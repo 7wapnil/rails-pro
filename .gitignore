@@ -1,0 +1,16 @@
+.bundle
+.byebug_history
+.env
+
+config/master.key
+log/*
+node_modules
+storage/*
+tmp/*
+public/assets
+
+yarn-error.log
+
+!log/.keep
+!storage/.keep
+!tmp/.keep
