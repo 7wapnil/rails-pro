@@ -28,9 +28,11 @@ gem 'jquery-rails'
 gem 'haml-rails', '~> 1.0'
 
 group :development, :test do
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'rspec-rails', '~> 3.7'
   gem 'factory_bot_rails'
+  gem 'rubocop', require: false
+  gem 'brakeman', require: false
 end
 
 group :development do
