@@ -9,6 +9,7 @@ storage/*
 tmp/*
 public/assets
 
+tags
 yarn-error.log
 
 !log/.keep
