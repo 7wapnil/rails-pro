@@ -10,9 +10,52 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 0) do
+ActiveRecord::Schema.define(version: 2018_04_24_140305) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "disciplines", force: :cascade do |t|
+    t.string "name"
+    t.string "kind"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "events", force: :cascade do |t|
+    t.bigint "discipline_id"
+    t.bigint "event_id"
+    t.string "name"
+    t.string "kind"
+    t.text "description"
+    t.datetime "started_at"
+    t.datetime "ended_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discipline_id"], name: "index_events_on_discipline_id"
+    t.index ["event_id"], name: "index_events_on_event_id"
+  end
+
+  create_table "markets", force: :cascade do |t|
+    t.bigint "event_id"
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_markets_on_event_id"
+  end
+
+  create_table "odds", force: :cascade do |t|
+    t.bigint "market_id"
+    t.string "name"
+    t.decimal "value"
+    t.boolean "won"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["market_id"], name: "index_odds_on_market_id"
+  end
+
+  add_foreign_key "events", "disciplines"
+  add_foreign_key "events", "events"
+  add_foreign_key "markets", "events"
+  add_foreign_key "odds", "markets"
 end
