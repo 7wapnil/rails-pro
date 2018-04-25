@@ -22,7 +22,12 @@ FactoryBot.define do
   factory :odd do
     market
     name 'MiTH'
-    value 1.85
     won true
+  end
+
+  factory :odd_value do
+    odd
+    value 1.85
+    active true
   end
 end

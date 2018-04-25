@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_04_24_140305) do
+ActiveRecord::Schema.define(version: 2018_04_25_071815) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,10 +44,18 @@ ActiveRecord::Schema.define(version: 2018_04_24_140305) do
     t.index ["event_id"], name: "index_markets_on_event_id"
   end
 
+  create_table "odd_values", force: :cascade do |t|
+    t.bigint "odd_id"
+    t.decimal "value"
+    t.boolean "active"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["odd_id"], name: "index_odd_values_on_odd_id"
+  end
+
   create_table "odds", force: :cascade do |t|
     t.bigint "market_id"
     t.string "name"
-    t.decimal "value"
     t.boolean "won"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -57,5 +65,6 @@ ActiveRecord::Schema.define(version: 2018_04_24_140305) do
   add_foreign_key "events", "disciplines"
   add_foreign_key "events", "events"
   add_foreign_key "markets", "events"
+  add_foreign_key "odd_values", "odds"
   add_foreign_key "odds", "markets"
 end
