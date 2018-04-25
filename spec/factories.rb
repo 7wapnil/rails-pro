@@ -1,4 +1,4 @@
-FactoryBot.define do
+FactoryBot.define do # rubocop:disable Metrics/BlockLength
   factory :discipline do
     name 'CS:GO'
     kind 'esports'
