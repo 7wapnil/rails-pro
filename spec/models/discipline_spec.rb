@@ -1,10 +1,10 @@
 describe Discipline, type: :model do
-  it { is_expected.to(validate_presence_of(:name)) }
-  it { is_expected.to(validate_presence_of(:kind)) }
+  kinds = described_class::KINDS.values
 
-  it do
-    is_expected.to(
-      validate_inclusion_of(:kind).in_array(described_class::KINDS.values)
-    )
-  end
+  it { should have_many(:events) }
+
+  it { should validate_presence_of(:name) }
+  it { should validate_presence_of(:kind) }
+
+  it { should validate_inclusion_of(:kind).in_array(kinds) }
 end
