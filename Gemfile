@@ -50,4 +50,5 @@ group :test do
   gem 'capybara', '>= 2.15', '< 4.0'
   gem 'selenium-webdriver'
   gem 'chromedriver-helper'
+  gem 'shoulda-matchers', '~> 3.1'
 end
