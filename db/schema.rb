@@ -47,7 +47,6 @@ ActiveRecord::Schema.define(version: 2018_04_25_071815) do
   create_table "odd_values", force: :cascade do |t|
     t.bigint "odd_id"
     t.decimal "value"
-    t.boolean "active"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["odd_id"], name: "index_odd_values_on_odd_id"
