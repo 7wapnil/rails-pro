@@ -1,6 +1,7 @@
 .bundle
 .byebug_history
 .env
+.yarn-integrity
 
 config/master.key
 log/*
@@ -8,8 +9,11 @@ node_modules
 storage/*
 tmp/*
 public/assets
+public/packs
+public/packs-test
 
 tags
+yarn-debug.log*
 yarn-error.log
 
 !log/.keep
