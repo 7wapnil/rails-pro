@@ -5,7 +5,7 @@ class Event < ApplicationRecord
   }.freeze
 
   belongs_to :discipline
-  belongs_to :event
+  belongs_to :event, optional: true
   has_many :markets
 
   validates :kind, :name, presence: true
