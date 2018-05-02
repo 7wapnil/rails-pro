@@ -4,7 +4,10 @@ import App from '../app.vue'
 
 Vue.use(TurbolinksAdapter)
 
-document.addEventListener('turbolinks:load', () => new Vue({
-  el: '#root',
-  components: { App }
-}))
+document.addEventListener('turbolinks:load', () => {
+  const el = document
+    .querySelector('.container')
+    .appendChild(document.createElement('app'))
+
+  return new Vue({ el, render: h => h(App) })
+})
