@@ -13,3 +13,4 @@ Style/EmptyMethod:
 AllCops:
   Exclude:
     - 'db/schema.rb'
+    - 'node_modules/**/*'
