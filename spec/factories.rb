@@ -6,7 +6,6 @@ FactoryBot.define do # rubocop:disable Metrics/BlockLength
 
   factory :event do
     discipline
-    event
     name 'MiTH vs. Beyond eSports'
     kind 'match'
     description 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' # rubocop:disable Metrics/LineLength
@@ -28,6 +27,5 @@ FactoryBot.define do # rubocop:disable Metrics/BlockLength
   factory :odd_value do
     odd
     value 1.85
-    active true
   end
 end
