@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 2018_05_03_095735) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "priority"
     t.index ["event_id"], name: "index_markets_on_event_id"
   end
 

@@ -2,5 +2,5 @@ class Market < ApplicationRecord
   belongs_to :event
   has_many :odds
 
-  validates :name, presence: true
+  validates :name, :priority, presence: true
 end

@@ -16,6 +16,7 @@ FactoryBot.define do # rubocop:disable Metrics/BlockLength
   factory :market do
     event
     name 'Winner Map (Train)'
+    priority 2
   end
 
   factory :odd do
