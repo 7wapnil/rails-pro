@@ -48,6 +48,8 @@ class CsgoPrimer
     end
   end
 
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def self.create_event(attributes)
     tournament = Event.tournament.order(Arel.sql('RANDOM()')).first
     teams = CSGO_TEAMS.sample(2)
@@ -72,6 +74,8 @@ class CsgoPrimer
     end
   end
 end
+# rubocop:enable Metrics/AbcSize
+# rubocop:enable Metrics/MethodLength
 
 puts 'Checking Discipline ...'
 
@@ -99,10 +103,10 @@ end
 puts 'Checking current in-play Matches ...'
 
 if Event.match.where(
-    'start_at > ? AND end_at = ?',
-    CsgoPrimer::REASONABLE_MATCH_TIME.ago,
-    nil
-  ).count < 3
+  'start_at > ? AND end_at = ?',
+  CsgoPrimer::REASONABLE_MATCH_TIME.ago,
+  nil
+).count < 3
   3.times do
     start_at =
       Faker::Time.between(2.hours.ago, Time.zone.now).beginning_of_hour
