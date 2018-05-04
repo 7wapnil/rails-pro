@@ -91,6 +91,9 @@ GEM
     formatador (0.2.5)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
+    goldiloader (2.1.0)
+      activerecord (>= 4.2, < 5.3)
+      activesupport (>= 4.2, < 5.3)
     graphiql-rails (1.4.10)
       railties
       sprockets-rails
@@ -315,6 +318,7 @@ DEPENDENCIES
   chromedriver-helper
   factory_bot_rails
   faker
+  goldiloader
   graphiql-rails
   graphql
   guard
