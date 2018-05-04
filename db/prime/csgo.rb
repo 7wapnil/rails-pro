@@ -73,9 +73,9 @@ class CsgoPrimer
       odd.odd_values.create!(value: Faker::Number.between(1.1, 9.9).round(2))
     end
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 end
-# rubocop:enable Metrics/AbcSize
-# rubocop:enable Metrics/MethodLength
 
 puts 'Checking Discipline ...'
 
