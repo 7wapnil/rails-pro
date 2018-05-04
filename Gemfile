@@ -27,6 +27,7 @@ gem 'bootstrap', '~> 4.1.0'
 gem 'jquery-rails'
 gem 'haml-rails', '~> 1.0'
 gem 'webpacker', '~> 3.4'
+gem 'graphql'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
@@ -41,6 +42,7 @@ end
 
 group :development do
   gem 'web-console', '>= 3.3.0'
+  gem 'graphiql-rails'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
