@@ -7,5 +7,5 @@ class Discipline < ApplicationRecord
     sports: 1
   }
 
-  validates :name, presence: true
+  validates :name, :kind, presence: true
 end
