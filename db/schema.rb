@@ -10,30 +10,38 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_03_095735) do
+ActiveRecord::Schema.define(version: 2018_05_08_080145) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "disciplines", force: :cascade do |t|
     t.string "name"
-    t.string "kind"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "kind", default: 0
+  end
+
+  create_table "event_scopes", force: :cascade do |t|
+    t.bigint "discipline_id"
+    t.bigint "event_scope_id"
+    t.string "name"
+    t.integer "kind", default: 0
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["discipline_id"], name: "index_event_scopes_on_discipline_id"
+    t.index ["event_scope_id"], name: "index_event_scopes_on_event_scope_id"
   end
 
   create_table "events", force: :cascade do |t|
     t.bigint "discipline_id"
-    t.bigint "event_id"
     t.string "name"
-    t.string "kind"
     t.text "description"
     t.datetime "start_at"
     t.datetime "end_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["discipline_id"], name: "index_events_on_discipline_id"
-    t.index ["event_id"], name: "index_events_on_event_id"
   end
 
   create_table "markets", force: :cascade do |t|
@@ -62,9 +70,21 @@ ActiveRecord::Schema.define(version: 2018_05_03_095735) do
     t.index ["market_id"], name: "index_odds_on_market_id"
   end
 
+  create_table "scoped_events", force: :cascade do |t|
+    t.bigint "event_scope_id"
+    t.bigint "event_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["event_id"], name: "index_scoped_events_on_event_id"
+    t.index ["event_scope_id"], name: "index_scoped_events_on_event_scope_id"
+  end
+
+  add_foreign_key "event_scopes", "disciplines"
+  add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "events", "disciplines"
-  add_foreign_key "events", "events"
   add_foreign_key "markets", "events"
   add_foreign_key "odd_values", "odds"
   add_foreign_key "odds", "markets"
+  add_foreign_key "scoped_events", "event_scopes"
+  add_foreign_key "scoped_events", "events"
 end

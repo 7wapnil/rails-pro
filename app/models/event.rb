@@ -1,20 +1,10 @@
 class Event < ApplicationRecord
-  KINDS = {
-    match: 'match',
-    tournament: 'tournament'
-  }.freeze
-
   belongs_to :discipline
-  belongs_to :event, optional: true
   has_many :markets
+  has_many :scoped_events
+  has_many :event_scopes, through: :scoped_events
 
-  validates :kind, :name, presence: true
-  validates :kind, inclusion: { in: KINDS.values }
+  validates :name, presence: true
 
-  scope :match, -> { where(kind: KINDS[:match]) }
-  scope :tournament, -> { where(kind: KINDS[:tournament]) }
-
-  def self.in_play
-    match.where('start_at < ? AND end_at IS NULL', Time.zone.now)
-  end
+  scope :in_play, -> { where('start_at < ? AND end_at IS NULL', Time.zone.now) }
 end
