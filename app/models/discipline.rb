@@ -1,11 +1,11 @@
 class Discipline < ApplicationRecord
-  KINDS = {
-    match: 'match',
-    tournament: 'tournament'
-  }.freeze
-
   has_many :events, dependent: :destroy
+  has_many :event_scopes, dependent: :destroy
+
+  enum kind: {
+    esports: 0,
+    sports: 1
+  }
 
   validates :name, :kind, presence: true
-  validates :kind, inclusion: { in: KINDS.values }
 end

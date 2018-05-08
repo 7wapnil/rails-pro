@@ -1,7 +1,9 @@
 class Event < ApplicationRecord
   belongs_to :discipline
-  belongs_to :event
   has_many :markets
 
-  validates :kind, :name, presence: true
+  has_many :scoped_events
+  has_many :event_scopes, through: :scoped_events
+
+  validates :name, presence: true
 end
