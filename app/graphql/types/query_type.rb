@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/BlockLength
 Types::QueryType = GraphQL::ObjectType.define do
   name 'Query'
   # Add root-level fields here.
@@ -16,8 +17,9 @@ Types::QueryType = GraphQL::ObjectType.define do
     argument :scope,
              types.String,
              prepare: ->(scope, _ctx) {
-               error_msg =
-                 'Scope should be one of following values: (discipline, kind, event_scope)'
+               # rubocop:disable Metrics/LineLength
+               error_msg = 'Scope should be one of following values: (discipline, kind, event_scope)'
+               # rubocop:enable Metrics/LineLength
 
                return scope if scope.in? %w[discipline kind event_scope]
                return GraphQL::ExecutionError.new(error_msg)
@@ -38,3 +40,4 @@ Types::QueryType = GraphQL::ObjectType.define do
     }
   end
 end
+# rubocop:enable Metrics/BlockLength

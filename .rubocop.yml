@@ -10,6 +10,9 @@ Style/Documentation:
 Style/EmptyMethod:
   Enabled: false
 
+Style/Lambda:
+  Enabled: false
+
 AllCops:
   Exclude:
     - 'db/schema.rb'
