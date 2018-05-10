@@ -7,13 +7,11 @@ Types::QueryType = GraphQL::ObjectType.define do
     type Types::MatchType
     description 'Get a match by id'
     argument :id, !types.ID
-    resolve -> (_obj, args, _ctx) { Event.find(args['id']) }
+    resolve ->(_obj, args, _ctx) { Event.find(args['id']) }
   end
 
   field :matches, types[Types::MatchType] do
     description 'Get all matches'
-    resolve -> (_obj, _args, _ctx) {
-      Event.match.in_play
-    }
+    resolve ->(_obj, _args, _ctx) { Event.match.in_play }
   end
 end
