@@ -3,4 +3,5 @@ describe Market, type: :model do
   it { should have_many(:odds) }
 
   it { should validate_presence_of(:name) }
+  it { should validate_presence_of(:priority) }
 end

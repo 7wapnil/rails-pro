@@ -50,6 +50,7 @@ GEM
     ast (2.4.0)
     autoprefixer-rails (8.3.0)
       execjs
+    awesome_print (1.8.0)
     bindex (0.5.0)
     bootsnap (1.3.0)
       msgpack (~> 1.0)
@@ -84,10 +85,19 @@ GEM
     factory_bot_rails (4.8.2)
       factory_bot (~> 4.8.2)
       railties (>= 3.0.0)
+    faker (1.8.7)
+      i18n (>= 0.7)
     ffi (1.9.23)
     formatador (0.2.5)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
+    goldiloader (2.1.0)
+      activerecord (>= 4.2, < 5.3)
+      activesupport (>= 4.2, < 5.3)
+    graphiql-rails (1.4.10)
+      railties
+      sprockets-rails
+    graphql (1.7.14)
     guard (2.14.2)
       formatador (>= 0.2.4)
       listen (>= 2.7, < 4.0)
@@ -167,6 +177,8 @@ GEM
     pry (0.11.3)
       coderay (~> 1.1.0)
       method_source (~> 0.9.0)
+    pry-rails (0.3.6)
+      pry (>= 0.10.4)
     public_suffix (3.0.2)
     puma (3.11.4)
     rack (2.0.4)
@@ -297,6 +309,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  awesome_print
   bootsnap (>= 1.1.0)
   bootstrap (~> 4.1.0)
   brakeman
@@ -304,6 +317,10 @@ DEPENDENCIES
   capybara (>= 2.15, < 4.0)
   chromedriver-helper
   factory_bot_rails
+  faker
+  goldiloader
+  graphiql-rails
+  graphql
   guard
   guard-brakeman
   guard-rspec
@@ -313,6 +330,7 @@ DEPENDENCIES
   jquery-rails
   listen (>= 3.0.5, < 3.2)
   pg (>= 0.18, < 2.0)
+  pry-rails
   puma (~> 3.11)
   rails (~> 5.2.0)
   rspec-rails (~> 3.7)

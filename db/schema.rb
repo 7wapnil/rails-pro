@@ -37,8 +37,8 @@ ActiveRecord::Schema.define(version: 2018_05_08_080145) do
     t.bigint "discipline_id"
     t.string "name"
     t.text "description"
-    t.datetime "started_at"
-    t.datetime "ended_at"
+    t.datetime "start_at"
+    t.datetime "end_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["discipline_id"], name: "index_events_on_discipline_id"
@@ -49,6 +49,7 @@ ActiveRecord::Schema.define(version: 2018_05_08_080145) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "priority"
     t.index ["event_id"], name: "index_markets_on_event_id"
   end
 
