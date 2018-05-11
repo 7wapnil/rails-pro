@@ -6,10 +6,20 @@
   },
   "dependencies": {
     "@rails/webpacker": "3.4",
+    "apollo-cache-inmemory": "^1.2.1",
+    "apollo-client": "^2.3.1",
+    "apollo-link": "^1.2.2",
+    "apollo-link-http": "^1.5.4",
+    "caniuse-lite": "^1.0",
+    "css-loader": "^0.28.11",
+    "graphql": "^0.13.2",
+    "graphql-tag": "^2.9.2",
     "vue": "^2.5.16",
+    "vue-apollo": "^3.0.0-beta.9",
     "vue-loader": "^14.2.2",
     "vue-template-compiler": "^2.5.16",
-    "vue-turbolinks": "^2.0.3"
+    "vue-turbolinks": "^2.0.3",
+    "webpack": "^3.0.0"
   },
   "devDependencies": {
     "eslint": "^4.19.1",
