@@ -19,13 +19,14 @@ FactoryBot.define do # rubocop:disable Metrics/BlockLength
     discipline
     name 'MiTH vs. Beyond eSports'
     description 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' # rubocop:disable Metrics/LineLength
-    started_at { 2.hours.ago }
-    ended_at { 1.hours.ago }
+    start_at { 2.hours.ago }
+    end_at { 1.hours.ago }
   end
 
   factory :market do
     event
     name 'Winner Map (Train)'
+    priority 2
   end
 
   factory :odd do

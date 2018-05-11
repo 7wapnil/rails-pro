@@ -8,4 +8,5 @@ class Discipline < ApplicationRecord
   }
 
   validates :name, :kind, presence: true
+  validates :name, uniqueness: true
 end
