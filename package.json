@@ -14,6 +14,7 @@
     "css-loader": "^0.28.11",
     "graphql": "^0.13.2",
     "graphql-tag": "^2.9.2",
+    "rails-erb-loader": "^5.4.2",
     "vue": "^2.5.16",
     "vue-apollo": "^3.0.0-beta.9",
     "vue-loader": "^14.2.2",
