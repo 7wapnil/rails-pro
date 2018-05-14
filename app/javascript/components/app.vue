@@ -1,17 +1,14 @@
 <template>
   <div id="app">
-    <h1 class="display-4">{{ message }}</h1>
-
-    <card header="In Play">
-      <ul>
-        <li v-for="event in events"> {{ event.name }} </li>
-      </ul>
+    <card header="Events">
+      <event-row v-for="(event, index) in events" :event="event"></event-row>
     </card>
   </div>
 </template>
 
 <script>
 import Card from './card.vue'
+import EventRow from './event-row.vue'
 
 import gql from 'graphql-tag'
 
@@ -19,18 +16,31 @@ const EVENTS_QUERY = gql`{
   events {
     id
     name
+    description
+    start_at
+    end_at
+    markets {
+      id
+      name
+      priority
+      odds {
+        id
+        name
+        odd_values {
+          id
+          value
+          created_at
+        }
+      }
+    }
   }
 }
 `
 
 export default {
-  data () {
-    return {
-      message: "Hello, World"
-    }
-  },
   components: {
-    Card
+    Card,
+    EventRow
   },
   apollo: {
     events: EVENTS_QUERY
