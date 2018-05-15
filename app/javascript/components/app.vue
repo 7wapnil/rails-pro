@@ -17,6 +17,7 @@ const EVENTS_QUERY = gql`{
     id
     name
     description
+    discipline_name
     start_at
     end_at
     markets {
