@@ -29,6 +29,7 @@ gem 'haml-rails', '~> 1.0'
 gem 'webpacker', '~> 3.4'
 gem 'graphql'
 gem 'goldiloader'
+gem 'devise'
 
 # Here only because of staging on Heroku
 # To be moved back to development and test group
