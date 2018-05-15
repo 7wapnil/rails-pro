@@ -10,6 +10,8 @@ class Event < ApplicationRecord
 
   validates :name, presence: true
 
+  delegate :name, to: :discipline, prefix: true
+
   def self.in_play
     where('start_at < ? AND end_at IS NULL', Time.zone.now)
   end
