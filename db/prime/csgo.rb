@@ -92,10 +92,9 @@ end
 
 puts 'Finishing past in-play Matches ...'
 
-Event.where(
-  'start_at < ? AND end_at = ?',
-  CsgoPrimer::REASONABLE_MATCH_TIME.ago,
-  nil
+Event.unscoped.where(
+  'start_at < ? AND end_at IS NULL',
+  CsgoPrimer::REASONABLE_MATCH_TIME.ago
 ).find_each(batch_size: 100) do |event|
   event.update_attributes!(end_at: event.start_at + 2.hours)
 end
@@ -117,9 +116,11 @@ end
 
 puts 'Creating more future Matches ...'
 
-10.times do
-  start_at =
-    Faker::Time.between(Time.zone.now, 1.day.from_now).beginning_of_hour
+if Event.where('end_at IS NULL').count < 20
+  10.times do
+    start_at =
+      Faker::Time.between(Time.zone.now, 1.day.from_now).beginning_of_hour
 
-  CsgoPrimer.create_event(start_at: start_at)
+    CsgoPrimer.create_event(start_at: start_at)
+  end
 end
