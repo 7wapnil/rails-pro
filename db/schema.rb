@@ -10,10 +10,33 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_08_080145) do
+ActiveRecord::Schema.define(version: 2018_05_15_113514) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "customers", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.integer "gender"
+    t.date "birth_date"
+    t.string "phone"
+    t.string "email"
+    t.string "username", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.inet "current_sign_in_ip"
+    t.inet "last_sign_in_ip"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true
+    t.index ["username"], name: "index_customers_on_username", unique: true
+  end
 
   create_table "disciplines", force: :cascade do |t|
     t.string "name"
