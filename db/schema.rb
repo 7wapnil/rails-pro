@@ -10,10 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_15_113514) do
+ActiveRecord::Schema.define(version: 2018_05_15_133529) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "addresses", force: :cascade do |t|
+    t.bigint "customer_id"
+    t.integer "country"
+    t.string "state"
+    t.string "city"
+    t.string "address"
+    t.string "zip_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_addresses_on_customer_id"
+  end
 
   create_table "customers", force: :cascade do |t|
     t.string "first_name"
@@ -102,6 +114,7 @@ ActiveRecord::Schema.define(version: 2018_05_15_113514) do
     t.index ["event_scope_id"], name: "index_scoped_events_on_event_scope_id"
   end
 
+  add_foreign_key "addresses", "customers"
   add_foreign_key "event_scopes", "disciplines"
   add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "events", "disciplines"
