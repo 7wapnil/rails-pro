@@ -4,7 +4,7 @@ module ApplicationHelper
     error: :danger,
     success: :success,
     alert: :warning
-  }
+  }.freeze
 
   def alert(message, opts = {})
     type = opts[:type] || :notice
