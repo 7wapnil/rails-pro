@@ -1,16 +1,16 @@
 %nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
-  %a.navbar-brand{:href => "#"} ArcaneBet
-  %button.navbar-toggler{ 'aria-controls': 'navbarSupportedContent',
+  = link_to 'ArcaneBet', root_path, class: 'navbar-brand'
+  %button.navbar-toggler{ 'aria-controls': 'navbar-content',
                           'aria-expanded': 'false',
                           'aria-label': 'Toggle navigation',
-                          'data-target': '#navbarSupportedContent',
+                          'data-target': '#navbar-content',
                           'data-toggle': 'collapse',
                           type: 'button' }
     %span.navbar-toggler-icon
-  #navbarSupportedContent.collapse.navbar-collapse
+  #navbar-content.collapse.navbar-collapse
     %ul.navbar-nav.mr-auto
       %li.nav-item
-        %a.nav-link{ href: '#'} Esports
+        %a.nav-link.active{ href: '#'} Esports
       %li.nav-item
         %a.nav-link{ href: '#'} Live
       %li.nav-item
@@ -19,3 +19,4 @@
         %a.nav-link{ href: '#'} Sports
       %li.nav-item
         %a.nav-link{ href: '#'} Live Casino
+    = render 'shared/authentication_links'

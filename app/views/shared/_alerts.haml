@@ -1,2 +1,4 @@
-- %i(notice error success alert).each do |msg|
-  = alert(flash[msg], type: msg) if flash[msg]
+.row
+  .col.mt-2
+    - %i(notice error success alert).each do |msg|
+      = alert(flash[msg], type: msg) if flash[msg]
