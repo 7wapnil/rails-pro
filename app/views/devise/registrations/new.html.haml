@@ -3,7 +3,7 @@
     .col.mt-2= f.error_notification
   .row
     .col-6.offset-3
-      %h2 Sign up
+      %h2= t(:sign_up)
   .row
     .col-6.offset-3
       = f.input :username, required: true, autofocus: true
@@ -13,6 +13,6 @@
       = f.input :date_of_birth, as: :date_picker, required: true
       = f.input :password, required: true, hint: ("#{@minimum_password_length} characters minimum" if @minimum_password_length)
       = f.input :password_confirmation, required: true
-      = f.button :submit, "Sign up", class: 'btn btn-dark btn-block'
+      = f.button :submit, t(:sign_up), class: 'btn btn-dark btn-block'
       %hr
       = render "devise/shared/links"
