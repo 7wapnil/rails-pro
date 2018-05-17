@@ -1,32 +1,11 @@
-import Vue from 'vue/dist/vue.esm'
-import TurbolinksAdapter from 'vue-turbolinks'
-import VueApollo from 'vue-apollo'
+import flatpickr from 'flatpickr'
 
-import { ApolloClient } from 'apollo-client'
-import { HttpLink } from 'apollo-link-http'
-import { InMemoryCache } from 'apollo-cache-inmemory'
+import 'flatpickr/dist/flatpickr.css'
+import 'flatpickr/dist/themes/airbnb.css'
 
-import App from '../components/app.vue'
-
-const httpLink = new HttpLink({
-  uri: '<%= ENV["INTERNAL_API_URI"] %>'
-})
-
-const apolloClient = new ApolloClient({
-  link: httpLink,
-  cache: new InMemoryCache(),
-  connectToDevTools: <%= ENV['NODE_ENV'] == 'development' %>
-})
-
-const apolloProvider = new VueApollo({ defaultClient: apolloClient })
-
-Vue.use(TurbolinksAdapter)
-Vue.use(VueApollo)
+const dateFormat = 'j F Y'
+const defaultDate = '1 January 1990'
 
 document.addEventListener('turbolinks:load', () => {
-  return new Vue({
-    el: '#root',
-    provide: apolloProvider.provide(),
-    render: h => h(App)
-  })
+  flatpickr('.form_date', { dateFormat, defaultDate })
 })
