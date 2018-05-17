@@ -1,4 +1,13 @@
-FactoryBot.define do # rubocop:disable Metrics/BlockLength
+FactoryBot.define do
+  factory :customer do
+    username { Faker::Internet.user_name }
+    email { Faker::Internet.email }
+    first_name { Faker::Name.first_name }
+    last_name { Faker::Name.last_name }
+    date_of_birth { Faker::Date.birthday }
+    password 'iamverysecure'
+  end
+
   factory :discipline do
     name 'CS:GO'
     kind :esports
