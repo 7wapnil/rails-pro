@@ -13,7 +13,13 @@ Style/EmptyMethod:
 Style/Lambda:
   Enabled: false
 
+Metrics/BlockLength:
+  Enabled: false
+
 AllCops:
   Exclude:
     - 'db/schema.rb'
     - 'node_modules/**/*'
+    - 'db/migrate/20180515113514_devise_create_customers.rb'
+    - 'config/initializers/simple_form.rb'
+    - 'config/initializers/simple_form_bootstrap.rb'

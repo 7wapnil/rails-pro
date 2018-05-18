@@ -10,10 +10,45 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_08_080145) do
+ActiveRecord::Schema.define(version: 2018_05_16_120949) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "addresses", force: :cascade do |t|
+    t.bigint "customer_id"
+    t.integer "country"
+    t.string "state"
+    t.string "city"
+    t.string "address"
+    t.string "zip_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_addresses_on_customer_id"
+  end
+
+  create_table "customers", force: :cascade do |t|
+    t.string "first_name"
+    t.string "last_name"
+    t.integer "gender"
+    t.date "date_of_birth"
+    t.string "phone"
+    t.string "email"
+    t.string "username", default: "", null: false
+    t.string "encrypted_password", default: "", null: false
+    t.string "reset_password_token"
+    t.datetime "reset_password_sent_at"
+    t.datetime "remember_created_at"
+    t.integer "sign_in_count", default: 0, null: false
+    t.datetime "current_sign_in_at"
+    t.datetime "last_sign_in_at"
+    t.inet "current_sign_in_ip"
+    t.inet "last_sign_in_ip"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true
+    t.index ["username"], name: "index_customers_on_username", unique: true
+  end
 
   create_table "disciplines", force: :cascade do |t|
     t.string "name"
@@ -79,6 +114,7 @@ ActiveRecord::Schema.define(version: 2018_05_08_080145) do
     t.index ["event_scope_id"], name: "index_scoped_events_on_event_scope_id"
   end
 
+  add_foreign_key "addresses", "customers"
   add_foreign_key "event_scopes", "disciplines"
   add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "events", "disciplines"

@@ -1,4 +1,3 @@
-# rubocop:disable Metrics/BlockLength
 Types::QueryType = GraphQL::ObjectType.define do
   name 'Query'
   # Add root-level fields here.
@@ -40,4 +39,3 @@ Types::QueryType = GraphQL::ObjectType.define do
     }
   end
 end
-# rubocop:enable Metrics/BlockLength
