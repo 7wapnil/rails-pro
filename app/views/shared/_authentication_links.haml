@@ -13,6 +13,6 @@
                   method: :delete,
                   class: 'dropdown-item'
   - else
-    %li.nav-item= link_to 'Sign in', new_customer_session_path, class: 'nav-link'
-    %li.nav-item= link_to 'Sign up', new_customer_registration_path, class: 'nav-link'
+    %li.nav-item= link_to t(:sign_in), new_customer_session_path, class: 'nav-link'
+    %li.nav-item= link_to t(:sign_up), new_customer_registration_path, class: 'nav-link'
 
