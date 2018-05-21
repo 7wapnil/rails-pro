@@ -4,12 +4,14 @@ Rails.application.routes.draw do
   end
 
   namespace :backoffice do
-    devise_for :users
-
     resource :dashboard, only: :show
 
     root 'dashboards#show'
   end
+
+  devise_for :users, controllers: {
+    sessions: 'users/sessions'
+  }
 
   devise_for :customers, controllers: {
     registrations: 'customers/registrations'
