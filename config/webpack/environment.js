@@ -8,7 +8,7 @@ const vue = require('./loaders/vue')
 environment.loaders.append('vue', vue)
 environment.loaders.append('erb', erb)
 
-environment.loaders.get('sass').use.splice(-1, 0,  {
+environment.loaders.get('sass').use.splice(-1, 0, {
   loader: 'resolve-url-loader',
   options: { attempts: 1 }
 })
