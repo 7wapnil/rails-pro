@@ -1,0 +1,11 @@
+%nav.navbar.navbar-expand-lg.navbar-light.bg-light
+  = link_to 'ArcaneBet Backoffice', backoffice_root_path, class: 'navbar-brand'
+  %button.navbar-toggler{ 'aria-controls': 'navbar-content',
+                          'aria-expanded': 'false',
+                          'aria-label': 'Toggle navigation',
+                          'data-target': '#navbar-content',
+                          'data-toggle': 'collapse',
+                          type: 'button' }
+    %span.navbar-toggler-icon
+  #navbar-content.collapse.navbar-collapse
+    %ul.navbar-nav.mr-auto
