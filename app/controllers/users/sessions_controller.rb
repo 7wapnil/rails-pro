@@ -1,5 +1,5 @@
 module Users
-  class Users::SessionsController < Devise::SessionsController
+  class SessionsController < Devise::SessionsController
     layout 'backoffice'
 
     # before_action :configure_sign_in_params, only: [:create]
