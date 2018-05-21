@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   end
 
   namespace :backoffice do
+    devise_for :users
+
     resource :dashboard, only: :show
 
     root 'dashboards#show'
