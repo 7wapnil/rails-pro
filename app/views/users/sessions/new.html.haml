@@ -1,7 +1,7 @@
 = simple_form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
   .row
     .col-6.offset-3
-      %h2= t(:sign_in)
+      %h1.text-center.display-4= t(:sign_in)
   .row
     .col-6.offset-3
       = f.input :email, required: false, autofocus: true

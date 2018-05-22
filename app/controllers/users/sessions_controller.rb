@@ -1,6 +1,6 @@
 module Users
   class SessionsController < Devise::SessionsController
-    layout 'backoffice'
+    layout 'minimal'
 
     # before_action :configure_sign_in_params, only: [:create]
 
