@@ -68,12 +68,12 @@ describe 'User Sign In', type: :feature do
       end
     end
   end
-end
 
-def expect_authentication_failure
-  expect(current_path).to eq new_user_session_path
-  expect(page).to have_content I18n.t(
-    'devise.failure.invalid',
-    authentication_keys: 'Email'
-  )
+  def expect_authentication_failure
+    expect(current_path).to eq new_user_session_path
+    expect(page).to have_content I18n.t(
+      'devise.failure.invalid',
+      authentication_keys: 'Email'
+    )
+  end
 end
