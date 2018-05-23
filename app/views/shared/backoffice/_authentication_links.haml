@@ -1,0 +1,12 @@
+%ul.navbar-nav.ml-auto
+  %li.nav-item.dropdown
+    %a#username-dropdown{ role: :button,
+                          class: 'nav-link dropdown-toggle',
+                          'data-toggle': 'dropdown',
+                          'aria-haspopup': true,
+                          'aria-expanded': false }
+      = current_user.full_name
+    .dropdown-menu{ 'aria-labelledby': 'username-dropdown' }
+      = link_to t(:sign_out),
+                destroy_user_session_path,
+                class: 'dropdown-item'
