@@ -1,1 +1,7 @@
-%h1 hello customers index
+%h1.display-4= t(:customers)
+
+= table_for @customers, class: 'table' do |t|
+  - t.column(:username)
+  - t.column(:email)
+  - t.column(:last_sign_in_at) { |customer| l(customer.last_sign_in_at) }
+  - t.column(:last_sign_in_ip)
