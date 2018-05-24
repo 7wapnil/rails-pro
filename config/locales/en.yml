@@ -5,6 +5,10 @@ en:
 
   edit_profile: Edit Profile
 
+  time:
+    formats:
+      default: "%-d %B %Y %k:%M"
+
   date:
     formats:
       default: "%-d %B %Y"
