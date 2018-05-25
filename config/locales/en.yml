@@ -5,6 +5,8 @@ en:
 
   edit_profile: Edit Profile
 
+  search: 'Search %{subject}'
+
   time:
     formats:
       default: "%-d %B %Y %k:%M"

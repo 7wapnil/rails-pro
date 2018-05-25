@@ -1,11 +1,22 @@
 module Backoffice
   class CustomersController < BackofficeController
     def index
-      @customers = Customer.page params[:page]
+      @search = Customer.search(query_params)
+      @customers = @search.result.page(params[:page])
     end
 
     def show
       @customer = Customer.find(params[:id])
+    end
+
+    private
+
+    def query_params
+      query = params[:query].dup
+      return unless query
+
+      query.each { |key, value| query[key] = value.gsub(' ', '') }
+      query
     end
   end
 end
