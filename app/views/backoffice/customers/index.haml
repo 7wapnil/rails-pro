@@ -4,5 +4,8 @@
   - t.column(:username) do |customer|
     - link_to customer.username, backoffice_customer_path(customer)
   - t.column(:email)
-  - t.column(:last_sign_in_at) { |customer| l(customer.last_sign_in_at) }
+  - t.column(:last_sign_in_at) do |customer|
+    - l(customer.last_sign_in_at)
   - t.column(:last_sign_in_ip)
+
+= paginate @customers
