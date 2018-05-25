@@ -10,14 +10,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_24_072436) do
+ActiveRecord::Schema.define(version: 2018_05_25_065649) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
   create_table "addresses", force: :cascade do |t|
     t.bigint "customer_id"
-    t.integer "country"
+    t.string "country"
     t.string "state"
     t.string "city"
     t.string "street_address"
