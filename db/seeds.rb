@@ -1,3 +1,5 @@
+puts 'Checking system users ...'
+
 users_payload = [
   {
     first_name: 'Tim',
@@ -38,3 +40,5 @@ users_payload.each do |payload|
     user.password = ENV['SEED_USER_DEFAULT_PASSWORD']
   end
 end
+
+Puts 'Done!'
