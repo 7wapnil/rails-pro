@@ -33,7 +33,6 @@ gem 'devise'
 gem 'simple_form'
 gem 'rack-cors', require: 'rack/cors'
 gem 'activerecord-import'
-gem 'easy_table'
 gem 'kaminari'
 gem 'ransack'
 
