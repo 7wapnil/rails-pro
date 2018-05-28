@@ -32,6 +32,36 @@ To attach to container and interact with byebug debugger console (given that you
 $ docker exec arcanebet_web_1
 ```
 
+### Database setup
+
+Setting up development database comes in following steps:
+
+1. Create database instance and initialize the schema"
+
+```
+$ rake db:create db:schema:load
+```
+
+or alternatively (which does the same with one step):
+
+```
+$ rake db:setup
+```
+
+2. Populate the database with seed and develoment (prime) data:
+
+Initial data for all environments (i.e. backoffice users)
+
+```
+$ rake db:seed
+```
+
+Development fixture data that simulates production (i.e. events and markets, customers, etc.)
+
+```
+$ rake dev:prime
+```
+
 ## Sanity Checks
 
 We use Codeship as the CI/CD system. It runs following sanity checks on the code during builds:
