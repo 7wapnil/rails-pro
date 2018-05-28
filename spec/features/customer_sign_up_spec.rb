@@ -1,7 +1,16 @@
 describe 'Customer Sign Up', type: :feature do
   before { visit new_customer_registration_path }
 
-  let(:customer_attributes) { attributes_for(:customer) }
+  let(:customer_attributes) do
+    attributes_for(:customer).slice(
+      :username,
+      :email,
+      :first_name,
+      :last_name,
+      :date_of_birth,
+      :password
+    )
+  end
 
   it 'Successfully creates an account' do
     submit_customer_form_with customer_attributes
