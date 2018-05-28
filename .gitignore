@@ -2,6 +2,7 @@
 .byebug_history
 .env
 .yarn-integrity
+.idea
 
 config/master.key
 log/*
@@ -19,3 +20,4 @@ yarn-error.log
 !log/.keep
 !storage/.keep
 !tmp/.keep
+docker-compose.yml
