@@ -15,8 +15,8 @@ FactoryBot.define do
     email { Faker::Internet.email }
     phone { Faker::PhoneNumber.phone_number }
     sign_in_count { [*1..200].sample }
-    current_sign_in_at { Faker::Time.between(1.week.ago, Date.today).in_time_zone }
-    last_sign_in_at { Faker::Time.between(Date.yesterday, Date.today).in_time_zone }
+    current_sign_in_at { Faker::Time.between(1.week.ago, Date.today).in_time_zone } # rubocop:disable Metrics/LineLength
+    last_sign_in_at { Faker::Time.between(Date.yesterday, Date.today).in_time_zone } # rubocop:disable Metrics/LineLength
     current_sign_in_ip { Faker::Internet.ip_v4_address }
     last_sign_in_ip { Faker::Internet.ip_v4_address }
     password 'iamverysecure'

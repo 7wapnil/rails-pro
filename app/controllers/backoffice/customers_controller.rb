@@ -15,7 +15,7 @@ module Backoffice
       query = params[:query].dup
       return unless query
 
-      query.each { |key, value| query[key] = value.gsub(' ', '') }
+      query.each { |key, value| query[key] = value.delete(' ') }
       query
     end
   end
