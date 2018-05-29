@@ -8,6 +8,8 @@ Rails.application.routes.draw do
 
     resource :dashboard, only: :show
 
+    resources :labels, only: %i[index show]
+
     root 'dashboards#show'
   end
 
