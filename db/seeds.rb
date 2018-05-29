@@ -41,4 +41,4 @@ users_payload.each do |payload|
   end
 end
 
-Puts 'Done!'
+puts 'Done!'
