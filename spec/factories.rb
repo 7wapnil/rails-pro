@@ -22,6 +22,12 @@ FactoryBot.define do
     password 'iamverysecure'
   end
 
+  factory :customer_note do
+    customer
+    user
+    content { Faker::Lorem.paragraph }
+  end
+
   factory :address do
     customer
     country { Faker::Address.country }
