@@ -1,0 +1,42 @@
+%h1.display-4= t(:customers)
+
+%table.table
+  %thead
+    = search_form_for @search,
+                      url: backoffice_customers_path do |f|
+      %tr
+        %th
+          = f.label :username_cont, class: 'sr-only'
+          = f.search_field :username_cont,
+                           class: 'form-control',
+                           placeholder: t(:search, subject: :username),
+                           autocomplete: :off
+        %th
+          = f.label :email_cont, class: 'sr-only'
+          = f.search_field :email_cont,
+                           class: 'form-control',
+                           placeholder: t(:search, subject: :email),
+                           autocomplete: :off
+        %th
+          = f.label :ip_address_eq, class: 'sr-only'
+          = f.search_field :ip_address_eq,
+                           class: 'form-control',
+                           placeholder: t(:search, subject: 'IP address'),
+                           autocomplete: :off
+        %th
+          = f.label :id_eq, class: 'sr-only'
+          = f.search_field :id_eq,
+                           class: 'form-control',
+                           placeholder: t(:search, subject: 'ID'),
+                           autocomplete: :off
+        %th
+          = f.submit class: 'btn btn-outline-dark btn-block'
+  %tbody
+    - @customers.each do |customer|
+      %tr{ id: "customer-#{customer.id}" }
+        %td= link_to customer.username, backoffice_customer_path(customer)
+        %td= customer.email
+        %td= customer.last_sign_in_ip
+        %td= customer.id
+
+= paginate @customers

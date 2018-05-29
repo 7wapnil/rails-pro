@@ -1,7 +1,16 @@
 describe 'Customer Sign Up', type: :feature do
   before { visit new_customer_registration_path }
 
-  let(:customer_attributes) { attributes_for(:customer) }
+  let(:customer_attributes) do
+    attributes_for(:customer).slice(
+      :username,
+      :email,
+      :first_name,
+      :last_name,
+      :date_of_birth,
+      :password
+    )
+  end
 
   it 'Successfully creates an account' do
     submit_customer_form_with customer_attributes
@@ -72,7 +81,7 @@ def submit_customer_form_with(attributes)
     fill_in 'customer_password_confirmation',
             with: attributes[:password_confirmation] || attributes[:password]
 
-    find('input[name="commit"]').click
+    click_submit
   end
 end
 # rubocop:enable Metrics/MethodLength

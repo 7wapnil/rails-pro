@@ -4,6 +4,8 @@ Rails.application.routes.draw do
   end
 
   namespace :backoffice do
+    resources :customers, only: %i[index show]
+
     resource :dashboard, only: :show
 
     root 'dashboards#show'

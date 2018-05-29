@@ -8,12 +8,30 @@ FactoryBot.define do
 
   factory :customer do
     username { Faker::Internet.user_name }
-    email { Faker::Internet.email }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
     date_of_birth { Faker::Date.birthday }
+    gender { Customer.genders.keys.sample }
+    email { Faker::Internet.email }
+    phone { Faker::PhoneNumber.phone_number }
+    sign_in_count { [*1..200].sample }
+    current_sign_in_at { Faker::Time.between(1.week.ago, Date.today).in_time_zone } # rubocop:disable Metrics/LineLength
+    last_sign_in_at { Faker::Time.between(Date.yesterday, Date.today).in_time_zone } # rubocop:disable Metrics/LineLength
+    current_sign_in_ip { Faker::Internet.ip_v4_address }
+    last_sign_in_ip { Faker::Internet.ip_v4_address }
     password 'iamverysecure'
   end
+
+  factory :address do
+    customer
+    country { Faker::Address.country }
+    state { Faker::Address.state }
+    city { Faker::Address.city }
+    street_address { Faker::Address.street_address }
+    zip_code { Faker::Address.zip_code }
+  end
+
+  # Markets data
 
   factory :discipline do
     name 'CS:GO'

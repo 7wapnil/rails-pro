@@ -18,7 +18,7 @@ describe 'User Sign In', type: :feature do
         fill_in 'user_email', with: user.email
         fill_in 'user_password', with: user.password
 
-        find('input[name="commit"]').click
+        click_submit
       end
 
       expect(current_path).to eq backoffice_root_path
@@ -30,7 +30,7 @@ describe 'User Sign In', type: :feature do
         fill_in 'user_email', with: user.email
         fill_in 'user_password', with: 'iamwrong'
 
-        find('input[name="commit"]').click
+        click_submit
       end
 
       expect_authentication_failure
@@ -40,7 +40,7 @@ describe 'User Sign In', type: :feature do
       within 'form#new_user' do
         fill_in 'user_password', with: user.password
 
-        find('input[name="commit"]').click
+        click_submit
       end
 
       expect_authentication_failure
@@ -50,7 +50,7 @@ describe 'User Sign In', type: :feature do
       within 'form#new_user' do
         fill_in 'user_email', with: user.email
 
-        find('input[name="commit"]').click
+        click_submit
       end
 
       expect_authentication_failure

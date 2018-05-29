@@ -32,6 +32,9 @@ gem 'goldiloader'
 gem 'devise'
 gem 'simple_form'
 gem 'rack-cors', require: 'rack/cors'
+gem 'activerecord-import'
+gem 'kaminari'
+gem 'ransack'
 
 # Here only because of staging on Heroku
 # To be moved back to development and test group

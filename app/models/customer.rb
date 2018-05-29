@@ -1,4 +1,9 @@
 class Customer < ApplicationRecord
+  enum gender: {
+    male: 0,
+    female: 1
+  }
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
          authentication_keys: [:username]
@@ -15,4 +20,6 @@ class Customer < ApplicationRecord
             presence: true
 
   validates :username, uniqueness: { case_sensitive: false }
+
+  ransack_alias :ip_address, :last_sign_in_ip_or_current_sign_in_ip
 end
