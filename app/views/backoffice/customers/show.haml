@@ -16,6 +16,11 @@
         %tr
           %td= t(:sign_in_count)
           %td= @customer.sign_in_count
+        %tr
+          %td= t(:labels)
+          %td
+            - @customer.labels.each do |label|
+              %span{ :class => 'badge badge-info' }= label.name
 
   .col-6
     = card header: t(:personal_information) do
