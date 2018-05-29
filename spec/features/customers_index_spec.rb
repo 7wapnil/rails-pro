@@ -1,5 +1,4 @@
 describe 'Customers#index', type: :feature do
-
   it 'is protected' do
     visit backoffice_customers_path
 
@@ -9,12 +8,11 @@ describe 'Customers#index', type: :feature do
 
   context 'signed in' do
     let(:per_page_count) { 10 }
-    let(:user) { create(:user) }
 
     before do
       create_list(:customer, 5)
 
-      login_as user, scope: :user
+      login_as create(:user), scope: :user
       visit backoffice_customers_path
     end
 
@@ -41,12 +39,77 @@ describe 'Customers#index', type: :feature do
       end
     end
 
-    it 'searches by username contains'
+    context 'search' do
+      let!(:john) do
+        create(:customer, username: 'john_doe', email: 'john_doe@email.com')
+      end
 
-    it 'searches by email contains'
+      it 'searches by username contains' do
+        within 'table' do
+          fill_in :query_username_cont, with: 'john'
+          click_submit
+        end
 
-    it 'searches by ip address'
+        within 'table > tbody' do
+          expect(page).to have_content(john.username)
+        end
+      end
 
-    it 'searches by id'
+      it 'searches by email contains' do
+        within 'table' do
+          fill_in :query_email_cont, with: 'doe@email'
+          click_submit
+        end
+
+        within 'table > tbody' do
+          expect(page).to have_content(john.email)
+        end
+      end
+
+      it 'searches by last sign in ip address' do
+        within 'table' do
+          fill_in :query_ip_address_eq, with: john.last_sign_in_ip
+          click_submit
+        end
+
+        within 'table > tbody' do
+          expect(page).to have_content(john.last_sign_in_ip)
+        end
+      end
+
+      it 'searches by current sign in ip address' do
+        within 'table' do
+          fill_in :query_ip_address_eq, with: john.current_sign_in_ip
+          click_submit
+        end
+
+        within 'table > tbody' do
+          expect(page).to have_content(john.last_sign_in_ip)
+        end
+      end
+
+      it 'searches by id' do
+        within 'table' do
+          fill_in :query_id_eq, with: john.id
+          click_submit
+        end
+
+        within 'table > tbody' do
+          expect(page).to have_content(john.id)
+          expect(page).to have_content(john.username)
+        end
+      end
+
+      it 'trims whitespaces from the query' do
+        within 'table' do
+          fill_in :query_username_cont, with: 'j oh n '
+          click_submit
+        end
+
+        within 'table > tbody' do
+          expect(page).to have_content(john.username)
+        end
+      end
+    end
   end
 end
