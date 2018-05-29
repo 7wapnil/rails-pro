@@ -1,1 +1,32 @@
 %h1.display-4= t(:labels)
+
+%table.table
+  %thead
+    = search_form_for @search,
+                      url: backoffice_labels_path do |f|
+      %tr
+        %th
+          = f.label :name_cont, class: 'sr-only'
+          = f.search_field :name_cont,
+                           class: 'form-control',
+                           placeholder: t(:search, subject: :name),
+                           autocomplete: :off
+        %th
+          = f.label :description_cont, class: 'sr-only'
+          = f.search_field :description_cont,
+                           class: 'form-control',
+                           placeholder: t(:search, subject: :description),
+                           autocomplete: :off
+        %th
+          = f.submit class: 'btn btn-outline-dark btn-block'
+  %tbody
+    - @labels.each do |label|
+      %tr{ id: "label-#{label.id}" }
+        %td= link_to label.name, edit_backoffice_label_path(label)
+        %td= label.description
+
+= paginate @labels
+
+.row
+  .col.text-right
+    =link_to t(:add_label), new_backoffice_label_path, { :class => 'btn btn-primary' }
