@@ -7,12 +7,24 @@ FactoryBot.define do
   end
 
   factory :customer do
-    username { Faker::Internet.user_name }
+    username do
+      loop do
+        username = Faker::Internet.user_name
+        break username unless Customer.exists?(username: username)
+      end
+    end
+
+    email do
+      loop do
+        email = Faker::Internet.user_name
+        break email unless Customer.exists?(email: email)
+      end
+    end
+
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
     date_of_birth { Faker::Date.birthday }
     gender { Customer.genders.keys.sample }
-    email { Faker::Internet.email }
     phone { Faker::PhoneNumber.phone_number }
     sign_in_count { [*1..200].sample }
     current_sign_in_at { Faker::Time.between(1.week.ago, Date.today).in_time_zone } # rubocop:disable Metrics/LineLength
