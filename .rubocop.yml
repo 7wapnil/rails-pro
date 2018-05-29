@@ -18,9 +18,11 @@ Metrics/BlockLength:
 
 AllCops:
   Exclude:
-    - 'db/schema.rb'
-    - 'node_modules/**/*'
-    - 'db/migrate/20180515113514_devise_create_customers.rb'
-    - 'db/migrate/20180521120705_devise_create_users.rb'
     - 'config/initializers/simple_form.rb'
     - 'config/initializers/simple_form_bootstrap.rb'
+    - 'db/schema.rb'
+    - 'db/migrate/20180515113514_devise_create_customers.rb'
+    - 'db/migrate/20180521120705_devise_create_users.rb'
+    - 'log/**/*'
+    - 'node_modules/**/*'
+    - 'tmp/**/*'
