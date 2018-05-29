@@ -18,7 +18,7 @@ describe 'Customer Sign In', type: :feature do
         fill_in 'customer_username', with: customer.username
         fill_in 'customer_password', with: customer.password
 
-        find('input[name="commit"]').click
+        click_submit
       end
 
       expect(current_path).to eq root_path
@@ -30,7 +30,7 @@ describe 'Customer Sign In', type: :feature do
         fill_in 'customer_username', with: customer.username
         fill_in 'customer_password', with: 'iamwrong'
 
-        find('input[name="commit"]').click
+        click_submit
       end
 
       expect_authentication_failure
@@ -40,7 +40,7 @@ describe 'Customer Sign In', type: :feature do
       within 'form#new_customer' do
         fill_in 'customer_password', with: customer.password
 
-        find('input[name="commit"]').click
+        click_submit
       end
 
       expect_authentication_failure
@@ -50,7 +50,7 @@ describe 'Customer Sign In', type: :feature do
       within 'form#new_customer' do
         fill_in 'customer_username', with: customer.username
 
-        find('input[name="commit"]').click
+        click_submit
       end
 
       expect_authentication_failure

@@ -81,7 +81,7 @@ def submit_customer_form_with(attributes)
     fill_in 'customer_password_confirmation',
             with: attributes[:password_confirmation] || attributes[:password]
 
-    find('input[name="commit"]').click
+    click_submit
   end
 end
 # rubocop:enable Metrics/MethodLength
