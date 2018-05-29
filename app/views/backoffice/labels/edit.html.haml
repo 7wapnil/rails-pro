@@ -1,0 +1,12 @@
+= simple_form_for(@label, url: backoffice_label_path(@label)) do |f|
+  .row
+    .col.mt-2= f.error_notification
+  .row
+    .col-6.offset-3
+      %h2= t(:add_label)
+  .row
+    .col-6.offset-3
+      = f.input :name, required: true
+      = f.input :description
+      = f.button :submit, t(:save), class: 'btn btn-success'
+      = link_to t(:back), backoffice_labels_path

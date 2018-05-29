@@ -3,7 +3,6 @@ class BackofficeController < ActionController::Base
 
   before_action :authenticate_user!
 
-
   protected
 
   def query_params

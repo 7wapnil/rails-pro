@@ -1,8 +1,7 @@
 FactoryBot.define do
-
   factory :label do
-    name "MyString"
-    description "MyText"
+    name 'MyString'
+    description 'MyText'
   end
 
   factory :user do
