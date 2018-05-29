@@ -33,6 +33,13 @@ module Backoffice
       end
     end
 
+    def destroy
+      @label = Label.find(params[:id])
+      @label.destroy
+
+      redirect_to backoffice_labels_path
+    end
+
     private
 
     def label_params

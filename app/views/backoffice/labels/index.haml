@@ -24,6 +24,10 @@
       %tr{ id: "label-#{label.id}" }
         %td= link_to label.name, edit_backoffice_label_path(label)
         %td= label.description
+        %td= link_to t(:delete),
+          backoffice_label_path(label),
+          method: :delete,
+          data: { confirm: t(:confirmation) }
 
 = paginate @labels
 
