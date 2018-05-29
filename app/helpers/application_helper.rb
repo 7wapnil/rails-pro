@@ -1,6 +1,9 @@
 module ApplicationHelper
-  def card(header: nil)
-    content_tag(:div, class: 'card') do
+  def card(opts = {})
+    header = opts[:header]
+    css_class = ['card', opts[:class]].join(' ')
+
+    content_tag(:div, class: css_class) do
       concat content_tag(:h5, class: 'card-header') { header } if header
       concat content_tag(:div, class: 'card-body') { yield }
     end

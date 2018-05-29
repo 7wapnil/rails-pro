@@ -1,0 +1,4 @@
+= card class: 'mb-2' do
+  %h6.card-subtitle.mb-2.text-muted
+    = t(:says_at, who: note.user_full_name, when: l(note.created_at))
+  = simple_format note.content
