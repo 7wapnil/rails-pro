@@ -19,8 +19,13 @@
         %tr
           %td= t(:labels)
           %td
-            - @customer.labels.each do |label|
-              %span{ :class => 'badge badge-info' }= label.name
+            = collection_select(:labels, :ids, @labels, :id, :name,
+              { :selected => @customer.labels.map(&:id) }, { :class => 'form-control',
+              :id => 'customers_labels',
+              :multiple => true,
+              :data => { :placeholder => 'Add customer label',
+                :adding_url => add_label_backoffice_customer_path(@customer),
+                :removing_url => remove_label_backoffice_customer_path(@customer) }})
 
   .col-6
     = card header: t(:personal_information) do
@@ -51,3 +56,6 @@
         %tr
           %td= t(:address)
           %td= @customer.address
+
+= stylesheet_pack_tag 'customer_details_css'
+= javascript_pack_tag 'customer_details'

@@ -1,0 +1,30 @@
+import 'select2/dist/js/select2.full.min'
+
+$(() => {
+  // Send CSRF header with every ajax request
+  $(document).ajaxSend((event, xhr) => {
+    xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
+  })
+
+  const handleFailure = (err) => {
+    alert(`${err.status}: ${err.statusText}`)
+  }
+
+  const sendRequest = (url, id) => {
+    $.post(url, { label: { id } })
+      .done(() => {
+        alert('Customer labels updated')
+      })
+      .fail(handleFailure)
+  }
+
+  $('#customers_labels')
+    .select2()
+    .on('select2:select', (event) => {
+      sendRequest($(event.currentTarget).data('addingUrl'), event.params.data.id)
+    })
+    .on('select2:unselect', (event) => {
+      sendRequest($(event.currentTarget).data('removingUrl'), event.params.data.id)
+    })
+
+})

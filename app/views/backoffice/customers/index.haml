@@ -34,7 +34,11 @@
   %tbody
     - @customers.each do |customer|
       %tr{ id: "customer-#{customer.id}" }
-        %td= link_to customer.username, backoffice_customer_path(customer)
+        %td
+          = link_to customer.username, backoffice_customer_path(customer)
+          %br
+          - customer.labels.each do |label|
+            %span{ :class => 'badge badge-danger' }= label.name
         %td= customer.email
         %td= customer.last_sign_in_ip
         %td= customer.id
