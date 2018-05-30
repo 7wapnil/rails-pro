@@ -16,7 +16,7 @@ FactoryBot.define do
 
     email do
       loop do
-        email = Faker::Internet.user_name
+        email = Faker::Internet.email
         break email unless Customer.exists?(email: email)
       end
     end
@@ -32,6 +32,12 @@ FactoryBot.define do
     current_sign_in_ip { Faker::Internet.ip_v4_address }
     last_sign_in_ip { Faker::Internet.ip_v4_address }
     password 'iamverysecure'
+  end
+
+  factory :customer_note do
+    customer
+    user
+    content { Faker::Lorem.paragraph }
   end
 
   factory :address do
