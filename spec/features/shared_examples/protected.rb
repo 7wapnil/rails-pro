@@ -1,5 +1,8 @@
-shared_examples 'protected' do |protected_path_name|
-  let(:protected_path) { send(protected_path_name) }
+shared_examples 'protected' do |protected_path_name:, instance: false|
+  let(:protected_path) do
+    subject_id = instance ? subject.id : nil
+    send(protected_path_name, subject_id)
+  end
 
   it 'is protected' do
     visit protected_path
