@@ -7,6 +7,7 @@ module Backoffice
 
     def show
       @customer = Customer.find(params[:id])
+      @note = CustomerNote.new(customer: @customer)
     end
 
     private
