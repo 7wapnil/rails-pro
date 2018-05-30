@@ -55,7 +55,9 @@ describe 'Customers#show' do
         end
 
         within '.container' do
-          expect(page).to have_content "#{I18n.t(:content)} #{I18n.t('errors.messages.blank')}"
+          expect(page).to have_content(
+            "#{I18n.t(:content)} #{I18n.t('errors.messages.blank')}"
+          )
         end
       end
     end
