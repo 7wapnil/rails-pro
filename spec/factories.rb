@@ -16,7 +16,7 @@ FactoryBot.define do
 
     email do
       loop do
-        email = Faker::Internet.user_name
+        email = Faker::Internet.email
         break email unless Customer.exists?(email: email)
       end
     end
