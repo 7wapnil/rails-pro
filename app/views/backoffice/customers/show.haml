@@ -19,16 +19,21 @@
         %tr
           %td= t(:labels)
           %td
-            = collection_select(:labels, :ids, @labels, :id, :name,
-              { :selected => @customer.labels.map(&:id) }, { :class => 'form-control',
-              :id => 'customers_labels',
-              :multiple => true,
-              :data => { :placeholder => 'Add customer label',
-                :update_url => update_labels_backoffice_customer_path(@customer) }})
+            = collection_select(:labels,
+                                :ids,
+                                @labels,
+                                :id,
+                                :name,
+                                { selected: @customer.labels.map(&:id) },
+                                { class: 'form-control',
+                                  id: 'customers_labels',
+                                  multiple: true,
+                                  data: { placeholder: 'Add customer label',
+                                          update_url: update_labels_backoffice_customer_path(@customer) } })
 
       .row
-        %div{ :class => 'col text-right' }
-          %button{ :class => 'btn btn-success', :disabled => true, :id => 'save_labels' }= t(:save)
+        %div.col.text-right
+          %button.btn.btn-success{ disabled: true, id: 'save_labels' }= t(:save)
 
   .col-6
     = card header: t(:personal_information) do
@@ -60,5 +65,7 @@
           %td= t(:address)
           %td= @customer.address
 
-= stylesheet_pack_tag 'customer_details_css'
+- content_for :stylesheets do
+  = stylesheet_pack_tag 'customer_details_css'
+
 = javascript_pack_tag 'customer_details'
