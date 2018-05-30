@@ -10,20 +10,19 @@ module Backoffice
       @labels = Label.all
     end
 
-    def add_label
+    def update_labels
       customer = Customer.find(params[:id])
-      customer.labels << Label.find(label_param[:id])
-    end
-
-    def remove_label
-      customer = Customer.find(params[:id])
-      customer.labels.delete(Label.find(label_param[:id]))
+      if labels_params[:ids].include? '0'
+        customer.labels.clear
+      else
+        customer.label_ids = labels_params[:ids]
+      end
     end
 
     private
 
-    def label_param
-      params.require(:label).permit(:id)
+    def labels_params
+      params.require(:labels).permit(ids: [])
     end
   end
 end

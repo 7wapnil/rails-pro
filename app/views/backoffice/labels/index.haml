@@ -1,4 +1,6 @@
-%h1.display-4= t(:labels)
+%h1.display-4
+  = t(:labels)
+  = link_to t(:add_label), new_backoffice_label_path, { :class => 'btn btn-primary float-right btn-sm' }
 
 %table.table
   %thead
@@ -30,7 +32,3 @@
           data: { confirm: t(:confirmation) }
 
 = paginate @labels
-
-.row
-  .col.text-right
-    =link_to t(:add_label), new_backoffice_label_path, { :class => 'btn btn-primary' }

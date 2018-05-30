@@ -6,25 +6,32 @@ $(() => {
     xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
   })
 
-  const handleFailure = (err) => {
-    alert(`${err.status}: ${err.statusText}`)
-  }
+  const selectElement = $('#customers_labels')
+  const saveLabelsBtn = $('#save_labels')
 
-  const sendRequest = (url, id) => {
-    $.post(url, { label: { id } })
+  saveLabelsBtn.on('click', () => {
+    let ids = selectElement.val()
+    if (!ids.length) {
+      ids = [0]
+    }
+
+    saveLabelsBtn.prop('disabled', true)
+
+    $.post(selectElement.data('updateUrl'), { labels: { ids } })
       .done(() => {
         alert('Customer labels updated')
       })
-      .fail(handleFailure)
-  }
+      .fail((err) => {
+        alert(`${err.status}: ${err.statusText}`)
+        saveLabelsBtn.prop('disabled', false)
+      })
+  })
 
-  $('#customers_labels')
-    .select2()
-    .on('select2:select', (event) => {
-      sendRequest($(event.currentTarget).data('addingUrl'), event.params.data.id)
+  selectElement
+    .select2({
+      minimumInputLength: 0
     })
-    .on('select2:unselect', (event) => {
-      sendRequest($(event.currentTarget).data('removingUrl'), event.params.data.id)
+    .on('change', () => {
+      saveLabelsBtn.prop('disabled', false)
     })
-
 })

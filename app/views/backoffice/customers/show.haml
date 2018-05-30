@@ -24,8 +24,11 @@
               :id => 'customers_labels',
               :multiple => true,
               :data => { :placeholder => 'Add customer label',
-                :adding_url => add_label_backoffice_customer_path(@customer),
-                :removing_url => remove_label_backoffice_customer_path(@customer) }})
+                :update_url => update_labels_backoffice_customer_path(@customer) }})
+
+      .row
+        %div{ :class => 'col text-right' }
+          %button{ :class => 'btn btn-success', :disabled => true, :id => 'save_labels' }= t(:save)
 
   .col-6
     = card header: t(:personal_information) do
