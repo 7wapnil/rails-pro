@@ -1,5 +1,6 @@
 describe Customer, type: :model do
   it { should have_one(:address) }
+  it { should have_and_belong_to_many(:labels) }
 
   it { should validate_presence_of(:username) }
   it { should validate_presence_of(:email) }

@@ -1,4 +1,9 @@
 FactoryBot.define do
+  factory :label do
+    name 'MyString'
+    description 'MyText'
+  end
+
   factory :user do
     email { Faker::Internet.email }
     first_name { Faker::Name.first_name }

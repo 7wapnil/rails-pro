@@ -7,17 +7,23 @@ module Backoffice
 
     def show
       @customer = Customer.find(params[:id])
+      @labels = Label.all
       @note = CustomerNote.new(customer: @customer)
+    end
+
+    def update_labels
+      customer = Customer.find(params[:id])
+      if labels_params[:ids].include? '0'
+        customer.labels.clear
+      else
+        customer.label_ids = labels_params[:ids]
+      end
     end
 
     private
 
-    def query_params
-      query = params[:query].dup
-      return unless query
-
-      query.each { |key, value| query[key] = value.delete(' ') }
-      query
+    def labels_params
+      params.require(:labels).permit(ids: [])
     end
   end
 end

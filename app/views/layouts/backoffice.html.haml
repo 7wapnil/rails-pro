@@ -6,6 +6,8 @@
     %title ArcaneBet Backoffice
     = csrf_meta_tag
     = stylesheet_pack_tag 'bootstrap_css', media: 'all', 'data-turbolinks-track': 'reload'
+    = yield(:stylesheets)
+    = javascript_pack_tag 'rails_ujs', 'data-turbolinks-track': 'reload'
     = javascript_pack_tag 'bootstrap_js', 'data-turbolinks-track': 'reload'
     = javascript_pack_tag 'backoffice', 'data-turbolinks-track': 'reload'
   %body{ 'data-controller': controller.controller_name }

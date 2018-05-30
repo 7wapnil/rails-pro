@@ -11,6 +11,7 @@ class Customer < ApplicationRecord
   has_many :customer_notes
 
   has_one :address
+  has_and_belongs_to_many :labels
 
   # Devise Validatable module creates all needed
   # validations for a user email and password.

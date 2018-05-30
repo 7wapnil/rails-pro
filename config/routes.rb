@@ -4,11 +4,17 @@ Rails.application.routes.draw do
   end
 
   namespace :backoffice do
-    resources :customers, only: %i[index show]
+    resources :customers, only: %i[index show] do
+      member do
+        post :update_labels
+      end
+    end
 
     resources :customer_notes, only: :create
 
     resource :dashboard, only: :show
+
+    resources :labels
 
     root 'dashboards#show'
   end
