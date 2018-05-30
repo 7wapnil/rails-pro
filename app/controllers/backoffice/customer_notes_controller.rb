@@ -6,9 +6,7 @@ module Backoffice
       if note.save
         redirect_to backoffice_customer_path(note.customer)
       else
-        # This ugly hack assumes that only thing that can be possible invalid
-        # is blank content. Needs to be fixed at some point
-        flash[:error] = note.errors.full_messages.first
+        flash[:error] = note.errors.full_messages
         redirect_back fallback_location: root_path
       end
     end
