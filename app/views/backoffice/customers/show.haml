@@ -46,7 +46,7 @@
           %td= @customer.last_name
         %tr
           %td= t(:gender)
-          %td= @customer.gender.humanize
+          %td= @customer.gender&.humanize
         %tr
           %td= t(:date_of_birth)
           %td= l(@customer.date_of_birth)
