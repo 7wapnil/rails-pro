@@ -7,6 +7,15 @@ en:
 
   edit_profile: Edit Profile
 
+  add: Add
+  created: "%{instance} created"
+
+  says_at: "%{who} at %{when}"
+
+  note: Note
+
+  content: Content
+
   search: 'Search %{subject}'
 
   time:

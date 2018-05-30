@@ -1,10 +1,8 @@
-describe 'Customers#index', type: :feature do
-  it 'is protected' do
-    visit backoffice_customers_path
+require Rails.root.join('spec/features/shared_examples/protected')
 
-    expect(current_path).to eq new_user_session_path
-    expect(page).to have_content I18n.t('devise.failure.unauthenticated')
-  end
+describe 'Customers#index', type: :feature do
+  it_behaves_like 'protected',
+                  protected_path_name: :backoffice_customers_path
 
   context 'signed in' do
     let(:per_page_count) { 10 }

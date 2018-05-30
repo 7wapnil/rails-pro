@@ -10,6 +10,8 @@ Rails.application.routes.draw do
       end
     end
 
+    resources :customer_notes, only: :create
+
     resource :dashboard, only: :show
 
     resources :labels

@@ -8,6 +8,8 @@ class Customer < ApplicationRecord
          :recoverable, :rememberable, :trackable, :validatable,
          authentication_keys: [:username]
 
+  has_many :customer_notes
+
   has_one :address
   has_and_belongs_to_many :labels
 
