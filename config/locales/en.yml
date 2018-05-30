@@ -12,6 +12,8 @@ en:
 
   note: Note
 
+  content: Content
+
   search: 'Search %{subject}'
 
   time:

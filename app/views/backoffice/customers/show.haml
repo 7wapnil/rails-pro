@@ -2,7 +2,7 @@
 
 .row.mt-4
   .col-6
-    = card header: t(:account_information) do
+    = card header: t(:account_information), class: 'account-information' do
       %table.table
         %tr
           %td= t(:username)
@@ -18,7 +18,7 @@
           %td= @customer.sign_in_count
 
   .col-6
-    = card header: t(:personal_information) do
+    = card header: t(:personal_information), class: 'personal-information' do
       %table.table
         %tr
           %td= t(:first_name)
@@ -47,7 +47,7 @@
         = f.submit t(:add), class: 'btn btn-outline-dark'
 
   .col-6
-    = card header: t(:contact_information) do
+    = card header: t(:contact_information), class: 'contact-information' do
       %table.table
         %tr
           %td= t(:email)
