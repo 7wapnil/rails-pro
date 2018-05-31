@@ -68,8 +68,8 @@ Rails.application.configure do
   config.webpacker.check_yarn_integrity = true
 
   config.web_console.whitelisted_ips << Socket
-                                          .ip_address_list
-                                          .detect { |intf| intf.ipv4_private? }
-                                          &.ip_address
-                                          &.sub(/\.(\d{1,3})$/, ".0/16")
+                                        .ip_address_list
+                                        .detect(&:ipv4_private?)
+                                        &.ip_address
+                                        &.sub(/\.(\d{1,3})$/, '.0/16')
 end
