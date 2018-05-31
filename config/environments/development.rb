@@ -72,4 +72,6 @@ Rails.application.configure do
                                         .detect(&:ipv4_private?)
                                         &.ip_address
                                         &.sub(/\.(\d{1,3})$/, '.0/16')
+
+  config.middleware.insert(0, Rack::Deflater)
 end
