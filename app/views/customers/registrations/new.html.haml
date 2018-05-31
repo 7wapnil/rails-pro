@@ -1,3 +1,9 @@
+- content_for :css do
+  = stylesheet_pack_tag 'flatpickr', media: :all, 'data-turbolinks-track': 'reload'
+
+- content_for :js do
+  = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
+
 = simple_form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
   .row
     .col.mt-2= f.error_notification

@@ -6,7 +6,7 @@ import { ApolloClient } from 'apollo-client'
 import { HttpLink } from 'apollo-link-http'
 import { InMemoryCache } from 'apollo-cache-inmemory'
 
-import App from '../components/app.vue'
+import App from './components/app.vue'
 
 const httpLink = new HttpLink({
   uri: '<%= ENV["INTERNAL_API_URI"] %>'
