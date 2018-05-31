@@ -1,18 +1,11 @@
 describe 'Labels#index', type: :feature do
-  it 'is protected' do
-    visit backoffice_labels_path
-
-    expect(current_path).to eq new_user_session_path
-    expect(page).to have_content I18n.t('devise.failure.unauthenticated')
-  end
-
   context 'signed in' do
     let(:per_page_count) { 10 }
 
     before do
       create_list(:label, 5)
 
-      login_as create(:user), scope: :user
+      login_as create(:admin_user), scope: :user
       visit backoffice_labels_path
     end
 

@@ -1,14 +1,5 @@
 describe 'User Sign In', type: :feature do
-  let(:user) { create(:user) }
-
-  context 'Anonymous user' do
-    it 'Can not access backoffice dashboard' do
-      visit backoffice_root_path
-
-      expect(current_path).to eq new_user_session_path
-      expect(page).to have_content I18n.t('devise.failure.unauthenticated')
-    end
-  end
+  let(:user) { create(:admin_user) }
 
   context 'Sign In form' do
     before { visit new_user_session_path }
