@@ -1,16 +1,11 @@
-require Rails.root.join('spec/features/shared_examples/protected')
-
 describe 'Customers#index', type: :feature do
-  it_behaves_like 'protected',
-                  protected_path_name: :backoffice_customers_path
-
   context 'signed in' do
     let(:per_page_count) { 10 }
 
     before do
       create_list(:customer, 5)
 
-      login_as create(:user), scope: :user
+      login_as create(:admin_user), scope: :user
       visit backoffice_customers_path
     end
 

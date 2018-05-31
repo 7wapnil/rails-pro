@@ -1,7 +1,7 @@
 describe 'Label#form', type: :feature do
   context 'new label form' do
     before do
-      login_as create(:user), scope: :user
+      login_as create(:admin_user), scope: :user
       visit new_backoffice_label_path
     end
 
