@@ -1,11 +1,5 @@
-require Rails.root.join('spec/features/shared_examples/protected')
-
 describe 'Customers#show' do
   subject { create(:customer) }
-
-  it_behaves_like 'protected',
-                  protected_path_name: :backoffice_customer_path,
-                  instance: true
 
   context 'page content' do
     before do

@@ -1,9 +1,4 @@
-require Rails.root.join('spec/features/shared_examples/protected')
-
 describe 'Customers#index', type: :feature do
-  it_behaves_like 'protected',
-                  protected_path_name: :backoffice_customers_path
-
   context 'signed in' do
     let(:per_page_count) { 10 }
 
