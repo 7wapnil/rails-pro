@@ -5,7 +5,7 @@ describe 'Customers#index', type: :feature do
     before do
       create_list(:customer, 5)
 
-      login_as create(:user), scope: :user
+      login_as create(:admin_user), scope: :user
       visit backoffice_customers_path
     end
 

@@ -3,7 +3,7 @@ describe 'Customers#show' do
 
   context 'page content' do
     before do
-      login_as create(:user), scope: :user
+      login_as create(:admin_user), scope: :user
       visit backoffice_customer_path(subject)
     end
 
