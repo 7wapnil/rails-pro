@@ -9,6 +9,13 @@ FactoryBot.define do
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
     password 'iamverysecure'
+
+    factory :admin_user do
+      email 'admin@email.com'
+      first_name 'Super'
+      last_name 'Admin'
+      password 'iamadminuser'
+    end
   end
 
   factory :customer do

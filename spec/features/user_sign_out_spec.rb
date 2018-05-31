@@ -1,6 +1,6 @@
 describe 'User Sign Out', type: :feature do
   it 'Successfully signs out' do
-    user = create(:user)
+    user = create(:admin_user)
     login_as user, scope: :user
 
     visit backoffice_root_path
