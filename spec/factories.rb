@@ -1,4 +1,10 @@
 FactoryBot.define do
+  factory :wallet do
+    customer
+    currency 0
+    amount { Faker::Number.decimal(3, 2) }
+  end
+
   factory :label do
     name 'MyString'
     description 'MyText'

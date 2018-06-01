@@ -9,6 +9,7 @@ class Customer < ApplicationRecord
          authentication_keys: [:username]
 
   has_many :customer_notes
+  has_many :wallets
 
   has_one :address
   has_and_belongs_to_many :labels
