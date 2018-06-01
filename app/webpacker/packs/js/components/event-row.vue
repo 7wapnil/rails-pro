@@ -12,7 +12,7 @@
         <div class="col-lg-6">
           <div class="row">
             <div class="col-lg-12 col-sm-6">
-              <p class="card-text font-weight-bold">{{ event.discipline_name }}</p>
+              <p class="card-text font-weight-bold">{{ event.title_name }}</p>
             </div>
 
             <div class="col-lg-12 col-sm-6">

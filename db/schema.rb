@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_29_120809) do
+ActiveRecord::Schema.define(version: 2018_06_01_064245) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,33 +67,26 @@ ActiveRecord::Schema.define(version: 2018_05_29_120809) do
     t.index ["label_id"], name: "index_customers_labels_on_label_id"
   end
 
-  create_table "disciplines", force: :cascade do |t|
-    t.string "name"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.integer "kind", default: 0
-  end
-
   create_table "event_scopes", force: :cascade do |t|
-    t.bigint "discipline_id"
+    t.bigint "title_id"
     t.bigint "event_scope_id"
     t.string "name"
     t.integer "kind", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["discipline_id"], name: "index_event_scopes_on_discipline_id"
     t.index ["event_scope_id"], name: "index_event_scopes_on_event_scope_id"
+    t.index ["title_id"], name: "index_event_scopes_on_title_id"
   end
 
   create_table "events", force: :cascade do |t|
-    t.bigint "discipline_id"
+    t.bigint "title_id"
     t.string "name"
     t.text "description"
     t.datetime "start_at"
     t.datetime "end_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["discipline_id"], name: "index_events_on_discipline_id"
+    t.index ["title_id"], name: "index_events_on_title_id"
   end
 
   create_table "labels", force: :cascade do |t|
@@ -138,6 +131,13 @@ ActiveRecord::Schema.define(version: 2018_05_29_120809) do
     t.index ["event_scope_id"], name: "index_scoped_events_on_event_scope_id"
   end
 
+  create_table "titles", force: :cascade do |t|
+    t.string "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.integer "kind", default: 0
+  end
+
   create_table "users", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -160,9 +160,9 @@ ActiveRecord::Schema.define(version: 2018_05_29_120809) do
   add_foreign_key "addresses", "customers"
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
-  add_foreign_key "event_scopes", "disciplines"
   add_foreign_key "event_scopes", "event_scopes"
-  add_foreign_key "events", "disciplines"
+  add_foreign_key "event_scopes", "titles"
+  add_foreign_key "events", "titles"
   add_foreign_key "markets", "events"
   add_foreign_key "odd_values", "odds"
   add_foreign_key "odds", "markets"
