@@ -5,8 +5,8 @@ Types::EventType = GraphQL::ObjectType.define do
   field :name, !types.String
   field :description, !types.String
 
-  field :discipline_name, types.String do
-    resolve ->(obj, _args, _ctx) { obj.discipline_name }
+  field :title_name, types.String do
+    resolve ->(obj, _args, _ctx) { obj.title_name }
   end
 
   field :start_at, types.String do

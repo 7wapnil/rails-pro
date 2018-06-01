@@ -3,14 +3,14 @@ class Event < ApplicationRecord
     where('start_at > ?', Date.yesterday.end_of_day).order(:start_at)
   end
 
-  belongs_to :discipline
+  belongs_to :title
   has_many :markets
   has_many :scoped_events
   has_many :event_scopes, through: :scoped_events
 
   validates :name, presence: true
 
-  delegate :name, to: :discipline, prefix: true
+  delegate :name, to: :title, prefix: true
 
   def self.in_play
     where('start_at < ? AND end_at IS NULL', Time.zone.now)

@@ -42,9 +42,9 @@ class CsgoPrimer
 
   REASONABLE_MATCH_TIME = 3.hours.freeze
 
-  def self.discipline
-    @discipline ||= Discipline.find_or_create_by!(name: 'CS:GO') do |discipline|
-      discipline.kind = :esports
+  def self.title
+    @title ||= Title.find_or_create_by!(name: 'CS:GO') do |title|
+      title.kind = :esports
     end
   end
 
@@ -56,7 +56,7 @@ class CsgoPrimer
     event_name = "#{teams.first} vs #{teams.last}"
 
     default_attributes = {
-      discipline: discipline,
+      title: title,
       name: event_name,
       description: "#{tournament.name}: #{event_name}",
       start_at: Time.zone.now.beginning_of_hour
@@ -77,15 +77,15 @@ class CsgoPrimer
   # rubocop:enable Metrics/MethodLength
 end
 
-puts 'Checking Discipline ...'
+puts 'Checking Title ...'
 
-discipline = CsgoPrimer.discipline
+title = CsgoPrimer.title
 
 puts 'Checking Tournaments ...'
 
 CsgoPrimer::CSGO_TOURNAMENTS.each do |name|
   EventScope.find_or_create_by!(name: name) do |tournament|
-    tournament.discipline = discipline
+    tournament.title = title
     tournament.kind = :tournament
   end
 end

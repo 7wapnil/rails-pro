@@ -63,13 +63,13 @@ FactoryBot.define do
 
   # Markets data
 
-  factory :discipline do
+  factory :title do
     name 'CS:GO'
     kind :esports
   end
 
   factory :event_scope do
-    discipline
+    title
     name 'FPSThailand CS:GO Pro League Season#4'
     kind :tournament
   end
@@ -80,7 +80,7 @@ FactoryBot.define do
   end
 
   factory :event do
-    discipline
+    title
     name 'MiTH vs. Beyond eSports'
     description 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' # rubocop:disable Metrics/LineLength
     start_at { 2.hours.ago }
