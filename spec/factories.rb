@@ -1,4 +1,10 @@
 FactoryBot.define do
+  factory :balance do
+    wallet
+    type 0
+    amount { Faker::Number.decimal(3, 2) }
+  end
+
   factory :wallet do
     customer
     currency 0
