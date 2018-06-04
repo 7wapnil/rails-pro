@@ -9,6 +9,11 @@ class WalletEntryService < ApplicationService
         customer_id: @request.payload['customer_id'],
         currency: @request.payload['currency']
       )
+
+      @balance = Balance.find_or_create_by!(
+        wallet_id: @wallet.id,
+        kind: Balance.kinds[:real_money]
+      )
     end
   end
 end
