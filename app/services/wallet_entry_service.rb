@@ -45,6 +45,6 @@ class WalletEntryService < ApplicationService
       wallet_id: @wallet.id,
       kind: Balance.kinds[:real_money]
     )
-    @balance.increment! :amount, amount
+    @balance.increment! :amount, @amount
   end
 end
