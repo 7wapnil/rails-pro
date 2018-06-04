@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_04_080510) do
+ActiveRecord::Schema.define(version: 2018_06_04_113939) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 2018_06_04_080510) do
 
   create_table "balances", force: :cascade do |t|
     t.bigint "wallet_id"
-    t.integer "type"
+    t.integer "kind"
     t.decimal "amount", precision: 8, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -90,7 +90,7 @@ ActiveRecord::Schema.define(version: 2018_06_04_080510) do
 
   create_table "entries", force: :cascade do |t|
     t.bigint "wallet_id"
-    t.integer "type"
+    t.integer "kind"
     t.decimal "amount", precision: 8, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

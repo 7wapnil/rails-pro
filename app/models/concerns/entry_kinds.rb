@@ -1,8 +1,8 @@
-module EntryTypes
+module EntryKinds
   extend ActiveSupport::Concern
 
   included do
-    enum type: {
+    enum kind: {
       deposit: 0,
       winning: 1,
       internal_debit: 2,

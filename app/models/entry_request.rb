@@ -1,7 +1,9 @@
 class EntryRequest < ApplicationRecord
-  include EntryTypes
+  include EntryKinds
 
-  ENTRY_PAYLOAD_SCHEMA = Rails.root.join('config', 'schemas', 'entry_payload.json').to_s
+  ENTRY_PAYLOAD_SCHEMA = Rails.root.join('config',
+                                         'schemas',
+                                         'entry_payload.json').to_s
 
   enum status: {
     pending: 0

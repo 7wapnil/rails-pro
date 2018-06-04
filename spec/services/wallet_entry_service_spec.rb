@@ -4,12 +4,15 @@ describe 'WalletService', type: :service do
   end
 
   let(:request) do
-    create(:entry_request, payload: {
-      customer_id: customer.id,
-      type: Entry.types[:deposit],
-      amount: 29.99,
-      currency: Wallet.currencies[:euro]
-    })
+    create(
+      :entry_request,
+      payload: {
+        customer_id: customer.id,
+        kind: Entry.kinds[:deposit],
+        amount: 29.99,
+        currency: Wallet.currencies[:euro]
+      }
+    )
   end
 
   it 'should be initialized with request object' do
