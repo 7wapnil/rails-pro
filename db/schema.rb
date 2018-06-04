@@ -99,7 +99,7 @@ ActiveRecord::Schema.define(version: 2018_06_04_080510) do
 
   create_table "entry_requests", force: :cascade do |t|
     t.integer "status", default: 0
-    t.json "payload"
+    t.json "payload", default: "{}"
     t.json "result"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

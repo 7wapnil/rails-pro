@@ -1,0 +1,11 @@
+{
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "properties": {
+    "customer_id": { "type": "integer" },
+    "type": { "type": "integer" },
+    "amount": { "type": "number" },
+    "currency": { "type": "integer" }
+  },
+  "required": ["type", "amount", "currency"]
+}
