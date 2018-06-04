@@ -82,6 +82,8 @@ ActiveRecord::Schema.define(version: 2018_06_04_063358) do
   create_table "customers_labels", id: false, force: :cascade do |t|
     t.bigint "customer_id"
     t.bigint "label_id"
+    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
+    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
     t.index ["customer_id"], name: "index_customers_labels_on_customer_id"
     t.index ["label_id"], name: "index_customers_labels_on_label_id"
   end

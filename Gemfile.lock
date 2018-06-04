@@ -46,6 +46,9 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
+    airbrake (7.3.3)
+      airbrake-ruby (~> 2.10)
+    airbrake-ruby (2.10.0)
     archive-zip (0.11.0)
       io-like (~> 0.3.0)
     arel (9.0.0)
@@ -335,6 +338,7 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord-import
+  airbrake (~> 7.3)
   awesome_print
   bootsnap (>= 1.1.0)
   brakeman
