@@ -1,3 +1,3 @@
-describe Transaction, type: :model do
+describe Entry, type: :model do
   it { should belong_to(:wallet) }
 end
