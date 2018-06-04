@@ -1,4 +1,9 @@
 FactoryBot.define do
+  factory :entry_request do
+    status EntryRequest.statuses[:pending]
+    payload { { test: 1 } }
+  end
+
   factory :balance_entry do
     entry
     balance

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_04_063358) do
+ActiveRecord::Schema.define(version: 2018_06_04_080510) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -95,6 +95,14 @@ ActiveRecord::Schema.define(version: 2018_06_04_063358) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
+  end
+
+  create_table "entry_requests", force: :cascade do |t|
+    t.integer "status", default: 0
+    t.json "payload"
+    t.json "result"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "event_scopes", force: :cascade do |t|
