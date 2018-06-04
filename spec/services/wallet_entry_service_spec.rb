@@ -26,11 +26,11 @@ describe 'WalletService', type: :service do
       assert_equal Balance.count, 0
       WalletEntryService.call(request.id)
       balance = Balance
-                  .joins(:wallet)
-                  .where('wallets.customer_id': customer.id)
-                  .first
+                .joins(:wallet)
+                .where('wallets.customer_id': customer.id)
+                .first
 
-      assert balance != nil
+      assert !balance.nil?
       assert_equal Balance.kinds[balance.kind], Balance.kinds[:real_money]
       assert_equal balance.amount, request.payload['amount']
     end
@@ -39,11 +39,11 @@ describe 'WalletService', type: :service do
       assert_equal Entry.count, 0
       WalletEntryService.call(request.id)
       entry = Entry
-                  .joins(:wallet)
-                  .where('wallets.customer_id': customer.id)
-                  .first
+              .joins(:wallet)
+              .where('wallets.customer_id': customer.id)
+              .first
 
-      assert entry != nil
+      assert !entry.nil?
       assert_equal entry.amount, request.payload['amount']
     end
 
@@ -53,7 +53,7 @@ describe 'WalletService', type: :service do
       wallet = Wallet.find_by(customer_id: customer.id)
       entry = Entry.find_by(wallet_id: wallet.id)
       balance_entry = BalanceEntry.where(entry_id: entry.id).first
-      assert balance_entry != nil
+      assert !balance_entry.nil?
       assert_equal balance_entry.amount, request.payload['amount']
     end
 
