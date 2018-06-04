@@ -1,5 +1,6 @@
 class Entry < ApplicationRecord
   belongs_to :wallet
+  has_many :balance_entries
 
-  validates :type, presence: true
+  validates :type, :amount, presence: true
 end

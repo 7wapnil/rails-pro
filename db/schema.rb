@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_04_063033) do
+ActiveRecord::Schema.define(version: 2018_06_04_063358) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -25,6 +25,16 @@ ActiveRecord::Schema.define(version: 2018_06_04_063033) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_addresses_on_customer_id"
+  end
+
+  create_table "balance_entries", force: :cascade do |t|
+    t.bigint "balance_id"
+    t.bigint "entry_id"
+    t.decimal "amount", precision: 8, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["balance_id"], name: "index_balance_entries_on_balance_id"
+    t.index ["entry_id"], name: "index_balance_entries_on_entry_id"
   end
 
   create_table "balances", force: :cascade do |t|
@@ -185,6 +195,8 @@ ActiveRecord::Schema.define(version: 2018_06_04_063033) do
   end
 
   add_foreign_key "addresses", "customers"
+  add_foreign_key "balance_entries", "balances"
+  add_foreign_key "balance_entries", "entries"
   add_foreign_key "balances", "wallets"
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"

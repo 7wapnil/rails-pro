@@ -1,4 +1,10 @@
 FactoryBot.define do
+  factory :balance_entry do
+    entry
+    balance
+    amount { Faker::Number.decimal(3, 2) }
+  end
+
   factory :entry do
     wallet
     type 0
