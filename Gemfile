@@ -33,6 +33,7 @@ gem 'activerecord-import'
 gem 'kaminari'
 gem 'ransack'
 gem 'airbrake', '~> 7.3'
+gem 'sidekiq'
 
 # Here only because of staging on Heroku
 # To be moved back to development and test group
