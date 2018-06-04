@@ -32,6 +32,7 @@ gem 'rack-cors', require: 'rack/cors'
 gem 'activerecord-import'
 gem 'kaminari'
 gem 'ransack'
+gem 'airbrake', '~> 7.3'
 
 # Here only because of staging on Heroku
 # To be moved back to development and test group
