@@ -1,0 +1,90 @@
+module WalletEntry
+  class WalletEntryService < ApplicationService
+    RULES_MAPPING = {
+      deposit: [],
+      winning: [],
+      internal_debit: [],
+      withdraw: [],
+      bet: [],
+      internal_credit: []
+    }
+
+    def initialize(request)
+      @request = request
+      @amount = @request.payload['amount']
+    end
+
+    def call
+      if apply_rules
+        update_database!
+        handle_success
+      end
+    rescue ActiveRecord::RecordInvalid, ActiveRecord::StatementInvalid => e
+      handle_failure e
+    end
+
+    private
+
+    def apply_rules
+      RULES_MAPPING[@request.payload[:kind]].each do |rule|
+        rule.call(@request)
+      end
+      true
+    rescue ::RuleError => e
+      handle_failure e
+      false
+    end
+
+    def update_database!
+      ActiveRecord::Base.transaction do
+        update_wallet!
+        update_balance!
+        create_entry!
+      end
+    end
+
+    def create_entry!
+      @entry = Entry.create!(
+        wallet_id: @wallet.id,
+        kind: @request.payload['kind'],
+        amount: @amount
+      )
+
+      BalanceEntry.create!(
+        balance_id: @balance.id,
+        entry_id: @entry.id,
+        amount: @amount
+      )
+    end
+
+    def update_wallet!
+      @wallet = Wallet.find_or_create_by!(
+        customer_id: @request.payload['customer_id'],
+        currency: @request.payload['currency']
+      )
+      @wallet.increment! :amount, @amount
+    end
+
+    def update_balance!
+      @balance = Balance.find_or_create_by!(
+        wallet_id: @wallet.id,
+        kind: Balance.kinds[:real_money]
+      )
+      @balance.increment! :amount, @amount
+    end
+
+    def handle_success
+      @request.success!
+    end
+
+    def handle_failure(exception)
+      @request.update_attributes!(
+        status: EntryRequest.statuses[:fail],
+        result: {
+          message: exception,
+          exception_class: exception.class.to_s
+        }
+      )
+    end
+  end
+end
