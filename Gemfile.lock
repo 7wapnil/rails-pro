@@ -35,9 +35,6 @@ GEM
       arel (>= 9.0)
     activerecord-import (0.23.0)
       activerecord (>= 3.2)
-    activerecord_json_validator (1.2.0)
-      activerecord (>= 4.2.0, < 6)
-      json-schema (~> 2.8)
     activestorage (5.2.0)
       actionpack (= 5.2.0)
       activerecord (= 5.2.0)
@@ -148,8 +145,6 @@ GEM
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
-    json-schema (2.8.0)
-      addressable (>= 2.4)
     kaminari (1.1.1)
       activesupport (>= 4.1.0)
       kaminari-actionview (= 1.1.1)
@@ -352,7 +347,6 @@ PLATFORMS
 
 DEPENDENCIES
   activerecord-import
-  activerecord_json_validator (>= 1.2.0)
   airbrake (~> 7.3)
   awesome_print
   bootsnap (>= 1.1.0)
