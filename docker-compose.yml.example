@@ -1,16 +1,26 @@
 version: '3.1'
 
+volumes:
+  bundle:
+  postgres:
+  redis:
+
 services:
 
   db:
     image: postgres:10.3-alpine
     volumes:
-      - ./tmp/db:/var/lib/postgresql/data
+      - postgres:/var/lib/postgresql/data
     ports:
       - "5432:5432"
 
+  redis:
+    image: redis:3.2-alpine
+    volumes:
+      - redis:/data
+
   web:
-    build: .
+    image: arcanebet/arcanebet:dev
     command: bundle exec rails s -p 3000 -b '0.0.0.0'
     stdin_open: true
     tty: true
@@ -18,7 +28,22 @@ services:
       - .env
     volumes:
       - .:/arcanebet
+      - bundle:/usr/local/bundle
     ports:
       - "3000:3000"
     depends_on:
       - db
+
+  worker:
+    image: arcanebet/arcanebet:dev
+    command: bundle exec sidekiq
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    volumes:
+      - .:/arcanebet
+      - bundle:/usr/local/bundle
+    depends_on:
+      - db
+      - redis
