@@ -1,39 +1,18 @@
 module WalletEntry
-  class WalletEntryService < ApplicationService
-    RULES_MAPPING = {
-      deposit: [],
-      winning: [],
-      internal_debit: [],
-      withdraw: [],
-      bet: [],
-      internal_credit: []
-    }
-
+  class Service < ApplicationService
     def initialize(request)
       @request = request
-      @amount = @request.payload['amount']
+      @amount = @request.payload.amount
     end
 
     def call
-      if apply_rules
-        update_database!
-        handle_success
-      end
+      update_database!
+      handle_success
     rescue ActiveRecord::RecordInvalid, ActiveRecord::StatementInvalid => e
       handle_failure e
     end
 
     private
-
-    def apply_rules
-      RULES_MAPPING[@request.payload[:kind]].each do |rule|
-        rule.call(@request)
-      end
-      true
-    rescue ::RuleError => e
-      handle_failure e
-      false
-    end
 
     def update_database!
       ActiveRecord::Base.transaction do
@@ -46,7 +25,7 @@ module WalletEntry
     def create_entry!
       @entry = Entry.create!(
         wallet_id: @wallet.id,
-        kind: @request.payload['kind'],
+        kind: @request.payload.kind,
         amount: @amount
       )
 
@@ -59,8 +38,8 @@ module WalletEntry
 
     def update_wallet!
       @wallet = Wallet.find_or_create_by!(
-        customer_id: @request.payload['customer_id'],
-        currency: @request.payload['currency']
+        customer_id: @request.payload.customer.id,
+        currency: @request.payload.currency
       )
       @wallet.increment! :amount, @amount
     end

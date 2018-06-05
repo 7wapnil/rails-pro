@@ -3,7 +3,7 @@
   "$schema": "http://json-schema.org/draft-04/schema",
   "properties": {
     "customer_id": { "type": "integer" },
-    "kind": { "type": "integer" },
+    "kind": { "type": "string" },
     "amount": { "type": "number" },
     "currency": { "type": "string" }
   },

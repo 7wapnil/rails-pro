@@ -33,46 +33,46 @@ describe 'WalletService', type: :service do
 
       expect(balance).to be_present
       expect(balance.real_money?).to be true
-      expect(balance.amount).to eq request.payload['amount']
+      expect(balance.amount).to eq request.payload.amount
     end
 
     it 'creates a wallet entry' do
       expect(Entry.count).to eq 0
 
-      WalletEntryService.call(request)
+      WalletEntry::Service.call(request)
       entry = Entry
               .joins(:wallet)
               .where('wallets.customer_id': customer.id)
               .first
 
       expect(entry).to be_present
-      expect(entry.amount).to eq request.payload['amount']
+      expect(entry.amount).to eq request.payload.amount
     end
 
     it 'creates balance entry record' do
       expect(BalanceEntry.count).to eq 0
 
-      WalletEntryService.call(request)
+      WalletEntry::Service.call(request)
       balance_entry = BalanceEntry
                       .joins(entry: { wallet: :customer })
                       .where(entry: { wallets: { customer: customer } })
                       .first
 
       expect(balance_entry).to be_present
-      expect(balance_entry.amount).to eq request.payload['amount']
+      expect(balance_entry.amount).to eq request.payload.amount
     end
 
     it 'adds entry amount into wallet' do
-      WalletEntryService.call(request)
+      WalletEntry::Service.call(request)
       wallet = Wallet.find_by(customer_id: customer.id)
-      expect(wallet.amount).to eq request.payload['amount']
+      expect(wallet.amount).to eq request.payload.amount
     end
 
     it 'updates entry request on failure' do
-      expect_any_instance_of(WalletEntryService).not_to receive(:handle_success)
+      expect_any_instance_of(WalletEntry::Service).not_to receive(:handle_success)
 
-      request.payload['currency'] = :peso
-      WalletEntryService.call(request)
+      request.payload.instance_variable_set :@currency, :peso
+      WalletEntry::Service.call(request)
 
       expect(request.fail?).to be true
       expect(request.result['exception_class'])

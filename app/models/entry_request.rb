@@ -1,10 +1,6 @@
 class EntryRequest < ApplicationRecord
   include EntryKinds
 
-  ENTRY_PAYLOAD_SCHEMA = Rails.root.join('config',
-                                         'schemas',
-                                         'entry_payload.json').to_s
-
   enum status: {
     pending: 0,
     success: 1,
@@ -12,5 +8,13 @@ class EntryRequest < ApplicationRecord
   }
 
   validates :status, inclusion: { in: statuses.keys }
-  validates :payload, presence: true, json: { schema: ENTRY_PAYLOAD_SCHEMA }
+  validates :payload, presence: true
+
+  validates_with EntryRequestPayloadValidator
+
+  def payload
+    return unless self[:payload]
+
+    EntryRequestPayload.new(self[:payload])
+  end
 end
