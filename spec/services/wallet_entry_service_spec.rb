@@ -69,9 +69,10 @@ describe 'WalletService', type: :service do
     end
 
     it 'updates entry request on failure' do
-      expect_any_instance_of(WalletEntry::Service).not_to receive(:handle_success)
+      expect_any_instance_of(WalletEntry::Service)
+        .not_to receive(:handle_success)
 
-      request.payload.instance_variable_set :@currency, :peso
+      request[:payload]['currency'] = :peso
       WalletEntry::Service.call(request)
 
       expect(request.fail?).to be true
@@ -80,7 +81,8 @@ describe 'WalletService', type: :service do
     end
 
     it 'updates entry request on success' do
-      expect_any_instance_of(WalletEntry::Service).not_to receive(:handle_failure)
+      expect_any_instance_of(WalletEntry::Service)
+        .not_to receive(:handle_failure)
 
       WalletEntry::Service.call(request)
 
