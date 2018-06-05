@@ -2,5 +2,10 @@ class Balance < ApplicationRecord
   belongs_to :wallet
   has_many :balance_entries
 
-  validates :type, presence: true
+  validates :kind, presence: true
+
+  enum kind: {
+    real_money: 0,
+    bonus: 1
+  }
 end

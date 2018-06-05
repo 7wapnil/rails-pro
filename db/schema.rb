@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_04_063358) do
+ActiveRecord::Schema.define(version: 2018_06_04_130727) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -39,8 +39,8 @@ ActiveRecord::Schema.define(version: 2018_06_04_063358) do
 
   create_table "balances", force: :cascade do |t|
     t.bigint "wallet_id"
-    t.integer "type"
-    t.decimal "amount", precision: 8, scale: 2
+    t.integer "kind"
+    t.decimal "amount", precision: 8, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["wallet_id"], name: "index_balances_on_wallet_id"
@@ -90,11 +90,19 @@ ActiveRecord::Schema.define(version: 2018_06_04_063358) do
 
   create_table "entries", force: :cascade do |t|
     t.bigint "wallet_id"
-    t.integer "type"
+    t.integer "kind"
     t.decimal "amount", precision: 8, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
+  end
+
+  create_table "entry_requests", force: :cascade do |t|
+    t.integer "status", default: 0
+    t.json "payload", default: "{}"
+    t.json "result"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "event_scopes", force: :cascade do |t|
@@ -190,7 +198,7 @@ ActiveRecord::Schema.define(version: 2018_06_04_063358) do
   create_table "wallets", force: :cascade do |t|
     t.bigint "customer_id"
     t.integer "currency"
-    t.decimal "amount", precision: 8, scale: 2
+    t.decimal "amount", precision: 8, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_wallets_on_customer_id"

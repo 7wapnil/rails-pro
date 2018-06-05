@@ -1,4 +1,15 @@
 FactoryBot.define do
+  factory :entry_request do
+    status EntryRequest.statuses[:pending]
+    payload do
+      {
+        type: EntryRequest.types[:deposit],
+        amount: Faker::Number.decimal(3, 2),
+        currency: Wallet.currencies[:euro]
+      }
+    end
+  end
+
   factory :balance_entry do
     entry
     balance
