@@ -9,8 +9,7 @@ class EntryRequest < ApplicationRecord
 
   validates :status, inclusion: { in: statuses.keys }
   validates :payload, presence: true
-
-  validates_with EntryRequestPayloadValidator
+  validates :payload, entry_request_payload: true
 
   def payload
     return unless self[:payload]

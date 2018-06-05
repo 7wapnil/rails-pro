@@ -20,7 +20,7 @@ describe EntryRequest, type: :model do
 
   it 'calls payload validation on request validate' do
     expect_any_instance_of(EntryRequestPayloadValidator)
-      .to receive(:validate).with(request)
+      .to receive(:validate_each)
 
     request.validate
   end
