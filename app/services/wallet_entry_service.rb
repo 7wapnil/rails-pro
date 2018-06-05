@@ -1,24 +1,27 @@
 class WalletEntryService < ApplicationService
-  def initialize(request_id)
-    @request = EntryRequest.find(request_id)
+  def initialize(request)
+    @request = request
     @amount = @request.payload['amount']
   end
 
   def call
-    update_database
+    update_database!
+    handle_success
+  rescue ActiveRecord::RecordInvalid, ActiveRecord::StatementInvalid => e
+    handle_failure e
   end
 
   private
 
-  def update_database
+  def update_database!
     ActiveRecord::Base.transaction do
-      update_wallet
-      update_balance
-      create_entry
+      update_wallet!
+      update_balance!
+      create_entry!
     end
   end
 
-  def create_entry
+  def create_entry!
     @entry = Entry.create!(
       wallet_id: @wallet.id,
       kind: @request.payload['kind'],
@@ -32,7 +35,7 @@ class WalletEntryService < ApplicationService
     )
   end
 
-  def update_wallet
+  def update_wallet!
     @wallet = Wallet.find_or_create_by!(
       customer_id: @request.payload['customer_id'],
       currency: @request.payload['currency']
@@ -40,11 +43,25 @@ class WalletEntryService < ApplicationService
     @wallet.increment! :amount, @amount
   end
 
-  def update_balance
+  def update_balance!
     @balance = Balance.find_or_create_by!(
       wallet_id: @wallet.id,
       kind: Balance.kinds[:real_money]
     )
     @balance.increment! :amount, @amount
+  end
+
+  def handle_success
+    @request.success!
+  end
+
+  def handle_failure(exception)
+    @request.update_attributes!(
+      status: EntryRequest.statuses[:fail],
+      result: {
+        message: exception,
+        exception_class: exception.class.to_s
+      }
+    )
   end
 end

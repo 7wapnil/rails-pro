@@ -6,7 +6,9 @@ class EntryRequest < ApplicationRecord
                                          'entry_payload.json').to_s
 
   enum status: {
-    pending: 0
+    pending: 0,
+    success: 1,
+    fail: 2
   }
 
   validates :status, inclusion: { in: statuses.keys }

@@ -11,56 +11,81 @@ describe 'WalletService', type: :service do
           customer_id: customer.id,
           kind: Entry.kinds[:deposit],
           amount: 29.99,
-          currency: Wallet.currencies[:euro]
+          currency: :euro
         }
       )
     end
 
-    it 'should create a wallet' do
-      assert_equal Wallet.where(customer_id: customer.id).count, 0
-      WalletEntryService.call(request.id)
-      assert_equal Wallet.where(customer_id: customer.id).count, 1
+    it 'creates a wallet' do
+      expect(Wallet.where(customer: customer).count).to eq 0
+      WalletEntryService.call(request)
+      expect(Wallet.where(customer: customer).count).to eq 1
     end
 
-    it 'should create a real money balance' do
-      assert_equal Balance.count, 0
-      WalletEntryService.call(request.id)
+    it 'creates a real money balance' do
+      expect(Balance.count).to eq 0
+
+      WalletEntryService.call(request)
       balance = Balance
                 .joins(:wallet)
-                .where('wallets.customer_id': customer.id)
+                .where(wallets: { customer: customer })
                 .first
 
-      assert !balance.nil?
-      assert_equal Balance.kinds[balance.kind], Balance.kinds[:real_money]
-      assert_equal balance.amount, request.payload['amount']
+      expect(balance).to be_present
+      expect(balance.real_money?).to be true
+      expect(balance.amount).to eq request.payload['amount']
     end
 
-    it 'should create a wallet entry' do
-      assert_equal Entry.count, 0
-      WalletEntryService.call(request.id)
+    it 'creates a wallet entry' do
+      expect(Entry.count).to eq 0
+
+      WalletEntryService.call(request)
       entry = Entry
               .joins(:wallet)
               .where('wallets.customer_id': customer.id)
               .first
 
-      assert !entry.nil?
-      assert_equal entry.amount, request.payload['amount']
+      expect(entry).to be_present
+      expect(entry.amount).to eq request.payload['amount']
     end
 
-    it 'should create balance entry record' do
-      assert_equal BalanceEntry.count, 0
-      WalletEntryService.call(request.id)
-      wallet = Wallet.find_by(customer_id: customer.id)
-      entry = Entry.find_by(wallet_id: wallet.id)
-      balance_entry = BalanceEntry.where(entry_id: entry.id).first
-      assert !balance_entry.nil?
-      assert_equal balance_entry.amount, request.payload['amount']
+    it 'creates balance entry record' do
+      expect(BalanceEntry.count).to eq 0
+
+      WalletEntryService.call(request)
+      balance_entry = BalanceEntry
+                      .joins(entry: { wallet: :customer })
+                      .where(entry: { wallets: { customer: customer } })
+                      .first
+
+      expect(balance_entry).to be_present
+      expect(balance_entry.amount).to eq request.payload['amount']
     end
 
-    it 'should add entry amount into wallet' do
-      WalletEntryService.call(request.id)
+    it 'adds entry amount into wallet' do
+      WalletEntryService.call(request)
       wallet = Wallet.find_by(customer_id: customer.id)
-      assert_equal wallet.amount, request.payload['amount']
+      expect(wallet.amount).to eq request.payload['amount']
+    end
+
+    it 'updates entry request on failure' do
+      expect_any_instance_of(WalletEntryService).not_to receive(:handle_success)
+
+      request.payload['currency'] = :peso
+      WalletEntryService.call(request)
+
+      expect(request.fail?).to be true
+      expect(request.result['exception_class'])
+        .to eq 'ActiveRecord::StatementInvalid'
+    end
+
+    it 'updates entry request on success' do
+      expect_any_instance_of(WalletEntryService).not_to receive(:handle_failure)
+
+      WalletEntryService.call(request)
+
+      expect(request.success?).to be true
+      expect(request.result).not_to be_present
     end
   end
 end

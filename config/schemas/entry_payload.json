@@ -5,7 +5,7 @@
     "customer_id": { "type": "integer" },
     "kind": { "type": "integer" },
     "amount": { "type": "number" },
-    "currency": { "type": "integer" }
+    "currency": { "type": "string" }
   },
   "required": ["customer_id", "kind", "amount", "currency"]
 }
