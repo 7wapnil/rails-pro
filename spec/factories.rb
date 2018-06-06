@@ -1,12 +1,15 @@
 FactoryBot.define do
+  factory :entry_request_payload do
+    customer_id { create(:customer).id }
+    kind { EntryRequest.kinds.keys.first }
+    amount { Faker::Number.decimal(3, 2) }
+    currency { Wallet.currencies[:euro] }
+  end
+
   factory :entry_request do
     status EntryRequest.statuses[:pending]
     payload do
-      {
-        type: EntryRequest.types[:deposit],
-        amount: Faker::Number.decimal(3, 2),
-        currency: Wallet.currencies[:euro]
-      }
+      attributes_for(:entry_request_payload)
     end
   end
 

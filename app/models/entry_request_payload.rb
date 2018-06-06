@@ -1,7 +1,7 @@
 class EntryRequestPayload
-  include ActiveModel::Validations
+  include ActiveModel::Model
 
-  attr_reader :customer, :kind, :amount, :currency
+  attr_accessor :customer, :kind, :amount, :currency, :customer_id
 
   KINDS = EntryRequest.kinds.keys
 
@@ -10,18 +10,9 @@ class EntryRequestPayload
   validates :kind, inclusion: { in: KINDS }
   validates :currency, inclusion: { in: Wallet.currencies.keys }
 
-  # validates_with DepositRequestValidator, if: :deposit?
-  # validates_with WinningRequestValidator, if: :winning?
-  # validates_with InternalDebitRequestValidator, if: :internal_debit?
-  # validates_with WithdrawRequestValidator, if: :withdraw?
-  # validates_with BetRequestValidator, if: :bet?
-  # validates_with InternalCreditRequestValidator, if: :internal_credit?
-
-  def initialize(payload)
-    @customer = Customer.find_by(id: payload['customer_id'])
-    @kind = payload['kind']
-    @amount = payload['amount']
-    @currency = payload['currency']
+  def initialize(attributes = {})
+    super(attributes)
+    @customer ||= Customer.find_by(id: attributes[:customer_id])
   end
 
   KINDS.each do |kind|
