@@ -3,8 +3,7 @@ puts 'Checking currencies ...'
 currency_mapping = [
   { name: 'Euro', code: 'EUR', primary: true },
   { name: 'Swedish Kronor', code: 'SEK' },
-  { name: 'BitCoin', code: 'BTC' },
-  { name: 'milliBitCoin', code: 'mBTC' },
+  { name: 'BitCoin', code: 'mBTC' },
   { name: 'Ethereum', code: 'ETH' }
 ]
 
