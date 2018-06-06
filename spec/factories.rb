@@ -2,20 +2,20 @@ FactoryBot.define do
   factory :entry_currency_rule do
     currency
     kind { EntryRequest.kinds.keys.first }
-    min_value { Faker::Number.decimal(3, 2) }
-    max_value { Faker::Number.decimal(3, 2) }
+    min_amount { Faker::Number.decimal(3, 2) }
+    max_amount { Faker::Number.decimal(3, 2) }
   end
 
   factory :currency do
     name { Faker::Currency.name }
-    short_name { Faker::Currency.code }
+    code { Faker::Currency.code }
   end
 
   factory :entry_request_payload do
     customer_id { create(:customer).id }
     kind { EntryRequest.kinds.keys.first }
     amount { Faker::Number.decimal(3, 2) }
-    currency :euro
+    currency { create(:currency).code }
   end
 
   factory :entry_request do

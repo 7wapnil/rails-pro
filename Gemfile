@@ -37,7 +37,7 @@ gem 'sidekiq'
 
 # Here only because of staging on Heroku
 # To be moved back to development and test group
-gem 'faker'
+gem 'faker', github: 'stympy/faker', branch: 'master'
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
