@@ -3,7 +3,7 @@ class EntryRequestPayload
 
   attr_accessor :amount, :kind, :currency, :customer_id
 
-  KINDS = EntryRequest.kinds.keys
+  KINDS = EntryKinds::KINDS.keys.map(&:to_s)
 
   validates :amount, :kind, :currency, :customer_id, presence: true
   validates :amount, numericality: true
