@@ -1,4 +1,4 @@
-class EntryRequestPayloadValidator < ActiveModel::EachValidator
+class ChildValidator < ActiveModel::EachValidator
   def validate_each(record, attribute, value)
     return if value.nil? || value.valid?
 
