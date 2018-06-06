@@ -1,4 +1,16 @@
 FactoryBot.define do
+  factory :entry_currency_rule do
+    currency
+    kind { EntryRequest.kinds.keys.first }
+    min_value { Faker::Number.decimal(3, 2) }
+    max_value { Faker::Number.decimal(3, 2) }
+  end
+
+  factory :currency do
+    name { Faker::Currency.name }
+    short_name { Faker::Currency.code }
+  end
+
   factory :entry_request_payload do
     customer_id { create(:customer).id }
     kind { EntryRequest.kinds.keys.first }

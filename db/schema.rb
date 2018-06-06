@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_04_130727) do
+ActiveRecord::Schema.define(version: 2018_06_06_104226) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,14 @@ ActiveRecord::Schema.define(version: 2018_06_04_130727) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["wallet_id"], name: "index_balances_on_wallet_id"
+  end
+
+  create_table "currencies", force: :cascade do |t|
+    t.string "name"
+    t.string "short_name"
+    t.boolean "primary", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "customer_notes", force: :cascade do |t|
@@ -95,6 +103,17 @@ ActiveRecord::Schema.define(version: 2018_06_04_130727) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
+  end
+
+  create_table "entry_currency_rules", force: :cascade do |t|
+    t.bigint "currency_id"
+    t.integer "kind"
+    t.decimal "min_amount", precision: 8, scale: 2
+    t.decimal "max_amount", precision: 8, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["currency_id", "kind"], name: "index_entry_currency_rules_on_currency_id_and_kind", unique: true
+    t.index ["currency_id"], name: "index_entry_currency_rules_on_currency_id"
   end
 
   create_table "entry_requests", force: :cascade do |t|
@@ -211,6 +230,7 @@ ActiveRecord::Schema.define(version: 2018_06_04_130727) do
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "entries", "wallets"
+  add_foreign_key "entry_currency_rules", "currencies"
   add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "event_scopes", "titles"
   add_foreign_key "events", "titles"

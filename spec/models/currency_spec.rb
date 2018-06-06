@@ -1,0 +1,2 @@
+describe Currency do
+end

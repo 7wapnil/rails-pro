@@ -1,0 +1,2 @@
+describe EntryCurrencyRule do
+end
