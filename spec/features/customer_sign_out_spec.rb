@@ -1,4 +1,4 @@
-describe 'Customer Sign Out', type: :feature do
+describe 'Customer Sign Out' do
   it 'Successfully signs out' do
     customer = create(:customer)
     login_as customer, scope: :customer

@@ -1,4 +1,4 @@
-describe EventScope, type: :model do
+describe EventScope do
   it { should belong_to(:title) }
   it { should have_many(:scoped_events) }
   it { should have_many(:events).through(:scoped_events) }

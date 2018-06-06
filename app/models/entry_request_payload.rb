@@ -1,24 +1,23 @@
 class EntryRequestPayload
   include ActiveModel::Model
 
-  attr_accessor :customer, :kind, :amount, :currency, :customer_id
+  attr_accessor :amount, :kind, :currency, :customer_id
 
   KINDS = EntryRequest.kinds.keys
 
-  validates :amount, :kind, :customer, :currency, presence: true
+  validates :amount, :kind, :currency, :customer_id, presence: true
   validates :amount, numericality: true
   validates :kind, inclusion: { in: KINDS }
   validates :currency, inclusion: { in: Wallet.currencies.keys }
-
-  def initialize(attributes = {})
-    super(attributes)
-    @customer ||= Customer.find_by(id: attributes[:customer_id])
-  end
 
   KINDS.each do |kind|
     define_method "#{kind}?" do
       @kind == kind
     end
+  end
+
+  def customer
+    @customer ||= Customer.find_by(id: customer_id)
   end
 
   def to_json

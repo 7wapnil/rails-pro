@@ -1,4 +1,4 @@
-describe Title, type: :model do
+describe Title do
   it { should have_many(:events) }
   it { should have_many(:event_scopes) }
 

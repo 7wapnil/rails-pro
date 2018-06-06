@@ -1,4 +1,4 @@
-describe 'User Sign In', type: :feature do
+describe 'User Sign In' do
   let(:user) { create(:admin_user) }
 
   context 'Sign In form' do

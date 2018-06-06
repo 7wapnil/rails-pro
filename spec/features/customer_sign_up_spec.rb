@@ -1,4 +1,4 @@
-describe 'Customer Sign Up', type: :feature do
+describe 'Customer Sign Up' do
   before { visit new_customer_registration_path }
 
   let(:customer_attributes) do

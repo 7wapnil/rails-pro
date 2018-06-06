@@ -1,4 +1,4 @@
-describe Odd, type: :model do
+describe Odd do
   it { should belong_to(:market) }
   it { should have_many(:odd_values) }
 

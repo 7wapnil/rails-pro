@@ -1,4 +1,4 @@
-describe Event, type: :model do
+describe Event do
   it { should belong_to(:title) }
   it { should have_many(:markets) }
   it { should have_many(:scoped_events) }

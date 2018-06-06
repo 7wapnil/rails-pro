@@ -14,6 +14,6 @@ class EntryRequest < ApplicationRecord
   def payload
     return unless self[:payload]
 
-    EntryRequestPayload.new(self[:payload])
+    EntryRequestPayload.new(self[:payload].symbolize_keys)
   end
 end

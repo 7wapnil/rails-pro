@@ -1,4 +1,4 @@
-describe 'Labels#index', type: :feature do
+describe 'Labels#index' do
   context 'signed in' do
     let(:per_page_count) { 10 }
 

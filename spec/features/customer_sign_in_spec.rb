@@ -1,4 +1,4 @@
-describe 'Customer Sign In', type: :feature do
+describe 'Customer Sign In' do
   let(:customer) { create(:customer) }
 
   it 'Sees sign in link in Navbar' do

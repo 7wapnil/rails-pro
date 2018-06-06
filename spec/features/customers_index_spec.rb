@@ -1,4 +1,4 @@
-describe 'Customers#index', type: :feature do
+describe 'Customers#index' do
   context 'signed in' do
     let(:per_page_count) { 10 }
 

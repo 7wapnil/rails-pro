@@ -1,2 +1,2 @@
-describe User, type: :model do
+describe User do
 end

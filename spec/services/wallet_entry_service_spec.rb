@@ -1,4 +1,4 @@
-describe 'WalletService', type: :service do
+describe 'WalletService' do
   context 'first entry' do
     let(:customer) do
       create(:customer)

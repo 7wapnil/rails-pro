@@ -1,4 +1,4 @@
-describe CustomerNote, type: :model do
+describe CustomerNote do
   it { should belong_to(:user) }
   it { should belong_to(:customer) }
 
