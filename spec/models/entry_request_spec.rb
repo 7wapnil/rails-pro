@@ -9,7 +9,7 @@ describe EntryRequest do
   end
 
   it 'calls payload validation on request validate' do
-    expect_any_instance_of(EntryRequestPayloadValidator)
+    expect_any_instance_of(ChildValidator)
       .to receive(:validate_each)
 
     request
