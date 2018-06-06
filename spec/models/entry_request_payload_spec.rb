@@ -17,5 +17,11 @@ describe EntryRequestPayload do
     subject { payload.customer }
 
     it { is_expected.to be_a Customer }
+
+    it 'raises RecordNotFound exception' do
+      payload.customer_id = 0
+
+      expect { payload.customer }.to raise_error(ActiveRecord::RecordNotFound)
+    end
   end
 end

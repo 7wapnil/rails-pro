@@ -17,7 +17,7 @@ class EntryRequestPayload
   end
 
   def customer
-    @customer ||= Customer.find_by(id: customer_id)
+    @customer ||= Customer.find(customer_id)
   end
 
   def to_json
