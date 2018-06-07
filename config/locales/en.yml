@@ -25,3 +25,7 @@ en:
   date:
     formats:
       default: "%-d %B %Y"
+
+  errors:
+    messages:
+      entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
