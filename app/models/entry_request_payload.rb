@@ -14,12 +14,6 @@ class EntryRequestPayload
 
   validates_with EntryAmountValidator
 
-  KINDS.each do |kind|
-    define_method "#{kind}?" do
-      @kind == kind
-    end
-  end
-
   def customer
     @customer ||= Customer.find(customer_id)
   end
