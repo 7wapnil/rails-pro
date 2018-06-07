@@ -1,7 +1,16 @@
 describe 'WalletService' do
+  let(:currency) { create(:currency) }
+  let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
+  let(:payload) { build(:entry_request_payload, amount: 100) }
+
+  before do
+    allow(EntryCurrencyRule).to receive(:find_by!) { rule }
+    allow(Currency).to receive(:find_by!) { currency }
+  end
+
   context 'first entry' do
     let(:request) do
-      create(:entry_request)
+      create(:entry_request, payload: payload)
     end
 
     let(:customer) do
@@ -64,7 +73,7 @@ describe 'WalletService' do
       expect_any_instance_of(WalletEntry::Service)
         .not_to receive(:handle_success)
 
-      request[:payload]['currency'] = :peso
+      request[:payload]['amount'] = 600
       WalletEntry::Service.call(request)
 
       expect(request.fail?).to be true

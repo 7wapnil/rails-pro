@@ -15,7 +15,7 @@ FactoryBot.define do
     customer_id { create(:customer).id }
     kind { EntryRequest.kinds.keys.first }
     amount Random.new.rand(1.00..200.00).round(2)
-    currency { create(:currency).code }
+    currency_code { create(:currency).code }
   end
 
   factory :entry_request do

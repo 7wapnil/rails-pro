@@ -1,21 +1,25 @@
 class EntryRequestPayload
   include ActiveModel::Model
 
-  attr_accessor :kind, :currency, :customer_id
+  attr_accessor :kind, :currency_code, :customer_id
   attr_writer :amount
 
   KINDS = EntryKinds::KINDS.keys.map(&:to_s)
 
-  validates :amount, :kind, :currency, :customer_id, presence: true
+  validates :amount, :kind, :currency_code, :customer_id, presence: true
   validates :amount, numericality: true
   validates :kind, inclusion: { in: KINDS }
-  validates :currency,
+  validates :currency_code,
             inclusion: { in: ->(_) { Currency.select(:code).map(&:code) } }
 
   validates_with EntryAmountValidator
 
   def customer
     @customer ||= Customer.find(customer_id)
+  end
+
+  def currency
+    @currency ||= Currency.find_by!(code: @currency_code)
   end
 
   def amount
@@ -27,7 +31,7 @@ class EntryRequestPayload
       customer_id: @customer&.id,
       kind: @kind,
       amount: @amount,
-      currency: @currency
+      currency_code: @currency&.code
     }.to_json
   end
 end
