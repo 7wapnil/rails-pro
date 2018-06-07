@@ -1,19 +1,11 @@
 describe 'WalletService' do
   context 'first entry' do
-    let(:customer) do
-      create(:customer)
+    let(:request) do
+      create(:entry_request)
     end
 
-    let(:request) do
-      create(
-        :entry_request,
-        payload: {
-          customer_id: customer.id,
-          kind: :deposit,
-          amount: 29.99,
-          currency: :euro
-        }
-      )
+    let(:customer) do
+      request.payload.customer
     end
 
     it 'creates a wallet' do
@@ -77,7 +69,7 @@ describe 'WalletService' do
 
       expect(request.fail?).to be true
       expect(request.result['exception_class'])
-        .to eq 'ActiveRecord::StatementInvalid'
+        .to eq 'ActiveRecord::RecordInvalid'
     end
 
     it 'updates entry request on success' do

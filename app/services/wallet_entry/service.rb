@@ -8,7 +8,7 @@ module WalletEntry
     def call
       update_database!
       handle_success
-    rescue ActiveRecord::RecordInvalid, ActiveRecord::StatementInvalid => e
+    rescue ActiveRecord::RecordInvalid => e
       handle_failure e
     end
 
@@ -38,9 +38,10 @@ module WalletEntry
 
     def update_wallet!
       @wallet = Wallet.find_or_create_by!(
-        customer_id: @request.payload.customer.id,
-        currency: @request.payload.currency
+        customer: @request.payload.customer,
+        currency: Currency.find_by(code: @request.payload.currency)
       )
+
       @wallet.increment! :amount, @amount
     end
 

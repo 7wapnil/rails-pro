@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_06_113206) do
+ActiveRecord::Schema.define(version: 2018_06_06_133210) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -216,10 +216,11 @@ ActiveRecord::Schema.define(version: 2018_06_06_113206) do
 
   create_table "wallets", force: :cascade do |t|
     t.bigint "customer_id"
-    t.integer "currency"
     t.decimal "amount", precision: 8, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "currency_id"
+    t.index ["currency_id"], name: "index_wallets_on_currency_id"
     t.index ["customer_id"], name: "index_wallets_on_customer_id"
   end
 
@@ -239,5 +240,6 @@ ActiveRecord::Schema.define(version: 2018_06_06_113206) do
   add_foreign_key "odds", "markets"
   add_foreign_key "scoped_events", "event_scopes"
   add_foreign_key "scoped_events", "events"
+  add_foreign_key "wallets", "currencies"
   add_foreign_key "wallets", "customers"
 end

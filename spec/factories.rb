@@ -43,7 +43,7 @@ FactoryBot.define do
 
   factory :wallet do
     customer
-    currency 0
+    currency
     amount { Faker::Number.decimal(3, 2) }
   end
 
