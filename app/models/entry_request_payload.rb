@@ -9,7 +9,10 @@ class EntryRequestPayload
   validates :amount, :kind, :currency, :customer_id, presence: true
   validates :amount, numericality: true
   validates :kind, inclusion: { in: KINDS }
-  validates :currency, inclusion: { in: ->(_) { Currency.select(:code).map(&:code) } } # rubocop:disable Metrics/LineLength
+  validates :currency,
+            inclusion: { in: ->(_) { Currency.select(:code).map(&:code) } }
+
+  validates_with EntryAmountValidator
 
   KINDS.each do |kind|
     define_method "#{kind}?" do
