@@ -28,10 +28,10 @@ class EntryRequestPayload
 
   def to_json
     {
-      customer_id: @customer&.id,
-      kind: @kind,
+      customer_id: customer_id,
+      kind: kind,
       amount: @amount,
-      currency_code: @currency&.code
+      currency_code: currency_code
     }.to_json
   end
 end
