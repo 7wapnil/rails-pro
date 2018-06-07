@@ -1,4 +1,4 @@
-describe 'Label#form', type: :feature do
+describe 'Label#form' do
   context 'new label form' do
     before do
       login_as create(:admin_user), scope: :user

@@ -1,4 +1,4 @@
-describe 'User Sign Out', type: :feature do
+describe 'User Sign Out' do
   it 'Successfully signs out' do
     user = create(:admin_user)
     login_as user, scope: :user

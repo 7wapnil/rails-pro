@@ -1,4 +1,4 @@
-describe Market, type: :model do
+describe Market do
   it { should belong_to(:event) }
   it { should have_many(:odds) }
 

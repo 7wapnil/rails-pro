@@ -1,4 +1,4 @@
-describe BalanceEntry, type: :model do
+describe BalanceEntry do
   it { should belong_to(:balance) }
   it { should belong_to(:entry) }
 

@@ -1,4 +1,4 @@
-describe Customer, type: :model do
+describe Customer do
   it { should have_one(:address) }
   it { should have_many(:wallets) }
   it { should have_and_belong_to_many(:labels) }

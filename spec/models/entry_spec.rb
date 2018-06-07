@@ -1,4 +1,4 @@
-describe Entry, type: :model do
+describe Entry do
   it { is_expected.to define_enum_for :kind }
 
   it { should belong_to(:wallet) }

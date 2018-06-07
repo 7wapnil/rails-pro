@@ -1,13 +1,26 @@
 FactoryBot.define do
+  factory :entry_currency_rule do
+    currency
+    kind { EntryRequest.kinds.keys.first }
+    min_amount { Faker::Number.decimal(3, 2) }
+    max_amount { Faker::Number.decimal(3, 2) }
+  end
+
+  factory :currency do
+    name { Faker::Currency.name }
+    code { Faker::Currency.code }
+  end
+
+  factory :entry_request_payload do
+    customer_id { create(:customer).id }
+    kind { EntryRequest.kinds.keys.first }
+    amount Random.new.rand(1.00..200.00).round(2)
+    currency_code { create(:currency).code }
+  end
+
   factory :entry_request do
     status EntryRequest.statuses[:pending]
-    payload do
-      {
-        type: EntryRequest.types[:deposit],
-        amount: Faker::Number.decimal(3, 2),
-        currency: Wallet.currencies[:euro]
-      }
-    end
+    payload { attributes_for(:entry_request_payload) }
   end
 
   factory :balance_entry do
@@ -30,7 +43,7 @@ FactoryBot.define do
 
   factory :wallet do
     customer
-    currency 0
+    currency
     amount { Faker::Number.decimal(3, 2) }
   end
 

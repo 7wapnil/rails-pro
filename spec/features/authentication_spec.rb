@@ -1,4 +1,4 @@
-describe 'Authentication', type: :feature do
+describe 'Authentication' do
   context 'back office routes' do
     backoffice_get_paths = %i[backoffice_customers_path
                               backoffice_labels_path
