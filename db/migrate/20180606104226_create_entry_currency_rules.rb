@@ -8,7 +8,7 @@ class CreateEntryCurrencyRules < ActiveRecord::Migration[5.2]
 
       t.timestamps
 
-      t.index [:currency_id, :kind], unique: true
+      t.index %i[currency_id kind], unique: true
     end
   end
 end

@@ -8,7 +8,7 @@ module EntryKinds
     withdraw: 3,
     bet: 4,
     internal_credit: 5
-  }
+  }.freeze
 
   included do
     enum kind: KINDS
