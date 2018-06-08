@@ -16,7 +16,14 @@ en:
 
   content: Content
 
-  search: 'Search %{subject}'
+  search: "Search %{subject}"
+
+  attributes:
+    username: Username
+    email: Email
+    ip_address: IP Address
+    id: ID
+    balance: Balance
 
   time:
     formats:
