@@ -18,7 +18,7 @@
             %span= "(#{@request.payload.customer.username})"
         %tr
           %td= t(:kind)
-          %td= t(EntryKinds::KINDS.key(@request.payload.kind))
+          %td= t("kinds.#{@request.payload.kind}")
         %tr
           %td= t(:amount)
           %td

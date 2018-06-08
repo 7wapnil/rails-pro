@@ -19,6 +19,14 @@ en:
   search: "Search %{subject}"
   no_records: No records yet
 
+  kinds:
+    deposit: "Deposit"
+    win: "Win"
+    internal_debit: "Internal debit"
+    withdraw: "Withdraw"
+    bet: "Bet"
+    internal_credit: "Internal credit"
+
   attributes:
     username: Username
     email: Email

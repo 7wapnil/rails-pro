@@ -15,7 +15,7 @@
           - else request.fail?
             %span.badge.badge-danger= t(:fail)
         %td
-          %b= t(EntryKinds::KINDS.key(request.payload.kind))
+          %b= t("kinds.#{request.payload.kind}")
         %td= request.payload.customer.full_name
         %td
           =number_with_precision request.payload.amount, precision: 2
