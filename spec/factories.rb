@@ -31,13 +31,13 @@ FactoryBot.define do
 
   factory :entry do
     wallet
-    type 0
+    kind 0
     amount { Faker::Number.decimal(3, 2) }
   end
 
   factory :balance do
     wallet
-    type 0
+    kind 0
     amount { Faker::Number.decimal(3, 2) }
   end
 
