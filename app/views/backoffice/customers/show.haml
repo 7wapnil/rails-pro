@@ -51,6 +51,8 @@
           %td= t(:date_of_birth)
           %td= l(@customer.date_of_birth)
 
+    = render 'backoffice/customers/balances'
+
 .row.mt-4
   .col-6
     = card header: t(:customer_notes), class: 'customer-notes' do

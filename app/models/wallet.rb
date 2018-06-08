@@ -4,5 +4,7 @@ class Wallet < ApplicationRecord
   has_many :balances
   has_many :entries
 
-  delegate :code, to: :currency, prefix: true
+  delegate :name,
+           :code,
+           to: :currency, prefix: true
 end

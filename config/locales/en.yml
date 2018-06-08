@@ -17,6 +17,7 @@ en:
   content: Content
 
   search: "Search %{subject}"
+  no_records: No records yet
 
   attributes:
     username: Username
