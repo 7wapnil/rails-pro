@@ -1,0 +1,29 @@
+%h1.display-4= t(:entry_requests)
+
+%table.table
+  -#%thead
+  -#  = search_form_for @search,
+  -#                    url: backoffice_entry_requests_path do |f|
+  -#    %tr
+  -#      %th
+  -#        = f.label :customer_full_name_cont, class: 'sr-only'
+  -#        = f.search_field :customer_full_name_cont,
+  -#                         class: 'form-control',
+  -#                         placeholder: t(:search, subject: :username),
+  -#                         autocomplete: :off
+  -#        = f.submit class: 'btn btn-outline-dark btn-block'
+  %tbody
+    - @requests.each do |request|
+      %tr{ id: "entry-request-#{request.id}" }
+        %td
+          = link_to request.created_at.strftime('%-d %B, %Y %H:%M:%S')
+        %td= request.status
+        %td= EntryKinds::KINDS.key(request.payload.kind)
+        %td= request.payload.customer.full_name
+        %td
+          =request.payload.amount
+          =request.payload.currency.code
+        %td= request.result.message unless request.result.nil?
+
+
+= paginate @requests

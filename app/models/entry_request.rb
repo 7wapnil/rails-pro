@@ -1,6 +1,8 @@
 class EntryRequest < ApplicationRecord
   include EntryKinds
 
+  default_scope { order(created_at: :desc) }
+
   enum status: {
     pending: 0,
     success: 1,
