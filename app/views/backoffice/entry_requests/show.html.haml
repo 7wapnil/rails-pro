@@ -1,0 +1,29 @@
+.row.mt-4
+  .col-6.offset-3
+    = card header: t(:request_information), class: 'request-info' do
+      %table.table
+        %tr
+          %td= t(:id)
+          %td= @request.id
+        %tr
+          %td= t(:status)
+          %td= @request.status
+        %tr
+          %td= t(:created_date)
+          %td= l(@request.created_at, format: :long)
+        %tr
+          %td= t(:customer)
+          %td
+            %span= @request.payload.customer.full_name
+            %span= "(#{@request.payload.customer.username})"
+        %tr
+          %td= t(:kind)
+          %td= t(EntryKinds::KINDS.key(@request.payload.kind))
+        %tr
+          %td= t(:amount)
+          %td
+            =number_with_precision @request.payload.amount, precision: 2
+            =@request.payload.currency.code
+        %tr
+          %td= t(:result)
+          %td= @request.result_message

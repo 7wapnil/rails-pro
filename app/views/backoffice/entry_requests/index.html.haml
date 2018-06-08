@@ -1,0 +1,26 @@
+%h1.display-4= t(:entry_requests)
+
+%table.table
+  %tbody
+    - @requests.each do |request|
+      %tr{ id: "entry-request-#{request.id}" }
+        %td
+          = link_to l(request.created_at, format: :long),
+                    backoffice_entry_request_path(request)
+        %td
+          - if request.pending?
+            %span.badge.badge-secondary= t(:pending)
+          - elsif request.success?
+            %span.badge.badge-success= t(:success)
+          - else request.fail?
+            %span.badge.badge-danger= t(:fail)
+        %td
+          %b= t(EntryKinds::KINDS.key(request.payload.kind))
+        %td= request.payload.customer.full_name
+        %td
+          =number_with_precision request.payload.amount, precision: 2
+          =request.payload.currency.code
+        %td= request.result_message
+
+
+= paginate @requests

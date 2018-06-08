@@ -16,12 +16,20 @@ en:
 
   content: Content
 
-  search: 'Search %{subject}'
+  search: "Search %{subject}"
   no_records: No records yet
+
+  attributes:
+    username: Username
+    email: Email
+    ip_address: IP Address
+    id: ID
+    balance: Balance
 
   time:
     formats:
       default: "%-d %B %Y %k:%M"
+      long: "%-d %B %Y %k:%M:%S"
 
   date:
     formats:

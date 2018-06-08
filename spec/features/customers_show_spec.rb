@@ -20,11 +20,11 @@ describe 'Customers#show' do
     end
 
     context 'notes' do
-      it 'displays customer notes section' do
+      it 'shows customer notes section' do
         expect_to_have_section 'customer-notes'
       end
 
-      it 'displays new note form' do
+      it 'shows new note form' do
         within '.card.customer-notes' do
           expect(page).to have_selector 'form#new_customer_note'
         end
@@ -52,6 +52,31 @@ describe 'Customers#show' do
           expect(page).to have_content(
             "#{I18n.t(:content)} #{I18n.t('errors.messages.blank')}"
           )
+        end
+      end
+    end
+
+    context 'balances' do
+      it 'shows customers balance section' do
+        expect_to_have_section 'balances'
+      end
+
+      it 'shows available balances' do
+        create_list(:wallet, 3, customer: subject)
+
+        visit backoffice_customer_path(subject)
+
+        within '.balances' do
+          subject.wallets.each do |wallet|
+            expect(page).to have_content wallet.currency_name
+            expect(page).to have_content wallet.amount
+          end
+        end
+      end
+
+      it 'shows no records note' do
+        within '.balances' do
+          expect(page).to have_content I18n.t(:no_records)
         end
       end
     end
