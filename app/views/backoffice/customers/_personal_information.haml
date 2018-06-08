@@ -1,0 +1,14 @@
+= card header: t(:personal_information), class: 'personal-information' do
+  %table.table
+    %tr
+      %td= t(:first_name)
+      %td= @customer.first_name
+    %tr
+      %td= t(:last_name)
+      %td= @customer.last_name
+    %tr
+      %td= t(:gender)
+      %td= @customer.gender&.humanize
+    %tr
+      %td= t(:date_of_birth)
+      %td= l(@customer.date_of_birth)
