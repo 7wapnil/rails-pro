@@ -1,0 +1,10 @@
+= card header: t(:balances), class: 'mt-4 balances' do
+  - if @customer.wallets.any?
+    %table.table
+      - @customer.wallets.each do |wallet|
+        %tr
+          %td= wallet.currency_name
+          %td= wallet_balance(wallet)
+  - else
+    .text-center
+      %em= t(:no_records)
