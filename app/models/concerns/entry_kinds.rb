@@ -3,7 +3,7 @@ module EntryKinds
 
   KINDS = {
     deposit: 0,
-    winning: 1,
+    win: 1,
     internal_debit: 2,
     withdraw: 3,
     bet: 4,
