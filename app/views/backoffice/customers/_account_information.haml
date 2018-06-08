@@ -1,0 +1,32 @@
+= card header: t(:account_information), class: 'account-information' do
+  %table.table
+    %tr
+      %td= t(:username)
+      %td= @customer.username
+    %tr
+      %td= t(:last_sign_in_ip)
+      %td= @customer.last_sign_in_ip
+    %tr
+      %td= t(:last_sign_in_at)
+      %td= l(@customer.last_sign_in_at)
+    %tr
+      %td= t(:sign_in_count)
+      %td= @customer.sign_in_count
+    %tr
+      %td= t(:labels)
+      %td
+        = collection_select(:labels,
+                            :ids,
+                            @labels,
+                            :id,
+                            :name,
+                            { selected: @customer.labels.map(&:id) },
+                            { class: 'form-control',
+                              id: 'customers_labels',
+                              multiple: true,
+                              data: { placeholder: 'Add customer label',
+                                      update_url: update_labels_backoffice_customer_path(@customer) } })
+
+  .row
+    %div.col.text-right
+      %button.btn.btn-success{ disabled: true, id: 'save_labels' }= t(:save)

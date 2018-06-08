@@ -1,0 +1,13 @@
+= card header: t(:activity), class: 'activity' do
+  - if @customer.entries.any?
+    %table.table.table-hover
+      %tbody
+        - @customer.entries.each do |entry|
+          %tr
+            %td= l entry.created_at, format: :long
+            %td= entry.kind
+            %td= entry.amount
+            %td= entry.wallet.currency_code
+  - else
+    .text-center
+      %em= t(:no_records)

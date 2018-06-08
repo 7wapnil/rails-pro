@@ -81,6 +81,30 @@ describe 'Customers#show' do
       end
     end
 
+    context 'activity' do
+      it 'shows activity section' do
+        expect_to_have_section 'activity'
+      end
+
+      it 'shows available entries' do
+        create_list(:entry, 10, wallet: create(:wallet, customer: subject))
+
+        visit backoffice_customer_path(subject)
+
+        within '.activity' do
+          subject.entries.each do |entry|
+            expect(page).to have_content entry.kind
+            expect(page).to have_content entry.amount
+            expect(page).to have_content entry.wallet.currency_code
+          end
+        end
+      end
+
+      it 'shows no records note' do
+        expect(page).to have_content I18n.t(:no_records)
+      end
+    end
+
     def expect_to_have_section(section_class)
       within '.container' do
         expect(page).to have_selector ".card.#{section_class}"

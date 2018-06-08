@@ -1,0 +1,11 @@
+= card header: t(:contact_information), class: 'contact-information' do
+  %table.table
+    %tr
+      %td= t(:email)
+      %td= @customer.email
+    %tr
+      %td= t(:phone_number)
+      %td= @customer.phone
+    %tr
+      %td= t(:address)
+      %td= @customer.address

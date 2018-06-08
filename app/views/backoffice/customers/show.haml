@@ -1,86 +1,14 @@
 %h1.display-4= @customer.username
 
 .row.mt-4
-  .col-6
-    = card header: t(:account_information), class: 'account-information' do
-      %table.table
-        %tr
-          %td= t(:username)
-          %td= @customer.username
-        %tr
-          %td= t(:last_sign_in_ip)
-          %td= @customer.last_sign_in_ip
-        %tr
-          %td= t(:last_sign_in_at)
-          %td= l(@customer.last_sign_in_at)
-        %tr
-          %td= t(:sign_in_count)
-          %td= @customer.sign_in_count
-        %tr
-          %td= t(:labels)
-          %td
-            = collection_select(:labels,
-                                :ids,
-                                @labels,
-                                :id,
-                                :name,
-                                { selected: @customer.labels.map(&:id) },
-                                { class: 'form-control',
-                                  id: 'customers_labels',
-                                  multiple: true,
-                                  data: { placeholder: 'Add customer label',
-                                          update_url: update_labels_backoffice_customer_path(@customer) } })
-
-      .row
-        %div.col.text-right
-          %button.btn.btn-success{ disabled: true, id: 'save_labels' }= t(:save)
-
-  .col-6
-    = card header: t(:personal_information), class: 'personal-information' do
-      %table.table
-        %tr
-          %td= t(:first_name)
-          %td= @customer.first_name
-        %tr
-          %td= t(:last_name)
-          %td= @customer.last_name
-        %tr
-          %td= t(:gender)
-          %td= @customer.gender&.humanize
-        %tr
-          %td= t(:date_of_birth)
-          %td= l(@customer.date_of_birth)
-
-    = render 'backoffice/customers/balances'
-
-.row.mt-4
-  .col-6
-    = card header: t(:customer_notes), class: 'customer-notes' do
-      = card do
-        .customer-notes-form
-          = simple_form_for @note, url: backoffice_customer_notes_path do |f|
-            %legend= t(:add_note)
-            = f.input :customer_id, as: :hidden
-            = f.input :content
-            = f.submit t(:add), class: 'btn btn-outline-dark'
-
-      = card class: 'mt-2' do
-        .customer-notes-content{ style: 'height: 20rem; overflow-x: scroll;' }
-          - @customer.customer_notes.each do |note|
-            = render 'backoffice/customer_notes/show', note: note
-
-  .col-6
-    = card header: t(:contact_information), class: 'contact-information' do
-      %table.table
-        %tr
-          %td= t(:email)
-          %td= @customer.email
-        %tr
-          %td= t(:phone_number)
-          %td= @customer.phone
-        %tr
-          %td= t(:address)
-          %td= @customer.address
+  .col-md-6
+    .mb-4= render 'backoffice/customers/account_information'
+    .mb-4= render 'backoffice/customers/personal_information'
+    .mb-4= render 'backoffice/customers/contact_information'
+    .mb-4= render 'backoffice/customers/notes'
+  .col-md-6
+    .mb-4= render 'backoffice/customers/balances'
+    .mb-4= render 'backoffice/customers/activity'
 
 - content_for :css do
   = stylesheet_pack_tag 'customers/labels_selector'
