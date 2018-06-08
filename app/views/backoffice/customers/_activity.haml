@@ -4,6 +4,7 @@
       %tbody
         - @customer.entries.each do |entry|
           %tr
+            %td= l entry.created_at, format: :long
             %td= entry.kind
             %td= entry.amount
             %td= entry.wallet.currency_code
