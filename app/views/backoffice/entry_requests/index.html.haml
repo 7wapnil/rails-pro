@@ -5,7 +5,7 @@
     - @requests.each do |request|
       %tr{ id: "entry-request-#{request.id}" }
         %td
-          = link_to request.created_at.strftime(Date::DATE_FORMATS[:long_date_time]),
+          = link_to l(request.created_at, format: :long),
                     backoffice_entry_request_path(request)
         %td
           - if request.pending?

@@ -10,7 +10,7 @@
           %td= @request.status
         %tr
           %td= t(:created_date)
-          %td= @request.created_at.strftime(Date::DATE_FORMATS[:long_date_time])
+          %td= l(@request.created_at, format: :long)
         %tr
           %td= t(:customer)
           %td

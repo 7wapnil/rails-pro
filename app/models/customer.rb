@@ -28,6 +28,6 @@ class Customer < ApplicationRecord
   ransack_alias :ip_address, :last_sign_in_ip_or_current_sign_in_ip
 
   def full_name
-    @full_name = "#{first_name} #{last_name}"
+    [first_name, last_name].join(' ')
   end
 end

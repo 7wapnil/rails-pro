@@ -24,9 +24,7 @@ describe 'EntryRequests#show' do
 
     it 'shows entry request info' do
       within '.card.request-info' do
-        expected_date = entry_request
-                        .created_at
-                        .strftime(Date::DATE_FORMATS[:long_date_time])
+        expected_date = I18n.l(entry_request.created_at, format: :long)
         expected_kind = I18n.t(EntryKinds::KINDS
                                  .key(entry_request.payload.kind))
         expected_amount = "200.00 #{entry_request.payload.currency.code}"
