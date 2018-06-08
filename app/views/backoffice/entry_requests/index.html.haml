@@ -16,14 +16,22 @@
     - @requests.each do |request|
       %tr{ id: "entry-request-#{request.id}" }
         %td
-          = link_to request.created_at.strftime('%-d %B, %Y %H:%M:%S')
-        %td= request.status
-        %td= EntryKinds::KINDS.key(request.payload.kind)
+          = link_to request.created_at.strftime(Date::DATE_FORMATS[:long_date_time]),
+                    backoffice_entry_request_path(request)
+        %td
+          - if request.pending?
+            %span.badge.badge-secondary= t(:pending)
+          - elsif request.success?
+            %span.badge.badge-success= t(:success)
+          - else request.fail?
+            %span.badge.badge-danger= t(:fail)
+        %td
+          %b= t(EntryKinds::KINDS.key(request.payload.kind))
         %td= request.payload.customer.full_name
         %td
           =request.payload.amount
           =request.payload.currency.code
-        %td= request.result.message unless request.result.nil?
+        %td= request.result_message
 
 
 = paginate @requests

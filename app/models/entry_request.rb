@@ -18,4 +18,10 @@ class EntryRequest < ApplicationRecord
 
     EntryRequestPayload.new(self[:payload].symbolize_keys)
   end
+
+  def result_message
+    return unless self[:result]
+
+    @message = self[:result]['message']
+  end
 end
