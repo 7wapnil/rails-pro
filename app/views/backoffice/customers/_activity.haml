@@ -1,0 +1,8 @@
+= card header: t(:activity), class: 'activity' do
+  %table.table.table-hover
+    %tbody
+      - @customer.entries.each do |entry|
+        %tr
+          %td= entry.kind
+          %td= entry.amount
+          %td= entry.wallet.currency_code
