@@ -29,6 +29,7 @@ en:
   time:
     formats:
       default: "%-d %B %Y %k:%M"
+      long: "%-d %B %Y %k:%M:%S"
 
   date:
     formats:
