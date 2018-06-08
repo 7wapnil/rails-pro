@@ -1,6 +1,6 @@
 .row.mt-4
   .col-6.offset-3
-    = card header: t(:request_information) do
+    = card header: t(:request_information), class: 'request-info' do
       %table.table
         %tr
           %td= t(:id)
@@ -22,7 +22,8 @@
         %tr
           %td= t(:amount)
           %td
-            = "#{@request.payload.amount} #{@request.payload.currency.code}"
+            =number_with_precision @request.payload.amount, precision: 2
+            =@request.payload.currency.code
         %tr
           %td= t(:result)
           %td= @request.result_message
