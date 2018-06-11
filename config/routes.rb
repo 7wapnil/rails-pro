@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
     resources :labels
 
-    resources :entry_requests, only: %i[index show]
+    resources :entry_requests, only: %i[index show create]
 
     root 'dashboards#show'
   end
