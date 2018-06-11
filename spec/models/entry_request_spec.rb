@@ -7,4 +7,15 @@ describe EntryRequest do
   it 'returns payload as instance of EntryRequestPayload' do
     expect(request.payload).to be_an EntryRequestPayload
   end
+
+  it 'is valid with invalid payload' do
+    request.payload = {
+      kind: :invalid,
+      currency_code: :none,
+      customer_id: 0,
+      amount: 'foo'
+    }
+
+    expect(request).to be_valid
+  end
 end
