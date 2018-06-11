@@ -11,7 +11,6 @@ class EntryRequest < ApplicationRecord
 
   validates :status, inclusion: { in: statuses.keys }
   validates :payload, presence: true
-  validates :payload, child: true
 
   def payload
     return unless self[:payload]
