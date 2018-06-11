@@ -7,11 +7,4 @@ describe EntryRequest do
   it 'returns payload as instance of EntryRequestPayload' do
     expect(request.payload).to be_an EntryRequestPayload
   end
-
-  it 'calls payload validation on request validate' do
-    expect_any_instance_of(ChildValidator)
-      .to receive(:validate_each)
-
-    request.validate
-  end
 end
