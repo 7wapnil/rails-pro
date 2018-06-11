@@ -1,4 +1,6 @@
 class User < ApplicationRecord
+  include Person
+
   devise :database_authenticatable, :recoverable, :rememberable,
          :trackable, :validatable,
          authentication_keys: [:email]
