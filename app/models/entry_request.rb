@@ -4,7 +4,7 @@ class EntryRequest < ApplicationRecord
   ORIGINS = {
     user: 0,
     customer: 1
-  }
+  }.freeze
 
   default_scope { order(created_at: :desc) }
 

@@ -13,6 +13,9 @@ Style/EmptyMethod:
 Style/Lambda:
   Enabled: false
 
+Metrics/AbcSize:
+  Max: 25
+
 Metrics/BlockLength:
   Enabled: false
 
