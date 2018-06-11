@@ -1,6 +1,11 @@
 class EntryRequest < ApplicationRecord
   include EntryKinds
 
+  ORIGINS = {
+    user: 0,
+    customer: 1
+  }.freeze
+
   default_scope { order(created_at: :desc) }
 
   enum status: {

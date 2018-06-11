@@ -63,9 +63,7 @@ describe 'Customer Sign Up' do
   end
 end
 
-# rubocop:disable Metrics/MethodLength
-# rubocop:disable Metrics/AbcSize
-def submit_customer_form_with(attributes)
+def submit_customer_form_with(attributes) # rubocop:disable Metrics/MethodLength
   within 'form#new_customer' do
     fill_in 'customer_username', with: attributes[:username]
     fill_in 'customer_email', with: attributes[:email]
@@ -84,5 +82,3 @@ def submit_customer_form_with(attributes)
     click_submit
   end
 end
-# rubocop:enable Metrics/MethodLength
-# rubocop:enable Metrics/AbcSize

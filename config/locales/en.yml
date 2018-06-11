@@ -27,6 +27,13 @@ en:
     bet: "Bet"
     internal_credit: "Internal credit"
 
+  origins:
+    user: User
+    customer: Customer
+
+  entities:
+    entry_request: Entry request
+
   attributes:
     username: Username
     email: Email
@@ -38,7 +45,11 @@ en:
     customer_name: Customer name
     amount: Amount
     result: Result
+    kind: Type
     entry_kind: Entry type
+    currency_code: Currency
+    origin: Origin
+    comment: Comment
 
   time:
     formats:
@@ -48,6 +59,9 @@ en:
   date:
     formats:
       default: "%-d %B %Y"
+
+  messages:
+    entry_request_created: "Entry request successfully created"
 
   errors:
     messages:

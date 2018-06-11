@@ -3,7 +3,7 @@ class EntryAmountValidator < ActiveModel::Validator
   # :currency
   # :kind
   # :amount
-  def validate(record) # rubocop:disable Metrics/AbcSize
+  def validate(record)
     rule = EntryCurrencyRule.find_by!(currency: record.currency,
                                       kind: record.kind)
 
