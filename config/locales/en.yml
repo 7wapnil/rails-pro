@@ -33,6 +33,12 @@ en:
     ip_address: IP Address
     id: ID
     balance: Balance
+    date: Date
+    status: Status
+    customer_name: Customer name
+    amount: Amount
+    result: Result
+    entry_kind: Entry type
 
   time:
     formats:
