@@ -1,7 +1,13 @@
 class EntryRequestPayload
   include ActiveModel::Model
 
-  attr_accessor :kind, :currency_code, :customer_id
+  attr_accessor :kind,
+                :currency_code,
+                :customer_id,
+                :comment,
+                :origin_type,
+                :origin_id
+
   attr_writer :amount
 
   KINDS = EntryKinds::KINDS.keys.map(&:to_s)
@@ -24,6 +30,14 @@ class EntryRequestPayload
 
   def amount
     @amount.is_a?(Numeric) ? @amount.to_d : @amount
+  end
+
+  def origin
+    origin_type
+      .to_s
+      .camelize
+      .safe_constantize
+      &.find(origin_id)
   end
 
   def to_json

@@ -27,6 +27,13 @@ en:
     bet: "Bet"
     internal_credit: "Internal credit"
 
+  origins:
+    user: User
+    customer: Customer
+
+  entities:
+    entry_request: Entry request
+
   attributes:
     username: Username
     email: Email
@@ -41,6 +48,8 @@ en:
     kind: Type
     entry_kind: Entry type
     currency_code: Currency
+    origin: Origin
+    comment: Comment
 
   time:
     formats:

@@ -4,11 +4,14 @@ module EntryKinds
   KINDS = {
     deposit: 0,
     win: 1,
-    internal_debit: 2,
+    internal: 2,
     withdraw: 3,
-    bet: 4,
-    internal_credit: 5
+    bet: 4
   }.freeze
+
+  FUND_KINDS = KINDS.slice(:deposit, :internal, :withdraw)
+
+  TRADING_KINDS = KINDS.slice(:win, :bet)
 
   included do
     enum kind: KINDS

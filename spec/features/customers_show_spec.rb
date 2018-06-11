@@ -118,7 +118,7 @@ describe 'Customers#show' do
 
         within '.container' do
           expect(page).to have_content(
-            I18n.t('messages.entry_request_created')
+            I18n.t(:created, instance: I18n.t('entities.entry_request'))
           )
         end
       end

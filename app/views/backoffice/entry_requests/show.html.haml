@@ -25,5 +25,11 @@
             =number_with_precision @request.payload.amount, precision: 2
             =@request.payload.currency.code
         %tr
+          %td= t('attributes.origin')
+          %td= @request.payload.origin
+        %tr
+          %td= t('attributes.comment')
+          %td= @request.payload.comment
+        %tr
           %td= t(:result)
           %td= @request.result_message

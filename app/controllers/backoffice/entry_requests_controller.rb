@@ -13,7 +13,7 @@ module Backoffice
       entry_request = EntryRequest.new(payload: payload_params)
 
       if entry_request.save
-        flash[:success] = t('messages.entry_request_created')
+        flash[:success] = t(:created, instance: t('entities.entry_request'))
         redirect_to backoffice_customer_path(entry_request.payload.customer)
       else
         flash[:error] = entry_request.errors.full_messages
@@ -26,7 +26,8 @@ module Backoffice
     def payload_params
       params
         .require(:entry_request_payload)
-        .permit(:customer_id, :currency_code, :amount, :kind)
+        .permit(:customer_id, :currency_code, :amount, :kind, :comment)
+        .merge(origin_id: current_user.id, origin_type: :user)
     end
   end
 end
