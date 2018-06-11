@@ -6,10 +6,10 @@ module WalletEntry
     end
 
     def call
-      @request.validate!
+      @request.payload.validate!
       update_database!
       handle_success
-    rescue ActiveRecord::RecordInvalid => e
+    rescue ActiveModel::ValidationError => e
       handle_failure e
     end
 
