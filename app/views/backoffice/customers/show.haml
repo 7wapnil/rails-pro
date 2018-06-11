@@ -1,14 +1,14 @@
 %h1.display-4= @customer.username
 
-.row.mt-4
+.row
   .col-md-6
-    .mb-4= render 'backoffice/customers/account_information'
-    .mb-4= render 'backoffice/customers/personal_information'
-    .mb-4= render 'backoffice/customers/contact_information'
-    .mb-4= render 'backoffice/customers/notes'
+    .mt-4= render 'backoffice/customers/account_information'
+    .mt-4= render 'backoffice/customers/personal_information'
+    .mt-4= render 'backoffice/customers/contact_information'
+    .mt-4= render 'backoffice/customers/notes'
   .col-md-6
-    .mb-4= render 'backoffice/customers/balances'
-    .mb-4= render 'backoffice/customers/activity'
+    .mt-4= render 'backoffice/customers/balances'
+    .mt-4= render 'backoffice/customers/activity'
 
 - content_for :css do
   = stylesheet_pack_tag 'customers/labels_selector'
