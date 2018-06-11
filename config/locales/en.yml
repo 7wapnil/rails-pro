@@ -38,7 +38,9 @@ en:
     customer_name: Customer name
     amount: Amount
     result: Result
+    kind: Type
     entry_kind: Entry type
+    currency_code: Currency
 
   time:
     formats:
@@ -48,6 +50,9 @@ en:
   date:
     formats:
       default: "%-d %B %Y"
+
+  messages:
+    entry_request_created: "Entry request successfully created"
 
   errors:
     messages:

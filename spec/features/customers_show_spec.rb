@@ -105,6 +105,25 @@ describe 'Customers#show' do
       end
     end
 
+    context 'entry request' do
+      it 'shows entry request form' do
+        expect_to_have_section 'customer-entry-request'
+      end
+
+      it 'creates new customer entry request' do
+        within 'form#new_entry_request_payload' do
+          fill_in :entry_request_payload_amount, with: 200.00
+          click_submit
+        end
+
+        within '.container' do
+          expect(page).to have_content(
+            I18n.t('messages.entry_request_created')
+          )
+        end
+      end
+    end
+
     def expect_to_have_section(section_class)
       within '.container' do
         expect(page).to have_selector ".card.#{section_class}"

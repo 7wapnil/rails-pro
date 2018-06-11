@@ -13,6 +13,7 @@ module Backoffice
       entry_request = EntryRequest.new(payload: payload_params)
 
       if entry_request.save
+        flash[:success] = t('messages.entry_request_created')
         redirect_to backoffice_customer_path(entry_request.payload.customer)
       else
         flash[:error] = entry_request.errors.full_messages
