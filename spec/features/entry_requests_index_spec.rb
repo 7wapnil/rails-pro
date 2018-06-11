@@ -28,8 +28,7 @@ describe 'EntryRequests#index' do
       within 'table.table' do
         EntryRequest.limit(per_page_count).each do |request|
           expected_date = I18n.l(request.created_at, format: :long)
-          expected_kind = I18n.t(EntryKinds::KINDS
-                                  .key(request.payload.kind))
+          expected_kind = I18n.t("kinds.#{request.payload.kind}")
           expected_amount = "200.00 #{request.payload.currency.code}"
 
           expect(page).to have_content(expected_date)

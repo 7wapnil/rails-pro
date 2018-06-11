@@ -1,6 +1,14 @@
 %h1.display-4= t(:entry_requests)
 
 %table.table
+  %thead
+    %tr
+      %th= t('attributes.date')
+      %th= t('attributes.status')
+      %th= t('attributes.entry_kind')
+      %th= t('attributes.customer_name')
+      %th= t('attributes.amount')
+      %th= t('attributes.result')
   %tbody
     - @requests.each do |request|
       %tr{ id: "entry-request-#{request.id}" }
@@ -15,7 +23,7 @@
           - else request.fail?
             %span.badge.badge-danger= t(:fail)
         %td
-          %b= t(EntryKinds::KINDS.key(request.payload.kind))
+          %b= t("kinds.#{request.payload.kind}")
         %td= request.payload.customer.full_name
         %td
           =number_with_precision request.payload.amount, precision: 2
