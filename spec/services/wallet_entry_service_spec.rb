@@ -78,7 +78,7 @@ describe 'WalletService' do
 
       expect(request.fail?).to be true
       expect(request.result['exception_class'])
-        .to eq 'ActiveRecord::RecordInvalid'
+        .to eq 'ActiveModel::ValidationError'
     end
 
     it 'updates entry request on success' do

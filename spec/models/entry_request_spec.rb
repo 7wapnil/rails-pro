@@ -8,10 +8,14 @@ describe EntryRequest do
     expect(request.payload).to be_an EntryRequestPayload
   end
 
-  it 'calls payload validation on request validate' do
-    expect_any_instance_of(ChildValidator)
-      .to receive(:validate_each)
+  it 'is valid with invalid payload' do
+    request.payload = {
+      kind: :invalid,
+      currency_code: :none,
+      customer_id: 0,
+      amount: 'foo'
+    }
 
-    request.validate
+    expect(request).to be_valid
   end
 end
