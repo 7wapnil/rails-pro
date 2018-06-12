@@ -1,0 +1,25 @@
+box: ruby:2.5.1
+
+services:
+  - postgres
+
+build:
+  steps:
+    - bundle-install
+    - bashaus/yarn-install
+
+    - script:
+      name: rspec
+      code: bundle exec rspec
+
+    - script:
+      name: rubocop
+      code: bundle exec rubocop
+
+    - script:
+      name: brakeman
+      code: bundle exec brakeman -q
+
+    - script:
+      name: eslint
+      code: yarn run eslint .
