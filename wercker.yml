@@ -27,3 +27,9 @@ build:
     - script:
       name: eslint
       code: yarn run eslint .
+
+deploy-heroku:
+  steps:
+    heroku-deploy:
+      app_name: arcanebet-staging
+      key_name: $HEROKU_API_KEY
