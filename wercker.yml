@@ -9,6 +9,10 @@ build:
     - bashaus/yarn-install
 
     - script:
+      name: prepare database
+      code: rake db:test:prepare
+
+    - script:
       name: rspec
       code: bundle exec rspec
 
