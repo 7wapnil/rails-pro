@@ -14,6 +14,7 @@ module Backoffice
 
       if entry_request.save
         flash[:success] = t(:created, instance: t('entities.entry_request'))
+        EntryRequestProcessingJob.perform_later(entry_request)
         redirect_to backoffice_customer_path(entry_request.payload.customer)
       else
         flash[:error] = entry_request.errors.full_messages
