@@ -6,8 +6,6 @@ Rails.start()
 Turbolinks.start()
 
 document.addEventListener('turbolinks:load', () => {
-  console.log('reloaded')
-
   const controllerName = $('body').data('controller')
 
   $('.nav-link').removeClass('active')
