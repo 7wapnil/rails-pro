@@ -31,6 +31,5 @@ build:
 deploy-heroku:
   steps:
     - heroku-deploy:
-      app_name: arcanebet-staging
-      key_name: $HEROKU_API_KEY
+      app-name: arcanebet-staging
       run: rake db:migrate db:seed
