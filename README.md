@@ -1,6 +1,6 @@
 # arcanebet
 
-[ ![Codeship Status for arcanebet/arcanebet](https://app.codeship.com/projects/bec721c0-29eb-0136-53e1-72ca75b7ec4b/status?branch=master)](https://app.codeship.com/projects/287403)
+[![wercker status](https://app.wercker.com/status/bd58fc9e4800e174aa4a6a9216d83d0c/s/master "wercker status")](https://app.wercker.com/project/byKey/bd58fc9e4800e174aa4a6a9216d83d0c)
 
 ArcaneBet betting backend
 
