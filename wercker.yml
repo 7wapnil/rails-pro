@@ -29,7 +29,7 @@ build:
       code: yarn run eslint .
 
   after-steps:
-    slack-notifier:
+    - slack-notifier:
       url: $SLACK_URL
       notify_on: failed
 
@@ -40,5 +40,5 @@ deploy-heroku:
       run: rake db:migrate db:seed
 
   after-steps:
-    slack-notifier:
+    - slack-notifier:
       url: $SLACK_URL
