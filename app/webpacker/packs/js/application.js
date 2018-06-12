@@ -5,7 +5,7 @@ import Turbolinks from 'turbolinks'
 Rails.start()
 Turbolinks.start()
 
-$(() => {
+document.addEventListener('turbolinks:load', () => {
   const controllerName = $('body').data('controller')
 
   $('.nav-link').removeClass('active')

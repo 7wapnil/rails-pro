@@ -1,7 +1,7 @@
 import 'select2/dist/css/select2.min.css'
 import 'select2/dist/js/select2.full.min'
 
-$(() => {
+const processLabels = () => {
   // Send CSRF header with every ajax request
   $(document).ajaxSend((event, xhr) => {
     xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
@@ -35,4 +35,12 @@ $(() => {
     .on('change', () => {
       saveLabelsBtn.prop('disabled', false)
     })
-})
+}
+
+let loaded = false
+if (!loaded) {
+  document.addEventListener('turbolinks:load', processLabels)
+  loaded = true
+}
+
+processLabels()
