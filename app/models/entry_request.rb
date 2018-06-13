@@ -10,8 +10,8 @@ class EntryRequest < ApplicationRecord
 
   enum status: {
     pending: 0,
-    success: 1,
-    fail: 2
+    succeeded: 1,
+    failed: 2
   }
 
   validates :status, inclusion: { in: statuses.keys }

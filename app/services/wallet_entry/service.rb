@@ -55,12 +55,12 @@ module WalletEntry
     end
 
     def handle_success
-      @request.success!
+      @request.succeeded!
     end
 
     def handle_failure(exception)
       @request.update_columns(
-        status: EntryRequest.statuses[:fail],
+        status: EntryRequest.statuses[:failed],
         result: {
           message: exception,
           exception_class: exception.class.to_s
