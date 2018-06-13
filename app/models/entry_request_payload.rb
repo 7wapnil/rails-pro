@@ -2,12 +2,13 @@ class EntryRequestPayload
   include ActiveModel::Model
 
   attr_accessor :kind,
-                :amount,
                 :currency_code,
                 :customer_id,
                 :comment,
                 :origin_type,
                 :origin_id
+
+  attr_reader :amount
 
   KINDS = EntryKinds::KINDS.keys.map(&:to_s)
 
