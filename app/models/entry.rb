@@ -1,4 +1,6 @@
 class Entry < ApplicationRecord
+  default_scope { order(created_at: :desc) }
+
   include EntryKinds
 
   belongs_to :wallet
