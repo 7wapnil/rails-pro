@@ -13,7 +13,7 @@
                     value_method: ->(k) { k.first }
       .row
         .col-6
-          = f.input :amount, as: :decimal
+          = f.input :amount, as: :decimal, required: true
         .col-6
           = f.input :currency_code,
             collection: Currency.all,
@@ -21,5 +21,5 @@
             include_blank: false
       .row
         .col
-          = f.input :comment, as: :text
+          = f.input :comment, as: :text, required: true
       = f.submit t(:add), class: 'btn btn-outline-dark'
