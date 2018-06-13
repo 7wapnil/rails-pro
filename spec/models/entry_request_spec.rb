@@ -27,5 +27,4 @@ describe EntryRequest do
 
     expect(request.origin).to be_instance_of Customer
   end
-
 end
