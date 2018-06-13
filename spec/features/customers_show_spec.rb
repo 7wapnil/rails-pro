@@ -111,6 +111,8 @@ describe 'Customers#show' do
       end
 
       it 'creates new customer entry request' do
+        allow(EntryRequestProcessingJob).to receive(:perform_later)
+
         currency = create(:currency)
         create(:entry_currency_rule, currency: currency, kind: :deposit)
 
