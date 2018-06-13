@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_06_133210) do
+ActiveRecord::Schema.define(version: 2018_06_12_121553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -118,10 +118,16 @@ ActiveRecord::Schema.define(version: 2018_06_06_133210) do
 
   create_table "entry_requests", force: :cascade do |t|
     t.integer "status", default: 0
-    t.json "payload", default: "{}"
     t.json "result"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "customer_id"
+    t.integer "currency_id"
+    t.integer "kind"
+    t.integer "origin_type"
+    t.integer "origin_id"
+    t.text "comment"
+    t.decimal "amount", precision: 8, scale: 2
   end
 
   create_table "event_scopes", force: :cascade do |t|
@@ -232,6 +238,8 @@ ActiveRecord::Schema.define(version: 2018_06_06_133210) do
   add_foreign_key "customer_notes", "users"
   add_foreign_key "entries", "wallets"
   add_foreign_key "entry_currency_rules", "currencies"
+  add_foreign_key "entry_requests", "currencies"
+  add_foreign_key "entry_requests", "customers"
   add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "event_scopes", "titles"
   add_foreign_key "events", "titles"
