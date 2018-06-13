@@ -14,6 +14,18 @@ module Backoffice
       )
     end
 
+    def activity
+      @customer = Customer.find(params[:id])
+      @entry_request_payload = EntryRequestPayload.new(
+        customer_id: @customer.id
+      )
+    end
+
+    def notes
+      @customer = Customer.find(params[:id])
+      @note = CustomerNote.new(customer: @customer)
+    end
+
     def update_labels
       customer = Customer.find(params[:id])
       if labels_params[:ids].include? '0'
