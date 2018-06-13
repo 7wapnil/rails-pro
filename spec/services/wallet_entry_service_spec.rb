@@ -76,7 +76,7 @@ describe 'WalletService' do
       request[:payload]['amount'] = 600
       WalletEntry::Service.call(request)
 
-      expect(request.fail?).to be true
+      expect(request.failed?).to be true
       expect(request.result['exception_class'])
         .to eq 'ActiveModel::ValidationError'
     end
@@ -87,7 +87,7 @@ describe 'WalletService' do
 
       WalletEntry::Service.call(request)
 
-      expect(request.success?).to be true
+      expect(request.succeeded?).to be true
       expect(request.result).not_to be_present
     end
   end

@@ -18,10 +18,10 @@
         %td
           - if request.pending?
             %span.badge.badge-secondary= t(:pending)
-          - elsif request.success?
-            %span.badge.badge-success= t(:success)
-          - else request.fail?
-            %span.badge.badge-danger= t(:fail)
+          - elsif request.succeeded?
+            %span.badge.badge-success= t(:succeeded)
+          - else request.failed?
+            %span.badge.badge-danger= t(:failed)
         %td
           %b= t("kinds.#{request.payload.kind}")
         %td= request.payload.customer.full_name
