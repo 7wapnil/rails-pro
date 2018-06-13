@@ -31,4 +31,51 @@ describe EntryRequestPayload do
       expect { payload.customer }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
+
+  context '#amount' do
+    it 'sets Decimal' do
+      input = BigDecimal(22.99, 4)
+      payload.amount = input
+
+      expect(payload.amount).to be_a BigDecimal
+      expect(payload.amount).to eq input
+    end
+
+    it 'sets Decimal from Float' do
+      input = Float(22.99)
+      payload.amount = input
+
+      expect(payload.amount).to be_a BigDecimal
+      expect(payload.amount).to eq input
+    end
+
+    it 'sets Decimal from numeric String' do
+      input = '22.99'
+      payload.amount = input
+
+      expect(payload.amount).to be_a BigDecimal
+      expect(payload.amount).to eq input.to_d
+    end
+
+    it 'sets nil' do
+      input = nil
+      payload.amount = input
+
+      expect(payload.amount).to eq input
+    end
+
+    it 'sets String' do
+      input = 'hello 2.0'
+      payload.amount = input
+
+      expect(payload.amount).to eq input
+    end
+
+    it 'sets Object' do
+      input = { foo: :bar }
+      payload.amount = input
+
+      expect(payload.amount).to eq input
+    end
+  end
 end

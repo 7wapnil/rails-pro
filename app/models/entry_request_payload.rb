@@ -2,13 +2,12 @@ class EntryRequestPayload
   include ActiveModel::Model
 
   attr_accessor :kind,
+                :amount,
                 :currency_code,
                 :customer_id,
                 :comment,
                 :origin_type,
                 :origin_id
-
-  attr_writer :amount
 
   KINDS = EntryKinds::KINDS.keys.map(&:to_s)
 
@@ -28,8 +27,8 @@ class EntryRequestPayload
     @currency ||= Currency.find_by!(code: @currency_code)
   end
 
-  def amount
-    @amount.is_a?(Numeric) ? @amount.to_d : @amount
+  def amount=(value)
+    @amount = numeric_value(value)
   end
 
   def origin
@@ -47,5 +46,14 @@ class EntryRequestPayload
       amount: @amount,
       currency_code: currency_code
     }.to_json
+  end
+
+  private
+
+  def numeric_value(value)
+    return value.to_d if value.is_a?(Numeric)
+    BigDecimal(value)
+  rescue ArgumentError, TypeError
+    value
   end
 end

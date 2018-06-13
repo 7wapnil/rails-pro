@@ -111,7 +111,13 @@ describe 'Customers#show' do
       end
 
       it 'creates new customer entry request' do
+        currency = create(:currency)
+        create(:entry_currency_rule, currency: currency, kind: :deposit)
+
+        visit backoffice_customer_path(subject)
+
         within 'form#new_entry_request_payload' do
+          select I18n.t('kinds.deposit'), from: :entry_request_payload_kind
           fill_in :entry_request_payload_amount, with: 200.00
           click_submit
         end
