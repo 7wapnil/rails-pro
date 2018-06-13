@@ -1,4 +1,13 @@
 %ul.list-group
-  = link_to t(:account), backoffice_customer_path(@customer), class: 'list-group-item list-group-item-action'
-  = link_to t(:activity), activity_backoffice_customer_path(@customer), class: 'list-group-item list-group-item-action'
-  = link_to t(:notes), notes_backoffice_customer_path(@customer), class: 'list-group-item list-group-item-action'
+  = link_to t(:account),
+            backoffice_customer_path(@customer),
+            class: 'list-group-item list-group-item-action',
+            'data-target-action': :show
+  = link_to t(:activity),
+            activity_backoffice_customer_path(@customer),
+            class: 'list-group-item list-group-item-action',
+            'data-target-action': :activity
+  = link_to t(:notes),
+            notes_backoffice_customer_path(@customer),
+            class: 'list-group-item list-group-item-action',
+            'data-target-action': :notes

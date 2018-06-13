@@ -9,7 +9,7 @@
     = yield :css
     = javascript_pack_tag 'js/application', 'data-turbolinks-track': 'reload'
     = yield :js
-  %body{ 'data-controller': controller.controller_name }
+  %body{ data: { controller: controller_name, action: action_name } }
     = render 'shared/backoffice/navbar'
     .container
       = render 'shared/alerts'
