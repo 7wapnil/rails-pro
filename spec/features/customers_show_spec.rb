@@ -89,7 +89,12 @@ describe 'Customers#show' do
       end
 
       it 'shows available entries' do
-        create_list(:entry, 10, wallet: create(:wallet, customer: subject))
+        wallet = create(:wallet, customer: subject)
+        rule = create(:entry_currency_rule,
+                      currency: wallet.currency,
+                      min_amount: 10,
+                      max_amount: 500)
+        create_list(:entry, 10, wallet: wallet, kind: rule.kind, amount: 100)
 
         visit backoffice_customer_path(subject)
 

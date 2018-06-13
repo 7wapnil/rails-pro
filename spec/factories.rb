@@ -30,7 +30,7 @@ FactoryBot.define do
 
   factory :entry do
     wallet
-    kind 0
+    kind { EntryRequest.kinds.keys.first }
     amount { Faker::Number.decimal(3, 2) }
   end
 

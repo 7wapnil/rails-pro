@@ -9,7 +9,7 @@ module WalletEntry
       @request.validate!
       update_database!
       handle_success
-    rescue ActiveModel::ValidationError => e
+    rescue ActiveRecord::RecordInvalid => e
       handle_failure e
     end
 
