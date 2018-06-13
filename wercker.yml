@@ -1,0 +1,44 @@
+box: arcanebet/arcanebet:base
+
+services:
+  - postgres
+
+build:
+  steps:
+    - bundle-install
+    - bashaus/yarn-install
+
+    - script:
+      name: prepare database
+      code: rake db:test:prepare
+
+    - script:
+      name: rspec
+      code: bundle exec rspec
+
+    - script:
+      name: rubocop
+      code: bundle exec rubocop
+
+    - script:
+      name: brakeman
+      code: bundle exec brakeman -q
+
+    - script:
+      name: eslint
+      code: yarn run eslint .
+
+  after-steps:
+    - slack-notifier:
+      url: $SLACK_URL
+      notify_on: failed
+
+deploy-heroku:
+  steps:
+    - heroku-deploy:
+      app-name: arcanebet-staging
+      run: rake db:migrate db:seed
+
+  after-steps:
+    - slack-notifier:
+      url: $SLACK_URL
