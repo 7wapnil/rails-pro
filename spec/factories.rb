@@ -11,16 +11,15 @@ FactoryBot.define do
     code { Faker::Currency.code }
   end
 
-  factory :entry_request_payload do
-    customer_id { create(:customer).id }
+  factory :entry_request do
+    customer
+    currency
+    status EntryRequest.statuses[:pending]
     kind { EntryRequest.kinds.keys.first }
     amount Random.new.rand(1.00..200.00).round(2)
-    currency_code { create(:currency).code }
-  end
-
-  factory :entry_request do
-    status EntryRequest.statuses[:pending]
-    payload { attributes_for(:entry_request_payload) }
+    origin_type EntryRequest.origin_types[:user]
+    origin_id { create(:user).id }
+    comment { Faker::Lorem.paragraph }
   end
 
   factory :balance_entry do

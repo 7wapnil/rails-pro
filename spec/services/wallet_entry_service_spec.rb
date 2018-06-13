@@ -1,7 +1,6 @@
 describe 'WalletService' do
   let(:currency) { create(:currency) }
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
-  let(:payload) { build(:entry_request_payload, amount: 100) }
 
   before do
     allow(EntryCurrencyRule).to receive(:find_by!) { rule }
@@ -10,11 +9,11 @@ describe 'WalletService' do
 
   context 'first entry' do
     let(:request) do
-      create(:entry_request, payload: payload)
+      create(:entry_request)
     end
 
     let(:customer) do
-      request.payload.customer
+      request.customer
     end
 
     it 'creates a wallet' do
@@ -34,7 +33,7 @@ describe 'WalletService' do
 
       expect(balance).to be_present
       expect(balance.real_money?).to be true
-      expect(balance.amount).to eq request.payload.amount
+      expect(balance.amount).to eq request.amount
     end
 
     it 'creates a wallet entry' do
@@ -47,7 +46,7 @@ describe 'WalletService' do
               .first
 
       expect(entry).to be_present
-      expect(entry.amount).to eq request.payload.amount
+      expect(entry.amount).to eq request.amount
     end
 
     it 'creates balance entry record' do
@@ -60,20 +59,20 @@ describe 'WalletService' do
                       .first
 
       expect(balance_entry).to be_present
-      expect(balance_entry.amount).to eq request.payload.amount
+      expect(balance_entry.amount).to eq request.amount
     end
 
     it 'adds entry amount into wallet' do
       WalletEntry::Service.call(request)
       wallet = Wallet.find_by(customer_id: customer.id)
-      expect(wallet.amount).to eq request.payload.amount
+      expect(wallet.amount).to eq request.amount
     end
 
     it 'updates entry request on failure' do
       expect_any_instance_of(WalletEntry::Service)
         .not_to receive(:handle_success)
 
-      request[:payload]['amount'] = 600
+      request.amount = 600
       WalletEntry::Service.call(request)
 
       expect(request.fail?).to be true

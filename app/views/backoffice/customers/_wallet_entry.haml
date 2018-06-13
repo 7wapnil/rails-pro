@@ -1,6 +1,6 @@
 = card header: t(:add_entry_request), class: 'customer-entry-request' do
   .customer-entry-request-form
-    = simple_form_for @entry_request_payload,
+    = simple_form_for @entry_request,
                       method: :post,
                       url: backoffice_entry_requests_path do |f|
       = f.input :customer_id, as: :hidden
@@ -15,9 +15,8 @@
         .col-6
           = f.input :amount, as: :decimal
         .col-6
-          = f.input :currency_code,
+          = f.input :currency_id,
             collection: Currency.all,
-            value_method: :code,
             include_blank: false
       .row
         .col

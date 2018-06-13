@@ -1,21 +1,31 @@
 describe EntryRequest do
+  it { should belong_to(:customer) }
+  it { should belong_to(:currency) }
+
   it { should define_enum_for :status }
-  it { should validate_presence_of(:payload) }
+  it { should define_enum_for :kind }
+  it { should define_enum_for :origin_type }
+  it { should validate_presence_of(:amount) }
+  it { should validate_presence_of(:kind) }
+  it { should validate_presence_of(:origin_type) }
+  it { should validate_presence_of(:origin_id) }
 
-  let(:request) { build(:entry_request) }
+  it 'should return user instance if origin is user' do
+    user = create(:user)
+    request = build(:entry_request)
+    request.origin_type = EntryRequest.origin_types[:user]
+    request.origin_id = user.id
 
-  it 'returns payload as instance of EntryRequestPayload' do
-    expect(request.payload).to be_an EntryRequestPayload
+    expect(request.origin).to be_instance_of User
   end
 
-  it 'is valid with invalid payload' do
-    request.payload = {
-      kind: :invalid,
-      currency_code: :none,
-      customer_id: 0,
-      amount: 'foo'
-    }
+  it 'should return customer instance if origin is customer' do
+    customer = create(:customer)
+    request = build(:entry_request)
+    request.origin_type = EntryRequest.origin_types[:customer]
+    request.origin_id = customer.id
 
-    expect(request).to be_valid
+    expect(request.origin).to be_instance_of Customer
   end
+
 end

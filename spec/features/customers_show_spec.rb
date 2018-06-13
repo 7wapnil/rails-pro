@@ -3,6 +3,8 @@ describe 'Customers#show' do
 
   context 'page content' do
     before do
+      create_list(:currency, 3)
+
       login_as create(:admin_user), scope: :user
       visit backoffice_customer_path(subject)
     end
@@ -111,8 +113,9 @@ describe 'Customers#show' do
       end
 
       it 'creates new customer entry request' do
-        within 'form#new_entry_request_payload' do
-          fill_in :entry_request_payload_amount, with: 200.00
+        within 'form#new_entry_request' do
+          fill_in :entry_request_amount, with: 200.00
+          fill_in :entry_request_comment, with: 'A reason'
           click_submit
         end
 
