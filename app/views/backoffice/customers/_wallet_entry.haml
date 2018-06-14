@@ -1,6 +1,6 @@
 = card header: t(:add_entry_request), class: 'customer-entry-request' do
   .customer-entry-request-form
-    = simple_form_for @entry_request_payload,
+    = simple_form_for @entry_request,
                       method: :post,
                       url: backoffice_entry_requests_path do |f|
       = f.input :customer_id, as: :hidden
@@ -12,14 +12,8 @@
                     label_method: ->(k) { t("kinds.#{k.first}") },
                     value_method: ->(k) { k.first }
       .row
-        .col-6
-          = f.input :amount, as: :decimal, required: true
-        .col-6
-          = f.input :currency_code,
-            collection: Currency.all,
-            value_method: :code,
-            include_blank: false
+        .col-6= f.input :amount, as: :decimal, required: true
+        .col-6= f.association :currency, include_blank: false
       .row
-        .col
-          = f.input :comment, as: :text, required: true
+        .col= f.input :comment, as: :text, required: true
       = f.submit t(:add), class: 'btn btn-outline-dark'
