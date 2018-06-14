@@ -14,22 +14,22 @@
         %tr
           %td= t(:customer)
           %td
-            %span= @request.payload.customer.full_name
-            %span= "(#{@request.payload.customer.username})"
+            %span= @request.customer.full_name
+            %span= "(#{@request.customer.username})"
         %tr
           %td= t(:kind)
-          %td= t("kinds.#{@request.payload.kind}")
+          %td= t("kinds.#{@request.kind}")
         %tr
           %td= t(:amount)
           %td
-            =number_with_precision @request.payload.amount, precision: 2
-            =@request.payload.currency.code
+            =number_with_precision @request.amount, precision: 2
+            =@request.currency.code
         %tr
           %td= t('attributes.origin')
-          %td= @request.payload.origin
+          %td= @request.origin
         %tr
           %td= t('attributes.comment')
-          %td= @request.payload.comment
+          %td= @request.comment
         %tr
           %td= t(:result)
           %td= @request.result_message

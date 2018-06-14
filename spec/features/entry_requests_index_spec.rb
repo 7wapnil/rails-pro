@@ -10,15 +10,12 @@ describe 'EntryRequests#index' do
              max_amount: 500)
     end
 
-    let(:payload) do
-      build(:entry_request_payload,
-            currency_code: rule.currency.code,
-            kind: rule.kind,
-            amount: 200)
-    end
-
     before do
-      create_list(:entry_request, 5, payload: payload)
+      create_list(:entry_request,
+                  5,
+                  currency: currency,
+                  kind: rule.kind,
+                  amount: 200)
 
       login_as create(:admin_user), scope: :user
       visit backoffice_entry_requests_path
@@ -27,13 +24,17 @@ describe 'EntryRequests#index' do
     it 'shows entry requests list' do
       within 'table.table' do
         EntryRequest.limit(per_page_count).each do |request|
-          expected_date = I18n.l(request.created_at, format: :long)
-          expected_kind = I18n.t("kinds.#{request.payload.kind}")
-          expected_amount = "200.00 #{request.payload.currency.code}"
+          # #squish is a temporary hack to fix a bug in `I18n.l` where
+          # the value is returned with an extra space
+          # between the date and the time
+          expected_date = I18n.l(request.created_at, format: :long).squish
+
+          expected_kind = I18n.t("kinds.#{request.kind}")
+          expected_amount = "200.00 #{request.currency.code}"
 
           expect(page).to have_content(expected_date)
           expect(page).to have_content(expected_kind)
-          expect(page).to have_content(request.payload.customer.full_name)
+          expect(page).to have_content(request.customer.full_name)
           expect(page).to have_content(expected_amount)
         end
       end

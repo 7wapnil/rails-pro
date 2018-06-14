@@ -2,14 +2,14 @@ module WalletEntry
   class Service < ApplicationService
     def initialize(request)
       @request = request
-      @amount = @request.payload.amount
+      @amount = @request.amount
     end
 
     def call
-      @request.payload.validate!
+      @request.validate!
       update_database!
       handle_success
-    rescue ActiveModel::ValidationError => e
+    rescue ActiveRecord::RecordInvalid => e
       handle_failure e
     end
 
@@ -26,7 +26,7 @@ module WalletEntry
     def create_entry!
       @entry = Entry.create!(
         wallet_id: @wallet.id,
-        kind: @request.payload.kind,
+        kind: @request.kind,
         amount: @amount
       )
 
@@ -39,8 +39,8 @@ module WalletEntry
 
     def update_wallet!
       @wallet = Wallet.find_or_create_by!(
-        customer: @request.payload.customer,
-        currency: @request.payload.currency
+        customer: @request.customer,
+        currency: @request.currency
       )
 
       @wallet.increment! :amount, @amount

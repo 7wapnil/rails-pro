@@ -23,11 +23,11 @@
           - else request.failed?
             %span.badge.badge-danger= t(:failed)
         %td
-          %b= t("kinds.#{request.payload.kind}")
-        %td= request.payload.customer.full_name
+          %b= t("kinds.#{request.kind}")
+        %td= request.customer.full_name
         %td
-          =number_with_precision request.payload.amount, precision: 2
-          =request.payload.currency.code
+          =number_with_precision request.amount, precision: 2
+          =request.currency.code
         %td= request.result_message
 
 
