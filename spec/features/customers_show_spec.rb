@@ -125,7 +125,7 @@ describe 'Customers#show' do
 
         visit backoffice_customer_path(subject)
 
-        within 'form#new_entry_request_payload' do
+        within 'form#new_entry_request' do
           select I18n.t('kinds.deposit'), from: :entry_request_kind
           fill_in :entry_request_amount, with: 200.00
           fill_in :entry_request_comment, with: 'A reason'
