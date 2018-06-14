@@ -24,7 +24,12 @@ describe 'EntryRequests#index' do
     it 'shows entry requests list' do
       within 'table.table' do
         EntryRequest.limit(per_page_count).each do |request|
-          expected_date = I18n.l(request.created_at, format: :long)
+
+          # #squish is a temporary hack to fix a bug in `I18n.l` where
+          # the value is returned with an extra space
+          # between the date and the time
+          expected_date = I18n.l(request.created_at, format: :long).squish
+
           expected_kind = I18n.t("kinds.#{request.kind}")
           expected_amount = "200.00 #{request.currency.code}"
 
