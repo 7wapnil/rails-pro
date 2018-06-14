@@ -118,7 +118,15 @@ describe 'Customers#show' do
       end
 
       it 'creates new customer entry request' do
+        allow(EntryRequestProcessingJob).to receive(:perform_later)
+
+        currency = create(:currency)
+        create(:entry_currency_rule, currency: currency, kind: :deposit)
+
+        visit backoffice_customer_path(subject)
+
         within 'form#new_entry_request' do
+          select I18n.t('kinds.deposit'), from: :entry_request_kind
           fill_in :entry_request_amount, with: 200.00
           fill_in :entry_request_comment, with: 'A reason'
           click_submit

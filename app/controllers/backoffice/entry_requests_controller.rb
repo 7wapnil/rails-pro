@@ -13,6 +13,7 @@ module Backoffice
       entry_request = EntryRequest.new(payload_params)
 
       if entry_request.save
+        EntryRequestProcessingJob.perform_later(entry_request)
         flash[:success] = t(:created, instance: t('entities.entry_request'))
         redirect_to backoffice_customer_path(entry_request.customer)
       else
