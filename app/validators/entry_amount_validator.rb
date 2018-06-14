@@ -1,8 +1,5 @@
 class EntryAmountValidator < ActiveModel::Validator
-  # requires a record to respond to:
-  # :currency
-  # :kind
-  # :amount
+  # requires a record to be Entry instance
   def validate(record)
     rule = EntryCurrencyRule.find_by!(currency: record.currency,
                                       kind: record.kind)
@@ -13,6 +10,6 @@ class EntryAmountValidator < ActiveModel::Validator
                                      kind: record.kind,
                                      min_amount: rule.min_amount.abs,
                                      max_amount: rule.max_amount.abs,
-                                     currency: record.currency_code)
+                                     currency: record.currency.code)
   end
 end

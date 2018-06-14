@@ -50,7 +50,7 @@ $ rake db:setup
 
 2. Populate the database with seed and develoment (prime) data:
 
-Initial data for all environments (i.e. backoffice users)
+Initial data for all environments (i.e. backoffice users) (is automatically executed by `rake db:setup`)
 
 ```
 $ rake db:seed

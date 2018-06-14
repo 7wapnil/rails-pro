@@ -3,6 +3,8 @@ describe 'Customers#show' do
 
   context 'page content' do
     before do
+      create_list(:currency, 3)
+
       login_as create(:admin_user), scope: :user
       visit backoffice_customer_path(subject)
     end
@@ -87,7 +89,12 @@ describe 'Customers#show' do
       end
 
       it 'shows available entries' do
-        create_list(:entry, 10, wallet: create(:wallet, customer: subject))
+        wallet = create(:wallet, customer: subject)
+        rule = create(:entry_currency_rule,
+                      currency: wallet.currency,
+                      min_amount: 10,
+                      max_amount: 500)
+        create_list(:entry, 10, wallet: wallet, kind: rule.kind, amount: 100)
 
         visit backoffice_customer_path(subject)
 
@@ -119,8 +126,9 @@ describe 'Customers#show' do
         visit backoffice_customer_path(subject)
 
         within 'form#new_entry_request_payload' do
-          select I18n.t('kinds.deposit'), from: :entry_request_payload_kind
-          fill_in :entry_request_payload_amount, with: 200.00
+          select I18n.t('kinds.deposit'), from: :entry_request_kind
+          fill_in :entry_request_amount, with: 200.00
+          fill_in :entry_request_comment, with: 'A reason'
           click_submit
         end
 
