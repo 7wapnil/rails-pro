@@ -19,7 +19,6 @@ describe 'EntryRequests#show' do
 
     it 'shows entry request info' do
       within '.card.request-info' do
-
         # #squish is a temporary hack to fix a bug in `I18n.l` where
         # the value is returned with an extra space
         # between the date and the time

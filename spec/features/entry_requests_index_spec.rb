@@ -24,7 +24,6 @@ describe 'EntryRequests#index' do
     it 'shows entry requests list' do
       within 'table.table' do
         EntryRequest.limit(per_page_count).each do |request|
-
           # #squish is a temporary hack to fix a bug in `I18n.l` where
           # the value is returned with an extra space
           # between the date and the time
