@@ -8,10 +8,6 @@ module Backoffice
     def show
       @customer = Customer.find(params[:id])
       @labels = Label.all
-      @note = CustomerNote.new(customer: @customer)
-      @entry_request = EntryRequest.new(
-        customer: @customer
-      )
     end
 
     def activity
