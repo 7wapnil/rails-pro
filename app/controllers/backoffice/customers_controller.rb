@@ -17,6 +17,7 @@ module Backoffice
     def activity
       @customer = Customer.find(params[:id])
       @entry_request = EntryRequest.new(customer: @customer)
+      @entries = @customer.entries.page(params[:page])
     end
 
     def notes
