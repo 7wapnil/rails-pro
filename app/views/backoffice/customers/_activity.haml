@@ -1,8 +1,8 @@
 = card header: t(:activity), class: 'activity' do
-  - if @customer.entries.any?
+  - if @entries.any?
     %table.table.table-hover
       %tbody
-        - @customer.entries.each do |entry|
+        - @entries.each do |entry|
           %tr
             %td= l entry.created_at, format: :long
             %td= entry.kind
@@ -11,3 +11,5 @@
   - else
     .text-center
       %em= t(:no_records)
+
+  = paginate @entries

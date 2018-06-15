@@ -20,7 +20,9 @@ describe 'Authentication' do
     context 'customer member' do
       let(:customer) { create(:customer) }
 
-      customer_member_paths = %i[backoffice_customer_path]
+      customer_member_paths = %i[backoffice_customer_path
+                                 activity_backoffice_customer_path
+                                 notes_backoffice_customer_path]
 
       customer_member_paths.each do |path|
         it "#{path} is protected" do

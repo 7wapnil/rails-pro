@@ -4,7 +4,7 @@ module Backoffice
       note = CustomerNote.new(customer_note_params)
 
       if note.save
-        redirect_to backoffice_customer_path(note.customer)
+        redirect_to notes_backoffice_customer_path(note.customer)
       else
         flash[:error] = note.errors.full_messages
         redirect_back fallback_location: root_path

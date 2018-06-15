@@ -1,13 +1,17 @@
-= card header: t(:customer_notes), class: 'customer-notes' do
-  = card do
-    .customer-notes-form
-      = simple_form_for @note, url: backoffice_customer_notes_path do |f|
-        %legend= t(:add_note)
-        = f.input :customer_id, as: :hidden
-        = f.input :content
-        = f.submit t(:add), class: 'btn btn-outline-dark'
+= card header: t(:customer_notes) do
+  = card class: 'customer-note-form' do
+    = simple_form_for @note, url: backoffice_customer_notes_path do |f|
+      %legend= t(:add_note)
+      = f.input :customer_id, as: :hidden
+      = f.input :content
+      = f.submit t(:add), class: 'btn btn-outline-dark'
 
-  = card class: 'mt-2' do
-    .customer-notes-content{ style: 'height: 20rem; overflow-x: scroll;' }
-      - @customer.customer_notes.each do |note|
+  = card class: 'customer-notes mt-2' do
+    - if @customer_notes.any?
+      - @customer_notes.each do |note|
         = render 'backoffice/customer_notes/show', note: note
+    - else
+      .text-center
+        %em= t(:no_records)
+
+    = paginate @customer_notes

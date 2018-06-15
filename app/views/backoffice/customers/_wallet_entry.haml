@@ -12,8 +12,8 @@
                     label_method: ->(k) { t("kinds.#{k.first}") },
                     value_method: ->(k) { k.first }
       .row
-        .col-6= f.input :amount, as: :decimal
+        .col-6= f.input :amount, as: :decimal, required: true
         .col-6= f.association :currency, include_blank: false
       .row
-        .col= f.input :comment, as: :text
+        .col= f.input :comment, as: :text, required: true
       = f.submit t(:add), class: 'btn btn-outline-dark'
