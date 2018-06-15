@@ -23,6 +23,7 @@ module Backoffice
     def notes
       @customer = Customer.find(params[:id])
       @note = CustomerNote.new(customer: @customer)
+      @customer_notes = @customer.customer_notes.page(params[:page]).per(5)
     end
 
     def update_labels

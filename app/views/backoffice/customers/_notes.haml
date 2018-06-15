@@ -8,6 +8,7 @@
         = f.submit t(:add), class: 'btn btn-outline-dark'
 
   = card class: 'mt-2' do
-    .customer-notes-content{ style: 'height: 20rem; overflow-x: scroll;' }
-      - @customer.customer_notes.each do |note|
-        = render 'backoffice/customer_notes/show', note: note
+    - @customer_notes.each do |note|
+      = render 'backoffice/customer_notes/show', note: note
+
+    = paginate @customer_notes
