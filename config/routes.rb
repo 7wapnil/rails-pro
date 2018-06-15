@@ -16,7 +16,7 @@ Rails.application.routes.draw do
 
     resource :dashboard, only: :show
 
-    resources :labels
+    resources :labels, only: %i[index new edit create update destroy]
 
     resources :entry_requests, only: %i[index show create]
 
