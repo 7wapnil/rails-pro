@@ -6,7 +6,9 @@ describe 'Authentication' do
                                        new_backoffice_label_path
                                        backoffice_entry_requests_path
                                        backoffice_root_path
-                                       backoffice_dashboard_path]
+                                       backoffice_dashboard_path
+                                       backoffice_currencies_path
+                                       new_backoffice_currency_path]
 
       backoffice_collection_paths.each do |path|
         it "#{path} is protected" do
