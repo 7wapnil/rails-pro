@@ -1,0 +1,34 @@
+.row
+  .col.mt-2= f.error_notification
+.row
+  .col-8.offset-2
+    %h2= heading
+    %hr
+    .row
+      .col
+        = f.input :name, required: true
+        = f.input :code, required: true
+
+        .row.mt-5
+          .col
+            %h3= t(:entry_rules)
+
+            %table.table
+              %thead
+                %tr
+                  %th.w-50= t(:kind)
+                  %th= t(:min_amount)
+                  %th= t(:max_amount)
+              %tbody
+                = f.simple_fields_for :entry_currency_rules, wrapper: :inline_form do |p|
+                  %tr{ id: "entry-rule" }
+                    %td
+                      = p.input :kind, as: :hidden
+                      = p.input :id, as: :hidden
+                      %label.col-form-label
+                        %b= t("kinds.#{p.object.kind}")
+                    %td= p.input :min_amount
+                    %td= p.input :max_amount
+
+        = f.button :submit, t(:save), class: 'btn btn-success'
+        = link_to t(:back), backoffice_currencies_path

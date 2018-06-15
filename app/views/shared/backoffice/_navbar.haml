@@ -25,6 +25,11 @@
                   class: 'nav-link',
                   'data-target-controller': 'entry_requests'
       %li.nav-item
+        = link_to t(:currencies),
+                  backoffice_currencies_path,
+                  class: 'nav-link',
+                  'data-target-controller': 'currencies'
+      %li.nav-item
         = link_to t(:sidekiq),
                   sidekiq_web_path,
                   class: 'nav-link',
