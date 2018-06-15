@@ -17,24 +17,24 @@ describe 'Customers#notes' do
     end
   end
 
-    it 'shows available notes' do
-      create_list(:customer_note, 3, customer: customer)
+  it 'shows available notes' do
+    create_list(:customer_note, 3, customer: customer)
 
-      visit page_path
+    visit page_path
 
-      within '.customer-notes' do
-        customer.customer_notes.each do |note|
-          expect(page).to have_content note.content
-          expect(page).to have_content note.user.full_name
-        end
+    within '.customer-notes' do
+      customer.customer_notes.each do |note|
+        expect(page).to have_content note.content
+        expect(page).to have_content note.user.full_name
       end
     end
+  end
 
-    it 'shows no records note' do
-      within '.customer-notes' do
-        expect(page).to have_content I18n.t(:no_records)
-      end
+  it 'shows no records note' do
+    within '.customer-notes' do
+      expect(page).to have_content I18n.t(:no_records)
     end
+  end
 
   it 'creates customer note' do
     note_content = Faker::Lorem.paragraph
