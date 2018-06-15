@@ -1,23 +1,48 @@
 describe 'Authentication' do
   context 'back office routes' do
-    backoffice_get_paths = %i[backoffice_customers_path
-                              backoffice_labels_path
-                              new_backoffice_label_path]
+    context 'collection' do
+      backoffice_collection_paths = %i[backoffice_customers_path
+                                       backoffice_labels_path
+                                       new_backoffice_label_path
+                                       backoffice_entry_requests_path
+                                       backoffice_root_path
+                                       backoffice_dashboard_path]
 
-    backoffice_get_paths.each do |path|
-      it "#{path} is protected" do
-        check_path_protection(path)
+      backoffice_collection_paths.each do |path|
+        it "#{path} is protected" do
+          check_path_protection(path)
+        end
       end
     end
 
-    it 'customer view is protected' do
-      existing_customer = create(:customer)
-      check_path_protection :backoffice_customer_path, existing_customer
+    context 'customer member' do
+      let(:customer) { create(:customer) }
+
+      customer_member_paths = %i[backoffice_customer_path
+                                 activity_backoffice_customer_path
+                                 notes_backoffice_customer_path]
+
+      customer_member_paths.each do |path|
+        it "#{path} is protected" do
+          check_path_protection(path, customer)
+        end
+      end
     end
 
-    it 'label edit form is protected' do
-      existing_label = create(:label)
-      check_path_protection :edit_backoffice_label_path, existing_label
+    context 'label member' do
+      let(:label) { create(:label) }
+
+      it 'edit_backoffice_label_path is protected' do
+        check_path_protection :edit_backoffice_label_path, label
+      end
+    end
+
+    context 'entry_request member' do
+      let(:entry_request) { create(:entry_request) }
+
+      it 'backoffice_entry_request_path is protected' do
+        check_path_protection :backoffice_entry_request_path, entry_request
+      end
     end
 
     def check_path_protection(protected_path_fn, instance = nil)
