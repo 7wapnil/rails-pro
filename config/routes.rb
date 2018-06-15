@@ -20,7 +20,7 @@ Rails.application.routes.draw do
 
     resources :entry_requests, only: %i[index show create]
 
-    resources :currencies
+    resources :currencies, only: %i[index new edit create update]
 
     root 'dashboards#show'
   end
