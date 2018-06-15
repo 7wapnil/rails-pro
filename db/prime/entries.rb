@@ -5,12 +5,13 @@ class EntriesPrimer
 
   def self.create_entry!(rule:, currency:, customer:)
     request = EntryRequest.create!(
-      payload: {
-        kind: rule.kind,
-        currency_code: currency.code,
-        customer_id: customer.id,
-        amount: random.rand(rule.min_amount..rule.max_amount).round(2).to_f
-      }
+      kind: rule.kind,
+      currency: currency,
+      customer: customer,
+      amount: random.rand(rule.min_amount..rule.max_amount).round(2),
+      origin_type: EntryRequest.origin_types[:customer],
+      origin_id: customer.id,
+      comment: 'Prime data'
     )
 
     WalletEntry::Service.call(request)
