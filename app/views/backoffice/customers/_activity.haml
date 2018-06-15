@@ -1,5 +1,5 @@
 = card header: t(:activity), class: 'activity' do
-  - if @customer.entries.any?
+  - if @entries.any?
     %table.table.table-hover
       %tbody
         - @entries.each do |entry|
