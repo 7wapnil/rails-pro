@@ -1,0 +1,12 @@
+= render 'backoffice/customers/heading'
+
+.row
+  .col-md-3
+    .mt-4= render 'backoffice/customers/navigation'
+  .col-md-9
+    .mt-4= render 'backoffice/customers/balances'
+    .mt-4= render 'backoffice/customers/wallet_entry'
+    .mt-4.mb-4= render 'backoffice/customers/activity'
+
+- content_for :js do
+  = javascript_pack_tag 'customers/navigation_links'

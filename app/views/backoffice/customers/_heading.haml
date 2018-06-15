@@ -1,0 +1,3 @@
+%h1.display-4= @customer.username
+- @customer.labels.each do |label|
+  %span.badge.badge-dark= label.name

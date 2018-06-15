@@ -8,10 +8,18 @@ module Backoffice
     def show
       @customer = Customer.find(params[:id])
       @labels = Label.all
+    end
+
+    def activity
+      @customer = Customer.find(params[:id])
+      @entry_request = EntryRequest.new(customer: @customer)
+      @entries = @customer.entries.page(params[:page])
+    end
+
+    def notes
+      @customer = Customer.find(params[:id])
       @note = CustomerNote.new(customer: @customer)
-      @entry_request = EntryRequest.new(
-        customer: @customer
-      )
+      @customer_notes = @customer.customer_notes.page(params[:page]).per(5)
     end
 
     def update_labels

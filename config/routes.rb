@@ -8,6 +8,8 @@ Rails.application.routes.draw do
   namespace :backoffice do
     resources :customers, only: %i[index show] do
       member do
+        get :activity
+        get :notes
         post :update_labels
       end
     end
@@ -16,7 +18,7 @@ Rails.application.routes.draw do
 
     resource :dashboard, only: :show
 
-    resources :labels
+    resources :labels, only: %i[index new edit create update destroy]
 
     resources :entry_requests, only: %i[index show create]
 
