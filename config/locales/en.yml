@@ -19,6 +19,12 @@ en:
   search: "Search %{subject}"
   no_records: No records yet
 
+  navigation:
+    customer:
+      account: Account
+      activity: Activity
+      notes: Notes
+
   kinds:
     deposit: "Deposit"
     win: "Win"
