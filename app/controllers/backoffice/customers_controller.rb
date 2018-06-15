@@ -16,9 +16,7 @@ module Backoffice
 
     def activity
       @customer = Customer.find(params[:id])
-      @entry_request_payload = EntryRequestPayload.new(
-        customer_id: @customer.id
-      )
+      @entry_request = EntryRequest.new(customer: @customer)
     end
 
     def notes
