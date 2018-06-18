@@ -5,7 +5,5 @@ class User < ApplicationRecord
          :trackable, :validatable,
          authentication_keys: [:email]
 
-  def full_name
-    [first_name, last_name].join(' ')
-  end
+  has_many :entry_requests, as: :origin
 end

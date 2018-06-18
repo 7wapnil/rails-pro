@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_12_121553) do
+ActiveRecord::Schema.define(version: 2018_06_18_070710) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -124,10 +124,11 @@ ActiveRecord::Schema.define(version: 2018_06_12_121553) do
     t.integer "customer_id"
     t.integer "currency_id"
     t.integer "kind"
-    t.integer "origin_type"
-    t.integer "origin_id"
     t.text "comment"
     t.decimal "amount", precision: 8, scale: 2
+    t.string "origin_type"
+    t.bigint "origin_id"
+    t.index ["origin_type", "origin_id"], name: "index_entry_requests_on_origin_type_and_origin_id"
   end
 
   create_table "event_scopes", force: :cascade do |t|

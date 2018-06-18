@@ -1,6 +1,7 @@
 describe Customer do
   it { should have_one(:address) }
   it { should have_many(:wallets) }
+  it { should have_many(:entry_requests) }
   it { should have_and_belong_to_many(:labels) }
 
   it { should validate_presence_of(:username) }
