@@ -10,6 +10,22 @@ describe EntryRequest do
   it { should validate_presence_of(:origin_type) }
   it { should validate_presence_of(:origin_id) }
 
+  context 'user originated' do
+    before { subject.origin_type = :user }
+
+    it 'should validate comment if origin is user' do
+      should validate_presence_of(:comment)
+    end
+  end
+
+  context 'customer originated' do
+    before { subject.origin_type = :customer }
+
+    it 'should skip comment validation if origin is customer' do
+      should_not validate_presence_of(:comment)
+    end
+  end
+
   it 'should return user instance if origin is user' do
     user = create(:user)
     request = build(:entry_request)

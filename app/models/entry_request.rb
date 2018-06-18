@@ -23,8 +23,8 @@ class EntryRequest < ApplicationRecord
             :kind,
             :origin_type,
             :origin_id,
-            :comment,
             presence: true
+  validates :comment, presence: true, if: :user_originated?
   validates :amount, numericality: true
   validates :status, inclusion: { in: statuses.keys }
   validates :kind, inclusion: { in: kinds.keys }
@@ -36,6 +36,10 @@ class EntryRequest < ApplicationRecord
       .camelize
       .safe_constantize
       &.find(origin_id)
+  end
+
+  def user_originated?
+    self[:origin_type] == EntryRequest.origin_types.key(0)
   end
 
   def result_message
