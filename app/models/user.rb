@@ -6,7 +6,4 @@ class User < ApplicationRecord
          authentication_keys: [:email]
 
   has_many :entry_requests, as: :origin
-  def full_name
-    [first_name, last_name].join(' ')
-  end
 end
