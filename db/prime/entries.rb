@@ -9,7 +9,8 @@ class EntriesPrimer
       currency: currency,
       customer: customer,
       amount: random.rand(rule.min_amount..rule.max_amount).round(2),
-      origin: customer,
+      origin: EntryRequest.origins[:cashier],
+      initiator: customer,
       comment: 'Prime data'
     )
 

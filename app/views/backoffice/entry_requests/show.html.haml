@@ -25,8 +25,8 @@
             =number_with_precision @request.amount, precision: 2
             =@request.currency.code
         %tr
-          %td= t('attributes.origin')
-          %td= @request.origin
+          %td= t('attributes.initiator')
+          %td= @request.initiator
         %tr
           %td= t('attributes.comment')
           %td= @request.comment

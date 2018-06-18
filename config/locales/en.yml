@@ -34,6 +34,9 @@ en:
     internal_credit: "Internal credit"
 
   origins:
+    cashier: Cashier
+
+  initiators:
     user: User
     customer: Customer
 
@@ -54,7 +57,7 @@ en:
     kind: Type
     entry_kind: Entry type
     currency_code: Currency
-    origin: Origin
+    initiator: Initiator
     comment: Comment
 
   time:

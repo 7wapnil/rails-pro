@@ -5,5 +5,5 @@ class User < ApplicationRecord
          :trackable, :validatable,
          authentication_keys: [:email]
 
-  has_many :entry_requests, as: :origin
+  has_many :entry_requests, as: :initiator
 end
