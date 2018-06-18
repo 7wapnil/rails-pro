@@ -33,7 +33,7 @@ en:
     bet: "Bet"
     internal_credit: "Internal credit"
 
-  origins:
+  initiators:
     user: User
     customer: Customer
 
@@ -54,7 +54,7 @@ en:
     kind: Type
     entry_kind: Entry type
     currency_code: Currency
-    origin: Origin
+    initiator: Initiator
     comment: Comment
 
   time:
