@@ -25,25 +25,24 @@ describe EntryRequest do
     end
   end
 
-  context '#amount=' do
-    it 'assigns input as is if it is not numeric' do
-      subject.amount = :foo
-      expect(subject.amount).to eq :foo
-    end
-
+  context '#adjust_amount_value' do
     EntryKinds::DEBIT_KINDS.each do |kind, _i|
-      it "should store positive amount on #{kind} kinds" do
+      it "should assign positive amount on #{kind} kinds" do
         subject.kind = kind
         subject.amount = -100
+
+        subject.send(:adjust_amount_value)
 
         expect(subject.amount).to eq(100)
       end
     end
 
     EntryKinds::CREDIT_KINDS.each do |kind, _i|
-      it "should store positive amount on #{kind} kinds" do
+      it "should assign positive amount on #{kind} kinds" do
         subject.kind = kind
         subject.amount = 100
+
+        subject.send(:adjust_amount_value)
 
         expect(subject.amount).to eq(-100)
       end

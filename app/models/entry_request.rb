@@ -27,17 +27,7 @@ class EntryRequest < ApplicationRecord
   validates :origin, inclusion: { in: origins.keys }
   validates :kind, inclusion: { in: kinds.keys }
 
-  def amount=(value)
-    unless value.is_a?(Numeric)
-      super(value)
-      return
-    end
-
-    value = value.abs
-    value = -value if CREDIT_KINDS.keys.include?(kind.to_sym)
-
-    self[:amount] = value
-  end
+  before_validation { adjust_amount_value }
 
   def customer_initiated?
     self[:initiator_type] == Customer.to_s
@@ -47,5 +37,16 @@ class EntryRequest < ApplicationRecord
     return unless self[:result]
 
     @message = self[:result]['message']
+  end
+
+  private
+
+  def adjust_amount_value
+    return unless amount && kind
+
+    new_value = amount.abs
+    new_value = -new_value if CREDIT_KINDS.keys.include?(kind.to_sym)
+
+    self.amount = new_value
   end
 end
