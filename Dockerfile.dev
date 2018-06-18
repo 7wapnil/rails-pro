@@ -1,0 +1,3 @@
+FROM arcanebet/arcanebet:base
+
+RUN apt-get install -y graphviz
