@@ -13,6 +13,7 @@ class Customer < ApplicationRecord
   has_many :customer_notes
   has_many :wallets
   has_many :entries, through: :wallets
+  has_many :entry_requests, as: :origin
 
   has_one :address
   has_and_belongs_to_many :labels

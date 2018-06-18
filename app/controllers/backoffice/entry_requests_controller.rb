@@ -28,7 +28,7 @@ module Backoffice
       params
         .require(:entry_request)
         .permit(:customer_id, :currency_id, :amount, :kind, :comment)
-        .merge(origin_id: current_user.id, origin_type: :user)
+        .merge(origin: current_user)
     end
   end
 end

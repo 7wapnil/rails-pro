@@ -3,11 +3,7 @@ class EntryRequest < ApplicationRecord
 
   belongs_to :customer
   belongs_to :currency
-
-  ORIGINS = {
-    user: 0,
-    customer: 1
-  }.freeze
+  belongs_to :origin, polymorphic: true
 
   default_scope { order(created_at: :desc) }
 
@@ -17,29 +13,17 @@ class EntryRequest < ApplicationRecord
     failed: 2
   }
 
-  enum origin_type: ORIGINS
-
   validates :amount,
             :kind,
-            :origin_type,
-            :origin_id,
             presence: true
+
   validates :comment, presence: true, if: :user_originated?
   validates :amount, numericality: true
   validates :status, inclusion: { in: statuses.keys }
   validates :kind, inclusion: { in: kinds.keys }
-  validates :origin_type, inclusion: { in: origin_types.keys }
-
-  def origin
-    origin_type
-      .to_s
-      .camelize
-      .safe_constantize
-      &.find(origin_id)
-  end
 
   def user_originated?
-    self[:origin_type] == EntryRequest.origin_types.key(0)
+    self[:origin_type] == User.to_s
   end
 
   def result_message

@@ -17,8 +17,7 @@ FactoryBot.define do
     status EntryRequest.statuses[:pending]
     kind { EntryRequest.kinds.keys.first }
     amount Random.new.rand(1.00..200.00).round(2)
-    origin_type EntryRequest.origin_types[:user]
-    origin_id { create(:user).id }
+    association :origin, factory: :customer
     comment { Faker::Lorem.paragraph }
   end
 
