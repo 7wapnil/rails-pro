@@ -27,6 +27,18 @@ class EntryRequest < ApplicationRecord
   validates :origin, inclusion: { in: origins.keys }
   validates :kind, inclusion: { in: kinds.keys }
 
+  def amount=(value)
+    unless value.is_a?(Numeric)
+      super(value)
+      return
+    end
+
+    value = value.abs
+    value = -value if CREDIT_KINDS.keys.include?(kind.to_sym)
+
+    self[:amount] = value
+  end
+
   def customer_initiated?
     self[:initiator_type] == Customer.to_s
   end

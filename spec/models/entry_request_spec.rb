@@ -24,4 +24,29 @@ describe EntryRequest do
       should_not validate_presence_of(:comment)
     end
   end
+
+  context '#amount=' do
+    it 'assigns input as is if it is not numeric' do
+      subject.amount = :foo
+      expect(subject.amount).to eq :foo
+    end
+
+    EntryKinds::DEBIT_KINDS.each do |kind, _i|
+      it "should store positive amount on #{kind} kinds" do
+        subject.kind = kind
+        subject.amount = -100
+
+        expect(subject.amount).to eq(100)
+      end
+    end
+
+    EntryKinds::CREDIT_KINDS.each do |kind, _i|
+      it "should store positive amount on #{kind} kinds" do
+        subject.kind = kind
+        subject.amount = 100
+
+        expect(subject.amount).to eq(-100)
+      end
+    end
+  end
 end

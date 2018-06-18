@@ -12,6 +12,10 @@ module EntryKinds
 
   TRADING_KINDS = KINDS.slice(:win, :bet)
 
+  DEBIT_KINDS = KINDS.slice(:deposit, :win)
+
+  CREDIT_KINDS = KINDS.slice(:withdraw, :bet)
+
   included do
     enum kind: KINDS
   end
