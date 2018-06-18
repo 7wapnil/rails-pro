@@ -15,12 +15,16 @@ class EntryRequest < ApplicationRecord
 
   validates :amount,
             :kind,
-            :comment,
             presence: true
 
+  validates :comment, presence: true, unless: :customer_originated?
   validates :amount, numericality: true
   validates :status, inclusion: { in: statuses.keys }
   validates :kind, inclusion: { in: kinds.keys }
+
+  def customer_originated?
+    self[:origin_type] == Customer.to_s
+  end
 
   def result_message
     return unless self[:result]
