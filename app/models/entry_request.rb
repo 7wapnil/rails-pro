@@ -13,6 +13,10 @@ class EntryRequest < ApplicationRecord
     failed: 2
   }
 
+  enum origin: {
+    cashier: 0
+  }
+
   validates :amount,
             :kind,
             presence: true
@@ -20,6 +24,7 @@ class EntryRequest < ApplicationRecord
   validates :comment, presence: true, unless: :customer_initiated?
   validates :amount, numericality: true
   validates :status, inclusion: { in: statuses.keys }
+  validates :origin, inclusion: { in: origins.keys }
   validates :kind, inclusion: { in: kinds.keys }
 
   def customer_initiated?

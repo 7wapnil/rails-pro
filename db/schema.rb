@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_18_084847) do
+ActiveRecord::Schema.define(version: 2018_06_18_091425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,7 @@ ActiveRecord::Schema.define(version: 2018_06_18_084847) do
     t.decimal "amount", precision: 8, scale: 2
     t.string "initiator_type"
     t.bigint "initiator_id"
+    t.integer "origin"
     t.index ["initiator_type", "initiator_id"], name: "index_entry_requests_on_initiator_type_and_initiator_id"
   end
 

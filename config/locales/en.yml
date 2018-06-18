@@ -33,6 +33,9 @@ en:
     bet: "Bet"
     internal_credit: "Internal credit"
 
+  origins:
+    cashier: Cashier
+
   initiators:
     user: User
     customer: Customer

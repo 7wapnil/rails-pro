@@ -27,7 +27,7 @@ module Backoffice
     def payload_params
       params
         .require(:entry_request)
-        .permit(:customer_id, :currency_id, :amount, :kind, :comment)
+        .permit(:customer_id, :currency_id, :amount, :kind, :origin, :comment)
         .merge(initiator: current_user)
     end
   end

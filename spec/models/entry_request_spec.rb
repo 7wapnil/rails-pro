@@ -5,6 +5,7 @@ describe EntryRequest do
 
   it { should define_enum_for :status }
   it { should define_enum_for :kind }
+  it { should define_enum_for :origin }
   it { should validate_presence_of(:amount) }
   it { should validate_presence_of(:kind) }
 
