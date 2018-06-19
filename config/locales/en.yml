@@ -8,6 +8,7 @@ en:
   edit_profile: Edit Profile
 
   add: Add
+  confirm: Confirm
   created: "%{instance} created"
 
   says_at: "%{who} at %{when}"
