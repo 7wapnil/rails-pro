@@ -15,13 +15,7 @@
         %td
           = link_to l(request.created_at, format: :long),
                     backoffice_entry_request_path(request)
-        %td
-          - if request.pending?
-            %span.badge.badge-secondary= t(:pending)
-          - elsif request.succeeded?
-            %span.badge.badge-success= t(:succeeded)
-          - else request.failed?
-            %span.badge.badge-danger= t(:failed)
+        %td= status_badge(request.status)
         %td
           %b= t("kinds.#{request.kind}")
         %td= request.customer.full_name
