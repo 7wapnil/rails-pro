@@ -8,6 +8,7 @@ en:
   edit_profile: Edit Profile
 
   add: Add
+  confirm: Confirm
   created: "%{instance} created"
 
   says_at: "%{who} at %{when}"
@@ -41,7 +42,8 @@ en:
     customer: Customer
 
   entities:
-    entry_request: Entry request
+    entry_request:
+     flash: Entry request successfully create and will be processed ASAP. <a href="%{entry_request_url}">Go here to check request info</a>
 
   attributes:
     username: Username
