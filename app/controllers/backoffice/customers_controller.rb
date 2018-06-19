@@ -10,9 +10,14 @@ module Backoffice
       @labels = Label.all
     end
 
-    def activity
+    def account_management
       @customer = Customer.find(params[:id])
       @entry_request = EntryRequest.new(customer: @customer)
+      @entry_requests = @customer.entry_requests.page(params[:page])
+    end
+
+    def activity
+      @customer = Customer.find(params[:id])
       @entries = @customer.entries.page(params[:page])
     end
 

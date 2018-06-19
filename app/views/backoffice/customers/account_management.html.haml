@@ -4,7 +4,8 @@
   .col-md-3
     .mt-4= render 'backoffice/customers/navigation'
   .col-md-9
-    .mt-4.mb-4= render 'backoffice/customers/entries'
+    .mt-4= render 'backoffice/customers/balances'
+    .mt-4= render 'backoffice/customers/entry_request_form'
 
 - content_for :js do
   = javascript_pack_tag 'customers/navigation_links'

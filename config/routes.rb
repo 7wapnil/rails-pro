@@ -8,6 +8,7 @@ Rails.application.routes.draw do
   namespace :backoffice do
     resources :customers, only: %i[index show] do
       member do
+        get :account_management
         get :activity
         get :notes
         post :update_labels

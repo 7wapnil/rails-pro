@@ -15,7 +15,7 @@ module Backoffice
       if entry_request.save
         EntryRequestProcessingJob.perform_later(entry_request)
         flash[:success] = t(:created, instance: t('entities.entry_request'))
-        redirect_to activity_backoffice_customer_path(entry_request.customer)
+        redirect_to account_management_backoffice_customer_path(entry_request.customer) # rubocop:disable Metrics/LineLength
       else
         flash[:error] = entry_request.errors.full_messages
         redirect_back fallback_location: root_path
