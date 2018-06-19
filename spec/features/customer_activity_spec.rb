@@ -53,9 +53,14 @@ describe 'Customers#activity' do
       end
 
       within '.container' do
-        expect(page).to have_content(
-          I18n.t(:created, instance: I18n.t('entities.entry_request'))
-        )
+        request = EntryRequest.last
+        message = ActionController::Base
+                  .helpers
+                  .strip_tags I18n.t(
+                    'entities.entry_request.flash',
+                    entry_request_url: backoffice_entry_request_path(request)
+                  )
+        expect(page).to have_content(message)
       end
     end
   end

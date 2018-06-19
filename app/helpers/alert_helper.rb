@@ -10,7 +10,7 @@ module AlertHelper
     type = opts[:type] || :notice
 
     content_tag(:div, class: "alert alert-#{ALERT_TYPES[type]}") do
-      concat message
+      concat message.html_safe
       concat close_tag
     end
   end
