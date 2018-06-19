@@ -13,7 +13,8 @@ class Customer < ApplicationRecord
   has_many :customer_notes
   has_many :wallets
   has_many :entries, through: :wallets
-  has_many :entry_requests, as: :initiator
+  has_many :entry_requests
+  has_many :initiated_entry_requests, as: :initiator, class_name: 'EntryRequest'
 
   has_one :address
   has_and_belongs_to_many :labels

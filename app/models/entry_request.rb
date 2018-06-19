@@ -27,6 +27,8 @@ class EntryRequest < ApplicationRecord
   validates :origin, inclusion: { in: origins.keys }
   validates :kind, inclusion: { in: kinds.keys }
 
+  delegate :code, to: :currency, prefix: true
+
   before_validation { adjust_amount_value }
 
   def customer_initiated?
