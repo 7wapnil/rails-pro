@@ -8,4 +8,8 @@ module ApplicationHelper
       concat content_tag(:div, class: 'card-body') { yield }
     end
   end
+
+  def link_back
+    link_to t(:back), :back, class: 'btn btn-outline-dark'
+  end
 end
