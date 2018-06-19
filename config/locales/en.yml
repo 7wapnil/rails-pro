@@ -7,6 +7,7 @@ en:
 
   edit_profile: Edit Profile
 
+  back: Back
   add: Add
   confirm: Confirm
   created: "%{instance} created"
@@ -24,7 +25,13 @@ en:
     customer:
       account: Account
       activity: Activity
+      account_management: Account management
       notes: Notes
+
+  statuses:
+    pending: Pending
+    succeeded: Succeeded
+    failed: Failed
 
   kinds:
     deposit: "Deposit"
