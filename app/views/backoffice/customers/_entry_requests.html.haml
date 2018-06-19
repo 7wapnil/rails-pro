@@ -1,4 +1,4 @@
-= card header: t(:entry_requests), class: 'entry-requests' do
+= card header: t(:entry_requests), class: 'customer-entry-requests' do
   - if @entry_requests.any?
     %table.table
       %tbody
@@ -7,7 +7,7 @@
             %td
               = link_to l(entry_request.created_at, format: :long),
                         backoffice_entry_request_path(entry_request)
-            %td= t "kinds.#{entry_request}.kind"
+            %td= t "kinds.#{entry_request.kind}"
             %td= entry_request.origin
             %td= entry_request.amount
             %td= entry_request.currency_code
