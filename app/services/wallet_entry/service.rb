@@ -43,7 +43,7 @@ module WalletEntry
         currency: @request.currency
       )
 
-      @wallet.increment! :amount, @amount
+      @wallet.update_attributes!(amount: @wallet.amount + @amount)
     end
 
     def update_balance!
@@ -51,7 +51,8 @@ module WalletEntry
         wallet_id: @wallet.id,
         kind: Balance.kinds[:real_money]
       )
-      @balance.increment! :amount, @amount
+
+      @balance.update_attributes!(amount: @balance.amount + @amount)
     end
 
     def handle_success
