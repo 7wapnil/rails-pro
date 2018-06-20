@@ -15,12 +15,23 @@ module AlertHelper
     end
   end
 
+  def flash_message(message, opts = {})
+    type = opts[:type] || :notice
+
+    content_tag(:div, '',
+                class: 'flash-message',
+                data: {
+                  type: type,
+                  text: message
+                })
+  end
+
   def alerts_from_flash(payload, type: :notice)
     if payload.is_a?(String)
-      alert(payload, type: type)
+      flash_message(payload, type: type)
     elsif payload.is_a?(Array)
       content_tag :div do
-        payload.each { |msg| concat alert(msg, type: type) }
+        payload.each { |msg| concat flash_message(msg, type: type) }
       end
     else
       raise TypeError,

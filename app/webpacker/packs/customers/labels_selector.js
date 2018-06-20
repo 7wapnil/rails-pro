@@ -1,5 +1,6 @@
 import 'select2/dist/css/select2.min.css'
 import 'select2/dist/js/select2.full.min'
+import Noty from 'noty'
 
 const processLabels = () => {
   // Send CSRF header with every ajax request
@@ -20,10 +21,18 @@ const processLabels = () => {
 
     $.post(selectElement.data('updateUrl'), { labels: { ids } })
       .done(() => {
-        alert('Customer labels updated')
+        new Noty({
+          type: 'success',
+          text: 'Customer labels update',
+          timeout: 2000
+        }).show()
       })
       .fail((err) => {
-        alert(`${err.status}: ${err.statusText}`)
+        new Noty({
+          type: 'error',
+          text: `${err.status}: ${err.statusText}`,
+          timeout: 2000
+        }).show()
         saveLabelsBtn.prop('disabled', false)
       })
   })
