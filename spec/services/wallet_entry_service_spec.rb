@@ -123,7 +123,6 @@ describe WalletEntry::Service do
       end
     end
 
-
     context 'decrement' do
       let(:rule) do
         create(:entry_currency_rule, min_amount: -500, max_amount: 0)
@@ -165,7 +164,6 @@ describe WalletEntry::Service do
         expect(request.failed?).to be true
         expect(request.result_message).to include error_message
       end
-
 
       it 'fails to update balance amount to negative' do
         error_message = I18n.t('errors.messages.with_instance.not_negative',
