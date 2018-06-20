@@ -10,6 +10,6 @@ describe 'User Sign Out' do
     end
 
     expect(current_path).to eq new_user_session_path
-    expect(page).to have_content I18n.t('devise.sessions.signed_out')
+    expect_to_have_notification I18n.t('devise.sessions.signed_out')
   end
 end

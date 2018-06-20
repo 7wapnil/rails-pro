@@ -13,7 +13,7 @@ describe 'User Sign In' do
       end
 
       expect(current_path).to eq backoffice_root_path
-      expect(page).to have_content I18n.t('devise.sessions.signed_in')
+      expect_to_have_notification I18n.t('devise.sessions.signed_in')
     end
 
     it 'Fails to sign in if email or password is invalid' do
@@ -62,7 +62,7 @@ describe 'User Sign In' do
 
   def expect_authentication_failure
     expect(current_path).to eq new_user_session_path
-    expect(page).to have_content I18n.t(
+    expect_to_have_notification I18n.t(
       'devise.failure.invalid',
       authentication_keys: 'Email'
     )
