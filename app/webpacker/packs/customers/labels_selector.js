@@ -23,7 +23,7 @@ const processLabels = () => {
       .done(() => {
         new Noty({
           type: 'success',
-          text: 'Customer labels update',
+          text: 'Customer labels updated',
           timeout: 3000
         }).show()
       })
