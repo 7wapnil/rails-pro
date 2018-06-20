@@ -40,7 +40,13 @@ store:
 
     - script:
       name: compile-assets
-      code: rake assets:precompile
+      code: |
+        NODE_ENV=production \
+        RACK_ENV=production \
+        RAILS_ENV=production \
+        SECRET_KEY_BASE=foo \
+        ERRBIT_PROJECT_KEY=foo \
+        rake assets:precompile
 
     - internal/docker-push:
       username: $DOCKERHUB_USERNAME
