@@ -24,7 +24,7 @@ const processLabels = () => {
         new Noty({
           type: 'success',
           text: 'Customer labels update',
-          timeout: 2000
+          timeout: 3000
         }).show()
       })
       .fail((err) => {

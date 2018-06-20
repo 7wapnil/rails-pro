@@ -51,7 +51,7 @@ describe 'Authentication' do
       visit send(protected_path_fn, instance)
 
       expect(current_path).to eq new_user_session_path
-      expect(page).to have_content I18n.t('devise.failure.unauthenticated')
+      expect_to_have_notification(I18n.t('devise.failure.unauthenticated'))
     end
   end
 end

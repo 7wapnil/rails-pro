@@ -53,14 +53,7 @@ describe 'Customers#account_management' do
       end
 
       within '.container' do
-        request = EntryRequest.last
-        message = ActionController::Base
-                  .helpers
-                  .strip_tags I18n.t(
-                    'entities.entry_request.flash',
-                    entry_request_url: backoffice_entry_request_path(request)
-                  )
-        expect(page).to have_content(message)
+        expect_to_have_notification(I18n.t('entities.entry_request.flash'))
       end
     end
   end

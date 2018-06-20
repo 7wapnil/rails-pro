@@ -15,7 +15,7 @@ describe 'Customer Sign Up' do
   it 'Successfully creates an account' do
     submit_customer_form_with customer_attributes
 
-    expect(page).to have_content I18n.t('devise.registrations.signed_up')
+    expect_to_have_notification I18n.t('devise.registrations.signed_up')
     expect(current_path).to eq root_path
   end
 

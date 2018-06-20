@@ -9,6 +9,6 @@ describe 'Customer Sign Out' do
       click_link I18n.t(:sign_out)
     end
 
-    expect(page).to have_content I18n.t('devise.sessions.signed_out')
+    expect_to_have_notification I18n.t('devise.sessions.signed_out')
   end
 end

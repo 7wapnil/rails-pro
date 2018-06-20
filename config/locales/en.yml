@@ -50,7 +50,7 @@ en:
 
   entities:
     entry_request:
-     flash: Entry request successfully create and will be processed ASAP. <a href="%{entry_request_url}">Go here to check request info</a>
+     flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
 
   attributes:
     username: Username

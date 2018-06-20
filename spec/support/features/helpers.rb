@@ -8,4 +8,8 @@ module FeatureHelpers
       expect(page).to have_selector ".card.#{section_class}"
     end
   end
+
+  def expect_to_have_notification(expected_text)
+    expect(page).to have_css(".flash-message[data-text=\"#{expected_text}\"]")
+  end
 end

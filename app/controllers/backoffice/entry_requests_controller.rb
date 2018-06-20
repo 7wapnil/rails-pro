@@ -14,7 +14,7 @@ module Backoffice
 
       if entry_request.save
         EntryRequestProcessingJob.perform_later(entry_request)
-        create_success_message entry_request
+        flash[:success] = t('entities.entry_request.flash')
         redirect_to account_management_backoffice_customer_path(entry_request.customer) # rubocop:disable Metrics/LineLength
       else
         flash[:error] = entry_request.errors.full_messages
@@ -29,13 +29,6 @@ module Backoffice
         .require(:entry_request)
         .permit(:customer_id, :currency_id, :amount, :kind, :origin, :comment)
         .merge(initiator: current_user)
-    end
-
-    def create_success_message(request)
-      flash[:success] = t(
-        'entities.entry_request.flash',
-        entry_request_url: backoffice_entry_request_path(request)
-      )
     end
   end
 end

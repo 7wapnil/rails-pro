@@ -55,7 +55,7 @@ describe 'Customers#notes' do
     end
 
     within '.container' do
-      expect(page).to have_content(
+      expect_to_have_notification(
         "#{I18n.t(:content)} #{I18n.t('errors.messages.blank')}"
       )
     end
