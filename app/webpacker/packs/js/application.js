@@ -20,8 +20,18 @@ document.addEventListener('turbolinks:load', () => {
 
   $('.flash-message').each(function() {
     const options = {}
+    const typesMap = {
+      notice: 'info',
+      error: 'error',
+      success: 'success',
+      alert: 'warning'
+    }
     $.each($(this).data(), (key, value) => {
-      options[key] = value
+      let attributeValue = value
+      if (key === 'type' && typesMap[attributeValue]) {
+        attributeValue = typesMap[attributeValue]
+      }
+      options[key] = attributeValue
     })
     new Noty(options).show()
   })
