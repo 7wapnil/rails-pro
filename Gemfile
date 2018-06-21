@@ -34,6 +34,8 @@ gem 'kaminari'
 gem 'ransack'
 gem 'airbrake', '~> 7.3'
 gem 'sidekiq'
+gem 'redis-rails'
+gem 'redis-rack-cache'
 
 # Here only because of staging on Heroku
 # To be moved back to development and test group
