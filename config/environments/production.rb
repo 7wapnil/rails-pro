@@ -66,7 +66,7 @@ Rails.application.configure do
   # Use a different cache store in production.
   config.cache_store = :redis_cache_store, { url: "#{ENV['REDIS_URL']}/cache" }
 
-  config.session_store :redis_store, { servers: ["#{ENV['REDIS_URL']}/session"] }
+  config.session_store :redis_store, servers: ["#{ENV['REDIS_URL']}/session"]
 
   config.action_dispatch.rack_cache = {
     metastore: "#{ENV['REDIS_URL']}/metastore",
