@@ -49,6 +49,8 @@ en:
     customer: Customer
 
   entities:
+    wallet: Wallet
+    balance: Balance
     entry_request:
      flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
 
@@ -84,3 +86,5 @@ en:
   errors:
     messages:
       entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
+      with_instance:
+        not_negative: "of %{instance} cannot be negative"

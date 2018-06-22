@@ -7,7 +7,7 @@
           %td= @request.id
         %tr
           %td= t(:status)
-          %td= @request.status
+          %td= status_badge @request.status
         %tr
           %td= t(:created_date)
           %td= l(@request.created_at, format: :long)
