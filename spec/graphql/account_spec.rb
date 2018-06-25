@@ -31,14 +31,48 @@ describe 'GraphQL#account' do
     context 'non-existing user' do
       let(:variables) do
         { input: {
-          email: 'unknown@email.com',
+          username: 'unknown',
           password: '12345'
         } }
       end
 
-      it 'should return empty result' do
-        expect(result['data']['signIn'])
-          .to be_nil
+      it 'should return wrong credentials error' do
+        expect(result['errors'][0]['message'])
+          .to eq('Wrong email or password')
+      end
+    end
+
+    context 'existing user wrong password' do
+      let!(:user) do
+        create(:customer, username: 'testuser', password: 'strongpass')
+      end
+      let(:variables) do
+        { input: {
+          username: 'testuser',
+          password: '12345'
+        } }
+      end
+
+      it 'should return wrong credentials' do
+        expect(result['errors'][0]['message'])
+          .to eq('Wrong email or password')
+      end
+    end
+
+    context 'existing user' do
+      let!(:user) do
+        create(:customer, username: 'testuser', password: 'strongpass')
+      end
+      let(:variables) do
+        { input: {
+          username: 'testuser',
+          password: 'strongpass'
+        } }
+      end
+
+      it 'should successfully sign in' do
+        expect(result['data']['signIn']['token']).not_to be_nil
+        expect(result['data']['signIn']['user']).not_to be_nil
       end
     end
   end

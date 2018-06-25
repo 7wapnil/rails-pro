@@ -1,13 +1,11 @@
 class JwtService
   def self.encode(payload)
-    JWT.encode(payload, secret)
+    JWT.encode(payload, 'my_secret')
   end
 
   def self.decode(token)
-    JWT.decode(token, secret)
+    JWT.decode(token, 'my_secret')
   end
-
-  private
 
   def secret
     'my_secret'

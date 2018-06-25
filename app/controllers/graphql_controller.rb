@@ -1,11 +1,14 @@
 class GraphqlController < ApplicationController
   protect_from_forgery with: :null_session
 
+  respond_to :json
+
   def execute # rubocop:disable Metrics/MethodLength
     variables = ensure_hash(params[:variables])
     query = params[:query]
     operation_name = params[:operationName]
     context = {
+      warden: warden
       # Query context goes here, for example:
       # current_user: current_user,
     }

@@ -4,18 +4,16 @@ module Account
     type Account::AccountType
 
     def call(_obj, args, _ctx)
-      input = args[:input]
-      return unless input
+      user = Customer.find_for_authentication(username: args[:input][:username])
 
-      user = Customer.find_by(email: input[:email])
-
-      return unless user
-      # return unless user.authenticate(input[:password])
-
-      OpenStruct.new(user: user,
-                     token: JwtService.encode(id: user.id,
-                                              username: user.username,
-                                              email: user.email))
+      if user&.valid_password?(args[:input][:password])
+        OpenStruct.new(user: user,
+                       token: JwtService.encode(id: user.id,
+                                                username: user.username,
+                                                email: user.email))
+      else
+        GraphQL::ExecutionError.new('Wrong email or password')
+      end
     end
   end
 end
