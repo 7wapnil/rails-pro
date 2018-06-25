@@ -39,7 +39,10 @@ build:
 
 store:
   steps:
-    - bundle-install
+    - script:
+      name: bundle-install
+      code: bundle install
+
     - bashaus/yarn-install
 
     - internal/docker-push:
