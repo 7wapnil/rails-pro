@@ -24,9 +24,10 @@ gem 'bootsnap', '>= 1.1.0', require: false
 
 gem 'haml-rails', '~> 1.0'
 gem 'webpacker', '~> 3.4'
-gem 'graphql'
+gem 'graphql', '~>1.8'
 gem 'goldiloader'
 gem 'devise'
+gem 'jwt'
 gem 'simple_form'
 gem 'rack-cors', require: 'rack/cors'
 gem 'activerecord-import'
@@ -35,7 +36,6 @@ gem 'ransack'
 gem 'airbrake', '~> 7.3'
 gem 'sidekiq'
 
-# Here only because of staging on Heroku
 # To be moved back to development and test group
 gem 'faker', github: 'stympy/faker', branch: 'master'
 

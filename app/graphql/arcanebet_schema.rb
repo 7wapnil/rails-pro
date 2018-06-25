@@ -3,6 +3,6 @@ ArcanebetSchema = GraphQL::Schema.define do
   # There's a bug that breaks GraphiQL if
   # blank mutation is present in the schema
 
-  # mutation(Types::MutationType)
-  query(Types::QueryType)
+  mutation(MutationType)
+  query(QueryType)
 end

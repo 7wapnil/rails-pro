@@ -1,4 +1,4 @@
-Types::EventType = GraphQL::ObjectType.define do
+Events::EventType = GraphQL::ObjectType.define do
   name 'Event'
 
   field :id, !types.ID
