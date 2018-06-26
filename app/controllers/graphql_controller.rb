@@ -8,9 +8,7 @@ class GraphqlController < ApplicationController
     query = params[:query]
     operation_name = params[:operationName]
     context = {
-      warden: warden
-      # Query context goes here, for example:
-      # current_user: current_user,
+      current_user: current_user
     }
     result = ArcanebetSchema.execute(
       query,
@@ -40,5 +38,13 @@ class GraphqlController < ApplicationController
     else
       raise ArgumentError, "Unexpected parameter: #{ambiguous_param}"
     end
+  end
+
+  def current_user
+    return nil if request.headers['Authorization'].blank?
+    token = request.headers['Authorization'].split(' ').last
+    return nil if token.blank?
+    result = JwtService.decode(token)
+    Customer.find_by(id: result[:id])
   end
 end

@@ -1,5 +1,5 @@
 module Account
-  class SignIn < GraphQL::Function
+  class SignIn < ::Base::Resolver
     argument :input, !Account::AuthInput
     type Account::AccountType
 

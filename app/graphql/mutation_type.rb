@@ -2,6 +2,7 @@ MutationType = GraphQL::ObjectType.define do
   name 'Mutation'
 
   field :signIn, function: Account::SignIn.new
+  field :signUp, function: Account::SignUp.new
 
   field :testField, types.String do
     description 'An example mutation field'
