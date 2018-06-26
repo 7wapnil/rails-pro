@@ -45,6 +45,6 @@ class GraphqlController < ApplicationController
     token = request.headers['Authorization'].split(' ').last
     return nil if token.blank?
     result = JwtService.decode(token)
-    Customer.find_by(id: result[:id])
+    Customer.find_by(id: result[0]['id'])
   end
 end
