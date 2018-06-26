@@ -1,13 +1,9 @@
 class JwtService
   def self.encode(payload)
-    JWT.encode(payload, 'my_secret')
+    JWT.encode(payload, Devise.secret_key)
   end
 
   def self.decode(token)
-    JWT.decode(token, 'my_secret')
-  end
-
-  def secret
-    'my_secret'
+    JWT.decode(token, Devise.secret_key)
   end
 end
