@@ -56,6 +56,10 @@ Rails.application.configure do
   # and use secure cookies.
   config.force_ssl = true
 
+  config.ssl_options = {
+    redirect: { exclude: ->(request) { request.path =~ /health-check/ } }
+  }
+
   # Use the lowest log level to ensure availability of diagnostic information
   # when problems arise.
   config.log_level = :debug
