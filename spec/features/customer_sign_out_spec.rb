@@ -1,4 +1,7 @@
 describe 'Customer Sign Out' do
+  before(:context) { Capybara.app_host = 'http://arcanebet.test' }
+  after(:context) { Capybara.app_host = nil }
+
   it 'Successfully signs out' do
     customer = create(:customer)
     login_as customer, scope: :customer

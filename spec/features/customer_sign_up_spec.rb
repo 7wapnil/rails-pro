@@ -1,4 +1,7 @@
 describe 'Customer Sign Up' do
+  before(:context) { Capybara.app_host = 'http://arcanebet.test' }
+  after(:context) { Capybara.app_host = nil }
+
   before { visit new_customer_registration_path }
 
   let(:customer_attributes) do
