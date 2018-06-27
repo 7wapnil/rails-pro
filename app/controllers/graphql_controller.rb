@@ -46,5 +46,7 @@ class GraphqlController < ApplicationController
     return nil if token.blank?
     result = JwtService.decode(token)
     Customer.find_by(id: result[0]['id'])
+  rescue JWT::DecodeError
+    nil
   end
 end
