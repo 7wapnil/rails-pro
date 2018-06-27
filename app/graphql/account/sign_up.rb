@@ -7,16 +7,16 @@ module Account
       input = args[:input]
       return unless input
 
-      user = create_user! input
-      OpenStruct.new(user: user,
-                     token: JwtService.encode(id: user.id,
-                                              username: user.username,
-                                              email: user.email))
+      customer = create_customer! input
+      OpenStruct.new(user: customer,
+                     token: JwtService.encode(id: customer.id,
+                                              username: customer.username,
+                                              email: customer.email))
     end
 
     private
 
-    def create_user!(input)
+    def create_customer!(input)
       Customer.create!(username: input[:username],
                        email: input[:email],
                        first_name: input[:first_name],

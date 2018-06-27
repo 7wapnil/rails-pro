@@ -3,7 +3,7 @@ module Base
     protected
 
     def check_auth(context)
-      return unless context[:currenct_user].blank?
+      return unless context[:current_customer].blank?
       raise GraphQL::ExecutionError, 'AUTH_REQUIRED'
     end
   end

@@ -8,7 +8,7 @@ class GraphqlController < ApplicationController
     query = params[:query]
     operation_name = params[:operationName]
     context = {
-      current_user: current_user
+      current_customer: current_customer
     }
     result = ArcanebetSchema.execute(
       query,
@@ -40,7 +40,7 @@ class GraphqlController < ApplicationController
     end
   end
 
-  def current_user
+  def current_customer
     return nil if request.headers['Authorization'].blank?
     token = request.headers['Authorization'].split(' ').last
     return nil if token.blank?
