@@ -39,6 +39,7 @@ gem 'graphql-errors'
 gem 'redis-rails'
 gem 'redis-rack-cache'
 gem 'lograge'
+gem 'newrelic_rpm'
 
 # To be moved back to development and test group
 gem 'faker', github: 'stympy/faker', branch: 'master'
