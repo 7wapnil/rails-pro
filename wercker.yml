@@ -37,6 +37,24 @@ build:
       url: $SLACK_URL
       notify_on: failed
 
+store:
+  steps:
+    - script:
+      name: bundle-install
+      code: bundle install
+
+    - bashaus/yarn-install
+
+    - script:
+      name: compile-assets
+      code: bundle exec rake assets:precompile
+
+    - internal/docker-push:
+      username: $DOCKERHUB_USERNAME
+      password: $DOCKERHUB_PASSWORD
+      repository: arcanebet/arcanebet
+      tag: $WERCKER_GIT_COMMIT
+
 deploy-heroku:
   steps:
     - heroku-deploy:

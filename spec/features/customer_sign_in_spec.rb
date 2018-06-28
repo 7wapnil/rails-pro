@@ -1,4 +1,7 @@
 describe 'Customer Sign In' do
+  before(:context) { Capybara.app_host = 'http://arcanebet.test' }
+  after(:context) { Capybara.app_host = nil }
+
   let(:customer) { create(:customer) }
 
   it 'Sees sign in link in Navbar' do
