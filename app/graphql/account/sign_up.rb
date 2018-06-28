@@ -7,6 +7,8 @@ module Account
       input = args[:input]
       return unless input
 
+      # TODO: 1. replace with Customer.create(input)
+      #       2. remove #create_customer!
       customer = create_customer! input
       OpenStruct.new(user: customer,
                      token: JwtService.encode(id: customer.id,
