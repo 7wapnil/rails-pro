@@ -30,6 +30,22 @@ describe 'Customers#notes' do
     end
   end
 
+  it 'shows not deleted notes only' do
+    deleted_notes = create_list(:customer_note,
+                                3,
+                                customer: customer,
+                                deleted_at: Date.new)
+
+    visit page_path
+
+    within '.customer-notes' do
+      deleted_notes.each do |note|
+        expect(page).not_to have_content note.content
+        expect(page).not_to have_content note.user.full_name
+      end
+    end
+  end
+
   it 'shows no records note' do
     within '.customer-notes' do
       expect(page).to have_content I18n.t(:no_records)

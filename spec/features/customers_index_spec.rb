@@ -20,6 +20,19 @@ describe 'Customers#index' do
       end
     end
 
+    it 'shows only not deleted customers in a list' do
+      deleted_customers = create_list(:customer, 5, deleted_at: Date.new)
+
+      within 'table.table' do
+        deleted_customers.each do |customer|
+          expect(page).not_to have_content(customer.username)
+          expect(page).not_to have_content(customer.email)
+          expect(page).not_to have_content(customer.last_sign_in_ip)
+          expect(page).not_to have_content(customer.id)
+        end
+      end
+    end
+
     context 'pagination' do
       it 'is shown' do
         create_list(:customer, 10)
