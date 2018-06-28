@@ -36,6 +36,9 @@ gem 'ransack'
 gem 'airbrake', '~> 7.3'
 gem 'sidekiq'
 gem 'graphql-errors'
+gem 'redis-rails'
+gem 'redis-rack-cache'
+gem 'lograge'
 
 # To be moved back to development and test group
 gem 'faker', github: 'stympy/faker', branch: 'master'
