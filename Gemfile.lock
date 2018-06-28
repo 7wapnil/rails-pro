@@ -210,6 +210,8 @@ GEM
       pry (>= 0.10.4)
     public_suffix (3.0.2)
     puma (3.11.4)
+    rack-cache (1.8.0)
+      rack (>= 0.4)
     rack (2.0.5)
     rack-cors (1.0.2)
     rack-protection (2.0.1)
@@ -259,6 +261,25 @@ GEM
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
     redis (4.0.1)
+    redis-actionpack (5.0.2)
+      actionpack (>= 4.0, < 6)
+      redis-rack (>= 1, < 3)
+      redis-store (>= 1.1.0, < 2)
+    redis-activesupport (5.0.5)
+      activesupport (>= 3, < 6)
+      redis-store (>= 1.3, < 2)
+    redis-rack (2.0.4)
+      rack (>= 1.5, < 3)
+      redis-store (>= 1.2, < 2)
+    redis-rack-cache (2.0.2)
+      rack-cache (>= 1.6, < 2)
+      redis-store (>= 1.2, < 2)
+    redis-rails (5.0.2)
+      redis-actionpack (>= 5.0, < 6)
+      redis-activesupport (>= 5.0, < 6)
+      redis-store (>= 1.2, < 2)
+    redis-store (1.5.0)
+      redis (>= 2.2, < 5)
     request_store (1.4.1)
       rack (>= 1.4)
     responders (2.4.0)
@@ -396,6 +417,8 @@ DEPENDENCIES
   rails (~> 5.2.0)
   rails-erd
   ransack
+  redis-rack-cache
+  redis-rails
   rspec-rails (~> 3.7)
   rubocop
   sass-rails (~> 5.0)
