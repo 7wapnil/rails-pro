@@ -1,13 +1,14 @@
 class GraphqlController < ApplicationController
   protect_from_forgery with: :null_session
 
+  respond_to :json
+
   def execute # rubocop:disable Metrics/MethodLength
     variables = ensure_hash(params[:variables])
     query = params[:query]
     operation_name = params[:operationName]
     context = {
-      # Query context goes here, for example:
-      # current_user: current_user,
+      current_customer: current_customer
     }
     result = ArcanebetSchema.execute(
       query,
@@ -37,5 +38,15 @@ class GraphqlController < ApplicationController
     else
       raise ArgumentError, "Unexpected parameter: #{ambiguous_param}"
     end
+  end
+
+  def current_customer
+    return nil if request.headers['Authorization'].blank?
+    token = request.headers['Authorization'].split(' ').last
+    return nil if token.blank?
+    result = JwtService.decode(token)
+    Customer.find_by(id: result[0]['id'])
+  rescue JWT::DecodeError
+    nil
   end
 end
