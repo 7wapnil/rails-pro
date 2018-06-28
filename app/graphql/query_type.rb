@@ -1,16 +1,14 @@
-Types::QueryType = GraphQL::ObjectType.define do
+QueryType = GraphQL::ObjectType.define do
   name 'Query'
-  # Add root-level fields here.
-  # They will be entry points for queries on your schema.
 
   field :event do
-    type Types::EventType
+    type Events::EventType
     description 'Get an event by id'
     argument :id, !types.ID
     resolve ->(_obj, args, _ctx) { Event.find(args['id']) }
   end
 
-  field :events, types[Types::EventType] do
+  field :events, types[Events::EventType] do
     description 'Get all events'
 
     argument :scope,
