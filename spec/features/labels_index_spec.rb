@@ -18,6 +18,17 @@ describe 'Labels#index' do
       end
     end
 
+    it 'shows only not deleted labels in a list' do
+      deleted_labels = create_list(:label, 5, deleted_at: Date.new)
+
+      within 'table.table' do
+        deleted_labels.each do |label|
+          expect(page).not_to have_content(label.name)
+          expect(page).not_to have_content(label.description)
+        end
+      end
+    end
+
     context 'search' do
       let!(:vip_label) do
         create(:label, name: 'VIP', description: 'Label for VIP users')

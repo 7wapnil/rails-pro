@@ -47,8 +47,13 @@ FactoryBot.define do
   end
 
   factory :label do
-    name 'MyString'
-    description 'MyText'
+    sequence :name do |n|
+      "My label #{n}"
+    end
+    sequence :description do |n|
+      text = Faker::Community.quotes
+      "#{text} #{n}"
+    end
   end
 
   factory :user do
