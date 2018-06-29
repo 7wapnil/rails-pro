@@ -41,7 +41,6 @@ describe 'Customers#notes' do
     within '.customer-notes' do
       deleted_notes.each do |note|
         expect(page).not_to have_content note.content
-        expect(page).not_to have_content note.user.full_name
       end
     end
   end

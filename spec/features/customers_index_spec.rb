@@ -27,8 +27,6 @@ describe 'Customers#index' do
         deleted_customers.each do |customer|
           expect(page).not_to have_content(customer.username)
           expect(page).not_to have_content(customer.email)
-          expect(page).not_to have_content(customer.last_sign_in_ip)
-          expect(page).not_to have_content(customer.id)
         end
       end
     end
