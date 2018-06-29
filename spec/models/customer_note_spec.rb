@@ -3,4 +3,6 @@ describe CustomerNote do
   it { should belong_to(:customer) }
 
   it { should validate_presence_of(:content) }
+
+  it { should act_as_paranoid }
 end

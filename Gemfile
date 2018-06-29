@@ -40,6 +40,7 @@ gem 'redis-rails'
 gem 'redis-rack-cache'
 gem 'lograge'
 gem 'newrelic_rpm'
+gem 'paranoia', '~> 2.2'
 
 # To be moved back to development and test group
 gem 'faker', github: 'stympy/faker', branch: 'master'
