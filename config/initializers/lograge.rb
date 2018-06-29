@@ -2,6 +2,8 @@ Rails.application.configure do
   config.lograge.enabled = true
   config.lograge.formatter = Lograge::Formatters::Json.new
 
+  config.lograge.ignore_actions = %w[HealthChecksController#show]
+
   config.lograge.custom_payload do |controller|
     unwanted_params = %w[action authenticity_token controller commit utf8]
 
