@@ -69,6 +69,10 @@ deploy:
       keyname: GITHUB
 
     - script:
+      name: add-github-to-known-hosts
+      code: ssh-keyscan github.com >> /root/.ssh/known_hosts
+
+    - script:
       name: clone-terraform-config
       code: |
         git clone \
