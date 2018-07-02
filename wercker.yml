@@ -55,6 +55,41 @@ store:
       repository: arcanebet/arcanebet
       tag: $WERCKER_GIT_COMMIT
 
+deploy:
+  steps:
+    - capgemini/terraform-install:
+      version: "0.11.7"
+
+    - edgecaseadmin/install-aws-cli:
+      key: $AWS_ACCESS_KEY_ID
+      secret: $AWS_SECRET_ACCESS_KEY
+      region: $AWS_DEFAULT_REGION
+
+    - add-ssh-key:
+      keyname: infrastructure-deploy
+
+    - script:
+      name: clone-terraform-config
+      code: |
+        git clone \
+            git@github.com:arcanebet/infrastructure.git \
+            /pipeline/cache/terraform-config
+
+    - script:
+      name: update-image-tag
+      code: |
+        aws ssm put-parameter \
+            --name /backend/branch
+            --value $WERCKER_GIT_COMMIT
+
+    - script:
+      name: terraform-apply
+      code: |
+        cd /pipeline/cache/terraform-config/services
+        terraform init
+        terraform workspace select $TARGET_ENV
+        terraform apply
+
 deploy-heroku:
   steps:
     - heroku-deploy:
