@@ -103,12 +103,6 @@ deploy:
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
 
-deploy-heroku:
-  steps:
-    - heroku-deploy:
-      app-name: arcanebet-staging
-      run: rake db:migrate db:seed
-
   after-steps:
     - slack-notifier:
       url: $SLACK_URL
