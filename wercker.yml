@@ -55,6 +55,11 @@ store:
       repository: arcanebet/arcanebet
       tag: $WERCKER_GIT_COMMIT
 
+  after-steps:
+    - slack-notifier:
+      url: $SLACK_URL
+      notify_on: failed
+
 deploy:
   box: python:3.6-alpine
 
