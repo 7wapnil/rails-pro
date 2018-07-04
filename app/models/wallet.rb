@@ -14,4 +14,8 @@ class Wallet < ApplicationRecord
               message: I18n.t('errors.messages.with_instance.not_negative',
                               instance: I18n.t('entities.wallet'))
             }
+
+  def self.build_default
+    new(amount: 0, currency: Currency.build_default)
+  end
 end
