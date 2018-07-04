@@ -90,7 +90,7 @@ deploy:
       name: update-image-tag
       code: |
         aws ssm put-parameter \
-            --name /backend/branch
+            --name /backend/branch \
             --value $WERCKER_GIT_COMMIT
 
     - script:
