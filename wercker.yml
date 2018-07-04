@@ -101,7 +101,7 @@ deploy:
         cd $TERRAFORM_CONFIG_DIR/services
         terraform init
         terraform workspace select $TARGET_ENV
-        terraform apply
+        terraform apply -auto-approve
 
 deploy-heroku:
   steps:
