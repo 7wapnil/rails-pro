@@ -56,7 +56,13 @@ store:
       tag: $WERCKER_GIT_COMMIT
 
 deploy:
+  box: python:3.6-alpine
+
   steps:
+    - script:
+      name: install-linux-deps
+      code: apk add -qU openssh git
+
     - capgemini/terraform-install:
       version: "0.11.7"
 
