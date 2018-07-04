@@ -25,5 +25,14 @@ describe 'GraphQL#wallets' do
       expect(result_wallet['currency']['code']).to eq(wallet.currency.code)
       expect(result_wallet['currency']['name']).to eq(wallet.currency.name)
     end
+
+    it 'should return default wallet when customer has no any' do
+      expect(result['data']['wallets'].count).to eq(1)
+      result_wallet = result['data']['wallets'].first
+      default_currency = Currency.build_default
+
+      expect(result_wallet['amount']).to eq(0)
+      expect(result_wallet['currency']['code']).to eq(default_currency.code)
+    end
   end
 end

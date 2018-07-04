@@ -5,7 +5,10 @@ module Wallets
     def call(_obj, _args, ctx)
       check_auth ctx
 
-      Wallet.where(customer: ctx[:current_customer]).all
+      wallets = Wallet.where(customer: ctx[:current_customer]).all
+      return wallets unless wallets.empty?
+
+      Array.new(1) { Wallet.build_default }
     end
   end
 end

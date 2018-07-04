@@ -5,4 +5,8 @@ class Currency < ApplicationRecord
 
   validates :name, :code, presence: true
   validates_associated :entry_currency_rules
+
+  def self.build_default
+    new(code: 'EUR', name: 'Euro')
+  end
 end
