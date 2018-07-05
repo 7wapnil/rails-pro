@@ -18,6 +18,7 @@ module Backoffice
         .require(:customer_note)
         .permit(:customer_id, :content)
         .merge(user_id: current_user.id)
+        .merge(origin_params)
     end
   end
 end
