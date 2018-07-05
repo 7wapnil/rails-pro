@@ -55,11 +55,58 @@ store:
       repository: arcanebet/arcanebet
       tag: $WERCKER_GIT_COMMIT
 
-deploy-heroku:
+  after-steps:
+    - slack-notifier:
+      url: $SLACK_URL
+      notify_on: failed
+
+deploy:
+  box: python:3.6-alpine
+
   steps:
-    - heroku-deploy:
-      app-name: arcanebet-staging
-      run: rake db:migrate db:seed
+    - script:
+      name: install-linux-deps
+      code: apk add -qU openssh git
+
+    - capgemini/terraform-install:
+      version: "0.11.7"
+
+    - edgecaseadmin/install-aws-cli:
+      key: $AWS_ACCESS_KEY_ID
+      secret: $AWS_SECRET_ACCESS_KEY
+      region: $AWS_DEFAULT_REGION
+
+    - add-ssh-key:
+      keyname: GITHUB
+
+    - script:
+      name: add-github-to-known-hosts
+      code: ssh-keyscan github.com >> /root/.ssh/known_hosts
+
+    - script:
+      name: clone-terraform-config
+      code: |
+        rm -rf $TERRAFORM_CONFIG_DIR
+        git clone \
+            git@github.com:arcanebet/infrastructure.git \
+            $TERRAFORM_CONFIG_DIR
+
+    - script:
+      name: update-image-tag
+      code: |
+        aws ssm put-parameter \
+            --name /backend/branch \
+            --value $WERCKER_GIT_COMMIT \
+            --type SecureString \
+            --overwrite
+
+    - script:
+      name: terraform-apply
+      code: |
+        cd $TERRAFORM_CONFIG_DIR/services
+        terraform init
+        terraform workspace select $TARGET_ENV
+        terraform apply -auto-approve
 
   after-steps:
     - slack-notifier:
