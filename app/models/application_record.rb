@@ -18,6 +18,5 @@ class ApplicationRecord < ActiveRecord::Base
   private
 
   def log_event(action)
-
   end
 end
