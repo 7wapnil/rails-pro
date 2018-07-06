@@ -1,4 +1,6 @@
 describe CustomerNote do
+  it_should_behave_like 'audit model', factory: :customer_note
+
   it { should belong_to(:user) }
   it { should belong_to(:customer) }
 

@@ -43,7 +43,7 @@ module Backoffice
     private
 
     def label_params
-      params.require(:label).permit(:name, :description)
+      params.require(:label).permit(:name, :description).merge(origin_params)
     end
   end
 end

@@ -1,4 +1,6 @@
 describe EventScope do
+  it_should_behave_like 'audit model', factory: :event_scope
+
   it { should belong_to(:title) }
   it { should have_many(:scoped_events) }
   it { should have_many(:events).through(:scoped_events) }

@@ -39,7 +39,7 @@ module Backoffice
     private
 
     def labels_params
-      params.require(:labels).permit(ids: [])
+      params.require(:labels).permit(ids: []).merge(origin_params)
     end
   end
 end
