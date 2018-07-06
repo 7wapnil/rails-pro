@@ -1,4 +1,4 @@
-describe AuditService do
+describe Audit::Service do
   let(:user) { create(:user) }
 
   before do
@@ -11,11 +11,11 @@ describe AuditService do
       action = 'create'
       payload = { id: 1, changes: { name: %i[From To] } }
 
-      AuditService.call target: target,
-                        action: action,
-                        origin_kind: :user,
-                        origin_id: user.id,
-                        payload: payload
+      Audit::Service.call target: target,
+                          action: action,
+                          origin_kind: :user,
+                          origin_id: user.id,
+                          payload: payload
 
       expect(AuditLog)
         .to have_received(:create)

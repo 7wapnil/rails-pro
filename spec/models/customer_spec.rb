@@ -1,4 +1,6 @@
 describe Customer do
+  it_should_behave_like 'audit model', factory: :customer
+
   it { should have_one(:address) }
   it { should have_many(:wallets) }
   it { should have_many(:entry_requests) }

@@ -15,8 +15,10 @@ class ApplicationRecord < ActiveRecord::Base
     log_event :destroyed
   end
 
-  private
-
   def log_event(action)
+    Audit::Service.call(target: self.class,
+                        action: action,
+                        origin_kind: self[:origin_kind],
+                        origin_id: self[:origin_id])
   end
 end
