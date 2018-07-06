@@ -1,0 +1,2 @@
+describe Bonus do
+end

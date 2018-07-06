@@ -1,4 +1,6 @@
 FactoryBot.define do
+  # Financials
+
   factory :entry_currency_rule do
     currency
     kind { EntryRequest.kinds.keys.first }
@@ -46,14 +48,18 @@ FactoryBot.define do
     amount { Faker::Number.decimal(3, 2) }
   end
 
-  factory :label do
-    sequence :name do |n|
-      "My label #{n}"
-    end
-    sequence :description do |n|
-      text = Faker::Community.quotes
-      "#{text} #{n}"
-    end
+  # System
+
+  factory :bonus do
+    code 'FOOBAR11'
+    kind 1
+    rollover_multiplier 10
+    max_rollover_per_bet 150.00
+    max_deposit_match 1000.00
+    min_odds_per_bet 1.6
+    min_deposit 10.00
+    expires_at { Date.today.end_of_month }
+    valid_for_days 60
   end
 
   factory :user do
@@ -69,6 +75,8 @@ FactoryBot.define do
       password 'iamadminuser'
     end
   end
+
+  # Customers
 
   factory :customer do
     username do
@@ -96,6 +104,16 @@ FactoryBot.define do
     current_sign_in_ip { Faker::Internet.ip_v4_address }
     last_sign_in_ip { Faker::Internet.ip_v4_address }
     password 'iamverysecure'
+  end
+
+  factory :label do
+    sequence :name do |n|
+      "My label #{n}"
+    end
+    sequence :description do |n|
+      text = Faker::Community.quotes
+      "#{text} #{n}"
+    end
   end
 
   factory :customer_note do
