@@ -10,6 +10,7 @@ class CreateBonuses < ActiveRecord::Migration[5.2]
       t.decimal :min_deposit
       t.integer :valid_for_days
       t.datetime :expires_at
+      t.datetime :deleted_at
 
       t.timestamps
     end

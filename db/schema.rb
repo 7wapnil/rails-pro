@@ -56,6 +56,7 @@ ActiveRecord::Schema.define(version: 2018_07_06_135455) do
     t.decimal "min_deposit"
     t.integer "valid_for_days"
     t.datetime "expires_at"
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
