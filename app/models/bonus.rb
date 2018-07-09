@@ -1,6 +1,4 @@
 class Bonus < ApplicationRecord
-  self.table_name = :bonuses
-
   enum kind: {
     deposit: 0
   }
