@@ -1,5 +1,5 @@
 class CreateBonuses < ActiveRecord::Migration[5.2]
-  def change
+  def change # rubocop:disable Metrics/MethodLength
     create_table :bonuses do |t|
       t.string :code
       t.integer :kind
