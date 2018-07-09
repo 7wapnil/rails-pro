@@ -51,8 +51,10 @@ en:
   entities:
     wallet: Wallet
     balance: Balance
+    bonus: Bonus
+    bonuses: Bonuses
     entry_request:
-     flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
+      flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
 
   attributes:
     username: Username
@@ -70,6 +72,14 @@ en:
     currency_code: Currency
     initiator: Initiator
     comment: Comment
+    code: Code
+    rollover_multiplier: Rollover
+    max_rollover_per_bet: Max rollover per bet
+    max_deposit_match: Max amount
+    min_odds_per_bet: Min odds per bet
+    min_deposit: Min deposit
+    valid_for_days: Valid for days
+    expires_at: Expires at
 
   time:
     formats:

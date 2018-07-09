@@ -9,6 +9,8 @@ Rails.application.routes.draw do
 
   namespace :backoffice, path: '' do
     constraints subdomain: 'backend' do
+      resources :bonuses, only: %[index]
+
       resources :customers, only: %i[index show] do
         member do
           get :account_management
@@ -20,13 +22,13 @@ Rails.application.routes.draw do
 
       resources :customer_notes, only: :create
 
-      resource :dashboard, only: :show
-
       resources :labels, only: %i[index new edit create update destroy]
 
       resources :entry_requests, only: %i[index show create]
 
       resources :currencies, only: %i[index new edit create update]
+
+      resource :dashboard, only: :show
 
       root 'dashboards#show'
     end

@@ -1,0 +1,27 @@
+%h1.display-4= t('entities.bonuses')
+
+%table.table
+  %thead
+    %tr
+      %th= t('attributes.code')
+      %th= t('attributes.kind')
+      %th= t('attributes.rollover_multiplier')
+      %th= t('attributes.min_deposit')
+      %th= t('attributes.max_deposit_match')
+      %th= t('attributes.min_odds_per_bet')
+      %th= t('attributes.valid_for_days')
+      %th= t('attributes.expires_at')
+
+  %tbody
+    - @bonuses.each do |bonus|
+      %tr
+        %td= bonus.code
+        %td= bonus.kind
+        %td= bonus.rollover_multiplier
+        %td= bonus.min_deposit
+        %td= bonus.max_deposit_match
+        %td= bonus.min_odds_per_bet
+        %td= bonus.valid_for_days
+        %td= l(bonus.expires_at)
+
+= paginate @bonuses
