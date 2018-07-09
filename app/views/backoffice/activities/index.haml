@@ -1,0 +1,13 @@
+%h1.display-4
+  = t(:activities)
+
+%table.table
+  %thead
+    %tr
+      %th= t(:action_date)
+      %th= t(:action)
+  %tbody
+    - @activities.each do |activity|
+      %tr{ id: "activity-#{activity.id}" }
+        %td= l(activity.created_at, format: :long)
+        %td= @formatter.format(activity)

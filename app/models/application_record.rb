@@ -32,6 +32,8 @@ class ApplicationRecord < ActiveRecord::Base
   private
 
   def filter_changes
-    previous_changes.slice!(:created_at, :updated_at)
+    previous_changes.slice!(:created_at,
+                            :updated_at,
+                            :encrypted_password)
   end
 end
