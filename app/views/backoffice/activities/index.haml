@@ -11,3 +11,5 @@
       %tr{ id: "activity-#{activity.id}" }
         %td= l(activity.created_at, format: :long)
         %td= @formatter.format(activity)
+
+= paginate @activities

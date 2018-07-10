@@ -1,7 +1,7 @@
 module Backoffice
   class ActivitiesController < BackofficeController
     def index
-      @activities = AuditLog.all
+      @activities = AuditLog.page(params[:page])
       @formatter = Audit::Formatter.new
     end
   end
