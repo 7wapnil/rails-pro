@@ -4,12 +4,12 @@
 %table.table
   %thead
     %tr
-      %th= t(:action_date)
+      %th= t(:created_at)
       %th= t(:action)
   %tbody
     - @activities.each do |activity|
       %tr{ id: "activity-#{activity.id}" }
-        %td= l(activity.created_at, format: :long)
-        %td= @formatter.format(activity)
+        %td= link_to l(activity.created_at, format: :long), backoffice_activity_path(activity)
+        %td= @formatter.format_action(activity)
 
 = paginate @activities

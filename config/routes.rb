@@ -28,7 +28,7 @@ Rails.application.routes.draw do
 
       resources :currencies, only: %i[index new edit create update]
 
-      resources :activities, only: %i[index]
+      resources :activities, only: %i[index show]
 
       root 'dashboards#show'
     end

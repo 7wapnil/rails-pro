@@ -15,7 +15,7 @@ class AuditLog
             :origin,
             presence: true
 
-  def origin
+  def origin_model
     return if self[:origin][:kind].blank? && self[:origin][:id].blank?
 
     self[:origin][:kind]
