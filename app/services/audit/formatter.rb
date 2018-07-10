@@ -4,20 +4,16 @@ module Audit
     def format(record)
       formatted = "#{record.target} #{record.action}"
       origin_str = format_origin(record)
-      unless origin_str.blank?
-        formatted +=" #{origin_str}"
-      end
+      formatted += " #{origin_str}" unless origin_str.blank?
       formatted
     end
 
     private
 
     def format_origin(record)
-      origin = record.origin
-      unless origin.blank?
-        "by #{record.origin[:kind]} #{origin.full_name}, ID #{record.origin[:id]}"
-      end
-    end
+      return unless record.origin.blank?
 
+      "by #{record.origin[:kind]} #{origin.full_name}, ID #{record.origin[:id]}"
+    end
   end
 end

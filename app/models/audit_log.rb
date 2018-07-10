@@ -16,12 +16,12 @@ class AuditLog
             presence: true
 
   def origin
-    unless self[:origin][:kind].blank? && self[:origin][:id].blank?
-      if self[:origin][:kind] == :user
-        User.find_by(id: self[:origin][:id])
-      else
-        Customer.find_by(id: self[:origin][:id])
-      end
-    end
+    return if self[:origin][:kind].blank? && self[:origin][:id].blank?
+
+    self[:origin][:kind]
+      .to_s
+      .camelize
+      .constantize
+      .find_by(id: self[:origin][:id])
   end
 end
