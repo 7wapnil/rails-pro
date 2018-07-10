@@ -1,25 +1,25 @@
 .row.mt-4
   .col-6.offset-3
-    = card header: t(:activity), class: 'activity-info' do
+    = card header: t('entities.activity'), class: 'activity-info' do
       %table.table
         %tr
-          %td= t(:action)
+          %td= t('attributes.action')
           %td= @formatter.format_action(@activity)
         %tr
-          %td= t(:created_date)
+          %td= t('attributes.created_at')
           %td= l(@activity.created_at, format: :long)
         %tr
-          %td= t(:origin_kind)
+          %td= t('attributes.origin_kind')
           %td= @activity.origin[:kind]
         %tr
-          %td= t(:origin_id)
+          %td= t('attributes.origin_id')
           %td= @activity.origin[:id]
         %tr
-          %td= t(:origin_name)
+          %td= t('attributes.origin_name')
           %td= @activity.origin_model&.full_name
         - unless @activity.payload[:changes].blank?
           %tr
-            %td= t(:changes)
+            %td= t('attributes.changes')
             %td
               %ul.list-unstyled
                 - @activity.payload[:changes].each do |attr, changes|
