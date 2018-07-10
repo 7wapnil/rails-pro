@@ -18,7 +18,7 @@ module Account
 
     def resolve(customer)
       Audit::Service.call(target: 'Customer',
-                          action: 'login',
+                          action: :logged,
                           origin_kind: :customer,
                           origin_id: customer.id)
 
