@@ -16,7 +16,7 @@
   %tbody
     - @bonuses.each do |bonus|
       %tr
-        %td= bonus.code
+        %td= link_to bonus.code, backoffice_bonus_path(bonus)
         %td= bonus.kind
         %td= bonus.rollover_multiplier
         %td= bonus.min_deposit
