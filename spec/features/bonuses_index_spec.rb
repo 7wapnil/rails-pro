@@ -38,5 +38,95 @@ describe 'Bonuses#index' do
         expect(page).not_to have_selector('ul.pagination')
       end
     end
+
+    context 'search by code' do
+      before do
+        create :bonus, code: 'ARCANE100'
+        create :bonus, code: 'WELCOME500'
+        create :bonus, code: 'BETFORFREE'
+
+        visit backoffice_bonuses_path
+
+        within 'form#bonus_search' do
+          fill_in :query_code_cont, with: 'welcome'
+          click_submit
+        end
+      end
+
+      it 'finds bonus by code' do
+        within 'table.table tbody' do
+          expect(page).to have_content 'WELCOME500'
+        end
+      end
+
+      it 'does not include bonus not matching search criteria' do
+        within 'table.table tbody' do
+          expect(page).not_to have_content 'ARCANE100'
+          expect(page).not_to have_content 'BETFORFREE'
+        end
+      end
+    end
+
+    context 'filter by kind' do
+      before do
+        create :bonus, code: 'ARCANE100', kind: Bonus.kinds[:deposit]
+        create :bonus, code: 'WELCOME500', kind: Bonus.kinds[:deposit]
+        create :bonus, code: 'BETFORFREE', kind: Bonus.kinds[:free_bet]
+
+        visit backoffice_bonuses_path
+
+        within 'form#bonus_search' do
+          select :free_bet, from: :query_kind_eq
+          click_submit
+        end
+      end
+
+      it 'filters bonuses by kind' do
+        within 'table.table tbody' do
+          expect(page).to have_content 'BETFORFREE'
+        end
+      end
+
+      it 'does not include bonus not matching filter criteria' do
+        within 'table.table tbody' do
+          expect(page).not_to have_content 'ARCANE100'
+          expect(page).not_to have_content 'WELCOME500'
+        end
+      end
+    end
+
+    context 'sorting' do
+      before do
+        create :bonus, code: 'ARCANE100', expires_at: Date.today.end_of_week
+        create :bonus, code: 'WELCOME500', expires_at: Date.today.end_of_month
+        create :bonus, code: 'BETFORFREE', expires_at: Date.today.end_of_year
+
+        visit backoffice_bonuses_path
+      end
+
+      it 'sorts by code' do
+        within 'table.table thead' do
+          click_on I18n.t('attributes.code')
+        end
+
+        first_row = all('table.table tbody tr').first
+        last_row = all('table.table tbody tr').last
+
+        expect(first_row).to have_content 'ARCANE100'
+        expect(last_row).to have_content 'WELCOME500'
+      end
+
+      it 'sorts by expires_at' do
+        within 'table.table thead' do
+          click_on I18n.t('attributes.expires_at')
+        end
+
+        first_row = all('table.table tbody tr').first
+        last_row = all('table.table tbody tr').last
+
+        expect(first_row).to have_content 'ARCANE100'
+        expect(last_row).to have_content 'BETFORFREE'
+      end
+    end
   end
 end

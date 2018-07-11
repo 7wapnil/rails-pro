@@ -11,9 +11,9 @@
       %th= t('attributes.min_odds_per_bet')
       %th= t('attributes.valid_for_days')
       %th= sort_link @search, :expires_at, t('attributes.expires_at')
+    = render 'search'
 
   %tbody
-    = render 'search'
     - @bonuses.each do |bonus|
       %tr
         %td= bonus.code
