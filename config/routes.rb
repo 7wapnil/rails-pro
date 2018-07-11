@@ -9,7 +9,7 @@ Rails.application.routes.draw do
 
   namespace :backoffice, path: '' do
     constraints subdomain: 'backend' do
-      resources :bonuses, only: %[index]
+      resources :bonuses, only: %i[index]
 
       resources :customers, only: %i[index show] do
         member do

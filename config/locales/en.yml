@@ -52,7 +52,9 @@ en:
     wallet: Wallet
     balance: Balance
     bonus: Bonus
-    bonuses: Bonuses
+    bonuses:
+      one: Bonus
+      other: Bonuses
     entry_request:
       flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
 

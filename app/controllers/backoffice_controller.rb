@@ -9,7 +9,7 @@ class BackofficeController < ActionController::Base
     query = params[:query].dup
     return unless query
 
-    query.each { |key, value| query[key] = value.delete(' ') }
+    query.each { |key, value| query[key] = value.squish }
     query
   end
 end

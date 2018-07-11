@@ -1,6 +1,7 @@
 class Bonus < ApplicationRecord
   enum kind: {
-    deposit: 0
+    deposit: 0,
+    free_bet: 1
   }
 
   validates :code,

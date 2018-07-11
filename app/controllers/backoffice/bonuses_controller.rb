@@ -1,7 +1,8 @@
 module Backoffice
   class BonusesController < BackofficeController
     def index
-      @bonuses = Bonus.all.page(params[:page])
+      @search = Bonus.search(query_params)
+      @bonuses = @search.result.page(params[:page])
     end
   end
 end

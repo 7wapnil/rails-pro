@@ -1,0 +1,22 @@
+= search_form_for @search,
+                  url: backoffice_bonuses_path do |f|
+  %tr
+    %th
+      = f.label :code_cont, class: 'sr-only'
+      = f.search_field :code_cont,
+                       class: 'form-control',
+                       placeholder: t(:search, subject: :code),
+                       autocomplete: :off
+
+    %th
+      = f.label :kind_eq, class: 'sr-only'
+      = f.select :kind_eq,
+                 Bonus.kinds,
+                 {},
+                 { class: 'form-control' }
+    %th
+    %th
+    %th
+    %th
+    %th
+    %th= f.submit class: 'btn btn-outline-dark btn-block'

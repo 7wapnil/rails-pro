@@ -1,18 +1,19 @@
-%h1.display-4= t('entities.bonuses')
+%h1.display-4= t('entities.bonuses', count: @bonuses.count)
 
 %table.table
   %thead
     %tr
-      %th= t('attributes.code')
+      %th= sort_link @search, :code, t('attributes.code')
       %th= t('attributes.kind')
       %th= t('attributes.rollover_multiplier')
       %th= t('attributes.min_deposit')
       %th= t('attributes.max_deposit_match')
       %th= t('attributes.min_odds_per_bet')
       %th= t('attributes.valid_for_days')
-      %th= t('attributes.expires_at')
+      %th= sort_link @search, :expires_at, t('attributes.expires_at')
 
   %tbody
+    = render 'search'
     - @bonuses.each do |bonus|
       %tr
         %td= bonus.code
