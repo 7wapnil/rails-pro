@@ -106,7 +106,7 @@ describe 'Customers#index' do
 
       it 'trims whitespaces from the query' do
         within 'table' do
-          fill_in :query_username_cont, with: 'j oh n '
+          fill_in :query_username_cont, with: '  john '
           click_submit
         end
 
