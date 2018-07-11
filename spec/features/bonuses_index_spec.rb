@@ -93,6 +93,19 @@ describe 'Bonuses#index' do
           expect(page).not_to have_content 'WELCOME500'
         end
       end
+
+      it 'removes kind filter' do
+        within 'form#bonus_search' do
+          select '', from: :query_kind_eq
+          click_submit
+        end
+
+        within 'table.table tbody' do
+          expect(page).to have_content 'ARCANE100'
+          expect(page).to have_content 'WELCOME500'
+          expect(page).to have_content 'BETFORFREE'
+        end
+      end
     end
 
     context 'sorting' do
