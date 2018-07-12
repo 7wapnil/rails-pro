@@ -4,16 +4,20 @@ en:
   sign_out: Sign Out
   create: Create
   save: Save
-
-  edit_profile: Edit Profile
-
   back: Back
   add: Add
+  edit: Edit
+  delete: Delete
   confirm: Confirm
+
   created: "%{instance} created"
+  updated: "%{instance} updated"
   new_instance: "New %{instance}"
+  edit_instance: "Edit %{instance}"
 
   says_at: "%{who} at %{when}"
+
+  edit_profile: Edit Profile
 
   note: Note
 

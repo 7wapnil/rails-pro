@@ -53,4 +53,26 @@ describe 'Bonuses' do
       expect_to_have_notification success_message
     end
   end
+
+  describe '#update' do
+    subject { create(:bonus) }
+
+    before do
+      visit backoffice_bonus_path(subject)
+    end
+
+    it 'updates an existing bonus' do
+      visit edit_backoffice_bonus_path(subject)
+
+      within 'form' do
+        fill_in :bonus_rollover_multiplier, with: 100
+        click_submit
+      end
+
+      success_message = I18n.t(:updated, instance: subject.code)
+
+      expect(current_path).to eq backoffice_bonus_path(subject)
+      expect_to_have_notification success_message
+    end
+  end
 end

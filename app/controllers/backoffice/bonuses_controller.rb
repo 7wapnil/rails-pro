@@ -13,8 +13,12 @@ module Backoffice
       @bonus = Bonus.new
     end
 
+    def edit
+      @bonus = Bonus.find(params[:id])
+    end
+
     def create
-      @bonus = Bonus.new(create_params)
+      @bonus = Bonus.new(bonus_params)
 
       if @bonus.save
         redirect_to(backoffice_bonus_path(@bonus),
@@ -24,9 +28,20 @@ module Backoffice
       end
     end
 
+    def update
+      @bonus = Bonus.find(params[:id])
+
+      if @bonus.update(bonus_params)
+        redirect_to(backoffice_bonus_path(@bonus),
+                    notice: t(:updated, instance: @bonus.code))
+      else
+        render :edit
+      end
+    end
+
     private
 
-    def create_params
+    def bonus_params # rubocop:disable Metrics/MethodLength
       params
         .require(:bonus)
         .permit(:code,
