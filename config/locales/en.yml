@@ -81,7 +81,7 @@ en:
     origin_kind: Origin type
     origin_id: Origin ID
     origin_name: Origin name
-    changes: Changes
+    info: Info
 
   time:
     formats:

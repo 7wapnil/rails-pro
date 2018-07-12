@@ -7,22 +7,19 @@ describe Audit::Service do
 
   context 'log entry' do
     it 'creates a log entry' do
-      target = 'Customer'
-      action = 'create'
-      payload = { id: 1, changes: { name: %i[From To] } }
+      allow(AuditLog).to receive(:create!)
 
-      Audit::Service.call target: target,
-                          action: action,
+      event = :customer_created
+      Audit::Service.call event: event,
                           origin_kind: :user,
-                          origin_id: user.id,
-                          payload: payload
+                          origin_id: user.id
 
       expect(AuditLog)
-        .to have_received(:create)
-        .with(target: target,
-              action: action,
-              origin: { kind: :user, id: user.id },
-              payload: payload)
+        .to have_received(:create!)
+        .with(event: event,
+              origin_kind: :user,
+              origin_id: user.id,
+              context: {})
     end
   end
 end

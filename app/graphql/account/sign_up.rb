@@ -3,12 +3,17 @@ module Account
     argument :input, !Account::RegisterInput
     type Account::AccountType
 
-    def call(_obj, args, _ctx)
+    def auth_protected?
+      false
+    end
+
+    def resolve(_obj, args)
       input = args[:input]
       return unless input
 
-      attributes = input.to_h.merge(origin_kind: :customer)
-      customer = Customer.create!(attributes)
+      customer = Customer.create!(input.to_h)
+      @current_customer = customer
+      log_record_event :customer_signed_up, customer
       OpenStruct.new(user: customer,
                      token: JwtService.encode(id: customer.id,
                                               username: customer.username,

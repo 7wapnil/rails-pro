@@ -15,7 +15,7 @@ module Backoffice
       if entry_request.save
         EntryRequestProcessingJob.perform_later(entry_request)
 
-        log_event :entry_request_added, { id: entry_request.id }
+        log_record_event :entry_request_created, entry_request
 
         flash[:success] = t('entities.entry_request.flash')
         redirect_to account_management_backoffice_customer_path(entry_request.customer) # rubocop:disable Metrics/LineLength

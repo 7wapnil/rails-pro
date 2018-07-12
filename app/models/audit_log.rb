@@ -15,4 +15,23 @@ class AuditLog
             :origin_kind,
             :origin_id,
             presence: true
+
+  def origin
+    self[:origin_kind]
+      .to_s
+      .camelize
+      .constantize
+      .find_by(id: self[:origin_id])
+  end
+
+  def origin_name
+    origin&.full_name
+  end
+
+  def interpolation
+    {
+      origin_kind: origin_kind,
+      origin_name: origin_name
+    }.merge(context.attributes.symbolize_keys)
+  end
 end

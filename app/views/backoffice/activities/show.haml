@@ -4,26 +4,21 @@
       %table.table
         %tr
           %td= t('attributes.action')
-          %td= @formatter.format_action(@activity)
+          %td= t("events.#{@activity.event}", @activity.interpolation)
         %tr
           %td= t('attributes.created_at')
           %td= l(@activity.created_at, format: :long)
         %tr
-          %td= t('attributes.origin_kind')
-          %td= @activity.origin[:kind]
-        %tr
           %td= t('attributes.origin_id')
-          %td= @activity.origin[:id]
+          %td= @activity.origin_id
         %tr
-          %td= t('attributes.origin_name')
-          %td= @activity.origin_model&.full_name
-        - unless @activity.payload[:changes].blank?
-          %tr
-            %td= t('attributes.changes')
-            %td
-              %ul.list-unstyled
-                - @activity.payload[:changes].each do |attr, changes|
-                  %li= "'#{attr}' changed from '#{changes.first}' to '#{changes.last}'"
+          %td= t('attributes.info')
+          %td
+            %ul.list-unstyled
+              - @activity.context.attributes.each do |attr, value|
+                %li
+                  %b= "#{attr}: "
+                  %span= value
 
       %hr
       = link_back

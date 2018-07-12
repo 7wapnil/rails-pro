@@ -1,4 +1,4 @@
-describe 'GraphQL#SignIn' do
+describe 'GraphQL#SignUp' do
   let(:context) { {} }
   let(:variables) { {} }
   let(:result) do

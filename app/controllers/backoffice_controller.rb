@@ -19,4 +19,8 @@ class BackofficeController < ApplicationController
                         origin_id: current_user&.id,
                         context: context)
   end
+
+  def log_record_event(event, record)
+    log_event event, record.loggable_attributes
+  end
 end
