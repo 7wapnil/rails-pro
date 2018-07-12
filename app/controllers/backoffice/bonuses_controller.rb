@@ -39,6 +39,13 @@ module Backoffice
       end
     end
 
+    def destroy
+      @bonus = Bonus.find(params[:id])
+      @bonus.destroy!
+      redirect_to(backoffice_bonuses_path,
+                  notice: t(:deleted, instance: t('entities.bonus')))
+    end
+
     private
 
     def bonus_params # rubocop:disable Metrics/MethodLength

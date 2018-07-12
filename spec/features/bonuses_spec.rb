@@ -58,12 +58,10 @@ describe 'Bonuses' do
     subject { create(:bonus) }
 
     before do
-      visit backoffice_bonus_path(subject)
+      visit edit_backoffice_bonus_path(subject)
     end
 
     it 'updates an existing bonus' do
-      visit edit_backoffice_bonus_path(subject)
-
       within 'form' do
         fill_in :bonus_rollover_multiplier, with: 100
         click_submit
@@ -73,6 +71,27 @@ describe 'Bonuses' do
 
       expect(current_path).to eq backoffice_bonus_path(subject)
       expect_to_have_notification success_message
+    end
+  end
+
+  describe '#destroy' do
+    subject { create(:bonus) }
+
+    before do
+      visit backoffice_bonus_path(subject)
+      click_on I18n.t(:delete)
+    end
+
+    it 'deletes an existing bonus' do
+      success_message = I18n.t(:deleted, instance: I18n.t('entities.bonus'))
+
+      expect(current_path).to eq backoffice_bonuses_path
+      expect_to_have_notification success_message
+      expect(Bonus.find_by(id: subject.id)).to be nil
+    end
+
+    it 'is still possible to recover' do
+      expect(Bonus.with_deleted.find_by(id: subject.id)).to be_present
     end
   end
 end

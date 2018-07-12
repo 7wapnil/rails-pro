@@ -24,4 +24,6 @@ class Bonus < ApplicationRecord
             :min_deposit,
             :valid_for_days,
             numericality: { greater_than: 0 }
+
+  acts_as_paranoid
 end

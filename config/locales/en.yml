@@ -9,9 +9,11 @@ en:
   edit: Edit
   delete: Delete
   confirm: Confirm
+  confirm_sure: Are you sure?
 
   created: "%{instance} created"
   updated: "%{instance} updated"
+  deleted: "%{instance} deleted"
   new_instance: "New %{instance}"
   edit_instance: "Edit %{instance}"
 

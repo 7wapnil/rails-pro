@@ -35,4 +35,12 @@
 
       %hr
       = link_back
-      = link_to t(:edit), edit_backoffice_bonus_path(@bonus), class: 'btn btn-outline-dark'
+      = link_to t(:edit),
+                edit_backoffice_bonus_path(@bonus),
+                class: 'btn btn-outline-dark'
+
+      = link_to t(:delete),
+                backoffice_bonus_path(@bonus),
+                class: 'btn btn-outline-dark',
+                method: :delete,
+                data: { confirm: t(:confirm_sure) }
