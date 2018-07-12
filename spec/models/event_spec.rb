@@ -1,6 +1,4 @@
 describe Event do
-  it_should_behave_like 'audit model', factory: :event
-
   it { should belong_to(:title) }
   it { should have_many(:markets) }
   it { should have_many(:scoped_events) }

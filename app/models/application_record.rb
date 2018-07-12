@@ -9,15 +9,15 @@ class ApplicationRecord < ActiveRecord::Base
   attr_accessor :origin_kind, :origin_id
 
   after_create do
-    log_event :created, id: id, changes: filter_changes
+    # log_event :created, id: id, changes: filter_changes
   end
 
   after_update do
-    log_event :updated, id: id, changes: filter_changes
+    # log_event :updated, id: id, changes: filter_changes
   end
 
   after_destroy do
-    log_event :destroyed, id: id
+    # log_event :destroyed, id: id
   end
 
   def log_event(action, payload)

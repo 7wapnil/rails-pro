@@ -1,6 +1,4 @@
 describe Balance do
-  it_should_behave_like 'audit model', factory: :balance
-
   it { should belong_to(:wallet) }
   it { should have_many(:balance_entries) }
   it { is_expected.to define_enum_for :kind }

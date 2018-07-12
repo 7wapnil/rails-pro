@@ -5,23 +5,14 @@ class AuditLog
 
   default_scope { order(created_at: :desc) }
 
-  field :target, type: String
-  field :action, type: String
-  field :origin, type: Hash
-  field :payload, type: Hash
+  embeds_one :context, class_name: 'AuditLogContext', inverse_of: :audit_log
 
-  validates :target,
-            :action,
-            :origin,
+  field :event, type: String
+  field :origin_kind, type: String
+  field :origin_id, type: Integer
+
+  validates :event,
+            :origin_kind,
+            :origin_id,
             presence: true
-
-  def origin_model
-    return if self[:origin][:kind].blank? && self[:origin][:id].blank?
-
-    self[:origin][:kind]
-      .to_s
-      .camelize
-      .constantize
-      .find_by(id: self[:origin][:id])
-  end
 end

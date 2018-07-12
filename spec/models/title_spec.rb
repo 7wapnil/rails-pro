@@ -1,6 +1,4 @@
 describe Title do
-  it_should_behave_like 'audit model', factory: :title
-
   it { should have_many(:events) }
   it { should have_many(:event_scopes) }
 
