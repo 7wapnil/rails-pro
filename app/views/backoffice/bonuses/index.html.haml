@@ -1,4 +1,6 @@
-%h1.display-4= t('entities.bonuses', count: @bonuses.count)
+%h1.display-4
+  = t('entities.bonuses', count: @bonuses.count)
+  = link_to t(:create), new_backoffice_bonus_path, class: 'btn btn-outline-primary float-right'
 
 %table.table
   %thead
