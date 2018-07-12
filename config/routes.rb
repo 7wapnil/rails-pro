@@ -30,6 +30,8 @@ Rails.application.routes.draw do
 
       resource :dashboard, only: :show
 
+      resources :activities, only: %i[index show]
+
       root 'dashboards#show'
     end
   end

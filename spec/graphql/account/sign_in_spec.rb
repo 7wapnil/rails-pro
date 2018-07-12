@@ -73,5 +73,11 @@ describe 'GraphQL#SignIn' do
       expect(result['data']['signIn']['token']).not_to be_nil
       expect(result['data']['signIn']['user']).not_to be_nil
     end
+
+    it 'should log audit event' do
+      allow(Audit::Service).to receive(:call)
+      expect(result['data']['signIn']['token']).not_to be_nil
+      expect(Audit::Service).to have_received(:call)
+    end
   end
 end

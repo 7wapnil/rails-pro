@@ -64,6 +64,11 @@ en:
       other: Bonuses
     entry_request:
       flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
+    activity: Activity
+    activities:
+      zero: No activities
+      one: 1 activity
+      other: "%{count} activities"
 
   attributes:
     username: Username
@@ -89,6 +94,12 @@ en:
     min_deposit: Min deposit
     valid_for_days: Valid for days
     expires_at: Expires at
+    created_at: Created at
+    action: Action
+    origin_kind: Origin type
+    origin_id: Origin ID
+    origin_name: Origin name
+    changes: Changes
 
   time:
     formats:

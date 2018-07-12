@@ -55,6 +55,7 @@ module Backoffice
                                                     kind
                                                     min_amount
                                                     max_amount])
+        .merge(origin_params)
     end
   end
 end

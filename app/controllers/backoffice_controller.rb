@@ -1,4 +1,4 @@
-class BackofficeController < ActionController::Base
+class BackofficeController < ApplicationController
   layout 'backoffice'
 
   before_action :authenticate_user!
@@ -11,5 +11,10 @@ class BackofficeController < ActionController::Base
 
     query.each { |key, value| query[key] = value.squish }
     query
+  end
+
+  def origin_params
+    { origin_kind: :user,
+      origin_id: current_user&.id }
   end
 end
