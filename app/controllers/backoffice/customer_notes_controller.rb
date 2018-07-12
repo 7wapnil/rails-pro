@@ -4,6 +4,8 @@ module Backoffice
       note = CustomerNote.new(customer_note_params)
 
       if note.save
+        log_event :note_added, { id: note.id,
+                                              content: note.content}
         redirect_to notes_backoffice_customer_path(note.customer)
       else
         flash[:error] = note.errors.full_messages

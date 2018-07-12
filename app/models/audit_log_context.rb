@@ -9,8 +9,10 @@ class AuditLogContext
     self[:updates]
   end
 
-  def updates=(value)
-    self[:updates] = value.slice!(:created_at,
+  def updates=(record)
+    self[:updates] = record
+                       .previous_changes
+                       .slice!(:created_at,
                                 :updated_at,
                                 :deleted_at,
                                 :last_sign_in_ip,

@@ -30,7 +30,7 @@ module Backoffice
 
       if @label.update(label_params)
         log_event :label_updated, { id: @label.id,
-                                                  updates: @label.previous_changes }
+                                                  updates: @label }
         redirect_to backoffice_labels_path
       else
         render 'edit'
@@ -40,6 +40,7 @@ module Backoffice
     def destroy
       @label = Label.find(params[:id])
       @label.destroy
+      log_event :label_deleted, { id: @label.id }
 
       redirect_to backoffice_labels_path
     end

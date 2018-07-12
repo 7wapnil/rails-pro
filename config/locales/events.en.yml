@@ -1,0 +1,3 @@
+en:
+  events:
+    currency_added: "Currency added by %{origin_name}"

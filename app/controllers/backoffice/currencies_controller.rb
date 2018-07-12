@@ -28,6 +28,9 @@ module Backoffice
       @currency = Currency.new(currency_params)
 
       if @currency.save
+        log_event :currency_added, { id: @currency.id,
+                                                  name: @currency.name,
+                                                  code: @currency.code }
         redirect_to backoffice_currencies_path
       else
         render 'new'
@@ -38,6 +41,8 @@ module Backoffice
       @currency = Currency.find(params[:id])
 
       if @currency.update(currency_params)
+        log_event :currency_updated, { id: @currency.id,
+                                                    updates: @currency}
         redirect_to backoffice_currencies_path
       else
         render 'edit'
