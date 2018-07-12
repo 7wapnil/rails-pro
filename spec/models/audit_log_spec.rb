@@ -12,7 +12,7 @@ describe AuditLog do
     AuditLog.create!(event: 'test.event',
                      origin_kind: :user,
                      origin_id: 1,
-                     context: { customer_id: customer.id,
-                                updates: { name: 'hello' }})
+                     context: { id: customer.id,
+                                updates: customer.previous_changes })
   end
 end

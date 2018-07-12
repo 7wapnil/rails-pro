@@ -17,6 +17,8 @@ module Backoffice
       @label = Label.new(label_params)
 
       if @label.save
+        log_event :label_created, { id: @label.id,
+                                                  name: @label.name }
         redirect_to backoffice_labels_path
       else
         render 'new'
@@ -27,6 +29,8 @@ module Backoffice
       @label = Label.find(params[:id])
 
       if @label.update(label_params)
+        log_event :label_updated, { id: @label.id,
+                                                  updates: @label.previous_changes }
         redirect_to backoffice_labels_path
       else
         render 'edit'
@@ -43,7 +47,7 @@ module Backoffice
     private
 
     def label_params
-      params.require(:label).permit(:name, :description).merge(origin_params)
+      params.require(:label).permit(:name, :description)
     end
   end
 end

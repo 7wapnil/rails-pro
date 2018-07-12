@@ -1,18 +1,17 @@
 module Audit
   class Service < ApplicationService
-    def initialize(target:, action:, origin_kind:, origin_id:, payload: {})
-      @target = target
-      @action = action
+    def initialize(event:, origin_kind:, origin_id:, context:)
+      @event = event
       @origin_kind = origin_kind
       @origin_id = origin_id
-      @payload = payload
+      @context = context
     end
 
     def call
-      AuditLog.create(target: @target,
-                      action: @action,
-                      origin: { kind: @origin_kind, id: @origin_id },
-                      payload: @payload)
+      AuditLog.create!(event: @event,
+                      origin_kind: @origin_kind,
+                      origin_id: @origin_id,
+                      context: @context)
     end
   end
 end
