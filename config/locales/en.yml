@@ -11,6 +11,7 @@ en:
   add: Add
   confirm: Confirm
   created: "%{instance} created"
+  new_instance: "New %{instance}"
 
   says_at: "%{who} at %{when}"
 
