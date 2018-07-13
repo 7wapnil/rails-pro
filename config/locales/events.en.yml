@@ -7,4 +7,4 @@ en:
     label_created: "Label '%{name}' created by %{origin_kind} %{origin_name}"
     label_updated: "Label '%{name}' updated by %{origin_kind} %{origin_name}"
     label_deleted: "Label '%{name}' deleted by %{origin_kind} %{origin_name}"
-    note_created: "New note for %{target} added by %{origin_kind} %{origin_name}"
+    note_created: "New note for customer added by %{origin_kind} %{origin_name}"
