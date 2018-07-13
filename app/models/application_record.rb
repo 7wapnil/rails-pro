@@ -11,6 +11,6 @@ class ApplicationRecord < ActiveRecord::Base
               :last_sign_in_ip,
               :current_sign_in_ip,
               :encrypted_password)
-      .merge(target_id: id)
+      .merge(target_id: id, target_class: self.class.name)
   end
 end

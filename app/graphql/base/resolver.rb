@@ -23,7 +23,7 @@ module Base
 
     def log_event(event, context)
       Audit::Service.call(event: event,
-                          origin_kind: :user,
+                          origin_kind: :customer,
                           origin_id: @current_customer&.id,
                           context: context)
     end

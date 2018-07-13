@@ -28,10 +28,21 @@ class AuditLog
     origin&.full_name
   end
 
+  def target
+    return nil unless self[:context][:target_class]
+    self[:context][:target_class]
+      .to_s
+      .camelize
+      .constantize
+      .find_by(id: self[:context][:target_id])
+  end
+
   def interpolation
     {
+      origin_id: origin_id,
       origin_kind: origin_kind,
-      origin_name: origin_name
+      origin_name: origin_name,
+      target: target
     }.merge(context.attributes.symbolize_keys)
   end
 end
