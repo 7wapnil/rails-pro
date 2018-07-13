@@ -87,7 +87,7 @@ en:
     initiator: Initiator
     comment: Comment
     code: Code
-    rollover_multiplier: Rollover
+    rollover_multiplier: Bonus rollover
     max_rollover_per_bet: Max rollover per bet
     max_deposit_match: Max amount
     min_odds_per_bet: Min odds per bet
