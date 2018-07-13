@@ -6,6 +6,7 @@ box:
 
 services:
   - postgres
+  - mongo:3.6
 
 build:
   steps:
