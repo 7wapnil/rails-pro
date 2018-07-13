@@ -13,8 +13,14 @@ class BackofficeController < ApplicationController
     query
   end
 
-  def origin_params
-    { origin_kind: :user,
-      origin_id: current_user&.id }
+  def log_event(event, context)
+    Audit::Service.call(event: event,
+                        origin_kind: :user,
+                        origin_id: current_user&.id,
+                        context: context)
+  end
+
+  def log_record_event(event, record)
+    log_event event, record.loggable_attributes
   end
 end

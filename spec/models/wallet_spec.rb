@@ -1,6 +1,4 @@
 describe Wallet do
-  it_should_behave_like 'audit model', factory: :wallet
-
   it { should belong_to(:customer) }
   it { should belong_to(:currency) }
   it { should have_many(:balances) }

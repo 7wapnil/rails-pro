@@ -14,6 +14,9 @@ module Backoffice
 
       if entry_request.save
         EntryRequestProcessingJob.perform_later(entry_request)
+
+        log_record_event :entry_request_created, entry_request
+
         flash[:success] = t('entities.entry_request.flash')
         redirect_to account_management_backoffice_customer_path(entry_request.customer) # rubocop:disable Metrics/LineLength
       else
@@ -29,7 +32,6 @@ module Backoffice
         .require(:entry_request)
         .permit(:customer_id, :currency_id, :amount, :kind, :origin, :comment)
         .merge(initiator: current_user)
-        .merge(origin_params)
     end
   end
 end

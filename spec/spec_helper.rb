@@ -45,10 +45,9 @@ RSpec.configure do |config|
   # triggering implicit auto-inclusion in groups with matching metadata.
   config.shared_context_metadata_behavior = :apply_to_host_groups
 
-  # Mock audit service globally to avoid trying
-  # to connect to MongoDB
+  # Drop all mongo record before each test
   config.before(:each) do
-    allow(AuditLog).to receive(:create)
+    AuditLog.delete_all
   end
 
   # The settings below are suggested to provide a good initial experience

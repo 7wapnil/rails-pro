@@ -1,6 +1,4 @@
 describe EntryRequest do
-  it_should_behave_like 'audit model', factory: :entry_request
-
   it { should belong_to(:customer) }
   it { should belong_to(:currency) }
   it { should belong_to(:initiator) }

@@ -5,23 +5,44 @@ class AuditLog
 
   default_scope { order(created_at: :desc) }
 
-  field :target, type: String
-  field :action, type: String
-  field :origin, type: Hash
-  field :payload, type: Hash
+  embeds_one :context, class_name: 'AuditLogContext', inverse_of: :audit_log
 
-  validates :target,
-            :action,
-            :origin,
+  field :event, type: String
+  field :origin_kind, type: String
+  field :origin_id, type: Integer
+
+  validates :event,
+            :origin_kind,
+            :origin_id,
             presence: true
 
-  def origin_model
-    return if self[:origin][:kind].blank? && self[:origin][:id].blank?
-
-    self[:origin][:kind]
+  def origin
+    self[:origin_kind]
       .to_s
       .camelize
       .constantize
-      .find_by(id: self[:origin][:id])
+      .find_by(id: self[:origin_id])
+  end
+
+  def origin_name
+    origin&.full_name
+  end
+
+  def target
+    return nil unless self[:context][:target_class]
+    self[:context][:target_class]
+      .to_s
+      .camelize
+      .constantize
+      .find_by(id: self[:context][:target_id])
+  end
+
+  def interpolation
+    {
+      origin_id: origin_id,
+      origin_kind: origin_kind,
+      origin_name: origin_name,
+      target: target
+    }.merge(context.attributes.symbolize_keys)
   end
 end

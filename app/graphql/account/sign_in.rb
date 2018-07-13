@@ -3,12 +3,18 @@ module Account
     argument :input, !Account::AuthInput
     type Account::AccountType
 
-    def call(_obj, args, _ctx)
+    def auth_protected?
+      false
+    end
+
+    def resolve(_obj, args)
       username = args[:input][:username]
       customer = Customer.find_for_authentication(username: username)
 
       if customer&.valid_password?(args[:input][:password])
-        resolve(customer)
+        @current_customer = customer
+        log_record_event :customer_signed_in, customer
+        response(customer)
       else
         GraphQL::ExecutionError.new('Wrong email or password')
       end
@@ -16,12 +22,7 @@ module Account
 
     private
 
-    def resolve(customer)
-      Audit::Service.call(target: 'Customer',
-                          action: :logged,
-                          origin_kind: :customer,
-                          origin_id: customer.id)
-
+    def response(customer)
       OpenStruct.new(user: customer,
                      token: JwtService.encode(id: customer.id,
                                               username: customer.username,

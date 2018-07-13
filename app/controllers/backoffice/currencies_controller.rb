@@ -28,6 +28,7 @@ module Backoffice
       @currency = Currency.new(currency_params)
 
       if @currency.save
+        log_record_event :currency_created, @currency
         redirect_to backoffice_currencies_path
       else
         render 'new'
@@ -38,6 +39,7 @@ module Backoffice
       @currency = Currency.find(params[:id])
 
       if @currency.update(currency_params)
+        log_record_event :currency_updated, @currency
         redirect_to backoffice_currencies_path
       else
         render 'edit'
@@ -55,7 +57,6 @@ module Backoffice
                                                     kind
                                                     min_amount
                                                     max_amount])
-        .merge(origin_params)
     end
   end
 end
