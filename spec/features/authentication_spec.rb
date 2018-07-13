@@ -1,7 +1,8 @@
 describe 'Authentication' do
   context 'back office routes' do
     context 'collection' do
-      backoffice_collection_paths = %i[backoffice_customers_path
+      backoffice_collection_paths = %i[backoffice_bonuses_path
+                                       backoffice_customers_path
                                        backoffice_labels_path
                                        new_backoffice_label_path
                                        backoffice_entry_requests_path
@@ -22,6 +23,7 @@ describe 'Authentication' do
 
       customer_member_paths = %i[backoffice_customer_path
                                  activity_backoffice_customer_path
+                                 account_management_backoffice_customer_path
                                  notes_backoffice_customer_path]
 
       customer_member_paths.each do |path|

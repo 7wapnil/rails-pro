@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_06_28_121337) do
+ActiveRecord::Schema.define(version: 2018_07_06_135455) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -44,6 +44,21 @@ ActiveRecord::Schema.define(version: 2018_06_28_121337) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["wallet_id"], name: "index_balances_on_wallet_id"
+  end
+
+  create_table "bonuses", force: :cascade do |t|
+    t.string "code"
+    t.integer "kind"
+    t.decimal "rollover_multiplier"
+    t.decimal "max_rollover_per_bet"
+    t.decimal "max_deposit_match"
+    t.decimal "min_odds_per_bet"
+    t.decimal "min_deposit"
+    t.integer "valid_for_days"
+    t.datetime "expires_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "currencies", force: :cascade do |t|

@@ -4,15 +4,22 @@ en:
   sign_out: Sign Out
   create: Create
   save: Save
-
-  edit_profile: Edit Profile
-
   back: Back
   add: Add
+  edit: Edit
+  delete: Delete
   confirm: Confirm
+  confirm_sure: Are you sure?
+
   created: "%{instance} created"
+  updated: "%{instance} updated"
+  deleted: "%{instance} deleted"
+  new_instance: "New %{instance}"
+  edit_instance: "Edit %{instance}"
 
   says_at: "%{who} at %{when}"
+
+  edit_profile: Edit Profile
 
   note: Note
 
@@ -51,14 +58,17 @@ en:
   entities:
     wallet: Wallet
     balance: Balance
+    bonus: Bonus
+    bonuses:
+      one: Bonus
+      other: Bonuses
     entry_request:
-     flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
+      flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
     activity: Activity
     activities:
       zero: No activities
       one: 1 activity
       other: "%{count} activities"
-
 
   attributes:
     username: Username
@@ -76,6 +86,14 @@ en:
     currency_code: Currency
     initiator: Initiator
     comment: Comment
+    code: Code
+    rollover_multiplier: Bonus rollover
+    max_rollover_per_bet: Max rollover per bet
+    max_deposit_match: Max amount
+    min_odds_per_bet: Min odds per bet
+    min_deposit: Min deposit
+    valid_for_days: Valid for days
+    expires_at: Expires at
     created_at: Created at
     action: Action
     origin_kind: Origin type
