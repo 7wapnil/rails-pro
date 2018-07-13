@@ -19,7 +19,10 @@ module Backoffice
     def activity
       @customer = Customer.find(params[:id])
       @entries = @customer.entries.page(params[:page])
-      @audit_logs = AuditLog.page(params[:page])
+      @audit_logs = AuditLog
+                    .where(origin_kind: :customer,
+                           origin_id: @customer.id)
+                    .page(params[:page])
     end
 
     def notes

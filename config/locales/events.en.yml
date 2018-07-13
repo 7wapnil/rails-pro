@@ -1,7 +1,7 @@
 en:
   events:
-    customer_signed_in: "Customer '%{origin_name}' just signed in"
-    customer_signed_up: "Customer with ID %{origin_id}, name '%{origin_name}' just signed up"
+    customer_signed_in: "Customer '%{origin_name}' (%{username}) just signed in"
+    customer_signed_up: "Customer with ID %{origin_id}, username '%{username}' just signed up"
     currency_created: "Currency '%{code}' added by %{origin_kind} %{origin_name}"
     currency_updated: "Currency '%{code}' updated by %{origin_kind} %{origin_name}"
     label_created: "Label '%{name}' created by %{origin_kind} %{origin_name}"
