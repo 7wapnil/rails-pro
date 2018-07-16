@@ -40,17 +40,11 @@ Rails.application.routes.draw do
     sessions: 'users/sessions'
   }
 
-  devise_for :customers, controllers: {
-    registrations: 'customers/registrations'
-  }
-
   authenticate :user do
     mount Sidekiq::Web => '/sidekiq'
   end
 
   post '/graphql', to: 'graphql#execute'
 
-  resource :dashboard, only: :show
-
-  root 'dashboards#show'
+  root 'graphql#execute'
 end
