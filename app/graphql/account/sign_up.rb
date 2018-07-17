@@ -12,6 +12,7 @@ module Account
       return unless input
 
       customer = Customer.create!(input.to_h)
+      customer.update_tracked_fields!(@request)
       @current_customer = customer
       log_record_event :customer_signed_up, customer
       OpenStruct.new(user: customer,

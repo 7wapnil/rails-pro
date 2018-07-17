@@ -8,7 +8,8 @@ class GraphqlController < ApplicationController
     query = params[:query]
     operation_name = params[:operationName]
     context = {
-      current_customer: current_customer
+      current_customer: current_customer,
+      request: request
     }
     result = ArcanebetSchema.execute(
       query,

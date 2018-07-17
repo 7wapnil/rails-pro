@@ -5,6 +5,7 @@ module Base
     end
 
     def call(obj, args, ctx)
+      @request = ctx[:request]
       @current_customer = ctx[:current_customer]
       check_auth
       resolve(obj, args)
