@@ -4,9 +4,7 @@
       %tbody
         - @entry_requests.each do |entry_request|
           %tr
-            %td
-              = link_to l(entry_request.created_at, format: :long),
-                        backoffice_entry_request_path(entry_request)
+            %td= link_to l(entry_request.created_at, format: :long), entry_request
             %td= t "kinds.#{entry_request.kind}"
             %td= entry_request.origin
             %td= entry_request.amount

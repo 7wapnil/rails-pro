@@ -1,8 +1,6 @@
 = card header: t(:add_entry_request), class: 'customer-entry-request-form' do
   .customer-entry-request-form
-    = simple_form_for @entry_request,
-                      method: :post,
-                      url: backoffice_entry_requests_path do |f|
+    = simple_form_for @entry_request do |f|
       = f.input :customer_id, as: :hidden
       .row
         .col-6

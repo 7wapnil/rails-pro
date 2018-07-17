@@ -10,8 +10,7 @@
       %th= t('attributes.balance')
 
   %tbody
-    = search_form_for @search,
-                      url: backoffice_customers_path do |f|
+    = search_form_for @search do |f|
       %tr
         %th
           = f.label :username_cont, class: 'sr-only'
@@ -42,7 +41,7 @@
     - @customers.each do |customer|
       %tr{ id: "customer-#{customer.id}" }
         %td
-          = link_to customer.username, backoffice_customer_path(customer)
+          = link_to customer.username, customer
           %br
           - customer.labels.each do |label|
             %span.badge.badge-info= label.name

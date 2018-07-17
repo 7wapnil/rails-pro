@@ -1,0 +1,12 @@
+= render 'customers/heading'
+
+.row
+  .col-md-3
+    .mt-4= render 'customers/navigation'
+  .col-md-9
+    .mt-4= render 'customers/balances'
+    .mt-4= render 'customers/entry_request_form'
+    .mt-4.mb-4= render 'customers/entry_requests'
+
+- content_for :js do
+  = javascript_pack_tag 'customers/navigation_links'

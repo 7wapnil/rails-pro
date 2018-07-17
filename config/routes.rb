@@ -11,26 +11,26 @@ Rails.application.routes.draw do
     constraints subdomain: 'backend' do
       resources :bonuses
 
-      resources :customers, only: %i[index show] do
-        member do
-          get :account_management
-          get :activity
-          get :notes
-          post :update_labels
-        end
-      end
+  resources :customers, only: %i[index show] do
+    member do
+      get :account_management
+      get :activity
+      get :notes
+      post :update_labels
+    end
+  end
 
-      resources :customer_notes, only: :create
+  resources :customer_notes, only: :create
 
-
-      resources :entry_requests, only: %i[index show create]
   resources :labels, only: %i[index new edit create update destroy]
 
       resources :currencies, only: %i[index new edit create update]
+  resources :entry_requests, only: %i[index show create]
 
       resource :dashboard, only: :show
 
       resources :activities, only: %i[index show]
+  resource :dashboard, only: :show
 
       root 'dashboards#show'
     end
