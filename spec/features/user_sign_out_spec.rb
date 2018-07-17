@@ -3,7 +3,7 @@ describe 'User Sign Out' do
     user = create(:admin_user)
     login_as user, scope: :user
 
-    visit backoffice_root_path
+    visit root_path
 
     within 'nav.navbar' do
       click_link I18n.t(:sign_out)

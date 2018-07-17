@@ -2,7 +2,7 @@ describe 'Currency#form' do
   context 'new currency form' do
     before do
       login_as create(:admin_user), scope: :user
-      visit new_backoffice_currency_path
+      visit new_currency_path
     end
 
     it 'shows code validation error' do
@@ -30,7 +30,7 @@ describe 'Currency#form' do
       end
       click_submit
 
-      expect(page).to have_current_path(backoffice_currencies_path)
+      expect(page).to have_current_path(currencies_path)
       expect(page).to have_content('COD')
     end
   end
@@ -42,7 +42,7 @@ describe 'Currency#form' do
 
     before do
       login_as create(:user), scope: :user
-      visit edit_backoffice_currency_path(existing_currency)
+      visit edit_currency_path(existing_currency)
     end
 
     it 'shows code validation error' do
@@ -77,7 +77,7 @@ describe 'Currency#form' do
       fill_in :currency_name, with: 'New name'
       click_submit
 
-      expect(page).to have_current_path(backoffice_currencies_path)
+      expect(page).to have_current_path(currencies_path)
       expect(page).to have_content('New name')
     end
   end

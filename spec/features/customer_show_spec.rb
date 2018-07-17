@@ -6,7 +6,7 @@ describe 'Customers#show' do
       create_list(:currency, 3)
 
       login_as create(:admin_user), scope: :user
-      visit backoffice_customer_path(subject)
+      visit customer_path(subject)
     end
 
     it 'shows account information' do

@@ -6,7 +6,7 @@ describe 'Bonuses#index' do
       create_list(:bonus, 5)
 
       login_as create(:admin_user), scope: :user
-      visit backoffice_bonuses_path
+      visit bonuses_path
     end
 
     it 'shows bonuses list' do
@@ -30,7 +30,7 @@ describe 'Bonuses#index' do
     context 'pagination' do
       it 'is shown' do
         create_list(:bonus, 10)
-        visit backoffice_bonuses_path
+        visit bonuses_path
         expect(page).to have_selector('ul.pagination')
       end
 
@@ -45,7 +45,7 @@ describe 'Bonuses#index' do
         create :bonus, code: 'WELCOME500'
         create :bonus, code: 'BETFORFREE'
 
-        visit backoffice_bonuses_path
+        visit bonuses_path
 
         within 'form#bonus_search' do
           fill_in :query_code_cont, with: 'welcome'
@@ -73,7 +73,7 @@ describe 'Bonuses#index' do
         create :bonus, code: 'WELCOME500', kind: Bonus.kinds[:deposit]
         create :bonus, code: 'BETFORFREE', kind: Bonus.kinds[:free_bet]
 
-        visit backoffice_bonuses_path
+        visit bonuses_path
 
         within 'form#bonus_search' do
           select :free_bet, from: :query_kind_eq
@@ -114,7 +114,7 @@ describe 'Bonuses#index' do
         create :bonus, code: 'WELCOME500', expires_at: Date.today.end_of_month
         create :bonus, code: 'BETFORFREE', expires_at: Date.today.end_of_year
 
-        visit backoffice_bonuses_path
+        visit bonuses_path
       end
 
       it 'sorts by code' do

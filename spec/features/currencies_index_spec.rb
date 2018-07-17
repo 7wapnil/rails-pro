@@ -6,7 +6,7 @@ describe 'Currency#index' do
       create_list(:currency, 5)
 
       login_as create(:admin_user), scope: :user
-      visit backoffice_currencies_path
+      visit currencies_path
     end
 
     it 'shows currencies list' do
@@ -21,7 +21,7 @@ describe 'Currency#index' do
     context 'pagination' do
       it 'is shown' do
         create_list(:currency, 10)
-        visit backoffice_currencies_path
+        visit currencies_path
         expect(page).to have_selector('ul.pagination')
       end
 

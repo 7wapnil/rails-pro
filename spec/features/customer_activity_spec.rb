@@ -1,6 +1,6 @@
 describe 'Customers#activity' do
   let(:customer) { create(:customer) }
-  let(:page_path) { activity_backoffice_customer_path(customer) }
+  let(:page_path) { activity_customer_path(customer) }
 
   before do
     login_as create(:admin_user), scope: :user
