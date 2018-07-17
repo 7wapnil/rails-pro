@@ -1,6 +1,6 @@
 %h1.display-4
   = t('entities.bonuses', count: @bonuses.count)
-  = link_to t(:create), new_backoffice_bonus_path, class: 'btn btn-outline-primary float-right'
+  = link_to t(:create), new_bonus_path, class: 'btn btn-outline-primary float-right'
 
 %table.table
   %thead
@@ -18,7 +18,7 @@
   %tbody
     - @bonuses.each do |bonus|
       %tr
-        %td= link_to bonus.code, backoffice_bonus_path(bonus)
+        %td= link_to bonus.code, bonus
         %td= bonus.kind
         %td= bonus.rollover_multiplier
         %td= bonus.min_deposit
