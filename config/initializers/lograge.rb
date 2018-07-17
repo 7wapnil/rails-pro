@@ -13,6 +13,7 @@ Rails.application.configure do
 
     {
       ip: controller.request.ip,
+      remote_ip: controller.request.remote_ip,
       params: logging_params,
       user_id: controller.current_user&.id,
       customer_id: controller.current_customer&.id
