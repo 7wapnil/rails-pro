@@ -13,8 +13,7 @@
     - @requests.each do |request|
       %tr{ id: "entry-request-#{request.id}" }
         %td
-          = link_to l(request.created_at, format: :long),
-                    backoffice_entry_request_path(request)
+          = link_to l(request.created_at, format: :long), request
         %td= status_badge(request.status)
         %td
           %b= t("kinds.#{request.kind}")
