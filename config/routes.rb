@@ -7,8 +7,6 @@ Rails.application.routes.draw do
     mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: '/graphql'
   end
 
-  namespace :backoffice, path: '' do
-    constraints subdomain: 'backend' do
   resources :bonuses
 
   resources :customers, only: %i[index show] do
@@ -26,14 +24,10 @@ Rails.application.routes.draw do
 
   resources :entry_requests, only: %i[index show create]
 
-      resource :dashboard, only: :show
   resources :currencies, only: %i[index new edit create update]
 
   resource :dashboard, only: :show
 
-      root 'dashboards#show'
-    end
-  end
   resources :activities, only: %i[index show]
 
   devise_for :users, controllers: {
