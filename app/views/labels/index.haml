@@ -1,11 +1,10 @@
 %h1.display-4
   = t(:labels)
-  = link_to t(:add_label), new_backoffice_label_path, { class: 'btn btn-primary float-right btn-sm' }
+  = link_to t(:add_label), new_label_path, { class: 'btn btn-primary float-right btn-sm' }
 
 %table.table
   %thead
-    = search_form_for @search,
-                      url: backoffice_labels_path do |f|
+    = search_form_for @search do |f|
       %tr
         %th
           = f.label :name_cont, class: 'sr-only'
@@ -24,10 +23,10 @@
   %tbody
     - @labels.each do |label|
       %tr{ id: "label-#{label.id}" }
-        %td= link_to label.name, edit_backoffice_label_path(label)
+        %td= link_to label.name, edit_label_path(label)
         %td= label.description
         %td= link_to t(:delete),
-          backoffice_label_path(label),
+          label,
           method: :delete,
           data: { confirm: t(:confirmation) }
 

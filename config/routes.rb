@@ -22,9 +22,9 @@ Rails.application.routes.draw do
 
       resources :customer_notes, only: :create
 
-      resources :labels, only: %i[index new edit create update destroy]
 
       resources :entry_requests, only: %i[index show create]
+  resources :labels, only: %i[index new edit create update destroy]
 
       resources :currencies, only: %i[index new edit create update]
 
