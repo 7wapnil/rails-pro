@@ -1,11 +1,10 @@
 %h1.display-4
   = t(:currencies)
-  = link_to t(:add_currency), new_backoffice_currency_path, { class: 'btn btn-primary float-right btn-sm' }
+  = link_to t(:add_currency), new_currency_path, { class: 'btn btn-primary float-right btn-sm' }
 
 %table.table
   %thead
-    = search_form_for @search,
-                      url: backoffice_currencies_path do |f|
+    = search_form_for @search do |f|
       %tr
         %th
           = f.label :code_cont, class: 'sr-only'
@@ -24,8 +23,8 @@
   %tbody
     - @currencies.each do |currency|
       %tr{ id: "currency-#{currency.id}" }
-        %td= link_to currency.code, edit_backoffice_currency_path(currency)
-        %td= link_to currency.name, edit_backoffice_currency_path(currency)
+        %td= link_to currency.code, edit_currency_path(currency)
+        %td= link_to currency.name, edit_currency_path(currency)
         %td
 
 = paginate @currencies

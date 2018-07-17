@@ -24,10 +24,10 @@ Rails.application.routes.draw do
 
   resources :labels, only: %i[index new edit create update destroy]
 
-      resources :currencies, only: %i[index new edit create update]
   resources :entry_requests, only: %i[index show create]
 
       resource :dashboard, only: :show
+  resources :currencies, only: %i[index new edit create update]
 
   resource :dashboard, only: :show
 
