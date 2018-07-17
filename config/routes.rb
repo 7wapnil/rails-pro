@@ -29,12 +29,12 @@ Rails.application.routes.draw do
 
       resource :dashboard, only: :show
 
-      resources :activities, only: %i[index show]
   resource :dashboard, only: :show
 
       root 'dashboards#show'
     end
   end
+  resources :activities, only: %i[index show]
 
   devise_for :users, controllers: {
     sessions: 'users/sessions'

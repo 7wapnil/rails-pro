@@ -9,7 +9,7 @@
   %tbody
     - @activities.each do |activity|
       %tr{ id: "activity-#{activity.id}" }
-        %td= link_to l(activity.created_at, format: :long), backoffice_activity_path(activity)
+        %td= link_to l(activity.created_at, format: :long), activity_path(activity)
         %td= t("events.#{activity.event}", activity.interpolation)
 
 = paginate @activities
