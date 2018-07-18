@@ -43,6 +43,7 @@ gem 'lograge'
 gem 'newrelic_rpm'
 gem 'paranoia', '~> 2.2'
 gem 'mongoid', '~> 6.1.0'
+gem 'httparty', '~> 0.16.2'
 
 # To be moved back to development and test group
 gem 'faker', github: 'stympy/faker', branch: 'master'
