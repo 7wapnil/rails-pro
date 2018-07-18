@@ -12,7 +12,7 @@ describe 'User Sign In' do
         click_submit
       end
 
-      expect(current_path).to eq backoffice_root_path
+      expect(current_path).to eq root_path
       expect_to_have_notification I18n.t('devise.sessions.signed_in')
     end
 
@@ -51,7 +51,7 @@ describe 'User Sign In' do
       it 'Sees own full name in navbar right corner' do
         login_as user, scope: :user
 
-        visit backoffice_root_path
+        visit root_path
 
         within 'nav.navbar' do
           expect(page).to have_content user.full_name

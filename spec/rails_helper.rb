@@ -57,4 +57,9 @@ RSpec.configure do |config|
   config.include Rails.application.routes.url_helpers, type: :feature
   config.include Warden::Test::Helpers, type: :feature
   config.include FeatureHelpers, type: :feature
+
+  # Drop all mongo record before each test
+  config.before(:each) do
+    AuditLog.delete_all
+  end
 end

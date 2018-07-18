@@ -1,6 +1,6 @@
 describe 'Customers#notes' do
   let(:customer) { create(:customer) }
-  let(:page_path) { notes_backoffice_customer_path(customer) }
+  let(:page_path) { notes_customer_path(customer) }
 
   before do
     login_as create(:admin_user), scope: :user

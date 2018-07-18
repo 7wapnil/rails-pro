@@ -18,7 +18,7 @@ describe 'EntryRequests#index' do
                   amount: 200)
 
       login_as create(:admin_user), scope: :user
-      visit backoffice_entry_requests_path
+      visit entry_requests_path
     end
 
     it 'shows entry requests list' do

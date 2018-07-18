@@ -6,7 +6,7 @@ describe 'Labels#index' do
       create_list(:label, 5)
 
       login_as create(:admin_user), scope: :user
-      visit backoffice_labels_path
+      visit labels_path
     end
 
     it 'shows labels list' do

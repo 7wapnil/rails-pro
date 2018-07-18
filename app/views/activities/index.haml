@@ -1,0 +1,15 @@
+%h1.display-4
+  = t('entities.activities', count: @activities.count)
+
+%table.table
+  %thead
+    %tr
+      %th= t('attributes.created_at')
+      %th= t('attributes.action')
+  %tbody
+    - @activities.each do |activity|
+      %tr{ id: "activity-#{activity.id}" }
+        %td= link_to l(activity.created_at, format: :long), activity_path(activity)
+        %td= t("events.#{activity.event}", activity.interpolation)
+
+= paginate @activities

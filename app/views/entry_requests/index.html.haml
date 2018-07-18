@@ -1,0 +1,27 @@
+%h1.display-4= t(:entry_requests)
+
+%table.table
+  %thead
+    %tr
+      %th= t('attributes.date')
+      %th= t('attributes.status')
+      %th= t('attributes.entry_kind')
+      %th= t('attributes.customer_name')
+      %th= t('attributes.amount')
+      %th= t('attributes.result')
+  %tbody
+    - @requests.each do |request|
+      %tr{ id: "entry-request-#{request.id}" }
+        %td
+          = link_to l(request.created_at, format: :long), request
+        %td= status_badge(request.status)
+        %td
+          %b= t("kinds.#{request.kind}")
+        %td= request.customer.full_name
+        %td
+          =number_with_precision request.amount, precision: 2
+          =request.currency.code
+        %td= request.result_message
+
+
+= paginate @requests

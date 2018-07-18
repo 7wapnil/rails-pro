@@ -2,7 +2,7 @@ describe 'Label#form' do
   context 'new label form' do
     before do
       login_as create(:admin_user), scope: :user
-      visit new_backoffice_label_path
+      visit new_label_path
     end
 
     it 'shows name validation error' do
@@ -17,7 +17,7 @@ describe 'Label#form' do
       fill_in :label_description, with: 'Label test description'
       click_submit
 
-      expect(page).to have_current_path(backoffice_labels_path)
+      expect(page).to have_current_path(labels_path)
       expect(page).to have_content('LName')
     end
   end
@@ -29,7 +29,7 @@ describe 'Label#form' do
 
     before do
       login_as create(:user), scope: :user
-      visit edit_backoffice_label_path(existing_label)
+      visit edit_label_path(existing_label)
     end
 
     it 'shows name validation error' do
@@ -43,7 +43,7 @@ describe 'Label#form' do
       fill_in :label_name, with: 'NewName'
       click_submit
 
-      expect(page).to have_current_path(backoffice_labels_path)
+      expect(page).to have_current_path(labels_path)
       expect(page).to have_content('NewName')
     end
   end
