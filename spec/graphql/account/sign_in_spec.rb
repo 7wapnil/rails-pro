@@ -1,5 +1,8 @@
 describe 'GraphQL#SignIn' do
-  let(:context) { {} }
+  let(:request) do
+    OpenStruct.new(remote_ip: Faker::Internet.ip_v4_address)
+  end
+  let(:context) { { request: request } }
   let(:variables) { {} }
   let(:result) do
     ArcanebetSchema.execute(query,
