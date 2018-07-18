@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_06_135455) do
+ActiveRecord::Schema.define(version: 2018_07_18_114959) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -158,7 +158,9 @@ ActiveRecord::Schema.define(version: 2018_07_06_135455) do
     t.integer "kind", default: 0
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "external_id"
     t.index ["event_scope_id"], name: "index_event_scopes_on_event_scope_id"
+    t.index ["external_id"], name: "index_event_scopes_on_external_id"
     t.index ["title_id"], name: "index_event_scopes_on_title_id"
   end
 
@@ -170,6 +172,8 @@ ActiveRecord::Schema.define(version: 2018_07_06_135455) do
     t.datetime "end_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "external_id"
+    t.index ["external_id"], name: "index_events_on_external_id"
     t.index ["title_id"], name: "index_events_on_title_id"
   end
 
@@ -188,7 +192,9 @@ ActiveRecord::Schema.define(version: 2018_07_06_135455) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "priority"
+    t.string "external_id"
     t.index ["event_id"], name: "index_markets_on_event_id"
+    t.index ["external_id"], name: "index_markets_on_external_id"
   end
 
   create_table "odd_values", force: :cascade do |t|
@@ -222,6 +228,8 @@ ActiveRecord::Schema.define(version: 2018_07_06_135455) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "kind", default: 0
+    t.string "external_id"
+    t.index ["external_id"], name: "index_titles_on_external_id"
   end
 
   create_table "users", force: :cascade do |t|
