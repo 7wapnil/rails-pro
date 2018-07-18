@@ -25,7 +25,7 @@ describe 'Customers#index' do
 
       within 'table.table' do
         deleted_customers.each do |customer|
-          expect(page).not_to have_content(customer.username)
+          expect(page).not_to have_content("#{customer.username} ")
           expect(page).not_to have_content(customer.email)
         end
       end
