@@ -2,29 +2,30 @@
   = t('entities.bonuses', count: @bonuses.count)
   = link_to t(:create), new_bonus_path, class: 'btn btn-outline-primary float-right'
 
-%table.table
-  %thead
-    %tr
-      %th= sort_link @search, :code, t('attributes.code')
-      %th= t('attributes.kind')
-      %th= t('attributes.rollover_multiplier')
-      %th= t('attributes.min_deposit')
-      %th= t('attributes.max_deposit_match')
-      %th= t('attributes.min_odds_per_bet')
-      %th= t('attributes.valid_for_days')
-      %th= sort_link @search, :expires_at, t('attributes.expires_at')
-    = render 'search'
-
-  %tbody
-    - @bonuses.each do |bonus|
+= search_form_for @search do |f|
+  %table.table
+    %thead
       %tr
-        %td= link_to bonus.code, bonus
-        %td= bonus.kind
-        %td= bonus.rollover_multiplier
-        %td= bonus.min_deposit
-        %td= bonus.max_deposit_match
-        %td= bonus.min_odds_per_bet
-        %td= bonus.valid_for_days
-        %td= l(bonus.expires_at)
+        %th= sort_link @search, :code, t('attributes.code')
+        %th= t('attributes.kind')
+        %th= t('attributes.rollover_multiplier')
+        %th= t('attributes.min_deposit')
+        %th= t('attributes.max_deposit_match')
+        %th= t('attributes.min_odds_per_bet')
+        %th= t('attributes.valid_for_days')
+        %th= sort_link @search, :expires_at, t('attributes.expires_at')
+      = render 'search', f: f
+
+    %tbody
+      - @bonuses.each do |bonus|
+        %tr
+          %td= link_to bonus.code, bonus
+          %td= bonus.kind
+          %td= bonus.rollover_multiplier
+          %td= bonus.min_deposit
+          %td= bonus.max_deposit_match
+          %td= bonus.min_odds_per_bet
+          %td= bonus.valid_for_days
+          %td= l(bonus.expires_at)
 
 = paginate @bonuses
