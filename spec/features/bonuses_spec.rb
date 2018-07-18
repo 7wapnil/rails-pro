@@ -7,7 +7,7 @@ describe 'Bonuses' do
     subject { create(:bonus) }
 
     before do
-      visit backoffice_bonus_path(subject)
+      visit bonus_path(subject)
     end
 
     it 'shows bonus details' do
@@ -31,7 +31,7 @@ describe 'Bonuses' do
 
   describe '#new' do
     it 'creates a new bonus' do
-      visit new_backoffice_bonus_path
+      visit new_bonus_path
 
       within 'form' do
         fill_in :bonus_code, with: 'ARCANE100'
@@ -49,7 +49,7 @@ describe 'Bonuses' do
 
       success_message = I18n.t(:created, instance: I18n.t('entities.bonus'))
 
-      expect(current_path).to eq backoffice_bonus_path(Bonus.last)
+      expect(current_path).to eq bonus_path(Bonus.last)
       expect_to_have_notification success_message
     end
   end
@@ -58,7 +58,7 @@ describe 'Bonuses' do
     subject { create(:bonus) }
 
     before do
-      visit edit_backoffice_bonus_path(subject)
+      visit edit_bonus_path(subject)
     end
 
     it 'updates an existing bonus' do
@@ -69,7 +69,7 @@ describe 'Bonuses' do
 
       success_message = I18n.t(:updated, instance: subject.code)
 
-      expect(current_path).to eq backoffice_bonus_path(subject)
+      expect(current_path).to eq bonus_path(subject)
       expect_to_have_notification success_message
     end
   end
@@ -78,14 +78,14 @@ describe 'Bonuses' do
     subject { create(:bonus) }
 
     before do
-      visit backoffice_bonus_path(subject)
+      visit bonus_path(subject)
       click_on I18n.t(:delete)
     end
 
     it 'deletes an existing bonus' do
       success_message = I18n.t(:deleted, instance: I18n.t('entities.bonus'))
 
-      expect(current_path).to eq backoffice_bonuses_path
+      expect(current_path).to eq bonuses_path
       expect_to_have_notification success_message
       expect(Bonus.find_by(id: subject.id)).to be nil
     end

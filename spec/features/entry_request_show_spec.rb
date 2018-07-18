@@ -14,7 +14,7 @@ describe 'EntryRequests#show' do
 
     before do
       login_as create(:admin_user), scope: :user
-      visit backoffice_entry_request_path(request)
+      visit entry_request_path(request)
     end
 
     it 'shows entry request info' do

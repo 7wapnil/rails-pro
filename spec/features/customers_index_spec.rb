@@ -6,7 +6,7 @@ describe 'Customers#index' do
       create_list(:customer, 5)
 
       login_as create(:admin_user), scope: :user
-      visit backoffice_customers_path
+      visit customers_path
     end
 
     it 'shows customers list' do
@@ -34,7 +34,7 @@ describe 'Customers#index' do
     context 'pagination' do
       it 'is shown' do
         create_list(:customer, 10)
-        visit backoffice_customers_path
+        visit customers_path
         expect(page).to have_selector('ul.pagination')
       end
 

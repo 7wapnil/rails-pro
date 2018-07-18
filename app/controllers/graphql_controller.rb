@@ -1,4 +1,4 @@
-class GraphqlController < ApplicationController
+class GraphqlController < ApiController
   protect_from_forgery with: :null_session
 
   respond_to :json
@@ -19,16 +19,6 @@ class GraphqlController < ApplicationController
     )
 
     render json: result
-  end
-
-  def current_customer
-    return nil if request.headers['Authorization'].blank?
-    token = request.headers['Authorization'].split(' ').last
-    return nil if token.blank?
-    result = JwtService.decode(token)
-    Customer.find_by(id: result[0]['id'])
-  rescue JWT::DecodeError
-    nil
   end
 
   private

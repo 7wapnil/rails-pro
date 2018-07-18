@@ -1,0 +1,16 @@
+= render 'customers/heading'
+
+.row
+  .col-md-3
+    .mt-4= render 'customers/navigation'
+  .col-md-9
+    .mt-4= render 'customers/account_information'
+    .mt-4= render 'customers/personal_information'
+    .mt-4.mb-4= render 'customers/contact_information'
+
+- content_for :css do
+  = stylesheet_pack_tag 'customers/labels_selector'
+
+- content_for :js do
+  = javascript_pack_tag 'customers/labels_selector'
+  = javascript_pack_tag 'customers/navigation_links'

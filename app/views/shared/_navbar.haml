@@ -1,5 +1,5 @@
-%nav.navbar.navbar-expand-lg.navbar-dark.bg-dark
-  = link_to 'ArcaneBet', root_path, class: 'navbar-brand'
+%nav.navbar.navbar-expand-lg.navbar-light.bg-light
+  = link_to 'ArcaneBet Backend', root_path, class: 'navbar-brand'
   %button.navbar-toggler{ 'aria-controls': 'navbar-content',
                           'aria-expanded': 'false',
                           'aria-label': 'Toggle navigation',
@@ -10,13 +10,38 @@
   #navbar-content.collapse.navbar-collapse
     %ul.navbar-nav.mr-auto
       %li.nav-item
-        %a.nav-link.active{ href: '#'} Esports
+        = link_to t(:customers),
+                  customers_path,
+                  class: 'nav-link',
+                  'data-target-controller': 'customers'
       %li.nav-item
-        %a.nav-link{ href: '#'} Live
+        = link_to t(:entry_requests),
+                  entry_requests_path,
+                  class: 'nav-link',
+                  'data-target-controller': 'entry_requests'
       %li.nav-item
-        %a.nav-link{ href: '#'} Outrights
+        = link_to t(:activities),
+                  activities_path,
+                  class: 'nav-link',
+                  'data-target-controller': 'activities'
       %li.nav-item
-        %a.nav-link{ href: '#'} Sports
+        = link_to t(:bonuses, count: 2),
+                  bonuses_path,
+                  class: 'nav-link',
+                  'data-target-controller': 'bonuses'
       %li.nav-item
-        %a.nav-link{ href: '#'} Live Casino
+        = link_to t(:currencies),
+                  currencies_path,
+                  class: 'nav-link',
+                  'data-target-controller': 'currencies'
+      %li.nav-item
+        = link_to t(:labels),
+                  labels_path,
+                  class: 'nav-link',
+                  'data-target-controller': 'labels'
+      %li.nav-item
+        = link_to t(:sidekiq),
+                  sidekiq_web_path,
+                  class: 'nav-link',
+                  target: :blank
     = render 'shared/authentication_links'

@@ -7,34 +7,28 @@ Rails.application.routes.draw do
     mount GraphiQL::Rails::Engine, at: '/graphiql', graphql_path: '/graphql'
   end
 
-  namespace :backoffice, path: '' do
-    constraints subdomain: 'backend' do
-      resources :bonuses
+  resources :bonuses
 
-      resources :customers, only: %i[index show] do
-        member do
-          get :account_management
-          get :activity
-          get :notes
-          post :update_labels
-        end
-      end
-
-      resources :customer_notes, only: :create
-
-      resources :labels, only: %i[index new edit create update destroy]
-
-      resources :entry_requests, only: %i[index show create]
-
-      resources :currencies, only: %i[index new edit create update]
-
-      resource :dashboard, only: :show
-
-      resources :activities, only: %i[index show]
-
-      root 'dashboards#show'
+  resources :customers, only: %i[index show] do
+    member do
+      get :account_management
+      get :activity
+      get :notes
+      post :update_labels
     end
   end
+
+  resources :customer_notes, only: :create
+
+  resources :labels, only: %i[index new edit create update destroy]
+
+  resources :entry_requests, only: %i[index show create]
+
+  resources :currencies, only: %i[index new edit create update]
+
+  resource :dashboard, only: :show
+
+  resources :activities, only: %i[index show]
 
   devise_for :users, controllers: {
     sessions: 'users/sessions'
@@ -46,5 +40,5 @@ Rails.application.routes.draw do
 
   post '/graphql', to: 'graphql#execute'
 
-  root 'graphql#execute'
+  root 'dashboards#show'
 end
