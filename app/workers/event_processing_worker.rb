@@ -2,6 +2,6 @@ class EventProcessingWorker
   include Sidekiq::Worker
 
   def perform(payload)
-    return payload
+    payload
   end
 end
