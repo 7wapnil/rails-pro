@@ -211,6 +211,8 @@ ActiveRecord::Schema.define(version: 2018_07_18_114959) do
     t.boolean "won"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "external_id"
+    t.index ["external_id"], name: "index_odds_on_external_id"
     t.index ["market_id"], name: "index_odds_on_market_id"
   end
 
