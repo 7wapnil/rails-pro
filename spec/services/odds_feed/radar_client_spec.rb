@@ -1,4 +1,4 @@
-describe Radar::Client do
+describe OddsFeed::Radar::Client do
   context 'client api' do
     let(:options) do
       { headers: { "x-access-token": ENV['RADAR_API_TOKEN'],
