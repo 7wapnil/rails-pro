@@ -17,8 +17,8 @@ module OddsFeed
       end
 
       def get_event(id)
-        payload = get_request "/sports/#{@language}/sport_events/#{id}/fixture.xml"
-        EventAdapter.new(payload)
+        route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"
+        EventAdapter.new(get_request(route))
       end
 
       def get_request(path)

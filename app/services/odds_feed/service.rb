@@ -16,7 +16,7 @@ module OddsFeed
     end
 
     def store_event(external_id)
-      event_adapter = @api.get_event external_id
+      @api.get_event external_id
     end
   end
 end
