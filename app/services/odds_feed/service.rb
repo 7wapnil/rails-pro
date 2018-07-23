@@ -1,22 +1,29 @@
 module OddsFeed
   class Service < ApplicationService
-    def initialize(event_data)
-      @event_data = event_data
-      @api = Radar::Client.new
+    def initialize(api_client, payload)
+      @api_client = api_client
+      @payload = payload
     end
 
     def call
-      event_id = 'sr:match:8696826'
-      store_event(event_id)
-      # store event
-      # store markets
-      # store odds
-      # add new odd values
+      event(event_data['@event_id'])
+      # fetch markets
+      # fetch odds
+      # update odd values
       # send updates to websocket
     end
 
-    def store_event(external_id)
-      @api.get_event external_id
+    def event(external_id)
+      event = Event.find_by(external_id: external_id)
+      return event unless event.nil?
+
+      @api_client.event external_id
+    end
+
+    private
+
+    def event_data
+      @payload['odds_change']
     end
   end
 end

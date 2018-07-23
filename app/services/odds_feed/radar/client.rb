@@ -13,15 +13,15 @@ module OddsFeed
       end
 
       def who_am_i
-        get_request('/users/whoami.xml')
+        request('/users/whoami.xml')
       end
 
-      def get_event(id)
+      def event(id)
         route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"
-        EventAdapter.new(get_request(route))
+        EventAdapter.new(request(route))
       end
 
-      def get_request(path)
+      def request(path)
         self.class.get(path, @options).parsed_response
       end
     end
