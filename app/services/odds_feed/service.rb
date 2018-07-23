@@ -8,11 +8,13 @@ module OddsFeed
     def call
       event = event(event_data['@event_id'])
       event_data['odds']['market'].each do |market_data|
-        market(event, market_data)
+        market = market(event, market_data)
+        market_data['outcome'].each do |odd_data|
+          odd(market, odd_data)
+        end
       end
-      # fetch odds
-      # update odd values
-      # send updates to websocket
+
+      # TODO: send updates to websocket
     end
 
     def event(external_id)
@@ -31,6 +33,20 @@ module OddsFeed
                      name: 'My market',
                      external_id: external_id,
                      priority: 0)
+    end
+
+    def odd(market, odd_data) # rubocop:disable Metrics/MethodLength
+      id = odd_id(market, odd_data)
+      odd = Odd.find_by(external_id: id)
+      if odd.nil?
+        odd = Odd.create!(external_id: id,
+                          name: 'My odd',
+                          market: market,
+                          value: odd_data['@odds'])
+      else
+        odd.update_attributes(value: odd_data['@odds'])
+      end
+      odd
     end
 
     private
@@ -53,6 +69,10 @@ module OddsFeed
     def market_id(market_data)
       return market_data['@id'] if market_data['@specifiers'].nil?
       "#{market_data['@id']}:#{market_data['@specifiers']}"
+    end
+
+    def odd_id(market, odd_data)
+      "#{market.id}:#{odd_data['@id']}"
     end
   end
 end
