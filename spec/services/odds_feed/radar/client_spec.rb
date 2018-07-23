@@ -25,8 +25,8 @@ describe OddsFeed::Radar::Client do
       let(:event_id) { 'sr:match:10001' }
       let(:route) { "/sports/en/sport_events/#{event_id}/fixture.xml" }
 
-      it 'should return datapter on event request' do
-        expect(subject.get_event(event_id))
+      it 'should return adapter on event request' do
+        expect(subject.event(event_id))
           .to be_a(OddsFeed::Radar::EventAdapter)
       end
     end
