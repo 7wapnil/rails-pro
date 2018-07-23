@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_18_114959) do
+ActiveRecord::Schema.define(version: 2018_07_23_122951) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -212,6 +212,7 @@ ActiveRecord::Schema.define(version: 2018_07_18_114959) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "external_id"
+    t.decimal "value"
     t.index ["external_id"], name: "index_odds_on_external_id"
     t.index ["market_id"], name: "index_odds_on_market_id"
   end
