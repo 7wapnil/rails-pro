@@ -5,5 +5,9 @@ module OddsFeed
     def initialize(payload)
       @payload = payload
     end
+
+    def result
+      raise NotImplementedError
+    end
   end
 end

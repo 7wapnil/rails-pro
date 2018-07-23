@@ -22,7 +22,7 @@ module OddsFeed
       end
 
       def get_request(path)
-        self.class.get(path, @options)
+        self.class.get(path, @options).parsed_response
       end
     end
   end
