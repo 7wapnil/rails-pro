@@ -25,7 +25,7 @@ module OddsFeed
     end
 
     def find_or_create_market!(event, market_data)
-      external_id = market_id(market_data)
+      external_id = "#{event.external_id}:#{market_data['@id']}"
       market = Market.find_by(external_id: external_id)
       return market unless market.nil?
 
@@ -37,7 +37,7 @@ module OddsFeed
 
     # rubocop:disable Metrics/MethodLength
     def find_or_create_odd!(market, odd_data)
-      id = odd_id(market, odd_data)
+      id = "#{market.external_id}:#{odd_data['@id']}"
       odd = Odd.find_by(external_id: id)
       if odd.nil?
         odd = Odd.create!(external_id: id,
@@ -64,17 +64,7 @@ module OddsFeed
       if event.event_scopes.any?
         event.event_scopes.each { |scope| scope&.save! }
       end
-
       event
-    end
-
-    def market_id(market_data)
-      return market_data['@id'] if market_data['@specifiers'].nil?
-      "#{market_data['@id']}:#{market_data['@specifiers']}"
-    end
-
-    def odd_id(market, odd_data)
-      "#{market.id}:#{odd_data['@id']}"
     end
   end
 end

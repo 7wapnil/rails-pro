@@ -45,23 +45,10 @@ describe OddsFeed::Service do
   context 'markets' do
     let(:markets_data) { job['odds_change']['odds']['market'] }
 
-    it 'should generate market external id by template id and specifiers' do
-      [
-        [{ "@id": '47',
-           "@specifiers": 'score=47' }, '47:score=47'],
-        [{ "@id": '1001',
-           "@specifiers": 'set=2|game=3|point=1' },
-         '1001:set=2|game=3|point=1'],
-        [{ "@id": '10000' }, '10000']
-      ].each do |data, expected|
-        expect(service.send(:market_id, data.stringify_keys)).to eq(expected)
-      end
-    end
-
     it 'should return market from db if exists' do
-      external_id = '47:score=41.5'
-      event = create(:event)
-      market = create(:market, event: event, external_id: external_id)
+      event_id = 'sr:match:1234'
+      event = create(:event, external_id: event_id)
+      market = create(:market, event: event, external_id: "#{event_id}:47")
 
       found_market = service.send(:find_or_create_market!,
                                   event,
@@ -70,8 +57,9 @@ describe OddsFeed::Service do
     end
 
     it 'should create market with specifiers if not exists' do
-      external_id = '47:score=41.5'
-      event = create(:event)
+      event_id = 'sr:match:1234'
+      external_id = "#{event_id}:47"
+      event = create(:event, external_id: event_id)
 
       created_market = service.send(:find_or_create_market!,
                                     event,
@@ -84,22 +72,9 @@ describe OddsFeed::Service do
   context 'odds' do
     let(:odds_data) { job['odds_change']['odds']['market'][0]['outcome'] }
 
-    it 'should generate odd external id by market id and odd external id' do
-      market = create(:market)
-
-      [
-        [{ "@id": '47' }, "#{market.id}:47"],
-        [{ "@id": '1001' }, "#{market.id}:1001"],
-        [{ "@id": '10000' }, "#{market.id}:10000"]
-      ].each do |data, expected|
-        expect(service.send(:odd_id, market, data.stringify_keys))
-          .to eq(expected)
-      end
-    end
-
     it 'should return odd from db if exists' do
-      market = create(:market)
-      odd_external_id = "#{market.id}:#{odds_data[0]['@id']}"
+      market = create(:market, external_id: 'market:id')
+      odd_external_id = "#{market.external_id}:#{odds_data[0]['@id']}"
       create(:odd, market: market, external_id: odd_external_id)
 
       found_odd = service.send(:find_or_create_odd!, market, odds_data[0])
@@ -108,8 +83,8 @@ describe OddsFeed::Service do
     end
 
     it 'should create odd if not exists' do
-      market = create(:market)
-      odd_external_id = "#{market.id}:#{odds_data[0]['@id']}"
+      market = create(:market, external_id: 'market:id')
+      odd_external_id = "#{market.external_id}:#{odds_data[0]['@id']}"
 
       created_odd = service.send(:find_or_create_odd!, market, odds_data[0])
       expect(created_odd.id).not_to be_nil
@@ -118,8 +93,8 @@ describe OddsFeed::Service do
     end
 
     it 'should update odd value' do
-      market = create(:market)
-      odd_external_id = "#{market.id}:#{odds_data[0]['@id']}"
+      market = create(:market, external_id: 'market:id')
+      odd_external_id = "#{market.external_id}:#{odds_data[0]['@id']}"
       create(:odd, market: market, external_id: odd_external_id, value: 99.99)
 
       found_odd = service.send(:find_or_create_odd!, market, odds_data[0])
