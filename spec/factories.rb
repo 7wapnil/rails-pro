@@ -173,6 +173,7 @@ FactoryBot.define do
     market
     name 'MiTH'
     won true
+    value 1.85
   end
 
   factory :odd_value do

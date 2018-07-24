@@ -6,7 +6,8 @@ class EventScope < ApplicationRecord
 
   enum kind: {
     tournament: 0,
-    country: 1
+    country: 1,
+    season: 2
   }
 
   validates :name, presence: true
