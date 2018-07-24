@@ -169,9 +169,4 @@ FactoryBot.define do
     won true
     value 1.85
   end
-
-  factory :odd_value do
-    odd
-    value 1.85
-  end
 end
