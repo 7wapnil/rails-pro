@@ -1,5 +1,5 @@
 class CreateOddValues < ActiveRecord::Migration[5.2]
-  def up
+  def down
     create_table :odd_values do |t|
       t.references :odd, foreign_key: true
       t.decimal :value
@@ -8,7 +8,7 @@ class CreateOddValues < ActiveRecord::Migration[5.2]
     end
   end
 
-  def down
+  def up
     drop_table :odd_values
   end
 end
