@@ -168,9 +168,4 @@ FactoryBot.define do
     name 'MiTH'
     won true
   end
-
-  factory :odd_value do
-    odd
-    value 1.85
-  end
 end
