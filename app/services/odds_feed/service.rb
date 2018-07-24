@@ -61,7 +61,7 @@ module OddsFeed
       event = @api_client.event(external_id).result
       event.save!
       event.title&.save!
-      if event.event_scopes.length
+      if event.event_scopes.any?
         event.event_scopes.each { |scope| scope&.save! }
       end
 
