@@ -1,6 +1,12 @@
 FactoryBot.define do
-  # Financials
+  factory :market_template do
+    external_id { Faker::Number.between(1, 1000) }
+    name { Faker::Name.unique.name }
+    groups 'all'
+    payload { { test: 1 } }
+  end
 
+  # Financials
   factory :entry_currency_rule do
     currency
     kind { EntryRequest.kinds.keys.first }
