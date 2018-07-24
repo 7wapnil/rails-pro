@@ -6,25 +6,25 @@ module OddsFeed
     end
 
     def call
-      event = event(event_data['@event_id'])
+      event = find_or_create_event!(event_data['@event_id'])
       event_data['odds']['market'].each do |market_data|
-        market = market(event, market_data)
+        market = find_or_create_market!(event, market_data)
         market_data['outcome'].each do |odd_data|
-          odd(market, odd_data)
+          find_or_create_odd!(market, odd_data)
         end
       end
 
       # TODO: send updates to websocket
     end
 
-    def event(external_id)
+    def find_or_create_event!(external_id)
       event = Event.find_by(external_id: external_id)
       return event unless event.nil?
 
       create_event(external_id)
     end
 
-    def market(event, market_data)
+    def find_or_create_market!(event, market_data)
       external_id = market_id(market_data)
       market = Market.find_by(external_id: external_id)
       return market unless market.nil?
@@ -35,7 +35,8 @@ module OddsFeed
                      priority: 0)
     end
 
-    def odd(market, odd_data) # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength
+    def find_or_create_odd!(market, odd_data)
       id = odd_id(market, odd_data)
       odd = Odd.find_by(external_id: id)
       if odd.nil?
@@ -48,6 +49,7 @@ module OddsFeed
       end
       odd
     end
+    # rubocop:enable Metrics/MethodLength
 
     private
 

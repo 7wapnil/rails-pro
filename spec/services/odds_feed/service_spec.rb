@@ -11,7 +11,7 @@ describe OddsFeed::Service do
     it 'should return event from db if exists' do
       allow(service).to receive(:create_event)
       event = create(:event, external_id: event_id)
-      found_event = service.send(:event, event_id)
+      found_event = service.send(:find_or_create_event!, event_id)
 
       expect(service).not_to have_received(:create_event)
       expect(found_event).to be_a(Event)
@@ -20,7 +20,7 @@ describe OddsFeed::Service do
 
     it 'should query event data from API if not exists in db' do
       allow(service).to receive(:create_event)
-      service.send(:event, event_id)
+      service.send(:find_or_create_event!, event_id)
 
       expect(service)
         .to have_received(:create_event)
@@ -46,8 +46,6 @@ describe OddsFeed::Service do
     let(:markets_data) { job['odds_change']['odds']['market'] }
 
     it 'should generate market external id by template id and specifiers' do
-      allow(service).to receive(:market)
-
       [
         [{ "@id": '47',
            "@specifiers": 'score=47' }, '47:score=47'],
@@ -65,7 +63,9 @@ describe OddsFeed::Service do
       event = create(:event)
       market = create(:market, event: event, external_id: external_id)
 
-      found_market = service.send(:market, event, markets_data[0])
+      found_market = service.send(:find_or_create_market!,
+                                  event,
+                                  markets_data[0])
       expect(found_market.id).to eq(market.id)
     end
 
@@ -73,7 +73,9 @@ describe OddsFeed::Service do
       external_id = '47:score=41.5'
       event = create(:event)
 
-      created_market = service.send(:market, event, markets_data[0])
+      created_market = service.send(:find_or_create_market!,
+                                    event,
+                                    markets_data[0])
       expect(created_market.id).not_to be_nil
       expect(created_market.external_id).to eq(external_id)
     end
@@ -84,7 +86,6 @@ describe OddsFeed::Service do
 
     it 'should generate odd external id by market id and odd external id' do
       market = create(:market)
-      allow(service).to receive(:odd)
 
       [
         [{ "@id": '47' }, "#{market.id}:47"],
@@ -101,7 +102,7 @@ describe OddsFeed::Service do
       odd_external_id = "#{market.id}:#{odds_data[0]['@id']}"
       create(:odd, market: market, external_id: odd_external_id)
 
-      found_odd = service.send(:odd, market, odds_data[0])
+      found_odd = service.send(:find_or_create_odd!, market, odds_data[0])
       expect(found_odd.id).not_to be_nil
       expect(found_odd.external_id).to eq(odd_external_id)
     end
@@ -110,7 +111,7 @@ describe OddsFeed::Service do
       market = create(:market)
       odd_external_id = "#{market.id}:#{odds_data[0]['@id']}"
 
-      created_odd = service.send(:odd, market, odds_data[0])
+      created_odd = service.send(:find_or_create_odd!, market, odds_data[0])
       expect(created_odd.id).not_to be_nil
       expect(created_odd.external_id).to eq(odd_external_id)
       expect(created_odd.value).to eq(1.12)
@@ -121,7 +122,7 @@ describe OddsFeed::Service do
       odd_external_id = "#{market.id}:#{odds_data[0]['@id']}"
       create(:odd, market: market, external_id: odd_external_id, value: 99.99)
 
-      found_odd = service.send(:odd, market, odds_data[0])
+      found_odd = service.send(:find_or_create_odd!, market, odds_data[0])
       expect(found_odd.value).to eq(1.12)
     end
   end
