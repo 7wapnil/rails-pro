@@ -8,7 +8,7 @@ describe MarketsUpdateWorker do
     allow(client).to receive(:markets).and_return(response)
     client
   end
-  let(:subject) do
+  subject do
     subject = MarketsUpdateWorker.new
     allow(subject).to receive(:client).and_return(client)
     subject
