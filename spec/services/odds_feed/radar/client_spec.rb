@@ -30,5 +30,13 @@ describe OddsFeed::Radar::Client do
           .to be_a(OddsFeed::Radar::EventAdapter)
       end
     end
+
+    context 'markets request' do
+      let(:route) { '/descriptions/en/markets.xml?include_mappings=false' }
+
+      it 'should return markets request result' do
+        subject.markets
+      end
+    end
   end
 end

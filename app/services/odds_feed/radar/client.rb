@@ -21,6 +21,14 @@ module OddsFeed
         EventAdapter.new(request(route))
       end
 
+      # Market templates descriptions request
+      # Returns a list of market templates with outcome name, specifiers
+      # and attributes
+      def markets
+        route = "/descriptions/#{@language}/markets.xml?include_mappings=false"
+        request(route)
+      end
+
       def request(path)
         self.class.get(path, @options).parsed_response
       end
