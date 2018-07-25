@@ -3,7 +3,12 @@ class MarketsUpdateWorker
 
   def perform
     Rails.logger.debug 'Updating BetRadar market templates'
-    templates.each { |market_data| create_or_update_market!(market_data) }
+    templates.each do |market_data|
+      create_or_update_market!(market_data)
+    rescue StandardError => error
+      Rails.logger.error error
+      next
+    end
   end
 
   def templates

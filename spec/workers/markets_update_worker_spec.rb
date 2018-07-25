@@ -53,4 +53,10 @@ describe MarketsUpdateWorker do
     expect(updated_template.groups).to eq('all')
     expect(updated_template.payload).to eq(expected_payload)
   end
+
+  it 'should skip creation on invalid data without breaking execution' do
+    response['market_descriptions']['market'][0]['@name'] = ''
+    subject.perform
+    expect(MarketTemplate.count).to eq(4)
+  end
 end
