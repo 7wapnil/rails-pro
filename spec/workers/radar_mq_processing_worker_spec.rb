@@ -3,13 +3,17 @@ describe RadarMqProcessingWorker do
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
     '<odds_change/>'
   end
-  let(:minimal_valid_odds_change_hash) { Nori.new.parse(minimal_valid_odds_change_xml) }
+  let(:minimal_valid_odds_change_hash) do
+    Nori.new.parse(minimal_valid_odds_change_xml)
+  end
   let(:minimal_valid_fixtures_fixture_xml) do
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
     '<fixtures_fixture/>'
   end
-  let(:minimal_valid_fixtures_fixture_hash) { Nori.new.parse(minimal_valid_fixtures_fixture_xml) }
-  
+  let(:minimal_valid_fixtures_fixture_hash) do
+    Nori.new.parse(minimal_valid_fixtures_fixture_xml)
+  end
+
   it { is_expected.to be_processed_in :mq }
 
   describe '.perform' do
