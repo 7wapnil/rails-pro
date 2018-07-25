@@ -8,7 +8,8 @@ class RadarMqProcessingWorker
     matcher = Regexp.new(event_processing_job_matchers.join('|'))
     scan_result = payload.scan matcher
     if event_processing_job_matchers.any? {|matcher| scan_result.include?(matcher)}
-      return EventProcessingWorker.perform_async(payload)
+      parsed_payload = Nori.new.parse(payload)
+      return EventProcessingWorker.perform_async(parsed_payload)
     end
     raise NotImplementedError
   end
