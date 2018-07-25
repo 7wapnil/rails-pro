@@ -4,7 +4,7 @@ class RadarMqProcessingWorker
 
   def perform(payload)
     Rails.logger.debug "Received job: #{payload}"
-    event_message_matchers = %w[<odds_change <fixtures_fixture]
+    event_message_matchers = %w[<odds_change]
     matcher_regexp = Regexp.new(event_message_matchers.join('|'))
     scan_result = payload.scan matcher_regexp
     if event_message_matchers.any? { |matcher| scan_result.include?(matcher) }

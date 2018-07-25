@@ -6,13 +6,6 @@ describe RadarMqProcessingWorker do
   let(:minimal_valid_odds_change_hash) do
     Nori.new.parse(minimal_valid_odds_change_xml)
   end
-  let(:minimal_valid_fixtures_fixture_xml) do
-    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
-    '<fixtures_fixture/>'
-  end
-  let(:minimal_valid_fixtures_fixture_hash) do
-    Nori.new.parse(minimal_valid_fixtures_fixture_xml)
-  end
 
   it { is_expected.to be_processed_in :mq }
 
@@ -21,11 +14,6 @@ describe RadarMqProcessingWorker do
       RadarMqProcessingWorker.new.perform(minimal_valid_odds_change_xml)
       expect(EventProcessingWorker)
         .to have_enqueued_sidekiq_job(minimal_valid_odds_change_hash)
-    end
-    it 'should route fixtures_fixture to EventProcessingWorker' do
-      RadarMqProcessingWorker.new.perform(minimal_valid_fixtures_fixture_xml)
-      expect(EventProcessingWorker)
-        .to have_enqueued_sidekiq_job(minimal_valid_fixtures_fixture_hash)
     end
     it 'should raise NotImplementedError on any unknown input' do
       expect do
