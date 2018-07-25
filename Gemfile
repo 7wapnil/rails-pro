@@ -53,7 +53,6 @@ group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'rspec-rails', '~> 3.7'
   gem 'factory_bot_rails'
-  gem 'rspec-sidekiq'
   gem 'rubocop', require: false
   gem 'brakeman', require: false
   gem 'awesome_print'
@@ -78,4 +77,5 @@ group :test do
   gem 'selenium-webdriver'
   gem 'chromedriver-helper'
   gem 'shoulda-matchers', '~> 3.1'
+  gem 'rspec-sidekiq'
 end
