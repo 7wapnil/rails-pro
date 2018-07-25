@@ -7,7 +7,7 @@ module OddsFeed
         event.event_scopes.build tournament_data(event)
         event.event_scopes.build season_data(event)
         event.event_scopes.build country_data(event)
-        event.event_scopes.build event_title(event)
+        event.event_scopes.build event_title
 
         event
       end
@@ -19,7 +19,7 @@ module OddsFeed
       end
 
       def event_data
-        { external_id: fixture['@id'], name: event_title['@title'] }
+        { external_id: fixture['@id'], name: event_title }
       end
 
       def title_data(_event)
@@ -51,11 +51,11 @@ module OddsFeed
           title: event.title }
       end
 
-      def event_title(event)
+      def event_title
         event_title = fixture['competitors']
-        { competitor_1: event_title['competitor'][0]['@name'],
-          competitor_2: event_title['competitor'][1]['@name'],
-          title: competitor_1 + 'vs' + competitor_2 }
+        competitor1 = event_title['competitor'][0]['@name']
+        competitor2 = event_title['competitor'][1]['@name']
+        "#{competitor1} VS #{competitor2}" if event_title.length == 2
       end
     end
   end
