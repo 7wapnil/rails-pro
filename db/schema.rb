@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_23_122951) do
+ActiveRecord::Schema.define(version: 2018_07_25_074900) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -184,6 +184,16 @@ ActiveRecord::Schema.define(version: 2018_07_23_122951) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.index ["deleted_at"], name: "index_labels_on_deleted_at"
+  end
+
+  create_table "market_templates", force: :cascade do |t|
+    t.string "external_id", null: false
+    t.string "name"
+    t.string "groups"
+    t.json "payload"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_market_templates_on_external_id"
   end
 
   create_table "markets", force: :cascade do |t|
