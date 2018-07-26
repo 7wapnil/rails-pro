@@ -161,6 +161,7 @@ FactoryBot.define do
     description 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' # rubocop:disable Metrics/LineLength
     start_at { 2.hours.ago }
     end_at { 1.hours.ago }
+    payload { {} }
   end
 
   factory :market do
