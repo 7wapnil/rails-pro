@@ -37,4 +37,14 @@ describe OddsFeed::Radar::EventAdapter do
     expect(country.external_id).to eq('sr:category:9')
     expect(country.name).to eq('Sweden')
   end
+
+  it 'should return generated event name' do
+    expect(result.name).to eq('IK Oddevold VS Tvaakers IF')
+  end
+
+  it 'should raise an error if competitors amount is wrong' do
+    payload['fixtures_fixture']['fixture']['competitors']['competitor']
+      .push('Test competitor')
+    expect { result }.to raise_error(NotImplementedError)
+  end
 end

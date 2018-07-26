@@ -7,7 +7,6 @@ module OddsFeed
         event.event_scopes.build tournament_data(event)
         event.event_scopes.build season_data(event)
         event.event_scopes.build country_data(event)
-        event.event_scopes.build event_title
 
         event
       end
@@ -19,7 +18,7 @@ module OddsFeed
       end
 
       def event_data
-        { external_id: fixture['@id'], name: event_title }
+        { external_id: fixture['@id'], name: event_name }
       end
 
       def title_data(_event)
@@ -51,11 +50,12 @@ module OddsFeed
           title: event.title }
       end
 
-      def event_title
-        event_title = fixture['competitors']
-        competitor1 = event_title['competitor'][0]['@name']
-        competitor2 = event_title['competitor'][1]['@name']
-        "#{competitor1} VS #{competitor2}" if event_title.length == 2
+      def event_name
+        competitors = fixture['competitors']['competitor']
+        raise NotImplementedError unless competitors.length == 2
+        competitor1 = competitors[0]
+        competitor2 = competitors[1]
+        "#{competitor1['@name']} VS #{competitor2['@name']}"
       end
     end
   end
