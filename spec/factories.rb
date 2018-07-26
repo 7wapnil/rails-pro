@@ -167,6 +167,7 @@ FactoryBot.define do
     event
     name 'Winner Map (Train)'
     priority 2
+    status 0
   end
 
   factory :odd do
@@ -174,5 +175,6 @@ FactoryBot.define do
     name 'MiTH'
     won true
     value 1.85
+    status 0
   end
 end
