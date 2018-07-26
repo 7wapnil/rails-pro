@@ -20,7 +20,7 @@ module OddsFeed
       def event_data
         { external_id: fixture['@id'],
           name: 'My event name',
-          payload: { competitors: fixture['competitors'] }}
+          payload: { competitors: fixture['competitors'] } }
       end
 
       def title_data(_event)
