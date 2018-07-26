@@ -6,6 +6,7 @@ describe OddsFeed::Service do
   let(:event) { build(:event, title: build(:title), external_id: event_id) }
   subject do
     subject = OddsFeed::Service.new(OddsFeed::Radar::Client.new, payload)
+    allow(subject).to receive(:generate_market!)
     allow(subject).to receive(:request_event).and_return(event)
     subject
   end
@@ -31,7 +32,6 @@ describe OddsFeed::Service do
   end
 
   it 'should call market generator for every market data row' do
-    allow(subject).to receive(:generate_market!)
     subject.call
     expect(subject)
       .to have_received(:generate_market!)

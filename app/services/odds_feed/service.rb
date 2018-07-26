@@ -14,15 +14,15 @@ module OddsFeed
 
     private
 
+    def event_data
+      @payload['odds_change']
+    end
+
     def find_or_create_event!(external_id)
       event = Event.find_by(external_id: external_id)
       return event unless event.nil?
 
       create_event(external_id)
-    end
-
-    def event_data
-      @payload['odds_change']
     end
 
     def create_event(external_id)
