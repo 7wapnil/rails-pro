@@ -18,7 +18,7 @@ module OddsFeed
       end
 
       def event_data
-        { external_id: fixture['@id'], name: 'My event name' }
+        { external_id: fixture['@id'], name: event_name }
       end
 
       def title_data(_event)
@@ -48,6 +48,14 @@ module OddsFeed
           name: country_data['@name'],
           kind: :country,
           title: event.title }
+      end
+
+      def event_name
+        competitors = fixture['competitors']['competitor']
+        raise NotImplementedError unless competitors.length == 2
+        competitor1 = competitors[0]
+        competitor2 = competitors[1]
+        "#{competitor1['@name']} VS #{competitor2['@name']}"
       end
     end
   end
