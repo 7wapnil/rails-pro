@@ -17,13 +17,13 @@ describe OddsFeed::Radar::MarketGenerator do
     payload = {
       outcomes: [
         { '@id': '1' },
-        { '@id': '2' },
+        { '@id': '2' }
       ]
     }.deep_stringify_keys
 
     create(:market_template, external_id: '123',
-           name: 'Template name',
-           payload: payload)
+                             name: 'Template name',
+                             payload: payload)
   end
 
   context 'market with outcomes' do

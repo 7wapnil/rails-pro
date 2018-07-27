@@ -10,9 +10,9 @@ module OddsFeed
         external_id = "#{@event.external_id}:#{@market_data['@id']}"
         market = Market.find_or_initialize_by(external_id: external_id,
                                               event: @event)
-        market.assign_attributes({ name: transpiler.market_name,
-                                   priority: 0,
-                                   status: 1 })
+        market.assign_attributes(name: transpiler.market_name,
+                                 priority: 0,
+                                 status: 1)
         market.save!
         generate_odds!(market)
       end
@@ -30,9 +30,9 @@ module OddsFeed
         odd_id = "#{market.external_id}:#{odd_data['@id']}"
         odd = Odd.find_or_initialize_by(external_id: odd_id,
                                         market: market)
-        odd.assign_attributes({ name: transpiler.odd_name(odd_data['@id']),
-                                status: odd_data['@active'],
-                                value: odd_data['@odds']})
+        odd.assign_attributes(name: transpiler.odd_name(odd_data['@id']),
+                              status: odd_data['@active'],
+                              value: odd_data['@odds'])
         odd.save!
       end
 

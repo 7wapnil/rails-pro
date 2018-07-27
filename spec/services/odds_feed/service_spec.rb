@@ -3,9 +3,7 @@ describe OddsFeed::Service do
 
   it 'should delegate to supported handler' do
     allow_any_instance_of(OddsFeed::Radar::OddsChangeHandler)
-      .to receive(:handle)
-
-    subject.call
-    expect(OddsFeed::Radar::OddsChangeHandler).to have_received(:handle)
+      .to receive(:handle).and_return(1)
+    expect(subject.call).to eq(1)
   end
 end

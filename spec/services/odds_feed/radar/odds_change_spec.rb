@@ -35,7 +35,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
     subject.handle
     expect(subject)
       .to have_received(:generate_market!)
-            .exactly(5)
-            .times
+      .exactly(5)
+      .times
   end
 end

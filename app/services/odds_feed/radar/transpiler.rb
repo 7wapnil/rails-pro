@@ -34,9 +34,9 @@ module OddsFeed
 
       def tokens
         tokens = @specifiers
-                   .split('|')
-                   .map { |spec| spec.split('=') }
-                   .to_h
+                 .split('|')
+                 .map { |spec| spec.split('=') }
+                 .to_h
 
         unless @event.payload['competitors'].blank?
           @event.payload['competitors'].each.with_index do |competitor, i|
