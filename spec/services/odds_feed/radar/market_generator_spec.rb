@@ -1,4 +1,4 @@
-describe OddsFeed::MarketGenerator do
+describe OddsFeed::Radar::MarketGenerator do
   let(:market_payload) do
     data = Nori.new.parse(file_fixture('odds_change_message.xml').read)
     data['odds_change']['odds']['market']
@@ -6,9 +6,9 @@ describe OddsFeed::MarketGenerator do
   let(:chosen_market) { nil }
   let(:event) { create(:event, external_id: 'sr:match:1234') }
   subject do
-    transpiler = OddsFeed::Transpiler.new
+    transpiler = OddsFeed::Radar::Transpiler.new(event, '123')
     allow(transpiler).to receive(:transpile).and_return('transpiler value')
-    subject = OddsFeed::MarketGenerator.new(event, chosen_market)
+    subject = OddsFeed::Radar::MarketGenerator.new(event, chosen_market)
     allow(subject).to receive(:transpiler).and_return(transpiler)
     subject
   end
