@@ -43,6 +43,19 @@ describe OddsFeed::Radar::MarketGenerator do
       expect(updated_market.updated_at).not_to eq(market.updated_at)
     end
 
+    it 'should set appropriate status for market' do
+      [
+        { status: '-1', result: Market::STATUSES[:suspended] },
+        { status: '0', result: Market::STATUSES[:inactive] },
+        { status: '1', result: Market::STATUSES[:active] }
+      ].each do |expectation|
+        chosen_market['@status'] = expectation[:status]
+        subject.generate
+        market = Market.find_by(external_id: external_id)
+        expect(market.status).to eq(expectation[:result])
+      end
+    end
+
     it 'should create odds if not exist in db' do
       subject.generate
       expect(Odd.find_by(external_id: "#{external_id}:1")).not_to be_nil

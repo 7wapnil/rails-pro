@@ -12,12 +12,24 @@ module OddsFeed
                                               event: @event)
         market.assign_attributes(name: transpiler.market_name,
                                  priority: 0,
-                                 status: 1)
+                                 status: market_status)
         market.save!
         generate_odds!(market)
       end
 
       private
+
+      def market_status
+        status_map[@market_data['@status']] || Market::DEFAULT_STATUS
+      end
+
+      def status_map
+        {
+          '-1': Market::STATUSES[:suspended],
+          '0': Market::STATUSES[:inactive],
+          '1': Market::STATUSES[:active]
+        }.stringify_keys
+      end
 
       def generate_odds!(market)
         return if @market_data['outcome'].nil?
