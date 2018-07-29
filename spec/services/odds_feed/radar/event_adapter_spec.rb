@@ -7,8 +7,13 @@ describe OddsFeed::Radar::EventAdapter do
   let(:result) { adapter.result }
 
   it 'should return filled event' do
+    expected_payload = {
+      'competitors': payload['fixtures_fixture']['fixture']['competitors']
+    }.stringify_keys
+
     expect(result).to be_a(Event)
     expect(result.external_id).to eq('sr:match:8696826')
+    expect(result.payload).to eq(expected_payload)
   end
 
   it 'should return filled event title' do
