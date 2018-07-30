@@ -21,6 +21,12 @@ module OddsFeed
         EventAdapter.new(request(route))
       end
 
+      # Respect rates
+      def subscription_recovery(product_id:, start_at:)
+        route = "/#{product_id}/recovery/initiate_request?after=#{start_at}"
+        post(route)
+      end
+
       # Market templates descriptions request
       # Returns a list of market templates with outcome name, specifiers
       # and attributes
@@ -31,6 +37,11 @@ module OddsFeed
 
       def request(path)
         self.class.get(path, @options).parsed_response
+      end
+
+      # TODO: Rquest with method option
+      def post(path)
+        self.class.post(path, @options).parsed_response
       end
     end
   end
