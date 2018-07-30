@@ -1,6 +1,11 @@
 module OddsFeed
   module Radar
     class SubscriptionRecovery < ApplicationService
+      PRODUCTS_MAP = {
+        1 => :pre,
+        3 => :liveodds
+      }.freeze
+
       attr_accessor :product_id, :start_at
 
       def initialize(product_id:, start_at: nil)
@@ -9,9 +14,10 @@ module OddsFeed
       end
 
       def call
+        return unless product_available?
         return unless rates_available?
         response = api_client.subscription_recovery(
-          product_id: product_id,
+          product_code: code,
           start_at: start_at
         )
         return unless response.code == 202
@@ -29,6 +35,14 @@ module OddsFeed
       end
 
       private
+
+      def product_available?
+        PRODUCTS_MAP.include? product_id
+      end
+
+      def code
+        PRODUCTS_MAP[product_id]
+      end
 
       def write_previous_recovery_timestamp(timestamp)
         Rails.cache.write(previous_recovery_call_key, timestamp)

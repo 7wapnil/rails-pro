@@ -22,8 +22,8 @@ module OddsFeed
       end
 
       # Respect rates
-      def subscription_recovery(product_id:, start_at:)
-        route = "/#{product_id}/recovery/initiate_request?after=#{start_at}"
+      def subscription_recovery(product_code:, start_at:)
+        route = "/#{product_code}/recovery/initiate_request?after=#{start_at}"
         post(route)
       end
 

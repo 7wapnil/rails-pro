@@ -14,6 +14,7 @@ describe OddsFeed::Radar::SubscriptionRecovery do
     end
 
     it 'calls_recover_api' do
+      cache.write(cache_key, Time.zone.now - 1.minute)
       expect(client).to receive(:subscription_recovery)
       described_class.call(product_id: 1, start_at: Time.now.to_i)
     end
