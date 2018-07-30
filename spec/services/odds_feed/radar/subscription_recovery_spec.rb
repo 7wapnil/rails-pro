@@ -1,0 +1,61 @@
+describe OddsFeed::Radar::SubscriptionRecovery do
+  let(:cache) { Rails.cache }
+  let(:cache_key) { 'radar:last_recovery_call' }
+
+  describe '.call' do
+    let(:client) { instance_double('Client') }
+
+    before do
+      allow_any_instance_of(OddsFeed::Radar::SubscriptionRecovery)
+        .to receive(:api_client).and_return client
+      allow(client)
+        .to receive(:subscription_recovery)
+        .and_return(OpenStruct.new(code: 200))
+    end
+
+    it 'calls_recover_api' do
+      expect(client).to receive(:subscription_recovery)
+      described_class.call(product_id: 1, start_at: Time.now.to_i)
+    end
+
+    it 'should store last recovery call time' do
+      Timecop.freeze(Time.zone.now)
+      time = Time.zone.now
+      cache.write(cache_key, Time.now - 1.year)
+      described_class.call(product_id: 1, start_at: time.to_i)
+      expect(cache.read(cache_key).to_i).to eq time.to_i
+      Timecop.return
+    end
+  end
+
+  describe 'rates_available?' do
+    let(:timestamp) { Time.now.to_i }
+    let(:timestamp_date_time) { Time.at(timestamp).to_datetime }
+
+    it 'should return true when cache is empty' do
+      cache.delete(cache_key)
+      service = described_class.new(product_id: 1, start_at: timestamp)
+      expect(service.rates_available?).to be true
+    end
+    it 'should return true when cache is older than timeout' do
+      cache.write(cache_key, (timestamp_date_time - 40.seconds).to_i)
+      service = described_class.new(product_id: 1, start_at: timestamp)
+      expect(service.rates_available?).to be true
+    end
+    it 'should return false when cache is equal to timeout' do
+      Timecop.freeze(timestamp_date_time)
+      cache.write(cache_key, (timestamp_date_time - 30.seconds).to_i)
+      service = described_class.new(product_id: 1, start_at: timestamp)
+      expect(service.rates_available?).to be false
+      Timecop.return
+    end
+    it 'should return false when cache is less that timeout' do
+      cache.write(cache_key, (timestamp_date_time - 1.seconds).to_i)
+      service = described_class.new(product_id: 1, start_at: timestamp)
+      expect(service.rates_available?).to be false
+    end
+  end
+end
+
+# limit rates, hardcode 30 seconds timeout
+# no longer than 72 hour ago
