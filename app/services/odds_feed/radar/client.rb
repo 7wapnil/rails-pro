@@ -36,13 +36,12 @@ module OddsFeed
         request(route)
       end
 
-      def request(path)
-        self.class.get(path, @options).parsed_response
+      def request(path, method: :get)
+        self.class.send(method, path, @options).parsed_response
       end
 
-      # TODO: Rquest with method option
       def post(path)
-        self.class.post(path, @options).parsed_response
+        request(path, method: :post)
       end
     end
   end
