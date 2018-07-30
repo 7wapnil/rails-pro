@@ -9,13 +9,13 @@ describe OddsFeed::Radar::SubscriptionRecovery do
       allow_any_instance_of(OddsFeed::Radar::SubscriptionRecovery)
         .to receive(:api_client).and_return client
       allow(client)
-        .to receive(:subscription_recovery)
+        .to receive(:product_recovery_initiate_request)
         .and_return(OpenStruct.new(code: 202))
     end
 
     it 'calls_recover_api' do
       cache.write(cache_key, Time.zone.now - 1.minute)
-      expect(client).to receive(:subscription_recovery)
+      expect(client).to receive(:product_recovery_initiate_request)
       described_class.call(product_id: 1, start_at: Time.now.to_i)
     end
 

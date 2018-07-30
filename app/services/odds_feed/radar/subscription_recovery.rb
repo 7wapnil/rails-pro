@@ -16,9 +16,9 @@ module OddsFeed
       def call
         return unless product_available?
         return unless rates_available?
-        response = api_client.subscription_recovery(
+        response = api_client.product_recovery_initiate_request(
           product_code: code,
-          start_at: start_at
+          after: start_at
         )
         return unless response.code == 202
         write_previous_recovery_timestamp(Time.zone.now.to_i)
