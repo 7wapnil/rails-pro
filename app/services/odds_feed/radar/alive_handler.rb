@@ -14,7 +14,9 @@ module OddsFeed
         recover(message.product_id)
       end
 
-      def recover(product)
+      def recover(product_id)
+        OddsFeed::Radar::SubscriptionRecovery
+          .call(product_id: product_id)
       end
 
       def alive_message_data
