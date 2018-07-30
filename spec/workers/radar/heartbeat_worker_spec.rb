@@ -3,10 +3,19 @@ describe Radar::HeartbeatWorker do
 
   it { is_expected.to be_processed_in :critical }
 
-  xit 'passes payload with OddsFeed::Radar::AliveHandler'
   it 'handles with OddsFeed::Radar::AliveHandler' do
-    allow_any_instance_of(OddsFeed::Radar::AliveHandler)
-      .to receive(:handle).and_return(:handled)
-    expect(subject.perform(payload)).to eq :handled
+    expect_any_instance_of(OddsFeed::Radar::AliveHandler)
+      .to receive(:handle)
+
+    subject.perform(payload)
+  end
+
+  it 'passes payload to OddsFeed::Radar::AliveHandler' do
+    expect(OddsFeed::Radar::AliveHandler)
+      .to receive(:new)
+      .with(payload)
+      .and_return(OpenStruct.new(handle: nil))
+
+    subject.perform(payload)
   end
 end
