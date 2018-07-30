@@ -179,4 +179,10 @@ FactoryBot.define do
     value 1.85
     status 0
   end
+
+  factory(:alive_message, class: Radar::AliveMessage) do
+    product_id 1
+    reported_at Time.now.to_i
+    subscribed false
+  end
 end
