@@ -7,8 +7,13 @@ describe OddsFeed::Radar::EventAdapter do
   let(:result) { adapter.result }
 
   it 'should return filled event' do
+    expected_payload = {
+      'competitors': payload['fixtures_fixture']['fixture']['competitors']
+    }.stringify_keys
+
     expect(result).to be_a(Event)
     expect(result.external_id).to eq('sr:match:8696826')
+    expect(result.payload).to eq(expected_payload)
   end
 
   it 'should return filled event title' do
@@ -36,5 +41,15 @@ describe OddsFeed::Radar::EventAdapter do
     expect(country).not_to be_nil
     expect(country.external_id).to eq('sr:category:9')
     expect(country.name).to eq('Sweden')
+  end
+
+  it 'should return generated event name' do
+    expect(result.name).to eq('IK Oddevold VS Tvaakers IF')
+  end
+
+  it 'should raise an error if competitors amount is wrong' do
+    payload['fixtures_fixture']['fixture']['competitors']['competitor']
+      .push('Test competitor')
+    expect { result }.to raise_error(NotImplementedError)
   end
 end
