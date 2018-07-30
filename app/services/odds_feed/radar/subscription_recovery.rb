@@ -14,7 +14,7 @@ module OddsFeed
           product_id: product_id,
           start_at: start_at
         )
-        return unless response.code == 200
+        return unless response.code == 202
         write_previous_recovery_timestamp(Time.zone.now.to_i)
       end
 

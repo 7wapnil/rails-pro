@@ -10,7 +10,7 @@ describe OddsFeed::Radar::SubscriptionRecovery do
         .to receive(:api_client).and_return client
       allow(client)
         .to receive(:subscription_recovery)
-        .and_return(OpenStruct.new(code: 200))
+        .and_return(OpenStruct.new(code: 202))
     end
 
     it 'calls_recover_api' do
