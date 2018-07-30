@@ -18,7 +18,12 @@ module Radar
     end
 
     def save!
-      return unless subscribed?
+      unless subscribed?
+        start_at = Rails.cache.read(last_success_at).to_i
+        start_at = nil if Time.zone.at(start_at) < 72.hours.ago
+        return OddsFeed::Radar::SubscriptionRecovery
+               .call(product_id: product_id, start_at: start_at)
+      end
       store_last_successful_alive!
     end
 

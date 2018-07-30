@@ -21,6 +21,10 @@ describe Radar::AliveMessage do
   end
 
   describe 'save!' do
+    before do
+      allow(OddsFeed::Radar::SubscriptionRecovery).to receive(:call)
+    end
+
     context 'valid alive call' do
       let(:key) { 'radar:last_successful_alive_message:1' }
       let(:message) do
@@ -70,6 +74,26 @@ describe Radar::AliveMessage do
         message.save!
 
         expect(cache.read(key)).to eq(cache_value)
+      end
+
+      it 'should call SubscriptionRecovery for correct product and date' do
+        time = Time.zone.now - 1.hour
+        cache.write('radar:last_successful_alive_message:1', time.to_i)
+        expect(OddsFeed::Radar::SubscriptionRecovery)
+          .to receive(:call)
+          .with(product_id: 1, start_at: time.to_i)
+        message.save!
+      end
+
+      it 'should limit call SubscriptionRecovery to 72 hours' do
+        Timecop.freeze(Time.zone.now)
+        old_time = Time.zone.now - 100.hour
+        cache.write('radar:last_successful_alive_message:1', old_time.to_i)
+        expect(OddsFeed::Radar::SubscriptionRecovery)
+          .to receive(:call)
+          .with(product_id: 1, start_at: nil)
+        message.save!
+        Timecop.return
       end
     end
   end
