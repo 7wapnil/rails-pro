@@ -42,9 +42,9 @@ describe OddsFeed::Radar::AliveHandler do
       allow(message).to receive(:save!).and_return(message)
       allow(message).to receive(:subscribed?).and_return(false)
 
-      expect(
-        OddsFeed::Radar::SubscriptionRecovery
-      ).to receive(:call).with(product_id: message.product_id)
+      expect(OddsFeed::Radar::SubscriptionRecovery)
+        .to receive(:call)
+        .with(product_id: message.product_id, start_at: anything)
       subject.handle
     end
   end
