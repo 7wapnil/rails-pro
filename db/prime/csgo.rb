@@ -48,7 +48,6 @@ class CsgoPrimer
     end
   end
 
-  # rubocop:disable Metrics/AbcSize
   # rubocop:disable Metrics/MethodLength
   def self.create_event(attributes)
     tournament = EventScope.tournament.order(Arel.sql('RANDOM()')).first
@@ -80,7 +79,6 @@ class CsgoPrimer
       )
     end
   end
-  # rubocop:enable Metrics/AbcSize
   # rubocop:enable Metrics/MethodLength
 end
 
