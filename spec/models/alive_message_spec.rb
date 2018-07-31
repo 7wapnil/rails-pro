@@ -93,7 +93,7 @@ describe Radar::AliveMessage do
       cache.write('radar:last_successful_alive_message:1', time.to_i)
       expect(OddsFeed::Radar::SubscriptionRecovery)
         .to receive(:call)
-              .with(product_id: 1, start_at: time.to_i)
+        .with(product_id: 1, start_at: time.to_i)
       message.recover!
     end
 
@@ -103,7 +103,7 @@ describe Radar::AliveMessage do
       cache.write('radar:last_successful_alive_message:1', old_time.to_i)
       expect(OddsFeed::Radar::SubscriptionRecovery)
         .to receive(:call)
-              .with(product_id: 1, start_at: nil)
+        .with(product_id: 1, start_at: nil)
       message.recover!
       Timecop.return
     end
