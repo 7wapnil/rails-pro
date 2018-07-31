@@ -19,18 +19,18 @@ module Radar
     end
 
     def save!
-      return recovery_call unless subscribed?
-      store_last_successful_alive!
+      store_last_successful_alive! if subscribed?
     end
 
-    private
-
-    def recovery_call
+    def recover!
       start_at = last_success_timestamp
+      # binding.pry
       start_at = nil if Time.zone.at(start_at) < 72.hours.ago
       OddsFeed::Radar::SubscriptionRecovery
         .call(product_id: product_id, start_at: start_at)
     end
+
+    private
 
     def store_last_successful_alive!
       timestamp = reported_at.to_i
