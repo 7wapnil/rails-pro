@@ -2,8 +2,8 @@ module OddsFeed
   module Radar
     class SubscriptionRecovery < ApplicationService
       PRODUCTS_MAP = {
-        1 => :pre,
-        3 => :liveodds
+        1 => :liveodds,
+        3 => :pre
       }.freeze
 
       attr_accessor :product_id, :start_at
