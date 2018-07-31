@@ -56,9 +56,9 @@ describe Radar::AliveMessage do
       let(:key) { 'radar:last_successful_alive_message:1' }
       let(:message) do
         build(:alive_message,
-               product_id: 1,
-               reported_at: valid_timestamp,
-               subscribed: false)
+              product_id: 1,
+              reported_at: valid_timestamp,
+              subscribed: false)
       end
       let(:cache_value) { '0' }
 
