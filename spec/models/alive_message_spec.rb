@@ -20,11 +20,11 @@ describe Radar::AliveMessage do
     end
   end
 
-  describe 'save!' do
+  describe '.save' do
     context 'valid alive call' do
       let(:key) { 'radar:last_successful_alive_message:1' }
       let(:message) do
-        create(:alive_message, product_id: 1, reported_at: valid_timestamp)
+        build(:alive_message, product_id: 1, reported_at: valid_timestamp)
       end
 
       before do
@@ -32,7 +32,7 @@ describe Radar::AliveMessage do
       end
 
       it 'should save last successful alive to cache' do
-        message.save!
+        message.save
 
         expect(cache.exist?(key)).to be(true)
         expect(cache.read(key)).to eq(valid_timestamp)
@@ -45,7 +45,7 @@ describe Radar::AliveMessage do
         end
 
         it 'should ignore timestamp update for expired case' do
-          message.save!
+          message.save
 
           expect(cache.exist?(key)).to be(true)
           expect(cache.read(key)).to eq(timestamp_in_future)
@@ -55,7 +55,7 @@ describe Radar::AliveMessage do
     context 'subscribed is false' do
       let(:key) { 'radar:last_successful_alive_message:1' }
       let(:message) do
-        create(:alive_message,
+        build(:alive_message,
                product_id: 1,
                reported_at: valid_timestamp,
                subscribed: false)
@@ -67,7 +67,7 @@ describe Radar::AliveMessage do
       end
 
       it 'should not override cache value' do
-        message.save!
+        message.save
 
         expect(cache.read(key)).to eq(cache_value)
       end
@@ -76,7 +76,7 @@ describe Radar::AliveMessage do
 
   describe '.recover!' do
     let(:message) do
-      create(
+      build(
         :alive_message,
         product_id: 1,
         reported_at: valid_timestamp,

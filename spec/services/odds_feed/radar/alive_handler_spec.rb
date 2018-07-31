@@ -14,14 +14,14 @@ describe OddsFeed::Radar::AliveHandler do
     OddsFeed::Radar::AliveHandler.new(alive_payload)
   end
 
-  let(:message) { create(:alive_message) }
+  let(:message) { build(:alive_message) }
 
   it 'should delegate message logic to AliveMessage' do
     allow(::Radar::AliveMessage).to receive(:from_hash).and_return(message)
-    allow(message).to receive(:save!).and_return(message)
+    allow(message).to receive(:save).and_return(message)
 
     expect(::Radar::AliveMessage).to receive(:from_hash).with(alive_data)
-    expect(message).to receive(:save!).with no_args
+    expect(message).to receive(:save).with no_args
     subject.handle
   end
 
@@ -39,7 +39,7 @@ describe OddsFeed::Radar::AliveHandler do
 
     it 'recover on non_alive message' do
       allow(::Radar::AliveMessage).to receive(:from_hash).and_return(message)
-      allow(message).to receive(:save!).and_return(message)
+      allow(message).to receive(:save).and_return(message)
       allow(message).to receive(:subscribed?).and_return(false)
 
       expect(OddsFeed::Radar::SubscriptionRecovery)

@@ -18,7 +18,7 @@ module Radar
       )
     end
 
-    def save!
+    def save
       store_last_successful_alive! if subscribed?
     end
 
