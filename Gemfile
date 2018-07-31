@@ -78,4 +78,6 @@ group :test do
   gem 'chromedriver-helper'
   gem 'shoulda-matchers', '~> 3.1'
   gem 'rspec-sidekiq'
+  gem 'timecop'
+  gem 'webmock'
 end

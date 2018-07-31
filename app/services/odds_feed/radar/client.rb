@@ -21,6 +21,12 @@ module OddsFeed
         EventAdapter.new(request(route))
       end
 
+      def product_recovery_initiate_request(product_code:, after: nil)
+        route = "/#{product_code}/recovery/initiate_request"
+        route += "?after=#{after}" if after
+        post(route)
+      end
+
       # Market templates descriptions request
       # Returns a list of market templates with outcome name, specifiers
       # and attributes
@@ -29,8 +35,12 @@ module OddsFeed
         request(route)
       end
 
-      def request(path)
-        self.class.get(path, @options).parsed_response
+      def request(path, method: :get)
+        self.class.send(method, path, @options).parsed_response
+      end
+
+      def post(path)
+        request(path, method: :post)
       end
     end
   end
