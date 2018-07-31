@@ -2,6 +2,8 @@ module Radar
   class AliveMessage
     attr_accessor :product_id, :reported_at, :subscribed
 
+    alias_method 'subscribed?', :subscribed
+
     def initialize(product_id:, reported_at:, subscribed:)
       @product_id = product_id
       @reported_at = reported_at
@@ -9,45 +11,48 @@ module Radar
     end
 
     def self.from_hash(data)
-      message = new(
+      new(
         product_id: data['product_id'].to_i,
-        reported_at: Time.at(data['reported_at'].to_i).to_datetime,
+        reported_at: Time.zone.at(data['reported_at'].to_i).to_datetime,
         subscribed: data['subscribed'] == '1'
       )
-      message
     end
 
     def save!
-      unless subscribed?
-        start_at = Rails.cache.read(last_success_at).to_i
-        start_at = nil if Time.zone.at(start_at) < 72.hours.ago
-        return OddsFeed::Radar::SubscriptionRecovery
-               .call(product_id: product_id, start_at: start_at)
-      end
+      return recovery_call unless subscribed?
       store_last_successful_alive!
     end
 
-    alias_method 'subscribed?', :subscribed
-
     private
 
+    def recovery_call
+      start_at = last_success_timestamp
+      start_at = nil if Time.zone.at(start_at) < 72.hours.ago
+      OddsFeed::Radar::SubscriptionRecovery
+        .call(product_id: product_id, start_at: start_at)
+    end
+
     def store_last_successful_alive!
-      current_timestamp = Rails.cache.read(last_success_at).to_i
       timestamp = reported_at.to_i
-      timestamp_expired = current_timestamp > timestamp
-
+      timestamp_expired = last_success_timestamp > timestamp
       return if timestamp_expired
-      Rails.cache.write(
-        last_success_at,
-        timestamp.to_i
-      )
+
+      update_last_success_timestamp(timestamp)
     end
 
-    def last_success_at
-      last_successful_alive_message(product_id: product_id)
+    def update_last_success_timestamp(timestamp)
+      Rails.cache.write(last_success_at_key, timestamp)
     end
 
-    def last_successful_alive_message(product_id:)
+    def last_success_timestamp
+      Rails.cache.read(last_success_at_key).to_i
+    end
+
+    def last_success_at_key
+      last_successful_alive_message_key(product_id: product_id)
+    end
+
+    def last_successful_alive_message_key(product_id:)
       "radar:last_successful_alive_message:#{product_id}"
     end
   end
