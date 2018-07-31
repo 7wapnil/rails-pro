@@ -20,12 +20,8 @@ module OddsFeed
           product_code: code,
           after: start_at
         )
-        return unless response.code == 202
+        return unless response['response']['response_code'] == 'ACCEPTED'
         write_previous_recovery_timestamp(Time.zone.now.to_i)
-      end
-
-      def api_client
-        @api_client ||= Client.new
       end
 
       def rates_available?
@@ -35,6 +31,10 @@ module OddsFeed
       end
 
       private
+
+      def api_client
+        @api_client ||= Client.new
+      end
 
       def product_available?
         PRODUCTS_MAP.include? product_id

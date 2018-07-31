@@ -79,4 +79,5 @@ group :test do
   gem 'shoulda-matchers', '~> 3.1'
   gem 'rspec-sidekiq'
   gem 'timecop'
+  gem 'webmock'
 end

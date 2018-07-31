@@ -3,19 +3,23 @@ describe OddsFeed::Radar::SubscriptionRecovery do
   let(:cache_key) { 'radar:last_recovery_call' }
 
   describe '.call' do
-    let(:client) { instance_double('Client') }
-
     before do
-      allow_any_instance_of(OddsFeed::Radar::SubscriptionRecovery)
-        .to receive(:api_client).and_return client
-      allow(client)
-        .to receive(:product_recovery_initiate_request)
-        .and_return(OpenStruct.new(code: 202))
+      body =
+        <<-END_XML
+          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+          <response response_code="ACCEPTED">
+          <action>
+            Request for PRE ALL messages from bookmaker 25238 received
+          </action>
+          </response>
+        END_XML
+      stub_request(:post, %r{/recovery/initiate_request})
+        .to_return(status: 202, body: body, headers: {})
     end
 
     it 'calls_recover_api' do
       cache.write(cache_key, Time.zone.now - 1.minute)
-      expect(client).to receive(:product_recovery_initiate_request)
+      expect(a_request(:post, %r{/recovery/initiate_request}))
       described_class.call(product_id: 1, start_at: Time.now.to_i)
     end
 
