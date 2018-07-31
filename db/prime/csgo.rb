@@ -66,11 +66,18 @@ class CsgoPrimer
     event.event_scopes << tournament
     event.save!
 
-    market = event.markets.create!(name: 'Match Winner', priority: 1)
+    market = event.markets.create!(
+      name: 'Match Winner',
+      priority: 1,
+      status: Market::DEFAULT_STATUS
+    )
 
     teams.each do |name|
-      odd = market.odds.create!(name: name)
-      odd.odd_values.create!(value: Faker::Number.between(1.1, 9.9).round(2))
+      market.odds.create!(
+        name: name,
+        status: Market::DEFAULT_STATUS,
+        value: Faker::Number.between(1.1, 9.9).round(2)
+      )
     end
   end
   # rubocop:enable Metrics/AbcSize
