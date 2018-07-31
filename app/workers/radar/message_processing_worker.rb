@@ -1,7 +1,17 @@
 module Radar
   class MessageProcessingWorker
-    EVENT_PROCESSING_MATCHERS = %w[<odds_change].freeze
-    ALIVE_MESSAGE_MATCHER = '<alive'.freeze
+    MATCHERS = {
+      event_processing: {
+        matchers: %w[<odds_change].freeze,
+        klass: EventProcessingWorker,
+        processor: lambda { |payload| Nori.new.parse(payload) }
+      },
+      alive: {
+        matchers: %w[<alive].freeze,
+        klass: Radar::HeartbeatWorker,
+        processor: lambda { |payload| Hash.from_xml(payload) }
+      }
+    }.freeze
 
     include Sidekiq::Worker
     sidekiq_options queue: 'mq'
@@ -15,35 +25,22 @@ module Radar
     private
 
     def match_result(payload, scan_result)
-      matched = false
-      matched ||= detect_event_processing(payload, scan_result)
-      matched ||= detect_alive_message(payload, scan_result)
-      matched
+      MATCHERS.each do |_, rule|
+        rule_matchers = rule[:matchers]
+        klass = rule[:klass]
+        processor = rule[:processor]
+        found = rule_matchers.any? { |matcher| scan_result.include?(matcher) }
+        return klass.perform_async(processor.call(payload)) if found
+      end
+      false
     end
 
     def scan_payload(payload)
-      matchers = EVENT_PROCESSING_MATCHERS + [ALIVE_MESSAGE_MATCHER]
-      matcher_regexp = Regexp.new(matchers.join('|'))
-      payload.scan matcher_regexp
+      payload.scan Regexp.new(matchers.join('|'))
     end
 
-    def detect_alive_message(payload, scan_result)
-      if scan_result.include?(ALIVE_MESSAGE_MATCHER)
-        Radar::HeartbeatWorker.perform_async(Hash.from_xml(payload))
-        return true
-      end
-      false
-    end
-
-    def detect_event_processing(payload, scan_result)
-      matched = EVENT_PROCESSING_MATCHERS
-                .any? { |matcher| scan_result.include?(matcher) }
-      if matched
-        parsed_payload = Nori.new.parse(payload)
-        EventProcessingWorker.perform_async(parsed_payload)
-        return true
-      end
-      false
+    def matchers
+      MATCHERS.flat_map { |_, rule| rule[:matchers] }
     end
   end
 end
