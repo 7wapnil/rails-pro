@@ -96,7 +96,7 @@ deploy:
       name: update-image-tag
       code: |
         aws ssm put-parameter \
-            --name /backend/branch \
+            --name /backend/tag \
             --value $WERCKER_GIT_COMMIT \
             --type SecureString \
             --overwrite
@@ -104,7 +104,12 @@ deploy:
     - script:
       name: terraform-apply
       code: |
-        cd $TERRAFORM_CONFIG_DIR/services
+        cd $TERRAFORM_CONFIG_DIR/services/backend-web
+        terraform init
+        terraform workspace select $TARGET_ENV
+        terraform apply -auto-approve
+
+        cd $TERRAFORM_CONFIG_DIR/services/backend-worker
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
