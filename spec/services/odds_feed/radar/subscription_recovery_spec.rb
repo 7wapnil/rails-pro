@@ -57,6 +57,3 @@ describe OddsFeed::Radar::SubscriptionRecovery do
     end
   end
 end
-
-# limit rates, hardcode 30 seconds timeout
-# no longer than 72 hour ago

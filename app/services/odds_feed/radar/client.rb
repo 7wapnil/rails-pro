@@ -21,7 +21,6 @@ module OddsFeed
         EventAdapter.new(request(route))
       end
 
-      # Respect rates
       def product_recovery_initiate_request(product_code:, after: nil)
         route = "/#{product_code}/recovery/initiate_request"
         route += "?after=#{after}" if after
