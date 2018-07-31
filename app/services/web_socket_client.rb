@@ -20,7 +20,7 @@ class WebSocketClient
 
   def connect
     @driver = WebSocket::Driver.client(self, protocols: ['websocket'])
-    set_listeners
+    set_handlers
 
     @thread = Thread.new do
       @driver.parse(@tcp.read(1)) until @dead
