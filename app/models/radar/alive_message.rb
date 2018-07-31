@@ -24,7 +24,6 @@ module Radar
 
     def recover!
       start_at = last_success_timestamp
-      # binding.pry
       start_at = nil if Time.zone.at(start_at) < 72.hours.ago
       OddsFeed::Radar::SubscriptionRecovery
         .call(product_id: product_id, start_at: start_at)
