@@ -43,7 +43,7 @@ module OddsFeed
         odd = Odd.find_or_initialize_by(external_id: odd_id,
                                         market: market)
         odd.assign_attributes(name: transpiler.odd_name(odd_data['@id']),
-                              status: odd_data['@active'],
+                              status: odd_data['@active'].to_i,
                               value: odd_data['@odds'])
         odd.save!
       end
