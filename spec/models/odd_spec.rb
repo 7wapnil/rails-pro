@@ -1,4 +1,6 @@
 describe Odd do
+  it { should define_enum_for(:status) }
+
   it { should belong_to(:market) }
 
   it { should validate_presence_of(:name) }

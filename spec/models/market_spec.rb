@@ -1,4 +1,6 @@
 describe Market do
+  it { should define_enum_for(:status) }
+
   it { should belong_to(:event) }
   it { should have_many(:odds) }
 
