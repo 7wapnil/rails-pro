@@ -3,4 +3,5 @@ Types::OddType = GraphQL::ObjectType.define do
 
   field :id, !types.ID
   field :name, !types.String
+  field :value, !types.Float
 end
