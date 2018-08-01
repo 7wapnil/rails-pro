@@ -1,6 +1,4 @@
 class WebSocketClient
-  include Singleton
-
   DEFAULT_PORTS = { ws: 80, wss: 443 }.freeze
 
   attr_reader :url, :thread
@@ -9,14 +7,13 @@ class WebSocketClient
     @url  = "#{ENV['WEBSOCKET_URL']}/socket.io/?transport=websocket"
     @uri  = URI.parse(url)
     @port = @uri.port || DEFAULT_PORTS[@uri.scheme]
-    @tcp  = TCPSocket.new(@uri.host, @port)
-    @dead = false
 
     Rails.logger.debug "Build websocket client, url: #{@url}, port: #{@port}"
-    connect
   end
 
   def connect
+    @tcp  = TCPSocket.new(@uri.host, @port)
+    @dead = false
     @driver = WebSocket::Driver.client(self, protocols: ['websocket'])
     set_handlers
 
@@ -24,6 +21,21 @@ class WebSocketClient
       @driver.parse(@tcp.read(1)) until @dead
     end
     @driver.start
+  end
+
+  def close
+    Rails.logger.debug 'Closing connection'
+    @driver.close
+  end
+
+  def finalize(event)
+    Rails.logger.debug "Closing connection: #{event.code}, #{event.reason}"
+    @dead = true
+    @thread.kill
+  end
+
+  def status
+    @driver.status
   end
 
   def emit(event, data = {})
@@ -35,17 +47,6 @@ class WebSocketClient
 
   def write(data)
     @tcp.write(data)
-  end
-
-  def close
-    Rails.logger.debug 'Closing connection'
-    @driver.close
-  end
-
-  def finalize(event)
-    p [:close, event.code, event.reason, @driver.headers]
-    @dead = true
-    @thread.kill
   end
 
   private
@@ -71,7 +72,7 @@ class WebSocketClient
 
   def set_error_handler
     @driver.on(:error) do |error|
-      Rails.logger.error error
+      Rails.logger.error "ERROR: #{error}"
     end
   end
 
