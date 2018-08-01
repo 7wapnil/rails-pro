@@ -9,12 +9,10 @@ class WebSocketClient
     @url  = "#{ENV['WEBSOCKET_URL']}/socket.io/?transport=websocket"
     @uri  = URI.parse(url)
     @port = @uri.port || DEFAULT_PORTS[@uri.scheme]
-
     @tcp  = TCPSocket.new(@uri.host, @port)
     @dead = false
 
     Rails.logger.debug "Build websocket client, url: #{@url}, port: #{@port}"
-
     connect
   end
 
@@ -28,12 +26,11 @@ class WebSocketClient
     @driver.start
   end
 
-  def send(message)
-    Rails.logger.info "Sending message: #{message}"
-    data = ActiveSupport::JSON.encode(['message', { message: message }])
-    msg = "42#{data}"
-    Rails.logger.debug "Compiled message: #{msg}"
-    @driver.text(msg)
+  def emit(event, data = {})
+    Rails.logger.info "Sending event '#{event}', data: #{data}"
+    message = ['message', { event: event, data: data }]
+    data = ActiveSupport::JSON.encode(message)
+    @driver.text("42#{data}")
   end
 
   def write(data)
