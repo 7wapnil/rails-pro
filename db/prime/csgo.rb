@@ -68,13 +68,13 @@ class CsgoPrimer
     market = event.markets.create!(
       name: 'Match Winner',
       priority: 1,
-      status: Market::DEFAULT_STATUS
+      status: :active
     )
 
     teams.each do |name|
       market.odds.create!(
         name: name,
-        status: Market::DEFAULT_STATUS,
+        status: :active,
         value: Faker::Number.between(1.1, 9.9).round(2)
       )
     end

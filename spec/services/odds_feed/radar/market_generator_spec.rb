@@ -45,9 +45,9 @@ describe OddsFeed::Radar::MarketGenerator do
 
     it 'should set appropriate status for market' do
       [
-        { status: '-1', result: Market::STATUSES[:suspended] },
-        { status: '0', result: Market::STATUSES[:inactive] },
-        { status: '1', result: Market::STATUSES[:active] }
+        { status: '-1', result: 'suspended' },
+        { status: '0', result: 'inactive' },
+        { status: '1', result: 'active' }
       ].each do |expectation|
         chosen_market['@status'] = expectation[:status]
         subject.generate
