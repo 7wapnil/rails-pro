@@ -8,8 +8,8 @@ ArcanebetSchema = GraphQL::Schema.define do
 end
 
 GraphQL::Errors.configure(ArcanebetSchema) do
-  rescue_from ActiveRecord::RecordNotFound do
-    nil
+  rescue_from ActiveRecord::RecordNotFound do |exception|
+    GraphQL::ExecutionError.new(exception.message)
   end
 
   rescue_from ActiveRecord::RecordInvalid do |exception, _obj, _args, ctx|
