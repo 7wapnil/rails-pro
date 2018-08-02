@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_18_114959) do
+ActiveRecord::Schema.define(version: 2018_07_26_085042) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -173,6 +173,7 @@ ActiveRecord::Schema.define(version: 2018_07_18_114959) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "external_id"
+    t.json "payload"
     t.index ["external_id"], name: "index_events_on_external_id"
     t.index ["title_id"], name: "index_events_on_title_id"
   end
@@ -186,6 +187,16 @@ ActiveRecord::Schema.define(version: 2018_07_18_114959) do
     t.index ["deleted_at"], name: "index_labels_on_deleted_at"
   end
 
+  create_table "market_templates", force: :cascade do |t|
+    t.string "external_id", null: false
+    t.string "name"
+    t.string "groups"
+    t.json "payload"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_market_templates_on_external_id"
+  end
+
   create_table "markets", force: :cascade do |t|
     t.bigint "event_id"
     t.string "name"
@@ -193,6 +204,7 @@ ActiveRecord::Schema.define(version: 2018_07_18_114959) do
     t.datetime "updated_at", null: false
     t.integer "priority"
     t.string "external_id"
+    t.integer "status"
     t.index ["event_id"], name: "index_markets_on_event_id"
     t.index ["external_id"], name: "index_markets_on_external_id"
   end
@@ -212,6 +224,8 @@ ActiveRecord::Schema.define(version: 2018_07_18_114959) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "external_id"
+    t.decimal "value"
+    t.integer "status"
     t.index ["external_id"], name: "index_odds_on_external_id"
     t.index ["market_id"], name: "index_odds_on_market_id"
   end
