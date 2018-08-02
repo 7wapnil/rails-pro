@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_07_26_085042) do
+ActiveRecord::Schema.define(version: 2018_08_02_065109) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -209,14 +209,6 @@ ActiveRecord::Schema.define(version: 2018_07_26_085042) do
     t.index ["external_id"], name: "index_markets_on_external_id"
   end
 
-  create_table "odd_values", force: :cascade do |t|
-    t.bigint "odd_id"
-    t.decimal "value"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["odd_id"], name: "index_odd_values_on_odd_id"
-  end
-
   create_table "odds", force: :cascade do |t|
     t.bigint "market_id"
     t.string "name"
@@ -291,7 +283,6 @@ ActiveRecord::Schema.define(version: 2018_07_26_085042) do
   add_foreign_key "event_scopes", "titles"
   add_foreign_key "events", "titles"
   add_foreign_key "markets", "events"
-  add_foreign_key "odd_values", "odds"
   add_foreign_key "odds", "markets"
   add_foreign_key "scoped_events", "event_scopes"
   add_foreign_key "scoped_events", "events"
