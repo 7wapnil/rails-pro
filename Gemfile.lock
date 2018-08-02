@@ -86,6 +86,8 @@ GEM
     coderay (1.1.2)
     concurrent-ruby (1.0.5)
     connection_pool (2.2.2)
+    crack (0.4.3)
+      safe_yaml (~> 1.0.0)
     crass (1.0.4)
     devise (4.4.3)
       bcrypt (~> 3.0)
@@ -144,6 +146,7 @@ GEM
       haml (>= 4.0.6, < 6.0)
       html2haml (>= 1.0.1)
       railties (>= 4.0.1)
+    hashdiff (0.3.7)
     html2haml (2.2.0)
       erubis (~> 2.7.0)
       haml (>= 4.0, < 6)
@@ -208,6 +211,7 @@ GEM
     nio4r (2.3.0)
     nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
+    nori (2.6.0)
     notiffany (0.1.1)
       nenv (~> 0.1)
       shellany (~> 0.0)
@@ -323,6 +327,9 @@ GEM
       rspec-expectations (~> 3.7.0)
       rspec-mocks (~> 3.7.0)
       rspec-support (~> 3.7.0)
+    rspec-sidekiq (3.0.3)
+      rspec-core (~> 3.0, >= 3.0.0)
+      sidekiq (>= 2.4.0)
     rspec-support (3.7.1)
     rubocop (0.55.0)
       parallel (~> 1.10)
@@ -337,6 +344,7 @@ GEM
     ruby_parser (3.11.0)
       sexp_processor (~> 4.9)
     rubyzip (1.2.1)
+    safe_yaml (1.0.4)
     sass (3.5.6)
       sass-listen (~> 4.0.0)
     sass-listen (4.0.0)
@@ -379,6 +387,7 @@ GEM
     thor (0.20.0)
     thread_safe (0.3.6)
     tilt (2.0.8)
+    timecop (0.9.1)
     tzinfo (1.2.5)
       thread_safe (~> 0.1)
     uglifier (4.1.10)
@@ -391,6 +400,10 @@ GEM
       activemodel (>= 5.0)
       bindex (>= 0.4.0)
       railties (>= 5.0)
+    webmock (3.4.2)
+      addressable (>= 2.3.6)
+      crack (>= 0.3.2)
+      hashdiff
     webpacker (3.4.3)
       activesupport (>= 4.2)
       rack-proxy (>= 0.6.1)
@@ -434,6 +447,7 @@ DEPENDENCIES
   lograge
   mongoid (~> 6.1.0)
   newrelic_rpm
+  nori (~> 2.6.0)
   paranoia (~> 2.2)
   pg (>= 0.18, < 2.0)
   pry-rails
@@ -445,6 +459,7 @@ DEPENDENCIES
   redis-rack-cache
   redis-rails
   rspec-rails (~> 3.7)
+  rspec-sidekiq
   rubocop
   sass-rails (~> 5.0)
   selenium-webdriver
@@ -453,8 +468,10 @@ DEPENDENCIES
   simple_form
   spring
   spring-watcher-listen (~> 2.0.0)
+  timecop
   uglifier (>= 1.3.0)
   web-console (>= 3.3.0)
+  webmock
   webpacker (~> 3.4)
 
 RUBY VERSION

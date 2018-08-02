@@ -1,6 +1,12 @@
 FactoryBot.define do
-  # Financials
+  factory :market_template do
+    external_id { Faker::Number.between(1, 1000) }
+    name { Faker::Name.unique.name }
+    groups 'all'
+    payload { { test: 1 } }
+  end
 
+  # Financials
   factory :entry_currency_rule do
     currency
     kind { EntryRequest.kinds.keys.first }
@@ -134,7 +140,7 @@ FactoryBot.define do
   # Markets data
 
   factory :title do
-    name 'CS:GO'
+    name { Faker::Name.unique.name }
     kind :esports
   end
 
@@ -155,17 +161,36 @@ FactoryBot.define do
     description 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' # rubocop:disable Metrics/LineLength
     start_at { 2.hours.ago }
     end_at { 1.hours.ago }
+    external_id ''
+    payload { {} }
   end
 
   factory :market do
     event
     name 'Winner Map (Train)'
     priority 2
+    status 0
   end
 
   factory :odd do
     market
     name 'MiTH'
     won true
+    value 1.85
+    status 0
+  end
+
+  factory(:alive_message, class: Radar::AliveMessage) do
+    product_id 1
+    reported_at Time.now.to_i
+    subscribed true
+
+    initialize_with do
+      new(
+        product_id: product_id,
+        reported_at: reported_at,
+        subscribed: subscribed
+      )
+    end
   end
 end

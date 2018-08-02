@@ -3,38 +3,44 @@ describe 'Bonuses#index' do
     let(:per_page_count) { 10 }
 
     before do
-      create_list(:bonus, 5)
-
       login_as create(:admin_user), scope: :user
-      visit bonuses_path
     end
 
-    it 'shows bonuses list' do
-      within 'table.table' do
-        Bonus.limit(per_page_count).each do |bonus|
-          expect(page).to have_content(bonus.code)
+    context 'scopes' do
+      before do
+        create_list(:bonus, 5)
+        visit bonuses_path
+      end
+
+      it 'shows bonuses list' do
+        within 'table.table' do
+          Bonus.limit(per_page_count).each do |bonus|
+            expect(page).to have_content(bonus.code)
+          end
         end
       end
-    end
 
-    it 'shows only not deleted bonuses in a list' do
-      deleted_bonuses = create_list(:bonus, 5, deleted_at: Date.new)
+      it 'shows only not deleted bonuses in a list' do
+        deleted_bonuses = create_list(:bonus, 5, deleted_at: Date.new)
 
-      within 'table.table' do
-        deleted_bonuses.each do |bonus|
-          expect(page).not_to have_content(bonus.code)
+        within 'table.table' do
+          deleted_bonuses.each do |bonus|
+            expect(page).not_to have_content(bonus.code)
+          end
         end
       end
     end
 
     context 'pagination' do
       it 'is shown' do
-        create_list(:bonus, 10)
+        create_list(:bonus, 11)
         visit bonuses_path
         expect(page).to have_selector('ul.pagination')
       end
 
       it 'is hidden' do
+        create_list(:bonus, 10)
+        visit bonuses_path
         expect(page).not_to have_selector('ul.pagination')
       end
     end
@@ -110,9 +116,9 @@ describe 'Bonuses#index' do
 
     context 'sorting' do
       before do
-        create :bonus, code: 'ARCANE100', expires_at: Date.today.end_of_week
-        create :bonus, code: 'WELCOME500', expires_at: Date.today.end_of_month
-        create :bonus, code: 'BETFORFREE', expires_at: Date.today.end_of_year
+        create :bonus, code: 'ARCANE100', expires_at: Date.today + 15.days
+        create :bonus, code: 'WELCOME500', expires_at: Date.today + 10.days
+        create :bonus, code: 'BETFORFREE', expires_at: Date.today + 5.days
 
         visit bonuses_path
       end
@@ -137,8 +143,8 @@ describe 'Bonuses#index' do
         first_row = all('table.table tbody tr').first
         last_row = all('table.table tbody tr').last
 
-        expect(first_row).to have_content 'ARCANE100'
-        expect(last_row).to have_content 'BETFORFREE'
+        expect(first_row).to have_content 'BETFORFREE'
+        expect(last_row).to have_content 'ARCANE100'
       end
     end
   end
