@@ -21,4 +21,3 @@ yarn-error.log
 !storage/.keep
 !tmp/.keep
 docker-compose.yml
-.DS_Store
