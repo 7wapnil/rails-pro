@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_08_02_065109) do
+ActiveRecord::Schema.define(version: 2018_08_03_081116) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,6 +121,9 @@ ActiveRecord::Schema.define(version: 2018_08_02_065109) do
     t.decimal "amount", precision: 8, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "origin_type"
+    t.bigint "origin_id"
+    t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
   end
 
@@ -148,7 +151,10 @@ ActiveRecord::Schema.define(version: 2018_08_02_065109) do
     t.string "initiator_type"
     t.bigint "initiator_id"
     t.integer "origin"
+    t.string "origin_type"
+    t.bigint "origin_id"
     t.index ["initiator_type", "initiator_id"], name: "index_entry_requests_on_initiator_type_and_initiator_id"
+    t.index ["origin_type", "origin_id"], name: "index_entry_requests_on_origin_type_and_origin_id"
   end
 
   create_table "event_scopes", force: :cascade do |t|

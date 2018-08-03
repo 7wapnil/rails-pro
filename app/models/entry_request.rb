@@ -4,6 +4,7 @@ class EntryRequest < ApplicationRecord
   belongs_to :customer
   belongs_to :currency
   belongs_to :initiator, polymorphic: true
+  belongs_to :origin, polymorphic: true
 
   default_scope { order(created_at: :desc) }
 
