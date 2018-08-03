@@ -6,22 +6,22 @@ describe EntryRequest do
 
   it { should define_enum_for :status }
   it { should define_enum_for :kind }
-  it { should define_enum_for :origin }
+  it { should define_enum_for :mode }
   it { should validate_presence_of(:amount) }
   it { should validate_presence_of(:kind) }
 
-  context 'user originated' do
+  context 'user initiated' do
     before { subject.initiator = build(:user) }
 
-    it 'should validate comment if origin is user' do
+    it 'should validate comment if initiator is user' do
       should validate_presence_of(:comment)
     end
   end
 
-  context 'customer originated' do
+  context 'customer initiated' do
     before { subject.initiator = build(:customer) }
 
-    it 'should skip comment validation if origin is customer' do
+    it 'should skip comment validation if initiator is customer' do
       should_not validate_presence_of(:comment)
     end
   end

@@ -73,7 +73,7 @@ describe 'Customers#account_management' do
       within '.customer-entry-requests' do
         customer.entry_requests.each do |request|
           expect(page).to have_content I18n.t "kinds.#{request.kind}"
-          expect(page).to have_content request.origin
+          expect(page).to have_content request.mode
           expect(page).to have_content request.amount
           expect(page).to have_content request.currency_code
           expect(page).to have_content I18n.t "statuses.#{request.status}"

@@ -4,7 +4,7 @@ class Entry < ApplicationRecord
   include EntryKinds
 
   belongs_to :wallet
-  belongs_to :origin, polymorphic: true
+  belongs_to :origin, polymorphic: true, optional: true
   has_one :currency, through: :wallet
   has_many :balance_entries
 

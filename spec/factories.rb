@@ -23,7 +23,7 @@ FactoryBot.define do
     customer
     currency
     status EntryRequest.statuses[:pending]
-    origin EntryRequest.origins[:cashier]
+    mode EntryRequest.modes[:cashier]
     kind { EntryRequest.kinds.keys.first }
     amount Random.new.rand(1.00..200.00).round(2)
     association :initiator, factory: :customer
