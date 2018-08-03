@@ -16,7 +16,7 @@ describe OddsFeed::Radar::AliveHandler do
 
   let(:message) { build(:alive_message) }
 
-  it 'should delegate message logic to AliveMessage' do
+  it 'delegates message logic to AliveMessage' do
     allow(::Radar::AliveMessage).to receive(:from_hash).and_return(message)
     allow(message).to receive(:save).and_return(message)
 

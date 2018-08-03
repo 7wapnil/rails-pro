@@ -14,17 +14,17 @@ describe MarketsUpdateWorker do
     subject
   end
 
-  it 'should request market templates data from API' do
+  it 'requests market templates data from API' do
     subject.perform
     expect(client).to have_received(:markets)
   end
 
-  it 'should insert new template in db if not exists' do
+  it 'inserts new template in db if not exists' do
     subject.perform
     expect(MarketTemplate.count).to eq(5)
   end
 
-  it 'should update template in db if exists' do
+  it 'updates template in db if exists' do
     template_id = '701'
     create(:market_template, external_id: template_id,
                              name: 'Old template name',
@@ -54,7 +54,7 @@ describe MarketsUpdateWorker do
     expect(updated_template.payload).to eq(expected_payload)
   end
 
-  it 'should skip creation on invalid data without breaking execution' do
+  it 'skips creation on invalid data without breaking execution' do
     response['market_descriptions']['market'][0]['@name'] = ''
     subject.perform
     expect(MarketTemplate.count).to eq(4)
