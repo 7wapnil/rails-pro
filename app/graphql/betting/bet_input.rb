@@ -1,4 +1,4 @@
-module Bet
+module Betting
   BetInput = GraphQL::InputObjectType.define do
     name 'BetInput'
 

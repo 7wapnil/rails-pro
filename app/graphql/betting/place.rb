@@ -1,4 +1,4 @@
-module Bet
+module Betting
   class Place < ::Base::Resolver
     type types[BetType]
 

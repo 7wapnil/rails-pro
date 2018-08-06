@@ -1,4 +1,4 @@
-module Bet
+module Betting
   BetType = GraphQL::ObjectType.define do
     name 'Bet'
 
