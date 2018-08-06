@@ -1,4 +1,4 @@
-describe WebSocket::Client do
+describe 'websocket_client' do
   let(:connection) do
     connection = WebSocket::SocketIOConnection.new('wss://websocket')
     allow(connection).to receive(:connect)
@@ -6,7 +6,10 @@ describe WebSocket::Client do
     connection
   end
 
-  subject { WebSocket::Client.new(connection) }
+  subject do
+    WebSocket::Client.instance.connection = connection
+    WebSocket::Client.instance
+  end
 
   it 'should call connection method on emit' do
     subject.emit('eventName', test: 1)

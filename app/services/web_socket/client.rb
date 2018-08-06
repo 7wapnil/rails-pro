@@ -1,12 +1,11 @@
 module WebSocket
   class Client
-    attr_reader :connection
+    include Singleton
 
-    def initialize(connection)
-      @connection = connection
-    end
+    attr_writer :connection
 
     def emit(event, data = {})
+      raise 'No connection defined' if @connection.nil?
       @connection.connect if @connection.dead?
       @connection.emit(event, data)
     end
