@@ -15,7 +15,8 @@ class EntryRequest < ApplicationRecord
   }
 
   enum mode: {
-    cashier: 0
+    cashier: 0,
+    sports_ticket: 1
   }
 
   validates :amount,
