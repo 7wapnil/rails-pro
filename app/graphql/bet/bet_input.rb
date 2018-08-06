@@ -3,6 +3,7 @@ module Bet
     name 'BetInput'
 
     argument :amount, !types.Float
-    argument :oddId, !types.Int
+    argument :oddId, !types.String
+    argument :currency, !types.String
   end
 end
