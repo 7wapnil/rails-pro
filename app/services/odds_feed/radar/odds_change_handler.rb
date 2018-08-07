@@ -28,6 +28,9 @@ module OddsFeed
         if event.event_scopes.any?
           event.event_scopes.each { |scope| scope&.save! }
         end
+        WebSocket::Client.instance.emit('updateEvent',
+                                        id: event.id,
+                                        name: event.name)
         event
       end
 

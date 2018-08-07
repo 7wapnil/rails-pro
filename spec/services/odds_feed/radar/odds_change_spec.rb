@@ -15,7 +15,6 @@ describe OddsFeed::Radar::OddsChangeHandler do
     create(:event, external_id: event_id)
     allow(subject).to receive(:create_event)
     subject.handle
-
     expect(subject).not_to have_received(:create_event)
   end
 
@@ -29,6 +28,17 @@ describe OddsFeed::Radar::OddsChangeHandler do
     allow(event).to receive(:save!)
     subject.handle
     expect(event).to have_received(:save!)
+  end
+
+  it 'sends websocket message when new event created' do
+    subject.handle
+
+    created_event = Event.find_by!(external_id: event_id)
+    expect(WebSocket::Client.instance)
+      .to have_received(:emit)
+      .with('updateEvent',
+            id: created_event.id,
+            name: created_event.name)
   end
 
   it 'calls market generator for every market data row' do
