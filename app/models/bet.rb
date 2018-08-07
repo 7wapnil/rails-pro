@@ -8,4 +8,9 @@ class Bet < ApplicationRecord
   belongs_to :customer
   belongs_to :odd
   belongs_to :currency
+
+  has_one :entry, as: :origin
+  has_one :entry_request, as: :origin
+
+  delegate :market, to: :odd
 end

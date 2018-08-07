@@ -23,9 +23,10 @@ module WalletEntry
       end
     end
 
-    def create_entry!
+    def create_entry! # rubocop:disable Metrics/MethodLength
       @entry = Entry.create!(
         wallet_id: @wallet.id,
+        origin: @request.origin,
         kind: @request.kind,
         amount: @amount
       )
@@ -57,6 +58,7 @@ module WalletEntry
 
     def handle_success
       @request.succeeded!
+      @entry
     end
 
     def handle_failure(exception)
@@ -67,6 +69,7 @@ module WalletEntry
           exception_class: exception.class.to_s
         }
       )
+      nil
     end
   end
 end
