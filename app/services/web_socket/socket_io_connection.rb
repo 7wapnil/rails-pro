@@ -8,7 +8,8 @@ module WebSocket
       @url  = "#{base_url}/socket.io/?transport=websocket"
       @uri  = URI.parse(url)
       @uri.port ||= DEFAULT_PORTS[@uri.scheme]
-      @dead = true
+      @dead = false
+      @established = false
 
       Rails.logger.debug "Build client, url: #{@url}, port: #{@uri.port}"
     end
@@ -24,6 +25,10 @@ module WebSocket
         @driver.parse(socket.read(1)) until @dead
       end
       @driver.start
+    end
+
+    def established?
+      @established
     end
 
     def close
@@ -53,7 +58,6 @@ module WebSocket
 
     def set_handlers
       set_open_hanlder
-      set_message_handler
       set_error_handler
       set_close_handler
     end
@@ -61,6 +65,7 @@ module WebSocket
     def set_open_hanlder
       @driver.on(:open) do
         Rails.logger.debug 'Connection opened'
+        @established = true
       end
     end
 

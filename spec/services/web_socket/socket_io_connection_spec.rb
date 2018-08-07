@@ -13,12 +13,6 @@ describe WebSocket::SocketIOConnection do
     expect(subject).to have_received(:set_handlers)
   end
 
-  it 'updates dead status on connect' do
-    expect(subject.dead?).to be_truthy
-    subject.connect
-    expect(subject.dead?).to be_falsey
-  end
-
   it 'updates dead status on disconnect' do
     subject.connect
     expect(subject.dead?).to be_falsey
