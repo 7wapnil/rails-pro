@@ -7,7 +7,7 @@ describe Radar::AliveMessage do
   describe '#from_hash' do
     subject { Radar::AliveMessage }
     context 'valid' do
-      it 'should return message based on hash' do
+      it 'returns message based on hash' do
         message = subject.from_hash(
           'product_id' => '1',
           'reported_at' => valid_timestamp.to_s,
@@ -31,7 +31,7 @@ describe Radar::AliveMessage do
         cache.write(key, '0')
       end
 
-      it 'should save last successful alive to cache' do
+      it 'saves last successful alive to cache' do
         message.save
 
         expect(cache.exist?(key)).to be(true)
@@ -44,7 +44,7 @@ describe Radar::AliveMessage do
           cache.write(key, timestamp_in_future)
         end
 
-        it 'should ignore timestamp update for expired case' do
+        it 'ignores timestamp update for expired case' do
           message.save
 
           expect(cache.exist?(key)).to be(true)
@@ -66,7 +66,7 @@ describe Radar::AliveMessage do
         cache.write(key, cache_value)
       end
 
-      it 'should not override cache value' do
+      it 'is not override cache value' do
         message.save
 
         expect(cache.read(key)).to eq(cache_value)
@@ -88,7 +88,7 @@ describe Radar::AliveMessage do
       allow(OddsFeed::Radar::SubscriptionRecovery).to receive(:call)
     end
 
-    it 'should call SubscriptionRecovery for correct product and date' do
+    it 'calls SubscriptionRecovery for correct product and date' do
       time = Time.zone.now - 1.hour
       cache.write('radar:last_successful_alive_message:1', time.to_i)
       expect(OddsFeed::Radar::SubscriptionRecovery)
@@ -97,7 +97,7 @@ describe Radar::AliveMessage do
       message.recover!
     end
 
-    it 'should limit call SubscriptionRecovery to 72 hours' do
+    it 'limits call SubscriptionRecovery to 72 hours' do
       Timecop.freeze(Time.zone.now)
       old_time = Time.zone.now - 1.week
       cache.write('radar:last_successful_alive_message:1', old_time.to_i)

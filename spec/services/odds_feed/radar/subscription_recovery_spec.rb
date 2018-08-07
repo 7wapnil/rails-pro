@@ -17,13 +17,13 @@ describe OddsFeed::Radar::SubscriptionRecovery do
         .to_return(status: 202, body: body, headers: {})
     end
 
-    it 'should call recovery intiate request API endpoint' do
+    it 'calls recovery intiate request API endpoint' do
       cache.write(cache_key, Time.zone.now - 1.minute)
       expect(a_request(:post, %r{/recovery/initiate_request}))
       described_class.call(product_id: 1, start_at: Time.now.to_i)
     end
 
-    it 'should store last recovery call time' do
+    it 'stores last recovery call time' do
       Timecop.freeze(Time.zone.now)
       time = Time.zone.now
       cache.write(cache_key, Time.now - 1.year)
@@ -37,19 +37,19 @@ describe OddsFeed::Radar::SubscriptionRecovery do
     let(:timestamp) { Time.now.to_i }
     let(:timestamp_date_time) { Time.at(timestamp).to_datetime }
 
-    it 'should return true when cache is empty' do
+    it 'returns true when cache is empty' do
       cache.delete(cache_key)
       service = described_class.new(product_id: 1, start_at: timestamp)
       expect(service.rates_available?).to be true
     end
 
-    it 'should return true when cache is older than timeout' do
+    it 'returns true when cache is older than timeout' do
       cache.write(cache_key, (timestamp_date_time - 40.seconds).to_i)
       service = described_class.new(product_id: 1, start_at: timestamp)
       expect(service.rates_available?).to be true
     end
 
-    it 'should return false when cache is equal to timeout' do
+    it 'returns false when cache is equal to timeout' do
       Timecop.freeze(timestamp_date_time)
       cache.write(cache_key, (timestamp_date_time - 30.seconds).to_i)
       service = described_class.new(product_id: 1, start_at: timestamp)
@@ -57,7 +57,7 @@ describe OddsFeed::Radar::SubscriptionRecovery do
       Timecop.return
     end
 
-    it 'should return false when cache is less that timeout' do
+    it 'returns false when cache is less that timeout' do
       cache.write(cache_key, (timestamp_date_time - 1.seconds).to_i)
       service = described_class.new(product_id: 1, start_at: timestamp)
       expect(service.rates_available?).to be false

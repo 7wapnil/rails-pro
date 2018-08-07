@@ -16,7 +16,7 @@ describe OddsFeed::Radar::Client do
     context 'who am i request' do
       let(:route) { '/users/whoami.xml' }
 
-      it 'should request whoami endpoint' do
+      it 'requests whoami endpoint' do
         subject.who_am_i
       end
     end
@@ -25,7 +25,7 @@ describe OddsFeed::Radar::Client do
       let(:event_id) { 'sr:match:10001' }
       let(:route) { "/sports/en/sport_events/#{event_id}/fixture.xml" }
 
-      it 'should return adapter on event request' do
+      it 'returns adapter on event request' do
         expect(subject.event(event_id))
           .to be_a(OddsFeed::Radar::EventAdapter)
       end
@@ -34,7 +34,7 @@ describe OddsFeed::Radar::Client do
     context 'markets request' do
       let(:route) { '/descriptions/en/markets.xml?include_mappings=false' }
 
-      it 'should return markets request result' do
+      it 'returns markets request result' do
         subject.markets
       end
     end

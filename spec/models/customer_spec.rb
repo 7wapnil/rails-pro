@@ -15,7 +15,7 @@ describe Customer do
 
   it { should act_as_paranoid }
 
-  it 'should update tracked fields' do
+  it 'updates tracked fields' do
     customer = create(:customer)
     sign_in_count = customer.sign_in_count
     previous_ip = customer.current_sign_in_ip

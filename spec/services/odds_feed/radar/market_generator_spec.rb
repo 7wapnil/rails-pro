@@ -30,20 +30,20 @@ describe OddsFeed::Radar::MarketGenerator do
     let(:chosen_market) { market_payload[3] }
     let(:external_id) { 'sr:match:1234:123' }
 
-    it 'should generate new market if not exists in db' do
+    it 'generates new market if not exists in db' do
       subject.generate
       market = Market.find_by(external_id: external_id)
       expect(market).not_to be_nil
     end
 
-    it 'should update market if exists in db' do
+    it 'updates market if exists in db' do
       market = create(:market, external_id: external_id)
       subject.generate
       updated_market = Market.find_by(external_id: external_id)
       expect(updated_market.updated_at).not_to eq(market.updated_at)
     end
 
-    it 'should set appropriate status for market' do
+    it 'sets appropriate status for market' do
       [
         { status: '-1', result: 'suspended' },
         { status: '0', result: 'inactive' },
@@ -56,13 +56,13 @@ describe OddsFeed::Radar::MarketGenerator do
       end
     end
 
-    it 'should create odds if not exist in db' do
+    it 'creates odds if not exist in db' do
       subject.generate
       expect(Odd.find_by(external_id: "#{external_id}:1")).not_to be_nil
       expect(Odd.find_by(external_id: "#{external_id}:2")).not_to be_nil
     end
 
-    it 'should update odds if exist in db' do
+    it 'updates odds if exist in db' do
       create(:odd, external_id: "#{external_id}:1", value: 1.0)
       create(:odd, external_id: "#{external_id}:2", value: 1.0)
 

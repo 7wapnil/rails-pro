@@ -24,7 +24,7 @@ describe 'GraphQL#SignUp' do
       { input: {} }
     end
 
-    it 'should return argument error' do
+    it 'returns argument error' do
       msg = 'Variable input of type RegisterInput! was provided invalid value'
       expect(result['errors'][0]['message']).to eq(msg)
     end
@@ -43,7 +43,7 @@ describe 'GraphQL#SignUp' do
       } }
     end
 
-    it 'should return collection of validation errors' do
+    it 'returns collection of validation errors' do
       expect(result['errors'][0]['path']).to eq(:email)
       expect(result['errors'][0]['message']).to eq('Email is invalid')
     end
@@ -62,13 +62,13 @@ describe 'GraphQL#SignUp' do
       } }
     end
 
-    it 'should return user and token' do
+    it 'returns user and token' do
       expect(result['errors']).to be_nil
       expect(result['data']['signUp']['user']).not_to be_nil
       expect(result['data']['signUp']['token']).not_to be_nil
     end
 
-    it 'should log audit event on sign up' do
+    it 'logs audit event on sign up' do
       allow(Audit::Service).to receive(:call)
       expect(result['errors']).to be_nil
       expect(Audit::Service).to have_received(:call)

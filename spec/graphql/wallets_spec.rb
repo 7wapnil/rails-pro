@@ -11,13 +11,13 @@ describe 'GraphQL#wallets' do
   describe 'query' do
     let(:query) { %({ wallets { id amount currency { code name } } }) }
 
-    it 'should return list of auth customer wallets' do
+    it 'returns list of auth customer wallets' do
       create_list(:wallet, 5, customer: auth_customer)
       create_list(:wallet, 2)
       expect(result['data']['wallets'].count).to eq(5)
     end
 
-    it 'should return wallet currency fields' do
+    it 'returns wallet currency fields' do
       wallet = create(:wallet, customer: auth_customer)
       result_wallet = result['data']['wallets'].first
 
@@ -26,7 +26,7 @@ describe 'GraphQL#wallets' do
       expect(result_wallet['currency']['name']).to eq(wallet.currency.name)
     end
 
-    it 'should return default wallet when customer has no any' do
+    it 'returns default wallet when customer has no any' do
       expect(result['data']['wallets'].count).to eq(1)
       result_wallet = result['data']['wallets'].first
       default_currency = Currency.build_default
