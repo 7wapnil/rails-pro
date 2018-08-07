@@ -1,1 +1,6 @@
 %h1 hello backoffice
+
+= form_tag do
+  = label_tag :message, 'Add message'
+  = text_field_tag :message
+  = submit_tag 'Send'

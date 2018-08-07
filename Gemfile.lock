@@ -473,6 +473,7 @@ DEPENDENCIES
   web-console (>= 3.3.0)
   webmock
   webpacker (~> 3.4)
+  websocket-driver
 
 RUBY VERSION
    ruby 2.5.1p57
