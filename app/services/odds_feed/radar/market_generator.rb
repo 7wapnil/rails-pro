@@ -7,6 +7,13 @@ module OddsFeed
       end
 
       def generate
+        market = create_or_update_market!
+        generate_odds!(market)
+      end
+
+      private
+
+      def create_or_update_market!
         external_id = "#{@event.external_id}:#{@market_data['@id']}"
         market = Market.find_or_initialize_by(external_id: external_id,
                                               event: @event)
@@ -14,10 +21,22 @@ module OddsFeed
                                  priority: 0,
                                  status: market_status)
         market.save!
-        generate_odds!(market)
+        emit_market(market)
+        market
       end
 
-      private
+      def emit_market(market)
+        return unless market.saved_changes.keys.any? do |i|
+          %w[name priority status].include? i
+        end
+
+        WebSocket::Client.instance.emit(WebSocket::SignalList::UPDATE_MARKET,
+                                        id: market.id.to_s,
+                                        eventId: market.event.id.to_s,
+                                        name: market.name,
+                                        priority: market.priority,
+                                        status: market.status)
+      end
 
       def market_status
         status_map[@market_data['@status']] || Market::DEFAULT_STATUS

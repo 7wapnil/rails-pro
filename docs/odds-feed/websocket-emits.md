@@ -15,3 +15,5 @@ market updated.
 * `eventId`:`String` - market event internal ID
 * `name`:`String` - market name
 * `priority`:`Int` - market priority ( 0|1 )
+* `status`:`String` - market status, for a list of possible statuses check 
+`app/models/market.rb`
