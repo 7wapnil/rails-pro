@@ -67,6 +67,7 @@ describe OddsFeed::Radar::MarketGenerator do
       subject.generate
       expect(WebSocket::Client.instance)
         .not_to have_received(:emit)
+        .with(WebSocket::SignalList::UPDATE_MARKET)
     end
 
     it 'sets appropriate status for market' do
@@ -86,6 +87,21 @@ describe OddsFeed::Radar::MarketGenerator do
       subject.generate
       expect(Odd.find_by(external_id: "#{external_id}:1")).not_to be_nil
       expect(Odd.find_by(external_id: "#{external_id}:2")).not_to be_nil
+    end
+
+    it 'sends websocket message on new odd creation' do
+      subject.generate
+
+      odd = Odd.find_by!(external_id: "#{external_id}:1")
+      expect(WebSocket::Client.instance)
+        .to have_received(:emit)
+        .with(WebSocket::SignalList::ODD_CHANGE,
+              id: odd.id.to_s,
+              marketId: odd.market.id.to_s,
+              eventId: odd.market.event.id.to_s,
+              name: odd.name,
+              value: odd.value,
+              status: odd.status)
     end
 
     it 'updates odds if exist in db' do

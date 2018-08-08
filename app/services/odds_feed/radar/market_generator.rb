@@ -65,6 +65,17 @@ module OddsFeed
                               status: odd_data['@active'].to_i,
                               value: odd_data['@odds'])
         odd.save!
+        emit_odd(odd)
+      end
+
+      def emit_odd(odd)
+        WebSocket::Client.instance.emit(WebSocket::SignalList::ODD_CHANGE,
+                                        id: odd.id.to_s,
+                                        marketId: odd.market.id.to_s,
+                                        eventId: odd.market.event.id.to_s,
+                                        name: odd.name,
+                                        value: odd.value,
+                                        status: odd.status)
       end
 
       def transpiler
