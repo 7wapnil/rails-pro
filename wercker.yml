@@ -117,16 +117,3 @@ deploy:
   after-steps:
     - slack-notifier:
       url: $SLACK_URL
-
-
-test:
-  box: python:3.6-alpine
-
-  steps:
-    - script:
-      name: install-linux-deps
-      code: apk add -qU openssh git curl
-
-  after-steps:
-    - slack-notifier:
-      url: $SLACK_URL
