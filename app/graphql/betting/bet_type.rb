@@ -4,10 +4,15 @@ module Betting
 
     field :id, !types.ID
     field :amount, !types.Float
-    field :currency, !types.String
+    field :currency, !Wallets::CurrencyType
     field :odd, !Types::OddType
     field :market, !Types::MarketType
-    field :oddValue, !types.Float
+
+    field :oddValue do
+      type !types.Float
+      resolve ->(obj, _args, _ctx) { obj.odd_value }
+    end
+
     field :message, types.String
     field :status, !types.String
   end
