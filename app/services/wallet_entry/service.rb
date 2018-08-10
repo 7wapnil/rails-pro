@@ -58,6 +58,8 @@ module WalletEntry
 
     def handle_success
       @request.succeeded!
+      log_success
+
       @entry
     end
 
@@ -69,7 +71,33 @@ module WalletEntry
           exception_class: exception.class.to_s
         }
       )
+      log_failure
+
       nil
+    end
+
+    def log_success
+      Audit::Service.call(
+        event: :entry_created,
+        origin_kind: @request.initiator_type,
+        origin_id: @request.initiator_id,
+        context: @entry.loggable_attributes.merge(
+          target_class: :customer,
+          target_id: @request.customer_id
+        )
+      )
+    end
+
+    def log_failure
+      Audit::Service.call(
+        event: :entry_creation_failed,
+        origin_kind: @request.initiator_type,
+        origin_id: @request.initiator_id,
+        context: @request.loggable_attributes.merge(
+          target_class: :customer,
+          target_id: @request.customer_id
+        )
+      )
     end
   end
 end

@@ -8,3 +8,5 @@ en:
     label_updated: "Label '%{name}' updated by %{origin_kind} %{origin_name}"
     label_deleted: "Label '%{name}' deleted by %{origin_kind} %{origin_name}"
     note_created: "New note for customer added by %{origin_kind} %{origin_name}"
+    entry_created: "Entry (%{kind}) created by %{origin_kind} %{origin_name}"
+    entry_creation_failed: "Entry (%{kind}) failed to create from request by %{origin_kind} %{origin_name}"
