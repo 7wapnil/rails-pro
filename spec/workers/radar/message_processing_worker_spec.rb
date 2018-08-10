@@ -20,19 +20,19 @@ describe Radar::MessageProcessingWorker do
   it { is_expected.to be_processed_in :mq }
 
   describe '.perform' do
-    it 'should route odds_change to EventProcessingWorker' do
+    it 'routes odds_change to EventProcessingWorker' do
       Radar::MessageProcessingWorker.new.perform(minimal_valid_odds_change_xml)
       expect(EventProcessingWorker)
         .to have_enqueued_sidekiq_job(minimal_valid_odds_change_hash)
     end
 
-    it 'should route alive to Radar::HeartbeatWorker' do
+    it 'routes alive to Radar::HeartbeatWorker' do
       Radar::MessageProcessingWorker.new.perform(minimal_valid_alive_xml)
       expect(Radar::HeartbeatWorker)
         .to have_enqueued_sidekiq_job(minimal_valid_alive_hash)
     end
 
-    it 'should raise NotImplementedError on any unknown input' do
+    it 'raises NotImplementedError on any unknown input' do
       expect do
         Radar::MessageProcessingWorker.new.perform('rubbish')
       end.to raise_error(NotImplementedError)

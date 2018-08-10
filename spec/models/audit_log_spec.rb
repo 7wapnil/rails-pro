@@ -7,7 +7,7 @@ describe AuditLog do
     AuditLog.delete_all
   end
 
-  it 'should be stored in logs db' do
+  it 'stores in logs db' do
     customer = create(:customer)
     AuditLog.create!(event: 'test.event',
                      origin_kind: :user,

@@ -3,7 +3,7 @@ describe EventProcessingWorker do
 
   it { is_expected.to be_processed_in :default }
 
-  it 'should send payload to odds feed service' do
+  it 'sends payload to odds feed service' do
     allow(OddsFeed::Service).to receive(:call)
     EventProcessingWorker.new.perform(payload)
     expect(OddsFeed::Service)

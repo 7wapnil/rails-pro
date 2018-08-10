@@ -14,17 +14,17 @@ describe OddsFeed::Radar::Transpiler do
     OddsFeed::Radar::Transpiler.new(event, market_id, specifiers)
   end
 
-  it 'should transpile specifiers' do
+  it 'transpiles specifiers' do
     result = subject.transpile('Set is {set}, game is {game}, point is {point}')
     expect(result).to eq('Set is 1, game is 2, point is 3')
   end
 
-  it 'should transpile event variables' do
+  it 'transpiles event variables' do
     result = subject.transpile('{$competitor1} VS {$competitor2}')
     expect(result).to eq('Player 1 VS Player 2')
   end
 
-  it 'should return transpiled market name' do
+  it 'returns transpiled market name' do
     create(:market_template,
            external_id: market_id,
            name: 'Set is {set}, game is {game}, point is {point}')
@@ -32,7 +32,7 @@ describe OddsFeed::Radar::Transpiler do
     expect(subject.market_name).to eq('Set is 1, game is 2, point is 3')
   end
 
-  it 'should return transpiled odd name' do
+  it 'returns transpiled odd name' do
     create(:market_template,
            external_id: market_id,
            name: 'Market name',

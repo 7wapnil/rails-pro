@@ -11,7 +11,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
     subject
   end
 
-  it 'should not store event in db if already exists' do
+  it 'not stores event in db if already exists' do
     create(:event, external_id: event_id)
     allow(subject).to receive(:create_event)
     subject.handle
@@ -19,19 +19,19 @@ describe OddsFeed::Radar::OddsChangeHandler do
     expect(subject).not_to have_received(:create_event)
   end
 
-  it 'should request event data from API if not found in db' do
+  it 'requests event data from API if not found in db' do
     subject.handle
     expect(subject)
       .to have_received(:request_event).with(event_id)
   end
 
-  it 'should store event in db from API request data' do
+  it 'stores event in db from API request data' do
     allow(event).to receive(:save!)
     subject.handle
     expect(event).to have_received(:save!)
   end
 
-  it 'should call market generator for every market data row' do
+  it 'calls market generator for every market data row' do
     subject.handle
     expect(subject)
       .to have_received(:generate_market!)

@@ -15,7 +15,7 @@ describe 'GraphQL#events' do
 
     let(:query) { %({ events { id name } }) }
 
-    it 'should return list of events' do
+    it 'returns list of events' do
       expect(result['data']['events'].count).to eq(5)
     end
   end

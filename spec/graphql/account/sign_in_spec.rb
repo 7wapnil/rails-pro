@@ -24,7 +24,7 @@ describe 'GraphQL#SignIn' do
       { input: {} }
     end
 
-    it 'should return argument error' do
+    it 'returns argument error' do
       expect(result['errors'][0]['message'])
         .to eq('Variable input of type AuthInput! was provided invalid value')
     end
@@ -38,7 +38,7 @@ describe 'GraphQL#SignIn' do
       } }
     end
 
-    it 'should return wrong credentials error' do
+    it 'returns wrong credentials error' do
       expect(result['errors'][0]['message'])
         .to eq('Wrong email or password')
     end
@@ -55,7 +55,7 @@ describe 'GraphQL#SignIn' do
       } }
     end
 
-    it 'should return wrong credentials' do
+    it 'returns wrong credentials' do
       expect(result['errors'][0]['message'])
         .to eq('Wrong email or password')
     end
@@ -72,12 +72,12 @@ describe 'GraphQL#SignIn' do
       } }
     end
 
-    it 'should successfully sign in' do
+    it 'signs in successfully' do
       expect(result['data']['signIn']['token']).not_to be_nil
       expect(result['data']['signIn']['user']).not_to be_nil
     end
 
-    it 'should log audit event' do
+    it 'logs audit event' do
       allow(Audit::Service).to receive(:call)
       expect(result['data']['signIn']['token']).not_to be_nil
       expect(Audit::Service).to have_received(:call)
