@@ -12,5 +12,11 @@ class Bet < ApplicationRecord
   has_one :entry, as: :origin
   has_one :entry_request, as: :origin
 
+  validates :odd_value,
+            numericality: {
+              equal_to: ->(bet) { bet.odd.value },
+              on: :create
+            }
+
   delegate :market, to: :odd
 end
