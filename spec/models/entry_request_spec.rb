@@ -39,7 +39,7 @@ describe EntryRequest do
     end
 
     EntryKinds::CREDIT_KINDS.each do |kind, _i|
-      it "assigns positive amount on #{kind} kinds" do
+      it "assigns negative amount on #{kind} kinds" do
         subject.kind = kind
         subject.amount = 100
 
