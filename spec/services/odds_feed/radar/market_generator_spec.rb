@@ -16,8 +16,8 @@ describe OddsFeed::Radar::MarketGenerator do
   before do
     payload = {
       outcomes: [
-        { '@id': '1' },
-        { '@id': '2' }
+        { 'id': '1' },
+        { 'id': '2' }
       ]
     }.deep_stringify_keys
 

@@ -2,8 +2,8 @@ describe OddsFeed::Radar::Transpiler do
   let(:event_payload) do
     {
       'competitors': [
-        { '@id': '1000', '@name': 'Player 1' },
-        { '@id': '1001', '@name': 'Player 2' }
+        { 'id': '1000', 'name': 'Player 1' },
+        { 'id': '1001', 'name': 'Player 2' }
       ]
     }.deep_stringify_keys
   end
@@ -38,7 +38,7 @@ describe OddsFeed::Radar::Transpiler do
            name: 'Market name',
            payload: {
              outcomes: [
-               { '@id': '321', '@name': '{$competitor1} win game nr.{game}' }
+               { 'id': '321', 'name': '{$competitor1} win game nr.{game}' }
              ]
            })
 
