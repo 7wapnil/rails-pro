@@ -21,16 +21,16 @@ module OddsFeed
                                  priority: 0,
                                  status: market_status)
         market.save!
-        emit_market(market)
+        emit_market_update(market)
         market
       end
 
-      def emit_market(market)
+      def emit_market_update(market)
         return unless market.saved_changes.keys.any? do |i|
           %w[name priority status].include? i
         end
 
-        WebSocket::Client.instance.emit(WebSocket::SignalList::UPDATE_MARKET,
+        WebSocket::Client.instance.emit(WebSocket::Signals::UPDATE_MARKET,
                                         id: market.id.to_s,
                                         eventId: market.event.id.to_s,
                                         name: market.name,
@@ -65,11 +65,11 @@ module OddsFeed
                               status: odd_data['@active'].to_i,
                               value: odd_data['@odds'])
         odd.save!
-        emit_odd(odd)
+        emit_odd_update(odd)
       end
 
-      def emit_odd(odd)
-        WebSocket::Client.instance.emit(WebSocket::SignalList::ODD_CHANGE,
+      def emit_odd_update(odd)
+        WebSocket::Client.instance.emit(WebSocket::Signals::ODD_CHANGE,
                                         id: odd.id.to_s,
                                         marketId: odd.market.id.to_s,
                                         eventId: odd.market.event.id.to_s,

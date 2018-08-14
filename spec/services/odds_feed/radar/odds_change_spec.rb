@@ -36,7 +36,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
     created_event = Event.find_by!(external_id: event_id)
     expect(WebSocket::Client.instance)
       .to have_received(:emit)
-      .with(WebSocket::SignalList::UPDATE_EVENT,
+      .with(WebSocket::Signals::UPDATE_EVENT,
             id: created_event.id,
             name: created_event.name)
   end
