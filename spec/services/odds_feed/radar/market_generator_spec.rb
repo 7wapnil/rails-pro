@@ -15,10 +15,12 @@ describe OddsFeed::Radar::MarketGenerator do
 
   before do
     payload = {
-      outcomes: [
-        { 'id': '1' },
-        { 'id': '2' }
-      ]
+      outcomes: {
+        outcome: [
+          { 'id': '1' },
+          { 'id': '2' }
+        ]
+      }
     }.deep_stringify_keys
 
     create(:market_template, external_id: '123',
