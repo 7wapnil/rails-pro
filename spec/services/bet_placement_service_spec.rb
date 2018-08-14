@@ -7,7 +7,7 @@ describe BetPlacement::Service do
 
   it 'creates an entry request from bet' do
     expect(bet_request).to be_an EntryRequest
-    expect(bet_request.amount).to eq -bet.amount
+    expect(bet_request.amount).to eq(-bet.amount)
     expect(bet_request.currency).to eq bet.currency
     expect(bet_request.kind).to eq 'bet'
     expect(bet_request.mode).to eq 'sports_ticket'
