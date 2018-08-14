@@ -4,7 +4,11 @@ module Radar
 
     def perform(payload)
       Rails.logger.debug "Received job: #{payload}"
-      OddsFeed::Radar::OddsChangeHandler.new(payload)
+      ActiveRecord::Base.transaction do
+        OddsFeed::Radar::OddsChangeHandler.new(payload)
+      end
+    rescue StandardError => e
+      Rails.logger.error e
     end
   end
 end
