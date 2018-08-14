@@ -1,6 +1,6 @@
 describe MarketsUpdateWorker do
   let(:response) do
-    Nori.new.parse(file_fixture('radar_markets_descriptions.xml').read)
+    Hash.from_xml(file_fixture('radar_markets_descriptions.xml').read)
   end
   let(:client) do
     client = OddsFeed::Radar::Client.new
@@ -33,14 +33,14 @@ describe MarketsUpdateWorker do
     expected_payload = {
       outcomes: {
         outcome: [
-          { '@id': '74', '@name': 'yes' },
-          { '@id': '76', '@name': 'no' }
+          { 'id': '74', 'name': 'yes' },
+          { 'id': '76', 'name': 'no' }
         ]
       },
       specifiers: {
         specifier: [
-          { '@name': 'milestone' },
-          { '@name': 'maxovers' }
+          { 'name': 'milestone', 'type': 'integer' },
+          { 'name': 'maxovers', 'type': 'integer' }
         ]
       },
       attributes: nil
@@ -55,7 +55,7 @@ describe MarketsUpdateWorker do
   end
 
   it 'skips creation on invalid data without breaking execution' do
-    response['market_descriptions']['market'][0]['@name'] = ''
+    response['market_descriptions']['market'][0]['name'] = ''
     subject.perform
     expect(MarketTemplate.count).to eq(4)
   end

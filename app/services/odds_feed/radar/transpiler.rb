@@ -14,7 +14,7 @@ module OddsFeed
       def odd_name(odd_id)
         template = odd_template(odd_id)
         raise "Odd template ID #{odd_id} not found" if template.nil?
-        transpile(template['@name'])
+        transpile(template['name'])
       end
 
       def transpile(value)
@@ -40,7 +40,7 @@ module OddsFeed
 
         unless @event.payload['competitors'].blank?
           @event.payload['competitors'].each.with_index do |competitor, i|
-            tokens["$competitor#{i + 1}"] = competitor['@name']
+            tokens["$competitor#{i + 1}"] = competitor['name']
           end
         end
         tokens
@@ -53,7 +53,7 @@ module OddsFeed
       def odd_template(odd_id)
         return if template.payload['outcomes'].nil?
         odd = template.payload['outcomes'].find do |outcome|
-          outcome['@id'] == odd_id
+          outcome['id'] == odd_id
         end
         odd
       end

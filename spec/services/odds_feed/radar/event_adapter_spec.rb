@@ -1,7 +1,7 @@
 describe OddsFeed::Radar::EventAdapter do
   let(:event_id) { 'sr:match:8696826' }
   let(:payload) do
-    Nori.new.parse(file_fixture('radar_event_fixture.xml').read)
+    Hash.from_xml(file_fixture('radar_event_fixture.xml').read)
   end
   let(:adapter) { OddsFeed::Radar::EventAdapter.new(payload) }
   let(:result) { adapter.result }

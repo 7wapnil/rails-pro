@@ -1,6 +1,6 @@
 describe OddsFeed::Radar::MarketGenerator do
   let(:market_payload) do
-    data = Nori.new.parse(file_fixture('odds_change_message.xml').read)
+    data = Hash.from_xml(file_fixture('odds_change_message.xml').read)
     data['odds_change']['odds']['market']
   end
   let(:chosen_market) { nil }
@@ -16,8 +16,8 @@ describe OddsFeed::Radar::MarketGenerator do
   before do
     payload = {
       outcomes: [
-        { '@id': '1' },
-        { '@id': '2' }
+        { 'id': '1' },
+        { 'id': '2' }
       ]
     }.deep_stringify_keys
 
@@ -49,7 +49,7 @@ describe OddsFeed::Radar::MarketGenerator do
         { status: '0', result: 'inactive' },
         { status: '1', result: 'active' }
       ].each do |expectation|
-        chosen_market['@status'] = expectation[:status]
+        chosen_market['status'] = expectation[:status]
         subject.generate
         market = Market.find_by(external_id: external_id)
         expect(market.status).to eq(expectation[:result])

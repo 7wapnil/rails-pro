@@ -5,7 +5,7 @@ describe Radar::MessageProcessingWorker do
   end
 
   let(:minimal_valid_odds_change_hash) do
-    Nori.new.parse(minimal_valid_odds_change_xml)
+    Hash.from_xml(minimal_valid_odds_change_xml)
   end
 
   let(:minimal_valid_alive_xml) do
