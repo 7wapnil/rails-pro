@@ -51,6 +51,7 @@ describe WalletEntry::Service do
 
       expect(entry).to be_present
       expect(entry.amount).to eq request.amount
+      expect(entry.origin).to eq request.origin
     end
 
     it 'creates balance entry record' do
