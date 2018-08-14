@@ -15,11 +15,11 @@ module OddsFeed
       end
 
       def timestamp
-        Time.at(event_data['@timestamp'].to_i / 1000).utc
+        Time.at(event_data['timestamp'].to_i / 1000).utc
       end
 
       def create_or_update_event!
-        id = event_data['@event_id']
+        id = event_data['event_id']
         event = Event.find_by(external_id: id)
         if event.nil?
           event = create_event(id)

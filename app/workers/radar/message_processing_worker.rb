@@ -3,8 +3,8 @@ module Radar
     MATCHERS = {
       event_processing: {
         matchers: %w[<odds_change].freeze,
-        klass: EventProcessingWorker,
-        processor: lambda { |payload| Nori.new.parse(payload) }
+        klass: Radar::EventProcessingWorker,
+        processor: lambda { |payload| Hash.from_xml(payload) }
       },
       alive: {
         matchers: %w[<alive].freeze,

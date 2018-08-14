@@ -5,7 +5,7 @@ describe Radar::MessageProcessingWorker do
   end
 
   let(:minimal_valid_odds_change_hash) do
-    Nori.new.parse(minimal_valid_odds_change_xml)
+    Hash.from_xml(minimal_valid_odds_change_xml)
   end
 
   let(:minimal_valid_alive_xml) do
@@ -22,7 +22,7 @@ describe Radar::MessageProcessingWorker do
   describe '.perform' do
     it 'routes odds_change to EventProcessingWorker' do
       Radar::MessageProcessingWorker.new.perform(minimal_valid_odds_change_xml)
-      expect(EventProcessingWorker)
+      expect(Radar::EventProcessingWorker)
         .to have_enqueued_sidekiq_job(minimal_valid_odds_change_hash)
     end
 
