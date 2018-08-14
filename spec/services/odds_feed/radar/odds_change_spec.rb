@@ -1,8 +1,8 @@
 describe OddsFeed::Radar::OddsChangeHandler do
   let(:payload) do
-    Nori.new.parse(file_fixture('odds_change_message.xml').read)
+    Hash.from_xml(file_fixture('odds_change_message.xml').read)
   end
-  let(:event_id) { payload['odds_change']['@event_id'] }
+  let(:event_id) { payload['odds_change']['event_id'] }
   let(:event) { build(:event, title: build(:title), external_id: event_id) }
   let!(:timestamp) { Time.now + 60 }
 
