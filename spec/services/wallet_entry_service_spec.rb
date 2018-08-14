@@ -20,106 +20,110 @@ describe WalletEntry::Service do
       WalletEntry::Service.new(request)
     end
 
-    it 'creates a wallet' do
-      expect(Wallet.where(customer: customer).count).to eq 0
-      WalletEntry::Service.call(request)
-      expect(Wallet.where(customer: customer).count).to eq 1
-    end
+    context 'success' do
+      it 'creates a wallet' do
+        expect(Wallet.where(customer: customer).count).to eq 0
+        WalletEntry::Service.call(request)
+        expect(Wallet.where(customer: customer).count).to eq 1
+      end
 
-    it 'creates a real money balance' do
-      expect(Balance.count).to eq 0
+      it 'creates a real money balance' do
+        expect(Balance.count).to eq 0
 
-      WalletEntry::Service.call(request)
-      balance = Balance
+        WalletEntry::Service.call(request)
+        balance = Balance
+                  .joins(:wallet)
+                  .where(wallets: { customer: customer })
+                  .first
+
+        expect(balance).to be_present
+        expect(balance.real_money?).to be true
+        expect(balance.amount).to eq request.amount
+      end
+
+      it 'creates a wallet entry' do
+        expect(Entry.count).to eq 0
+
+        WalletEntry::Service.call(request)
+        entry = Entry
                 .joins(:wallet)
-                .where(wallets: { customer: customer })
+                .where('wallets.customer_id': customer.id)
                 .first
 
-      expect(balance).to be_present
-      expect(balance.real_money?).to be true
-      expect(balance.amount).to eq request.amount
+        expect(entry).to be_present
+        expect(entry.amount).to eq request.amount
+        expect(entry.origin).to eq request.origin
+      end
+
+      it 'creates balance entry record' do
+        expect(BalanceEntry.count).to eq 0
+
+        WalletEntry::Service.call(request)
+        balance_entry = BalanceEntry
+                        .joins(entry: { wallet: :customer })
+                        .where(entry: { wallets: { customer: customer } })
+                        .first
+
+        expect(balance_entry).to be_present
+        expect(balance_entry.amount).to eq request.amount
+      end
+
+      it 'adds entry amount into wallet' do
+        WalletEntry::Service.call(request)
+        wallet = Wallet.find_by(customer_id: customer.id)
+        expect(wallet.amount).to eq request.amount
+      end
+
+      it 'updates entry request' do
+        expect_any_instance_of(WalletEntry::Service)
+          .not_to receive(:handle_failure)
+
+        WalletEntry::Service.call(request)
+
+        expect(request.succeeded?).to be true
+        expect(request.result).not_to be_present
+      end
+
+      it 'calls Audit::Service' do
+        service.instance_variable_set :@entry, create(:entry, amount: 10)
+
+        expect(Audit::Service)
+          .to receive(:call)
+          .with hash_including(event: :entry_created)
+
+        service.send(:handle_success)
+      end
+
+      it 'returns the created entry' do
+        expect(WalletEntry::Service.call(request)).to be_an Entry
+      end
     end
 
-    it 'creates a wallet entry' do
-      expect(Entry.count).to eq 0
+    context 'failure' do
+      before { request.amount = 600 }
 
-      WalletEntry::Service.call(request)
-      entry = Entry
-              .joins(:wallet)
-              .where('wallets.customer_id': customer.id)
-              .first
+      it 'updates entry request' do
+        expect_any_instance_of(WalletEntry::Service)
+          .not_to receive(:handle_success)
 
-      expect(entry).to be_present
-      expect(entry.amount).to eq request.amount
-      expect(entry.origin).to eq request.origin
-    end
+        WalletEntry::Service.call(request)
 
-    it 'creates balance entry record' do
-      expect(BalanceEntry.count).to eq 0
+        expect(request.failed?).to be true
+        expect(request.result['exception_class'])
+          .to eq 'ActiveRecord::RecordInvalid'
+      end
 
-      WalletEntry::Service.call(request)
-      balance_entry = BalanceEntry
-                      .joins(entry: { wallet: :customer })
-                      .where(entry: { wallets: { customer: customer } })
-                      .first
+      it 'calls Audit::Service' do
+        expect(Audit::Service)
+          .to receive(:call)
+          .with hash_including(event: :entry_creation_failed)
 
-      expect(balance_entry).to be_present
-      expect(balance_entry.amount).to eq request.amount
-    end
+        service.send(:handle_failure, StandardError.new)
+      end
 
-    it 'adds entry amount into wallet' do
-      WalletEntry::Service.call(request)
-      wallet = Wallet.find_by(customer_id: customer.id)
-      expect(wallet.amount).to eq request.amount
-    end
-
-    it 'updates entry request on failure' do
-      expect_any_instance_of(WalletEntry::Service)
-        .not_to receive(:handle_success)
-
-      request.amount = 600
-      WalletEntry::Service.call(request)
-
-      expect(request.failed?).to be true
-      expect(request.result['exception_class'])
-        .to eq 'ActiveRecord::RecordInvalid'
-    end
-
-    it 'updates entry request on success' do
-      expect_any_instance_of(WalletEntry::Service)
-        .not_to receive(:handle_failure)
-
-      WalletEntry::Service.call(request)
-
-      expect(request.succeeded?).to be true
-      expect(request.result).not_to be_present
-    end
-
-    it 'calls Audit::Service on success' do
-      service.instance_variable_set :@entry, create(:entry, amount: 10)
-
-      expect(Audit::Service)
-        .to receive(:call)
-        .with hash_including(event: :entry_created)
-
-      service.send(:handle_success)
-    end
-
-    it 'calls Audit::Service on failure' do
-      expect(Audit::Service)
-        .to receive(:call)
-        .with hash_including(event: :entry_creation_failed)
-
-      service.send(:handle_failure, StandardError.new)
-    end
-
-    it 'returns the created entry on success' do
-      expect(WalletEntry::Service.call(request)).to be_an Entry
-    end
-
-    it 'returns nil on failure' do
-      request.amount = 600
-      expect(WalletEntry::Service.call(request)).to be_nil
+      it 'returns nil' do
+        expect(WalletEntry::Service.call(request)).to be_nil
+      end
     end
   end
 
