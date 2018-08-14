@@ -16,6 +16,10 @@ describe WalletEntry::Service do
       request.customer
     end
 
+    let(:service) do
+      WalletEntry::Service.new(request)
+    end
+
     it 'creates a wallet' do
       expect(Wallet.where(customer: customer).count).to eq 0
       WalletEntry::Service.call(request)
@@ -88,6 +92,24 @@ describe WalletEntry::Service do
 
       expect(request.succeeded?).to be true
       expect(request.result).not_to be_present
+    end
+
+    it 'calls Audit::Service on success' do
+      service.instance_variable_set :@entry, create(:entry, amount: 10)
+
+      expect(Audit::Service)
+        .to receive(:call)
+        .with hash_including(event: :entry_created)
+
+      service.send(:handle_success)
+    end
+
+    it 'calls Audit::Service on failure' do
+      expect(Audit::Service)
+        .to receive(:call)
+        .with hash_including(event: :entry_creation_failed)
+
+      service.send(:handle_failure, StandardError.new)
     end
   end
 
