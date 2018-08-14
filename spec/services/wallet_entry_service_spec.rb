@@ -112,6 +112,15 @@ describe WalletEntry::Service do
 
       service.send(:handle_failure, StandardError.new)
     end
+
+    it 'returns the created entry on success' do
+      expect(WalletEntry::Service.call(request)).to be_an Entry
+    end
+
+    it 'returns nil on failure' do
+      request.amount = 600
+      expect(WalletEntry::Service.call(request)).to be_nil
+    end
   end
 
   context 'existing wallet' do
