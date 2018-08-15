@@ -17,9 +17,9 @@ class MarketsUpdateWorker
 
   def create_or_update_market!(market_data)
     template = MarketTemplate
-               .find_or_initialize_by(external_id: market_data['@id'])
-    template.name = market_data['@name']
-    template.groups = market_data['@groups']
+               .find_or_initialize_by(external_id: market_data['id'])
+    template.name = market_data['name']
+    template.groups = market_data['groups']
     template.payload = { outcomes: market_data['outcomes'],
                          specifiers: market_data['specifiers'],
                          attributes: market_data['attributes'] }

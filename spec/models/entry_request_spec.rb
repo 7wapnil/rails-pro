@@ -2,14 +2,15 @@ describe EntryRequest do
   it { should belong_to(:customer) }
   it { should belong_to(:currency) }
   it { should belong_to(:initiator) }
+  it { should belong_to(:origin) }
 
   it { should define_enum_for :status }
   it { should define_enum_for :kind }
-  it { should define_enum_for :origin }
+  it { should define_enum_for :mode }
   it { should validate_presence_of(:amount) }
   it { should validate_presence_of(:kind) }
 
-  context 'user originated' do
+  context 'user initiated' do
     before { subject.initiator = build(:user) }
 
     it 'validates comment if origin is user' do
@@ -17,7 +18,7 @@ describe EntryRequest do
     end
   end
 
-  context 'customer originated' do
+  context 'customer initiated' do
     before { subject.initiator = build(:customer) }
 
     it 'skips comment validation if origin is customer' do
@@ -38,7 +39,7 @@ describe EntryRequest do
     end
 
     EntryKinds::CREDIT_KINDS.each do |kind, _i|
-      it "assigns positive amount on #{kind} kinds" do
+      it "assigns negative amount on #{kind} kinds" do
         subject.kind = kind
         subject.amount = 100
 

@@ -10,8 +10,8 @@
                     label_method: ->(k) { t("kinds.#{k.first}") },
                     value_method: ->(k) { k.first }
         .col-6
-          = f.input :origin,
-                    collection: EntryRequest.origins,
+          = f.input :mode,
+                    collection: EntryRequest.modes,
                     include_blank: false,
                     label_method: ->(k) { t("kinds.#{k.first}") },
                     value_method: ->(k) { k.first }

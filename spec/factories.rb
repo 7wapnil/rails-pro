@@ -1,12 +1,6 @@
 FactoryBot.define do
-  factory :market_template do
-    external_id { Faker::Number.between(1, 1000) }
-    name { Faker::Name.unique.name }
-    groups 'all'
-    payload { { test: 1 } }
-  end
-
   # Financials
+
   factory :entry_currency_rule do
     currency
     kind { EntryRequest.kinds.keys.first }
@@ -23,7 +17,7 @@ FactoryBot.define do
     customer
     currency
     status EntryRequest.statuses[:pending]
-    origin EntryRequest.origins[:cashier]
+    mode EntryRequest.modes[:cashier]
     kind { EntryRequest.kinds.keys.first }
     amount Random.new.rand(1.00..200.00).round(2)
     association :initiator, factory: :customer
@@ -52,6 +46,15 @@ FactoryBot.define do
     customer
     currency
     amount { Faker::Number.decimal(3, 2) }
+  end
+
+  factory :bet do
+    customer
+    odd
+    currency
+    amount 10
+    odd_value 1.85
+    status Bet.statuses[:pending]
   end
 
   # System
@@ -138,6 +141,13 @@ FactoryBot.define do
   end
 
   # Markets data
+
+  factory :market_template do
+    external_id { Faker::Number.between(1, 1000) }
+    name { Faker::Name.unique.name }
+    groups 'all'
+    payload { { test: 1 } }
+  end
 
   factory :title do
     name { Faker::Name.unique.name }

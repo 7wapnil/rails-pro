@@ -9,4 +9,8 @@ class Currency < ApplicationRecord
   def self.build_default
     new(code: 'EUR', name: 'Euro')
   end
+
+  def to_s
+    code
+  end
 end

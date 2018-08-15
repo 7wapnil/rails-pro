@@ -14,7 +14,7 @@ module OddsFeed
       private
 
       def create_or_update_market!
-        external_id = "#{@event.external_id}:#{@market_data['@id']}"
+        external_id = "#{@event.external_id}:#{@market_data['id']}"
         market = Market.find_or_initialize_by(external_id: external_id,
                                               event: @event)
         market.assign_attributes(name: transpiler.market_name,
@@ -39,7 +39,7 @@ module OddsFeed
       end
 
       def market_status
-        status_map[@market_data['@status']] || Market::DEFAULT_STATUS
+        status_map[@market_data['status']] || Market::DEFAULT_STATUS
       end
 
       def status_map
@@ -58,12 +58,12 @@ module OddsFeed
       end
 
       def generate_odd!(market, odd_data)
-        odd_id = "#{market.external_id}:#{odd_data['@id']}"
+        odd_id = "#{market.external_id}:#{odd_data['id']}"
         odd = Odd.find_or_initialize_by(external_id: odd_id,
                                         market: market)
-        odd.assign_attributes(name: transpiler.odd_name(odd_data['@id']),
-                              status: odd_data['@active'].to_i,
-                              value: odd_data['@odds'])
+        odd.assign_attributes(name: transpiler.odd_name(odd_data['id']),
+                              status: odd_data['active'].to_i,
+                              value: odd_data['odds'])
         odd.save!
         emit_odd_update(odd)
       end
@@ -80,8 +80,8 @@ module OddsFeed
 
       def transpiler
         @transpiler ||= Transpiler.new(@event,
-                                       @market_data['@id'],
-                                       @market_data['@specifiers'])
+                                       @market_data['id'],
+                                       @market_data['specifiers'])
       end
     end
   end

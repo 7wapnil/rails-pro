@@ -6,3 +6,11 @@ Airbrake.configure do |config|
   config.environment = Rails.env
   config.ignore_environments = %w[development test]
 end
+
+Airbrake.add_filter do |notice|
+  if notice[:errors].any? do |error|
+       error[:type] == 'SignalException' && error[:message] == 'SIGTERM'
+     end
+    notice.ignore!
+  end
+end

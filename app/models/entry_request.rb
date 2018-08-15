@@ -4,6 +4,7 @@ class EntryRequest < ApplicationRecord
   belongs_to :customer
   belongs_to :currency
   belongs_to :initiator, polymorphic: true
+  belongs_to :origin, polymorphic: true, optional: true
 
   default_scope { order(created_at: :desc) }
 
@@ -13,8 +14,9 @@ class EntryRequest < ApplicationRecord
     failed: 2
   }
 
-  enum origin: {
-    cashier: 0
+  enum mode: {
+    cashier: 0,
+    sports_ticket: 1
   }
 
   validates :amount,
@@ -24,7 +26,7 @@ class EntryRequest < ApplicationRecord
   validates :comment, presence: true, unless: :customer_initiated?
   validates :amount, numericality: true
   validates :status, inclusion: { in: statuses.keys }
-  validates :origin, inclusion: { in: origins.keys }
+  validates :mode, inclusion: { in: modes.keys }
   validates :kind, inclusion: { in: kinds.keys }
 
   delegate :code, to: :currency, prefix: true
