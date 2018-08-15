@@ -1,6 +1,6 @@
 describe Radar::MarketsUpdateWorker do
   let(:response) do
-    Hash.from_xml(file_fixture('radar_markets_descriptions.xml').read)
+    XmlParser.parse(file_fixture('radar_markets_descriptions.xml').read)
   end
   let(:client) { OddsFeed::Radar::Client.new }
 

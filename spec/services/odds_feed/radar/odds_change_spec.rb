@@ -1,6 +1,6 @@
 describe OddsFeed::Radar::OddsChangeHandler do
   let(:payload) do
-    Hash.from_xml(file_fixture('odds_change_message.xml').read)
+    XmlParser.parse(file_fixture('odds_change_message.xml').read)
   end
   let(:event_id) { payload['odds_change']['event_id'] }
   let(:event) { build(:event, title: build(:title), external_id: event_id) }
