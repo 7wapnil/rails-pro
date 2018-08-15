@@ -15,6 +15,7 @@ module OddsFeed
 
       def create_or_update_market!
         external_id = "#{@event.external_id}:#{@market_data['id']}"
+        Rails.logger.info "Updating market with external ID #{external_id}"
         market = Market.find_or_initialize_by(external_id: external_id,
                                               event: @event)
         market.assign_attributes(name: transpiler.market_name,

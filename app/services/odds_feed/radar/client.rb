@@ -36,7 +36,10 @@ module OddsFeed
       end
 
       def request(path, method: :get)
-        self.class.send(method, path, @options).parsed_response
+        Rails.logger.debug "Requesting Radar API endpoint: #{path}"
+        response = self.class.send(method, path, @options).parsed_response
+        Rails.logger.debug "Radar API response: #{response}"
+        response
       end
 
       def post(path)

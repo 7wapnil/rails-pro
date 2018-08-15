@@ -20,12 +20,14 @@ module OddsFeed
 
       def create_or_update_event!
         id = event_data['event_id']
-        event = Event.find_by(external_id: id)
+        event = Event.unscoped.find_by(external_id: id)
         if event.nil?
+          Rails.logger.info "Event with external ID #{id} not found, create new"
           event = create_event(id)
         else
           check_message_time(event)
         end
+        Rails.logger.info "Update timestamp for event ID #{id}"
         event.update_attribute(:updated_at, timestamp)
         event
       end
