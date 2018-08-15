@@ -33,13 +33,13 @@ module OddsFeed
       end
 
       def tokens
-        tokens = @specifiers
-                 .split('|')
-                 .map { |spec| spec.split('=') }
-                 .to_h
+        tokens = @specifiers.split('|')
+                            .map { |spec| spec.split('=') }
+                            .to_h
 
-        unless @event.payload['competitors'].blank?
-          @event.payload['competitors'].each.with_index do |competitor, i|
+        competitors = @event.payload['competitors']['competitor']
+        unless competitors.blank?
+          competitors.each.with_index do |competitor, i|
             tokens["$competitor#{i + 1}"] = competitor['name']
           end
         end
@@ -51,8 +51,8 @@ module OddsFeed
       end
 
       def odd_template(odd_id)
-        return if template.payload['outcomes'].nil?
-        odd = template.payload['outcomes'].find do |outcome|
+        return if template.payload['outcomes']['outcome'].nil?
+        odd = template.payload['outcomes']['outcome'].find do |outcome|
           outcome['id'] == odd_id
         end
         odd

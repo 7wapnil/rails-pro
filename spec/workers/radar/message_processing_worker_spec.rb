@@ -22,7 +22,7 @@ describe Radar::MessageProcessingWorker do
   describe '.perform' do
     it 'routes odds_change to EventProcessingWorker' do
       Radar::MessageProcessingWorker.new.perform(minimal_valid_odds_change_xml)
-      expect(EventProcessingWorker)
+      expect(Radar::EventProcessingWorker)
         .to have_enqueued_sidekiq_job(minimal_valid_odds_change_hash)
     end
 

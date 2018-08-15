@@ -3,7 +3,7 @@ module Radar
     MATCHERS = {
       event_processing: {
         matchers: %w[<odds_change].freeze,
-        klass: EventProcessingWorker,
+        klass: Radar::EventProcessingWorker,
         processor: lambda { |payload| Hash.from_xml(payload) }
       },
       alive: {
