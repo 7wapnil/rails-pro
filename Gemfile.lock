@@ -211,7 +211,6 @@ GEM
     nio4r (2.3.0)
     nokogiri (1.8.4)
       mini_portile2 (~> 2.3.0)
-    nori (2.6.0)
     notiffany (0.1.1)
       nenv (~> 0.1)
       shellany (~> 0.0)
@@ -447,7 +446,6 @@ DEPENDENCIES
   lograge
   mongoid (~> 6.1.0)
   newrelic_rpm
-  nori (~> 2.6.0)
   paranoia (~> 2.2)
   pg (>= 0.18, < 2.0)
   pry-rails
