@@ -1,6 +1,6 @@
 describe OddsFeed::Radar::AliveHandler do
   let(:alive_payload) do
-    Hash.from_xml(
+    XmlParser.parse(
       '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
       '<alive product="1" timestamp="1532353934098" subscribed="1"/>'
     )
@@ -27,7 +27,7 @@ describe OddsFeed::Radar::AliveHandler do
 
   context 'non_alive' do
     let(:non_alive_payload) do
-      Hash.from_xml(
+      XmlParser.parse(
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
         '<alive product="1" timestamp="1532353934098" subscribed="0"/>'
       )

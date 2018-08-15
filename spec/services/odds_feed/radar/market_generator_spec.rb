@@ -1,6 +1,6 @@
 describe OddsFeed::Radar::MarketGenerator do
   let(:market_payload) do
-    data = Hash.from_xml(file_fixture('odds_change_message.xml').read)
+    data = XmlParser.parse(file_fixture('odds_change_message.xml').read)
     data['odds_change']['odds']['market']
   end
   let(:chosen_market) { nil }

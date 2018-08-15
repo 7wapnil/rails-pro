@@ -3,13 +3,11 @@ module Radar
     MATCHERS = {
       event_processing: {
         matchers: %w[<odds_change].freeze,
-        klass: EventProcessingWorker,
-        processor: lambda { |payload| Hash.from_xml(payload) }
+        klass: EventProcessingWorker
       },
       alive: {
         matchers: %w[<alive].freeze,
-        klass: Radar::HeartbeatWorker,
-        processor: lambda { |payload| Hash.from_xml(payload) }
+        klass: Radar::HeartbeatWorker
       }
     }.freeze
 
@@ -28,9 +26,8 @@ module Radar
       MATCHERS.each do |_, rule|
         rule_matchers = rule[:matchers]
         klass = rule[:klass]
-        processor = rule[:processor]
         found = rule_matchers.any? { |matcher| scan_result.include?(matcher) }
-        return klass.perform_async(processor.call(payload)) if found
+        return klass.perform_async(XmlParser.parse(payload)) if found
       end
       false
     end

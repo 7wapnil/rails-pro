@@ -5,7 +5,7 @@ describe Radar::MessageProcessingWorker do
   end
 
   let(:minimal_valid_odds_change_hash) do
-    Hash.from_xml(minimal_valid_odds_change_xml)
+    XmlParser.parse(minimal_valid_odds_change_xml)
   end
 
   let(:minimal_valid_alive_xml) do
@@ -14,7 +14,7 @@ describe Radar::MessageProcessingWorker do
   end
 
   let(:minimal_valid_alive_hash) do
-    Hash.from_xml(minimal_valid_alive_xml)
+    XmlParser.parse(minimal_valid_alive_xml)
   end
 
   it { is_expected.to be_processed_in :mq }
