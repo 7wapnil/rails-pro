@@ -1,8 +1,4 @@
 class Event < ApplicationRecord
-  default_scope do
-    where('start_at > ?', Date.yesterday.end_of_day).order(:start_at)
-  end
-
   belongs_to :title
   has_many :markets
   has_many :scoped_events
