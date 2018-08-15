@@ -62,9 +62,13 @@ RSpec.configure do |config|
   config.include Warden::Test::Helpers, type: :feature
   config.include FeatureHelpers, type: :feature
 
-  # Drop all mongo record before each test
+  # Some work to do before any test
   config.before(:each) do
+    # Drop all mongo record before each test
     AuditLog.delete_all
+
+    # Stub web socket client
+    allow(WebSocket::Client.instance).to receive(:emit)
   end
 end
 
