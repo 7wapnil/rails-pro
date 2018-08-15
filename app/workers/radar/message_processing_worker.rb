@@ -3,7 +3,7 @@ module Radar
     MATCHERS = {
       event_processing: {
         matchers: %w[<odds_change].freeze,
-        klass: EventProcessingWorker
+        klass: Radar::EventProcessingWorker
       },
       alive: {
         matchers: %w[<alive].freeze,

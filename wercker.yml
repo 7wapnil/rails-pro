@@ -67,7 +67,7 @@ deploy:
   steps:
     - script:
       name: install-linux-deps
-      code: apk add -qU openssh git
+      code: apk add -qU openssh git curl
 
     - capgemini/terraform-install:
       version: "0.11.7"

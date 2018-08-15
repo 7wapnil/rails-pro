@@ -1,17 +1,13 @@
-describe MarketsUpdateWorker do
+describe Radar::MarketsUpdateWorker do
   let(:response) do
     XmlParser.parse(file_fixture('radar_markets_descriptions.xml').read)
   end
-  let(:client) do
-    client = OddsFeed::Radar::Client.new
+  let(:client) { OddsFeed::Radar::Client.new }
+
+  before do
     allow(client).to receive(:request)
     allow(client).to receive(:markets).and_return(response)
-    client
-  end
-  subject do
-    subject = MarketsUpdateWorker.new
     allow(subject).to receive(:client).and_return(client)
-    subject
   end
 
   it 'requests market templates data from API' do

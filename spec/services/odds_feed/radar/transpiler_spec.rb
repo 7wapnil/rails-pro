@@ -1,10 +1,12 @@
 describe OddsFeed::Radar::Transpiler do
   let(:event_payload) do
     {
-      'competitors': [
-        { 'id': '1000', 'name': 'Player 1' },
-        { 'id': '1001', 'name': 'Player 2' }
-      ]
+      'competitors': {
+        'competitor': [
+          { 'id': '1000', 'name': 'Player 1' },
+          { 'id': '1001', 'name': 'Player 2' }
+        ]
+      }
     }.deep_stringify_keys
   end
   let(:event) { create(:event, payload: event_payload) }
@@ -37,9 +39,11 @@ describe OddsFeed::Radar::Transpiler do
            external_id: market_id,
            name: 'Market name',
            payload: {
-             outcomes: [
-               { 'id': '321', 'name': '{$competitor1} win game nr.{game}' }
-             ]
+             outcomes: {
+               outcome: [
+                 { 'id': '321', 'name': '{$competitor1} win game nr.{game}' }
+               ]
+             }
            })
 
     expect(subject.odd_name('321'))

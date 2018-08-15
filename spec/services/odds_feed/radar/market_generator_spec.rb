@@ -5,20 +5,21 @@ describe OddsFeed::Radar::MarketGenerator do
   end
   let(:chosen_market) { nil }
   let(:event) { create(:event, external_id: 'sr:match:1234') }
-  subject do
-    transpiler = OddsFeed::Radar::Transpiler.new(event, '123')
-    allow(transpiler).to receive(:transpile).and_return('transpiler value')
-    subject = OddsFeed::Radar::MarketGenerator.new(event, chosen_market)
-    allow(subject).to receive(:transpiler).and_return(transpiler)
-    subject
-  end
+  let(:transpiler) { OddsFeed::Radar::Transpiler.new(event, '123') }
+
+  subject { OddsFeed::Radar::MarketGenerator.new(event, chosen_market) }
 
   before do
+    allow(transpiler).to receive(:transpile).and_return('transpiler value')
+    allow(subject).to receive(:transpiler).and_return(transpiler)
+
     payload = {
-      outcomes: [
-        { 'id': '1' },
-        { 'id': '2' }
-      ]
+      outcomes: {
+        outcome: [
+          { 'id': '1' },
+          { 'id': '2' }
+        ]
+      }
     }.deep_stringify_keys
 
     create(:market_template, external_id: '123',
@@ -36,11 +37,39 @@ describe OddsFeed::Radar::MarketGenerator do
       expect(market).not_to be_nil
     end
 
+    it 'sends websocket message on new market creation' do
+      subject.generate
+      market = Market.find_by!(external_id: external_id)
+
+      expect(WebSocket::Client.instance)
+        .to have_received(:emit)
+        .with(WebSocket::Signals::UPDATE_MARKET,
+              id: market.id.to_s,
+              eventId: market.event.id.to_s,
+              name: market.name,
+              priority: market.priority,
+              status: market.status)
+    end
+
     it 'updates market if exists in db' do
       market = create(:market, external_id: external_id)
       subject.generate
       updated_market = Market.find_by(external_id: external_id)
       expect(updated_market.updated_at).not_to eq(market.updated_at)
+    end
+
+    it 'does not send websocket message if market not change' do
+      create(:market,
+             external_id: external_id,
+             event: event,
+             name: 'transpiler value',
+             priority: 0,
+             status: :suspended)
+
+      subject.generate
+      expect(WebSocket::Client.instance)
+        .not_to have_received(:emit)
+        .with(WebSocket::Signals::UPDATE_MARKET)
     end
 
     it 'sets appropriate status for market' do
@@ -60,6 +89,21 @@ describe OddsFeed::Radar::MarketGenerator do
       subject.generate
       expect(Odd.find_by(external_id: "#{external_id}:1")).not_to be_nil
       expect(Odd.find_by(external_id: "#{external_id}:2")).not_to be_nil
+    end
+
+    it 'sends websocket message on new odd creation' do
+      subject.generate
+
+      odd = Odd.find_by!(external_id: "#{external_id}:1")
+      expect(WebSocket::Client.instance)
+        .to have_received(:emit)
+        .with(WebSocket::Signals::ODD_CHANGE,
+              id: odd.id.to_s,
+              marketId: odd.market.id.to_s,
+              eventId: odd.market.event.id.to_s,
+              name: odd.name,
+              value: odd.value,
+              status: odd.status)
     end
 
     it 'updates odds if exist in db' do

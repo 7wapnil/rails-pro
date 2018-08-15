@@ -32,6 +32,17 @@ describe OddsFeed::Radar::OddsChangeHandler do
     expect { subject.handle }.to raise_error(OddsFeed::InvalidMessageError)
   end
 
+  it 'sends websocket message when new event created' do
+    subject.handle
+
+    created_event = Event.find_by!(external_id: event_id)
+    expect(WebSocket::Client.instance)
+      .to have_received(:emit)
+      .with(WebSocket::Signals::UPDATE_EVENT,
+            id: created_event.id,
+            name: created_event.name)
+  end
+
   it 'calls market generator for every market data row' do
     subject.handle
     expect(subject)

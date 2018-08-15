@@ -1,15 +1,13 @@
-describe 'websocket_client' do
-  let(:connection) do
-    connection = WebSocket::SocketIOConnection.new('wss://websocket')
+describe WebSocket::Client.instance do
+  let(:connection) { WebSocket::SocketIOConnection.new('wss://websocket') }
+
+  before do
     allow(connection).to receive(:connect)
     allow(connection).to receive(:emit)
-    connection
-  end
+    allow(subject).to receive(:connection).and_return(connection)
 
-  subject do
-    client = WebSocket::Client.instance
-    allow(client).to receive(:connection).and_return(connection)
-    client
+    # Unstub emit method for this test
+    allow(subject).to receive(:emit).and_call_original
   end
 
   it 'calls connection emit method on message' do
