@@ -1,4 +1,8 @@
 describe 'GraphQL#placeBet' do
+  before do
+    create(:currency, code: 'EUR')
+  end
+
   let(:auth_customer) { create(:customer) }
   let(:context) { { current_customer: auth_customer } }
 
@@ -23,7 +27,14 @@ describe 'GraphQL#placeBet' do
 
     let(:variables) do
       {
-        bets: odds.map { |odd| { amount: 10, oddId: odd.id } }
+        bets: odds.map do |odd|
+          {
+            amount: 10,
+            currencyCode: 'EUR',
+            oddId: odd.id.to_s,
+            oddValue: odd.value
+          }
+        end
       }
     end
 
@@ -54,7 +65,11 @@ describe 'GraphQL#placeBet' do
 
   context 'errors' do
     it 'doesn\'t find the odd' do
-      variables = { bets: [{ amount: 10, oddId: 1 }] }
+      variables = {
+        bets: [
+          { amount: 10, currencyCode: 'EUR', oddId: '1', oddValue: 1.85 }
+        ]
+      }
 
       response = ArcanebetSchema.execute(
         query,
@@ -64,6 +79,27 @@ describe 'GraphQL#placeBet' do
 
       expect(response['errors'].first['message'])
         .to eq 'Couldn\'t find Odd with \'id\'=1'
+    end
+
+    it 'doesn\'t find the currency' do
+      odd = create(:odd)
+
+      variables = {
+        bets: [
+          {
+            amount: 10, currencyCode: 'ZZZ', oddId: odd.id.to_s, oddValue: 1.85
+          }
+        ]
+      }
+
+      response = ArcanebetSchema.execute(
+        query,
+        context: context,
+        variables: variables
+      )
+
+      expect(response['errors'].first['message'])
+        .to eq 'Couldn\'t find Currency'
     end
   end
 end
