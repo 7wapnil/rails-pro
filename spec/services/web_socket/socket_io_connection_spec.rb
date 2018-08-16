@@ -1,10 +1,12 @@
 describe WebSocket::SocketIOConnection do
   let(:url) { 'ws://websocket:3000' }
   let(:tcp) { TCPSocketMock.new }
+  let(:thread) { ThreadMock.new }
   subject { WebSocket::SocketIOConnection.new(url) }
 
   before do
     allow(subject).to receive(:tcp).and_return(tcp)
+    allow(subject).to receive(:start_listening)
   end
 
   it 'defines handlers on connect' do
@@ -14,6 +16,8 @@ describe WebSocket::SocketIOConnection do
   end
 
   it 'updates dead status on disconnect' do
+    allow(subject).to receive(:thread).and_return(thread)
+
     subject.connect
     expect(subject.dead?).to be_falsey
     subject.close

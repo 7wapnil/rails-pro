@@ -17,13 +17,8 @@ module WebSocket
     def connect
       @driver = WebSocket::Driver.client(self, protocols: ['websocket'])
       set_handlers
-
-      socket = tcp
       @dead = false
-
-      @thread = Thread.new do
-        @driver.parse(socket.read(1)) until @dead
-      end
+      start_listening(tcp)
       @driver.start
     end
 
@@ -85,7 +80,13 @@ module WebSocket
       @driver.on(:close) do |event|
         Rails.logger.debug "Closing connection: #{event.code}, #{event.reason}"
         @dead = true
-        @thread.kill
+        thread.kill
+      end
+    end
+
+    def start_listening(socket)
+      @thread = Thread.new do
+        @driver.parse(socket.read(1)) until @dead
       end
     end
   end
