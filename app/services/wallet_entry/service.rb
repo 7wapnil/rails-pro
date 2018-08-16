@@ -23,7 +23,7 @@ module WalletEntry
       end
     end
 
-    def create_entry! # rubocop:disable Metrics/MethodLength
+    def create_entry!
       @entry = Entry.create!(
         wallet_id: @wallet.id,
         origin: @request.origin,
