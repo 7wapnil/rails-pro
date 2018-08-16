@@ -14,7 +14,6 @@ module OddsFeed
       private
 
       def create_or_update_market!
-        external_id = "#{@event.external_id}:#{@market_data['id']}"
         market = Market.find_or_initialize_by(external_id: external_id,
                                               event: @event)
         market.assign_attributes(name: transpiler.market_name,
@@ -23,6 +22,17 @@ module OddsFeed
         market.save!
         emit_market_update(market)
         market
+      end
+
+      def external_id
+        id = "#{@event.external_id}:#{@market_data['id']}"
+        specs = specifiers
+        return id if specs.empty?
+        "#{id}/#{specs}"
+      end
+
+      def specifiers
+        @market_data['specifiers'] || ''
       end
 
       def emit_market_update(market)
