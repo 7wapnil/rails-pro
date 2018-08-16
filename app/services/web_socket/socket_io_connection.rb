@@ -17,9 +17,8 @@ module WebSocket
     def connect
       @driver = WebSocket::Driver.client(self, protocols: ['websocket'])
       set_handlers
-
-      start_listening(tcp)
       @dead = false
+      start_listening(tcp)
       @driver.start
     end
 
