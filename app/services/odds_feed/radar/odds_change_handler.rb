@@ -20,7 +20,7 @@ module OddsFeed
 
       def create_or_update_event!
         id = event_data['event_id']
-        event = Event.unscoped.find_by(external_id: id)
+        event = Event.find_by(external_id: id)
         if event.nil?
           Rails.logger.info "Event with external ID #{id} not found, create new"
           event = create_event(id)
@@ -35,12 +35,8 @@ module OddsFeed
       def create_event(external_id)
         event = request_event(external_id)
         event.save!
-        event.title&.save!
-        if event.event_scopes.any?
-          event.event_scopes.each { |scope| scope&.save! }
-        end
         WebSocket::Client.instance.emit(WebSocket::Signals::UPDATE_EVENT,
-                                        id: event.id,
+                                        id: event.id.to_s,
                                         name: event.name)
         event
       end

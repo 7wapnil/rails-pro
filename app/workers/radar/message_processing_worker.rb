@@ -12,10 +12,10 @@ module Radar
     }.freeze
 
     include Sidekiq::Worker
-    sidekiq_options queue: 'mq'
+    sidekiq_options queue: 'mq', retries: false
 
     def perform(payload)
-      Rails.logger.debug "Received job: #{payload}"
+      Rails.logger.debug 'Message processing worker received a new job'
       scan_result = scan_payload(payload)
       raise NotImplementedError unless match_result(payload, scan_result)
     end
@@ -29,6 +29,7 @@ module Radar
         found = rule_matchers.any? { |matcher| scan_result.include?(matcher) }
         return klass.perform_async(XmlParser.parse(payload)) if found
       end
+      Rails.logger.debug 'No worker found for message'
       false
     end
 

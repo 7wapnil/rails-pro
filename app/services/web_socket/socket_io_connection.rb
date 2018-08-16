@@ -40,7 +40,6 @@ module WebSocket
     end
 
     def emit(event, data = {})
-      Rails.logger.info "Sending event '#{event}', data: #{data}"
       message = ['message', { event: event, data: data }]
       data = ActiveSupport::JSON.encode(message)
       @driver.text("42#{data}")
@@ -64,7 +63,7 @@ module WebSocket
 
     def set_open_hanlder
       @driver.on(:open) do
-        Rails.logger.debug 'Connection opened'
+        Rails.logger.debug 'WebSocket connection opened'
         @established = true
       end
     end

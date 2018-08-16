@@ -19,7 +19,7 @@ module OddsFeed
         market = Market.find_or_initialize_by(external_id: external_id,
                                               event: @event)
         market.assign_attributes(name: transpiler.market_name,
-                                 priority: 0,
+                                 priority: 1,
                                  status: market_status)
         market.save!
         emit_market_update(market)
@@ -60,6 +60,7 @@ module OddsFeed
 
       def generate_odd!(market, odd_data)
         odd_id = "#{market.external_id}:#{odd_data['id']}"
+        Rails.logger.info "Updating odd with external ID #{odd_id}"
         odd = Odd.find_or_initialize_by(external_id: odd_id,
                                         market: market)
         odd.assign_attributes(name: transpiler.odd_name(odd_data['id']),
@@ -75,14 +76,13 @@ module OddsFeed
                                         marketId: odd.market.id.to_s,
                                         eventId: odd.market.event.id.to_s,
                                         name: odd.name,
-                                        value: odd.value,
-                                        status: odd.status)
+                                        value: odd.value)
       end
 
       def transpiler
         @transpiler ||= Transpiler.new(@event,
                                        @market_data['id'],
-                                       @market_data['specifiers'])
+                                       @market_data['specifiers'] || '')
       end
     end
   end

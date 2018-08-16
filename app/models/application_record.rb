@@ -1,7 +1,7 @@
 class ApplicationRecord < ActiveRecord::Base
   self.abstract_class = true
 
-  after_validation :log_errors, if: proc {|m| m.errors}
+  after_validation :log_errors, if: proc { |m| m.errors }
 
   def loggable_attributes
     attributes
@@ -17,6 +17,7 @@ class ApplicationRecord < ActiveRecord::Base
   end
 
   def log_errors
+    return unless errors.any?
     Rails.logger.info "#{self.class}: #{errors.full_messages.join("\n")}"
   end
 end
