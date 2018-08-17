@@ -12,7 +12,7 @@ module WebSocket
 
     def emit(event, data = {})
       emit!(event, data)
-    rescue => e
+    rescue StandardError => e
       Rails.logger.error e
       false
     end

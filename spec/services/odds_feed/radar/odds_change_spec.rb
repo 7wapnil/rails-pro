@@ -51,4 +51,13 @@ describe OddsFeed::Radar::OddsChangeHandler do
       .exactly(5)
       .times
   end
+
+  it 'skips single market generation on error' do
+    allow(subject).to receive(:generate_market!).and_raise(StandardError)
+    subject.handle
+    expect(subject)
+      .to have_received(:generate_market!)
+      .exactly(5)
+      .times
+  end
 end

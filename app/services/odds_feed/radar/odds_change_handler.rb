@@ -5,6 +5,9 @@ module OddsFeed
         event = create_or_update_event!
         event_data['odds']['market'].each do |market_data|
           generate_market!(event, market_data)
+        rescue StandardError => e
+          Rails.logger.error e
+          next
         end
       end
 
