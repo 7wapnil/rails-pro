@@ -6,6 +6,7 @@ module WebSocket
       reset_connection if connection.dead?
       connection.connect unless connection.established?
 
+      Rails.logger.debug "Sending websocket event '#{event}', data: #{data}"
       connection.emit(event, data)
     end
 

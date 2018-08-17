@@ -16,6 +16,9 @@ Style/Lambda:
 Metrics/AbcSize:
   Max: 25
 
+Metrics/MethodLength:
+  Max: 13
+
 Metrics/BlockLength:
   Enabled: false
 

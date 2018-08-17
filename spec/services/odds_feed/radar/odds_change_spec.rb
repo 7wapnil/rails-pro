@@ -39,7 +39,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
     expect(WebSocket::Client.instance)
       .to have_received(:emit)
       .with(WebSocket::Signals::UPDATE_EVENT,
-            id: created_event.id,
+            id: created_event.id.to_s,
             name: created_event.name)
   end
 

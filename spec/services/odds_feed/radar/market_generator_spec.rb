@@ -102,8 +102,7 @@ describe OddsFeed::Radar::MarketGenerator do
               marketId: odd.market.id.to_s,
               eventId: odd.market.event.id.to_s,
               name: odd.name,
-              value: odd.value,
-              status: odd.status)
+              value: odd.value)
     end
 
     it 'updates odds if exist in db' do
