@@ -113,6 +113,15 @@ describe OddsFeed::Radar::MarketGenerator do
       expect(Odd.find_by(external_id: "#{external_id}:1").value).to eq(1.3)
       expect(Odd.find_by(external_id: "#{external_id}:2").value).to eq(1.7)
     end
+
+    it 'skips single odd handling on error' do
+      allow(subject).to receive(:generate_odd!).and_raise(StandardError)
+      subject.generate
+      expect(subject)
+        .to have_received(:generate_odd!)
+        .exactly(2)
+        .times
+    end
   end
 
   context 'market without specifiers' do
