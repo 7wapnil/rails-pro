@@ -18,7 +18,7 @@ module OddsFeed
         market = Market.find_or_initialize_by(external_id: external_id,
                                               event: @event)
         market.assign_attributes(name: transpiler.market_name,
-                                 priority: 0,
+                                 priority: 1,
                                  status: market_status)
         market.save!
         emit_market_update(market)
