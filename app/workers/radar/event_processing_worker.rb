@@ -8,6 +8,7 @@ module Radar
       end
     rescue StandardError => e
       Rails.logger.error e
+      Rails.logger.debug e.backtrace
     end
   end
 end

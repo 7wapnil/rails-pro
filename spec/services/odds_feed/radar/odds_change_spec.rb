@@ -40,7 +40,8 @@ describe OddsFeed::Radar::OddsChangeHandler do
       .to have_received(:emit)
       .with(WebSocket::Signals::UPDATE_EVENT,
             id: created_event.id.to_s,
-            name: created_event.name)
+            name: created_event.name,
+            start_at: event.start_at)
   end
 
   it 'calls market generator for every market data row' do

@@ -37,7 +37,8 @@ module OddsFeed
         event.save!
         WebSocket::Client.instance.emit(WebSocket::Signals::UPDATE_EVENT,
                                         id: event.id.to_s,
-                                        name: event.name)
+                                        name: event.name,
+                                        start_at: event.start_at)
         event
       end
 

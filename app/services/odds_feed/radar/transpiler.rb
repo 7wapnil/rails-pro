@@ -51,7 +51,8 @@ module OddsFeed
       end
 
       def odd_template(odd_id)
-        return if template.payload['outcomes']['outcome'].nil?
+        return if template.payload['outcomes'].nil?
+        return if template.payload['outcomes']['outcome'].empty?
         odd = template.payload['outcomes']['outcome'].find do |outcome|
           outcome['id'] == odd_id
         end

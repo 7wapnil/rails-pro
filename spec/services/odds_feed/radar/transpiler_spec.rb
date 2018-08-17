@@ -49,4 +49,15 @@ describe OddsFeed::Radar::Transpiler do
     expect(subject.odd_name('321'))
       .to eq('Player 1 win game nr.2')
   end
+
+  it 'returns transpiled odd name without outcomes' do
+    create(:market_template,
+           external_id: market_id,
+           name: 'Market name',
+           payload: {
+             outcomes: nil
+           })
+
+    expect { subject.odd_name('321') }.to raise_error(StandardError)
+  end
 end
