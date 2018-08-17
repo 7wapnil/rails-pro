@@ -40,8 +40,7 @@ describe 'GraphQL#events' do
         expect(event_result['markets'].count).to eq(1)
         expect(event_result['markets'][0]['id']).to eq(market.id.to_s)
         expect(event_result['markets'][0]['name']).to eq(market.name)
-        expect(event_result['markets'][0]['status'])
-          .to eq(Market::DEFAULT_STATUS)
+        expect(event_result['markets'][0]['status']).to eq('active')
       end
     end
 
@@ -69,7 +68,7 @@ describe 'GraphQL#events' do
         expect(odd_result.count).to eq(1)
         expect(odd_result[0]['id']).to eq(odd.id.to_s)
         expect(odd_result[0]['name']).to eq(odd.name)
-        expect(odd_result[0]['status']).to eq(Odd.statuses[:active])
+        expect(odd_result[0]['status']).to eq('active')
       end
     end
   end
