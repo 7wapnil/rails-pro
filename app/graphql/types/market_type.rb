@@ -4,5 +4,6 @@ Types::MarketType = GraphQL::ObjectType.define do
   field :id, !types.ID
   field :name, !types.String
   field :priority, types.Int
+  field :status, types.String
   field :odds, types[Types::OddType]
 end
