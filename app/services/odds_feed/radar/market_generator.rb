@@ -35,7 +35,7 @@ module OddsFeed
                                         eventId: market.event.id.to_s,
                                         name: market.name,
                                         priority: market.priority,
-                                        status: market.status)
+                                        status: Market.statuses[market.status])
       end
 
       def market_status
@@ -75,7 +75,7 @@ module OddsFeed
                                         eventId: odd.market.event.id.to_s,
                                         name: odd.name,
                                         value: odd.value,
-                                        status: odd.status)
+                                        status: Odd.statuses[odd.status])
       end
 
       def transpiler
