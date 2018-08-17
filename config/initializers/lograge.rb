@@ -11,11 +11,15 @@ Rails.application.configure do
       unwanted_params.include?(k)
     end
 
-    {
+    params = {
       ip: controller.request.remote_ip,
       params: logging_params,
-      user_id: controller.current_user&.id,
-      customer_id: controller.current_customer&.id
+      user_id: controller.current_user&.id
     }
+
+    if controller.respond_to?(:current_customer)
+      params[:customer_id] = controller.current_customer&.id
+    end
+    params
   end
 end
