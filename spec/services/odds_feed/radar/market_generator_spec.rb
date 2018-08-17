@@ -29,7 +29,7 @@ describe OddsFeed::Radar::MarketGenerator do
 
   context 'market with outcomes' do
     let(:chosen_market) { market_payload[3] }
-    let(:external_id) { 'sr:match:1234:123' }
+    let(:external_id) { 'sr:match:1234:123/set=2|game=3|point=1' }
 
     it 'generates new market if not exists in db' do
       subject.generate
@@ -113,6 +113,18 @@ describe OddsFeed::Radar::MarketGenerator do
       subject.generate
       expect(Odd.find_by(external_id: "#{external_id}:1").value).to eq(1.3)
       expect(Odd.find_by(external_id: "#{external_id}:2").value).to eq(1.7)
+    end
+  end
+
+  context 'market without specifiers' do
+    let(:chosen_market) { market_payload[4] }
+    let(:external_id) { 'sr:match:1234:188' }
+
+    it 'generates market external ID without specs' do
+      allow(subject).to receive(:generate_odds!)
+      subject.generate
+      market = Market.find_by(external_id: external_id)
+      expect(market).not_to be_nil
     end
   end
 end
