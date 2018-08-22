@@ -8,8 +8,8 @@ module Account
     end
 
     def resolve(_obj, args)
-      username = args[:input][:username]
-      customer = Customer.find_for_authentication(username: username)
+      login = args[:input][:login]
+      customer = Customer.find_for_authentication(login: login)
 
       if customer&.valid_password?(args[:input][:password])
         customer.update_tracked_fields!(@request)
@@ -17,7 +17,7 @@ module Account
         log_record_event :customer_signed_in, customer
         response(customer)
       else
-        GraphQL::ExecutionError.new('Wrong email or password')
+        GraphQL::ExecutionError.new('Wrong username, email or password')
       end
     end
 
