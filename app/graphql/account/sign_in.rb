@@ -18,7 +18,7 @@ module Account
         response(customer)
       else
         GraphQL::ExecutionError.new(
-          I18n.t('errors.messages.wrong_credentials_message')
+          I18n.t('errors.messages.wrong_login_credentials')
         )
       end
     end

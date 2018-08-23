@@ -118,4 +118,4 @@ en:
       entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
       with_instance:
         not_negative: "of %{instance} cannot be negative"
-      wrong_credentials_message: "Wrong username, email or password"
+      wrong_login_credentials: "Wrong username, email or password"
