@@ -17,7 +17,9 @@ module Account
         log_record_event :customer_signed_in, customer
         response(customer)
       else
-        GraphQL::ExecutionError.new.I18n.t('Wrong username, email or password')
+        GraphQL::ExecutionError.new(
+          I18n.t('errors.messages.wrong_credentials_message')
+        )
       end
     end
 
