@@ -17,8 +17,8 @@ class Customer < ApplicationRecord
   def self.find_first_by_auth_conditions(warden_conditions)
     conditions = warden_conditions.dup
     if (login = conditions.delete(:login))
-      where(conditions).where(["lower(username) = lower(:value) OR
-      lower(email) = lower(:value)", { value: login.downcase }]).first
+      query = 'lower(username) = lower(:value) OR lower(email) = lower(:value)'
+      where(conditions).where([query, { value: login.downcase }]).first
     else
       where(conditions).first
     end
