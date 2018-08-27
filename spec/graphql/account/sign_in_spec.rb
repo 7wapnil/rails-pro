@@ -33,14 +33,14 @@ describe 'GraphQL#SignIn' do
   context 'non-existing user' do
     let(:variables) do
       { input: {
-        username: 'unknown',
+        login: 'unknown',
         password: '12345'
       } }
     end
 
     it 'returns wrong credentials error' do
       expect(result['errors'][0]['message'])
-        .to eq('Wrong email or password')
+        .to eq('Wrong username, email or password')
     end
   end
 
@@ -50,14 +50,14 @@ describe 'GraphQL#SignIn' do
     end
     let(:variables) do
       { input: {
-        username: 'testuser',
+        login: 'testuser',
         password: '12345'
       } }
     end
 
     it 'returns wrong credentials' do
       expect(result['errors'][0]['message'])
-        .to eq('Wrong email or password')
+        .to eq('Wrong username, email or password')
     end
   end
 
@@ -67,7 +67,7 @@ describe 'GraphQL#SignIn' do
     end
     let(:variables) do
       { input: {
-        username: 'testuser',
+        login: 'testuser',
         password: 'strongpass'
       } }
     end
@@ -81,6 +81,23 @@ describe 'GraphQL#SignIn' do
       allow(Audit::Service).to receive(:call)
       expect(result['data']['signIn']['token']).not_to be_nil
       expect(Audit::Service).to have_received(:call)
+    end
+  end
+
+  context 'existing user with case-insensitive username' do
+    let!(:user) do
+      create(:customer, username: 'testuser', password: 'strongpass')
+    end
+    let(:variables) do
+      { input: {
+        login: 'TESTuSeR',
+        password: 'strongpass'
+      } }
+    end
+
+    it 'signs in successfully' do
+      expect(result['data']['signIn']['token']).not_to be_nil
+      expect(result['data']['signIn']['user']).not_to be_nil
     end
   end
 end

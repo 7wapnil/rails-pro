@@ -10,7 +10,19 @@ class Customer < ApplicationRecord
 
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable,
-         authentication_keys: [:username]
+         authentication_keys: [:login]
+
+  attr_accessor :login
+
+  def self.find_first_by_auth_conditions(warden_conditions)
+    conditions = warden_conditions.dup
+    if (login = conditions.delete(:login))
+      query = 'lower(username) = lower(:value) OR lower(email) = lower(:value)'
+      where(conditions).where([query, { value: login.downcase }]).first
+    else
+      where(conditions).first
+    end
+  end
 
   has_many :customer_notes
   has_many :wallets
@@ -25,12 +37,14 @@ class Customer < ApplicationRecord
   # validations for a user email and password.
 
   validates :username,
+            :email,
             :first_name,
             :last_name,
             :date_of_birth,
             presence: true
 
   validates :username, uniqueness: { case_sensitive: false }
+  validates :email, uniqueness: { case_sensitive: false }
 
   ransack_alias :ip_address, :last_sign_in_ip_or_current_sign_in_ip
 end
