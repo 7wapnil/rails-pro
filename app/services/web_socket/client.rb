@@ -2,12 +2,19 @@ module WebSocket
   class Client
     include Singleton
 
-    def emit(event, data = {})
+    def emit!(event, data = {})
       reset_connection if connection.dead?
       connection.connect unless connection.established?
 
-      Rails.logger.debug "Sending websocket event '#{event}', data: #{data}"
+      Rails.logger.info "Sending websocket event '#{event}', data: #{data}"
       connection.emit(event, data)
+    end
+
+    def emit(event, data = {})
+      emit!(event, data)
+    rescue StandardError => e
+      Rails.logger.error e
+      false
     end
 
     def connection

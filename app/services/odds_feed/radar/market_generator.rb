@@ -65,6 +65,9 @@ module OddsFeed
         return if @market_data['outcome'].nil?
         @market_data['outcome'].each do |odd_data|
           generate_odd!(market, odd_data)
+        rescue StandardError => e
+          Rails.logger.error e
+          next
         end
       end
 
