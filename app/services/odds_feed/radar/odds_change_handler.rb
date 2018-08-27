@@ -5,6 +5,9 @@ module OddsFeed
         event = create_or_update_event!
         event_data['odds']['market'].each do |market_data|
           generate_market!(event, market_data)
+        rescue StandardError => e
+          Rails.logger.error e
+          next
         end
       end
 
@@ -37,7 +40,8 @@ module OddsFeed
         event.save!
         WebSocket::Client.instance.emit(WebSocket::Signals::UPDATE_EVENT,
                                         id: event.id.to_s,
-                                        name: event.name)
+                                        name: event.name,
+                                        start_at: event.start_at)
         event
       end
 
