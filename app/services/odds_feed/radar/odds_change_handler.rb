@@ -2,6 +2,14 @@ module OddsFeed
   module Radar
     class OddsChangeHandler < RadarMessageHandler
       def handle
+        ActiveRecord::Base.transaction do
+          handle_message
+        end
+      end
+
+      private
+
+      def handle_message
         event = create_or_update_event!
         event_data['odds']['market'].each do |market_data|
           generate_market!(event, market_data)
@@ -10,8 +18,6 @@ module OddsFeed
           next
         end
       end
-
-      private
 
       def event_data
         @payload['odds_change']
