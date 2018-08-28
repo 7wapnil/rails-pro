@@ -1,0 +1,2 @@
+class CustomerAttachment < ApplicationRecord
+end
