@@ -14,19 +14,24 @@ module Radar
     MATCHERS = {
       event_processing: {
         matchers: %w[<odds_change].freeze,
-        klass: Radar::EventProcessingWorker
+        klass: OddsFeed::Radar::OddsChangeHandler
       },
       alive: {
         matchers: %w[<alive].freeze,
-        klass: Radar::HeartbeatWorker
+        klass: OddsFeed::Radar::AliveHandler
       }
     }.freeze
 
-    def work(_msg)
-      logger.info 'Message processing worker received a new job'
-      raise NotImplementedError
-      # scan_result = scan_payload(msg)
-      # raise NotImplementedError unless match_result(msg, scan_result)
+    def work(msg)
+      handler = match_result(msg, scan_payload(msg))
+      raise NotImplementedError if handler.nil?
+      handle(handler)
+    end
+
+    def handle(handler)
+      handler.handle
+    rescue StandardError => e
+      logger.error e
     end
 
     private
@@ -36,10 +41,10 @@ module Radar
         rule_matchers = rule[:matchers]
         klass = rule[:klass]
         found = rule_matchers.any? { |matcher| scan_result.include?(matcher) }
-        return klass.perform_async(XmlParser.parse(payload)) if found
+        return klass.new(XmlParser.parse(payload)) if found
       end
       logger.debug 'No worker found for message'
-      false
+      nil
     end
 
     def scan_payload(payload)
