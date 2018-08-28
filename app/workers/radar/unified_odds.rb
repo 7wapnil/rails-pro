@@ -22,7 +22,7 @@ module Radar
       }
     }.freeze
 
-    def work(msg)
+    def work(_msg)
       logger.info 'Message processing worker received a new job'
       raise NotImplementedError
       # scan_result = scan_payload(msg)
