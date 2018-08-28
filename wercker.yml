@@ -114,6 +114,11 @@ deploy:
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
 
+        cd $TERRAFORM_CONFIG_DIR/services/backend-listener
+        terraform init
+        terraform workspace select $TARGET_ENV
+        terraform apply -auto-approve
+
   after-steps:
     - slack-notifier:
       url: $SLACK_URL
