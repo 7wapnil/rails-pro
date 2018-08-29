@@ -44,8 +44,6 @@ class CustomersController < ApplicationController
     customer.customer_attachment.attach(
       customer_attachment_upload_params[:customer_attachment]
     )
-    flash[:error] = customer.errors.full_messages.join
-    redirect_to root_path unless customer.valid?
   end
 
   private
