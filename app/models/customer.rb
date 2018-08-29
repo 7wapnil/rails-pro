@@ -38,9 +38,10 @@ class Customer < ApplicationRecord
 
   validates :customer_attachment,
             file_size: { less_than_or_equal_to: max_attachment_size },
-            file_content_type: {
-              allow: ['image/jpeg', 'image/png', 'application/pdf']
-            },
+            file_content_type: { allow: %w[image/jpeg
+                                           image/png
+                                           image/jpg
+                                           application/pdf] },
             if: proc { |customer| customer.customer_attachment.attached? }
 
   # Devise Validatable module creates all needed
