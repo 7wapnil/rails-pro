@@ -34,11 +34,13 @@ class Customer < ApplicationRecord
   has_one :address
   has_and_belongs_to_many :labels
 
+  max_attachment_size = 2.megabytes
+
   validates :customer_attachment,
-            file_size: { less_than_or_equal_to: 2.megabytes,
-                         message: 'File is too big' },
-            file_content_type: { allow: 'image/jpeg',
-                                 message: 'Only jpeg, please' },
+            file_size: { less_than_or_equal_to: max_attachment_size },
+            file_content_type: {
+              allow: ['image/jpeg', 'image/png', 'application/pdf']
+            },
             if: proc { |customer| customer.customer_attachment.attached? }
 
   # Devise Validatable module creates all needed
