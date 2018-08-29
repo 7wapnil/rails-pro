@@ -14,6 +14,8 @@ describe OddsFeed::Radar::EventAdapter do
     expect(result).to be_a(Event)
     expect(result.external_id).to eq('sr:match:8696826')
     expect(result.payload).to eq(expected_payload)
+    expect(result.start_at)
+      .to eq('2016-10-31T18:00:00+00:00'.to_time)
   end
 
   it 'returns generated event name' do

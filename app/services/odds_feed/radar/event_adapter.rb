@@ -18,6 +18,7 @@ module OddsFeed
 
       def event_data
         { external_id: fixture['id'],
+          start_at: fixture['start_time'].to_time,
           name: event_name,
           description: event_name,
           payload: { competitors: fixture['competitors'] } }
