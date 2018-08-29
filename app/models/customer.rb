@@ -34,6 +34,12 @@ class Customer < ApplicationRecord
   has_one :address
   has_and_belongs_to_many :labels
 
+  validates :customer_attachment,
+            file_size: { less_than_or_equal_to: 2.megabytes,
+                         message: 'File is too big' },
+            file_content_type: { allow: 'image/jpeg',
+                                 message: 'Only jpeg, please' }
+
   # Devise Validatable module creates all needed
   # validations for a user email and password.
 
