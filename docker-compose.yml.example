@@ -54,3 +54,18 @@ services:
     depends_on:
       - db
       - redis
+
+  listener:
+    image: arcanebet/arcanebet:dev
+    command: rake sneakers:run
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    environment:
+      - WORKERS=Radar::UnifiedOdds
+    volumes:
+      - .:/arcanebet
+      - bundle:/usr/local/bundle
+    depends_on:
+      - db
