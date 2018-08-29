@@ -19,4 +19,8 @@ class Event < ApplicationRecord
   def in_play?
     start_at.past? && end_at.nil?
   end
+
+  def update_from!(_other)
+    self
+  end
 end
