@@ -15,6 +15,7 @@ Rails.application.routes.draw do
       get :activity
       get :notes
       post :update_labels
+      post :upload_customer_attachment
     end
   end
 

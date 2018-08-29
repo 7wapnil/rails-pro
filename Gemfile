@@ -46,6 +46,7 @@ gem 'mongoid', '~> 6.1.0'
 gem 'httparty', '~> 0.16.2'
 gem 'websocket-driver'
 gem 'sneakers', '~> 2.7.0'
+gem 'aws-sdk-s3', require: false
 
 # To be moved back to development and test group
 gem 'faker', github: 'stympy/faker', branch: 'master'
