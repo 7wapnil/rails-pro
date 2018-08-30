@@ -1,4 +1,6 @@
 class Event < ApplicationRecord
+  UPDATABLE_ATTRIBUTES = %w[name description start_at end_at].freeze
+
   belongs_to :title
   has_many :markets
   has_many :scoped_events
@@ -20,7 +22,17 @@ class Event < ApplicationRecord
     start_at.past? && end_at.nil?
   end
 
-  def update_from!(_other)
+  def update_from!(other)
+    unless other.is_a?(self.class)
+      raise TypeError, 'Passed \'other\' argument is not an Event'
+    end
+
+    assign_attributes(other.attributes.slice(*UPDATABLE_ATTRIBUTES))
+
+    payload.merge!(other.payload) if payload && other.payload
+    self.payload = other.payload unless payload
+
+    save!
     self
   end
 end

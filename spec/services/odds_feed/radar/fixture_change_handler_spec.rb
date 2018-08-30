@@ -64,6 +64,8 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     end
 
     it 'sends notification to websocket server' do
+      allow(event).to receive(:update_from!)
+
       expect(WebSocket::Client.instance)
         .to receive(:emit)
         .with(WebSocket::Signals::UPDATE_EVENT,
