@@ -2,7 +2,8 @@ class Bet < ApplicationRecord
   enum status: {
     pending: 0,
     succeeded: 1,
-    failed: 2
+    failed: 2,
+    cancelled: 3
   }
 
   belongs_to :customer
