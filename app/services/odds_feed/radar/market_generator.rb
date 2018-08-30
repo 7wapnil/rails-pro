@@ -25,6 +25,7 @@ module OddsFeed
         market
       end
 
+      # TODO: use external id generator
       def external_id
         id = "#{@event.external_id}:#{@market_data['id']}"
         specs = specifiers
