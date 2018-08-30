@@ -2,7 +2,8 @@ class Bet < ApplicationRecord
   enum status: {
     pending: 0,
     succeeded: 1,
-    failed: 2
+    failed: 2,
+    settled: 3
   }
 
   belongs_to :customer
@@ -16,6 +17,12 @@ class Bet < ApplicationRecord
             numericality: {
               equal_to: ->(bet) { bet.odd.value },
               on: :create
+            }
+  validates :result, inclusion: { in: [true, false] }
+  validates :void_factor,
+            numericality: {
+              greater_than_or_equal_to: 0,
+              less_than_or_equal_to: 1
             }
 
   delegate :market, to: :odd
