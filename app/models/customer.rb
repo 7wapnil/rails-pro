@@ -29,9 +29,20 @@ class Customer < ApplicationRecord
   has_many :entries, through: :wallets
   has_many :entry_requests
   has_many :initiated_entry_requests, as: :initiator, class_name: 'EntryRequest'
+  has_one_attached :customer_attachment
 
   has_one :address
   has_and_belongs_to_many :labels
+
+  max_attachment_size = 2.megabytes
+
+  validates :customer_attachment,
+            file_size: { less_than_or_equal_to: max_attachment_size },
+            file_content_type: { allow: %w[image/jpeg
+                                           image/png
+                                           image/jpg
+                                           application/pdf] },
+            if: proc { |customer| customer.customer_attachment.attached? }
 
   # Devise Validatable module creates all needed
   # validations for a user email and password.

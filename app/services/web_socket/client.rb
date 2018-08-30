@@ -3,11 +3,9 @@ module WebSocket
     include Singleton
 
     def emit!(event, data = {})
-      reset_connection if connection.dead?
-      connection.connect unless connection.established?
-
       Rails.logger.info "Sending websocket event '#{event}', data: #{data}"
-      connection.emit(event, data)
+      message = ActiveSupport::JSON.encode(event: event, data: data)
+      connection.publish(channel_name, message)
     end
 
     def emit(event, data = {})
@@ -18,11 +16,15 @@ module WebSocket
     end
 
     def connection
-      @connection ||= SocketIOConnection.new(ENV['WEBSOCKET_URL'])
+      @connection ||= Redis.new(url: ENV['REDIS_URL'])
     end
 
     def reset_connection
       @connection = nil
+    end
+
+    def channel_name
+      'events'
     end
   end
 end

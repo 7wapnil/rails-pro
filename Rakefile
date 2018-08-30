@@ -3,5 +3,6 @@
 # available to Rake.
 
 require_relative 'config/application'
+require 'sneakers/tasks'
 
 Rails.application.load_tasks

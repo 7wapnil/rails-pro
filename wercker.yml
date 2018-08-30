@@ -70,7 +70,7 @@ deploy:
       code: apk add -qU openssh git curl
 
     - capgemini/terraform-install:
-      version: "0.11.7"
+      version: "0.11.8"
 
     - edgecaseadmin/install-aws-cli:
       key: $AWS_ACCESS_KEY_ID
@@ -110,6 +110,11 @@ deploy:
         terraform apply -auto-approve
 
         cd $TERRAFORM_CONFIG_DIR/services/backend-worker
+        terraform init
+        terraform workspace select $TARGET_ENV
+        terraform apply -auto-approve
+
+        cd $TERRAFORM_CONFIG_DIR/services/backend-listener
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve

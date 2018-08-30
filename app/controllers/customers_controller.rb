@@ -39,9 +39,20 @@ class CustomersController < ApplicationController
     end
   end
 
+  def upload_customer_attachment
+    customer = Customer.find(params[:id])
+    customer.customer_attachment.attach(
+      customer_attachment_upload_params[:customer_attachment]
+    )
+  end
+
   private
 
   def labels_params
     params.require(:labels).permit(ids: [])
+  end
+
+  def customer_attachment_upload_params
+    params.require(:customer).permit(:id, :customer_attachment)
   end
 end
