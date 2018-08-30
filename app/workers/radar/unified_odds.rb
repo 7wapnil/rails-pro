@@ -19,6 +19,10 @@ module Radar
       alive: {
         matchers: %w[<alive].freeze,
         klass: OddsFeed::Radar::AliveHandler
+      },
+      bet_cancel: {
+        matchers: %w[<bet_cancel].freeze,
+        klass: OddsFeed::Radar::BetCancelHandler
       }
     }.freeze
 

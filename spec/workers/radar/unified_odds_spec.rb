@@ -9,6 +9,11 @@ describe Radar::UnifiedOdds do
     '<alive/>'
   end
 
+  let(:minimal_valid_bet_cancel_xml) do
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
+    '<bet_cancel/>'
+  end
+
   describe 'work' do
     before do
       Sneakers.logger.level = Logger::ERROR
@@ -27,6 +32,13 @@ describe Radar::UnifiedOdds do
       expect(subject)
         .to have_received(:handle)
         .with(instance_of(OddsFeed::Radar::AliveHandler))
+    end
+
+    it 'routes bet cancel to Radar::BetCancelHandler' do
+      subject.work(minimal_valid_bet_cancel_xml)
+      expect(subject)
+        .to have_received(:handle)
+        .with(instance_of(OddsFeed::Radar::BetCancelHandler))
     end
 
     it 'raises NotImplementedError on any unknown input' do
