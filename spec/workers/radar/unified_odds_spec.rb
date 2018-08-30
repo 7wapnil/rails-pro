@@ -9,6 +9,11 @@ describe Radar::UnifiedOdds do
     '<alive/>'
   end
 
+  let(:minimal_valid_bet_stop_xml) do
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
+    '<bet_stop/>'
+  end
+
   describe 'work' do
     before do
       Sneakers.logger.level = Logger::ERROR
@@ -27,6 +32,13 @@ describe Radar::UnifiedOdds do
       expect(subject)
         .to have_received(:handle)
         .with(instance_of(OddsFeed::Radar::AliveHandler))
+    end
+
+    it 'routes bet stop to Radar::BetStopHandler' do
+      subject.work(minimal_valid_bet_stop_xml)
+      expect(subject)
+        .to have_received(:handle)
+        .with(instance_of(OddsFeed::Radar::BetStopHandler))
     end
 
     it 'raises NotImplementedError on any unknown input' do
