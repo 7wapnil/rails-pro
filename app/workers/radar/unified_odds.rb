@@ -19,6 +19,10 @@ module Radar
       alive: {
         matchers: %w[<alive].freeze,
         klass: OddsFeed::Radar::AliveHandler
+      },
+      fixture_change: {
+        matchers: %w[<fixture_change].freeze,
+        klass: OddsFeed::Radar::FixtureChangeHandler
       }
     }.freeze
 
