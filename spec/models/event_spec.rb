@@ -51,7 +51,7 @@ describe Event do
       expect(event.payload).to eq other_payload
     end
 
-    it 'doesn\'t overwrite payload with nil' do # payload
+    it 'doesn\'t overwrite payload with nil' do
       other = build(:event, updatable_attributes.merge(payload: nil))
       event.update_from!(other)
 
