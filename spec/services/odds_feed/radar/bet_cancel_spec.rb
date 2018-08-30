@@ -75,4 +75,39 @@ describe OddsFeed::Radar::BetCancelHandler do
 
     expect { subject.handle }.to raise_error(OddsFeed::InvalidMessageError)
   end
+
+  it 'emits one web socket event per bet' do
+    allow(subject).to receive(:input_data).and_return(input_data)
+    bets_amount = 5
+    create_list(:bet,
+                bets_amount,
+                odd: odd,
+                status: pending,
+                created_at: Time.at(1_235_000))
+
+    subject.handle
+    expect(WebSocket::Client.instance)
+      .to have_received(:emit)
+      .exactly(bets_amount)
+      .times
+  end
+
+  it 'emits web socket events in batches' do
+    allow(subject).to receive(:input_data).and_return(input_data)
+    allow(subject).to receive(:emit_websocket_signals)
+    bets_amount = 20
+    create_list(:bet,
+                bets_amount,
+                odd: odd,
+                status: pending,
+                created_at: Time.at(1_235_000))
+
+    subject.batch_size = 5
+    subject.handle
+
+    expect(subject)
+      .to have_received(:emit_websocket_signals)
+      .exactly(4)
+      .times
+  end
 end
