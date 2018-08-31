@@ -9,6 +9,11 @@ describe Radar::UnifiedOdds do
     '<alive/>'
   end
 
+  let(:minimal_valid_bet_settlement_xml) do
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
+    '<bet_settlement/>'
+  end
+
   describe 'work' do
     before do
       Sneakers.logger.level = Logger::ERROR
@@ -27,6 +32,13 @@ describe Radar::UnifiedOdds do
       expect(subject)
         .to have_received(:handle)
         .with(instance_of(OddsFeed::Radar::AliveHandler))
+    end
+
+    it 'routes alive to Radar::BetSettlementHandler' do
+      subject.work(minimal_valid_bet_settlement_xml)
+      expect(subject)
+        .to have_received(:handle)
+        .with(instance_of(OddsFeed::Radar::BetSettlementHandler))
     end
 
     it 'raises NotImplementedError on any unknown input' do
