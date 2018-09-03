@@ -23,6 +23,18 @@ module Radar
       bet_settlement: {
         matchers: %w[<bet_settlement].freeze,
         klass: OddsFeed::Radar::BetSettlementHandler
+      },
+      bet_stop: {
+        matchers: %w[<bet_stop].freeze,
+        klass: OddsFeed::Radar::BetStopHandler
+      },
+      bet_cancel: {
+        matchers: %w[<bet_cancel].freeze,
+        klass: OddsFeed::Radar::BetCancelHandler
+      },
+      fixture_change: {
+        matchers: %w[<fixture_change].freeze,
+        klass: OddsFeed::Radar::FixtureChangeHandler
       }
     }.freeze
 

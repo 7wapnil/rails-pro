@@ -4,5 +4,6 @@ module WebSocket
     UPDATE_MARKET = 'updateMarket'.freeze
     ODD_CHANGE = 'oddChange'.freeze
     BET_SETTLED = 'betSettled'.freeze
+    BET_CANCELLED = 'betCancelled'.freeze
   end
 end

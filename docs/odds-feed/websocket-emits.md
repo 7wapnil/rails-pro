@@ -30,3 +30,10 @@ odd updated.
 * `value`:`Float` - odd value
 * `status`:`String` - odd status, for a list of statuses check
 `app/models/odd.rb`
+
+#### `betCancelled`
+Sent when bets cancelled by odds provider  
+**Data:**
+* `id`:`String` - bet internal ID
+* `customerId`:`Integer` - ID of customer bet made by
+`app/models/bet.rb`

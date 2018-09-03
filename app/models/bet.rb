@@ -3,7 +3,8 @@ class Bet < ApplicationRecord
     pending: 0,
     succeeded: 1,
     failed: 2,
-    settled: 3
+    settled: 3,
+    cancelled: 4
   }
 
   belongs_to :customer
