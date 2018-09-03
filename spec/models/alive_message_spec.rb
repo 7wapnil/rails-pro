@@ -4,18 +4,74 @@ describe Radar::AliveMessage do
   let(:valid_timestamp) { Time.now.utc.to_i }
   let(:valid_timestamp_datetime) { Time.at(valid_timestamp.to_i).to_datetime }
 
+  let(:valid_input_data) do
+    XmlParser.parse(
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
+      '<alive product="1" timestamp="' + valid_timestamp.to_s +
+        '" subscribed="1"/>'
+    )['alive']
+  end
+
+  let(:product_id_key) { 'product' }
+  let(:reported_at_key) { 'timestamp' }
+  let(:subscribed_key) { 'subscribed' }
+
   describe '#from_hash' do
     subject { Radar::AliveMessage }
-    context 'valid' do
-      it 'returns message based on hash' do
-        message = subject.from_hash(
-          'product_id' => '1',
-          'reported_at' => valid_timestamp.to_s,
-          'subscribed' => '1'
-        )
+
+    context 'integration with OddsFeed::Radar::AliveHandler' do
+      it 'based on correct input data' do
+        expect(valid_input_data.keys).to include product_id_key
+        expect(valid_input_data.keys).to include reported_at_key
+        expect(valid_input_data.keys).to include subscribed_key
+      end
+    end
+
+    context 'with valid input' do
+      it 'converts timestamp to datetime' do
+        message = subject.from_hash(valid_input_data)
         expect(message.product_id).to eq 1
         expect(message.reported_at).to eq valid_timestamp_datetime
         expect(message.subscribed).to be true
+      end
+
+      it 'normalizes product_id to Integer' do
+        modified_data = valid_input_data.tap { |data| data[product_id_key] = 1 }
+        message = subject.from_hash(modified_data)
+
+        expect(message.product_id).to eq 1
+        expect(message.reported_at).to eq valid_timestamp_datetime
+        expect(message.subscribed).to be true
+      end
+    end
+
+    context 'input validation' do
+      it 'raises when reported_at is not provided' do
+        expect do
+          invalid_data = valid_input_data.tap { |data| data[reported_at_key] = nil }
+          message = subject.from_hash(invalid_data)
+        end.to raise_error(StandardError)
+      end
+
+      it 'raises when product_id is not provided' do
+        expect do
+          invalid_data = valid_input_data.tap { |data| data[product_id_key] = nil }
+          message = subject.from_hash(invalid_data)
+        end.to raise_error(StandardError)
+      end
+
+      it 'raises when product_id is not an integer' do
+        expect do
+          invalid_data = valid_input_data.tap { |data| data[product_id_key] = 'Foo' }
+          message = subject.from_hash(invalid_data)
+        end.to raise_error(StandardError)
+      end
+
+      it 'raises when subscribed is not zero or one' do
+        expect do
+          invalid_data = valid_input_data.tap { |data| data[subscribed_key] = 'FOO' }
+          message = subject.from_hash(invalid_data)
+        end.to raise_error(StandardError)
       end
     end
   end
