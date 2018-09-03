@@ -36,7 +36,8 @@ describe Radar::AliveMessage do
       end
 
       it 'normalizes product_id to Integer' do
-        modified_data = valid_input_data.tap { |data| data[product_id_key] = 1 }
+        modified_data =
+          valid_input_data.clone.tap { |data| data[product_id_key] = 1 }
         message = subject.from_hash(modified_data)
 
         expect(message.product_id).to eq 1
@@ -48,29 +49,33 @@ describe Radar::AliveMessage do
     context 'input validation' do
       it 'raises when reported_at is not provided' do
         expect do
-          invalid_data = valid_input_data.tap { |data| data[reported_at_key] = nil }
-          message = subject.from_hash(invalid_data)
+          invalid_data =
+            valid_input_data.clone.tap { |data| data[reported_at_key] = nil }
+          subject.from_hash(invalid_data)
         end.to raise_error(StandardError)
       end
 
       it 'raises when product_id is not provided' do
         expect do
-          invalid_data = valid_input_data.tap { |data| data[product_id_key] = nil }
-          message = subject.from_hash(invalid_data)
+          invalid_data =
+            valid_input_data.clone.tap { |data| data[product_id_key] = nil }
+          subject.from_hash(invalid_data)
         end.to raise_error(StandardError)
       end
 
       it 'raises when product_id is not an integer' do
         expect do
-          invalid_data = valid_input_data.tap { |data| data[product_id_key] = 'Foo' }
-          message = subject.from_hash(invalid_data)
+          invalid_data =
+            valid_input_data.clone.tap { |data| data[product_id_key] = 'Foo' }
+          subject.from_hash(invalid_data)
         end.to raise_error(StandardError)
       end
 
       it 'raises when subscribed is not zero or one' do
         expect do
-          invalid_data = valid_input_data.tap { |data| data[subscribed_key] = 'FOO' }
-          message = subject.from_hash(invalid_data)
+          invalid_data =
+            valid_input_data.clone.tap { |data| data[subscribed_key] = 'FOO' }
+          subject.from_hash(invalid_data)
         end.to raise_error(StandardError)
       end
     end
