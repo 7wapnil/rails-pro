@@ -1,8 +1,10 @@
 module Radar
   class AliveMessage
-    PRODUCT_ID_KEY = 'product'
-    REPORTED_AT_KEY = 'timestamp'
-    SUBSCRIBED_KEY = 'subscribed'
+    PRODUCT_ID_KEY = 'product'.freeze
+    REPORTED_AT_KEY = 'timestamp'.freeze
+    SUBSCRIBED_KEY = 'subscribed'.freeze
+
+    ALLOWED_SUBSCRIBED_VALUES = %w[0 1].freeze
 
     attr_accessor :product_id, :reported_at, :subscribed
 
@@ -15,7 +17,7 @@ module Radar
     end
 
     def self.from_hash(data)
-      raise unless valid_external_data?(data)
+      validate_external_data!(data)
 
       reported_at_timestamp = Time.zone.at(data[REPORTED_AT_KEY].to_i).to_datetime
       product_id = data[PRODUCT_ID_KEY].to_i
@@ -41,13 +43,12 @@ module Radar
 
     private
 
-    def self.valid_external_data?(data)
-      return false if data[PRODUCT_ID_KEY].nil?
-      return false if data[REPORTED_AT_KEY].nil?
-      return false if data[SUBSCRIBED_KEY].nil?
-      return false unless data[PRODUCT_ID_KEY].to_i.to_s == data[PRODUCT_ID_KEY].to_s
-      return false unless %w[0 1].include?(data[SUBSCRIBED_KEY])
-      true
+    def self.validate_external_data!(data)
+      raise 'missing product key' if data[PRODUCT_ID_KEY].nil?
+      raise 'missing reported_at key' if data[REPORTED_AT_KEY].nil?
+      raise 'missing subscribed key' if data[SUBSCRIBED_KEY].nil?
+      raise 'product key is not an integer' unless data[PRODUCT_ID_KEY].to_i.to_s == data[PRODUCT_ID_KEY].to_s
+      raise 'subscribed value is not valid' unless ALLOWED_SUBSCRIBED_VALUES.include?(data[SUBSCRIBED_KEY])
     end
 
     def store_last_successful_alive!
