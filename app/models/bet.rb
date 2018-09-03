@@ -3,7 +3,8 @@ class Bet < ApplicationRecord
     pending: 0,
     succeeded: 1,
     failed: 2,
-    cancelled: 3
+    settled: 3,
+    cancelled: 4
   }
 
   belongs_to :customer
@@ -18,6 +19,13 @@ class Bet < ApplicationRecord
               equal_to: ->(bet) { bet.odd.value },
               on: :create
             }
+  validates :result, inclusion: { in: [true, false] }
+  validates :void_factor,
+            numericality: {
+              greater_than_or_equal_to: 0,
+              less_than_or_equal_to: 1
+            },
+            allow_nil: true
 
   delegate :market, to: :odd
 end
