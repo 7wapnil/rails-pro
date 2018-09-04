@@ -37,7 +37,7 @@ class Event < ApplicationRecord
   # This is a good candidate to be extracted to a reusable concern
   def add_to_payload(addition)
     return unless addition
-    payload.merge!(addition) if payload
+    payload&.merge!(addition)
     self.payload = addition unless payload
   end
 end

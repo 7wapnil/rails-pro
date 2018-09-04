@@ -27,21 +27,25 @@ module OddsFeed
         Time.at(event_data['timestamp'].to_i / 1000).utc
       end
 
-      def create_or_update_event!
+      def create_or_update_event! # rubocop:disable Metrics/MethodLength
         id = event_data['event_id']
         event = Event.find_by(external_id: id)
+
         if event.nil?
           Rails.logger.info "Event with external ID #{id} not found, create new"
           event = create_event(id)
         else
           check_message_time(event)
         end
-        Rails.logger.info "Update timestamp for event ID #{id}"
+
+        Rails.logger.info "Update timestamp and payload for event ID #{id}"
+
         event.add_to_payload(
           producer: { origin: :radar, id: event_data['product'] }
         )
         event.assign_attributes(remote_updated_at: timestamp)
         event.save!
+
         event
       end
 
@@ -61,10 +65,10 @@ module OddsFeed
 
       def check_message_time(event)
         last_update = event.remote_updated_at.utc
+        return if event.remote_updated_at.utc <= timestamp
+
         msg = "Message came at #{timestamp}, but last update was #{last_update}"
-        if event.remote_updated_at.utc > timestamp
-          raise InvalidMessageError, msg
-        end
+        raise InvalidMessageError, msg
       end
 
       def generate_market!(event, market_data)
