@@ -32,6 +32,20 @@ describe OddsFeed::Radar::OddsChangeHandler do
     expect { subject.handle }.to raise_error(OddsFeed::InvalidMessageError)
   end
 
+  it 'adds producer id to event payload' do
+    payload_addition = {
+      producer: { origin: :radar, id: payload['odds_change']['product'] }
+    }
+
+    allow(Event).to receive(:find_by) { event }
+
+    expect(event)
+      .to receive(:add_to_payload)
+      .with(payload_addition)
+
+    subject.handle
+  end
+
   it 'sends websocket message when new event created' do
     subject.handle
 

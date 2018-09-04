@@ -37,6 +37,9 @@ module OddsFeed
           check_message_time(event)
         end
         Rails.logger.info "Update timestamp for event ID #{id}"
+        event.add_to_payload(
+          producer: { origin: :radar, id: event_data['product'] }
+        )
         event.assign_attributes(remote_updated_at: timestamp)
         event.save!
         event
