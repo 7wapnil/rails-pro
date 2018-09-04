@@ -17,14 +17,8 @@ describe Event do
       }
     end
 
-    let(:initial_payload) { { 'competitors' => %w[Foo Bar] } }
-    let(:other_payload) { { 'competitors' => %w[Bar Baz] } }
-
-    let(:event) { create(:event, payload: initial_payload) }
-
-    let(:other) do
-      build(:event, updatable_attributes.merge(payload: other_payload))
-    end
+    let(:event) { create(:event) }
+    let(:other) { build(:event, updatable_attributes) }
 
     it 'fails with TypeError when not an Event argument is passed' do
       expect { event.update_from!(:foo) }
@@ -39,6 +33,19 @@ describe Event do
       end
     end
 
+    it 'calls #add_to_payload' do
+      expect(event).to receive(:add_to_payload)
+      event.update_from!(other)
+    end
+  end
+
+  describe '#add_to_payload' do
+    let(:initial_payload) { { 'competitors' => %w[Foo Bar] } }
+    let(:other_payload) { { 'competitors' => %w[Bar Baz] } }
+
+    let(:event) { create(:event, payload: initial_payload) }
+    let(:other) { build(:event, payload: other_payload) }
+
     it 'updates existing payload' do
       event.update_from!(other)
       expect(event.payload).to eq other_payload
@@ -52,7 +59,7 @@ describe Event do
     end
 
     it 'doesn\'t overwrite payload with nil' do
-      other = build(:event, updatable_attributes.merge(payload: nil))
+      other = build(:event, payload: nil)
       event.update_from!(other)
 
       expect(event.payload).to eq initial_payload

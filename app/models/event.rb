@@ -28,11 +28,16 @@ class Event < ApplicationRecord
     end
 
     assign_attributes(other.attributes.slice(*UPDATABLE_ATTRIBUTES))
-
-    payload.merge!(other.payload) if payload && other.payload
-    self.payload = other.payload unless payload
+    add_to_payload(other.payload)
 
     save!
     self
+  end
+
+  # This is a good candidate to be extracted to a reusable concern
+  def add_to_payload(addition)
+    return unless addition
+    payload.merge!(addition) if payload
+    self.payload = addition unless payload
   end
 end
