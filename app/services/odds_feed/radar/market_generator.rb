@@ -56,6 +56,7 @@ module OddsFeed
 
       def status_map
         {
+          '-2': Market::STATUSES[:handed_over],
           '-1': Market::STATUSES[:suspended],
           '0': Market::STATUSES[:inactive],
           '1': Market::STATUSES[:active]
