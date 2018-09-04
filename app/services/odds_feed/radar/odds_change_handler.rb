@@ -37,7 +37,8 @@ module OddsFeed
           check_message_time(event)
         end
         Rails.logger.info "Update timestamp for event ID #{id}"
-        event.update_attribute(:updated_at, timestamp)
+        event.assign_attributes(remote_updated_at: timestamp)
+        event.save!
         event
       end
 
@@ -56,9 +57,11 @@ module OddsFeed
       end
 
       def check_message_time(event)
-        last_update = event.updated_at.utc
+        last_update = event.remote_updated_at.utc
         msg = "Message came at #{timestamp}, but last update was #{last_update}"
-        raise InvalidMessageError, msg if event.updated_at.utc > timestamp
+        if event.remote_updated_at.utc > timestamp
+          raise InvalidMessageError, msg
+        end
       end
 
       def generate_market!(event, market_data)

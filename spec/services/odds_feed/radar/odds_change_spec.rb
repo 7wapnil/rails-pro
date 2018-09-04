@@ -28,7 +28,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
   end
 
   it 'raises InvalidMessageError if message is late' do
-    create(:event, external_id: event_id, updated_at: Time.now + 300)
+    create(:event, external_id: event_id, remote_updated_at: Time.now + 300)
     expect { subject.handle }.to raise_error(OddsFeed::InvalidMessageError)
   end
 
