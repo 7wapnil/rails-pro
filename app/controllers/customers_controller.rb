@@ -1,4 +1,6 @@
 class CustomersController < ApplicationController
+  skip_before_action :verify_authenticity_token,
+                     only: :upload_customer_attachment
   def index
     @search = Customer.search(query_params)
     @customers = @search.result.page(params[:page])
@@ -41,6 +43,7 @@ class CustomersController < ApplicationController
 
   def upload_customer_attachment
     customer = Customer.find(params[:id])
+    return false unless customer.valid?
     customer.customer_attachment.attach(
       customer_attachment_upload_params[:customer_attachment]
     )
