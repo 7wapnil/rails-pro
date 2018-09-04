@@ -12,71 +12,15 @@ describe Radar::AliveMessage do
     )['alive']
   end
 
-  let(:product_id_key) { 'product' }
-  let(:reported_at_key) { 'timestamp' }
-  let(:subscribed_key) { 'subscribed' }
-
   describe '#from_hash' do
     subject { Radar::AliveMessage }
 
-    context 'integration with OddsFeed::Radar::AliveHandler' do
-      it 'based on correct input data' do
-        expect(valid_input_data.keys).to include product_id_key
-        expect(valid_input_data.keys).to include reported_at_key
-        expect(valid_input_data.keys).to include subscribed_key
-      end
-    end
-
     context 'with valid input' do
-      it 'converts timestamp to datetime' do
+      it 'converts hash values to correct input' do
         message = subject.from_hash(valid_input_data)
         expect(message.product_id).to eq 1
         expect(message.reported_at).to eq valid_timestamp_datetime
         expect(message.subscribed).to be true
-      end
-
-      it 'normalizes product_id to Integer' do
-        modified_data =
-          valid_input_data.clone.tap { |data| data[product_id_key] = 1 }
-        message = subject.from_hash(modified_data)
-
-        expect(message.product_id).to eq 1
-        expect(message.reported_at).to eq valid_timestamp_datetime
-        expect(message.subscribed).to be true
-      end
-    end
-
-    context 'input validation' do
-      it 'raises when reported_at is not provided' do
-        expect do
-          invalid_data =
-            valid_input_data.clone.tap { |data| data[reported_at_key] = nil }
-          subject.from_hash(invalid_data)
-        end.to raise_error(StandardError)
-      end
-
-      it 'raises when product_id is not provided' do
-        expect do
-          invalid_data =
-            valid_input_data.clone.tap { |data| data[product_id_key] = nil }
-          subject.from_hash(invalid_data)
-        end.to raise_error(StandardError)
-      end
-
-      it 'raises when product_id is not an integer' do
-        expect do
-          invalid_data =
-            valid_input_data.clone.tap { |data| data[product_id_key] = 'Foo' }
-          subject.from_hash(invalid_data)
-        end.to raise_error(StandardError)
-      end
-
-      it 'raises when subscribed is not zero or one' do
-        expect do
-          invalid_data =
-            valid_input_data.clone.tap { |data| data[subscribed_key] = 'FOO' }
-          subject.from_hash(invalid_data)
-        end.to raise_error(StandardError)
       end
     end
   end
