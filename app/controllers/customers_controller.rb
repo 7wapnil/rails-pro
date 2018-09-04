@@ -1,6 +1,4 @@
 class CustomersController < ApplicationController
-  skip_before_action :verify_authenticity_token,
-                     only: :upload_customer_attachment
   def index
     @search = Customer.search(query_params)
     @customers = @search.result.page(params[:page])
