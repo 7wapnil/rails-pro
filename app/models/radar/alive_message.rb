@@ -11,10 +11,15 @@ module Radar
     end
 
     def self.from_hash(data)
+      reported_at_timestamp =
+        Time.zone.at(data['timestamp'].to_i).to_datetime
+      product_id = data['product'].to_i
+      is_subscribed = data['subscribed'] == '1'
+
       new(
-        product_id: data['product_id'].to_i,
-        reported_at: Time.zone.at(data['reported_at'].to_i).to_datetime,
-        subscribed: data['subscribed'] == '1'
+        product_id: product_id,
+        reported_at: reported_at_timestamp,
+        subscribed: is_subscribed
       )
     end
 
