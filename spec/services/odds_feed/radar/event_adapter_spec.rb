@@ -3,8 +3,9 @@ describe OddsFeed::Radar::EventAdapter do
   let(:payload) do
     XmlParser.parse(file_fixture('radar_event_fixture.xml').read)
   end
-  let(:adapter) { OddsFeed::Radar::EventAdapter.new(payload) }
-  let(:result) { adapter.result }
+  let(:result) { subject.result }
+
+  subject { OddsFeed::Radar::EventAdapter.new(payload) }
 
   it 'returns filled event' do
     expected_payload = {
@@ -40,20 +41,27 @@ describe OddsFeed::Radar::EventAdapter do
       expect(result.title.id).to eq(existing.id)
       expect(result.title.external_id).to eq('sr:sport:1')
     end
+
+    it 'raises error if title data is invalid' do
+      payload['fixtures_fixture']['fixture']['tournament']['sport'] = {}
+      expect { result }.to raise_error(ActiveRecord::RecordInvalid)
+    end
   end
 
   context 'tournament' do
     it 'creates if not exists in db' do
-      tournament = result.event_scopes[0]
+      tournament = result.event_scopes.detect(&:tournament?)
       expect(tournament).not_to be_nil
       expect(tournament.external_id).to eq('4301')
       expect(tournament.name).to eq('Division 1, Södra')
     end
 
     it 'loads if exists in db' do
-      existing = create(:event_scope, name: 'Division 1, Södra',
-                                      external_id: '4301')
-      tournament = result.event_scopes[0]
+      existing = create(:event_scope,
+                        name: 'Division 1, Södra',
+                        external_id: '4301',
+                        kind: :tournament)
+      tournament = result.event_scopes.detect(&:tournament?)
       expect(tournament.id).to eq(existing.id)
       expect(tournament.external_id).to eq('4301')
       expect(tournament.name).to eq('Division 1, Södra')
@@ -62,16 +70,18 @@ describe OddsFeed::Radar::EventAdapter do
 
   context 'season' do
     it 'creates if not exists in db' do
-      season = result.event_scopes[1]
+      season = result.event_scopes.detect(&:season?)
       expect(season).not_to be_nil
       expect(season.external_id).to eq('sr:season:12346')
       expect(season.name).to eq('Div 1, Sodra 2016')
     end
 
     it 'loads if exists in db' do
-      existing = create(:event_scope, name: 'Div 1, Sodra 2016',
-                                      external_id: 'sr:season:12346')
-      season = result.event_scopes[1]
+      existing = create(:event_scope,
+                        name: 'Div 1, Sodra 2016',
+                        external_id: 'sr:season:12346',
+                        kind: :season)
+      season = result.event_scopes.detect(&:season?)
       expect(season.id).to eq(existing.id)
       expect(season.external_id).to eq('sr:season:12346')
       expect(season.name).to eq('Div 1, Sodra 2016')
@@ -80,19 +90,47 @@ describe OddsFeed::Radar::EventAdapter do
 
   context 'country' do
     it 'creates if not exists in db' do
-      country = result.event_scopes[2]
+      country = result.event_scopes.detect(&:country?)
       expect(country).not_to be_nil
       expect(country.external_id).to eq('sr:category:9')
       expect(country.name).to eq('Sweden')
     end
 
     it 'loads if exists in db' do
-      existing = create(:event_scope, name: 'Sweden',
-                                      external_id: 'sr:category:9')
-      country = result.event_scopes[2]
+      existing = create(:event_scope,
+                        name: 'Sweden',
+                        external_id: 'sr:category:9',
+                        kind: :country)
+      country = result.event_scopes.detect(&:country?)
       expect(country.id).to eq(existing.id)
       expect(country.external_id).to eq('sr:category:9')
       expect(country.name).to eq('Sweden')
+    end
+  end
+
+  context 'invalid data' do
+    let(:payload) do
+      payload = XmlParser
+                .parse(file_fixture('radar_event_fixture.xml').read)
+      payload['fixtures_fixture']['fixture']['tournament_round'] = {}
+      payload['fixtures_fixture']['fixture']['season'] = {}
+      payload['fixtures_fixture']['fixture']['tournament']['category'] = {}
+      payload
+    end
+
+    it 'skips tournament if data is invalid' do
+      record = result.event_scopes.detect(&:tournament?)
+      expect(record).to be_nil
+    end
+
+    it 'skips season if data is invalid' do
+      record = result.event_scopes.detect(&:season?)
+      expect(record).to be_nil
+    end
+
+    it 'skips country if data is invalid' do
+      record = result.event_scopes.detect(&:country?)
+      expect(record).to be_nil
     end
   end
 end
