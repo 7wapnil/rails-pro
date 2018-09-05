@@ -119,3 +119,4 @@ en:
       with_instance:
         not_negative: "of %{instance} cannot be negative"
       wrong_login_credentials: "Wrong username, email or password"
+      wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
