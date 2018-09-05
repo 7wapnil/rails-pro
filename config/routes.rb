@@ -15,7 +15,6 @@ Rails.application.routes.draw do
       get :activity
       get :notes
       post :update_labels
-      post :upload_customer_attachment
     end
   end
 
@@ -40,6 +39,8 @@ Rails.application.routes.draw do
   end
 
   post '/graphql', to: 'graphql#execute'
+  post '/customer_attachment_upload',
+       to: 'customer_attachment#customer_attachment_upload'
 
   root 'dashboards#show'
 end
