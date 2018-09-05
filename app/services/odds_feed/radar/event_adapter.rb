@@ -38,7 +38,7 @@ module OddsFeed
         return title unless title.nil?
 
         Rails.logger.info "Create new title '#{sport_data['name']}'"
-        Title.create(external_id: sport_data['id'],
+        Title.create!(external_id: sport_data['id'],
                      name: sport_data['name'])
       end
 
@@ -50,7 +50,7 @@ module OddsFeed
 
         name = tournament_data['group_long_name']
         Rails.logger.info "Create new tournament scope '#{name}'"
-        EventScope.create(external_id: external_id,
+        EventScope.create!(external_id: external_id,
                           name: name,
                           kind: :tournament,
                           title: event.title)
@@ -62,7 +62,7 @@ module OddsFeed
         return season unless season.nil?
 
         Rails.logger.info "Create new season scope '#{season_data['name']}'"
-        EventScope.create(external_id: season_data['id'],
+        EventScope.create!(external_id: season_data['id'],
                           name: season_data['name'],
                           kind: :season,
                           title: event.title)
@@ -74,7 +74,7 @@ module OddsFeed
         return country unless country.nil?
 
         Rails.logger.info "Create new country scope '#{country_data['name']}'"
-        EventScope.create(external_id: country_data['id'],
+        EventScope.create!(external_id: country_data['id'],
                           name: country_data['name'],
                           kind: :country,
                           title: event.title)
