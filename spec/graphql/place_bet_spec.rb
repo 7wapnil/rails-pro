@@ -23,7 +23,7 @@ describe 'GraphQL#placeBet' do
   end
 
   context 'success' do
-    let(:odds) { create_list(:odd, 2) }
+    let(:odds) { create_list(:odd, 2, value: 8.87) }
 
     let(:variables) do
       {
