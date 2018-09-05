@@ -27,6 +27,10 @@ describe 'GraphQL#markets' do
         } })
       end
 
+      before do
+        allow_any_instance_of(Market).to receive(:define_priority)
+      end
+
       it 'returns markets related to event only' do
         create_list(:market, 5, event: event, priority: 0)
         create_list(:market, 5, priority: 0)

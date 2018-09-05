@@ -57,6 +57,7 @@ describe 'GraphQL#events' do
 
       before do
         event = create(:event)
+        allow_any_instance_of(Market).to receive(:define_priority)
         create(:market,
                event: event,
                status: Market::DEFAULT_STATUS,

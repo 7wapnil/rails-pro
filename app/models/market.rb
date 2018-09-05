@@ -1,4 +1,12 @@
 class Market < ApplicationRecord
+  before_validation :define_priority, if: :name_changed?
+
+  PRIORITIES_MAP = [
+    { pattern: /^Match winner/, priority: 1 }
+  ].freeze
+
+  DEFAULT_PRIORITY = 0
+
   STATUSES = {
     inactive: 0,
     active: 1,
@@ -31,4 +39,12 @@ class Market < ApplicationRecord
     %i[cancelled suspended],
     %i[cancelled settled]
   ]
+
+  def define_priority
+    matched = PRIORITIES_MAP.detect do |rule|
+      name =~ rule[:pattern]
+    end
+
+    self.priority = matched ? matched[:priority] : DEFAULT_PRIORITY
+  end
 end
