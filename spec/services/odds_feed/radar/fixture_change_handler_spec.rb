@@ -11,6 +11,8 @@ describe OddsFeed::Radar::FixtureChangeHandler do
 
   let(:api_event) { build(:event) }
 
+  let(:payload_update) { { producer: { origin: :radar, id: '1' } } }
+
   subject { described_class.new(payload) }
 
   before do
@@ -23,13 +25,13 @@ describe OddsFeed::Radar::FixtureChangeHandler do
 
   context 'new event' do
     it 'calls #save! on retrieved event' do
-      expect(api_event).to receive(:save!)
+      expect(api_event)
+        .to receive(:save!)
+        .exactly(2).times
     end
 
     it 'logs event create message' do
-      expect(Rails.logger)
-        .to receive(:info)
-        .with('Creating event with external ID sr:match:1234')
+      expect(subject).to receive(:log_on_create)
     end
 
     it 'sends notification to websocket server' do
@@ -39,6 +41,10 @@ describe OddsFeed::Radar::FixtureChangeHandler do
         .to receive(:emit)
         .with(WebSocket::Signals::UPDATE_EVENT,
               hash_including(name: event.name, start_at: event.start_at))
+    end
+
+    it 'adds producer info to payload' do
+      expect(api_event).to receive(:add_to_payload).with(payload_update)
     end
   end
 
@@ -56,11 +62,7 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     end
 
     it 'logs event update message' do
-      msg = <<-MESSAGE
-        Updating event with external ID sr:match:1234 \
-        on change type 'format'
-      MESSAGE
-      expect(Rails.logger).to receive(:info).with(msg.squish)
+      expect(subject).to receive(:log_on_update)
     end
 
     it 'sends notification to websocket server' do
@@ -70,6 +72,13 @@ describe OddsFeed::Radar::FixtureChangeHandler do
         .to receive(:emit)
         .with(WebSocket::Signals::UPDATE_EVENT,
               hash_including(name: event.name, start_at: event.start_at))
+    end
+
+    it 'adds producer info to payload' do
+      # Event receives :add_to_payload twice,
+      # this test checks arguments for second call
+      expect(event).to receive(:add_to_payload)
+      expect(event).to receive(:add_to_payload).with(payload_update)
     end
   end
 end
