@@ -39,9 +39,8 @@ module Radar
     }.freeze
 
     def work(msg)
-      handler = match_result(msg, scan_payload(msg))
-      raise NotImplementedError if handler.nil?
-      handle(handler)
+      initialized_handler = match_result(msg, scan_payload(msg))
+      handle(initialized_handler)
     end
 
     def handle(handler)
@@ -60,7 +59,7 @@ module Radar
         return klass.new(XmlParser.parse(payload)) if found
       end
       logger.debug 'No worker found for message'
-      nil
+      raise NotImplementedError
     end
 
     def scan_payload(payload)

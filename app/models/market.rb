@@ -24,6 +24,21 @@ class Market < ApplicationRecord
   has_many :odds
 
   validates :name, :priority, :status, presence: true
+  validates_with MarketStateValidator, restrictions: [
+    %i[active settled],
+    %i[active cancelled],
+    %i[inactive suspended],
+    %i[inactive cancelled],
+    %i[suspended settled],
+    %i[suspended cancelled],
+    %i[settled active],
+    %i[settled inactive],
+    %i[settled suspended],
+    %i[cancelled active],
+    %i[cancelled inactive],
+    %i[cancelled suspended],
+    %i[cancelled settled]
+  ]
 
   def define_priority
     matched = PRIORITIES_MAP.detect do |rule|

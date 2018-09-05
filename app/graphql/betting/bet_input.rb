@@ -4,7 +4,7 @@ module Betting
 
     argument :amount, !types.Float
     argument :oddId, !types.String
-    argument :oddValue, !types.Float
+    argument :oddValue, !Scalars::BigDecimal
     argument :currencyCode, !types.String
   end
 end

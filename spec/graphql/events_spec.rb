@@ -44,6 +44,36 @@ describe 'GraphQL#events' do
       end
     end
 
+    context 'with markets priority' do
+      let(:query) do
+        %({
+            events {
+              id
+              name
+              markets (priority: 1) { id name priority status }
+            }
+        })
+      end
+
+      before do
+        event = create(:event)
+        allow_any_instance_of(Market).to receive(:define_priority)
+        create(:market,
+               event: event,
+               status: Market::DEFAULT_STATUS,
+               priority: 0)
+        create(:market,
+               event: event,
+               status: Market::DEFAULT_STATUS,
+               priority: 1)
+      end
+
+      it 'returns event markets list with priority 1' do
+        event_result = result['data']['events'][0]
+        expect(event_result['markets'].count).to eq(1)
+      end
+    end
+
     context 'with odds' do
       let!(:event) { create(:event) }
       let!(:market) { create(:market, event: event) }
