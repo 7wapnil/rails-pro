@@ -30,6 +30,10 @@ class CustomersController < ApplicationController
     @customer_notes = @customer.customer_notes.page(params[:page]).per(5)
   end
 
+  def documents
+    @customer = Customer.find(params[:id])
+  end
+
   def update_labels
     customer = Customer.find(params[:id])
     if labels_params[:ids].include? '0'

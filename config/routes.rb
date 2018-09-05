@@ -14,6 +14,7 @@ Rails.application.routes.draw do
       get :account_management
       get :activity
       get :notes
+      get :documents
       post :update_labels
       post :upload_customer_attachment
     end
