@@ -2,11 +2,10 @@ class Market < ApplicationRecord
   before_validation :define_priority, if: :name_changed?
 
   PRIORITIES_MAP = [
-    [
-      /^Match winner/
-    ], # First priority
-    [] # Second priority
+    { pattern: /^Match winner/, priority: 1 }
   ].freeze
+
+  DEFAULT_PRIORITY = 0
 
   STATUSES = {
     inactive: 0,
@@ -27,13 +26,10 @@ class Market < ApplicationRecord
   validates :name, :priority, :status, presence: true
 
   def define_priority
-    self.priority = 0
-    PRIORITIES_MAP.each_with_index do |regex_map, index|
-      regex_map.each do |regex|
-        next if name.scan(regex).empty?
-        self.priority = index + 1
-        break
-      end
+    matched = PRIORITIES_MAP.detect do |rule|
+      name =~ rule[:pattern]
     end
+
+    self.priority = matched ? matched[:priority] : DEFAULT_PRIORITY
   end
 end
