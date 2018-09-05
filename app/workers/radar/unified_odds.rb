@@ -58,7 +58,7 @@ module Radar
         found = rule_matchers.any? { |matcher| scan_result.include?(matcher) }
         return klass.new(XmlParser.parse(payload)) if found
       end
-      logger.debug 'No worker found for message'
+      logger.warn 'No worker found for message'
       raise NotImplementedError
     end
 
