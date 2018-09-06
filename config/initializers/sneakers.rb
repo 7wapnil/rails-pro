@@ -4,3 +4,5 @@ Sneakers.configure workers: 1,
                                          user: ENV['RADAR_MQ_USER'],
                                          vhost: ENV['RADAR_MQ_VHOST'],
                                          tls: ENV['RADAR_MQ_TLS'] == 'true')
+
+Sneakers.logger.level = ENV['RAILS_LOG_LEVEL'] || :debug
