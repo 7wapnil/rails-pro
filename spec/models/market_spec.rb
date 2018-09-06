@@ -29,7 +29,7 @@ describe Market do
     end
 
     it 'defines 1 priority for match winner market' do
-      subject.name = 'Match winner'
+      subject.name = 'Match - winner'
       subject.validate
       expect(subject.priority).to eq(1)
     end

@@ -41,6 +41,8 @@ class Market < ApplicationRecord
   ]
 
   def define_priority
+    return if priority
+
     matched = PRIORITIES_MAP.detect do |rule|
       name =~ rule[:pattern]
     end
