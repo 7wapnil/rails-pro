@@ -4,15 +4,20 @@ describe Radar::AliveMessage do
   let(:valid_timestamp) { Time.now.utc.to_i }
   let(:valid_timestamp_datetime) { Time.at(valid_timestamp.to_i).to_datetime }
 
+  let(:valid_input_data) do
+    XmlParser.parse(
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
+      '<alive product="1" timestamp="' + valid_timestamp.to_s +
+        '" subscribed="1"/>'
+    )['alive']
+  end
+
   describe '#from_hash' do
     subject { Radar::AliveMessage }
-    context 'valid' do
-      it 'returns message based on hash' do
-        message = subject.from_hash(
-          'product_id' => '1',
-          'reported_at' => valid_timestamp.to_s,
-          'subscribed' => '1'
-        )
+
+    context 'with valid input' do
+      it 'converts hash values to correct input' do
+        message = subject.from_hash(valid_input_data)
         expect(message.product_id).to eq 1
         expect(message.reported_at).to eq valid_timestamp_datetime
         expect(message.subscribed).to be true

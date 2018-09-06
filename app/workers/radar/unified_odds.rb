@@ -20,6 +20,10 @@ module Radar
         matchers: %w[<alive].freeze,
         klass: OddsFeed::Radar::AliveHandler
       },
+      bet_settlement: {
+        matchers: %w[<bet_settlement].freeze,
+        klass: OddsFeed::Radar::BetSettlementHandler
+      },
       bet_stop: {
         matchers: %w[<bet_stop].freeze,
         klass: OddsFeed::Radar::BetStopHandler
@@ -35,9 +39,8 @@ module Radar
     }.freeze
 
     def work(msg)
-      handler = match_result(msg, scan_payload(msg))
-      raise NotImplementedError if handler.nil?
-      handle(handler)
+      initialized_handler = match_result(msg, scan_payload(msg))
+      handle(initialized_handler)
     end
 
     def handle(handler)
@@ -55,8 +58,8 @@ module Radar
         found = rule_matchers.any? { |matcher| scan_result.include?(matcher) }
         return klass.new(XmlParser.parse(payload)) if found
       end
-      logger.debug 'No worker found for message'
-      nil
+      logger.warn 'No worker found for message'
+      raise NotImplementedError
     end
 
     def scan_payload(payload)

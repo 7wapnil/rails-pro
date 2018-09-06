@@ -18,13 +18,13 @@ module OddsFeed
         market = Market.find_or_initialize_by(external_id: external_id,
                                               event: @event)
         market.assign_attributes(name: transpiler.market_name,
-                                 priority: 1,
                                  status: market_status)
         market.save!
         emit_market_update(market)
         market
       end
 
+      # TODO: use external id generator
       def external_id
         id = "#{@event.external_id}:#{@market_data['id']}"
         specs = specifiers
@@ -55,6 +55,7 @@ module OddsFeed
 
       def status_map
         {
+          '-2': Market::STATUSES[:handed_over],
           '-1': Market::STATUSES[:suspended],
           '0': Market::STATUSES[:inactive],
           '1': Market::STATUSES[:active]

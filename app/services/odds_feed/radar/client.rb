@@ -8,8 +8,7 @@ module OddsFeed
 
       def initialize
         @language = 'en'
-        @options = { headers: { "x-access-token": ENV['RADAR_API_TOKEN'],
-                                "content-type": 'application/xml' } }
+        @options = { headers: { "x-access-token": ENV['RADAR_API_TOKEN'] } }
       end
 
       def who_am_i
