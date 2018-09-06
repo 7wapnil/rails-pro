@@ -1,0 +1,23 @@
+= card header: t(:customer_documents), class: 'customer-documents' do
+  %table.table
+    - Customer::ATTACHMENT_TYPES.each do |attachment_type|
+      - file_exists = @customer.try(attachment_type).attached?
+      - file = file_exists ? @customer.send(attachment_type) : OpenStruct.new(filename: t('No file'))
+      %tr
+        %td= t(attachment_type)
+        %td= file.filename
+        %td
+        %td
+          - if file_exists
+            .dropdown
+              %button#dropdownMenuButton.btn.btn-outline-dark.dropdown-toggle{ aria: { expanded: false, haspopup: true },
+                                                                                   'data-toggle' => 'dropdown',
+                                                                                 type: :button }
+                = t(:action)
+              .dropdown-menu{ 'aria-labelledby' => 'dropdownMenuButton' }
+                = link_to t(:view), rails_blob_path(file), class: 'dropdown-item'
+                = link_to t(:confirm), '#', class: 'dropdown-item disabled'
+                = link_to t(:reject), '#', class: 'dropdown-item disabled'
+          -else
+            %button.btn.btn-outline-dark= t(:upload)
+
