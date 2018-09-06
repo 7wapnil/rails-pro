@@ -63,7 +63,7 @@ module OddsFeed
         Rails.logger.info "Tournament data received: #{data}"
         find_or_create_scope!(external_id: data['betradar_id'],
                               kind: :tournament,
-                              name: data['group_long_name'],
+                              name: tournament_name,
                               title: @event.title)
       end
 
@@ -94,6 +94,10 @@ module OddsFeed
           Rails.logger.info log_msg.squish
         end
         @event.event_scopes << scope
+      end
+
+      def tournament_name
+        tournament_fixture['group_long_name'] || tournament_fixture['name']
       end
     end
   end
