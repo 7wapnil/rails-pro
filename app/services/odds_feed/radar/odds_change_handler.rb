@@ -88,6 +88,7 @@ module OddsFeed
       end
 
       def generate_market!(event, market_data)
+        Rails.logger.info "Generating market for event #{event.external_id}"
         MarketGenerator.new(event, market_data).generate
       end
     end
