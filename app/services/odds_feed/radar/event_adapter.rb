@@ -49,48 +49,42 @@ module OddsFeed
       end
 
       def find_or_create_title!
+        Rails.logger.info "Title data received: #{title_fixture}"
         title = Title
                 .create_with(name: title_fixture['name'])
                 .find_or_create_by!(external_id: title_fixture['id'])
         @event.title = title
-        Rails.logger.info "Title '#{title.name}' attached to event"
       end
 
       def find_or_create_tournament!
         data = tournament_fixture
+        Rails.logger.info "Tournament data received: #{data}"
         tournament = EventScope
-                     .create_with(title: @event.title)
                      .find_or_create_by!(external_id: data['betradar_id'],
                                          kind: :tournament,
-                                         name: data['group_long_name'])
+                                         name: data['group_long_name'],
+                                         title: @event.title)
         @event.event_scopes << tournament
-        Rails.logger.info "Tournament '#{tournament.name}' attached to event"
-      rescue ActiveRecord::RecordInvalid
-        Rails.logger.warn "Invalid tournament data: #{data}"
       end
 
       def find_or_create_season!
+        Rails.logger.info "Season data received: #{season_fixture}"
         season = EventScope
-                 .create_with(title: @event.title)
                  .find_or_create_by!(external_id: season_fixture['id'],
                                      name: season_fixture['name'],
-                                     kind: :season)
+                                     kind: :season,
+                                     title: @event.title)
         @event.event_scopes << season
-        Rails.logger.info "Season '#{season.name}' attached to event"
-      rescue ActiveRecord::RecordInvalid
-        Rails.logger.warn "Invalid season data: #{season_fixture}"
       end
 
       def find_or_create_country!
+        Rails.logger.info "Country data received: #{country_fixture}"
         country = EventScope
-                  .create_with(title: @event.title)
                   .find_or_create_by!(external_id: country_fixture['id'],
                                       name: country_fixture['name'],
-                                      kind: :country)
+                                      kind: :country,
+                                      title: @event.title)
         @event.event_scopes << country
-        Rails.logger.info "Country '#{country.name}' attached to event"
-      rescue ActiveRecord::RecordInvalid
-        Rails.logger.warn "Invalid country data: #{country_fixture}"
       end
     end
   end

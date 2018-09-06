@@ -4,6 +4,7 @@ describe OddsFeed::Radar::EventAdapter do
     XmlParser.parse(file_fixture('radar_event_fixture.xml').read)
   end
   let(:result) { subject.result }
+  let(:title) { create(:title, external_id: 'sr:sport:1', name: 'Soccer') }
 
   subject { OddsFeed::Radar::EventAdapter.new(payload) }
 
@@ -41,11 +42,6 @@ describe OddsFeed::Radar::EventAdapter do
       expect(result.title.id).to eq(existing.id)
       expect(result.title.external_id).to eq('sr:sport:1')
     end
-
-    it 'raises error if title data is invalid' do
-      payload['fixtures_fixture']['fixture']['tournament']['sport'] = {}
-      expect { result }.to raise_error(ActiveRecord::RecordInvalid)
-    end
   end
 
   context 'tournament' do
@@ -60,7 +56,8 @@ describe OddsFeed::Radar::EventAdapter do
       existing = create(:event_scope,
                         name: 'Division 1, Södra',
                         external_id: '4301',
-                        kind: :tournament)
+                        kind: :tournament,
+                        title: title)
       tournament = result.event_scopes.detect(&:tournament?)
       expect(tournament.id).to eq(existing.id)
       expect(tournament.external_id).to eq('4301')
@@ -80,7 +77,8 @@ describe OddsFeed::Radar::EventAdapter do
       existing = create(:event_scope,
                         name: 'Div 1, Sodra 2016',
                         external_id: 'sr:season:12346',
-                        kind: :season)
+                        kind: :season,
+                        title: title)
       season = result.event_scopes.detect(&:season?)
       expect(season.id).to eq(existing.id)
       expect(season.external_id).to eq('sr:season:12346')
@@ -100,7 +98,8 @@ describe OddsFeed::Radar::EventAdapter do
       existing = create(:event_scope,
                         name: 'Sweden',
                         external_id: 'sr:category:9',
-                        kind: :country)
+                        kind: :country,
+                        title: title)
       country = result.event_scopes.detect(&:country?)
       expect(country.id).to eq(existing.id)
       expect(country.external_id).to eq('sr:category:9')
@@ -109,28 +108,24 @@ describe OddsFeed::Radar::EventAdapter do
   end
 
   context 'invalid data' do
-    let(:payload) do
-      payload = XmlParser
-                .parse(file_fixture('radar_event_fixture.xml').read)
+    it 'raises error if title data is invalid' do
+      payload['fixtures_fixture']['fixture']['tournament']['sport'] = {}
+      expect { result }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it 'raises error if tournament data is invalid' do
       payload['fixtures_fixture']['fixture']['tournament_round'] = {}
+      expect { result }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it 'raises error if season data is invalid' do
       payload['fixtures_fixture']['fixture']['season'] = {}
+      expect { result }.to raise_error(ActiveRecord::RecordInvalid)
+    end
+
+    it 'raises error if country data is invalid' do
       payload['fixtures_fixture']['fixture']['tournament']['category'] = {}
-      payload
-    end
-
-    it 'skips tournament if data is invalid' do
-      record = result.event_scopes.detect(&:tournament?)
-      expect(record).to be_nil
-    end
-
-    it 'skips season if data is invalid' do
-      record = result.event_scopes.detect(&:season?)
-      expect(record).to be_nil
-    end
-
-    it 'skips country if data is invalid' do
-      record = result.event_scopes.detect(&:country?)
-      expect(record).to be_nil
+      expect { result }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end
 end
