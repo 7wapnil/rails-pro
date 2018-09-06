@@ -3,6 +3,7 @@
 # available to Rake.
 
 require_relative 'config/application'
+require 'airbrake/sneakers'
 require 'sneakers/tasks'
 
 Rails.application.load_tasks

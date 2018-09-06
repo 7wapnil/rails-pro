@@ -18,38 +18,51 @@ module OddsFeed
           @event = api_event
           event.save!
         end
-
+        update_event_payload!
         notify_websocket
       end
 
       private
 
       def event
-        @event ||= Event.find_by(external_id: payload['event_id'])
+        @event ||= Event.find_by(external_id: external_id)
       end
 
       def api_event
-        @api_event ||= api_client.event(payload['event_id']).result
+        @api_event ||= api_client.event(external_id).result
       end
 
       def payload
         @payload['fixture_change']
       end
 
+      def external_id
+        payload['event_id']
+      end
+
       def log_on_create
-        event_id = payload['event_id']
-        Rails.logger.info("Creating event with external ID #{event_id}")
+        Rails.logger.info("Creating event with external ID #{external_id}")
       end
 
       def log_on_update
-        event_id = payload['event_id']
         change_type = CHANGE_TYPES[payload['change_type']]
         msg = <<-MESSAGE
-          Updating event with external ID #{event_id} \
+          Updating event with external ID #{external_id} \
           on change type '#{change_type}'
         MESSAGE
 
         Rails.logger.info(msg.squish)
+      end
+
+      def update_event_payload!
+        msg = "Updating payload for event ID #{external_id}"
+        Rails.logger.info msg
+
+        event.add_to_payload(
+          producer: { origin: :radar, id: payload['product'] }
+        )
+
+        event.save!
       end
 
       def notify_websocket

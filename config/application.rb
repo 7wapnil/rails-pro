@@ -33,5 +33,10 @@ module Arcanebet
         resource '*', headers: :any, methods: %i[get post options]
       end
     end
+
+    config.after_initialize do
+      Rails.logger = Airbrake::AirbrakeLogger.new(Rails.logger)
+      Rails.logger.airbrake_level = Logger::ERROR
+    end
   end
 end

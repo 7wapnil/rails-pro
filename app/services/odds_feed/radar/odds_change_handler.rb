@@ -3,14 +3,43 @@ module OddsFeed
     class OddsChangeHandler < RadarMessageHandler
       def handle
         ActiveRecord::Base.transaction do
-          handle_message
+          create_or_update_event!
+          touch_event!
         end
+        generate_markets
+        event
       end
 
       private
 
-      def handle_message
-        event = create_or_update_event!
+      def create_or_update_event!
+        if event
+          check_message_time
+        else
+          msg = <<-MESSAGE
+            Event with external ID #{external_id} \
+            not found, creating new
+          MESSAGE
+
+          Rails.logger.info msg.squish
+
+          create_event!
+        end
+      end
+
+      def touch_event!
+        msg = "Updating timestamp and payload for event ID #{external_id}"
+        Rails.logger.info msg
+
+        event.add_to_payload(
+          producer: { origin: :radar, id: event_data['product'] }
+        )
+
+        event.assign_attributes(remote_updated_at: timestamp)
+        event.save!
+      end
+
+      def generate_markets
         event_data['odds']['market'].each do |market_data|
           generate_market!(event, market_data)
         rescue StandardError => e
@@ -23,42 +52,39 @@ module OddsFeed
         @payload['odds_change']
       end
 
+      def event
+        @event ||= Event.find_by(external_id: external_id)
+      end
+
+      def api_event
+        @api_event ||= api_client.event(external_id).result
+      end
+
       def timestamp
         Time.at(event_data['timestamp'].to_i / 1000).utc
       end
 
-      def create_or_update_event!
-        id = event_data['event_id']
-        event = Event.find_by(external_id: id)
-        if event.nil?
-          Rails.logger.info "Event with external ID #{id} not found, create new"
-          event = create_event(id)
-        else
-          check_message_time(event)
-        end
-        Rails.logger.info "Update timestamp for event ID #{id}"
-        event.update_attribute(:updated_at, timestamp)
-        event
+      def external_id
+        event_data['event_id']
       end
 
-      def create_event(external_id)
-        event = request_event(external_id)
+      def create_event!
+        @event = api_event
         event.save!
         WebSocket::Client.instance.emit(WebSocket::Signals::UPDATE_EVENT,
                                         id: event.id.to_s,
                                         name: event.name,
                                         start_at: event.start_at)
-        event
       end
 
-      def request_event(id)
-        api_client.event(id).result
-      end
+      def check_message_time
+        return unless event.remote_updated_at
 
-      def check_message_time(event)
-        last_update = event.updated_at.utc
+        last_update = event.remote_updated_at.utc
+        return if event.remote_updated_at.utc <= timestamp
+
         msg = "Message came at #{timestamp}, but last update was #{last_update}"
-        raise InvalidMessageError, msg if event.updated_at.utc > timestamp
+        raise InvalidMessageError, msg
       end
 
       def generate_market!(event, market_data)
