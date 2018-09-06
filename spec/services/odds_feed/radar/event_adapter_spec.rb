@@ -48,20 +48,20 @@ describe OddsFeed::Radar::EventAdapter do
     it 'creates if not exists in db' do
       tournament = result.event_scopes.detect(&:tournament?)
       expect(tournament).not_to be_nil
-      expect(tournament.external_id).to eq('4301')
-      expect(tournament.name).to eq('Division 1, Södra')
+      expect(tournament.external_id).to eq('sr:tournament:68')
+      expect(tournament.name).to eq('Div 1 Sodra')
     end
 
     it 'loads if exists in db' do
       existing = create(:event_scope,
-                        name: 'Division 1, Södra',
-                        external_id: '4301',
+                        name: 'Div 1 Sodra',
+                        external_id: 'sr:tournament:68',
                         kind: :tournament,
                         title: title)
       tournament = result.event_scopes.detect(&:tournament?)
       expect(tournament.id).to eq(existing.id)
-      expect(tournament.external_id).to eq('4301')
-      expect(tournament.name).to eq('Division 1, Södra')
+      expect(tournament.external_id).to eq('sr:tournament:68')
+      expect(tournament.name).to eq('Div 1 Sodra')
     end
   end
 
@@ -114,8 +114,8 @@ describe OddsFeed::Radar::EventAdapter do
     end
 
     it 'raises error if tournament data is invalid' do
-      payload['fixtures_fixture']['fixture']['tournament_round'] = {}
-      expect { result }.to raise_error(ActiveRecord::RecordInvalid)
+      payload['fixtures_fixture']['fixture']['tournament'] = {}
+      expect { result }.to raise_error(OddsFeed::InvalidMessageError)
     end
 
     it 'raises error if season data is invalid' do

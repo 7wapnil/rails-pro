@@ -17,11 +17,14 @@ module OddsFeed
       end
 
       def title_fixture
-        fixture['tournament']['sport']
+        unless tournament_fixture.present?
+          raise OddsFeed::InvalidMessageError, 'Tournament fixture not found'
+        end
+        tournament_fixture['sport']
       end
 
       def tournament_fixture
-        fixture['tournament_round']
+        fixture['tournament']
       end
 
       def season_fixture
@@ -29,7 +32,10 @@ module OddsFeed
       end
 
       def country_fixture
-        fixture['tournament']['category']
+        unless tournament_fixture.present?
+          raise OddsFeed::InvalidMessageError, 'Tournament fixture not found'
+        end
+        tournament_fixture['category']
       end
 
       def event_attributes
@@ -61,7 +67,7 @@ module OddsFeed
       def find_or_create_tournament!
         data = tournament_fixture
         Rails.logger.info "Tournament data received: #{data}"
-        find_or_create_scope!(external_id: data['betradar_id'],
+        find_or_create_scope!(external_id: data['id'],
                               kind: :tournament,
                               name: tournament_name,
                               title: @event.title)
@@ -97,6 +103,7 @@ module OddsFeed
       end
 
       def tournament_name
+        # Tournament name is taken from field :name
         tournament_fixture['group_long_name'] || tournament_fixture['name']
       end
     end
