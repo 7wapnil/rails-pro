@@ -2,7 +2,7 @@ class Market < ApplicationRecord
   before_validation :define_priority, if: :name_changed?
 
   PRIORITIES_MAP = [
-    { pattern: /^Match winner/, priority: 1 }
+    { pattern: /- winner$/, priority: 1 }
   ].freeze
 
   DEFAULT_PRIORITY = 0
