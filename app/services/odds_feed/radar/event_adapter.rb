@@ -50,41 +50,50 @@ module OddsFeed
 
       def find_or_create_title!
         Rails.logger.info "Title data received: #{title_fixture}"
-        title = Title
-                .create_with(name: title_fixture['name'])
-                .find_or_create_by!(external_id: title_fixture['id'])
-        @event.title = title
+        id = title_fixture['id']
+
+        @event.title = Title.find_or_create_by!(external_id: id) do |title|
+          title.name = title_fixture['name']
+          Rails.logger.info "Creating new title with name '#{title.name}'"
+        end
       end
 
       def find_or_create_tournament!
         data = tournament_fixture
         Rails.logger.info "Tournament data received: #{data}"
-        tournament = EventScope
-                     .find_or_create_by!(external_id: data['betradar_id'],
-                                         kind: :tournament,
-                                         name: data['group_long_name'],
-                                         title: @event.title)
-        @event.event_scopes << tournament
+        find_or_create_scope!(external_id: data['betradar_id'],
+                              kind: :tournament,
+                              name: data['group_long_name'],
+                              title: @event.title)
       end
 
       def find_or_create_season!
         Rails.logger.info "Season data received: #{season_fixture}"
-        season = EventScope
-                 .find_or_create_by!(external_id: season_fixture['id'],
-                                     name: season_fixture['name'],
-                                     kind: :season,
-                                     title: @event.title)
-        @event.event_scopes << season
+        find_or_create_scope!(external_id: season_fixture['id'],
+                              name: season_fixture['name'],
+                              kind: :season,
+                              title: @event.title)
       end
 
       def find_or_create_country!
         Rails.logger.info "Country data received: #{country_fixture}"
-        country = EventScope
-                  .find_or_create_by!(external_id: country_fixture['id'],
-                                      name: country_fixture['name'],
-                                      kind: :country,
-                                      title: @event.title)
-        @event.event_scopes << country
+        find_or_create_scope!(external_id: country_fixture['id'],
+                              name: country_fixture['name'],
+                              kind: :country,
+                              title: @event.title)
+      end
+
+      def find_or_create_scope!(attributes)
+        scope = EventScope.find_or_create_by!(attributes) do |obj|
+          log_msg = <<-MESSAGE
+            Create new scope kind '#{obj.kind}' \
+            with external ID '#{obj.external_id}' \
+            and name '#{obj.name}'
+          MESSAGE
+
+          Rails.logger.info log_msg.squish
+        end
+        @event.event_scopes << scope
       end
     end
   end
