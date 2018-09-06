@@ -1,77 +1,22 @@
 = card header: t(:customer_documents), class: 'customer-documents' do
   %table.table
-    %tr
-      %td= t(:passport)
-      %td= t(:file_name)
-      %td= t(:status)
-      %td
-        .dropdown
-          %button#dropdownMenuButton.btn.btn-outline-dark.dropdown-toggle{ aria: { expanded: false, haspopup: true },
-                                                                           'data-toggle' => 'dropdown',
-                                                                           type: :button }
-            =t(:action)
-          .dropdown-menu{ 'aria-labelledby' => 'dropdownMenuButton' }
-            = link_to t(:view), '#', class: 'dropdown-item'
-            = link_to t(:confirm), '#', class: 'dropdown-item'
-            = link_to t(:reject), '#', class: 'dropdown-item'
-            = link_to t(:upload), '#', class: 'dropdown-item'
-    %tr
-      %td= t(:utility_bill)
-      %td= t(:file_name)
-      %td= t(:status)
-      %td
-        .dropdown
-          %button#dropdownMenuButton.btn.btn-outline-dark.dropdown-toggle{ aria: { expanded: false, haspopup: true },
-                                                                           'data-toggle' => 'dropdown',
-                                                                           type: :button }
-            =t(:action)
-          .dropdown-menu{ 'aria-labelledby' => 'dropdownMenuButton' }
-            = link_to t(:view), '#', class: 'dropdown-item'
-            = link_to t(:confirm), '#', class: 'dropdown-item'
-            = link_to t(:reject), '#', class: 'dropdown-item'
-            = link_to t(:upload), '#', class: 'dropdown-item'
-    %tr
-      %td= t(:bank_statement)
-      %td= t(:file_name)
-      %td= t(:status)
-      %td
-        .dropdown
-          %button#dropdownMenuButton.btn.btn-outline-dark.dropdown-toggle{ aria: { expanded: false, haspopup: true },
-                                                                           'data-toggle' => 'dropdown',
-                                                                           type: :button }
-            =t(:action)
-          .dropdown-menu{ 'aria-labelledby' => 'dropdownMenuButton' }
-            = link_to t(:view), '#', class: 'dropdown-item'
-            = link_to t(:confirm), '#', class: 'dropdown-item'
-            = link_to t(:reject), '#', class: 'dropdown-item'
-            = link_to t(:upload), '#', class: 'dropdown-item'
-    %tr
-      %td= t(:credit_card)
-      %td= t(:file_name)
-      %td= t(:status)
-      %td
-        .dropdown
-          %button#dropdownMenuButton.btn.btn-outline-dark.dropdown-toggle{ aria: { expanded: false, haspopup: true },
-                                                                           'data-toggle' => 'dropdown',
-                                                                           type: :button }
-            =t(:action)
-          .dropdown-menu{ 'aria-labelledby' => 'dropdownMenuButton' }
-            = link_to t(:view), '#', class: 'dropdown-item'
-            = link_to t(:confirm), '#', class: 'dropdown-item'
-            = link_to t(:reject), '#', class: 'dropdown-item'
-            = link_to t(:upload), '#', class: 'dropdown-item'
-    %tr
-      %td= t(:other)
-      %td= t(:file_name)
-      %td= t(:status)
-      %td
-        .dropdown
-          %button#dropdownMenuButton.btn.btn-outline-dark.dropdown-toggle{ aria: { expanded: false, haspopup: true },
-                                                                           'data-toggle' => 'dropdown',
-                                                                           type: :button }
-            =t(:action)
-          .dropdown-menu{ 'aria-labelledby' => 'dropdownMenuButton' }
-            = link_to t(:view), '#', class: 'dropdown-item'
-            = link_to t(:confirm), '#', class: 'dropdown-item'
-            = link_to t(:reject), '#', class: 'dropdown-item'
-            = link_to t(:upload), '#', class: 'dropdown-item'
+    - Customer::ATTACHMENT_TYPES.each do |attachment_type|
+      - file_exists = @customer.try(attachment_type).attached?
+      %tr
+        %td= t(attachment_type)
+        %td= file_exists ? @customer.send(attachment_type).filename : t('No file')
+        %td= t(1)
+        %td
+          - if file_exists
+            .dropdown
+              %button#dropdownMenuButton.btn.btn-outline-dark.dropdown-toggle{ aria: { expanded: false, haspopup: true },
+                                                                                   'data-toggle' => 'dropdown',
+                                                                                 type: :button }
+                = t(:action)
+              .dropdown-menu{ 'aria-labelledby' => 'dropdownMenuButton' }
+                = link_to t(:view), rails_blob_path(@customer.send(attachment_type)), class: 'dropdown-item'
+                = link_to t(:confirm), '#', class: 'dropdown-item disabled'
+                = link_to t(:reject), '#', class: 'dropdown-item disabled'
+          -else
+            %button.btn.btn-outline-dark= t(:upload)
+
