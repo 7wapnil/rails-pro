@@ -17,7 +17,8 @@ module OddsFeed
 
       def event(id)
         route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"
-        EventAdapter.new(request(route))
+        payload = request(route)['fixtures_fixture']['fixture']
+        EventAdapter.new(payload)
       end
 
       def product_recovery_initiate_request(product_code:, after: nil)
