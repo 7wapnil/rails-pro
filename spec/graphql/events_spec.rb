@@ -7,10 +7,12 @@ describe 'GraphQL#events' do
                             variables: variables)
   end
 
+  let(:title) { create(:title, name: 'Counter-Strike') }
+
   describe 'query' do
     context 'basic query' do
       before do
-        create_list(:event, 5)
+        create_list(:event, 5, title: title)
       end
 
       let(:query) { %({ events { id name } }) }
@@ -21,7 +23,7 @@ describe 'GraphQL#events' do
     end
 
     context 'with markets' do
-      let!(:event) { create(:event) }
+      let!(:event) { create(:event, title: title) }
       let!(:market) do
         create(:market, event: event, status: Market::DEFAULT_STATUS)
       end
@@ -56,7 +58,7 @@ describe 'GraphQL#events' do
       end
 
       before do
-        event = create(:event)
+        event = create(:event, title: title)
         allow_any_instance_of(Market).to receive(:define_priority)
         create(:market,
                event: event,
@@ -75,7 +77,7 @@ describe 'GraphQL#events' do
     end
 
     context 'with odds' do
-      let!(:event) { create(:event) }
+      let!(:event) { create(:event, title: title) }
       let!(:market) { create(:market, event: event) }
       let!(:odd) do
         create(:odd, market: market, status: Odd.statuses[:active])

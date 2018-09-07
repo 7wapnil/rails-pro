@@ -10,9 +10,9 @@ module Events
 
     def resolve(_obj, _args)
       Event
-        .where('start_at > ?', Date.yesterday.end_of_day)
+        .where(title: Title.find_by(name: 'Counter-Strike'))
+        .where(start_at: (3.hours.ago..10.hours.from_now))
         .order(:start_at)
-        .all
     end
   end
 end
