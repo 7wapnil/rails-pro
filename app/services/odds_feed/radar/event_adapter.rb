@@ -24,6 +24,10 @@ module OddsFeed
       end
 
       def tournament_fixture
+        unless fixture['tournament'].present?
+          raise OddsFeed::InvalidMessageError,
+                'Tournament fixture must be present'
+        end
         fixture['tournament']
       end
 
