@@ -74,6 +74,7 @@ module OddsFeed
 
       def find_or_create_season!
         Rails.logger.info "Season data received: #{season_fixture}"
+        return unless season_fixture
         find_or_create_scope!(external_id: season_fixture['id'],
                               name: season_fixture['name'],
                               kind: :season,
@@ -82,6 +83,7 @@ module OddsFeed
 
       def find_or_create_country!
         Rails.logger.info "Country data received: #{country_fixture}"
+        return unless country_fixture
         find_or_create_scope!(external_id: country_fixture['id'],
                               name: country_fixture['name'],
                               kind: :country,
