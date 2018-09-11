@@ -8,4 +8,9 @@ namespace :radar do
       Radar::LiveCoverageBookingWorker.new.perform(event_adapter.payload['id'])
     end
   end
+
+  desc 'Update market templates'
+  task update_market_templates: :environment do
+    Radar::MarketsUpdateWorker.new.perform
+  end
 end
