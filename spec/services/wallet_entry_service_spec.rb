@@ -1,4 +1,4 @@
-describe WalletEntry::Service do
+describe WalletEntry::AuthorizationService do
   let(:currency) { create(:currency) }
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
 
@@ -17,20 +17,20 @@ describe WalletEntry::Service do
     end
 
     let(:service) do
-      WalletEntry::Service.new(request)
+      WalletEntry::AuthorizationService.new(request)
     end
 
     context 'success' do
       it 'creates a wallet' do
         expect(Wallet.where(customer: customer).count).to eq 0
-        WalletEntry::Service.call(request)
+        WalletEntry::AuthorizationService.call(request)
         expect(Wallet.where(customer: customer).count).to eq 1
       end
 
       it 'creates a real money balance' do
         expect(Balance.count).to eq 0
 
-        WalletEntry::Service.call(request)
+        WalletEntry::AuthorizationService.call(request)
         balance = Balance
                   .joins(:wallet)
                   .where(wallets: { customer: customer })
@@ -46,7 +46,7 @@ describe WalletEntry::Service do
         Timecop.freeze(time) do
           expect(Entry.count).to eq 0
 
-          WalletEntry::Service.call(request)
+          WalletEntry::AuthorizationService.call(request)
           entry = Entry
                   .joins(:wallet)
                   .where('wallets.customer_id': customer.id)
@@ -62,7 +62,7 @@ describe WalletEntry::Service do
       it 'creates balance entry record' do
         expect(BalanceEntry.count).to eq 0
 
-        WalletEntry::Service.call(request)
+        WalletEntry::AuthorizationService.call(request)
         balance_entry = BalanceEntry
                         .joins(entry: { wallet: :customer })
                         .where(entry: { wallets: { customer: customer } })
@@ -73,16 +73,16 @@ describe WalletEntry::Service do
       end
 
       it 'adds entry amount into wallet' do
-        WalletEntry::Service.call(request)
+        WalletEntry::AuthorizationService.call(request)
         wallet = Wallet.find_by(customer_id: customer.id)
         expect(wallet.amount).to eq request.amount
       end
 
       it 'updates entry request' do
-        expect_any_instance_of(WalletEntry::Service)
+        expect_any_instance_of(WalletEntry::AuthorizationService)
           .not_to receive(:handle_failure)
 
-        WalletEntry::Service.call(request)
+        WalletEntry::AuthorizationService.call(request)
 
         expect(request.succeeded?).to be true
         expect(request.result).not_to be_present
@@ -99,7 +99,7 @@ describe WalletEntry::Service do
       end
 
       it 'returns the created entry' do
-        expect(WalletEntry::Service.call(request)).to be_an Entry
+        expect(WalletEntry::AuthorizationService.call(request)).to be_an Entry
       end
     end
 
@@ -107,10 +107,10 @@ describe WalletEntry::Service do
       before { request.amount = 600 }
 
       it 'updates entry request' do
-        expect_any_instance_of(WalletEntry::Service)
+        expect_any_instance_of(WalletEntry::AuthorizationService)
           .not_to receive(:handle_success)
 
-        WalletEntry::Service.call(request)
+        WalletEntry::AuthorizationService.call(request)
 
         expect(request.failed?).to be true
         expect(request.result['exception_class'])
@@ -126,7 +126,7 @@ describe WalletEntry::Service do
       end
 
       it 'returns nil' do
-        expect(WalletEntry::Service.call(request)).to be_nil
+        expect(WalletEntry::AuthorizationService.call(request)).to be_nil
       end
     end
   end

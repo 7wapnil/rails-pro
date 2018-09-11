@@ -17,7 +17,8 @@ describe BetPlacement::Service do
   end
 
   it 'calls WalletEntry::Service with entry request' do
-    expect(WalletEntry::Service).to receive(:call).with(bet_request)
+    expect(WalletEntry::AuthorizationService)
+      .to receive(:call).with(bet_request)
     subject.call
   end
 

@@ -1,5 +1,5 @@
 module WalletEntry
-  class Service < ApplicationService
+  class AuthorizationService < ApplicationService
     def initialize(request)
       @request = request
       @amount = @request.amount
