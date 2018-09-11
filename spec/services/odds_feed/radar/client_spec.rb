@@ -12,7 +12,7 @@ describe OddsFeed::Radar::Client do
         .and_return(OpenStruct.new(
                       parsed_response: {
                         'fixtures_fixture' => {
-                          'fixture': ''
+                          'fixture' => ''
                         }
                       }
         ))
