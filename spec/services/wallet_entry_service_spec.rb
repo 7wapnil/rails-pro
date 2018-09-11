@@ -42,17 +42,21 @@ describe WalletEntry::Service do
       end
 
       it 'creates a wallet entry' do
-        expect(Entry.count).to eq 0
+        time = Time.local(2008, 9, 1, 12, 0, 0)
+        Timecop.freeze(time) do
+          expect(Entry.count).to eq 0
 
-        WalletEntry::Service.call(request)
-        entry = Entry
-                .joins(:wallet)
-                .where('wallets.customer_id': customer.id)
-                .first
+          WalletEntry::Service.call(request)
+          entry = Entry
+                  .joins(:wallet)
+                  .where('wallets.customer_id': customer.id)
+                  .first
 
-        expect(entry).to be_present
-        expect(entry.amount).to eq request.amount
-        expect(entry.origin).to eq request.origin
+          expect(entry).to be_present
+          expect(entry.amount).to eq request.amount
+          expect(entry.origin).to eq request.origin
+          expect(entry.authorized_at).to eq time
+        end
       end
 
       it 'creates balance entry record' do
