@@ -43,5 +43,39 @@ describe 'GraphQL#markets' do
         expect(result['data']['markets'].count).to eq(5)
       end
     end
+
+    context 'pagination' do
+      let(:query) do
+        %({ markets (
+              eventId: #{event.id},
+              offset: #{offset},
+              limit: #{limit}
+          ) {
+              id
+        } })
+      end
+
+      before do
+        create_list(:market, 5, event: event)
+      end
+
+      context 'limit' do
+        let(:offset) { 0 }
+        let(:limit) { 3 }
+
+        it 'returns limited markets' do
+          expect(result['data']['markets'].count).to eq(3)
+        end
+      end
+
+      context 'offset' do
+        let(:offset) { 4 }
+        let(:limit) { nil }
+
+        it 'returns markets with offset' do
+          expect(result['data']['markets'].count).to eq(1)
+        end
+      end
+    end
   end
 end
