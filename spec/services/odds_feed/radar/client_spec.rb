@@ -9,7 +9,13 @@ describe OddsFeed::Radar::Client do
       allow(subject.class)
         .to receive(:get)
         .with(route, options)
-        .and_return(OpenStruct.new(parsed_response: ''))
+        .and_return(OpenStruct.new(
+                      parsed_response: {
+                        'fixtures_fixture' => {
+                          'fixture' => ''
+                        }
+                      }
+        ))
     end
 
     context 'who am i request' do
