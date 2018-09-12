@@ -1,7 +1,9 @@
 describe OddsFeed::Radar::EventAdapter do
   let(:event_id) { 'sr:match:8696826' }
   let(:payload) do
-    XmlParser.parse(file_fixture('radar_event_fixture.xml').read)
+    XmlParser.parse(
+      file_fixture('radar_event_fixture.xml').read
+    )['fixtures_fixture']['fixture']
   end
   let(:result) { subject.result }
   let(:title) { create(:title, external_id: 'sr:sport:1', name: 'Soccer') }
@@ -10,7 +12,7 @@ describe OddsFeed::Radar::EventAdapter do
 
   it 'returns filled event' do
     expected_payload = {
-      'competitors': payload['fixtures_fixture']['fixture']['competitors']
+      'competitors': payload['competitors']
     }.stringify_keys
 
     expect(result).to be_a(Event)
@@ -25,7 +27,7 @@ describe OddsFeed::Radar::EventAdapter do
   end
 
   it 'raises an error if competitors amount is wrong' do
-    payload['fixtures_fixture']['fixture']['competitors']['competitor']
+    payload['competitors']['competitor']
       .push('Test competitor')
     expect { result }.to raise_error(NotImplementedError)
   end
@@ -109,22 +111,22 @@ describe OddsFeed::Radar::EventAdapter do
 
   context 'invalid data' do
     it 'raises error if title data is invalid' do
-      payload['fixtures_fixture']['fixture']['tournament']['sport'] = {}
+      payload['tournament']['sport'] = {}
       expect { result }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'raises error if tournament data is invalid' do
-      payload['fixtures_fixture']['fixture']['tournament'] = {}
+      payload['tournament'] = {}
       expect { result }.to raise_error(OddsFeed::InvalidMessageError)
     end
 
     it 'raises error if season data is invalid' do
-      payload['fixtures_fixture']['fixture']['season'] = {}
+      payload['season'] = {}
       expect { result }.to raise_error(ActiveRecord::RecordInvalid)
     end
 
     it 'raises error if country data is invalid' do
-      payload['fixtures_fixture']['fixture']['tournament']['category'] = {}
+      payload['tournament']['category'] = {}
       expect { result }.to raise_error(ActiveRecord::RecordInvalid)
     end
   end

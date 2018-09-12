@@ -13,7 +13,7 @@ module OddsFeed
       private
 
       def fixture
-        @payload['fixtures_fixture']['fixture']
+        @payload
       end
 
       def title_fixture
@@ -24,6 +24,10 @@ module OddsFeed
       end
 
       def tournament_fixture
+        unless fixture['tournament'].present?
+          raise OddsFeed::InvalidMessageError,
+                'Tournament fixture must be present'
+        end
         fixture['tournament']
       end
 
@@ -32,15 +36,14 @@ module OddsFeed
       end
 
       def country_fixture
-        unless tournament_fixture.present?
-          raise OddsFeed::InvalidMessageError, 'Tournament fixture not found'
-        end
         tournament_fixture['category']
       end
 
       def event_attributes
+        start_at_field = fixture['start_time'] || fixture['scheduled']
+
         { external_id: fixture['id'],
-          start_at: fixture['start_time'].to_time,
+          start_at: start_at_field.to_time,
           name: event_name,
           description: event_name,
           payload: { competitors: fixture['competitors'] } }
@@ -75,6 +78,12 @@ module OddsFeed
 
       def find_or_create_season!
         Rails.logger.info "Season data received: #{season_fixture}"
+
+        unless season_fixture
+          Rails.logger.info 'Season fixture is missing in payload, exiting'
+          return
+        end
+
         find_or_create_scope!(external_id: season_fixture['id'],
                               name: season_fixture['name'],
                               kind: :season,
@@ -83,6 +92,12 @@ module OddsFeed
 
       def find_or_create_country!
         Rails.logger.info "Country data received: #{country_fixture}"
+
+        unless country_fixture
+          Rails.logger.info 'Country fixture is missing in payload, exiting'
+          return
+        end
+
         find_or_create_scope!(external_id: country_fixture['id'],
                               name: country_fixture['name'],
                               kind: :country,
