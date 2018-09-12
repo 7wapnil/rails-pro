@@ -15,8 +15,7 @@ module OddsFeed
           event.update_from!(api_event)
         else
           log_on_create
-          @event = api_event
-          event.save!
+          create_event!
         end
         update_event_payload!
         notify_websocket
@@ -38,6 +37,12 @@ module OddsFeed
 
       def external_id
         payload['event_id']
+      end
+
+      def create_event!
+        @event = api_event
+        event.save!
+        ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
       end
 
       def log_on_create
