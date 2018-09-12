@@ -125,7 +125,7 @@ describe 'GraphQL#events' do
       end
 
       before do
-        create_list(:event, 5, title: title)
+        create_list(:event_with_odds, 5, title: title)
       end
 
       it 'returns limited events' do
