@@ -4,20 +4,22 @@
       %table.table.table-striped
         %tbody
           - Customer::ATTACHMENT_TYPES.each do |attachment_type|
-            - file_exists = @customer.try(attachment_type).attached?
-            - file = file_exists ? @customer.send(attachment_type).last : OpenStruct.new(filename: t('no_file'))
+            - attachment = attachment_for(@customer, attachment_type)
             %tr
               %td= t(attachment_type)
-              %td= file.filename
+              %td= attachment.filename
               %td.text-right
-                - if file_exists
+                - if attachment.is_a? ActiveStorage::Attachment
                   .dropdown
                     %button#dropdownMenuButton.btn.btn-outline-dark.dropdown-toggle{ aria: { expanded: false, haspopup: true },
                                                                                      'data-toggle' => 'dropdown',
                                                                                    type: :button }
                       = t(:action)
                     .dropdown-menu{ 'aria-labelledby' => 'dropdownMenuButton' }
-                      = link_to t(:view), rails_blob_path(file), class: 'dropdown-item'
+                      = link_to t(:view),
+                                rails_blob_path(attachment),
+                                class: 'dropdown-item',
+                                target: :blank
                       = link_to t(:confirm), '#', class: 'dropdown-item disabled'
                       = link_to t(:reject), '#', class: 'dropdown-item disabled'
                       = link_to t(:history), '#', class: 'dropdown-item disabled'
