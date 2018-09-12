@@ -43,5 +43,25 @@ describe 'GraphQL#markets' do
         expect(result['data']['markets'].count).to eq(5)
       end
     end
+
+    context 'limited result' do
+      let(:limit) { 3 }
+      let(:query) do
+        %({ markets (
+              eventId: #{event.id},
+              limit: #{limit}
+          ) {
+              id
+        } })
+      end
+
+      before do
+        create_list(:market, 5, event: event)
+      end
+
+      it 'returns limited markets' do
+        expect(result['data']['markets'].count).to eq(3)
+      end
+    end
   end
 end

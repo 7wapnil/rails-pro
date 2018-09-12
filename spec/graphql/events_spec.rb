@@ -113,5 +113,24 @@ describe 'GraphQL#events' do
         expect(result['data']['events'].count).to eq(0)
       end
     end
+
+    context 'limited result' do
+      let(:limit) { 3 }
+      let(:query) do
+        %({ events (
+              limit: #{limit}
+          ) {
+              id
+        } })
+      end
+
+      before do
+        create_list(:event, 5, title: title)
+      end
+
+      it 'returns limited events' do
+        expect(result['data']['events'].count).to eq(3)
+      end
+    end
   end
 end
