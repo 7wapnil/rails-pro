@@ -3,7 +3,7 @@ class CustomerAttachmentController < ApiController
 
   respond_to :json
 
-  def customer_attachment_upload
+  def customer_attachment_upload # rubocop:disable Metrics/MethodLength
     error_msg = 'Customer not found from token'
     unless current_customer
       return render(json: { success: false, errors: [error_msg] })
