@@ -1,6 +1,6 @@
 module Events
   class MarketsQuery < ::Base::Resolver
-    include Base::PaginationConcern
+    include Base::Limitable
 
     type !types[Types::MarketType]
 
@@ -19,7 +19,6 @@ module Events
       query = Market
               .where(event_id: event_id)
               .order(priority: :desc)
-              .offset(args[:offset])
               .limit(args[:limit])
       query = query.where(priority: args[:priority]) if args[:priority]
       query.all

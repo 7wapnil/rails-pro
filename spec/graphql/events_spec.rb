@@ -104,10 +104,10 @@ describe 'GraphQL#events' do
       end
     end
 
-    context 'pagination' do
+    context 'limited result' do
+      let(:limit) { 3 }
       let(:query) do
         %({ events (
-              offset: #{offset},
               limit: #{limit}
           ) {
               id
@@ -118,22 +118,8 @@ describe 'GraphQL#events' do
         create_list(:event, 5, title: title)
       end
 
-      context 'limit' do
-        let(:offset) { 0 }
-        let(:limit) { 3 }
-
-        it 'returns limited events' do
-          expect(result['data']['events'].count).to eq(3)
-        end
-      end
-
-      context 'offset' do
-        let(:offset) { 4 }
-        let(:limit) { nil }
-
-        it 'returns events with offset' do
-          expect(result['data']['events'].count).to eq(1)
-        end
+      it 'returns limited events' do
+        expect(result['data']['events'].count).to eq(3)
       end
     end
   end
