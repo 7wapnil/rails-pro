@@ -8,7 +8,6 @@ class CustomerAttachmentController < ApiController
     unless current_customer
       return render(json: { success: false, errors: [error_msg] })
     end
-    render json: { success: true }
 
     Rails.logger.debug("Uploading attachments for customer #{current_customer}")
     Rails.logger.debug("received attachments #{params[:attachments].keys}")
@@ -16,6 +15,8 @@ class CustomerAttachmentController < ApiController
     attachments_from_params.each do |attachment_type, file|
       current_customer.send(attachment_type).attach(file)
     end
+
+    render json: { success: true }
   end
 
   private
