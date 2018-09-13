@@ -8,7 +8,83 @@ describe Event do
 
   it { should delegate_method(:name).to(:title).with_prefix }
 
-  context '#update_from!' do
+  describe '.in_play' do
+    it 'includes started and not finished events that are traded live' do
+      event = create(:event,
+                     start_at: 5.minutes.ago,
+                     end_at: nil,
+                     traded_live: true)
+
+      expect(Event.in_play).to include(event)
+    end
+
+    it 'doesn\'t include not started events' do
+      event = create(:event,
+                     start_at: 5.minutes.from_now,
+                     end_at: nil,
+                     traded_live: true)
+
+      expect(Event.in_play).not_to include(event)
+    end
+
+    it 'doesn\'t include finished events' do
+      event = create(:event,
+                     start_at: 1.hour.ago,
+                     end_at: 5.minutes.ago,
+                     traded_live: true)
+
+      expect(Event.in_play).not_to include(event)
+    end
+
+    it 'doesn\'t include events that are not traded live' do
+      event = create(:event,
+                     start_at: 5.minutes.ago,
+                     end_at: nil,
+                     traded_live: false)
+
+      expect(Event.in_play).not_to include(event)
+    end
+  end
+
+  describe '#in_play?' do
+    it 'is true when started, not finished and is traded live' do
+      event = create(:event,
+                     start_at: 5.minutes.ago,
+                     end_at: nil,
+                     traded_live: true)
+
+      expect(event.in_play?).to be true
+    end
+
+    it 'is false when not started' do
+      event = create(:event,
+                     start_at: 5.minutes.from_now,
+                     end_at: nil,
+                     traded_live: true)
+
+      expect(event.in_play?).not_to be true
+    end
+
+    it 'is false when finished' do
+      event = create(:event,
+                     start_at: 1.hour.ago,
+                     end_at: 5.minutes.ago,
+                     traded_live: true)
+
+      expect(event.in_play?).not_to be true
+    end
+
+    it 'is false when not traded live' do
+      event = create(:event,
+                           start_at: 5.minutes.ago,
+                           end_at: nil,
+                           traded_live: false)
+
+      expect(event.in_play?).not_to be true
+    end
+  end
+
+  describe '#update_from!' do
     let(:updatable_attributes) do
       {
         name: 'Foo vs Bar',
