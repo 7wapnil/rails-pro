@@ -1,5 +1,5 @@
 module WalletEntry
-  class Service < ApplicationService
+  class AuthorizationService < ApplicationService
     def initialize(request)
       @request = request
       @amount = @request.amount
@@ -28,7 +28,8 @@ module WalletEntry
         wallet_id: @wallet.id,
         origin: @request.origin,
         kind: @request.kind,
-        amount: @amount
+        amount: @amount,
+        authorized_at: Time.zone.now
       )
 
       BalanceEntry.create!(
