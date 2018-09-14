@@ -38,7 +38,7 @@ describe 'Customers#account_management' do
     end
 
     it 'creates new customer entry request' do
-      allow(EntryRequestProcessingJob).to receive(:perform_later)
+      allow(EntryRequestProcessingWorker).to receive(:perform_async)
 
       currency = create(:currency)
       create(:entry_currency_rule, currency: currency, kind: :deposit)
