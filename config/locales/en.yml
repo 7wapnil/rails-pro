@@ -104,7 +104,7 @@ en:
     origin_name: Origin name
     info: Info
     currency: Currency
-    currency: Authorized at
+    authorized_at: Authorized at
 
 
   time:
