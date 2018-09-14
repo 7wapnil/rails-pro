@@ -14,9 +14,14 @@ Rails.application.routes.draw do
       get :account_management
       get :activity
       get :notes
-      get :documents
       post :update_labels
       post :upload_documents
+      scope '/documents' do
+        root to: 'customers#documents', as: :documents
+        get '/:document_type',
+            to: 'customers#documents_history',
+            as: :documents_history
+      end
     end
   end
 

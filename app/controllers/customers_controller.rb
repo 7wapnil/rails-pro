@@ -34,6 +34,15 @@ class CustomersController < ApplicationController
     @customer = find_customer
   end
 
+  def documents_history
+    @customer = find_customer
+    type_included = Customer::ATTACHMENT_TYPES.include?(
+      params[:document_type].to_sym
+    )
+    raise ArgumentError unless type_included
+    @files = @customer.public_send(params[:document_type])
+  end
+
   def upload_documents
     @customer = find_customer
     documents_from_params.each do |attachment_type, file|
