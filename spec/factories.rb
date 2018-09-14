@@ -175,6 +175,18 @@ FactoryBot.define do
     remote_updated_at { Time.zone.now }
     external_id ''
     payload { {} }
+
+    factory :event_with_market do
+      after(:create) do |event|
+        create(:market, event: event)
+      end
+    end
+
+    factory :event_with_odds do
+      after(:create) do |event|
+        create_list(:odd, 2, market: create(:market, event: event))
+      end
+    end
   end
 
   factory :market do

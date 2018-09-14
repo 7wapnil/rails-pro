@@ -17,7 +17,23 @@ module OddsFeed
 
       def event(id)
         route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"
-        EventAdapter.new(request(route))
+        payload = request(route)['fixtures_fixture']['fixture']
+        EventAdapter.new(payload)
+      end
+
+      def events_to_date(date)
+        formatted_date = date.to_s
+        route = "/sports/#{@language}/schedules/#{formatted_date}/schedule.xml"
+        response = request(route)
+        events_payload = response['schedule']['sport_event']
+        events_payload.map do |event_payload|
+          EventAdapter.new(event_payload)
+        end
+      end
+
+      def book_live_coverage(id)
+        route = "/liveodds/booking-calendar/events/#{id}/book"
+        request(route, method: :post)
       end
 
       def product_recovery_initiate_request(product_code:, after: nil)

@@ -11,6 +11,9 @@ en:
   confirm: Confirm
   confirm_sure: Are you sure?
 
+  upload: Upload
+  no_file: No File
+
   created: "%{instance} created"
   updated: "%{instance} updated"
   deleted: "%{instance} deleted"
