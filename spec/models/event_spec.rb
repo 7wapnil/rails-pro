@@ -76,9 +76,9 @@ describe Event do
 
     it 'is false when not traded live' do
       event = create(:event,
-                           start_at: 5.minutes.ago,
-                           end_at: nil,
-                           traded_live: false)
+                     start_at: 5.minutes.ago,
+                     end_at: nil,
+                     traded_live: false)
 
       expect(event.in_play?).not_to be true
     end
