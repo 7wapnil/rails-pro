@@ -28,4 +28,9 @@ class Bet < ApplicationRecord
             allow_nil: true
 
   delegate :market, to: :odd
+
+  def outcome_amount
+    # TODO: Confirm rounding
+    amount * odd_value * void_factor
+  end
 end
