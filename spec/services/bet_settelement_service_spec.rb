@@ -1,9 +1,11 @@
 describe BetSettelement::Service do
   describe 'behaves like a service' do
-    subject { described_class }
-
     it 'is callable with one argument' do
-      expect(subject).to respond_to(:call).with(1).argument
+      expect(described_class).to respond_to(:call).with(1).argument
+    end
+
+    it 'responds to handle method' do
+      expect( described_class.new(double()) ).to respond_to(:handle).with(0).argument
     end
   end
 

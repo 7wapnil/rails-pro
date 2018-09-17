@@ -3,5 +3,9 @@ module BetSettelement
     def initialize(bet)
       @bet = bet
     end
+
+    def handle
+      raise NotImplementedError
+    end
   end
 end
