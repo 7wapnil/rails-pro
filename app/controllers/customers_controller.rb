@@ -36,11 +36,13 @@ class CustomersController < ApplicationController
 
   def documents_history
     @customer = find_customer
+    @document_type = document_type_params[:document_type]
     type_included = Customer::ATTACHMENT_TYPES.include?(
-      params[:document_type].to_sym
+      @document_type.to_sym
     )
     raise ArgumentError unless type_included
-    @files = @customer.public_send(params[:document_type])
+
+    @files = @customer.send(@document_type)
   end
 
   def upload_documents
@@ -73,5 +75,9 @@ class CustomersController < ApplicationController
   def documents_from_params
     params
       .permit(*Customer::ATTACHMENT_TYPES)
+  end
+
+  def document_type_params
+    params.permit(:document_type)
   end
 end

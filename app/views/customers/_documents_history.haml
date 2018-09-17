@@ -1,4 +1,6 @@
-= card header: t(:files_history), class: 'customer-documents' do
+= card header: t('documents.history_title',
+       document_type: t("attributes.#{@document_type}")),
+       class: 'customer-documents' do
   %table.table.table-striped
     %tbody
       - @files.each do |file|

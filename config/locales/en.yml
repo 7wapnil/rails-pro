@@ -103,6 +103,14 @@ en:
     origin_id: Origin ID
     origin_name: Origin name
     info: Info
+    personal_ids: Personal Id's
+    utility_bills: Utility Bills
+    bank_statements: Bank Statements
+    credit_cards: Credit Cards
+    other_documents: Other Documents
+
+  documents:
+    history_title: "Files history: %{document_type}"
 
   time:
     formats:
