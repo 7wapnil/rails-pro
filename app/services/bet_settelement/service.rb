@@ -5,7 +5,9 @@ module BetSettelement
     end
 
     def handle
-      return handle_unexpected_bet unless  @bet.settled?
+      unless @bet.settled? && @bet.result == true
+        return handle_unexpected_bet
+      end
 
       create_entry_request
       send_entry_request_for_wallet_authorization

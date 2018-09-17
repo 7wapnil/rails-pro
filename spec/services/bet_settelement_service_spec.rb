@@ -21,24 +21,38 @@ describe BetSettelement::Service do
   end
 
   describe 'handle' do
-    context 'unexpected bet' do
-      let(:invalid_bet) { create(:bet, :pending) }
+    describe 'unexpected bet' do
+      context 'pending bet' do
+        let(:invalid_bet) { create(:bet, :pending) }
 
-      subject { described_class.new(invalid_bet) }
+        subject { described_class.new(invalid_bet) }
 
-      it 'ignores unexpected bet state' do
-        allow(subject).to receive(:handle_unexpected_bet)
-        subject.handle
-        expect(subject).to have_received(:handle_unexpected_bet)
+        it 'ignores unexpected bet state' do
+          allow(subject).to receive(:handle_unexpected_bet)
+          subject.handle
+          expect(subject).to have_received(:handle_unexpected_bet)
+        end
+      end
+
+      context 'lose bet' do
+        let(:lose_bet) { create(:bet, :settled, result: false) }
+
+        subject { described_class.new(lose_bet) }
+
+        it 'ignores lose bet state' do
+          allow(subject).to receive(:handle_unexpected_bet)
+          subject.handle
+          expect(subject).to have_received(:handle_unexpected_bet)
+        end
       end
     end
 
     context 'settled bet' do
-      let(:bet) { create(:bet, :settled) }
+      let(:bet) { create(:bet, :settled, :win) }
 
       subject { described_class.new(bet) }
 
-      it 'handles settled bet' do
+      it 'handles settled win bet' do
         allow(subject).to receive(:handle_unexpected_bet)
 
         allow(subject).to receive(:create_entry_request)
