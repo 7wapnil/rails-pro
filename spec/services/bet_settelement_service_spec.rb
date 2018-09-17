@@ -48,20 +48,43 @@ describe BetSettelement::Service do
     end
 
     context 'settled bet' do
-      let(:bet) { create(:bet, :settled, :win) }
+      let!(:initiator) { create(:user, email: 'api@arcanebet.com') }
+      let(:bet) { create(:bet, :settled, :win, void_factor: 1) }
 
       subject { described_class.new(bet) }
 
       it 'handles settled win bet' do
         allow(subject).to receive(:handle_unexpected_bet)
 
-        allow(subject).to receive(:create_entry_request)
-        allow(subject).to receive(:send_entry_request_for_wallet_authorization)
+        allow(subject).to receive(:prepare_entry_request)
+        allow(subject).to receive(:prepare_wallet_entries)
 
         subject.handle
         expect(subject).not_to have_received(:handle_unexpected_bet)
-        expect(subject).to have_received(:create_entry_request)
-        expect(subject).to have_received(:send_entry_request_for_wallet_authorization)
+        expect(subject).to have_received(:prepare_entry_request)
+        expect(subject).to have_received(:prepare_wallet_entries)
+      end
+
+      let(:entry_request) { subject.instance_variable_get(:@entry_request) }
+
+      it 'creates EntryRequest from bet' do
+        allow(subject).to receive(:prepare_wallet_entries)
+
+        subject.handle
+
+        expect(entry_request).to be_an EntryRequest
+        {
+          amount: bet.outcome_amount,
+          currency: bet.currency,
+          kind: 'win',
+          mode: 'sports_ticket',
+          initiator: initiator,
+          comment: 'Automatic message',
+          customer: bet.customer,
+          origin: bet
+        }.each do |key, value|
+          expect(entry_request.send(key)).to eq(value)
+        end
       end
     end
   end
@@ -70,9 +93,6 @@ describe BetSettelement::Service do
     xit 'handles unexpected bet'
   end
 
-  describe 'create_entry_request' do
-    xit 'creates EntryRequest'
-  end
 
   describe 'send_entry_request_for_wallet_authorization' do
     xit 'passes entry request to wallet authorization service'
