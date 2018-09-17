@@ -45,4 +45,13 @@ describe BetSettelement::Service do
       end
     end
   end
+
+  describe 'handle_unexpected_bet' do
+    xit 'handles unexpected bet'
+  end
+
+  describe 'handle_bet' do
+    xit 'creates EntryRequest'
+    xit 'passes entry request to wallet authorization service'
+  end
 end
