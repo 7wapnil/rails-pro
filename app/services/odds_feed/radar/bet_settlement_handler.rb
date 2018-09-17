@@ -10,8 +10,9 @@ module OddsFeed
                                        market_id: market['id'],
                                        specs: market['specs'],
                                        outcome_id: outcome['id'])
+            external_id = generator.generate
 
-            update_odd(generator.generate, outcome)
+            update_bets(external_id, outcome)
           end
         end
       end
@@ -32,19 +33,19 @@ module OddsFeed
         Array.wrap(input_data['outcomes']['market'])
       end
 
-      def update_odd(external_id, outcome)
+      def update_bets(external_id, outcome)
         Rails.logger.info "Settling bets for odd with EID #{external_id}"
 
-        query = build_query(external_id)
-        query.update_all(status: Bet.statuses[:settled],
-                         result: outcome['result'] == '1',
-                         void_factor: outcome['void_factor'])
-        Rails.logger.info "#{query.count} bets settled"
+        bets = bets_by_external_id(external_id)
+        bets.update_all(status: Bet.statuses[:settled],
+                        result: outcome['result'] == '1',
+                        void_factor: outcome['void_factor'])
+        Rails.logger.info "#{bets.count} bets settled"
 
-        query.find_in_batches { |batch| emit_websocket_signals(batch) }
+        bets.find_in_batches { |batch| emit_websocket_signals(batch) }
       end
 
-      def build_query(external_id)
+      def bets_by_external_id(external_id)
         Bet
           .joins(:odd)
           .where(odds: { external_id: external_id })
