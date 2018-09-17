@@ -103,6 +103,9 @@ en:
     origin_id: Origin ID
     origin_name: Origin name
     info: Info
+    currency: Currency
+    authorized_at: Authorized at
+
 
   time:
     formats:
