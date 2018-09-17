@@ -34,7 +34,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
   end
 
   context 'winning bets settlement processing' do
-    let!(:winning_bets_set) do
+    let!(:odd_bets) do
       set = []
 
       odd.update(value: 6.52)
@@ -65,8 +65,8 @@ describe OddsFeed::Radar::BetSettlementHandler do
     it 'settles odd bets with result and void factor' do
       expected_result = Bet.where(status: Bet.statuses[:settled],
                                   result: true,
-                                  void_factor: 0.5)
-      expect(expected_result.to_a).to match_array(winning_bets_set)
+                                  void_factor: 0.5).to_a
+      expect(expected_result).to match_array(odd_bets)
     end
   end
 
