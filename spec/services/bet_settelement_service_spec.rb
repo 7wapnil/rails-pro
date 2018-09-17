@@ -39,9 +39,15 @@ describe BetSettelement::Service do
       subject { described_class.new(bet) }
 
       it 'handles settled bet' do
-        allow(subject).to receive(:handle_bet)
+        allow(subject).to receive(:handle_unexpected_bet)
+
+        allow(subject).to receive(:create_entry_request)
+        allow(subject).to receive(:send_entry_request_for_wallet_authorization)
+
         subject.handle
-        expect(subject).to have_received(:handle_bet)
+        expect(subject).not_to have_received(:handle_unexpected_bet)
+        expect(subject).to have_received(:create_entry_request)
+        expect(subject).to have_received(:send_entry_request_for_wallet_authorization)
       end
     end
   end
@@ -50,8 +56,11 @@ describe BetSettelement::Service do
     xit 'handles unexpected bet'
   end
 
-  describe 'handle_bet' do
+  describe 'create_entry_request' do
     xit 'creates EntryRequest'
+  end
+
+  describe 'send_entry_request_for_wallet_authorization' do
     xit 'passes entry request to wallet authorization service'
   end
 end

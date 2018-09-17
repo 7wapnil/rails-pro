@@ -5,15 +5,23 @@ module BetSettelement
     end
 
     def handle
-      @bet.settled? ? handle_bet : handle_unexpected_bet
+      return handle_unexpected_bet unless  @bet.settled?
+
+      create_entry_request
+      send_entry_request_for_wallet_authorization
     end
 
     private
 
     def handle_unexpected_bet; end
 
-    def handle_bet
+    def create_entry_request
       raise NotImplementedError
     end
+
+    def send_entry_request_for_wallet_authorization
+      raise NotImplementedError
+    end
+
   end
 end
