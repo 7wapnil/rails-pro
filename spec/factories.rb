@@ -60,6 +60,10 @@ FactoryBot.define do
     trait :pending do
       status Bet.statuses[:pending]
     end
+
+    trait :settled do
+      status Bet.statuses[:settled]
+    end
   end
 
   # System
