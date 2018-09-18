@@ -95,7 +95,6 @@ describe BetSettelement::Service do
     xit 'handles unexpected bet'
   end
 
-
   describe 'send_entry_request_for_wallet_authorization' do
     xit 'passes entry request to wallet authorization service'
   end
