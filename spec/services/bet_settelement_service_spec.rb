@@ -49,6 +49,7 @@ describe BetSettelement::Service do
 
     context 'settled bet' do
       let(:bet) { create(:bet, :settled, :win, void_factor: 1) }
+      let(:entry_request) { subject.instance_variable_get(:@entry_request) }
 
       subject { described_class.new(bet) }
 
@@ -63,8 +64,6 @@ describe BetSettelement::Service do
         expect(subject).to have_received(:generate_requests)
         expect(subject).to have_received(:apply_requests)
       end
-
-      let(:entry_request) { subject.instance_variable_get(:@entry_request) }
 
       it 'creates EntryRequest from bet' do
         allow(subject).to receive(:apply_requests)
