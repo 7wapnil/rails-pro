@@ -34,8 +34,8 @@ module BetSettelement
       )
     end
 
-    def prepare_wallet_entries
-      raise NotImplementedError
+    def apply_requests
+      WalletEntry::AuthorizationService.call(@entry_request)
     end
   end
 end

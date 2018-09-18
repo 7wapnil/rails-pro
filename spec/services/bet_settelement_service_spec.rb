@@ -85,14 +85,19 @@ describe BetSettelement::Service do
             .to be_within(0.01).of(bet.outcome_amount)
         end
       end
+
+      it 'passes entry request to wallet authorization service' do
+        allow(WalletEntry::AuthorizationService).to receive(:call)
+
+        subject.handle
+
+        expect(WalletEntry::AuthorizationService)
+          .to have_received(:call).with(entry_request).exactly(1).times
+      end
     end
   end
 
   describe 'handle_unexpected_bet' do
     xit 'handles unexpected bet'
-  end
-
-  describe 'send_entry_request_for_wallet_authorization' do
-    xit 'passes entry request to wallet authorization service'
   end
 end
