@@ -34,6 +34,7 @@ FactoryBot.define do
     wallet
     kind { EntryRequest.kinds.keys.first }
     amount { Faker::Number.decimal(3, 2) }
+    authorized_at nil
   end
 
   factory :balance do

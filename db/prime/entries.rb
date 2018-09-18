@@ -14,7 +14,7 @@ class EntriesPrimer
       comment: 'Prime data'
     )
 
-    WalletEntry::Service.call(request)
+    WalletEntry::AuthorizationService.call(request)
   end
 end
 

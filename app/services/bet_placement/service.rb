@@ -8,7 +8,7 @@ module BetPlacement
     end
 
     def call
-      @entry = WalletEntry::Service.call(entry_request)
+      @entry = WalletEntry::AuthorizationService.call(entry_request)
       update_bet_from_request!
       @bet
     end

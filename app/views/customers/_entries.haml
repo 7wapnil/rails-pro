@@ -2,12 +2,19 @@
   - if @entries.any?
     %table.table.table-hover
       %tbody
+        %thead
+          %th= t('attributes.created_at')
+          %th= t('attributes.kind')
+          %th= t('attributes.amount')
+          %th= t('attributes.currency')
+          %th= t('attributes.authorized_at')
         - @entries.each do |entry|
           %tr
             %td= l entry.created_at, format: :long
             %td= entry.kind
             %td= entry.amount
             %td= entry.wallet.currency_code
+            %td= entry.authorized_at ? (l entry.authorized_at, format: :long) : ''
   - else
     .text-center
       %em= t(:no_records)

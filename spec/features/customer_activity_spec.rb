@@ -12,13 +12,24 @@ describe 'Customers#activity' do
       expect_to_have_section 'activity'
     end
 
+    let(:authorization_time) { Time.zone.local(2018, 9, 11, 16, 29, 16) }
+    let(:authorization_time_formatted) { '11 September 2018 16:29:16' }
+
     it 'shows available entries' do
       wallet = create(:wallet, customer: customer)
       rule = create(:entry_currency_rule,
                     currency: wallet.currency,
                     min_amount: 10,
                     max_amount: 500)
-      create_list(:entry, 10, wallet: wallet, kind: rule.kind, amount: 100)
+
+      create_list(
+        :entry,
+        10,
+        wallet: wallet,
+        kind: rule.kind,
+        amount: 100,
+        authorized_at: authorization_time
+      )
 
       visit page_path
 
@@ -27,6 +38,7 @@ describe 'Customers#activity' do
           expect(page).to have_content entry.kind
           expect(page).to have_content entry.amount
           expect(page).to have_content entry.wallet.currency_code
+          expect(page).to have_content authorization_time_formatted
         end
       end
     end

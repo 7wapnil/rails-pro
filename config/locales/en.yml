@@ -108,6 +108,8 @@ en:
     bank_statements: Bank Statements
     credit_cards: Credit Cards
     other_documents: Other Documents
+    currency: Currency
+    authorized_at: Authorized at
 
   documents:
     history_title: "Files history: %{document_type}"
