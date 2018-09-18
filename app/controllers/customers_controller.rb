@@ -5,18 +5,18 @@ class CustomersController < ApplicationController
   end
 
   def show
-    @customer = Customer.find(params[:id])
+    @customer = find_customer
     @labels = Label.all
   end
 
   def account_management
-    @customer = Customer.find(params[:id])
+    @customer = find_customer
     @entry_request = EntryRequest.new(customer: @customer)
     @entry_requests = @customer.entry_requests.page(params[:page])
   end
 
   def activity
-    @customer = Customer.find(params[:id])
+    @customer = find_customer
     @entries = @customer.entries.page(params[:page])
     @audit_logs = AuditLog
                   .where(origin_kind: :customer,
@@ -25,17 +25,25 @@ class CustomersController < ApplicationController
   end
 
   def notes
-    @customer = Customer.find(params[:id])
+    @customer = find_customer
     @note = CustomerNote.new(customer: @customer)
     @customer_notes = @customer.customer_notes.page(params[:page]).per(5)
   end
 
   def documents
-    @customer = Customer.find(params[:id])
+    @customer = find_customer
+  end
+
+  def upload_documents
+    @customer = find_customer
+    documents_from_params.each do |attachment_type, file|
+      @customer.send(attachment_type).attach(file)
+    end
+    redirect_to documents_customer_path(@customer)
   end
 
   def update_labels
-    customer = Customer.find(params[:id])
+    customer = find_customer
     if labels_params[:ids].include? '0'
       customer.labels.clear
     else
@@ -49,7 +57,12 @@ class CustomersController < ApplicationController
     params.require(:labels).permit(ids: [])
   end
 
-  def customer_attachment_upload_params
-    params.require(:customer).permit(:id, :customer_attachment)
+  def find_customer
+    Customer.find(params[:id])
+  end
+
+  def documents_from_params
+    params
+      .permit(*Customer::ATTACHMENT_TYPES)
   end
 end

@@ -161,6 +161,7 @@ ActiveRecord::Schema.define(version: 2018_09_12_070005) do
     t.datetime "updated_at", null: false
     t.string "origin_type"
     t.bigint "origin_id"
+    t.datetime "authorized_at"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
   end
