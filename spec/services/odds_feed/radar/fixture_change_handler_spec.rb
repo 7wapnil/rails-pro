@@ -35,12 +35,9 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     end
 
     it 'sends notification to websocket server' do
-      event = api_event
-
       expect(WebSocket::Client.instance)
         .to receive(:emit)
-        .with(WebSocket::Signals::UPDATE_EVENT,
-              hash_including(name: event.name, start_at: event.start_at))
+        .with(WebSocket::Signals::EVENT_UPDATED, anything)
     end
 
     it 'adds producer info to payload' do
@@ -70,8 +67,7 @@ describe OddsFeed::Radar::FixtureChangeHandler do
 
       expect(WebSocket::Client.instance)
         .to receive(:emit)
-        .with(WebSocket::Signals::UPDATE_EVENT,
-              hash_including(name: event.name, start_at: event.start_at))
+        .with(WebSocket::Signals::EVENT_UPDATED, anything)
     end
 
     it 'adds producer info to payload' do

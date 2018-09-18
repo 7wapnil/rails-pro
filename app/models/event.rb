@@ -1,4 +1,7 @@
 class Event < ApplicationRecord
+  after_create :emit_created
+  after_update :emit_updated
+
   UPDATABLE_ATTRIBUTES = %w[name description start_at end_at].freeze
 
   belongs_to :title
@@ -39,5 +42,20 @@ class Event < ApplicationRecord
     return unless addition
     payload&.merge!(addition)
     self.payload = addition unless payload
+  end
+
+  def emit_created
+    WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_CREATED,
+                                    id: id)
+  end
+
+  def emit_updated
+    changes = {}
+    previous_changes.each do |attr, changed|
+      changes[attr.to_sym] = changed[1] unless attr == 'updated_at'
+    end
+    WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
+                                    id: id,
+                                    changes: changes)
   end
 end

@@ -19,7 +19,6 @@ module OddsFeed
           event.save!
         end
         update_event_payload!
-        notify_websocket
       end
 
       private
@@ -63,15 +62,6 @@ module OddsFeed
         )
 
         event.save!
-      end
-
-      def notify_websocket
-        WebSocket::Client.instance.emit(
-          WebSocket::Signals::UPDATE_EVENT,
-          id: event.id.to_s,
-          name: event.name,
-          start_at: event.start_at
-        )
       end
     end
   end

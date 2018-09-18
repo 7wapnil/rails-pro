@@ -65,4 +65,26 @@ describe Event do
       expect(event.payload).to eq initial_payload
     end
   end
+
+  context 'callbacks' do
+    it 'emits web socket event on create' do
+      event = create(:event)
+      expect(WebSocket::Client.instance)
+        .to have_received(:emit)
+        .with(WebSocket::Signals::EVENT_CREATED,
+              id: event.id)
+    end
+
+    it 'emits web socket event on update' do
+      allow_any_instance_of(Event).to receive(:emit_created)
+      event = create(:event)
+      event.assign_attributes(name: 'New name')
+      event.save!
+      expect(WebSocket::Client.instance)
+        .to have_received(:emit)
+        .with(WebSocket::Signals::EVENT_UPDATED,
+              id: event.id,
+              changes: { name: 'New name' })
+    end
+  end
 end

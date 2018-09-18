@@ -71,10 +71,6 @@ module OddsFeed
       def create_event!
         @event = api_event
         event.save!
-        WebSocket::Client.instance.emit(WebSocket::Signals::UPDATE_EVENT,
-                                        id: event.id.to_s,
-                                        name: event.name,
-                                        start_at: event.start_at)
       end
 
       def check_message_time
