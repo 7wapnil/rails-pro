@@ -3,11 +3,11 @@
     %table.table.table-hover
       %tbody
         %thead
-          %th= t(:created_at)
-          %th= t(:kind)
-          %th= t(:amount)
-          %th= t(:currency)
-          %th= t(:authorized_at)
+          %th= t('attributes.created_at')
+          %th= t('attributes.kind')
+          %th= t('attributes.amount')
+          %th= t('attributes.currency')
+          %th= t('attributes.authorized_at')
         - @entries.each do |entry|
           %tr
             %td= l entry.created_at, format: :long
