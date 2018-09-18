@@ -50,8 +50,8 @@ describe OddsFeed::Radar::MarketGenerator do
       expect(WebSocket::Client.instance)
         .to have_received(:emit)
         .with(WebSocket::Signals::MARKET_CREATED,
-              id: market.id,
-              eventId: market.event.id)
+              id: market.id.to_s,
+              eventId: market.event.id.to_s)
     end
 
     it 'updates market if exists in db' do
@@ -101,9 +101,9 @@ describe OddsFeed::Radar::MarketGenerator do
       expect(WebSocket::Client.instance)
         .to have_received(:emit)
         .with(WebSocket::Signals::ODD_CREATED,
-              id: odd.id,
-              marketId: odd.market.id,
-              eventId: odd.market.event.id)
+              id: odd.id.to_s,
+              marketId: odd.market.id.to_s,
+              eventId: odd.market.event.id.to_s)
     end
 
     it 'updates odds if exist in db' do

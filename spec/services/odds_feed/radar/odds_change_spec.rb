@@ -51,7 +51,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
     created_event = Event.find_by!(external_id: event_id)
     expect(WebSocket::Client.instance)
       .to have_received(:emit)
-      .with(WebSocket::Signals::EVENT_CREATED, id: created_event.id)
+      .with(WebSocket::Signals::EVENT_CREATED, id: created_event.id.to_s)
   end
 
   it 'calls market generator for every market data row' do

@@ -46,7 +46,7 @@ class Event < ApplicationRecord
 
   def emit_created
     WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_CREATED,
-                                    id: id)
+                                    id: id.to_s)
   end
 
   def emit_updated
@@ -55,7 +55,7 @@ class Event < ApplicationRecord
       changes[attr.to_sym] = changed[1] unless attr == 'updated_at'
     end
     WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
-                                    id: id,
+                                    id: id.to_s,
                                     changes: changes)
   end
 end

@@ -87,8 +87,8 @@ describe Market do
     expect(WebSocket::Client.instance)
       .to have_received(:emit)
       .with(WebSocket::Signals::MARKET_CREATED,
-            id: market.id,
-            eventId: market.event_id)
+            id: market.id.to_s,
+            eventId: market.event_id.to_s)
   end
 
   it 'emits web socket event on update' do
@@ -100,8 +100,8 @@ describe Market do
     expect(WebSocket::Client.instance)
       .to have_received(:emit)
       .with(WebSocket::Signals::MARKET_UPDATED,
-            id: market.id,
-            eventId: market.event_id,
+            id: market.id.to_s,
+            eventId: market.event_id.to_s,
             changes: {
               name: 'New name',
               status: 'active'

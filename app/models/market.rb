@@ -44,8 +44,8 @@ class Market < ApplicationRecord
 
   def emit_created
     WebSocket::Client.instance.emit(WebSocket::Signals::MARKET_CREATED,
-                                    id: id,
-                                    eventId: event_id)
+                                    id: id.to_s,
+                                    eventId: event_id.to_s)
   end
 
   def emit_updated
@@ -54,8 +54,8 @@ class Market < ApplicationRecord
       changes[attr.to_sym] = changed[1] if %w[name status].include?(attr)
     end
     WebSocket::Client.instance.emit(WebSocket::Signals::MARKET_UPDATED,
-                                    id: id,
-                                    eventId: event_id,
+                                    id: id.to_s,
+                                    eventId: event_id.to_s,
                                     changes: changes)
   end
 

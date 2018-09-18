@@ -72,7 +72,7 @@ describe Event do
       expect(WebSocket::Client.instance)
         .to have_received(:emit)
         .with(WebSocket::Signals::EVENT_CREATED,
-              id: event.id)
+              id: event.id.to_s)
     end
 
     it 'emits web socket event on update' do
@@ -83,7 +83,7 @@ describe Event do
       expect(WebSocket::Client.instance)
         .to have_received(:emit)
         .with(WebSocket::Signals::EVENT_UPDATED,
-              id: event.id,
+              id: event.id.to_s,
               changes: { name: 'New name' })
     end
   end

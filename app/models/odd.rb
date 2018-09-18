@@ -14,9 +14,9 @@ class Odd < ApplicationRecord
 
   def emit_created
     WebSocket::Client.instance.emit(WebSocket::Signals::ODD_CREATED,
-                                    id: id,
-                                    marketId: market.id,
-                                    eventId: market.event_id)
+                                    id: id.to_s,
+                                    marketId: market.id.to_s,
+                                    eventId: market.event_id.to_s)
   end
 
   def emit_updated
@@ -25,9 +25,9 @@ class Odd < ApplicationRecord
       changes[attr.to_sym] = changed[1] unless attr == 'updated_at'
     end
     WebSocket::Client.instance.emit(WebSocket::Signals::ODD_UPDATED,
-                                    id: id,
-                                    marketId: market.id,
-                                    eventId: market.event_id,
+                                    id: id.to_s,
+                                    marketId: market.id.to_s,
+                                    eventId: market.event_id.to_s,
                                     changes: changes)
   end
 end

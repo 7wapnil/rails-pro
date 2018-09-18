@@ -14,9 +14,9 @@ describe Odd do
       expect(WebSocket::Client.instance)
         .to have_received(:emit)
         .with(WebSocket::Signals::ODD_CREATED,
-              id: odd.id,
-              marketId: odd.market.id,
-              eventId: odd.market.event_id)
+              id: odd.id.to_s,
+              marketId: odd.market.id.to_s,
+              eventId: odd.market.event_id.to_s)
     end
 
     it 'emits web socket event on update' do
@@ -27,9 +27,9 @@ describe Odd do
       expect(WebSocket::Client.instance)
         .to have_received(:emit)
         .with(WebSocket::Signals::ODD_UPDATED,
-              id: odd.id,
-              marketId: odd.market.id,
-              eventId: odd.market.event_id,
+              id: odd.id.to_s,
+              marketId: odd.market.id.to_s,
+              eventId: odd.market.event_id.to_s,
               changes: { value: 1.99 })
     end
   end
