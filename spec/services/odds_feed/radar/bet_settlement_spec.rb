@@ -6,10 +6,11 @@ describe OddsFeed::Radar::BetSettlementHandler do
       'product="1" certainty="1" timestamp="1235">'\
         '<outcomes>'\
           '<market id="13">'\
-            '<outcome id="sr:player:789" result="1"/>'\
             '<outcome id="sr:player:123" result="0"/>'\
+            '<outcome id="sr:player:789" result="1"/>'\
             '<outcome id="sr:player:111" result="0" void_factor="1"/>'\
             '<outcome id="sr:player:222" result="1" void_factor="0.5"/>'\
+            '<outcome id="sr:player:456" result="0" void_factor="0.5"/>'\
           '</market>'\
         '</outcomes>'\
       '</bet_settlement>'
@@ -24,6 +25,9 @@ describe OddsFeed::Radar::BetSettlementHandler do
   end
   let(:odd_fourth) do
     create(:odd, external_id: 'sr:match:3432:13:sr:player:111')
+  end
+  let(:odd_five) do
+    create(:odd, external_id: 'sr:match:3432:13:sr:player:456')
   end
 
   subject { described_class.new(payload) }
