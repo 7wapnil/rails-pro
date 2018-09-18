@@ -1,12 +1,21 @@
 class Event < ApplicationRecord
   UPDATABLE_ATTRIBUTES = %w[name description start_at end_at].freeze
 
+  STATUSES = {
+    not_started: 0,
+    started: 1,
+    ended: 2,
+    closed: 3
+  }.freeze
+
   belongs_to :title
   has_many :markets
   has_many :scoped_events
   has_many :event_scopes, through: :scoped_events
 
   validates :name, presence: true
+
+  enum status: STATUSES
 
   delegate :name, to: :title, prefix: true
 
