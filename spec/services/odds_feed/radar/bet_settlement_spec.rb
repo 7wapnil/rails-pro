@@ -53,11 +53,9 @@ describe OddsFeed::Radar::BetSettlementHandler do
     end
 
     before do
-      [
-        odd_secondary, odd_third, odd_fourth
-      ].each do |other_odd|
-        create_list(:bet, rand(1..10), :pending, odd: other_odd)
-      end
+      create_list(:bet, 2, :pending, odd: odd_secondary)
+      create_list(:bet, 4, :pending, odd: odd_third)
+      create_list(:bet, 7, :pending, odd: odd_fourth)
 
       subject.handle
     end
@@ -68,6 +66,8 @@ describe OddsFeed::Radar::BetSettlementHandler do
                                   void_factor: 0.5).to_a
       expect(expected_result).to match_array(odd_bets)
     end
+
+    xit 'calls BetSettelement service for processing pay outs'
   end
 
   it 'emits web socket event per bet' do
