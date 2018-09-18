@@ -25,33 +25,56 @@ describe Bet do
       .allow_nil
   end
 
-  describe '.outcome_amount' do
-    context 'calculates outcome according to bet state' do
-      EXAMPLES = [
-        { name: 'simplest case',
-          amount: 1, odd_value: 1.0, void_factor: 1, outcome: 1.0 },
-        { name: 'decimal amount',
-          amount: 1.5234, odd_value: 1.0, void_factor: 1, outcome: 1.5234 },
-        { name: 'decimal odd value',
-          amount: 1, odd_value: 1.5234, void_factor: 1, outcome: 1.5234 },
-        { name: 'decimal void factor',
-          amount: 1, odd_value: 1.0, void_factor: 0.7, outcome: 0.7 },
-        { name: 'weird small case',
-          amount: 0.01, odd_value: 1.001, void_factor: 0.7, outcome: 0.007007 },
-        { name: 'extra big case',
-          amount: 1_000_000, odd_value: 10.22,
-          void_factor: 1, outcome: 10_220_000 }
-      ].freeze
+  EXAMPLES = [
+    { name: 'Lose entire bet',
+      amount: 1, odd_value: 1.0, void_factor: nil,
+      result: 0,
+      win_amount: 0, refund_amount: 0 },
+    { name: 'Win entire bet',
+      amount: 1, odd_value: 1.345, void_factor: nil,
+      result: 1,
+      win_amount: 1.345, refund_amount: 0 },
+    { name: 'Refund entire bet',
+      amount: 1, odd_value: 1.345, void_factor: 1,
+      result: 0,
+      win_amount: 0, refund_amount: 1 },
+    { name: 'Refund half bet and win other half',
+      amount: 1, odd_value: 1.345, void_factor: 0.5,
+      result: 1,
+      win_amount: 1.345 * 0.5, refund_amount: 0.5 },
+    { name: 'Refund half bet and lose other half',
+      amount: 1, odd_value: 1.345, void_factor: 0.5,
+      result: 0,
+      win_amount: 0, refund_amount: 0.5 }
+  ].freeze
 
-      EXAMPLES.each do |example|
-        it example[:name] do
-          bet =
-            build(:bet,
-                  amount: example[:amount],
-                  odd_value: example[:odd_value],
-                  void_factor: example[:void_factor])
-          expect(bet.outcome_amount).to be_within(0.01).of(example[:outcome])
-        end
+  describe '.win_amount' do
+    EXAMPLES.each do |example|
+      it example[:name] do
+        bet =
+          build(:bet,
+                amount: example[:amount],
+                odd_value: example[:odd_value],
+                void_factor: example[:void_factor],
+                result: example[:result])
+
+        expect(bet.win_amount).to be_within(0.01).of(example[:win_amount])
+      end
+    end
+  end
+
+  describe '.refund_amount' do
+    EXAMPLES.each do |example|
+      it example[:name] do
+        bet =
+          build(:bet,
+                amount: example[:amount],
+                odd_value: example[:odd_value],
+                void_factor: example[:void_factor],
+                result: example[:result])
+
+        expect(bet.refund_amount)
+          .to be_within(0.01).of(example[:refund_amount])
       end
     end
   end
