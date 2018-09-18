@@ -1,7 +1,5 @@
 module Radar
-  class LiveCoverageBookingWorker
-    include Sidekiq::Worker
-
+  class LiveCoverageBookingWorker < ApplicationWorker
     def perform(event_external_id)
       event = Event.find_by!(external_id: event_external_id)
 

@@ -12,7 +12,7 @@ class EntryRequestsController < ApplicationController
     entry_request = EntryRequest.new(payload_params)
 
     if entry_request.save
-      EntryRequestProcessingJob.perform_later(entry_request)
+      EntryRequestProcessingWorker.perform_async(entry_request.id)
 
       log_record_event :entry_request_created, entry_request
 

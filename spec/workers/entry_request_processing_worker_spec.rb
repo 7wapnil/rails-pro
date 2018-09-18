@@ -1,9 +1,9 @@
-describe EntryRequestProcessingJob do
+describe EntryRequestProcessingWorker do
   it 'calls WalletEntry::Service with received argument' do
-    entry_request = build(:entry_request)
+    entry_request = create(:entry_request)
 
     expect(WalletEntry::AuthorizationService)
       .to receive(:call).with(entry_request)
-    described_class.perform_now(entry_request)
+    described_class.new.perform(entry_request.id)
   end
 end
