@@ -44,6 +44,8 @@ class Event < ApplicationRecord
     self.payload = addition unless payload
   end
 
+  private
+
   def emit_created
     WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_CREATED,
                                     id: id.to_s)

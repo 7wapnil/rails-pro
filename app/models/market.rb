@@ -42,6 +42,8 @@ class Market < ApplicationRecord
     %i[cancelled settled]
   ]
 
+  private
+
   def emit_created
     WebSocket::Client.instance.emit(WebSocket::Signals::MARKET_CREATED,
                                     id: id.to_s,
