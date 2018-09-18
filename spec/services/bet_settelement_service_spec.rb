@@ -48,7 +48,6 @@ describe BetSettelement::Service do
     end
 
     context 'settled bet' do
-      let!(:initiator) { create(:user, email: 'api@arcanebet.com') }
       let(:bet) { create(:bet, :settled, :win, void_factor: 1) }
 
       subject { described_class.new(bet) }
@@ -77,7 +76,7 @@ describe BetSettelement::Service do
           currency: bet.currency,
           kind: 'win',
           mode: 'sports_ticket',
-          initiator: initiator,
+          initiator: bet.customer,
           comment: 'Automatic message',
           customer: bet.customer,
           origin: bet

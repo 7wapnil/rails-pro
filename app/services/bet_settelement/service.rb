@@ -27,8 +27,7 @@ module BetSettelement
         currency: @bet.currency,
         kind: ENTRY_REQUEST_WIN_KIND,
         mode: ENTRY_REQUEST_MODE,
-        # TODO: Figure out about initiator
-        initiator: User.find_by_email('api@arcanebet.com'),
+        initiator: @bet.customer,
         comment: 'Automatic message',
         customer: @bet.customer,
         origin: @bet
