@@ -10,18 +10,19 @@ module BetSettelement
     def handle
       return handle_unexpected_bet unless @bet.settled? && @bet.result == true
 
-      prepare_entry_request
-      prepare_wallet_entries
+      generate_requests
+      apply_requests
     end
 
     private
 
     def handle_unexpected_bet; end
 
-    # TODO: Fix Naming/MemoizedInstanceVariableName
-    #
-    # rubocop:disable Naming/MemoizedInstanceVariableName
-    def prepare_entry_request
+    def generate_requests
+      entry_request
+    end
+
+    def entry_request
       @entry_request ||= EntryRequest.create!(
         amount: @bet.outcome_amount,
         currency: @bet.currency,
@@ -33,7 +34,6 @@ module BetSettelement
         origin: @bet
       )
     end
-    # rubocop:enable Naming/MemoizedInstanceVariableName
 
     def prepare_wallet_entries
       raise NotImplementedError
