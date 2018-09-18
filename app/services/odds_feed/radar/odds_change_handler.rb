@@ -71,6 +71,7 @@ module OddsFeed
       def create_event!
         @event = api_event
         event.save!
+        ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
       end
 
       def check_message_time

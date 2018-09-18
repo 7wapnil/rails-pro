@@ -16,6 +16,7 @@ Rails.application.routes.draw do
       get :notes
       get :documents
       post :update_labels
+      post :upload_documents
     end
   end
 

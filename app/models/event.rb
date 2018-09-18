@@ -14,7 +14,10 @@ class Event < ApplicationRecord
   delegate :name, to: :title, prefix: true
 
   def self.in_play
-    where('start_at < ? AND end_at IS NULL', Time.zone.now)
+    where(
+      'start_at < ? AND end_at IS NULL AND traded_live IS TRUE',
+      Time.zone.now
+    )
   end
 
   def self.today
@@ -22,7 +25,7 @@ class Event < ApplicationRecord
   end
 
   def in_play?
-    start_at.past? && end_at.nil?
+    traded_live && start_at.past? && end_at.nil?
   end
 
   def update_from!(other)

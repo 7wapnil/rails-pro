@@ -43,6 +43,12 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     it 'adds producer info to payload' do
       expect(api_event).to receive(:add_to_payload).with(payload_update)
     end
+
+    it 'calls for live coverage booking' do
+      expect(Radar::LiveCoverageBookingWorker)
+        .to receive(:perform_async)
+        .with(api_event.external_id)
+    end
   end
 
   context 'existing event' do

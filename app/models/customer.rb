@@ -2,11 +2,11 @@ class Customer < ApplicationRecord
   include Person
 
   ATTACHMENT_TYPES = %i[
-    personal_id
-    utility_bill
-    bank_statement
-    credit_card
-    other_document
+    personal_ids
+    utility_bills
+    bank_statements
+    credit_cards
+    other_documents
   ].freeze
 
   MAX_ATTACHMENT_SIZE = 2.megabytes.freeze
@@ -43,7 +43,7 @@ class Customer < ApplicationRecord
   has_and_belongs_to_many :labels
 
   ATTACHMENT_TYPES.each do |attachment_type|
-    has_one_attached attachment_type
+    has_many_attached attachment_type
   end
 
   ATTACHMENT_TYPES.each do |attachment_type|
