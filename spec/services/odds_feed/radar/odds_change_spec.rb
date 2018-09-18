@@ -51,10 +51,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
     created_event = Event.find_by!(external_id: event_id)
     expect(WebSocket::Client.instance)
       .to have_received(:emit)
-      .with(WebSocket::Signals::UPDATE_EVENT,
-            id: created_event.id.to_s,
-            name: created_event.name,
-            start_at: event.start_at)
+      .with(WebSocket::Signals::EVENT_CREATED, id: created_event.id.to_s)
   end
 
   it 'calls for live coverage booking' do
