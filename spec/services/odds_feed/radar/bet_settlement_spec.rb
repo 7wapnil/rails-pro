@@ -38,22 +38,21 @@ describe OddsFeed::Radar::BetSettlementHandler do
   end
 
   context 'settled bets processing' do
-    let(:currency){ create(:currency) }
+    let(:currency) { create(:currency) }
 
     let!(:odd_bets) do
       create_list(:bet, 6, :pending, odd: odd, currency: currency)
     end
 
-    let(:bet){ odd_bets.first }
-    let(:wallet){ create(:wallet, customer: bet.customer) }
+    let(:bet) { odd_bets.first }
+    let(:wallet) { create(:wallet, customer: bet.customer) }
 
     let!(:rule) do
       create(:entry_currency_rule,
              currency: currency,
              kind: EntryRequest.kinds[:win],
              min_amount: 10,
-             max_amount: 1000
-      )
+             max_amount: 1000)
     end
 
     before do
