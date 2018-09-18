@@ -40,13 +40,6 @@ describe OddsFeed::Radar::BetSettlementHandler do
   context 'settled bets processing' do
     let(:currency) { create(:currency) }
 
-    let!(:odd_bets) do
-      create_list(:bet, 6, :pending, odd: odd, currency: currency)
-    end
-
-    let(:bet) { odd_bets.first }
-    let(:wallet) { create(:wallet, customer: bet.customer) }
-
     let!(:rule) do
       create(:entry_currency_rule,
              currency: currency,
@@ -56,6 +49,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
     end
 
     before do
+      create_list(:bet, 6, :pending, odd: odd, currency: currency)
       create_list(:bet, 2, :pending, odd: odd_secondary, currency: currency)
       create_list(:bet, 4, :pending, odd: odd_third, currency: currency)
       create_list(:bet, 7, :pending, odd: odd_fourth, currency: currency)
