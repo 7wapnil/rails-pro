@@ -32,6 +32,7 @@ describe BetSettelement::Service do
 
         subject { described_class.new(lose_bet) }
 
+        # TODO: Separate card will introduce refund processing
         it 'ignores lose bet state' do
           allow(subject).to receive(:handle_unexpected_bet)
           subject.call
@@ -57,6 +58,8 @@ describe BetSettelement::Service do
         expect(subject).to have_received(:apply_requests)
       end
 
+      xit 'handles settled refund for bet'
+
       it 'creates EntryRequest from bet' do
         allow(subject).to receive(:apply_requests)
 
@@ -74,7 +77,7 @@ describe BetSettelement::Service do
           expect(entry_request.send(key)).to eq(value)
 
           expect(entry_request.amount)
-            .to be_within(0.01).of(bet.outcome_amount)
+            .to be_within(0.01).of(bet.win_amount)
         end
       end
 

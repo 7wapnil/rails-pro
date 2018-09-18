@@ -24,7 +24,7 @@ module BetSettelement
 
     def entry_request
       @entry_request ||= EntryRequest.create!(
-        amount: @bet.outcome_amount,
+        amount: @bet.win_amount,
         currency: @bet.currency,
         kind: ENTRY_REQUEST_WIN_KIND,
         mode: ENTRY_REQUEST_MODE,
