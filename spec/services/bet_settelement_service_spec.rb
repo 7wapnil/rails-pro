@@ -74,7 +74,6 @@ describe BetSettelement::Service do
 
         expect(entry_request).to be_an EntryRequest
         {
-          amount: bet.outcome_amount,
           currency: bet.currency,
           kind: 'win',
           mode: 'sports_ticket',
@@ -84,6 +83,9 @@ describe BetSettelement::Service do
           origin: bet
         }.each do |key, value|
           expect(entry_request.send(key)).to eq(value)
+
+          expect(entry_request.amount)
+            .to be_within(0.01).of(bet.outcome_amount)
         end
       end
     end
