@@ -57,6 +57,14 @@ describe OddsFeed::Radar::OddsChangeHandler do
             start_at: event.start_at)
   end
 
+  it 'calls for live coverage booking' do
+    expect(Radar::LiveCoverageBookingWorker)
+      .to receive(:perform_async)
+      .with(event_id)
+
+    subject.handle
+  end
+
   it 'calls market generator for every market data row' do
     subject.handle
     expect(subject)
