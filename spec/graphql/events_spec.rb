@@ -132,5 +132,30 @@ describe 'GraphQL#events' do
         expect(result['data']['events'].count).to eq(3)
       end
     end
+
+    context 'in play' do
+      let(:query) do
+        %({ events (
+              inPlay: true
+          ) {
+              id
+        } })
+      end
+
+      before do
+        create_list(
+          :event_with_odds,
+          5,
+          title: title,
+          traded_live: true,
+          start_at: 5.minutes.ago,
+          end_at: nil
+        )
+      end
+
+      it 'returns in play events' do
+        expect(result['data']['events'].count).to eq(5)
+      end
+    end
   end
 end
