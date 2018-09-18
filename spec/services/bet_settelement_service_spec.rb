@@ -77,7 +77,6 @@ describe BetSettelement::Service do
           kind: 'win',
           mode: 'sports_ticket',
           initiator: bet.customer,
-          comment: 'Automatic message',
           customer: bet.customer,
           origin: bet
         }.each do |key, value|

@@ -29,7 +29,6 @@ module BetSettelement
         kind: ENTRY_REQUEST_WIN_KIND,
         mode: ENTRY_REQUEST_MODE,
         initiator: @bet.customer,
-        comment: 'Automatic message',
         customer: @bet.customer,
         origin: @bet
       )
