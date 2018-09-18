@@ -13,6 +13,7 @@ module OddsFeed
             external_id = generator.generate
 
             update_bets(external_id, outcome)
+            process_bets(external_id)
           end
         end
       end
@@ -43,6 +44,13 @@ module OddsFeed
         Rails.logger.info "#{bets.count} bets settled"
 
         bets.find_in_batches { |batch| emit_websocket_signals(batch) }
+      end
+
+      def process_bets(external_id)
+        bets = bets_by_external_id(external_id)
+        bets.each do |bet|
+          BetSettelement::Service.call(bet)
+        end
       end
 
       def bets_by_external_id(external_id)
