@@ -1,7 +1,5 @@
 module Radar
-  class MarketsUpdateWorker
-    include Sidekiq::Worker
-
+  class MarketsUpdateWorker < ApplicationWorker
     def perform
       Rails.logger.debug 'Updating BetRadar market templates'
       templates.each do |market_data|

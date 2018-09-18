@@ -103,6 +103,8 @@ en:
     origin_id: Origin ID
     origin_name: Origin name
     info: Info
+    currency: Currency
+    authorized_at: Authorized at
     personal_ids: Personal Id's
     utility_bills: Utility Bills
     bank_statements: Bank Statements
