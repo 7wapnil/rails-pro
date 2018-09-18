@@ -50,18 +50,18 @@ describe BetSettelement::Service do
       it 'handles settled win bet' do
         allow(subject).to receive(:handle_unexpected_bet)
         allow(subject).to receive(:generate_requests)
-        allow(subject).to receive(:apply_requests)
+        allow(subject).to receive(:apply_requests_to_wallets)
 
         subject.call
         expect(subject).not_to have_received(:handle_unexpected_bet)
         expect(subject).to have_received(:generate_requests)
-        expect(subject).to have_received(:apply_requests)
+        expect(subject).to have_received(:apply_requests_to_wallets)
       end
 
       xit 'handles settled refund for bet'
 
       it 'creates EntryRequest from bet' do
-        allow(subject).to receive(:apply_requests)
+        allow(subject).to receive(:apply_requests_to_wallets)
 
         subject.call
 

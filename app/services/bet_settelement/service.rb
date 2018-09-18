@@ -11,7 +11,7 @@ module BetSettelement
       return handle_unexpected_bet unless @bet.settled? && @bet.result == true
 
       generate_requests
-      apply_requests
+      apply_requests_to_wallets
     end
 
     private
@@ -34,7 +34,7 @@ module BetSettelement
       )
     end
 
-    def apply_requests
+    def apply_requests_to_wallets
       WalletEntry::AuthorizationService.call(@entry_request)
     end
   end

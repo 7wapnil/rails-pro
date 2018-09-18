@@ -68,7 +68,8 @@ describe 'BetSettlementHandler integration' do
       it state[:name] do
         odd = send(state[:odd_name])
         odd.value = state[:odd_value]
-        create(:bet, :pending, odd: odd, amount: state[:stake], currency: currency)
+        create(:bet,
+               :pending, odd: odd, amount: state[:stake], currency: currency)
 
         subject.handle
 
