@@ -29,7 +29,7 @@ describe BetSettelement::Service do
 
         it 'ignores unexpected bet state' do
           allow(subject).to receive(:handle_unexpected_bet)
-          subject.handle
+          subject.call
           expect(subject).to have_received(:handle_unexpected_bet)
         end
       end
@@ -41,7 +41,7 @@ describe BetSettelement::Service do
 
         it 'ignores lose bet state' do
           allow(subject).to receive(:handle_unexpected_bet)
-          subject.handle
+          subject.call
           expect(subject).to have_received(:handle_unexpected_bet)
         end
       end
@@ -55,11 +55,10 @@ describe BetSettelement::Service do
 
       it 'handles settled win bet' do
         allow(subject).to receive(:handle_unexpected_bet)
-
         allow(subject).to receive(:generate_requests)
         allow(subject).to receive(:apply_requests)
 
-        subject.handle
+        subject.call
         expect(subject).not_to have_received(:handle_unexpected_bet)
         expect(subject).to have_received(:generate_requests)
         expect(subject).to have_received(:apply_requests)
@@ -68,7 +67,7 @@ describe BetSettelement::Service do
       it 'creates EntryRequest from bet' do
         allow(subject).to receive(:apply_requests)
 
-        subject.handle
+        subject.call
 
         expect(entry_request).to be_an EntryRequest
         {
@@ -89,7 +88,7 @@ describe BetSettelement::Service do
       it 'passes entry request to wallet authorization service' do
         allow(WalletEntry::AuthorizationService).to receive(:call)
 
-        subject.handle
+        subject.call
 
         expect(WalletEntry::AuthorizationService)
           .to have_received(:call).with(entry_request).exactly(1).times

@@ -7,7 +7,7 @@ module BetSettelement
       @bet = bet
     end
 
-    def handle
+    def call
       return handle_unexpected_bet unless @bet.settled? && @bet.result == true
 
       generate_requests
