@@ -55,7 +55,10 @@ describe OddsFeed::Radar::MarketGenerator do
     end
 
     it 'updates market if exists in db' do
-      market = create(:market, external_id: external_id)
+      market = create(:market,
+                      external_id: external_id,
+                      event: event,
+                      status: :active)
       subject.generate
       updated_market = Market.find_by(external_id: external_id)
       expect(updated_market.updated_at).not_to eq(market.updated_at)
@@ -107,8 +110,12 @@ describe OddsFeed::Radar::MarketGenerator do
     end
 
     it 'updates odds if exist in db' do
-      create(:odd, external_id: "#{external_id}:1", value: 1.0)
-      create(:odd, external_id: "#{external_id}:2", value: 1.0)
+      market = create(:market,
+                      external_id: external_id,
+                      event: event,
+                      status: :active)
+      create(:odd, external_id: "#{external_id}:1", market: market, value: 1.0)
+      create(:odd, external_id: "#{external_id}:2", market: market, value: 1.0)
 
       subject.generate
       expect(Odd.find_by(external_id: "#{external_id}:1").value).to eq(1.3)
