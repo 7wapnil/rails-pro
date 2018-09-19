@@ -104,13 +104,11 @@ deploy:
     - script:
       name: prepare-migrations
       code: |
-         # Create only new TD, don't update service
         cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-web
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve \
             -target module.app.aws_ecs_task_definition.this
-        # Write down updated TD for 1science/wercker-aws-ecs use
         aws ecs describe-task-definition \
             --query 'taskDefinition.containerDefinitions' \
             --task-definition $(terraform output task_definition) > td.json
