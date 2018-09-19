@@ -60,19 +60,18 @@ describe BetSettelement::Service do
           end
 
           it 'creates win entry request with correct params' do
-            {
-              currency: bet.currency,
-              kind: 'win',
-              mode: 'sports_ticket',
-              initiator: bet.customer,
-              customer: bet.customer,
-              origin: bet
-            }.each do |key, value|
-              expect(win_entry_request.send(key)).to eq(value)
+            expect(win_entry_request)
+              .to have_attributes(
+                currency: bet.currency,
+                kind: 'win',
+                mode: 'sports_ticket',
+                initiator: bet.customer,
+                customer: bet.customer,
+                origin: bet
+              )
 
-              expect(win_entry_request.amount)
-                .to be_within(0.01).of(bet.win_amount)
-            end
+            expect(win_entry_request.amount)
+              .to be_within(0.01).of(bet.win_amount)
           end
         end
 
@@ -125,19 +124,18 @@ describe BetSettelement::Service do
           end
 
           it 'creates win entry request with correct params' do
-            {
-              currency: bet.currency,
-              kind: 'win',
-              mode: 'sports_ticket',
-              initiator: bet.customer,
-              customer: bet.customer,
-              origin: bet
-            }.each do |key, value|
-              expect(win_entry_request.send(key)).to eq(value)
+            expect(win_entry_request)
+              .to have_attributes(
+                currency: bet.currency,
+                kind: 'win',
+                mode: 'sports_ticket',
+                initiator: bet.customer,
+                customer: bet.customer,
+                origin: bet
+              )
 
-              expect(win_entry_request.amount)
-                .to be_within(0.01).of(bet.win_amount)
-            end
+            expect(win_entry_request.amount)
+              .to be_within(0.01).of(bet.win_amount)
           end
 
           it 'creates refund entry request of correct type' do
@@ -145,19 +143,18 @@ describe BetSettelement::Service do
           end
 
           it 'creates refund entry request with correct params' do
-            {
-              currency: bet.currency,
-              kind: 'refund',
-              mode: 'sports_ticket',
-              initiator: bet.customer,
-              customer: bet.customer,
-              origin: bet
-            }.each do |key, value|
-              expect(refund_entry_request.send(key)).to eq(value)
+            expect(refund_entry_request)
+              .to have_attributes(
+                currency: bet.currency,
+                kind: 'refund',
+                mode: 'sports_ticket',
+                initiator: bet.customer,
+                customer: bet.customer,
+                origin: bet
+              )
 
-              expect(refund_entry_request.amount)
-                .to be_within(0.01).of(bet.refund_amount)
-            end
+            expect(refund_entry_request.amount)
+              .to be_within(0.01).of(bet.refund_amount)
           end
         end
 
@@ -205,19 +202,18 @@ describe BetSettelement::Service do
           end
 
           it 'creates refund entry request with correct params' do
-            {
-              currency: bet.currency,
-              kind: 'refund',
-              mode: 'sports_ticket',
-              initiator: bet.customer,
-              customer: bet.customer,
-              origin: bet
-            }.each do |key, value|
-              expect(refund_entry_request.send(key)).to eq(value)
+            expect(refund_entry_request)
+              .to have_attributes(
+                currency: bet.currency,
+                kind: 'refund',
+                mode: 'sports_ticket',
+                initiator: bet.customer,
+                customer: bet.customer,
+                origin: bet
+              )
 
-              expect(refund_entry_request.amount)
-                .to be_within(0.01).of(bet.refund_amount)
-            end
+            expect(refund_entry_request.amount)
+              .to be_within(0.01).of(bet.refund_amount)
           end
         end
 
