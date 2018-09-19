@@ -40,10 +40,18 @@ describe OddsFeed::Radar::BetSettlementHandler do
   context 'settled bets processing' do
     let(:currency) { create(:currency) }
 
-    let!(:rule) do
+    let!(:rule_for_win) do
       create(:entry_currency_rule,
              currency: currency,
              kind: EntryRequest.kinds[:win],
+             min_amount: 10,
+             max_amount: 1000)
+    end
+
+    let!(:rule_for_refund) do
+      create(:entry_currency_rule,
+             currency: currency,
+             kind: EntryRequest.kinds[:refund],
              min_amount: 10,
              max_amount: 1000)
     end
