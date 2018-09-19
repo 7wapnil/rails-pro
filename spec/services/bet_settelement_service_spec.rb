@@ -21,9 +21,8 @@ describe BetSettelement::Service do
         subject { described_class.new(invalid_bet) }
 
         it 'ignores unexpected bet state' do
-          allow(subject).to receive(:handle_unexpected_bet)
+          expect(subject).to receive(:handle_unexpected_bet)
           subject.call
-          expect(subject).to have_received(:handle_unexpected_bet)
         end
       end
     end
@@ -35,14 +34,11 @@ describe BetSettelement::Service do
         subject { described_class.new(bet) }
 
         it 'settles bet' do
-          allow(subject).to receive(:handle_unexpected_bet)
-          allow(subject).to receive(:entry_requests)
-          allow(subject).to receive(:apply_requests_to_wallets)
+          expect(subject).not_to receive(:handle_unexpected_bet)
+          expect(subject).to receive(:entry_requests)
+          expect(subject).to receive(:apply_requests_to_wallets)
 
           subject.call
-          expect(subject).not_to have_received(:handle_unexpected_bet)
-          expect(subject).to have_received(:entry_requests)
-          expect(subject).to have_received(:apply_requests_to_wallets)
         end
 
         let(:win_entry_request) do
@@ -95,14 +91,11 @@ describe BetSettelement::Service do
         subject { described_class.new(bet) }
 
         it 'settles bet' do
-          allow(subject).to receive(:handle_unexpected_bet)
-          allow(subject).to receive(:entry_requests)
-          allow(subject).to receive(:apply_requests_to_wallets)
+          expect(subject).not_to receive(:handle_unexpected_bet)
+          expect(subject).to receive(:entry_requests)
+          expect(subject).to receive(:apply_requests_to_wallets)
 
           subject.call
-          expect(subject).not_to have_received(:handle_unexpected_bet)
-          expect(subject).to have_received(:entry_requests)
-          expect(subject).to have_received(:apply_requests_to_wallets)
         end
 
         let(:win_entry_request) do
@@ -177,14 +170,11 @@ describe BetSettelement::Service do
         subject { described_class.new(bet) }
 
         it 'settles bet' do
-          allow(subject).to receive(:handle_unexpected_bet)
-          allow(subject).to receive(:entry_requests)
-          allow(subject).to receive(:apply_requests_to_wallets)
+          expect(subject).not_to receive(:handle_unexpected_bet)
+          expect(subject).to receive(:entry_requests)
+          expect(subject).to receive(:apply_requests_to_wallets)
 
           subject.call
-          expect(subject).not_to have_received(:handle_unexpected_bet)
-          expect(subject).to have_received(:entry_requests)
-          expect(subject).to have_received(:apply_requests_to_wallets)
         end
 
         let(:refund_entry_request) do
