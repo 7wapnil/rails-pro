@@ -55,7 +55,8 @@ module OddsFeed
       end
 
       def event_status
-        status = event_data['sport_event_status']['status'] || 0
+        status = event_data['sport_event_status']['status'] ||
+                 Event.statuses[:not_started]
         event_statuses_map[status]
       end
 
