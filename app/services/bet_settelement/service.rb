@@ -9,7 +9,7 @@ module BetSettelement
     end
 
     def call
-      return handle_unexpected_bet unless @bet.settled? && @bet.result == true
+      return handle_unexpected_bet unless @bet.settled?
 
       entry_requests
       apply_requests_to_wallets
@@ -24,6 +24,7 @@ module BetSettelement
     end
 
     def win_entry_request
+      return unless @bet.result == true
       @win_entry_request ||= EntryRequest.create!(
         amount: @bet.win_amount,
         currency: @bet.currency,
@@ -36,6 +37,7 @@ module BetSettelement
     end
 
     def refund_entry_request
+      return if @bet.void_factor.nil?
       @refund_entry_request ||= EntryRequest.create!(
         amount: @bet.refund_amount,
         currency: @bet.currency,

@@ -37,11 +37,19 @@ describe 'BetSettlementHandler integration' do
 
   let(:currency) { create(:currency) }
 
-  let!(:rule) do
+  let!(:rule_for_wins) do
     create(:entry_currency_rule,
            currency: currency,
            kind: EntryRequest.kinds[:win],
            min_amount: 10,
+           max_amount: 1000)
+  end
+
+  let!(:rule_for_refunds) do
+    create(:entry_currency_rule,
+           currency: currency,
+           kind: EntryRequest.kinds[:refund],
+           min_amount: 1,
            max_amount: 1000)
   end
 
@@ -54,13 +62,13 @@ describe 'BetSettlementHandler integration' do
       win: nil, refund: nil, records_count: 0 },
     { name: 'full refund', odd_name: 'odd_full_refund',
       odd_value: 1.65, stake: 22.4,
-      win: nil, refund: 22.4, records_count: 0 },
+      win: nil, refund: 22.4, records_count: 1 },
     { name: 'half win, half refund', odd_name: 'odd_half_win',
       odd_value: 1.5, stake: 100,
-      win: 75, refund: 50, records_count: 1 },
+      win: 75, refund: 50, records_count: 2 },
     { name: 'lose, half refund', odd_name: 'odd_lose_half_refund',
       odd_value: 1.65, stake: 22.4,
-      win: nil, refund: 11.2, records_count: 0 }
+      win: nil, refund: 11.2, records_count: 1 }
   ].freeze
 
   context 'single bets map checks, wins only' do
