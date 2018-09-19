@@ -62,7 +62,7 @@ store:
       notify_on: failed
 
 deploy:
-  box: python:3.6-alpine
+  box: python:2.7-alpine
 
   steps:
     - script:
@@ -112,7 +112,7 @@ deploy:
         aws ecs describe-task-definition \
             --query 'taskDefinition.containerDefinitions' \
             --task-definition $(terraform output task_definition) > td.json
-        jq '.[].command=["rake","db:migrate"] | .[].cpu=50' td.json > migrate.json
+        jq '.[].command=["rake","db:migrate"] | .[].cpu=50' td.json > $WERCKER_SOURCE_DIR/migrate.json
 
     - 1science/aws-ecs:
         key: $AWS_ACCESS_KEY_ID
@@ -120,7 +120,7 @@ deploy:
         region: $AWS_DEFAULT_REGION
         cluster-name: arcanebet
         task-definition-name: backend-migrate
-        task-definition-file: migrate.json
+        task-definition-file: $WERCKER_SOURCE_DIR/migrate.json
 
     - script:
       name: terraform-apply
