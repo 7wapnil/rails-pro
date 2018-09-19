@@ -17,7 +17,9 @@ module BetSettelement
 
     private
 
-    def handle_unexpected_bet; end
+    def handle_unexpected_bet
+      raise 'BetSettlement was attempted to be used on non-settled bet'
+    end
 
     def entry_requests
       @entry_requests ||= [win_entry_request, refund_entry_request].compact
