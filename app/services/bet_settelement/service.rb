@@ -10,7 +10,7 @@ module BetSettelement
     def call
       return handle_unexpected_bet unless @bet.settled? && @bet.result == true
 
-      generate_requests
+      entry_requests
       apply_requests_to_wallets
     end
 
@@ -18,12 +18,12 @@ module BetSettelement
 
     def handle_unexpected_bet; end
 
-    def generate_requests
-      entry_request
+    def entry_requests
+      @entry_requests ||= [win_entry_request].compact
     end
 
-    def entry_request
-      @entry_request ||= EntryRequest.create!(
+    def win_entry_request
+      @win_entry_request ||= EntryRequest.create!(
         amount: @bet.win_amount,
         currency: @bet.currency,
         kind: ENTRY_REQUEST_WIN_KIND,
@@ -35,7 +35,9 @@ module BetSettelement
     end
 
     def apply_requests_to_wallets
-      WalletEntry::AuthorizationService.call(@entry_request)
+      @entry_requests.each do |entry_request|
+        WalletEntry::AuthorizationService.call(entry_request)
+      end
     end
   end
 end

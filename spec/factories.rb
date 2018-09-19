@@ -68,6 +68,10 @@ FactoryBot.define do
     trait :win do
       result true
     end
+
+    trait :lose do
+      result false
+    end
   end
 
   # System
