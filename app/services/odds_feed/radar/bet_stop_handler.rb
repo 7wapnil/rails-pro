@@ -9,11 +9,8 @@ module OddsFeed
       end
 
       def handle
-        query = build_query
-        query.update_all(status: stop_status)
-
-        query.find_in_batches(batch_size: @batch_size) do |batch|
-          emit_websocket_signals(batch)
+        build_query.find_in_batches(batch_size: @batch_size) do |batch|
+          update_markets(batch)
         end
       end
 
@@ -37,12 +34,12 @@ module OddsFeed
         Market.statuses[:inactive]
       end
 
-      def emit_websocket_signals(batch)
+      def update_markets(batch)
         batch.each do |market|
-          WebSocket::Client.instance.emit(WebSocket::Signals::UPDATE_MARKET,
-                                          id: market.id,
-                                          eventId: market.event.id,
-                                          status: market.status)
+          market.status = stop_status
+          market.save!
+        rescue ActiveRecord::RecordInvalid => e
+          Rails.logger.error e
         end
       end
     end

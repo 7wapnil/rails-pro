@@ -6,6 +6,7 @@ QueryType = GraphQL::ObjectType.define do
   field :title, function: Titles::TitleQuery.new
   field :events, function: Events::EventsQuery.new
   field :markets, function: Events::MarketsQuery.new
+  field :market, function: Events::MarketQuery.new
 
   field :event do
     type Events::EventType

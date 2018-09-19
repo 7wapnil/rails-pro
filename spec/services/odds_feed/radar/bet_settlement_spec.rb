@@ -92,5 +92,6 @@ describe OddsFeed::Radar::BetSettlementHandler do
       .to have_received(:emit)
       .exactly(10)
       .times
+      .with(WebSocket::Signals::BET_SETTLED, anything)
   end
 end

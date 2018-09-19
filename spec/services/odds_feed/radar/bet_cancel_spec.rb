@@ -90,6 +90,7 @@ describe OddsFeed::Radar::BetCancelHandler do
       .to have_received(:emit)
       .exactly(bets_amount)
       .times
+      .with(WebSocket::Signals::BET_CANCELLED, anything)
   end
 
   it 'emits web socket events in batches' do

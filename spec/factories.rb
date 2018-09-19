@@ -186,6 +186,7 @@ FactoryBot.define do
     end_at { 1.hours.ago }
     remote_updated_at { Time.zone.now }
     external_id ''
+    status 0
     payload { {} }
 
     factory :event_with_market do

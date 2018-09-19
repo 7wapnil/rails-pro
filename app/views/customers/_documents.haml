@@ -21,7 +21,7 @@
                               target: :blank
                     = link_to t(:confirm), '#', class: 'dropdown-item disabled'
                     = link_to t(:reject), '#', class: 'dropdown-item disabled'
-                    = link_to t(:history), '#', class: 'dropdown-item disabled'
+                    = link_to t(:history), documents_history_customer_path(id: @customer.id, document_type: attachment_type), class: 'dropdown-item'
               - else
                 = file_field_tag attachment_type, accept: 'image/jpeg, image/png, image/gif, application/pdf'
     .row

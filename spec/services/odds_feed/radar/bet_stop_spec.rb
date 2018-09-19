@@ -45,10 +45,11 @@ describe OddsFeed::Radar::BetStopHandler do
       .to have_received(:emit)
       .exactly(markets_amount)
       .times
+      .with(WebSocket::Signals::MARKET_UPDATED, anything)
   end
 
   it 'emits web socket events in batches' do
-    allow(subject).to receive(:emit_websocket_signals)
+    allow(subject).to receive(:update_markets)
     markets_amount = 20
     create_list(:market,
                 markets_amount,
@@ -59,7 +60,7 @@ describe OddsFeed::Radar::BetStopHandler do
     subject.handle
 
     expect(subject)
-      .to have_received(:emit_websocket_signals)
+      .to have_received(:update_markets)
       .exactly(4)
       .times
   end
