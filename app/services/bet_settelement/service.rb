@@ -1,6 +1,7 @@
 module BetSettelement
   class Service < ApplicationService
     ENTRY_REQUEST_WIN_KIND = EntryRequest.kinds[:win]
+    ENTRY_REQUEST_REFUND_KIND = EntryRequest.kinds[:refund]
     ENTRY_REQUEST_MODE = EntryRequest.modes[:sports_ticket]
 
     def initialize(bet)
@@ -19,7 +20,7 @@ module BetSettelement
     def handle_unexpected_bet; end
 
     def entry_requests
-      @entry_requests ||= [win_entry_request].compact
+      @entry_requests ||= [win_entry_request, refund_entry_request].compact
     end
 
     def win_entry_request
@@ -27,6 +28,18 @@ module BetSettelement
         amount: @bet.win_amount,
         currency: @bet.currency,
         kind: ENTRY_REQUEST_WIN_KIND,
+        mode: ENTRY_REQUEST_MODE,
+        initiator: @bet.customer,
+        customer: @bet.customer,
+        origin: @bet
+      )
+    end
+
+    def refund_entry_request
+      @refund_entry_request ||= EntryRequest.create!(
+        amount: @bet.refund_amount,
+        currency: @bet.currency,
+        kind: ENTRY_REQUEST_REFUND_KIND,
         mode: ENTRY_REQUEST_MODE,
         initiator: @bet.customer,
         customer: @bet.customer,
