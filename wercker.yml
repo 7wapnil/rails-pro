@@ -104,17 +104,17 @@ deploy:
     - script:
       name: terraform-apply
       code: |
-        cd $TERRAFORM_CONFIG_DIR/services/backend-web
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-web
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/services/backend-worker
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-worker
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/services/backend-listener
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-listener
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
