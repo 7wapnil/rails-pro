@@ -67,7 +67,7 @@ deploy:
   steps:
     - script:
       name: install-linux-deps
-      code: apk add -qU openssh git curl
+      code: apk add -qU openssh git curl jq
 
     - capgemini/terraform-install:
       version: "0.11.8"
@@ -100,6 +100,29 @@ deploy:
             --value $WERCKER_GIT_COMMIT \
             --type SecureString \
             --overwrite
+
+    - script:
+      name: prepare-migrations
+      code: |
+         # Create only new TD, don't update service
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-web
+        terraform init
+        terraform workspace select $TARGET_ENV
+        terraform apply -auto-approve \
+            -target module.app.aws_ecs_task_definition.this
+        # Write down updated TD for 1science/wercker-aws-ecs use
+        aws ecs describe-task-definition \
+            --query 'taskDefinition.containerDefinitions' \
+            --task-definition $(terraform output task_definition) > td.json
+        jq '.[].command=["rake","db:migrate"] | .[].cpu=50' td.json > migrate.json
+
+    - 1science/aws-ecs:
+        key: $AWS_ACCESS_KEY_ID
+        secret: $AWS_SECRET_ACCESS_KEY
+        region: $AWS_DEFAULT_REGION
+        cluster-name: arcanebet
+        task-definition-name: backend-migrate
+        task-definition-file: migrate.json
 
     - script:
       name: terraform-apply
