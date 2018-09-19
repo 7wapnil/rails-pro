@@ -31,6 +31,22 @@ describe OddsFeed::Radar::OddsChangeHandler do
     expect { subject.handle }.to raise_error(OddsFeed::InvalidMessageError)
   end
 
+  it 'updates event status from message' do
+    create(:event, external_id: event_id, status: :not_started)
+    subject.handle
+    event = Event.find_by(external_id: event_id)
+    expect(event.status).to eq('started')
+  end
+
+  it 'updates event end at time on "ended" status' do
+    create(:event, external_id: event_id, status: :not_started)
+    allow(subject).to receive(:event_status).and_return(Event.statuses[:ended])
+    subject.handle
+    event = Event.find_by(external_id: event_id)
+    expect(event.status).to eq('ended')
+    expect(event.end_at).not_to be_nil
+  end
+
   it 'adds producer id to event payload' do
     payload_addition = {
       producer: { origin: :radar, id: payload['odds_change']['product'] }

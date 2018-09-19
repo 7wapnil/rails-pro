@@ -35,7 +35,9 @@ module OddsFeed
           producer: { origin: :radar, id: event_data['product'] }
         )
 
-        event.assign_attributes(remote_updated_at: timestamp)
+        event.assign_attributes(remote_updated_at: timestamp,
+                                status: event_status,
+                                end_at: event_end_time)
         event.save!
       end
 
@@ -50,6 +52,26 @@ module OddsFeed
 
       def event_data
         @payload['odds_change']
+      end
+
+      def event_status
+        status = event_data['sport_event_status']['status'] ||
+                 Event.statuses[:not_started]
+        event_statuses_map[status]
+      end
+
+      def event_end_time
+        return nil unless event_status == Event.statuses[:ended]
+        timestamp
+      end
+
+      def event_statuses_map
+        {
+          '0': Event.statuses[:not_started],
+          '1': Event.statuses[:started],
+          '3': Event.statuses[:ended],
+          '4': Event.statuses[:closed]
+        }.stringify_keys
       end
 
       def event
