@@ -8,7 +8,8 @@ module BetSettelement
     end
 
     def call
-      return handle_unexpected_bet unless @bet.settled? && @bet.result == true
+      return handle_unexpected_bet unless @bet.settled?
+      return unless @bet.result == true
 
       generate_requests
       apply_requests_to_wallets
@@ -16,7 +17,9 @@ module BetSettelement
 
     private
 
-    def handle_unexpected_bet; end
+    def handle_unexpected_bet
+      raise ArgumentError, 'BetSettelement::Service Settled bet expected'
+    end
 
     def generate_requests
       entry_request
