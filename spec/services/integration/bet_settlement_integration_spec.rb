@@ -92,6 +92,12 @@ describe 'BetSettlementHandler integration' do
             expect(BalanceEntry.find_by(amount: state[:win])).to be_truthy
           end
         end
+
+        unless state[:refund].nil?
+          it 'adds refund to balance' do
+            expect(BalanceEntry.find_by(amount: state[:refund])).to be_truthy
+          end
+        end
       end
     end
   end
