@@ -20,22 +20,10 @@ describe BetSettelement::Service do
 
         subject { described_class.new(invalid_bet) }
 
-        it 'ignores unexpected bet state' do
+        it 'raises on unexpected bet state' do
           allow(subject).to receive(:handle_unexpected_bet)
           subject.call
           expect(subject).to have_received(:handle_unexpected_bet)
-        end
-      end
-
-      context 'lost bet' do
-        let(:lost_bet) { create(:bet, :settled, result: false) }
-
-        subject { described_class.new(lost_bet) }
-
-        # TODO: Separate card will introduce refund processing
-        it 'ignores lose bet state' do
-          expect(subject).to receive(:handle_unexpected_bet).and_return(nil)
-          subject.call
         end
       end
     end
@@ -48,19 +36,17 @@ describe BetSettelement::Service do
 
       it 'handles settled win bet' do
         allow(subject).to receive(:handle_unexpected_bet)
-        allow(subject).to receive(:generate_requests)
-        allow(subject).to receive(:apply_requests_to_wallets)
+        allow(subject).to receive(:process_bet_outcome_in_wallets)
 
         subject.call
         expect(subject).not_to have_received(:handle_unexpected_bet)
-        expect(subject).to have_received(:generate_requests)
-        expect(subject).to have_received(:apply_requests_to_wallets)
+        expect(subject).to have_received(:process_bet_outcome_in_wallets)
       end
 
       xit 'handles settled refund for bet'
 
       it 'creates EntryRequest from bet' do
-        allow(subject).to receive(:apply_requests_to_wallets)
+        allow(WalletEntry::AuthorizationService).to receive(:call)
 
         subject.call
 

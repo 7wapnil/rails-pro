@@ -9,20 +9,14 @@ module BetSettelement
 
     def call
       return handle_unexpected_bet unless @bet.settled?
-      return unless @bet.result == true
 
-      generate_requests
-      apply_requests_to_wallets
+      process_bet_outcome_in_wallets
     end
 
     private
 
     def handle_unexpected_bet
       raise ArgumentError, 'BetSettelement::Service Settled bet expected'
-    end
-
-    def generate_requests
-      entry_request
     end
 
     def entry_request
@@ -37,8 +31,9 @@ module BetSettelement
       )
     end
 
-    def apply_requests_to_wallets
-      WalletEntry::AuthorizationService.call(@entry_request)
+    def process_bet_outcome_in_wallets
+      return unless @bet.result == true
+      WalletEntry::AuthorizationService.call(entry_request)
     end
   end
 end
