@@ -63,5 +63,22 @@ describe 'GraphQL#markets' do
         expect(result['data']['markets'].count).to eq(3)
       end
     end
+
+    context 'single market' do
+      let(:market) { create(:market, event: event) }
+      let(:query) do
+        %({ markets (
+              eventId: #{event.id},
+              id: #{market.id}
+          ) {
+              id
+        } })
+      end
+
+      it 'returns limited markets' do
+        expect(result['data']['markets'].count).to eq(1)
+        expect(result['data']['markets'][0]['id']).to eq(market.id.to_s)
+      end
+    end
   end
 end

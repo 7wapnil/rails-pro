@@ -20,6 +20,7 @@ module Events
               .group('events.id')
               .order(:start_at)
 
+      query = query.where(id: filter[:id]) if filter[:id]
       if filter[:titleId]
         query = query.where(title: Title.find_by(id: filter[:titleId]))
       end
