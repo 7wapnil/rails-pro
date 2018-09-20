@@ -11,14 +11,13 @@ module BetSettelement
     def call
       return handle_unexpected_bet unless @bet.settled?
 
-      entry_requests
-      apply_requests_to_wallets
+      process_bet_outcome_in_wallets
     end
 
     private
 
     def handle_unexpected_bet
-      raise 'BetSettlement was attempted to be used on non-settled bet'
+      raise ArgumentError, 'BetSettelement::Service Settled bet expected'
     end
 
     def entry_requests
@@ -51,8 +50,8 @@ module BetSettelement
       )
     end
 
-    def apply_requests_to_wallets
-      @entry_requests.each do |entry_request|
+    def process_bet_outcome_in_wallets
+      entry_requests.each do |entry_request|
         WalletEntry::AuthorizationService.call(entry_request)
       end
     end

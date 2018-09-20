@@ -20,7 +20,7 @@ describe BetSettelement::Service do
 
         subject { described_class.new(invalid_bet) }
 
-        it 'ignores unexpected bet state' do
+        it 'raises on unexpected bet state' do
           expect(subject).to receive(:handle_unexpected_bet)
           subject.call
         end
@@ -35,8 +35,7 @@ describe BetSettelement::Service do
 
         it 'settles bet' do
           expect(subject).not_to receive(:handle_unexpected_bet)
-          expect(subject).to receive(:entry_requests)
-          expect(subject).to receive(:apply_requests_to_wallets)
+          expect(subject).to receive(:process_bet_outcome_in_wallets)
 
           subject.call
         end
@@ -47,7 +46,7 @@ describe BetSettelement::Service do
 
         context 'preparing entry requests' do
           before do
-            allow(subject).to receive(:apply_requests_to_wallets)
+            allow(WalletEntry::AuthorizationService).to receive(:call)
             subject.call
           end
 
@@ -92,8 +91,7 @@ describe BetSettelement::Service do
 
         it 'settles bet' do
           expect(subject).not_to receive(:handle_unexpected_bet)
-          expect(subject).to receive(:entry_requests)
-          expect(subject).to receive(:apply_requests_to_wallets)
+          expect(subject).to receive(:process_bet_outcome_in_wallets)
 
           subject.call
         end
@@ -108,7 +106,7 @@ describe BetSettelement::Service do
 
         context 'preparing entry requests' do
           before do
-            allow(subject).to receive(:apply_requests_to_wallets)
+            allow(WalletEntry::AuthorizationService).to receive(:call)
             subject.call
           end
 
@@ -171,8 +169,7 @@ describe BetSettelement::Service do
 
         it 'settles bet' do
           expect(subject).not_to receive(:handle_unexpected_bet)
-          expect(subject).to receive(:entry_requests)
-          expect(subject).to receive(:apply_requests_to_wallets)
+          expect(subject).to receive(:process_bet_outcome_in_wallets)
 
           subject.call
         end
@@ -183,7 +180,7 @@ describe BetSettelement::Service do
 
         context 'preparing entry requests' do
           before do
-            allow(subject).to receive(:apply_requests_to_wallets)
+            allow(WalletEntry::AuthorizationService).to receive(:call)
             subject.call
           end
 
@@ -221,9 +218,5 @@ describe BetSettelement::Service do
         end
       end
     end
-  end
-
-  describe 'handle_unexpected_bet' do
-    xit 'handles unexpected bet'
   end
 end

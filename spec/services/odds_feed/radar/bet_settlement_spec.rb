@@ -26,7 +26,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
   let(:odd_fourth) do
     create(:odd, external_id: 'sr:match:3432:13:sr:player:111')
   end
-  let(:odd_five) do
+  let(:odd_fifth) do
     create(:odd, external_id: 'sr:match:3432:13:sr:player:456')
   end
 
@@ -61,7 +61,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
       create_list(:bet, 2, :pending, odd: odd_secondary, currency: currency)
       create_list(:bet, 4, :pending, odd: odd_third, currency: currency)
       create_list(:bet, 7, :pending, odd: odd_fourth, currency: currency)
-      create_list(:bet, 3, :pending, odd: odd_five, currency: currency)
+      create_list(:bet, 3, :pending, odd: odd_fifth, currency: currency)
 
       subject.handle
     end
