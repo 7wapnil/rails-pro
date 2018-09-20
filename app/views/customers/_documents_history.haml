@@ -8,6 +8,6 @@
           %td= file.filename
           %td= file.created_at
           %td= link_to t(:view),
-                      rails_blob_path(file),
+                      rails_blob_path(file.document),
                       class: 'btn btn-outline-dark text-right',
                       target: :blank

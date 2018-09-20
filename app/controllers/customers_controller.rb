@@ -34,16 +34,15 @@ class CustomersController < ApplicationController
     @customer = find_customer
   end
 
-  # def documents_history
-  #   @customer = find_customer
-  #   @document_type = document_history_type
-  #   type_included = Customer::ATTACHMENT_TYPES.include?(
-  #     @document_type.to_sym
-  #   )
-  #   raise ArgumentError, 'Document type not supported' unless type_included
-  #
-  #   @files = @customer.send(@document_type)
-  # end
+  def documents_history
+    @customer = find_customer
+    @document_type = document_history_type
+    type_included = VerificationDocument::KINDS.include?(
+      @document_type.to_sym
+    )
+    raise ArgumentError, 'Document type not supported' unless type_included
+    @files = @customer.verification_documents.send(@document_type)
+  end
 
   def upload_documents
     @customer = find_customer
