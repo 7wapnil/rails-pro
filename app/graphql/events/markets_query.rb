@@ -6,6 +6,7 @@ module Events
 
     description 'Get all markets list'
 
+    argument :id, types.ID
     argument :eventId, types.ID
     argument :priority, types.Int
 
@@ -19,8 +20,9 @@ module Events
       query = Market
               .where(event_id: event_id)
               .order(priority: :desc)
-              .limit(args[:limit])
+      query = query.where(id: args[:id]) if args[:id]
       query = query.where(priority: args[:priority]) if args[:priority]
+      query = query.limit(args[:limit]) if args[:limit]
       query.all
     end
   end

@@ -39,5 +39,21 @@ describe 'GraphQL#titles' do
         expect(result['data']['titles'].count).to eq(5)
       end
     end
+
+    context 'single title' do
+      let(:title) { create(:title) }
+      let(:query) do
+        %({
+            titles (id: #{title.id}) {
+              id
+            }
+        })
+      end
+
+      it 'returns single title' do
+        expect(result['data']['titles'].count).to eq(1)
+        expect(result['data']['titles'][0]['id']).to eq(title.id.to_s)
+      end
+    end
   end
 end

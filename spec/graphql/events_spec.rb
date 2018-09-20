@@ -133,6 +133,22 @@ describe 'GraphQL#events' do
       end
     end
 
+    context 'single event' do
+      let(:event) { create(:event_with_odds) }
+      let(:query) do
+        %({ events (
+              filter: { id: #{event.id} }
+          ) {
+              id
+        } })
+      end
+
+      it 'returns event with defined id' do
+        expect(result['data']['events'].count).to eq(1)
+        expect(result['data']['events'][0]['id']).to eq(event.id.to_s)
+      end
+    end
+
     context 'in play' do
       let(:query) do
         %({ events (
