@@ -53,9 +53,21 @@ FactoryBot.define do
     customer
     odd
     currency
-    amount 10
-    odd_value 1.85
+    amount { Faker::Number.decimal(2, 2) }
+    odd_value { odd.value }
     status Bet.statuses[:pending]
+
+    trait :pending do
+      status Bet.statuses[:pending]
+    end
+
+    trait :settled do
+      status Bet.statuses[:settled]
+    end
+
+    trait :win do
+      result true
+    end
   end
 
   # System
@@ -201,7 +213,7 @@ FactoryBot.define do
     market
     name 'MiTH'
     won true
-    value 1.85
+    value { Faker::Number.decimal(1, 2) }
     status 0
   end
 

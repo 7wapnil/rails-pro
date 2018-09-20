@@ -1,9 +1,13 @@
+require 'services/service_spec'
+
 describe BetPlacement::Service do
   let(:bet) { create(:bet) }
 
   subject { described_class.new(bet) }
 
   let(:bet_request) { subject.send(:entry_request) }
+
+  it_behaves_like 'callable service'
 
   it 'creates an entry request from bet' do
     expect(bet_request).to be_an EntryRequest
