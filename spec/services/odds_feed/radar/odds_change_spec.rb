@@ -2,6 +2,9 @@ describe OddsFeed::Radar::OddsChangeHandler do
   let(:payload) do
     XmlParser.parse(file_fixture('odds_change_message.xml').read)
   end
+  let(:payload_single_market) do
+    XmlParser.parse(file_fixture('odds_change_with_single_market.xml').read)
+  end
   let(:event_id) { payload['odds_change']['event_id'] }
   let(:event) { build(:event, title: build(:title), external_id: event_id) }
   let!(:timestamp) { Time.now + 60 }
@@ -93,5 +96,17 @@ describe OddsFeed::Radar::OddsChangeHandler do
       .to have_received(:generate_market!)
       .exactly(5)
       .times
+  end
+
+  context 'market data' do
+    subject { OddsFeed::Radar::OddsChangeHandler.new(payload_single_market) }
+
+    it 'calls market generator for single market' do
+      subject.handle
+      expect(subject)
+        .to have_received(:generate_market!)
+        .with(anything, payload_single_market['odds_change']['odds']['market'])
+        .once
+    end
   end
 end
