@@ -1,16 +1,6 @@
 class Customer < ApplicationRecord
   include Person
 
-  ATTACHMENT_TYPES = %i[
-    personal_ids
-    utility_bills
-    bank_statements
-    credit_cards
-    other_documents
-  ].freeze
-
-  MAX_ATTACHMENT_SIZE = 2.megabytes.freeze
-
   acts_as_paranoid
 
   enum gender: {
@@ -41,22 +31,7 @@ class Customer < ApplicationRecord
   has_many :initiated_entry_requests, as: :initiator, class_name: 'EntryRequest'
   has_one :address
   has_and_belongs_to_many :labels
-
-  ATTACHMENT_TYPES.each do |attachment_type|
-    has_many_attached attachment_type
-  end
-
-  ATTACHMENT_TYPES.each do |attachment_type|
-    validates attachment_type,
-              file_size: { less_than_or_equal_to: MAX_ATTACHMENT_SIZE },
-              file_content_type: { allow: %w[image/jpeg
-                                             image/png
-                                             image/jpg
-                                             application/pdf] },
-              if: proc { |customer|
-                customer.send(attachment_type).attached?
-              }
-  end
+  has_many :verification_documents
 
   # Devise Validatable module creates all needed
   # validations for a user email and password.
@@ -72,4 +47,10 @@ class Customer < ApplicationRecord
   validates :email, uniqueness: { case_sensitive: false }
 
   ransack_alias :ip_address, :last_sign_in_ip_or_current_sign_in_ip
+
+  VerificationDocument::KINDS.keys.each do |kind|
+    define_method(kind) do
+      verification_documents.where(kind: kind).last
+    end
+  end
 end

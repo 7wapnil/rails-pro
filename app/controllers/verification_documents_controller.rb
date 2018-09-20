@@ -1,4 +1,4 @@
-class CustomerAttachmentController < ApiController
+class VerificationDocumentsController < ApiController
   protect_from_forgery with: :null_session
 
   respond_to :json
@@ -10,8 +10,8 @@ class CustomerAttachmentController < ApiController
     Rails.logger.debug("Uploading attachments for customer #{current_customer}")
     Rails.logger.debug("received attachments #{attachments_from_params.keys}")
 
-    attachments_from_params.each do |attachment_type, file|
-      current_customer.send(attachment_type).attach(file)
+    attachments_from_params.each do |attachment_kind, file|
+      current_customer.send(attachment_kind).attach(file)
     end
 
     render json: { success: true }
@@ -36,6 +36,6 @@ class CustomerAttachmentController < ApiController
   def attachments_from_params
     params
       .require(:attachments)
-      .permit(*Customer::ATTACHMENT_TYPES)
+      .permit(*VerificationDocument::ATTACHMENT_KINDS)
   end
 end
