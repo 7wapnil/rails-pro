@@ -221,6 +221,7 @@ ActiveRecord::Schema.define(version: 2018_09_19_073625) do
     t.json "payload"
     t.datetime "remote_updated_at"
     t.boolean "traded_live", default: false
+    t.integer "status", default: 0
     t.index ["external_id"], name: "index_events_on_external_id"
     t.index ["title_id"], name: "index_events_on_title_id"
   end

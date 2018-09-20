@@ -62,12 +62,12 @@ store:
       notify_on: failed
 
 deploy:
-  box: python:3.6-alpine
+  box: python:2.7-alpine
 
   steps:
     - script:
       name: install-linux-deps
-      code: apk add -qU openssh git curl
+      code: apk add -qU openssh git curl jq
 
     - capgemini/terraform-install:
       version: "0.11.8"
@@ -102,19 +102,40 @@ deploy:
             --overwrite
 
     - script:
+      name: prepare-migrations
+      code: |
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-web
+        terraform init
+        terraform workspace select $TARGET_ENV
+        terraform apply -auto-approve \
+            -target module.app.aws_ecs_task_definition.this
+        aws ecs describe-task-definition \
+            --query 'taskDefinition.containerDefinitions' \
+            --task-definition $(terraform output task_definition) > td.json
+        jq '.[].command=["rake","db:migrate"] | .[].cpu=50' td.json > $WERCKER_SOURCE_DIR/migrate.json
+
+    - 1science/aws-ecs:
+        key: $AWS_ACCESS_KEY_ID
+        secret: $AWS_SECRET_ACCESS_KEY
+        region: $AWS_DEFAULT_REGION
+        cluster-name: arcanebet
+        task-definition-name: backend-migrate
+        task-definition-file: $WERCKER_SOURCE_DIR/migrate.json
+
+    - script:
       name: terraform-apply
       code: |
-        cd $TERRAFORM_CONFIG_DIR/services/backend-web
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-web
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/services/backend-worker
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-worker
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/services/backend-listener
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-listener
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve

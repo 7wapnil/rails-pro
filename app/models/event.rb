@@ -1,5 +1,15 @@
 class Event < ApplicationRecord
+  after_create :emit_created
+  after_update :emit_updated
+
   UPDATABLE_ATTRIBUTES = %w[name description start_at end_at].freeze
+
+  STATUSES = {
+    not_started: 0,
+    started: 1,
+    ended: 2,
+    closed: 3
+  }.freeze
 
   belongs_to :title
   has_many :markets
@@ -7,6 +17,8 @@ class Event < ApplicationRecord
   has_many :event_scopes, through: :scoped_events
 
   validates :name, presence: true
+
+  enum status: STATUSES
 
   delegate :name, to: :title, prefix: true
 
@@ -42,5 +54,22 @@ class Event < ApplicationRecord
     return unless addition
     payload&.merge!(addition)
     self.payload = addition unless payload
+  end
+
+  private
+
+  def emit_created
+    WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_CREATED,
+                                    id: id.to_s)
+  end
+
+  def emit_updated
+    changes = {}
+    previous_changes.each do |attr, changed|
+      changes[attr.to_sym] = changed[1] unless attr == 'updated_at'
+    end
+    WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
+                                    id: id.to_s,
+                                    changes: changes)
   end
 end
