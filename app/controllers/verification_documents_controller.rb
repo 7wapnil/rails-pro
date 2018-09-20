@@ -10,8 +10,10 @@ class VerificationDocumentsController < ApiController
     Rails.logger.debug("Uploading attachments for customer #{current_customer}")
     Rails.logger.debug("received attachments #{attachments_from_params.keys}")
 
-    attachments_from_params.each do |attachment_kind, file|
-      current_customer.send(attachment_kind).attach(file)
+    attachments_from_params.each do |kind, file|
+      document = current_customer.verification_documents.build(kind: kind)
+      document.document.attach(file)
+      document.save!
     end
 
     render json: { success: true }
@@ -36,6 +38,6 @@ class VerificationDocumentsController < ApiController
   def attachments_from_params
     params
       .require(:attachments)
-      .permit(*VerificationDocument::ATTACHMENT_KINDS)
+      .permit(*VerificationDocument::KINDS.keys)
   end
 end
