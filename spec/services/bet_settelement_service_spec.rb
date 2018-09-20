@@ -27,16 +27,15 @@ describe BetSettelement::Service do
         end
       end
 
-      context 'lose bet' do
-        let(:lose_bet) { create(:bet, :settled, result: false) }
+      context 'lost bet' do
+        let(:lost_bet) { create(:bet, :settled, result: false) }
 
-        subject { described_class.new(lose_bet) }
+        subject { described_class.new(lost_bet) }
 
         # TODO: Separate card will introduce refund processing
         it 'ignores lose bet state' do
-          allow(subject).to receive(:handle_unexpected_bet)
+          expect(subject).to receive(:handle_unexpected_bet).and_return(nil)
           subject.call
-          expect(subject).to have_received(:handle_unexpected_bet)
         end
       end
     end
