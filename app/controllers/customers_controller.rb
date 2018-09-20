@@ -81,8 +81,4 @@ class CustomersController < ApplicationController
   def document_history_type
     params.require(:document_type)
   end
-
-  def document_history_type
-    params.require(:document_type)
-  end
 end
