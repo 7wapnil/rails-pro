@@ -41,8 +41,13 @@ module OddsFeed
         event.save!
       end
 
+      def markets_data
+        data = event_data['odds']['market']
+        data.is_a?(Array) ? data : [data]
+      end
+
       def generate_markets
-        event_data['odds']['market'].each do |market_data|
+        markets_data.each do |market_data|
           generate_market!(event, market_data)
         rescue StandardError => e
           Rails.logger.error e
