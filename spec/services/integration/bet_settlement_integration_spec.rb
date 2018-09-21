@@ -37,7 +37,7 @@ describe 'BetSettlementHandler integration' do
 
   let(:currency) { create(:currency) }
 
-  let!(:rule) do
+  let!(:rule_for_wins) do
     create(:entry_currency_rule,
            currency: currency,
            kind: EntryRequest.kinds[:win],
@@ -45,38 +45,58 @@ describe 'BetSettlementHandler integration' do
            max_amount: 1000)
   end
 
-  context 'single bets checks, wins check only' do
-    EXAMPLES = [
-      { name: 'entire win', odd_name: 'odd_entire_win',
-        odd_value: 1.65, stake: 22.4,
-        win: 36.96 },
-      { name: 'entire lose', odd_name: 'odd_entire_lose',
-        odd_value: 1.65, stake: 22.4,
-        win: nil },
-      { name: 'full refund', odd_name: 'odd_full_refund',
-        odd_value: 1.65, stake: 22.4,
-        win: nil },
-      { name: 'half win', odd_name: 'odd_half_win',
-        odd_value: 1.5, stake: 100,
-        win: 75 },
-      { name: 'half refund', odd_name: 'odd_lose_half_refund',
-        odd_value: 1.65, stake: 22.4,
-        win: nil }
-    ].freeze
+  let!(:rule_for_refunds) do
+    create(:entry_currency_rule,
+           currency: currency,
+           kind: EntryRequest.kinds[:refund],
+           min_amount: 1,
+           max_amount: 1000)
+  end
 
+  EXAMPLES = [
+    { name: 'entire win', odd_name: 'odd_entire_win',
+      odd_value: 1.65, stake: 22.4,
+      win: 36.96, refund: nil, records_count: 1 },
+    { name: 'entire lose', odd_name: 'odd_entire_lose',
+      odd_value: 1.65, stake: 22.4,
+      win: nil, refund: nil, records_count: 0 },
+    { name: 'full refund', odd_name: 'odd_full_refund',
+      odd_value: 1.65, stake: 22.4,
+      win: nil, refund: 22.4, records_count: 1 },
+    { name: 'half win, half refund', odd_name: 'odd_half_win',
+      odd_value: 1.5, stake: 100,
+      win: 75, refund: 50, records_count: 2 },
+    { name: 'lose, half refund', odd_name: 'odd_lose_half_refund',
+      odd_value: 1.65, stake: 22.4,
+      win: nil, refund: 11.2, records_count: 1 }
+  ].freeze
+
+  context 'single bets map checks, wins only' do
     EXAMPLES.each do |state|
-      it state[:name] do
-        odd = send(state[:odd_name])
-        odd.value = state[:odd_value]
-        create(:bet,
-               :pending, odd: odd, amount: state[:stake], currency: currency)
+      describe state[:name] do
+        before do
+          odd = send(state[:odd_name])
+          odd.value = state[:odd_value]
+          create(:bet,
+                 :pending, odd: odd, amount: state[:stake], currency: currency)
 
-        subject.handle
+          subject.handle
+        end
 
-        if state[:win].nil?
-          expect(BalanceEntry.count).to eq 0
-        else
-          expect(BalanceEntry.last.amount).to be_within(0.01).of(state[:win])
+        it 'creates correct number of balance entries' do
+          expect(BalanceEntry.all.length).to eq state[:records_count]
+        end
+
+        unless state[:win].nil?
+          it 'adds win to balance' do
+            expect(BalanceEntry.find_by(amount: state[:win])).to be_truthy
+          end
+        end
+
+        unless state[:refund].nil?
+          it 'adds refund to balance' do
+            expect(BalanceEntry.find_by(amount: state[:refund])).to be_truthy
+          end
         end
       end
     end
@@ -93,7 +113,6 @@ describe 'BetSettlementHandler integration' do
     expect(BalanceEntry.sum(&:amount)).to be_within(0.01).of(70)
   end
 
-  xit 'checks for refund amounts'
-  xit 'handles currency rules on win'
-  xit 'handles currency rules on refund'
+  xit 'handles currency rule violation on win'
+  xit 'handles currency rule violation on refund'
 end
