@@ -50,6 +50,19 @@ module OddsFeed
         request(route)
       end
 
+      def market_variants(market_id, variant_urn)
+        route = [
+          '/descriptions',
+          @language,
+          'markets',
+          market_id,
+          'variants',
+          variant_urn
+        ].join('/')
+
+        request(route)
+      end
+
       def request(path, method: :get)
         Rails.logger.debug "Requesting Radar API endpoint: #{path}"
         response = self.class.send(method, path, @options).parsed_response

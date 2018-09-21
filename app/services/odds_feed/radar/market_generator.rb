@@ -7,16 +7,21 @@ module OddsFeed
       end
 
       def generate
-        market = create_or_update_market!
-        generate_odds!(market)
+        create_or_update_market!
+        generate_odds!
       end
 
       private
 
+      def market
+        @market ||= Market.find_or_initialize_by(
+          external_id: external_id,
+          event: @event
+        )
+      end
+
       def create_or_update_market!
         Rails.logger.info "Updating market with external ID #{external_id}"
-        market = Market.find_or_initialize_by(external_id: external_id,
-                                              event: @event)
         market.assign_attributes(name: transpiler.market_name,
                                  status: market_status)
         market.save!
@@ -48,17 +53,17 @@ module OddsFeed
         }.stringify_keys
       end
 
-      def generate_odds!(market)
+      def generate_odds!
         return if @market_data['outcome'].nil?
         @market_data['outcome'].each do |odd_data|
-          generate_odd!(market, odd_data)
+          generate_odd!(odd_data)
         rescue StandardError => e
           Rails.logger.error e
           next
         end
       end
 
-      def generate_odd!(market, odd_data)
+      def generate_odd!(odd_data)
         odd_id = "#{market.external_id}:#{odd_data['id']}"
         Rails.logger.info "Updating odd with external ID #{odd_id}"
         odd = Odd.find_or_initialize_by(external_id: odd_id,

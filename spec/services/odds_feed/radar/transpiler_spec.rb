@@ -1,13 +1,13 @@
 describe OddsFeed::Radar::Transpiler do
   let(:event_payload) do
     {
-      'competitors': {
-        'competitor': [
-          { 'id': '1000', 'name': 'Player 1' },
-          { 'id': '1001', 'name': 'Player 2' }
+      'competitors' => {
+        'competitor' => [
+          { 'id' => '1000', 'name' => 'Player 1' },
+          { 'id' => '1001', 'name' => 'Player 2' }
         ]
       }
-    }.deep_stringify_keys
+    }
   end
   let(:event) { create(:event, payload: event_payload) }
   let(:market_id) { '1' }
@@ -34,30 +34,56 @@ describe OddsFeed::Radar::Transpiler do
     expect(subject.market_name).to eq('Set is 1, game is 2, point is 3')
   end
 
-  it 'returns transpiled odd name' do
-    create(:market_template,
-           external_id: market_id,
-           name: 'Market name',
-           payload: {
-             outcomes: {
-               outcome: [
-                 { 'id': '321', 'name': '{$competitor1} win game nr.{game}' }
-               ]
-             }
-           })
+  describe '#odd_name' do
+    it 'transpiles odd values from market template' do
+      create(:market_template,
+             external_id: market_id,
+             name: 'Market name',
+             payload: {
+               outcomes: {
+                 outcome: [
+                   { 'id': '321', 'name': '{$competitor1} win game nr.{game}' }
+                 ]
+               }
+             })
 
-    expect(subject.odd_name('321'))
-      .to eq('Player 1 win game nr.2')
-  end
+      expect(subject.odd_name('321'))
+        .to eq('Player 1 win game nr.2')
+    end
 
-  it 'returns transpiled odd name without outcomes' do
-    create(:market_template,
-           external_id: market_id,
-           name: 'Market name',
-           payload: {
-             outcomes: nil
-           })
+    it 'takes odd values from market variants API' do
+      subject.instance_variable_set(:@specifiers, 'variant=sr:exact_goals:9+')
+      allow(subject).to receive(:variant_odds) do
+        {
+          'outcomes' => {
+            'outcome' => [
+              { 'id' => 'sr:exact_goals:9+_2:104', 'name' => '0-1' },
+              { 'id' => 'sr:exact_goals:9+_2:105', 'name' => '2' }
+            ]
+          }
+        }
+      end
 
-    expect { subject.odd_name('321') }.to raise_error(StandardError)
+      create(:market_template,
+             external_id: market_id,
+             name: 'Market name',
+             payload: { outcomes: nil })
+
+      expect(subject.odd_name('sr:exact_goals:9+_2:104')).to eq('0-1')
+    end
+
+    it 'raises an error' do
+      create(:market_template,
+             external_id: market_id,
+             name: 'Market name',
+             payload: {
+               outcomes: nil
+             })
+
+      expect { subject.odd_name('321') }.to raise_error(
+        StandardError,
+        'Odd template ID 321 not found'
+      )
+    end
   end
 end

@@ -5,14 +5,17 @@ module OddsFeed
         @event = event
         @market_id = market_id
         @specifiers = specifiers
+        @client = Client.new
       end
 
       def market_name
-        transpile(template.name)
+        transpile(market_template.name)
       end
 
       def odd_name(odd_id)
-        template = odd_template(odd_id)
+        collection = variant? ? variant_odds : template_odds
+        template = odd_template(collection, odd_id)
+
         raise "Odd template ID #{odd_id} not found" if template.nil?
         transpile(template['name'])
       end
@@ -28,8 +31,16 @@ module OddsFeed
 
       private
 
+      def variant?
+        market_template.payload['outcomes'].nil? && variant_value.present?
+      end
+
       def token_value(token)
         tokens[token] || ''
+      end
+
+      def variant_value
+        token_value('variant')
       end
 
       def tokens
@@ -46,17 +57,28 @@ module OddsFeed
         tokens
       end
 
-      def template
-        @template ||= MarketTemplate.find_by!(external_id: @market_id)
+      def market_template
+        @market_template ||= MarketTemplate.find_by!(external_id: @market_id)
       end
 
-      def odd_template(odd_id)
-        return if template.payload['outcomes'].nil?
-        return if template.payload['outcomes']['outcome'].empty?
-        odd = template.payload['outcomes']['outcome'].find do |outcome|
+      def template_odds
+        market_template.payload
+      end
+
+      def variant_odds
+        @variant_odds ||= @client.market_variants(
+          @market_id,
+          variant_value
+        )['market_descriptions']['market']
+      end
+
+      def odd_template(collection, odd_id)
+        return if collection['outcomes'].nil?
+        return if collection['outcomes']['outcome'].empty?
+
+        collection['outcomes']['outcome'].find do |outcome|
           outcome['id'] == odd_id
         end
-        odd
       end
     end
   end
