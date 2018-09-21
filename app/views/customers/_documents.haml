@@ -2,13 +2,13 @@
   = form_tag upload_documents_customer_path, multipart: true do
     %table.table.table-striped
       %tbody
-        - Customer::ATTACHMENT_TYPES.each do |attachment_type|
-          - attachment = attachment_for(@customer, attachment_type)
+        - VerificationDocument::KINDS.keys.each do |kind|
+          - attachment = attachment_for(@customer, kind)
           %tr
-            %td= t(attachment_type)
+            %td= t(kind)
             %td= attachment.filename
             %td.text-right
-              - if attachment.is_a? ActiveStorage::Attachment
+              - if attachment.is_a? VerificationDocument
                 .dropdown
                   %button#dropdownMenuButton.btn.btn-outline-dark.dropdown-toggle{ aria: { expanded: false, haspopup: true },
                                                                                    'data-toggle' => 'dropdown',
@@ -16,14 +16,14 @@
                     = t(:action)
                   .dropdown-menu{ 'aria-labelledby' => 'dropdownMenuButton' }
                     = link_to t(:view),
-                              rails_blob_path(attachment),
+                              rails_blob_path(attachment.document),
                               class: 'dropdown-item',
                               target: :blank
                     = link_to t(:confirm), '#', class: 'dropdown-item disabled'
                     = link_to t(:reject), '#', class: 'dropdown-item disabled'
-                    = link_to t(:history), '#', class: 'dropdown-item disabled'
+                    = link_to t(:history), documents_history_customer_path(id: @customer.id, document_type: kind), class: 'dropdown-item'
               - else
-                = file_field_tag attachment_type, accept: 'image/jpeg, image/png, image/gif, application/pdf'
+                = file_field_tag kind, accept: 'image/jpeg, image/png, image/gif, application/pdf'
     .row
       .col.text-right
         = submit_tag t(:upload), class: 'btn btn-secondary'

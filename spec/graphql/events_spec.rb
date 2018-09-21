@@ -133,10 +133,26 @@ describe 'GraphQL#events' do
       end
     end
 
+    context 'single event' do
+      let(:event) { create(:event_with_odds) }
+      let(:query) do
+        %({ events (
+              filter: { id: #{event.id} }
+          ) {
+              id
+        } })
+      end
+
+      it 'returns event with defined id' do
+        expect(result['data']['events'].count).to eq(1)
+        expect(result['data']['events'][0]['id']).to eq(event.id.to_s)
+      end
+    end
+
     context 'in play' do
       let(:query) do
         %({ events (
-              inPlay: true
+              filter: { inPlay: true }
           ) {
               id
         } })
@@ -154,6 +170,38 @@ describe 'GraphQL#events' do
       end
 
       it 'returns in play events' do
+        expect(result['data']['events'].count).to eq(5)
+      end
+    end
+
+    context 'title' do
+      let(:query) do
+        %({ events (
+              filter: { titleId: #{title.id} }
+          ) {
+              id
+        } })
+      end
+
+      before do
+        other_title = create(:title)
+        create_list(
+          :event_with_odds,
+          5,
+          title: title,
+          start_at: 5.minutes.ago,
+          end_at: nil
+        )
+        create_list(
+          :event_with_odds,
+          5,
+          title: other_title,
+          start_at: 5.minutes.ago,
+          end_at: nil
+        )
+      end
+
+      it 'returns events by title ID' do
         expect(result['data']['events'].count).to eq(5)
       end
     end

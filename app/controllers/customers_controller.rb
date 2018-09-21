@@ -34,10 +34,22 @@ class CustomersController < ApplicationController
     @customer = find_customer
   end
 
+  def documents_history
+    @customer = find_customer
+    @document_type = document_history_type
+    type_included = VerificationDocument::KINDS.include?(
+      @document_type.to_sym
+    )
+    raise ArgumentError, 'Document type not supported' unless type_included
+    @files = @customer.verification_documents.send(@document_type)
+  end
+
   def upload_documents
     @customer = find_customer
-    documents_from_params.each do |attachment_type, file|
-      @customer.send(attachment_type).attach(file)
+    documents_from_params.each do |kind, file|
+      document = @customer.verification_documents.build(kind: kind)
+      document.document.attach(file)
+      document.save!
     end
     redirect_to documents_customer_path(@customer)
   end
@@ -63,6 +75,10 @@ class CustomersController < ApplicationController
 
   def documents_from_params
     params
-      .permit(*Customer::ATTACHMENT_TYPES)
+      .permit(*VerificationDocument::KINDS)
+  end
+
+  def document_history_type
+    params.require(:document_type)
   end
 end

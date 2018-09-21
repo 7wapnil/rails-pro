@@ -25,7 +25,6 @@ module OddsFeed
         market.assign_attributes(name: transpiler.market_name,
                                  status: market_status)
         market.save!
-        emit_market_update
         market
       end
 
@@ -39,19 +38,6 @@ module OddsFeed
 
       def specifiers
         @market_data['specifiers'] || ''
-      end
-
-      def emit_market_update
-        return unless market.saved_changes.keys.any? do |i|
-          %w[name priority status].include? i
-        end
-
-        WebSocket::Client.instance.emit(WebSocket::Signals::UPDATE_MARKET,
-                                        id: market.id.to_s,
-                                        eventId: market.event.id.to_s,
-                                        name: market.name,
-                                        priority: market.priority,
-                                        status: market.status)
       end
 
       def market_status
@@ -86,16 +72,6 @@ module OddsFeed
                               status: odd_data['active'].to_i,
                               value: odd_data['odds'])
         odd.save!
-        emit_odd_update(odd)
-      end
-
-      def emit_odd_update(odd)
-        WebSocket::Client.instance.emit(WebSocket::Signals::ODD_CHANGE,
-                                        id: odd.id.to_s,
-                                        marketId: odd.market.id.to_s,
-                                        eventId: odd.market.event.id.to_s,
-                                        name: odd.name,
-                                        value: odd.value)
       end
 
       def transpiler

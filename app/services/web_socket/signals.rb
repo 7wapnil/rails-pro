@@ -1,8 +1,11 @@
 module WebSocket
   class Signals
-    UPDATE_EVENT = 'updateEvent'.freeze
-    UPDATE_MARKET = 'updateMarket'.freeze
-    ODD_CHANGE = 'oddChange'.freeze
+    EVENT_CREATED = 'eventCreated'.freeze
+    EVENT_UPDATED = 'eventUpdated'.freeze
+    MARKET_CREATED = 'marketCreated'.freeze
+    MARKET_UPDATED = 'marketUpdated'.freeze
+    ODD_CREATED = 'oddCreated'.freeze
+    ODD_UPDATED = 'oddUpdated'.freeze
     BET_SETTLED = 'betSettled'.freeze
     BET_CANCELLED = 'betCancelled'.freeze
   end
