@@ -1,5 +1,5 @@
 module BetPlacement
-  class Service < ApplicationService
+  class SubmissionService < ApplicationService
     ENTRY_REQUEST_KIND = EntryRequest.kinds[:bet]
     ENTRY_REQUEST_MODE = EntryRequest.modes[:sports_ticket]
 
@@ -9,7 +9,7 @@ module BetPlacement
 
     def call
       @entry = WalletEntry::AuthorizationService.call(entry_request)
-      update_bet_from_request!
+      update_bet_from_request! if @entry_request.failed?
       @bet
     end
 

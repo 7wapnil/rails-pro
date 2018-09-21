@@ -1,6 +1,6 @@
 require 'services/service_spec'
 
-describe BetPlacement::Service do
+describe BetPlacement::SubmissionService do
   let(:bet) { create(:bet) }
 
   subject { described_class.new(bet) }
@@ -11,13 +11,17 @@ describe BetPlacement::Service do
 
   it 'creates an entry request from bet' do
     expect(bet_request).to be_an EntryRequest
-    expect(bet_request.amount).to eq(-bet.amount)
-    expect(bet_request.currency).to eq bet.currency
-    expect(bet_request.kind).to eq 'bet'
-    expect(bet_request.mode).to eq 'sports_ticket'
-    expect(bet_request.initiator).to eq bet.customer
-    expect(bet_request.customer).to eq bet.customer
-    expect(bet_request.origin).to eq bet
+
+    expect(bet_request)
+      .to have_attributes(
+        amount: -bet.amount,
+        currency: bet.currency,
+        kind: 'bet',
+        mode: 'sports_ticket',
+        initiator: bet.customer,
+        customer: bet.customer,
+        origin: bet
+      )
   end
 
   it 'calls WalletEntry::Service with entry request' do
