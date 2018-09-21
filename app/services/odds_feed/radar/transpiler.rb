@@ -9,7 +9,7 @@ module OddsFeed
       end
 
       def market_name
-        transpile(template.name)
+        transpile(market_template.name)
       end
 
       def odd_name(odd_id)
@@ -32,7 +32,7 @@ module OddsFeed
       private
 
       def variant?
-        template.payload['outcomes'].nil? && variant_value.present?
+        market_template.payload['outcomes'].nil? && variant_value.present?
       end
 
       def token_value(token)
@@ -57,12 +57,12 @@ module OddsFeed
         tokens
       end
 
-      def template
-        @template ||= MarketTemplate.find_by!(external_id: @market_id)
+      def market_template
+        @market_template ||= MarketTemplate.find_by!(external_id: @market_id)
       end
 
       def template_odds
-        template.payload
+        market_template.payload
       end
 
       def variant_odds
