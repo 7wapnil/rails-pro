@@ -57,42 +57,8 @@ describe OddsFeed::Radar::Transpiler do
         {
           'outcomes' => {
             'outcome' => [
-              {
-                'id' => 'sr:exact_goals:9+_2:104',
-                'name' => '0-1'
-              },
-              {
-                'id' => 'sr:exact_goals:9+_2:105',
-                'name' => '2'
-              },
-              {
-                'id' => 'sr:exact_goals:9+_2:106',
-                'name' => '3'
-              },
-              {
-                'id' => 'sr:exact_goals:9+_2:107',
-                'name' => '4'
-              },
-              {
-                'id' => 'sr:exact_goals:9+_2:108',
-                'name' => '5'
-              },
-              {
-                'id' => 'sr:exact_goals:9+_2:109',
-                'name' => '6'
-              },
-              {
-                'id' => 'sr:exact_goals:9+_2:110',
-                'name' => '7'
-              },
-              {
-                'id' => 'sr:exact_goals:9+_2:111',
-                'name' => '8'
-              },
-              {
-                'id' => 'sr:exact_goals:9+_2:112',
-                'name' => '9+'
-              }
+              { 'id' => 'sr:exact_goals:9+_2:104', 'name' => '0-1' },
+              { 'id' => 'sr:exact_goals:9+_2:105', 'name' => '2' }
             ]
           }
         }
