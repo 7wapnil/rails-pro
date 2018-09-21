@@ -43,8 +43,7 @@ module OddsFeed
 
       def markets_data
         data = event_data['odds']['market']
-        return data if data.is_a?(Array)
-        [data]
+        data.is_a?(Array) ? data : [data]
       end
 
       def generate_markets
