@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_18_114039) do
+ActiveRecord::Schema.define(version: 2018_09_19_073625) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -307,6 +307,15 @@ ActiveRecord::Schema.define(version: 2018_09_18_114039) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
 
+  create_table "verification_documents", force: :cascade do |t|
+    t.integer "customer_id"
+    t.string "kind"
+    t.integer "status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_verification_documents_on_customer_id"
+  end
+
   create_table "wallets", force: :cascade do |t|
     t.bigint "customer_id"
     t.decimal "amount", precision: 8, scale: 2, default: "0.0"
@@ -337,6 +346,7 @@ ActiveRecord::Schema.define(version: 2018_09_18_114039) do
   add_foreign_key "odds", "markets"
   add_foreign_key "scoped_events", "event_scopes"
   add_foreign_key "scoped_events", "events"
+  add_foreign_key "verification_documents", "customers"
   add_foreign_key "wallets", "currencies"
   add_foreign_key "wallets", "customers"
 end

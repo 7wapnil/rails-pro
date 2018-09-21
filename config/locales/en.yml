@@ -110,6 +110,11 @@ en:
     other_documents: Other Documents
     currency: Currency
     authorized_at: Authorized at
+    personal_id: Personal Id's
+    utility_bill: Utility Bills
+    bank_statement: Bank Statements
+    credit_card: Credit Cards
+    other_document: Other Documents
 
   documents:
     history_title: "Files history: %{document_type}"
