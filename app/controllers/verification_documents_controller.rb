@@ -11,7 +11,8 @@ class VerificationDocumentsController < ApiController
     Rails.logger.debug("received attachments #{attachments_from_params.keys}")
 
     attachments_from_params.each do |kind, file|
-      document = current_customer.verification_documents.build(kind: kind)
+      document = current_customer.verification_documents.build(kind: kind,
+                                                               status: :pending)
       document.document.attach(file)
       document.save!
     end

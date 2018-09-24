@@ -18,6 +18,9 @@ Rails.application.routes.draw do
       post :upload_documents
       scope '/documents' do
         root to: 'customers#documents', as: :documents
+        get '/status',
+            to: 'customers#update_document_status',
+            as: :update_document_status
         get '/:document_type',
             to: 'customers#documents_history',
             as: :documents_history
