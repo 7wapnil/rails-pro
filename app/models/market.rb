@@ -27,12 +27,8 @@ class Market < ApplicationRecord
 
   validates :name, :priority, :status, presence: true
   validates_with MarketStateValidator, restrictions: [
-    %i[active settled],
     %i[active cancelled],
-    %i[inactive suspended],
     %i[inactive cancelled],
-    %i[suspended settled],
-    %i[suspended cancelled],
     %i[settled active],
     %i[settled inactive],
     %i[settled suspended],

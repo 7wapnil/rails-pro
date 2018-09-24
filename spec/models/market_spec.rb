@@ -36,12 +36,8 @@ describe Market do
   end
 
   [
-    %i[active settled],
     %i[active cancelled],
-    %i[inactive suspended],
     %i[inactive cancelled],
-    %i[suspended settled],
-    %i[suspended cancelled],
     %i[settled active],
     %i[settled inactive],
     %i[settled suspended],
@@ -62,6 +58,9 @@ describe Market do
   end
 
   [
+    %i[suspended settled],
+    %i[suspended cancelled],
+    %i[active settled],
     %i[active inactive],
     %i[active suspended],
     %i[active handed_over],
@@ -72,7 +71,8 @@ describe Market do
     %i[suspended inactive],
     %i[suspended handed_over],
     %i[settled handed_over],
-    %i[cancelled handed_over]
+    %i[cancelled handed_over],
+    %i[inactive suspended]
   ].each do |initial_state, new_state|
     it "allows switching from '#{initial_state}' to '#{new_state}'" do
       market = create(:market, status: Market.statuses[initial_state])
