@@ -7,6 +7,7 @@
           %tr
             %td= t(kind)
             %td= attachment.filename
+            %td= attachment.status
             %td.text-right
               - if attachment.is_a? VerificationDocument
                 .dropdown
@@ -19,8 +20,8 @@
                               rails_blob_path(attachment.document),
                               class: 'dropdown-item',
                               target: :blank
-                    = link_to t(:confirm), '#', class: 'dropdown-item disabled'
-                    = link_to t(:reject), '#', class: 'dropdown-item disabled'
+                    = link_to t(:confirm), update_document_status_customer_path(status: :confirmed, document_type: kind), class: 'dropdown-item'
+                    = link_to t(:reject), update_document_status_customer_path(status: :rejected, document_type: kind), class: 'dropdown-item'
                     = link_to t(:history), documents_history_customer_path(id: @customer.id, document_type: kind), class: 'dropdown-item'
               - else
                 = file_field_tag kind, accept: 'image/jpeg, image/png, image/gif, application/pdf'

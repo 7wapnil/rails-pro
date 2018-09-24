@@ -36,7 +36,7 @@ class CustomersController < ApplicationController
 
   def documents_history
     @customer = find_customer
-    @document_type = document_history_type
+    @document_type = document_type
     type_included = VerificationDocument::KINDS.include?(
       @document_type.to_sym
     )
@@ -47,11 +47,19 @@ class CustomersController < ApplicationController
   def upload_documents
     @customer = find_customer
     documents_from_params.each do |kind, file|
-      document = @customer.verification_documents.build(kind: kind)
+      document = @customer.verification_documents.build(kind: kind,
+                                                        status: :pending)
       document.document.attach(file)
       document.save!
     end
     redirect_to documents_customer_path(@customer)
+  end
+
+  def update_document_status
+    VerificationDocument
+      .where(kind: document_type)
+      .update(status: document_status_code)
+    redirect_to documents_customer_path(find_customer)
   end
 
   def update_labels
@@ -78,7 +86,11 @@ class CustomersController < ApplicationController
       .permit(*VerificationDocument::KINDS)
   end
 
-  def document_history_type
+  def document_type
     params.require(:document_type)
+  end
+
+  def document_status_code
+    params.require(:status)
   end
 end
