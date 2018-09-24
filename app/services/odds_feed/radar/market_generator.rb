@@ -21,9 +21,11 @@ module OddsFeed
       end
 
       def create_or_update_market!
-        Rails.logger.info "Updating market with external ID #{external_id}"
-        market.assign_attributes(name: transpiler.market_name,
-                                 status: market_status)
+        attributes = { name: transpiler.market_name,
+                       status: market_status }
+        msg = "Updating market with external ID #{external_id}, #{attributes}"
+        Rails.logger.info msg
+        market.assign_attributes(attributes)
         market.save!
         market
       end
@@ -46,10 +48,10 @@ module OddsFeed
 
       def status_map
         {
-          '-2': Market::STATUSES[:handed_over],
-          '-1': Market::STATUSES[:suspended],
-          '0': Market::STATUSES[:inactive],
-          '1': Market::STATUSES[:active]
+          '-2': :handed_over,
+          '-1': :suspended,
+          '0': :inactive,
+          '1': :active
         }.stringify_keys
       end
 
