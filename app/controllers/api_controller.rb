@@ -1,4 +1,6 @@
 class ApiController < ActionController::Base
+  skip_before_action :verify_authenticity_token
+
   def current_customer
     return nil if request.headers['Authorization'].blank?
     token = request.headers['Authorization'].split(' ').last
