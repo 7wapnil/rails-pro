@@ -29,17 +29,6 @@ describe Mts::Connection do
         end
       end
     end
-
-    describe '#connection' do
-      it 'creates new instance of connection and pass config' do
-        expect(subject).to receive(:new).with(example_config).and_call_original
-        subject.connection(example_config)
-      end
-      it 'calls instance method connecton' do
-        expect_any_instance_of(subject).to receive(:connection)
-        subject.connection
-      end
-    end
   end
 
   describe '.connection' do
@@ -54,6 +43,34 @@ describe Mts::Connection do
       2.times do
         conn.connection
       end
+    end
+  end
+
+  describe '.opened_connection' do
+    it 'returns opened connection for new connection' do
+      allow(subject.connection).to receive(:open?).and_return(false)
+
+      expect(subject.connection).to receive(:start).and_return(:connection)
+
+      expect(subject.opened_connection).to eq(:connection)
+    end
+
+    it 'returns existing connection for opened connection' do
+      connection_stub = double
+      allow(subject).to receive(:connection).and_return(connection_stub)
+      allow(connection_stub).to receive(:open?).and_return(true)
+
+      expect(subject.connection).to_not receive(:start)
+
+      expect(subject.opened_connection).to eq(connection_stub)
+    end
+  end
+
+  describe '.within_connection' do
+    it 'passes control with opened_connection argument' do
+      allow(subject).to receive(:opened_connection).and_return(:connection)
+      expect { |b| subject.within_connection(&b) }
+        .to yield_with_args(:connection)
     end
   end
 end

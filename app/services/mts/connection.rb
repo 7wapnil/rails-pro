@@ -7,12 +7,16 @@ module Mts
       @config = config || default_config
     end
 
-    def self.connection(config = nil)
-      new(config).connection
-    end
-
     def connection
       @connection ||= Bunny.new(@config)
+    end
+
+    def opened_connection
+      connection.open? ? connection : connection.start
+    end
+
+    def within_connection
+      yield(opened_connection)
     end
 
     private
