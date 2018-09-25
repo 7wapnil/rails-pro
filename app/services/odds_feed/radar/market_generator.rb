@@ -67,12 +67,15 @@ module OddsFeed
 
       def generate_odd!(odd_data)
         odd_id = "#{market.external_id}:#{odd_data['id']}"
-        Rails.logger.info "Updating odd with external ID #{odd_id}"
         odd = Odd.find_or_initialize_by(external_id: odd_id,
                                         market: market)
-        odd.assign_attributes(name: transpiler.odd_name(odd_data['id']),
-                              status: odd_data['active'].to_i,
-                              value: odd_data['odds'])
+        attributes = { name: transpiler.odd_name(odd_data['id']),
+                       status: odd_data['active'].to_i,
+                       value: odd_data['odds'] }
+
+        Rails.logger.info "Updating odd external ID #{odd_id}, #{attributes}"
+
+        odd.assign_attributes(attributes)
         odd.save!
       end
 
