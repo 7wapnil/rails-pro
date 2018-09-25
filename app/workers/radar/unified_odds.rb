@@ -8,8 +8,9 @@ module Radar
                routing_key: '#',
                durable: false,
                ack: false,
-               prefetch: 1,
-               threads: 1
+               prefetch: 10,
+               threads: 10,
+               timeout_job_after: 10
 
     MATCHERS = {
       event_processing: {
