@@ -1,5 +1,5 @@
 module Mts
-  class Connection
+  class Session
     MTS_MQ_CONNECTION_PORT = 5671
 
     def initialize(config = nil)

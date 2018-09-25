@@ -1,8 +1,8 @@
-describe Mts::Connection do
+describe Mts::Session do
   let(:example_config) { { Faker::Lorem.word => Faker::Lorem.word } }
 
   describe 'class methods' do
-    subject { Mts::Connection }
+    subject { Mts::Session }
     describe '#initialize' do
       context 'config passed' do
         it 'sets config based on argument' do
@@ -34,12 +34,12 @@ describe Mts::Connection do
   describe '.connection' do
     it 'calls Bunny service with specific config' do
       expect(Bunny).to receive(:new).with(example_config)
-      Mts::Connection.new(example_config).connection
+      Mts::Session.new(example_config).connection
     end
     it 'calls Bunny service only once' do
       expect(Bunny).to receive(:new).and_return({})
         .once.with(example_config)
-      conn = Mts::Connection.new(example_config)
+      conn = Mts::Session.new(example_config)
       2.times do
         conn.connection
       end
