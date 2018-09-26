@@ -64,10 +64,11 @@ class Event < ApplicationRecord
   end
 
   def emit_updated
-    changes = {}
-    previous_changes.each do |attr, changed|
-      changes[attr.to_sym] = changed[1] unless attr == 'updated_at'
-    end
+    excluded_keys = %w[updated_at payload]
+    changes = previous_changes
+              .except(*excluded_keys)
+              .transform_values! { |v| v[1] }
+    return if changes.empty?
     WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
                                     id: id.to_s,
                                     changes: changes)
