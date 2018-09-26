@@ -67,6 +67,9 @@ module OddsFeed
 
       def generate_odd!(odd_data)
         odd_id = "#{market.external_id}:#{odd_data['id']}"
+        Rails.logger.info "Updating odd with external ID #{odd_id}"
+        return unless odd_valid?(odd_id, odd_data)
+
         odd = Odd.find_or_initialize_by(external_id: odd_id,
                                         market: market)
         attributes = { name: transpiler.odd_name(odd_data['id']),
@@ -77,6 +80,12 @@ module OddsFeed
 
         odd.assign_attributes(attributes)
         odd.save!
+      end
+
+      def odd_valid?(odd_id, odd_data)
+        return true unless odd_data['odds'].blank?
+        Rails.logger.info "Odd value for odd #{odd_id} is empty"
+        false
       end
 
       def transpiler
