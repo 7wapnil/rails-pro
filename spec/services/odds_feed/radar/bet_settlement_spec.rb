@@ -63,7 +63,6 @@ describe OddsFeed::Radar::BetSettlementHandler do
       create_list(:bet, 7, :pending, odd: odd_fourth, currency: currency)
       create_list(:bet, 3, :pending, odd: odd_fifth, currency: currency)
 
-      subject.handle
     end
 
     it 'calls BetSettelement service to process all affected bets' do
