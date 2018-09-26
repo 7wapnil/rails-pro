@@ -47,7 +47,6 @@ describe 'GraphQL#placeBet' do
     it 'returns an array' do
       expect(bets).to be_an Array
     end
-
     it 'array elements are bets' do
       bets.each do |bet|
         expect(bet['amount']).to be_a Numeric

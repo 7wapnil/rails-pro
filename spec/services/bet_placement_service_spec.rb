@@ -30,8 +30,8 @@ describe BetPlacement::SubmissionService do
     subject.call
   end
 
-  it 'updates bet status and message from request' do
-    bet.update_attributes(status: nil, message: nil)
+  it 'updates bet status and message from request on fialure' do
+    bet.update_attributes(status: Bet.statuses[:pending], message: :foo)
 
     subject.call
 

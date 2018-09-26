@@ -18,7 +18,8 @@ module Betting
         odd: Odd.find(bet_payload[:oddId]),
         currency: Currency.find_by!(code: bet_payload[:currencyCode]),
         amount: bet_payload[:amount],
-        odd_value: bet_payload[:oddValue]
+        odd_value: bet_payload[:oddValue],
+        status: Bet.statuses[:pending]
       )
     end
   end
