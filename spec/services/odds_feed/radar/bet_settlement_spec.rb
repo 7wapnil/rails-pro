@@ -60,13 +60,13 @@ describe OddsFeed::Radar::BetSettlementHandler do
     end
 
     before do
-      create_list(:bet, 6, :succeeded, odd: odd, currency: currency)
-      create_list(:bet, 4, :succeeded, odd: odd_secondary, currency: currency)
-      create_list(:bet, 7, :succeeded, odd: odd_third, currency: currency)
-      create_list(:bet, 3, :succeeded, odd: odd_fourth, currency: currency)
-      create_list(:bet, 5, :succeeded, odd: odd_fifth, currency: currency)
+      create_list(:bet, 6, :accepted, odd: odd, currency: currency)
+      create_list(:bet, 4, :accepted, odd: odd_secondary, currency: currency)
+      create_list(:bet, 7, :accepted, odd: odd_third, currency: currency)
+      create_list(:bet, 3, :accepted, odd: odd_fourth, currency: currency)
+      create_list(:bet, 5, :accepted, odd: odd_fifth, currency: currency)
 
-      create_list(:bet, 8, :succeeded,
+      create_list(:bet, 8, :accepted,
                   odd: odd_not_from_payload, currency: currency)
     end
 
@@ -84,8 +84,8 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
   it 'settles odd bets with result and void factor' do
     allow(subject).to receive(:process_bets)
-    create_list(:bet, 5, odd: odd, status: Bet.statuses[:succeeded])
-    create_list(:bet, 5, status: Bet.statuses[:succeeded]) # other bets
+    create_list(:bet, 5, odd: odd, status: Bet.statuses[:accepted])
+    create_list(:bet, 5, status: Bet.statuses[:accepted]) # other bets
     subject.handle
 
     expected_result = Bet.where(status: Bet.statuses[:settled],
@@ -97,7 +97,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
   it 'emits web socket event per bet' do
     allow(subject).to receive(:process_bets)
 
-    create_list(:bet, 10, odd: odd, status: Bet.statuses[:succeeded])
+    create_list(:bet, 10, odd: odd, status: Bet.statuses[:accepted])
     subject.handle
 
     expect(WebSocket::Client.instance)

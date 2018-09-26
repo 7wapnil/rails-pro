@@ -65,8 +65,8 @@ FactoryBot.define do
       status Bet.statuses[:settled]
     end
 
-    trait :succeeded do
-      status Bet.statuses[:succeeded]
+    trait :accepted do
+      status Bet.statuses[:accepted]
     end
 
     trait :win do

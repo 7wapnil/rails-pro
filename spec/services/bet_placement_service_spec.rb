@@ -31,7 +31,7 @@ describe BetPlacement::SubmissionService do
   end
 
   it 'updates bet status and message from request on fialure' do
-    bet.update_attributes(status: Bet.statuses[:pending], message: :foo)
+    bet.update_attributes(status: Bet.statuses[:initial], message: :foo)
 
     subject.call
 

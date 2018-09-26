@@ -77,7 +77,7 @@ describe 'BetSettlementHandler integration' do
         before do
           odd = send(state[:odd_name])
           odd.value = state[:odd_value]
-          create(:bet, :succeeded,
+          create(:bet, :accepted,
                  odd: odd, amount: state[:stake], currency: currency)
 
           subject.handle
@@ -104,10 +104,10 @@ describe 'BetSettlementHandler integration' do
 
   it 'pay outs win for multiple bets with different odd values' do
     odd_entire_win.value = 2
-    create(:bet, :succeeded,
+    create(:bet, :accepted,
            odd: odd_entire_win, amount: 20, currency: currency)
     odd_entire_win.value = 3
-    create(:bet, :succeeded,
+    create(:bet, :accepted,
            odd: odd_entire_win, amount: 10, currency: currency)
 
     subject.handle

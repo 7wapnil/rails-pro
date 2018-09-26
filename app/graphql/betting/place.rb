@@ -19,7 +19,7 @@ module Betting
         currency: Currency.find_by!(code: bet_payload[:currencyCode]),
         amount: bet_payload[:amount],
         odd_value: bet_payload[:oddValue],
-        status: Bet.statuses[:pending]
+        status: Bet.statuses[:initial]
       )
     end
   end
