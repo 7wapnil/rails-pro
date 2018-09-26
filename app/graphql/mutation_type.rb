@@ -5,11 +5,5 @@ MutationType = GraphQL::ObjectType.define do
   field :signUp, function: Account::SignUp.new
 
   field :placeBets, function: Betting::Place.new
-
-  field :testField, types.String do
-    description 'An example mutation field'
-    resolve ->(_obj, _args, _ctx) do
-      'Hello World!'
-    end
-  end
+  field :deleteFile, function: Documents::DeleteFile.new
 end
