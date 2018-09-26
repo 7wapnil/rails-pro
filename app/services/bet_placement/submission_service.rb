@@ -9,7 +9,7 @@ module BetPlacement
 
     def call
       @entry = WalletEntry::AuthorizationService.call(entry_request)
-      update_bet_from_request!
+      @bet.failure!(@entry_request.result_message) if @entry_request.failed?
       @bet
     end
 
@@ -25,10 +25,6 @@ module BetPlacement
         customer: @bet.customer,
         origin: @bet
       )
-    end
-
-    def update_bet_from_request!
-      @bet.failure!(@entry_request.result_message) if @entry_request.failed?
     end
   end
 end
