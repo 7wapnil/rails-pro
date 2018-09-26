@@ -29,6 +29,9 @@ describe OddsFeed::Radar::BetSettlementHandler do
   let(:odd_fifth) do
     create(:odd, external_id: 'sr:match:3432:13:sr:player:456')
   end
+  let(:odd_not_from_payload) do
+    create(:odd, external_id: 'sr:match:3432:13:sr:player:999')
+  end
 
   subject { described_class.new(payload) }
 
@@ -63,6 +66,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
       create_list(:bet, 7, :pending, odd: odd_fourth, currency: currency)
       create_list(:bet, 3, :pending, odd: odd_fifth, currency: currency)
 
+      create_list(:bet, 8, :succeeded, odd: odd_not_from_payload, currency: currency)
     end
 
     it 'calls BetSettelement service to process all affected bets' do
