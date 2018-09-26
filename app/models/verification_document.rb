@@ -1,4 +1,6 @@
 class VerificationDocument < ApplicationRecord
+  acts_as_paranoid
+
   MAX_ATTACHMENT_SIZE = 2.megabytes.freeze
   KINDS = {
     personal_id: 0,

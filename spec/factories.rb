@@ -234,4 +234,10 @@ FactoryBot.define do
       )
     end
   end
+
+  factory :verification_document do
+    customer
+    kind 0
+    status 0
+  end
 end
