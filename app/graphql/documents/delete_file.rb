@@ -5,8 +5,7 @@ module Documents
     type !types.Boolean
 
     def resolve(_obj, args)
-      doc = VerificationDocument.find_by!(id: args[:id])
-      doc.destroy
+      VerificationDocument.find_by!(id: args[:id]).destroy
       true
     end
   end
