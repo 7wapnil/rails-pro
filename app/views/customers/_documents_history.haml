@@ -6,8 +6,8 @@
       - @files.each do |file|
         %tr
           %td= file.filename
-          %td= file.created_at
-          %td= link_to t(:view),
+          %td.text-center= file.created_at
+          %td.text-right= link_to t(:view),
                       rails_blob_path(file.document),
-                      class: 'btn btn-outline-dark text-right',
+                      class: 'btn btn-outline-dark',
                       target: :blank

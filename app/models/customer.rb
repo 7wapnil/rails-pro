@@ -55,6 +55,8 @@ class Customer < ApplicationRecord
   end
 
   def documents_history(kind = nil)
-    []
+    query = verification_documents
+    query = query.where(kind: kind) if kind
+    query.with_deleted
   end
 end

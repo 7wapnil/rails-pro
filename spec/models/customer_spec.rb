@@ -28,4 +28,29 @@ describe Customer do
     expect(customer.current_sign_in_at).not_to be_nil
     expect(customer.last_sign_in_at).not_to be_nil
   end
+
+  context 'documents' do
+    subject { create(:customer) }
+
+    it 'returns history' do
+      create_list(:verification_document,
+                  3,
+                  customer: subject,
+                  deleted_at: Time.now)
+      create_list(:verification_document, 3, customer: subject)
+      expect(subject.documents_history.count).to eq(6)
+    end
+
+    it 'returns history by kind' do
+      create_list(:verification_document,
+                  3,
+                  customer: subject,
+                  kind: :personal_id)
+      create_list(:verification_document,
+                  3,
+                  customer: subject,
+                  kind: :utility_bill)
+      expect(subject.documents_history(:personal_id).count).to eq(3)
+    end
+  end
 end
