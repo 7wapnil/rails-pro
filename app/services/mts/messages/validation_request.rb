@@ -1,12 +1,12 @@
 module Mts
   module Messages
     class ValidationRequest
-      def self.build(_, _)
-        return new
+      def self.build(*)
+        new
       end
 
       def to_json
-        return <<-EXAMPLE_JSON
+        <<-EXAMPLE_JSON
       {"version": "2.0", "timestampUtc": 1486541079460,
       "ticketId": "MTS_Test_20170208_080435399",
       "sender": {"currency": "EUR", "terminalId": "Tallinn-1",
@@ -23,4 +23,3 @@ module Mts
     end
   end
 end
-

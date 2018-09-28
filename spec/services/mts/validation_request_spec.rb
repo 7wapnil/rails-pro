@@ -16,7 +16,7 @@ describe Mts::Messages::ValidationRequest do
       EXAMPLE_JSON
     end
 
-    let(:bet) {create(:bet)}
+    let(:bet) { create(:bet) }
     let(:context) { {} }
 
     it 'generates correct json by example' do
