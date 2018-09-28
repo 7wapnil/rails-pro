@@ -47,6 +47,10 @@ FactoryBot.define do
     customer
     currency
     amount { Faker::Number.decimal(3, 2) }
+
+    trait :brick do
+      amount 100_000
+    end
   end
 
   factory :bet do

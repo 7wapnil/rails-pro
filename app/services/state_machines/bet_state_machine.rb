@@ -4,9 +4,9 @@ module StateMachines
 
     BET_STATUSES = {
       initial: 0,
-      pending_internal_validation: 5,
-      internally_valid: 6,
-      pending_external_validation: 7,
+      sent_to_internal_validation: 5,
+      validated_internally: 6,
+      sent_to_external_validation: 7,
       accepted: 1,
       cancelled: 4,
       settled: 3,
@@ -21,32 +21,32 @@ module StateMachines
 
       aasm column: :status, enum: true do
         state :initial, initial: true
-        state :pending_internal_validation
-        state :internally_valid
-        state :pending_external_validation
+        state :sent_to_internal_validation
+        state :validated_internally
+        state :sent_to_external_validation
         state :accepted
         state :rejected
         state :cancelled
         state :failed
         state :settled
 
-        event :validate_internally do
+        event :send_to_internal_validation do
           transitions from: :initial,
-                      to: :validate_internally
+                      to: :sent_to_internal_validation
         end
 
-        event :internal_validation_success do
-          transitions from: :validate_internally,
-                      to: :internally_valid
+        event :finish_internal_validation_successfully do
+          transitions from: :sent_to_internal_validation,
+                      to: :validated_internally
         end
 
-        event :validate_externally do
-          transitions from: :internally_valid,
-                      to: :pending_external_validation
+        event :send_to_external_validation do
+          transitions from: :validated_internally,
+                      to: :sent_to_external_validation
         end
 
-        event :failure do
-          transitions from: :initial,
+        event :register_failure do
+          transitions from: :sent_to_internal_validation,
                       to: :failed,
                       after: proc { |msg| update(message: msg) }
         end
