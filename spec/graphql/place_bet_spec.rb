@@ -1,9 +1,9 @@
 describe 'GraphQL#placeBet' do
-  before do
-    create(:currency, code: 'EUR')
-  end
-
+  let!(:currency) { create(:currency, code: 'EUR') }
   let(:auth_customer) { create(:customer) }
+  let!(:wallet) do
+    create(:wallet, :brick, customer: auth_customer, currency: currency)
+  end
   let(:context) { { current_customer: auth_customer } }
 
   let(:query) do

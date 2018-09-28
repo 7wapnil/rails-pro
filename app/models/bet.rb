@@ -1,11 +1,5 @@
 class Bet < ApplicationRecord
-  enum status: {
-    pending: 0,
-    succeeded: 1,
-    failed: 2,
-    settled: 3,
-    cancelled: 4
-  }
+  include StateMachines::BetStateMachine
 
   belongs_to :customer
   belongs_to :odd

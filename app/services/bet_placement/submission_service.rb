@@ -8,8 +8,13 @@ module BetPlacement
     end
 
     def call
+      @bet.send_to_internal_validation!
       @entry = WalletEntry::AuthorizationService.call(entry_request)
-      update_bet_from_request! if @entry_request.failed?
+      if @entry_request.failed?
+        @bet.register_failure!(@entry_request.result_message)
+        return @bet
+      end
+      @bet.finish_internal_validation_successfully!
       @bet
     end
 
@@ -24,13 +29,6 @@ module BetPlacement
         initiator: @bet.customer,
         customer: @bet.customer,
         origin: @bet
-      )
-    end
-
-    def update_bet_from_request!
-      @bet.update_attributes!(
-        status: @entry_request.status,
-        message: @entry_request.result_message
       )
     end
   end

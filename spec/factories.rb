@@ -5,7 +5,7 @@ FactoryBot.define do
     currency
     kind { EntryRequest.kinds.keys.first }
     min_amount { Faker::Number.decimal(3, 2) }
-    max_amount { Faker::Number.decimal(3, 2) }
+    max_amount { Faker::Number.decimal(4, 2) }
   end
 
   factory :currency do
@@ -39,7 +39,7 @@ FactoryBot.define do
 
   factory :balance do
     wallet
-    kind 0
+    kind Balance.kinds[:real_money]
     amount { Faker::Number.decimal(3, 2) }
   end
 
@@ -47,6 +47,10 @@ FactoryBot.define do
     customer
     currency
     amount { Faker::Number.decimal(3, 2) }
+
+    trait :brick do
+      amount 100_000
+    end
   end
 
   factory :bet do
@@ -55,14 +59,14 @@ FactoryBot.define do
     currency
     amount { Faker::Number.decimal(2, 2) }
     odd_value { odd.value }
-    status Bet.statuses[:pending]
-
-    trait :pending do
-      status Bet.statuses[:pending]
-    end
+    status Bet.statuses[:initial]
 
     trait :settled do
       status Bet.statuses[:settled]
+    end
+
+    trait :accepted do
+      status Bet.statuses[:accepted]
     end
 
     trait :win do
