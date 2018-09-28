@@ -1,7 +1,9 @@
 describe 'GraphQL#placeBet' do
   let!(:currency) { create(:currency, code: 'EUR') }
   let(:auth_customer) { create(:customer) }
-  let!(:wallet) { create(:wallet, :brick, customer: auth_customer, currency: currency) }
+  let!(:wallet) do
+    create(:wallet, :brick, customer: auth_customer, currency: currency)
+  end
   let(:context) { { current_customer: auth_customer } }
 
   let(:query) do
@@ -45,6 +47,7 @@ describe 'GraphQL#placeBet' do
     it 'returns an array' do
       expect(bets).to be_an Array
     end
+
     it 'array elements are bets' do
       bets.each do |bet|
         expect(bet['amount']).to be_a Numeric

@@ -31,7 +31,7 @@ describe BetPlacement::SubmissionService do
   end
 
   it 'updates bet status and message from request on failure' do
-    bet.update_attributes(status: Bet.statuses[:sent_to_internal_validation], message: :foo)
+    bet.update_attributes(status: Bet.statuses[:initial], message: :foo)
 
     subject.call
 

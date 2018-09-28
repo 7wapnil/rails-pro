@@ -16,7 +16,7 @@ describe BetSettelement::Service do
   describe 'call' do
     describe 'unexpected bet' do
       context 'pending bet' do
-        let(:invalid_bet) { create(:bet, :pending) }
+        let(:invalid_bet) { create(:bet) }
 
         subject { described_class.new(invalid_bet) }
 
