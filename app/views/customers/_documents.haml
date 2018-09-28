@@ -26,6 +26,8 @@
                     = link_to t(:confirm), update_document_status_customer_path(status: :confirmed, document_type: kind), class: 'dropdown-item'
                     = link_to t(:reject), update_document_status_customer_path(status: :rejected, document_type: kind), class: 'dropdown-item'
                     = link_to t(:history), documents_history_customer_path(id: @customer.id, document_type: kind), class: 'dropdown-item'
+              - elsif @customer.documents_history(kind: kind).any?
+                = link_to t(:history), documents_history_customer_path(id: @customer.id, document_type: kind), class: 'btn btn-secondary'
     .row
       .col.text-right
         = submit_tag t(:upload), class: 'btn btn-secondary'

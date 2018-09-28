@@ -53,4 +53,8 @@ class Customer < ApplicationRecord
       verification_documents.where(kind: kind).last
     end
   end
+
+  def documents_history(kind = nil)
+    []
+  end
 end
