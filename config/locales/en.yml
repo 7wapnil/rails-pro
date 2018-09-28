@@ -13,6 +13,7 @@ en:
 
   upload: Upload
   no_file: No File
+  history: History
 
   created: "%{instance} created"
   updated: "%{instance} updated"
