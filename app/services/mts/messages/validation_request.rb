@@ -1,10 +1,10 @@
 module Mts
   module Messages
     # TODO: Extract parts to different classes
-    class ValidationRequest
+    class ValidationRequest # rubocop:disable Metrics/ClassLength
       SUPPORTED_BETS_PER_REQUEST = 1
-      MESSAGE_VERSION = '2.0'
-      DEFAULT_STAKE_TYPE = 'total'
+      MESSAGE_VERSION = '2.0'.freeze
+      DEFAULT_STAKE_TYPE = 'total'.freeze
       EXAMPLE_LIMIT_ID = 424
       DEFAULT_SENDER_ID = 7669
 
@@ -42,7 +42,7 @@ module Mts
         unless distribution_channel.channel == 'internet'
           raise NotImplementedError
         end
-        attrs = {
+        {
           currency: bets_currency,
           channel: internet_distribution_channel.channel,
           bookmaker_id: DEFAULT_SENDER_ID,
@@ -91,22 +91,26 @@ module Mts
 
       def internet_distribution_channel
         OpenStruct
-          .new({
-                 channel: 'internet',
-                 requirements: {
-                   customer_is_registered: true,
-                   customer_id: true,
-                   shop_id: nil,
-                   terminal_id: nil,
-                   end_customer_ip: true,
-                   end_customer_device_id: false,
-                   end_customer_languge: true
-                 },
-                 customer: customer,
-                 customer_id: customer.id,
-                 customer_ip: '127.0.0.1',
-                 customer_language: 'EN'
-               })
+          .new(
+            channel: 'internet',
+            requirements: internet_distribution_channel_requirements,
+            customer: customer,
+            customer_id: customer.id,
+            customer_ip: '127.0.0.1',
+            customer_language: 'EN'
+          )
+      end
+
+      def internet_distribution_channel_requirements
+        {
+          customer_is_registered: true,
+          customer_id: true,
+          shop_id: nil,
+          terminal_id: nil,
+          end_customer_ip: true,
+          end_customer_device_id: false,
+          end_customer_languge: true
+        }
       end
 
       # getters
