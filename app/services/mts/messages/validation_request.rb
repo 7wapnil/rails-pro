@@ -3,6 +3,10 @@ module Mts
     # TODO: Extract parts to different classes
     class ValidationRequest # rubocop:disable  Metrics/ClassLength
       SUPPORTED_BETS_PER_REQUEST = 1
+      MESSAGE_VERSION = '2.0'
+      DEFAULT_STAKE_TYPE = 'total'
+      EXAMPLE_LIMIT_ID = 424
+      DEFAULT_SENDER_ID = 7669
 
       def initialize(context, bets)
         raise NotImplementedError if bets.length > SUPPORTED_BETS_PER_REQUEST
@@ -26,9 +30,11 @@ module Mts
 
       # message structure
 
+
+
       def root_attributes
         {
-          version: '2.0',
+          version: MESSAGE_VERSION,
           timestampUtc: timestamp,
           ticketId: ticket_id
         }
@@ -40,9 +46,9 @@ module Mts
           terminal_id: 'Tallinn-1',
           channel: 'internet',
           shop_id: nil,
-          bookmaker_id: 7669,
+          bookmaker_id: DEFAULT_SENDER_ID,
           end_customer: end_customer,
-          limit_id: 424
+          limit_id: EXAMPLE_LIMIT_ID
         }
       end
 
@@ -74,7 +80,7 @@ module Mts
             selected_systems: single_bet_selected_systems,
             stake: {
               value: decimal_formatter(bet.amount),
-              type: 'total'
+              type: DEFAULT_STAKE_TYPE
             }
           }.merge(selection_refs(bet))
         end
