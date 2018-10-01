@@ -134,6 +134,7 @@ FactoryBot.define do
     current_sign_in_ip { Faker::Internet.ip_v4_address }
     last_sign_in_ip { Faker::Internet.ip_v4_address }
     password 'iamverysecure'
+    verified false
   end
 
   factory :label do

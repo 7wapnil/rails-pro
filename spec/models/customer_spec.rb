@@ -27,6 +27,7 @@ describe Customer do
     expect(customer.sign_in_count).to eq(sign_in_count + 1)
     expect(customer.current_sign_in_at).not_to be_nil
     expect(customer.last_sign_in_at).not_to be_nil
+    expect(customer.verified).to be_in([true, false])
   end
 
   context 'documents' do
