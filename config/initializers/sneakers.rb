@@ -5,4 +5,5 @@ Sneakers.configure workers: 1,
                                          vhost: ENV['RADAR_MQ_VHOST'],
                                          tls: ENV['RADAR_MQ_TLS'] == 'true')
 
+Sneakers.logger = ::LogStashLogger.new(type: :stdout)
 Sneakers.logger.level = ENV['RAILS_LOG_LEVEL'] || :debug

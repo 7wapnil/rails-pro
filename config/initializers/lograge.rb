@@ -1,6 +1,6 @@
 Rails.application.configure do
   config.lograge.enabled = true
-  config.lograge.formatter = Lograge::Formatters::Json.new
+  config.lograge.formatter = Lograge::Formatters::Logstash.new
 
   config.lograge.ignore_actions = %w[HealthChecksController#show]
 

@@ -54,7 +54,7 @@ Rails.application.configure do
 
   # Force all access to the app over SSL, use Strict-Transport-Security,
   # and use secure cookies.
-  config.force_ssl = true
+  config.force_ssl = false
 
   config.ssl_options = {
     redirect: { exclude: ->(request) { request.path =~ /health-check/ } }
@@ -98,18 +98,8 @@ Rails.application.configure do
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
 
-  # Use default logging formatter so that PID and timestamp are not suppressed.
-  config.log_formatter = JsonFormatter.new
-
-  # Use a different logger for distributed setups.
-  # require 'syslog/logger'
-  # config.logger =
-  #   ActiveSupport::TaggedLogging.new(Syslog::Logger.new 'app-name')
-
   if ENV['RAILS_LOG_TO_STDOUT'].present?
-    logger           = ActiveSupport::Logger.new(STDOUT)
-    logger.formatter = config.log_formatter
-    config.logger    = ActiveSupport::TaggedLogging.new(logger)
+    config.logger = ::LogStashLogger.new(type: :stdout)
   end
 
   # Do not dump schema after migrations.
