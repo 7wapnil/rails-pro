@@ -16,10 +16,11 @@ describe Mts::Messages::ValidationRequest do
       EXAMPLE_JSON
     end
 
-    let(:bet) { create(:bet) }
+    let(:euro) { create(:currency, code: 'EUR') }
+    let(:bet) { create(:bet, currency: euro) }
     let(:context) { {} }
 
-    let(:message) { described_class.build(context, [bet]) }
+    let(:message) { described_class.new(context, [bet]) }
 
     let(:experiment_time) { Time.strptime('1486541079460', '%s') }
 

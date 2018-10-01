@@ -1,8 +1,9 @@
 module Mts
   module Messages
     class ValidationRequest
-      def self.build(*)
-        new
+      def initialize(context, bets)
+        @context = context
+        @bets = bets
       end
 
       def to_h
@@ -31,7 +32,7 @@ module Mts
 
       def sender
         {
-          currency: 'EUR',
+          currency: bets_currency,
           terminal_id: 'Tallinn-1',
           channel: 'internet',
           shop_id: nil,
@@ -86,7 +87,11 @@ module Mts
         'MTS_Test_' + @timestamp.to_s
       end
 
-      def selection_refs(*)
+      def bets_currency
+        @bets.first.currency.code
+      end
+
+      def selection_refs
         { selection_refs: [
           {
             selection_index: 0,
