@@ -1,7 +1,7 @@
 module Mts
   module Messages
     # TODO: Extract parts to different classes
-    class ValidationRequest # rubocop:disable  Metrics/ClassLength
+    class ValidationRequest
       SUPPORTED_BETS_PER_REQUEST = 1
       MESSAGE_VERSION = '2.0'
       DEFAULT_STAKE_TYPE = 'total'
@@ -30,8 +30,6 @@ module Mts
 
       # message structure
 
-
-
       def root_attributes
         {
           version: MESSAGE_VERSION,
@@ -41,11 +39,12 @@ module Mts
       end
 
       def sender
-        {
+        unless distribution_channel.channel == 'internet'
+          raise NotImplementedError
+        end
+        attrs = {
           currency: bets_currency,
-          terminal_id: 'Tallinn-1',
-          channel: 'internet',
-          shop_id: nil,
+          channel: internet_distribution_channel.channel,
           bookmaker_id: DEFAULT_SENDER_ID,
           end_customer: end_customer,
           limit_id: EXAMPLE_LIMIT_ID
@@ -55,11 +54,9 @@ module Mts
       # TODO: Implement end_customer data from context
       def end_customer
         {
-          ip: '127.0.0.1',
-          language_id: 'EN',
-          device_id: '1234test',
-          id: @bets.first.customer.id.to_s,
-          confidence: 10_000
+          ip:  distribution_channel.customer_ip,
+          language_id: distribution_channel.customer_language,
+          id: @bets.first.customer.id.to_s
         }
       end
 
@@ -86,7 +83,37 @@ module Mts
         end
       end
 
+      # InternetDistributionChannel blueprint
+
+      def distribution_channel
+        @distribution_channel ||= internet_distribution_channel
+      end
+
+      def internet_distribution_channel
+        OpenStruct
+          .new({
+                 channel: 'internet',
+                 requirements: {
+                   customer_is_registered: true,
+                   customer_id: true,
+                   shop_id: nil,
+                   terminal_id: nil,
+                   end_customer_ip: true,
+                   end_customer_device_id: false,
+                   end_customer_languge: true
+                 },
+                 customer: customer,
+                 customer_id: customer.id,
+                 customer_ip: '127.0.0.1',
+                 customer_language: 'EN'
+               })
+      end
+
       # getters
+
+      def customer
+        @customer ||= @bets.first.customer
+      end
 
       # TODO: Figure out where to take id
       def event_id(*)

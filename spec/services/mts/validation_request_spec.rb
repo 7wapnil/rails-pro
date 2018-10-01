@@ -4,10 +4,10 @@ describe Mts::Messages::ValidationRequest do
       <<-EXAMPLE_JSON
       {"version": "2.0", "timestampUtc": 1486541079460,
       "ticketId": "MTS_Test_1486541079460",
-      "sender": {"currency": "EUR", "terminalId": "Tallinn-1",
-       "channel": "internet", "shopId": null, "bookmakerId": 7669,
+      "sender": {"currency": "EUR",
+       "channel": "internet", "bookmakerId": 7669,
        "endCustomer": {"ip": "127.0.0.1", "languageId": "EN",
-       "deviceId": "1234test", "id": "12345678", "confidence": 10000 },
+       "id": "12345678" },
        "limitId": 424 }, "selections":
       [{"eventId": 11050343, "id": "lcoo:42/1/*/X", "odds": 28700 }],
       "bets": [{"id": "MTS_Test_1486541079460_0",
