@@ -215,6 +215,12 @@ FactoryBot.define do
     name 'Winner Map (Train)'
     priority 2
     status 0
+
+    trait :with_odds do
+      after(:create) do |market|
+        create_list(:odd, 2, market: market)
+      end
+    end
   end
 
   factory :odd do
