@@ -24,7 +24,7 @@ module Mts
       def root_attributes
         {
           version: '2.0',
-          timestampUtc: 1_486_541_079_460,
+          timestampUtc: Time.now.to_i,
           ticketId: 'MTS_Test_20170208_080435399'
         }
       end
