@@ -24,8 +24,8 @@ module Mts
       def root_attributes
         {
           version: '2.0',
-          timestampUtc: Time.now.to_i,
-          ticketId: 'MTS_Test_20170208_080435399'
+          timestampUtc: timestamp,
+          ticketId: ticket_id
         }
       end
 
@@ -64,7 +64,7 @@ module Mts
       def bets
         [
           {
-            id: 'MTS_Test_20170208_080435391_0',
+            id: ticket_id + '_0',
             selected_systems: [
               1
             ],
@@ -77,6 +77,14 @@ module Mts
       end
 
       ## getters
+
+      def timestamp
+        @timestamp ||= Time.now.to_i
+      end
+
+      def ticket_id
+        'MTS_Test_' + @timestamp.to_s
+      end
 
       def selection_refs(*)
         { selection_refs: [
