@@ -19,8 +19,10 @@ describe Mts::Messages::ValidationRequest do
     let(:bet) { create(:bet) }
     let(:context) { {} }
 
-    it 'generates correct json by example' do
-      expect(described_class.build(context, bet).to_json).to eq example_json
+    let(:message) { described_class.build(context, [bet]) }
+
+    it 'generates correct hash by example' do
+      expect(message.to_formatted_hash).to eq(JSON.parse(example_json))
     end
   end
 end
