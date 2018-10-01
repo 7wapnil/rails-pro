@@ -65,7 +65,7 @@ module Mts
           {
             event_id: event_id(bet),
             id: bet.odd.external_id,
-            odds: decimal_formatter(bet.odd_value)
+            odds: Mts::MtsDecimal.from_number(bet.odd_value)
           }
         end
       end
@@ -76,7 +76,7 @@ module Mts
             id: [ticket_id, index].join('_'),
             selected_systems: single_bet_selected_systems,
             stake: {
-              value: decimal_formatter(bet.amount),
+              value: Mts::MtsDecimal.from_number(bet.amount),
               type: DEFAULT_STAKE_TYPE
             }
           }.merge(selection_refs(bet))
@@ -164,10 +164,6 @@ module Mts
             value
         end
         formatted_hash
-      end
-
-      def decimal_formatter(decimal)
-        (decimal * 10_000).round
       end
     end
   end
