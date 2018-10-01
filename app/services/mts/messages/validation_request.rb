@@ -23,7 +23,8 @@ module Mts
       end
 
       def to_formatted_hash
-        format_keys(to_h)
+        ::HashDeepFormatter
+          .deep_transform_keys(to_h) { |key| key.to_s.camelize(:lower) }
       end
 
       private
@@ -147,23 +148,6 @@ module Mts
             banker: false
           }
         ] }
-      end
-
-      # formatter
-
-      def format_keys(hash)
-        formatted_hash = {}
-        hash.each do |k, v|
-          value = v
-          value = format_keys(v) if v.is_a?(Hash)
-          if v.is_a?(Array)
-            value =
-              v.map { |e| e.is_a?(Hash) ? format_keys(e) : e }
-          end
-          formatted_hash[k.to_s.camelize(:lower)] =
-            value
-        end
-        formatted_hash
       end
     end
   end
