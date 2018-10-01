@@ -19,7 +19,7 @@ module Mts
 
       private
 
-      ## message structure
+      # message structure
 
       def root_attributes
         {
@@ -76,7 +76,7 @@ module Mts
         ]
       end
 
-      ## getters
+      # getters
 
       def timestamp
         @timestamp ||= Time.now.to_i
@@ -95,7 +95,7 @@ module Mts
         ] }
       end
 
-      ## formatter
+      # formatter
 
       def format_keys(hash)
         formatted_hash = {}
