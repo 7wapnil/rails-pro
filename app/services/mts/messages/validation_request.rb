@@ -1,7 +1,11 @@
 module Mts
   module Messages
-    class ValidationRequest
+    # TODO: Extract parts to different classes
+    class ValidationRequest # rubocop:disable  Metrics/ClassLength
+      SUPPORTED_BETS_PER_REQUEST = 1
+
       def initialize(context, bets)
+        raise NotImplementedError if bets.length > SUPPORTED_BETS_PER_REQUEST
         @context = context
         @bets = bets
       end
@@ -42,6 +46,7 @@ module Mts
         }
       end
 
+      # TODO: Implement end_customer data from context
       def end_customer
         {
           ip: '127.0.0.1',
@@ -53,31 +58,34 @@ module Mts
       end
 
       def selections
-        [
+        @bets.map do |bet|
           {
-            event_id: 11_050_343,
-            id: 'lcoo:42/1/*/X',
-            odds: 28_700
+            event_id: event_id(bet),
+            id: bet.odd.external_id,
+            odds: decimal_formatter(bet.odd_value)
           }
-        ]
+        end
       end
 
       def bets
-        [
+        @bets.map.with_index do |bet, index|
           {
-            id: ticket_id + '_0',
-            selected_systems: [
-              1
-            ],
+            id: [ticket_id, index].join('_'),
+            selected_systems: single_bet_selected_systems,
             stake: {
-              value: 10_000,
+              value: decimal_formatter(bet.amount),
               type: 'total'
             }
-          }.merge(selection_refs)
-        ]
+          }.merge(selection_refs(bet))
+        end
       end
 
       # getters
+
+      # TODO: Figure out where to take id
+      def event_id(*)
+        11_050_343
+      end
 
       def timestamp
         @timestamp ||= Time.now.to_i
@@ -91,7 +99,11 @@ module Mts
         @bets.first.currency.code
       end
 
-      def selection_refs
+      def single_bet_selected_systems
+        [1]
+      end
+
+      def selection_refs(_bet)
         { selection_refs: [
           {
             selection_index: 0,
@@ -115,6 +127,10 @@ module Mts
             value
         end
         formatted_hash
+      end
+
+      def decimal_formatter(decimal)
+        (decimal * 10_000).round
       end
     end
   end

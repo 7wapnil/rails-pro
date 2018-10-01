@@ -19,7 +19,15 @@ describe Mts::Messages::ValidationRequest do
     let(:customer) { create(:customer, id: 123_456_78) }
 
     let(:euro) { create(:currency, code: 'EUR') }
-    let(:bet) { create(:bet, currency: euro, customer: customer) }
+    let(:event) { create(:event) }
+    let(:market) { create(:market, event: event) }
+    let(:odd) do
+      create(:odd, market: market, value: 2.87, external_id: 'lcoo:42/1/*/X')
+    end
+    let(:bet) do
+      create(:bet, amount: 1, odd_value: odd.value,
+                   currency: euro, customer: customer, odd: odd)
+    end
     let(:context) { {} }
 
     let(:message) { described_class.new(context, [bet]) }
