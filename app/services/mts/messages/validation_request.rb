@@ -47,7 +47,7 @@ module Mts
           ip: '127.0.0.1',
           language_id: 'EN',
           device_id: '1234test',
-          id: '1234test',
+          id: @bets.first.customer.id.to_s,
           confidence: 10_000
         }
       end

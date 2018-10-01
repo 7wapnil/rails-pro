@@ -7,7 +7,7 @@ describe Mts::Messages::ValidationRequest do
       "sender": {"currency": "EUR", "terminalId": "Tallinn-1",
        "channel": "internet", "shopId": null, "bookmakerId": 7669,
        "endCustomer": {"ip": "127.0.0.1", "languageId": "EN",
-       "deviceId": "1234test", "id": "1234test", "confidence": 10000 },
+       "deviceId": "1234test", "id": "12345678", "confidence": 10000 },
        "limitId": 424 }, "selections":
       [{"eventId": 11050343, "id": "lcoo:42/1/*/X", "odds": 28700 }],
       "bets": [{"id": "MTS_Test_1486541079460_0",
@@ -16,8 +16,10 @@ describe Mts::Messages::ValidationRequest do
       EXAMPLE_JSON
     end
 
+    let(:customer) { create(:customer, id: 123_456_78) }
+
     let(:euro) { create(:currency, code: 'EUR') }
-    let(:bet) { create(:bet, currency: euro) }
+    let(:bet) { create(:bet, currency: euro, customer: customer) }
     let(:context) { {} }
 
     let(:message) { described_class.new(context, [bet]) }
