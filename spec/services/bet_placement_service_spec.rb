@@ -1,8 +1,4 @@
 describe BetPlacement::SubmissionService do
-  before do
-    allow(Mts::SubmissionPublisher).to receive(:publish!)
-  end
-
   let(:bet) { create(:bet) }
 
   subject { described_class.new(bet) }
