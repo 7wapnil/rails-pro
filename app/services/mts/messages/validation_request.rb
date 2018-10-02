@@ -45,7 +45,7 @@ module Mts
         end
         {
           currency: bets_currency,
-          channel: internet_distribution_channel.channel,
+          channel: distribution_channel.channel,
           bookmaker_id: DEFAULT_SENDER_ID,
           end_customer: end_customer,
           limit_id: EXAMPLE_LIMIT_ID
@@ -95,9 +95,6 @@ module Mts
           .new(
             channel: 'internet',
             requirements: internet_distribution_channel_requirements,
-            customer: customer,
-            customer_id: customer.id,
-            customer_ip: '127.0.0.1',
             customer_language: 'EN'
           )
       end

@@ -1,5 +1,5 @@
 describe Mts::Messages::ValidationRequest do
-  describe 'example message' do
+  describe 'generates example message' do
     let(:example_json) do
       <<-EXAMPLE_JSON
       {"version": "2.0", "timestampUtc": 1486541079460,
@@ -31,13 +31,13 @@ describe Mts::Messages::ValidationRequest do
     end
     let(:context) { {} }
 
-    let(:message) { described_class.new(context, [bet]) }
+    subject { described_class.new(context, [bet]) }
 
     let(:experiment_time) { Time.strptime('1486541079460', '%s') }
 
     it 'generates correct hash by example' do
       Timecop.freeze(experiment_time) do
-        expect(message.to_formatted_hash).to eq(JSON.parse(example_json))
+        expect(subject.to_formatted_hash).to eq(JSON.parse(example_json))
       end
     end
   end
