@@ -1,0 +1,19 @@
+= card do
+  .row.d-flex.align-items-center
+    .col=  t(:customer_verification_status)
+    .col.text-right= @customer.verified ? t('statuses.verified') : t('statuses.not_verified')
+    .col-4.d-flex.justify-content-end
+      .dropdown
+        %button#customerStatusDropdown.btn.btn-secondary.mr-1.dropdown-toggle{ aria: { expanded: false, haspopup: true },
+                                                                                     'data-toggle' => 'dropdown',
+                                                                                     type: :button }
+          = t(:action)
+        .dropdown-menu{ 'aria-labelledby' => 'customerStatusDropdown' }
+          = link_to t(:verified),
+                                update_customer_status_customer_path(verified: true),
+                                                                     method: :post,
+                                                                     class: 'dropdown-item'
+          = link_to t(:not_verified),
+                                update_customer_status_customer_path(verified: false),
+                                                                     method: :post,
+                                                                     class: 'dropdown-item'

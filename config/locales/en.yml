@@ -43,6 +43,8 @@ en:
     pending: Pending
     succeeded: Succeeded
     failed: Failed
+    verified: Verified
+    not_verified: Not verified
 
   kinds:
     deposit: "Deposit"
@@ -111,11 +113,11 @@ en:
     other_documents: Other Documents
     currency: Currency
     authorized_at: Authorized at
-    personal_id: Personal Id's
-    utility_bill: Utility Bills
-    bank_statement: Bank Statements
-    credit_card: Credit Cards
-    other_document: Other Documents
+    personal_id: Personal Id
+    utility_bill: Utility Bill
+    bank_statement: Bank Statement
+    credit_card: Credit Card
+    other_document: Other Document
 
   documents:
     history_title: "Files history: %{document_type}"
