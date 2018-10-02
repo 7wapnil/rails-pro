@@ -1,5 +1,3 @@
-require 'services/service_spec'
-
 describe BetSettelement::Service do
   it_behaves_like 'callable service'
 

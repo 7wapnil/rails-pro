@@ -48,6 +48,8 @@ describe Mts::Session do
 
   describe '.opened_connection' do
     it 'returns opened connection for new connection' do
+      bunny_double = double
+      allow(Bunny).to receive(:new).and_return(bunny_double)
       allow(subject.connection).to receive(:open?).and_return(false)
 
       expect(subject.connection).to receive(:start).and_return(:connection)

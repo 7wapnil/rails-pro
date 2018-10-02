@@ -53,7 +53,7 @@ describe 'BetSettlementHandler integration' do
            max_amount: 1000)
   end
 
-  EXAMPLES = [
+  BETS_OUTCOME_EXAMPLES = [
     { name: 'entire win', odd_name: 'odd_entire_win',
       odd_value: 1.65, stake: 22.4,
       win: 36.96, refund: nil, records_count: 1 },
@@ -72,7 +72,7 @@ describe 'BetSettlementHandler integration' do
   ].freeze
 
   context 'single bets map checks, wins only' do
-    EXAMPLES.each do |state|
+    BETS_OUTCOME_EXAMPLES.each do |state|
       describe state[:name] do
         before do
           odd = send(state[:odd_name])

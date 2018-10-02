@@ -25,7 +25,7 @@ describe Bet do
       .allow_nil
   end
 
-  EXAMPLES = [
+  BET_SETTLEMENT_OUTCOMES_EXAMPLES = [
     { name: 'Lose entire bet',
       amount: 1, odd_value: 1.0, void_factor: nil,
       result: 0,
@@ -49,7 +49,7 @@ describe Bet do
   ].freeze
 
   describe '.win_amount' do
-    EXAMPLES.each do |example|
+    BET_SETTLEMENT_OUTCOMES_EXAMPLES.each do |example|
       it example[:name] do
         bet =
           build(:bet,
@@ -64,7 +64,7 @@ describe Bet do
   end
 
   describe '.refund_amount' do
-    EXAMPLES.each do |example|
+    BET_SETTLEMENT_OUTCOMES_EXAMPLES.each do |example|
       it example[:name] do
         bet =
           build(:bet,

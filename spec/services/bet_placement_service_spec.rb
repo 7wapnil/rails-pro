@@ -1,5 +1,3 @@
-require 'services/service_spec'
-
 describe BetPlacement::SubmissionService do
   let(:bet) { create(:bet) }
 

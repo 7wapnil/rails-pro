@@ -1,5 +1,5 @@
 describe Mts::MtsDecimal do
-  EXAMPLES = [
+  MTS_DECIMAL_EXAMPLES = [
     { input: 1, mts_decimal: 10_000 },
     { input: 1.0, mts_decimal: 10_000 },
     { input: 1.2345, mts_decimal: 12_345 },
@@ -12,7 +12,7 @@ describe Mts::MtsDecimal do
   ].freeze
 
   describe '#from_number' do
-    EXAMPLES.each do |ex|
+    MTS_DECIMAL_EXAMPLES.each do |ex|
       it "converts from #{ex[:input]} to #{ex[:mts_decimal]}" do
         expect(described_class.from_number(ex[:input]))
           .to eq(ex[:mts_decimal])
