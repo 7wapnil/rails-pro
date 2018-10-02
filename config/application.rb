@@ -19,6 +19,7 @@ module Arcanebet
       g.orm :active_record
     end
 
+    config.eager_load_paths << Rails.root.join('lib/hash_deep_formatter')
     config.eager_load_paths << Rails.root.join('lib/xml_parser')
     config.eager_load_paths << Rails.root.join('lib/logger')
 

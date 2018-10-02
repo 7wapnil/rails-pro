@@ -33,6 +33,11 @@ class Event < ApplicationRecord
     where(start_at: [Date.today.beginning_of_day..Date.today.end_of_day])
   end
 
+  def external_id_number
+    return nil unless external_id
+    external_id.split(':')[2].to_i
+  end
+
   def in_play?
     traded_live && start_at.past? && end_at.nil?
   end
