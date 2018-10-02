@@ -7,10 +7,7 @@ module Radar
                exchange_options: { passive: true },
                routing_key: '#',
                durable: false,
-               ack: false,
-               prefetch: 10,
-               threads: 10,
-               timeout_job_after: 10
+               ack: false
 
     MATCHERS = {
       event_processing: {
