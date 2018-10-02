@@ -29,9 +29,8 @@ describe Mts::Messages::ValidationRequest do
       create(:bet, amount: 1, odd_value: odd.value,
                    currency: euro, customer: customer, odd: odd)
     end
-    let(:context) { {} }
 
-    subject { described_class.new(context, [bet]) }
+    subject { described_class.new([bet]) }
 
     let(:experiment_time) { Time.strptime('1486541079460', '%s') }
 

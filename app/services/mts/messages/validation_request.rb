@@ -7,10 +7,10 @@ module Mts
       DEFAULT_STAKE_TYPE = 'total'.freeze
       EXAMPLE_LIMIT_ID = 424
       DEFAULT_SENDER_ID = 7669
+      CUSTOMER_DEFAULT_LANGUAGE = 'EN'.freeze
 
-      def initialize(context, bets)
+      def initialize(bets)
         raise NotImplementedError if bets.length > SUPPORTED_BETS_PER_REQUEST
-        @context = context
         @bets = bets
       end
 
@@ -52,11 +52,10 @@ module Mts
         }
       end
 
-      # TODO: Implement end_customer data from context
       def end_customer
         {
           ip:  customer.last_sign_in_ip.to_s,
-          language_id: distribution_channel.customer_language,
+          language_id: CUSTOMER_DEFAULT_LANGUAGE,
           id: @bets.first.customer.id.to_s
         }
       end
@@ -94,8 +93,7 @@ module Mts
         OpenStruct
           .new(
             channel: 'internet',
-            requirements: internet_distribution_channel_requirements,
-            customer_language: 'EN'
+            requirements: internet_distribution_channel_requirements
           )
       end
 
