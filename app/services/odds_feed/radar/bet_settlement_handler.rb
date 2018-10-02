@@ -38,9 +38,11 @@ module OddsFeed
         Rails.logger.info "Settling bets for odd with EID #{external_id}"
 
         bets = bets_by_external_id(external_id)
-        bets.update_all(status: Bet.statuses[:settled],
-                        result: outcome['result'] == '1',
-                        void_factor: outcome['void_factor'])
+
+        bets.each do |bet|
+          bet.settle!(result: outcome['result'] == '1',
+                      void_factor: outcome['void_factor'])
+        end
         Rails.logger.info "#{bets.count} bets settled"
 
         bets.find_in_batches { |batch| emit_websocket_signals(batch) }

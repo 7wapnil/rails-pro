@@ -18,7 +18,9 @@ module Events
       event_id = obj&.id || args[:eventId]
       raise 'Event ID is required' unless event_id
       query = Market
+              .joins(:odds)
               .where(event_id: event_id)
+              .group('markets.id')
               .order(priority: :desc)
       query = query.where(id: args[:id]) if args[:id]
       query = query.where(priority: args[:priority]) if args[:priority]

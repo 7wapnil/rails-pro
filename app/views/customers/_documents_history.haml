@@ -4,10 +4,10 @@
   %table.table.table-striped
     %tbody
       - @files.each do |file|
-        %tr
-          %td= file.filename
-          %td= file.created_at
-          %td= link_to t(:view),
+        %tr.row
+          %td.col-6.text-truncate= file.filename
+          %td.col-4.text-center= l(file.created_at, format: :short)
+          %td.col-2.text-right= link_to t(:view),
                       rails_blob_path(file.document),
-                      class: 'btn btn-outline-dark text-right',
+                      class: 'btn btn-outline-dark',
                       target: :blank

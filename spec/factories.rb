@@ -5,7 +5,7 @@ FactoryBot.define do
     currency
     kind { EntryRequest.kinds.keys.first }
     min_amount { Faker::Number.decimal(3, 2) }
-    max_amount { Faker::Number.decimal(3, 2) }
+    max_amount { Faker::Number.decimal(4, 2) }
   end
 
   factory :currency do
@@ -39,7 +39,7 @@ FactoryBot.define do
 
   factory :balance do
     wallet
-    kind 0
+    kind Balance.kinds[:real_money]
     amount { Faker::Number.decimal(3, 2) }
   end
 
@@ -47,6 +47,10 @@ FactoryBot.define do
     customer
     currency
     amount { Faker::Number.decimal(3, 2) }
+
+    trait :brick do
+      amount 100_000
+    end
   end
 
   factory :bet do
@@ -55,14 +59,14 @@ FactoryBot.define do
     currency
     amount { Faker::Number.decimal(2, 2) }
     odd_value { odd.value }
-    status Bet.statuses[:pending]
-
-    trait :pending do
-      status Bet.statuses[:pending]
-    end
+    status Bet.statuses[:initial]
 
     trait :settled do
       status Bet.statuses[:settled]
+    end
+
+    trait :accepted do
+      status Bet.statuses[:accepted]
     end
 
     trait :win do
@@ -211,6 +215,12 @@ FactoryBot.define do
     name 'Winner Map (Train)'
     priority 2
     status 0
+
+    trait :with_odds do
+      after(:create) do |market|
+        create_list(:odd, 2, market: market)
+      end
+    end
   end
 
   factory :odd do
@@ -232,6 +242,23 @@ FactoryBot.define do
         reported_at: reported_at,
         subscribed: subscribed
       )
+    end
+  end
+
+  factory :verification_document do
+    customer
+    kind 0
+    status 0
+
+    after(:build) do |doc|
+      file_path = Rails.root.join('spec',
+                                  'support',
+                                  'fixtures',
+                                  'files',
+                                  'verification_document_image.jpg')
+      doc.document.attach(io: File.open(file_path),
+                          filename: 'verification_document_image.jpg',
+                          content_type: 'image/jpeg')
     end
   end
 end

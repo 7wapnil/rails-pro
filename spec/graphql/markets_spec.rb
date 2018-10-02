@@ -32,14 +32,14 @@ describe 'GraphQL#markets' do
       end
 
       it 'returns markets related to event only' do
-        create_list(:market, 5, event: event, priority: 0)
-        create_list(:market, 5, priority: 0)
+        create_list(:market, 5, :with_odds, event: event, priority: 0)
+        create_list(:market, 5, :with_odds, priority: 0)
         expect(result['data']['markets'].count).to eq(5)
       end
 
       it 'returns markets filtered by priority' do
-        create_list(:market, 5, event: event, priority: 0)
-        create_list(:market, 5, event: event, priority: 1)
+        create_list(:market, 5, :with_odds, event: event, priority: 0)
+        create_list(:market, 5, :with_odds, event: event, priority: 1)
         expect(result['data']['markets'].count).to eq(5)
       end
     end
@@ -56,7 +56,7 @@ describe 'GraphQL#markets' do
       end
 
       before do
-        create_list(:market, 5, event: event)
+        create_list(:market, 5, :with_odds, event: event)
       end
 
       it 'returns limited markets' do
@@ -65,7 +65,7 @@ describe 'GraphQL#markets' do
     end
 
     context 'single market' do
-      let(:market) { create(:market, event: event) }
+      let(:market) { create(:market, :with_odds, event: event) }
       let(:query) do
         %({ markets (
               eventId: #{event.id},

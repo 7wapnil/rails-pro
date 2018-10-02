@@ -53,4 +53,10 @@ class Customer < ApplicationRecord
       verification_documents.where(kind: kind).last
     end
   end
+
+  def documents_history(kind = nil)
+    query = verification_documents
+    query = query.where(kind: kind) if kind
+    query.with_deleted
+  end
 end

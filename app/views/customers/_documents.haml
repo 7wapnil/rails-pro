@@ -4,27 +4,43 @@
       %tbody
         - VerificationDocument::KINDS.keys.each do |kind|
           - attachment = attachment_for(@customer, kind)
-          %tr
-            %td= t(kind)
-            %td= attachment.filename
-            %td= attachment.status
-            %td.text-right
+          %tr.row
+            %td.col= t(kind)
+            %td.col.text-truncate= attachment.filename
+            %td.col.text-right= attachment.status
+            %td.col-4.d-flex.justify-content-end
+              = label_tag kind, class: 'btn btn-secondary mr-2' do
+                = t(:choose_file)
+                = file_field_tag kind, accept: 'image/jpeg, image/png, image/gif, application/pdf',
+                                       hidden: 'hidden'
               - if attachment.is_a? VerificationDocument
                 .dropdown
                   %button#dropdownMenuButton.btn.btn-outline-dark.dropdown-toggle{ aria: { expanded: false, haspopup: true },
                                                                                    'data-toggle' => 'dropdown',
-                                                                                 type: :button }
+                                                                                   type: :button }
                     = t(:action)
                   .dropdown-menu{ 'aria-labelledby' => 'dropdownMenuButton' }
                     = link_to t(:view),
                               rails_blob_path(attachment.document),
                               class: 'dropdown-item',
                               target: :blank
-                    = link_to t(:confirm), update_document_status_customer_path(status: :confirmed, document_type: kind), class: 'dropdown-item'
-                    = link_to t(:reject), update_document_status_customer_path(status: :rejected, document_type: kind), class: 'dropdown-item'
-                    = link_to t(:history), documents_history_customer_path(id: @customer.id, document_type: kind), class: 'dropdown-item'
-              - else
-                = file_field_tag kind, accept: 'image/jpeg, image/png, image/gif, application/pdf'
+                    = link_to t(:confirm),
+                              update_document_status_customer_path(status: :confirmed,
+                                                                   document_type: kind),
+                                                                   class: 'dropdown-item'
+                    = link_to t(:reject),
+                              update_document_status_customer_path(status: :rejected,
+                                                                   document_type: kind),
+                                                                   class: 'dropdown-item'
+                    = link_to t(:history),
+                              documents_history_customer_path(id: @customer.id,
+                                                              document_type: kind),
+                                                              class: 'dropdown-item'
+              - elsif @customer.documents_history(kind).any?
+                = link_to t(:history),
+                          documents_history_customer_path(id: @customer.id,
+                                                          document_type: kind),
+                                                          class: 'btn btn-outline-dark mb-2'
     .row
       .col.text-right
         = submit_tag t(:upload), class: 'btn btn-secondary'

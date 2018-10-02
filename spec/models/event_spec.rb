@@ -162,5 +162,15 @@ describe Event do
               id: event.id.to_s,
               changes: { name: 'New name' })
     end
+
+    it 'does not emit web socket event if no changes' do
+      allow_any_instance_of(Event).to receive(:emit_created)
+      event = create(:event)
+      event.assign_attributes(updated_at: Time.now)
+      event.save!
+      expect(WebSocket::Client.instance)
+        .not_to have_received(:emit)
+        .with(WebSocket::Signals::EVENT_UPDATED, anything)
+    end
   end
 end

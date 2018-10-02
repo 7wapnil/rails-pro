@@ -66,6 +66,7 @@ describe 'GraphQL#events' do
                                  priority: 0)
 
         create(:market,
+               :with_odds,
                event: event,
                status: Market::DEFAULT_STATUS,
                priority: 1)
