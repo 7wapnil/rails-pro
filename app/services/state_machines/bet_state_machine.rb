@@ -42,7 +42,8 @@ module StateMachines
 
         event :send_to_external_validation do
           transitions from: :validated_internally,
-                      to: :sent_to_external_validation
+                      to: :sent_to_external_validation,
+                      guard: :successfully_sent_to_external_validation?
         end
 
         event :register_failure do
@@ -56,6 +57,12 @@ module StateMachines
                       to: :settled,
                       after: proc { |args| update_attributes(args) }
         end
+      end
+
+      def successfully_sent_to_external_validation?
+        Mts::SubmissionPublisher
+          .publish!(Mts::Messages::ValidationRequest
+                      .new([self])) != false
       end
     end
   end

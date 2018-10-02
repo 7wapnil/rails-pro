@@ -14,7 +14,9 @@ module BetPlacement
         @bet.register_failure!(@entry_request.result_message)
         return @bet
       end
-      @bet.finish_internal_validation_successfully!
+      @bet.finish_internal_validation_successfully! do
+        @bet.send_to_external_validation!
+      end
       @bet
     end
 
