@@ -1,4 +1,4 @@
-RSpec.shared_examples 'callable service' do |_parameter|
+RSpec.shared_examples 'callable service' do
   it 'is callable with one argument' do
     expect(described_class).to respond_to(:call).with(1).argument
   end
