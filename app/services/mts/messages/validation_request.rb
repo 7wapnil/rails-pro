@@ -54,9 +54,9 @@ module Mts
 
       def end_customer
         {
-          ip:  customer.last_sign_in_ip.to_s,
+          ip: customer.last_sign_in_ip.to_s,
           language_id: CUSTOMER_DEFAULT_LANGUAGE,
-          id: @bets.first.customer.id.to_s
+          id: customer.id.to_s
         }
       end
 
