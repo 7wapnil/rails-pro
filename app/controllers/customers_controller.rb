@@ -62,6 +62,13 @@ class CustomersController < ApplicationController
     redirect_to documents_customer_path(find_customer)
   end
 
+  def update_customer_status
+    @customer = find_customer
+
+    @customer.update(verified: customer_verification_status == 'true')
+    redirect_to documents_customer_path(@customer)
+  end
+
   def update_labels
     customer = find_customer
     if labels_params[:ids].include? '0'
@@ -92,5 +99,9 @@ class CustomersController < ApplicationController
 
   def document_status_code
     params.require(:status)
+  end
+
+  def customer_verification_status
+    params.require(:verified)
   end
 end
