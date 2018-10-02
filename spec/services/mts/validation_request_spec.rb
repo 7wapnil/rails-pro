@@ -19,7 +19,7 @@ describe Mts::Messages::ValidationRequest do
     let(:customer) { create(:customer, id: 123_456_78) }
 
     let(:euro) { create(:currency, code: 'EUR') }
-    let(:event) { create(:event) }
+    let(:event) { create(:event, external_id: 'sr:match:11050343') }
     let(:market) { create(:market, event: event) }
     let(:odd) do
       create(:odd, market: market, value: 2.87, external_id: 'lcoo:42/1/*/X')

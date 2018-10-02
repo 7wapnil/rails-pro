@@ -64,7 +64,7 @@ module Mts
       def selections
         @bets.map do |bet|
           {
-            event_id: event_id(bet),
+            event_id: bet.odd.market.event.external_id_number,
             id: bet.odd.external_id,
             odds: Mts::MtsDecimal.from_number(bet.odd_value)
           }
@@ -118,11 +118,6 @@ module Mts
 
       def customer
         @customer ||= @bets.first.customer
-      end
-
-      # TODO: Figure out where to take id
-      def event_id(*)
-        11_050_343
       end
 
       def timestamp
