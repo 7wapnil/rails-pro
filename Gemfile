@@ -49,6 +49,8 @@ gem 'websocket-driver'
 gem 'sneakers', '~> 2.7.0'
 gem 'aws-sdk-s3', require: false
 gem 'file_validators'
+gem 'logstash-event'
+gem 'logstash-logger'
 gem 'aasm'
 
 # To be moved back to development and test group
