@@ -55,7 +55,7 @@ module Mts
       # TODO: Implement end_customer data from context
       def end_customer
         {
-          ip:  distribution_channel.customer_ip,
+          ip:  customer.last_sign_in_ip.to_s,
           language_id: distribution_channel.customer_language,
           id: @bets.first.customer.id.to_s
         }

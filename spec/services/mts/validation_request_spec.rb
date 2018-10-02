@@ -6,7 +6,7 @@ describe Mts::Messages::ValidationRequest do
       "ticketId": "MTS_Test_1486541079460",
       "sender": {"currency": "EUR",
        "channel": "internet", "bookmakerId": 7669,
-       "endCustomer": {"ip": "127.0.0.1", "languageId": "EN",
+       "endCustomer": {"ip": "202.12.22.4", "languageId": "EN",
        "id": "12345678" },
        "limitId": 424 }, "selections":
       [{"eventId": 11050343, "id": "lcoo:42/1/*/X", "odds": 28700 }],
@@ -16,8 +16,9 @@ describe Mts::Messages::ValidationRequest do
       EXAMPLE_JSON
     end
 
-    let(:customer) { create(:customer, id: 123_456_78) }
-
+    let(:customer) do
+      create(:customer, id: 123_456_78, last_sign_in_ip: '202.12.22.4')
+    end
     let(:euro) { create(:currency, code: 'EUR') }
     let(:event) { create(:event, external_id: 'sr:match:11050343') }
     let(:market) { create(:market, event: event) }
