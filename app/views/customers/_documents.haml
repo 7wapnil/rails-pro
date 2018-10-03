@@ -1,4 +1,8 @@
 = card header: t(:customer_documents), class: 'customer-documents' do
+  - if flash[:file_errors]
+    - flash[:file_errors].keys.each do |kind|
+      %small.text-danger= "#{t("attributes.#{kind}")}: #{flash[:file_errors][kind]}"
+      %br
   = form_tag upload_documents_customer_path, multipart: true, class: 'upload-form' do
     %table.table
       - VerificationDocument::KINDS.keys.each do |kind|
@@ -7,15 +11,15 @@
           %td.col.d-flex.align-items-center= t("attributes.#{kind}" )
           %td.col.d-flex.align-items-center
             %span.d-inline-block.text-truncate(data-target="#{kind}" style="max-width: 250px")
-              = attachment.filename
-          %td.col.d-flex.align-items-center.justify-content-end= attachment.status
+              = attachment&.filename || t('no_file')
+          %td.col.d-flex.align-items-center.justify-content-end= attachment&.status
           %td.col-md-12.col-lg-4.d-flex.align-items-center.justify-content-end
             = label_tag kind, class: 'btn btn-secondary mt-2 mr-2' do
               = t(:choose_file)
               = file_field_tag kind, accept: 'image/jpeg, image/png, image/gif, application/pdf',
                                      hidden: 'hidden',
                                      class: 'file-input'
-            - if attachment.is_a? VerificationDocument
+            - unless attachment.nil?
               .dropdown
                 %button#dropdownMenuButton.btn.btn-outline-dark.mr-2.dropdown-toggle{ aria: { expanded: false, haspopup: true },
                                                                                  'data-toggle' => 'dropdown',
@@ -38,7 +42,7 @@
                             documents_history_customer_path(id: @customer.id,
                                                             document_type: kind),
                                                             class: 'dropdown-item'
-            - elsif @customer.documents_history(kind).any?
+            - else @customer.documents_history(kind).any?
               = link_to t(:history),
                         documents_history_customer_path(id: @customer.id,
                                                         document_type: kind),
