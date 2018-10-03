@@ -3,8 +3,8 @@ module Radar
     include Sneakers::Worker
     MTS_CONFIMRATION_EXCHANGE_NAME = 'arcanebet_arcanebet-Confirm'.freeze
     MTS_CONFIRMATION_EXCHANGE_ROUTING_KEY =
-      'rk_for_arcanebet_arcanebet-Confirm_ruby_created_queue'.freeze
-    MTS_QUEUE_NAME = 'arcanebet_arcanebet-Confirm_ruby_created_queue'.freeze
+      'ticket.confirm'.freeze
+    MTS_QUEUE_NAME = 'arcanebet_arcanebet-ticket_response'.freeze
 
     from_queue MTS_QUEUE_NAME,
                connection: Mts::SingleSession.instance.session.connection,
@@ -12,6 +12,7 @@ module Radar
                exchange: MTS_CONFIMRATION_EXCHANGE_NAME,
                exchange_options: {
                  type: :topic,
+                 exclusive: true,
                  arguments: {
                    routing_key: MTS_CONFIRMATION_EXCHANGE_ROUTING_KEY
                  }

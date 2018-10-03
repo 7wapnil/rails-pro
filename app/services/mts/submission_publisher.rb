@@ -1,7 +1,6 @@
 module Mts
   class SubmissionPublisher
     SUBMISSION_EXCHANGE_NAME = 'arcanebet_arcanebet-Submit'.freeze
-    NONPERSISTENT_MODE = 1
 
     def initialize(message)
       @message = message
@@ -17,7 +16,7 @@ module Mts
           .publish(
             formatted_message,
             content_type: 'application/json',
-            delivery_mode: NONPERSISTENT_MODE,
+            persistent: false,
             headers: {
               'replyRoutingKey':
                 Radar::MtsResponseListener::
