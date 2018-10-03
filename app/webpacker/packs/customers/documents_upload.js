@@ -1,7 +1,7 @@
 
 const initDocumentsUpload = () => {
   $('input[type=file]').on('change', (e) => {
-    const files = e.target.files
+    const { target: { files } } = e
     if (files.length > 0) {
       const name = $(e.target).attr('name')
       $(`[data-target=${name}]`).text(files[0].name)

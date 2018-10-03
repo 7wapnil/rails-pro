@@ -18,7 +18,7 @@ document.addEventListener('turbolinks:load', () => {
     timeout: 2000
   })
 
-  $('.flash-message').each(function() {
+  $('.flash-message').each(() => {
     const options = {}
     const typesMap = {
       notice: 'info',
