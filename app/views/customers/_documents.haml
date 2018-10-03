@@ -1,18 +1,20 @@
 = card header: t(:customer_documents), class: 'customer-documents' do
-  = form_tag upload_documents_customer_path, multipart: true do
+  = form_tag upload_documents_customer_path, multipart: true, class: 'upload-form' do
     %table.table
       - VerificationDocument::KINDS.keys.each do |kind|
         - attachment = attachment_for(@customer, kind)
         %tr.row
           %td.col.d-flex.align-items-center= t("attributes.#{kind}" )
           %td.col.d-flex.align-items-center
-            %span.d-inline-block.text-truncate= attachment.filename
+            %span.d-inline-block.text-truncate(data-target="#{kind}" style="max-width: 250px")
+              = attachment.filename
           %td.col.d-flex.align-items-center.justify-content-end= attachment.status
           %td.col-md-12.col-lg-4.d-flex.align-items-center.justify-content-end
             = label_tag kind, class: 'btn btn-secondary mt-2 mr-2' do
               = t(:choose_file)
               = file_field_tag kind, accept: 'image/jpeg, image/png, image/gif, application/pdf',
-                                     hidden: 'hidden'
+                                     hidden: 'hidden',
+                                     class: 'file-input'
             - if attachment.is_a? VerificationDocument
               .dropdown
                 %button#dropdownMenuButton.btn.btn-outline-dark.mr-2.dropdown-toggle{ aria: { expanded: false, haspopup: true },
@@ -44,3 +46,6 @@
     .row
       .col.text-right
         = submit_tag t(:upload), class: 'btn btn-secondary mr-2'
+
+- content_for :js do
+  = javascript_pack_tag 'customers/documents_upload'
