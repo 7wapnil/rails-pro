@@ -27,6 +27,10 @@ module Mts
           .deep_transform_keys(to_h) { |key| key.to_s.camelize(:lower) }
       end
 
+      def ticket_id
+        'MTS_Test_' + timestamp.to_s
+      end
+
       private
 
       # message structure
@@ -117,10 +121,6 @@ module Mts
 
       def timestamp
         @timestamp ||= Time.now.to_i
-      end
-
-      def ticket_id
-        'MTS_Test_' + @timestamp.to_s
       end
 
       def bets_currency

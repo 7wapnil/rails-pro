@@ -40,10 +40,10 @@ module StateMachines
                       to: :validated_internally
         end
 
-        event :send_to_external_validation do
+        event :send_to_external_validation,
+              after: :send_single_bet_to_external_validation do
           transitions from: :validated_internally,
-                      to: :sent_to_external_validation,
-                      guard: :successfully_sent_to_external_validation?
+                      to: :sent_to_external_validation
         end
 
         event :register_failure do
@@ -59,10 +59,13 @@ module StateMachines
         end
       end
 
-      def successfully_sent_to_external_validation?
-        Mts::SubmissionPublisher
-          .publish!(Mts::Messages::ValidationRequest
-                      .new([self])) != false
+      def send_single_bet_to_external_validation
+        request = Mts::Messages::ValidationRequest
+                  .new([self])
+        response = Mts::SubmissionPublisher
+                   .publish!(request)
+        return false if response == false
+        update(validation_ticket_id: request.ticket_id)
       end
     end
   end
