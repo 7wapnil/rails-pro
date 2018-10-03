@@ -21,7 +21,7 @@ module Radar
                }
 
     def work(msg)
-      puts "Received #{msg}"
+      Rails.logger.debug "MtsResponseListener received: #{msg}"
     end
   end
 end
