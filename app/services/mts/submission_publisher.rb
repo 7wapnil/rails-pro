@@ -1,7 +1,6 @@
 module Mts
   class SubmissionPublisher
     SUBMISSION_EXCHANGE_NAME = 'arcanebet_arcanebet-Submit'.freeze
-    REPLY_KEY = 'rk_for_arcanebet_arcanebet-Confirm_ruby_created_queue'.freeze
     NONPERSISTENT_MODE = 1
 
     def initialize(message)
@@ -19,7 +18,11 @@ module Mts
             formatted_message,
             content_type: 'application/json',
             delivery_mode: NONPERSISTENT_MODE,
-            headers: { 'replyRoutingKey': REPLY_KEY }
+            headers: {
+              'replyRoutingKey':
+                Radar::MtsResponseListener::
+                    MTS_CONFIRMATION_EXCHANGE_ROUTING_KEY
+            }
           )
       end
     end
