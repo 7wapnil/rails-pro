@@ -56,9 +56,10 @@ class CustomersController < ApplicationController
   end
 
   def update_document_status
-    VerificationDocument
-      .where(kind: document_type)
-      .update(status: document_status_code)
+    doc = VerificationDocument.find_by!(id: params.require(:document_id))
+    doc.update(status: document_status_code)
+    log_record_event :document_status_updated, doc
+
     redirect_to documents_customer_path(find_customer)
   end
 
