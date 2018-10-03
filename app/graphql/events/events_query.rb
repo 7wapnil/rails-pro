@@ -16,7 +16,6 @@ module Events
       filter = args[:filter] || {}
       query = Event
               .joins(markets: :odds)
-              .where(start_at: (3.hours.ago..10.hours.from_now))
               .group('events.id')
               .order(:start_at)
 
