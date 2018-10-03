@@ -40,6 +40,11 @@
                   class: 'nav-link',
                   'data-target-controller': 'labels'
       %li.nav-item
+        = link_to t('navigation.documents'),
+                  documents_path,
+                  class: 'nav-link',
+                  'data-target-controller': 'documents'
+      %li.nav-item
         = link_to t(:sidekiq),
                   sidekiq_web_path,
                   class: 'nav-link',

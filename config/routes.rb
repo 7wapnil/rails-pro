@@ -29,6 +29,12 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :documents, only: %i[index show] do
+    get 'change_status',
+        to: 'documents#update_document_status',
+        as: :update_document_status
+  end
+
   resources :customer_notes, only: :create
 
   resources :labels, only: %i[index new edit create update destroy]
