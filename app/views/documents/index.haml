@@ -10,7 +10,7 @@
   %tbody
   - @documents.each do |document|
     %tr
-      %td= document.customer.username
+      %td= link_to document.customer.username, documents_customer_path(id: document.customer.id)
       %td= t("attributes.#{document.kind}")
       %td= l(document.created_at, format: :short)
       %td= status_badge(document.status)
