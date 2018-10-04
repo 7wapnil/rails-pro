@@ -58,14 +58,6 @@ class CustomersController < ApplicationController
     redirect_to documents_customer_path(@customer)
   end
 
-  def update_document_status
-    doc = VerificationDocument.find_by!(id: params.require(:document_id))
-    doc.update(status: document_status_code)
-    log_record_event :document_status_updated, doc
-
-    redirect_to documents_customer_path(find_customer)
-  end
-
   def update_customer_status
     @customer = find_customer
 
@@ -99,10 +91,6 @@ class CustomersController < ApplicationController
 
   def document_type
     params.require(:document_type)
-  end
-
-  def document_status_code
-    params.require(:status)
   end
 
   def customer_verification_status

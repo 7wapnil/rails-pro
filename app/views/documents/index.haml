@@ -26,10 +26,10 @@
                                     class: 'dropdown-item',
                                     target: :blank
             = link_to t(:confirm),
-                                    document_update_document_status_path(status: :confirmed,
-                                                                         document_id: document.id),
+                                    document_status_path(status: :confirmed,
+                                                                         id: document.id),
                                                                          class: 'dropdown-item'
             = link_to t(:reject),
-                                    document_update_document_status_path(status: :rejected,
-                                                                         document_id: document.id),
+                                    document_status_path(status: :rejected,
+                                                                         id: document.id),
                                                                          class: 'dropdown-item'
