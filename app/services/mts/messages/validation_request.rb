@@ -28,7 +28,7 @@ module Mts
       end
 
       def ticket_id
-        'MTS_Test_' + timestamp.to_s
+        'MTS_Test_' + created_at.to_i.to_s
       end
 
       private
@@ -38,7 +38,7 @@ module Mts
       def root_attributes
         {
           version: MESSAGE_VERSION,
-          timestamp_utc: timestamp,
+          timestamp_utc: now_in_millisecons_epoch,
           ticket_id: ticket_id,
           test_source: !Rails.env.production?,
           odds_change: DEFAULT_ODDS_CHANGE_BEHAVIOUR
@@ -70,6 +70,7 @@ module Mts
         @bets.map do |bet|
           {
             event_id: bet.odd.market.event.external_id,
+            # TODO: Add Radar ID
             id: bet.odd.external_id,
             odds: Mts::MtsDecimal.from_number(bet.odd_value)
           }
@@ -117,12 +118,16 @@ module Mts
 
       # getters
 
+      def now_in_millisecons_epoch
+        (Time.now.to_f * 1000).to_i
+      end
+
       def customer
         @customer ||= @bets.first.customer
       end
 
-      def timestamp
-        @timestamp ||= Time.now.to_i
+      def created_at
+        @created_at ||= now_in_millisecons_epoch
       end
 
       def bets_currency

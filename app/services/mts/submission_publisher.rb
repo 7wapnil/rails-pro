@@ -1,6 +1,6 @@
 module Mts
   class SubmissionPublisher
-    SUBMISSION_EXCHANGE_NAME = 'arcanebet_arcanebet-Submit'.freeze
+    MTS_SUBMISSION_EXCHANGE_NAME = 'arcanebet_arcanebet-Submit'.freeze
 
     def initialize(message)
       @message = message
@@ -19,8 +19,7 @@ module Mts
             persistent: false,
             headers: {
               'replyRoutingKey':
-                Radar::MtsResponseListener::
-                    MTS_CONFIRMATION_EXCHANGE_ROUTING_KEY
+                'ticket.confirm.dev'
             }
           )
       end
@@ -31,7 +30,7 @@ module Mts
     def create_exchange(conn)
       conn
         .create_channel
-        .exchange(SUBMISSION_EXCHANGE_NAME,
+        .exchange(MTS_SUBMISSION_EXCHANGE_NAME,
                   type: :fanout,
                   durable: true)
     end

@@ -2,15 +2,15 @@ describe Mts::Messages::ValidationRequest do
   describe 'generates example message' do
     let(:example_json) do
       <<-EXAMPLE_JSON
-      {"version": "2.1", "timestampUtc": 1486541079460, "testSource": true,
-      "ticketId": "MTS_Test_1486541079460",
+      {"version": "2.1", "timestampUtc": 1486541079460000, "testSource": true,
+      "ticketId": "MTS_Test_1486541079460000",
       "sender": {"currency": "EUR",
        "channel": "internet", "bookmakerId": 25238,
        "endCustomer": {"ip": "202.12.22.4", "languageId": "EN",
        "id": "12345678" },
        "limitId": 1355 }, "oddsChange": "none", "selections":
       [{"eventId": "sr:match:11050343", "id": "lcoo:42/1/*/X", "odds": 28700 }],
-      "bets": [{"id": "MTS_Test_1486541079460_0",
+      "bets": [{"id": "MTS_Test_1486541079460000_0",
       "selectionRefs": [{"selectionIndex": 0, "banker": false }],
       "selectedSystems": [1], "stake": {"value": 10000, "type": "total"} }] }
       EXAMPLE_JSON
