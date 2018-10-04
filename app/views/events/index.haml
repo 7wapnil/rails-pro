@@ -1,0 +1,31 @@
+%h1.display-4= t('entities.events', count: @events.count)
+
+= search_form_for @search do |f|
+  %table.table
+    %thead
+      %tr
+        %th= 'Name'
+        %th= 'Sport'
+        %th= 'Tournament'
+        %th= 'Markets'
+
+    %tbody
+      %tr
+        %th
+          = f.label :name_cont, class: 'sr-only'
+          = f.search_field :name_cont,
+                           class: 'form-control',
+                           placeholder: t(:search, subject: 'Name'),
+                           autocomplete: :off
+        %th
+        %th
+        %th
+          = f.submit class: 'btn btn-outline-dark btn-block'
+      - @events.each do |event|
+        %tr{ id: "event-#{event.id}" }
+          %td= link_to event.name, event
+          %td= event.title.name
+          %td= event.tournament&.name
+          %td= event.markets.count
+
+= paginate @events

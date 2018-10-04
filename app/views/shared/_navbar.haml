@@ -10,6 +10,12 @@
   #navbar-content.collapse.navbar-collapse
     %ul.navbar-nav.mr-auto
       %li.nav-item
+        = link_to t('entities.events', count: 5),
+                  events_path,
+                  class: 'nav-link',
+                  'data-target-controller': 'events'
+
+      %li.nav-item
         = link_to t(:customers),
                   customers_path,
                   class: 'nav-link',
