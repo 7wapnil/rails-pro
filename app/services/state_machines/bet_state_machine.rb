@@ -65,7 +65,7 @@ module StateMachines
         response = Mts::SubmissionPublisher
                    .publish!(request)
         return false if response == false
-        self.update(validation_ticket_id: request.ticket_id)
+        update(validation_ticket_id: request.ticket_id)
       end
     end
   end
