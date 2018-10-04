@@ -27,7 +27,7 @@ Rails.application.routes.draw do
   end
 
   post '/customer_attachment_upload',
-       to: 'verification_documents#customer_attachment_upload'
+       to: 'api_upload_controller#customer_attachment_upload'
 
   resources :customer_notes, only: :create
 
