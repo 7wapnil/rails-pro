@@ -46,11 +46,14 @@ class CustomersController < ApplicationController
 
   def upload_documents
     @customer = find_customer
+    flash[:file_errors] = {}
     documents_from_params.each do |kind, file|
       document = @customer.verification_documents.build(kind: kind,
                                                         status: :pending)
       document.document.attach(file)
-      document.save!
+      unless document.save
+        flash[:file_errors][kind] = document.errors.full_messages.first
+      end
     end
     redirect_to documents_customer_path(@customer)
   end
