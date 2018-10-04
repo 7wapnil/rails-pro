@@ -6,7 +6,7 @@
       %tr
         %th= 'Name'
         %th= 'Sport'
-        %th= 'Tournament'
+        %th= 'Start at'
         %th= 'Markets'
 
     %tbody
@@ -25,7 +25,7 @@
         %tr{ id: "event-#{event.id}" }
           %td= link_to event.name, event
           %td= event.title.name
-          %td= event.tournament&.name
+          %td= event.start_at ? l(event.start_at, format: :long) : '-'
           %td= event.markets.count
 
 = paginate @events
