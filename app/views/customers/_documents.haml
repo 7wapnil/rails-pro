@@ -31,13 +31,13 @@
                             class: 'dropdown-item',
                             target: :blank
                   = link_to t(:confirm),
-                            update_document_status_customer_path(status: :confirmed,
-                                                                 document_id: attachment.id),
-                                                                 class: 'dropdown-item'
+                            document_status_path(status: :confirmed,
+                                                 id: attachment.id),
+                                                 class: 'dropdown-item'
                   = link_to t(:reject),
-                            update_document_status_customer_path(status: :rejected,
-                                                                 document_id: attachment.id),
-                                                                 class: 'dropdown-item'
+                            document_status_path(status: :rejected,
+                                                 id: attachment.id),
+                                                 class: 'dropdown-item'
                   = link_to t(:history),
                             documents_history_customer_path(id: @customer.id,
                                                             document_type: kind),

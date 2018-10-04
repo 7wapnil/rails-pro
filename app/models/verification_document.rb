@@ -13,10 +13,9 @@ class VerificationDocument < ApplicationRecord
   enum kind: KINDS
 
   enum status: {
-    absent: 0,
-    pending: 1,
-    confirmed: 2,
-    rejected: 3
+    pending: 0,
+    confirmed: 1,
+    rejected: 2
   }
 
   belongs_to :customer

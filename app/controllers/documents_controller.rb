@@ -1,22 +1,21 @@
 class DocumentsController < ApplicationController
-  def show; end
-
   def index
     @documents = VerificationDocument
-                 .where(status: 'pending')
+                 .where(status: :pending)
   end
 
-  def update_document_status
-    VerificationDocument
-      .find(document_id)
-      .update(status: document_status_code)
-    redirect_to documents_path
+  def status
+    doc = VerificationDocument.find(document_id)
+    doc.update(status: document_status_code)
+    log_record_event :document_status_updated, doc
+
+    redirect_back(fallback_location: root_path)
   end
 
   private
 
   def document_id
-    params.require(:document_id)
+    params.require(:id)
   end
 
   def document_status_code
