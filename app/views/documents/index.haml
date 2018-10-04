@@ -6,7 +6,7 @@
       %th= t('attributes.kind')
       %th= t('attributes.created_at')
       %th= t('attributes.status')
-      %th= t('action')
+      %th.text-center= t('action')
   %tbody
   - @documents.each do |document|
     %tr
@@ -14,7 +14,7 @@
       %td= t("attributes.#{document.kind}")
       %td= l(document.created_at, format: :short)
       %td= status_badge(document.status)
-      %td
+      %td.text-center
         .dropdown
           %button#dropdownMenuButton.btn.btn-outline-dark.mr-2.dropdown-toggle{ aria: { expanded: false, haspopup: true },
                                                                                          'data-toggle' => 'dropdown',

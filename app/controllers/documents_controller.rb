@@ -1,14 +1,14 @@
 class DocumentsController < ApplicationController
-  def show
-  end
+  def show; end
 
   def index
-    @documents = VerificationDocument.where(status: 1)
+    @documents = VerificationDocument
+                 .where(status: 'pending')
   end
 
   def update_document_status
     VerificationDocument
-      .where(id: document_id)
+      .find(document_id)
       .update(status: document_status_code)
     redirect_to documents_path
   end
