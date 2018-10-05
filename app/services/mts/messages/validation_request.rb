@@ -70,7 +70,7 @@ module Mts
         @bets.map do |bet|
           {
             event_id: bet.odd.market.event.external_id,
-            id: Mts::UofId.id(bet.odd),
+            id: bet.odd.external_id,
             odds: Mts::MtsDecimal.from_number(bet.odd_value)
           }
         end
