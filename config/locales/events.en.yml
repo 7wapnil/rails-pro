@@ -10,4 +10,4 @@ en:
     note_created: "New note for customer added by %{origin_kind} %{origin_name}"
     entry_created: "Entry (%{kind}) created by %{origin_kind} %{origin_name}"
     entry_creation_failed: "Entry (%{kind}) failed to create from request by %{origin_kind} %{origin_name}"
-    document_status_updated: "Document %{status} by %{origin_name}"
+    document_status_updated: "Document '%{kind}' %{status} by %{origin_name}"

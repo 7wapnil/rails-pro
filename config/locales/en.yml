@@ -9,11 +9,14 @@ en:
   edit: Edit
   delete: Delete
   confirm: Confirm
+  reject: Reject
+  view: View
   confirm_sure: Are you sure?
-
+  action: Action
   upload: Upload
   no_file: No File
   history: History
+  action: Action
 
   created: "%{instance} created"
   updated: "%{instance} updated"
@@ -33,6 +36,7 @@ en:
   no_records: No records yet
 
   navigation:
+    documents: Documents
     customer:
       account: Account
       activity: Activity
@@ -88,6 +92,7 @@ en:
     amount: Amount
     result: Result
     kind: Type
+    created_at: Created at
     entry_kind: Entry type
     currency_code: Currency
     initiator: Initiator

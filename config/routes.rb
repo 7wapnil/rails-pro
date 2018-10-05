@@ -19,15 +19,15 @@ Rails.application.routes.draw do
       post :upload_documents
       scope '/documents' do
         root to: 'customers#documents', as: :documents
-        get '/:document_id/status',
-            to: 'customers#update_document_status',
-            as: :update_document_status
         get '/:document_type',
             to: 'customers#documents_history',
             as: :documents_history
       end
     end
   end
+
+  post '/customer_attachment_upload',
+       to: 'api_upload#customer_attachment_upload'
 
   resources :customer_notes, only: :create
 
@@ -36,6 +36,11 @@ Rails.application.routes.draw do
   resources :entry_requests, only: %i[index show create]
 
   resources :currencies, only: %i[index new edit create update]
+
+  scope 'documents' do
+    root to: 'documents#index', as: :documents
+    get '/:id', to: 'documents#status', as: :document_status
+  end
 
   resource :dashboard, only: :show
 
@@ -50,8 +55,6 @@ Rails.application.routes.draw do
   end
 
   post '/graphql', to: 'graphql#execute'
-  post '/customer_attachment_upload',
-       to: 'verification_documents#customer_attachment_upload'
 
   root 'dashboards#show'
 end

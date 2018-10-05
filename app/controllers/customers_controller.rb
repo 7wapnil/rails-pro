@@ -46,21 +46,16 @@ class CustomersController < ApplicationController
 
   def upload_documents
     @customer = find_customer
+    flash[:file_errors] = {}
     documents_from_params.each do |kind, file|
       document = @customer.verification_documents.build(kind: kind,
                                                         status: :pending)
       document.document.attach(file)
-      document.save!
+      unless document.save
+        flash[:file_errors][kind] = document.errors.full_messages.first
+      end
     end
     redirect_to documents_customer_path(@customer)
-  end
-
-  def update_document_status
-    doc = VerificationDocument.find_by!(id: params.require(:document_id))
-    doc.update(status: document_status_code)
-    log_record_event :document_status_updated, doc
-
-    redirect_to documents_customer_path(find_customer)
   end
 
   def update_customer_status
@@ -96,10 +91,6 @@ class CustomersController < ApplicationController
 
   def document_type
     params.require(:document_type)
-  end
-
-  def document_status_code
-    params.require(:status)
   end
 
   def customer_verification_status
