@@ -1,0 +1,46 @@
+.row.mt-4
+  .col-8.offset-2
+    = card header: t('entities.events', count: 1), class: 'events-info mb-3' do
+      %table.table
+        %tr
+          %td= 'Name'
+          %td= @event.name
+        %tr
+          %td= 'Title'
+          %td= @event.title.name
+        %tr
+          %td= 'Description'
+          %td= @event.description
+        %tr
+          %td= 'Start at'
+          %td= @event.start_at ? l(@event.start_at, format: :long) : '-'
+        %tr
+          %td= 'End at'
+          %td= @event.end_at ? l(@event.end_at, format: :long) : '-'
+        %tr
+          %td= 'Status'
+          %td= @event.status
+        %tr
+          %td= 'Scopes'
+          %td
+            %ul.list-unstyled
+              - @event.event_scopes.each do |scope|
+                %li
+                  %b= "#{scope.kind}:"
+                  %span= scope.name
+      %hr
+      = link_back
+
+    = card header: t('entities.markets'), class: 'markets-info' do
+      %table.table
+        %thead
+          %tr
+            %th= 'Name'
+            %th= 'Status'
+            %th= 'Priority'
+        %tbody
+          - @event.markets.each do |market|
+            %tr
+              %td= market.name
+              %td= market.status
+              %td= market.priority

@@ -79,6 +79,9 @@ en:
       zero: No activities
       one: 1 activity
       other: "%{count} activities"
+    events:
+      one: Event
+      other: Events
 
   attributes:
     username: Username

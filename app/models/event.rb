@@ -61,6 +61,10 @@ class Event < ApplicationRecord
     self.payload = addition unless payload
   end
 
+  def tournament
+    event_scopes.where(kind: :tournament).first
+  end
+
   private
 
   def emit_created
