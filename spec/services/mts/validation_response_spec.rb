@@ -53,7 +53,7 @@ describe Mts::Messages::ValidationResponse do
 
     it 'detects reason message' do
       expect(subject.result.reason.message)
-        .to include? 'Match is not found in MTS'
+        .to include 'Match is not found in MTS'
     end
 
     it 'detects version' do
