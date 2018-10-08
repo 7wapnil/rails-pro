@@ -14,11 +14,14 @@ module Radar
                  durable: true,
                  routing_key: ENV['MTS_MQ_ROUTING_KEY']
                },
+               ack: true,
                heartbeat: 30,
                amqp_heartbeat: 30
 
     def work(deserialized_msg)
       Rails.logger.debug deserialized_msg
+
+      ack!
     end
   end
 end
