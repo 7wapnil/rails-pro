@@ -1,27 +1,24 @@
 module Radar
   class MtsResponseListener
     include Sneakers::Worker
-    MTS_CONFIMRATION_EXCHANGE_NAME = 'arcanebet_arcanebet-Confirm'.freeze
-    MTS_CONFIRMATION_EXCHANGE_ROUTING_KEY =
-      'rk_for_arcanebet_arcanebet-Confirm_ruby_created_queue'.freeze
-    MTS_QUEUE_NAME = 'arcanebet_arcanebet-Confirm_ruby_created_queue'.freeze
+    MTS_CONFIRMATION_EXCHANGE_NAME = 'arcanebet_arcanebet-Confirm'.freeze
 
-    from_queue MTS_QUEUE_NAME,
+    from_queue ENV['MTS_MQ_QUEUE_NAME'],
                connection: Mts::SingleSession.instance.session.connection,
-               env: nil,
-               exchange: MTS_CONFIMRATION_EXCHANGE_NAME,
+               exchange: MTS_CONFIRMATION_EXCHANGE_NAME,
                exchange_options: {
                  type: :topic,
-                 arguments: {
-                   routing_key: MTS_CONFIRMATION_EXCHANGE_ROUTING_KEY
-                 }
+                 exclusive: true
                },
                queue_options: {
-                 durable: false
-               }
+                 durable: true,
+                 routing_key: ENV['MTS_MQ_ROUTING_KEY']
+               },
+               heartbeat: 30,
+               amqp_heartbeat: 30
 
-    def work(msg)
-      Rails.logger.debug "MtsResponseListener received: #{msg}"
+    def work(deserialized_msg)
+      Rails.logger.debug deserialized_msg
     end
   end
 end

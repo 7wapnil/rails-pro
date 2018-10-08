@@ -1,7 +1,6 @@
 module Mts
   class SubmissionPublisher
-    SUBMISSION_EXCHANGE_NAME = 'arcanebet_arcanebet-Submit'.freeze
-    NONPERSISTENT_MODE = 1
+    MTS_SUBMISSION_EXCHANGE_NAME = 'arcanebet_arcanebet-Submit'.freeze
 
     def initialize(message)
       @message = message
@@ -17,11 +16,9 @@ module Mts
           .publish(
             formatted_message,
             content_type: 'application/json',
-            delivery_mode: NONPERSISTENT_MODE,
+            persistent: false,
             headers: {
-              'replyRoutingKey':
-                Radar::MtsResponseListener::
-                    MTS_CONFIRMATION_EXCHANGE_ROUTING_KEY
+              'replyRoutingKey': ENV['MTS_MQ_ROUTING_KEY']
             }
           )
       end
@@ -32,7 +29,7 @@ module Mts
     def create_exchange(conn)
       conn
         .create_channel
-        .exchange(SUBMISSION_EXCHANGE_NAME,
+        .exchange(MTS_SUBMISSION_EXCHANGE_NAME,
                   type: :fanout,
                   durable: true)
     end
