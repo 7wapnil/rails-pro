@@ -60,4 +60,11 @@ class Customer < ApplicationRecord
     query = query.where(kind: kind) if kind
     query.with_deleted
   end
+
+  def log_event(event, context = {})
+    Audit::Service.call(event: event,
+                        user: nil,
+                        customer: self,
+                        context: context)
+  end
 end

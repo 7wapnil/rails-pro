@@ -11,14 +11,13 @@ describe Audit::Service do
 
       event = :customer_created
       Audit::Service.call event: event,
-                          origin_kind: :user,
-                          origin_id: user.id
+                          user: user
 
       expect(AuditLog)
         .to have_received(:create!)
         .with(event: event,
-              origin_kind: :user,
-              origin_id: user.id,
+              user_id: user.id,
+              customer_id: nil,
               context: {})
     end
   end

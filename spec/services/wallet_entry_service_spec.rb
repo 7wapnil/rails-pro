@@ -93,7 +93,7 @@ describe WalletEntry::AuthorizationService do
 
         expect(Audit::Service)
           .to receive(:call)
-          .with hash_including(event: :entry_created)
+          .with hash_including(event: :entry_request_created)
 
         service.send(:handle_success)
       end

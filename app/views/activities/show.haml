@@ -8,9 +8,14 @@
         %tr
           %td= t('attributes.created_at')
           %td= l(@activity.created_at, format: :long)
-        %tr
-          %td= t('attributes.origin_id')
-          %td= @activity.origin_id
+        - if @activity.user
+          %tr
+            %td= t('attributes.user')
+            %td= @activity.user_name
+        - if @activity.customer
+          %tr
+            %td= t('attributes.customer')
+            %td= @activity.customer_name
         %tr
           %td= t('attributes.info')
           %td

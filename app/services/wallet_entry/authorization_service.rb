@@ -79,25 +79,19 @@ module WalletEntry
 
     def log_success
       Audit::Service.call(
-        event: :entry_created,
-        origin_kind: @request.initiator_type,
-        origin_id: @request.initiator_id,
-        context: @entry.loggable_attributes.merge(
-          target_class: :customer,
-          target_id: @request.customer_id
-        )
+        event: :entry_request_created,
+        user: @request.customer_initiated? ? nil : @request.initiator,
+        customer: @request.customer,
+        context: @request
       )
     end
 
     def log_failure
       Audit::Service.call(
         event: :entry_creation_failed,
-        origin_kind: @request.initiator_type,
-        origin_id: @request.initiator_id,
-        context: @request.loggable_attributes.merge(
-          target_class: :customer,
-          target_id: @request.customer_id
-        )
+        user: @request.customer_initiated? ? nil : @request.initiator,
+        customer: @request.customer,
+        context: @request
       )
     end
   end
