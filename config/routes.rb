@@ -46,6 +46,8 @@ Rails.application.routes.draw do
 
   resources :activities, only: %i[index show]
 
+  resources :events, only: %i[index show]
+
   devise_for :users, controllers: {
     sessions: 'users/sessions'
   }
