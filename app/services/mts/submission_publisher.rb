@@ -18,8 +18,7 @@ module Mts
             content_type: 'application/json',
             persistent: false,
             headers: {
-              'replyRoutingKey':
-                'ticket.confirm.dev'
+              'replyRoutingKey': ENV['MTS_MQ_ROUTING_KEY']
             }
           )
       end
