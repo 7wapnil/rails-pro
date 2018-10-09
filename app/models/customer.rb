@@ -9,7 +9,7 @@ class Customer < ApplicationRecord
   }
 
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable,
+         :recoverable, :rememberable, :trackable,
          authentication_keys: [:login]
 
   attr_accessor :login
@@ -46,6 +46,8 @@ class Customer < ApplicationRecord
 
   validates :password, confirmation: true
   validates :password, length: { minimum: 6, maximum: 32 }
+
+  validates :email, format: /@/
 
   validates :username, uniqueness: { case_sensitive: false }
   validates :email, uniqueness: { case_sensitive: false }
