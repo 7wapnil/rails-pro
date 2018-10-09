@@ -9,7 +9,7 @@ describe Mts::Messages::ValidationRequest do
        "endCustomer": {"ip": "202.12.22.4", "languageId": "EN",
        "id": "12345678" },
        "limitId": 1355 }, "oddsChange": "none", "selections":
-      [{"eventId": "sr:match:11050343",
+      [{"eventId":  "sr:match:11050343",
         "id": "uof:3/sr:sport:110/186/4?setnr=1&gamenr=2",
         "odds": 28700 }],
       "bets": [{"id": "MTS_Test_1486541079460000_0",

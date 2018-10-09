@@ -16,7 +16,7 @@ class LabelsController < ApplicationController
     @label = Label.new(label_params)
 
     if @label.save
-      log_record_event :label_created, @label
+      current_user.log_event :label_created, @label
       redirect_to labels_path
     else
       render 'new'
@@ -27,7 +27,7 @@ class LabelsController < ApplicationController
     @label = Label.find(params[:id])
 
     if @label.update(label_params)
-      log_record_event :label_updated, @label
+      current_user.log_event :label_updated, @label
       redirect_to labels_path
     else
       render 'edit'
@@ -37,7 +37,7 @@ class LabelsController < ApplicationController
   def destroy
     @label = Label.find(params[:id])
     @label.destroy
-    log_record_event :label_deleted, @label
+    current_user.log_event :label_deleted, @label
 
     redirect_to labels_path
   end

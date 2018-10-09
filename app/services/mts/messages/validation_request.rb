@@ -40,7 +40,7 @@ module Mts
           version: MESSAGE_VERSION,
           timestamp_utc: now_in_millisecons_epoch,
           ticket_id: ticket_id,
-          test_source: !Rails.env.production?,
+          test_source: !production_mode,
           odds_change: DEFAULT_ODDS_CHANGE_BEHAVIOUR
         }
       end
@@ -116,6 +116,10 @@ module Mts
       end
 
       # getters
+
+      def production_mode
+        !ENV['MTS_MODE'] == 'production'
+      end
 
       def now_in_millisecons_epoch
         (Time.now.to_f * 1000).to_i
