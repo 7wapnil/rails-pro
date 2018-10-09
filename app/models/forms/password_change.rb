@@ -11,8 +11,6 @@ module Forms
 
     validates :new_password, confirmation: true
 
-    validates :new_password,
-              :new_password_confirmation,
-              length: { minimum: 6, maximum: 32 }
+    validates :new_password, length: { minimum: 6, maximum: 32 }
   end
 end
