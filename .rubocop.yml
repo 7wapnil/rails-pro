@@ -22,6 +22,9 @@ Metrics/MethodLength:
 Metrics/BlockLength:
   Enabled: false
 
+Layout/EmptyLineAfterGuardClause:
+  Enabled: false
+
 AllCops:
   Exclude:
     - 'config/initializers/simple_form.rb'
