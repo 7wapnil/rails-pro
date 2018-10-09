@@ -19,6 +19,7 @@ module Radar
 
     def work(deserialized_msg)
       Rails.logger.debug deserialized_msg
+      ack!
     end
   end
 end
