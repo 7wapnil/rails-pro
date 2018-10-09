@@ -17,7 +17,8 @@ class CustomersController < ApplicationController
 
   def activity
     @customer = find_customer
-    @entries = @customer.entries.page(params[:page])
+    @search = @customer.entries.search(query_params)
+    @entries = @search.result.page(params[:page])
     @audit_logs = AuditLog
                   .where(origin_kind: :customer,
                          origin_id: @customer.id)
