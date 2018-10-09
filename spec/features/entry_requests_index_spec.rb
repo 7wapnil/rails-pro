@@ -39,5 +39,13 @@ describe 'EntryRequests#index' do
         end
       end
     end
+
+    it 'allows sorting by date' do
+      old_request = create(:entry_request, created_at: 1.day.ago)
+      click_link('Date')
+      first_row = page.first('table > tbody tr')
+      element_id = "entry-request-#{old_request.id}"
+      expect(first_row[:id]).to eq(element_id)
+    end
   end
 end
