@@ -3,7 +3,7 @@ class CustomerNotesController < ApplicationController
     note = CustomerNote.new(customer_note_params)
 
     if note.save
-      log_record_event :note_created, note
+      current_user.log_event :note_created, note, note.customer
       redirect_to notes_customer_path(note.customer)
     else
       flash[:error] = note.errors.full_messages

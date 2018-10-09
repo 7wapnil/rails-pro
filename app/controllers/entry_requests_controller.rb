@@ -14,7 +14,9 @@ class EntryRequestsController < ApplicationController
     if entry_request.save
       EntryRequestProcessingWorker.perform_async(entry_request.id)
 
-      log_record_event :entry_request_created, entry_request
+      current_user.log_event :entry_request_created,
+                             entry_request,
+                             entry_request.customer
 
       flash[:success] = t('entities.entry_request.flash')
       redirect_to account_management_customer_path(entry_request.customer) # rubocop:disable Metrics/LineLength
