@@ -8,18 +8,6 @@ describe Event do
 
   it { should delegate_method(:name).to(:title).with_prefix }
 
-  describe '.external_id_number' do
-    subject { event.external_id_number }
-    context 'no external_id' do
-      let(:event) { build(:event, external_id: nil) }
-      it { is_expected.to eq nil }
-    end
-    context 'with external_id one:two:12345' do
-      let(:event) { build(:event, external_id: 'one:two:12345') }
-      it { is_expected.to eq 12_345 }
-    end
-  end
-
   describe '.in_play' do
     it 'includes started and not finished events that are traded live' do
       event = create(:event,
