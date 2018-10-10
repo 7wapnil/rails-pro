@@ -31,6 +31,11 @@ describe Customer do
     expect(customer.last_sign_in_at).not_to be_nil
   end
 
+  it 'generates activation token on create' do
+    customer = create(:customer)
+    expect(customer.activation_token).to_not be_nil
+  end
+
   context 'documents' do
     subject { create(:customer) }
 

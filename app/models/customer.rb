@@ -1,6 +1,7 @@
 class Customer < ApplicationRecord
   include Person
 
+  has_secure_token :activation_token
   acts_as_paranoid
 
   enum gender: {

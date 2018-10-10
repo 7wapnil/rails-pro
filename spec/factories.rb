@@ -136,7 +136,7 @@ FactoryBot.define do
     password 'iamverysecure'
     verified false
     activated false
-    activation_token 'activation-token'
+    activation_token { Faker::Internet.password }
   end
 
   factory :label do
