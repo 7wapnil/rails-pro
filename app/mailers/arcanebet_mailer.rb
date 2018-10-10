@@ -4,7 +4,6 @@ class ArcanebetMailer < ApplicationMailer
 
   def account_activation_mail
     @customer = params[:customer]
-    recipient = %("#{@customer.full_name}" <#{@customer.email}>)
-    mail(to: recipient, subject: 'Activate you account')
+    mail(to: @customer.email, subject: 'Activate you account')
   end
 end
