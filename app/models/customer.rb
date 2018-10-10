@@ -45,7 +45,7 @@ class Customer < ApplicationRecord
 
   validates :username, uniqueness: { case_sensitive: false }
   validates :email, uniqueness: { case_sensitive: false }
-  validates :verified, inclusion: { in: [true, false] }
+  validates :verified, :activated, inclusion: { in: [true, false] }
 
   ransack_alias :ip_address, :last_sign_in_ip_or_current_sign_in_ip
 
