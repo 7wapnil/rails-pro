@@ -47,7 +47,7 @@ class Customer < ApplicationRecord
   validates :password, confirmation: true
   validates :password, length: { minimum: 6, maximum: 32 }
 
-  validates :email, format: /@/
+  validates :email, format: /\A[\w\d_\-\.]+@[\w\d_\-\.]+\z/
 
   validates :username, uniqueness: { case_sensitive: false }
   validates :email, uniqueness: { case_sensitive: false }

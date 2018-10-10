@@ -20,7 +20,7 @@ describe Customer do
       .is_at_most(32)
   end
 
-  it { should allow_value('@').for(:email) }
+  it { should allow_value('foo@bar.com').for(:email) }
   it { should_not allow_value('hello').for(:email) }
 
   it { should validate_uniqueness_of(:username).case_insensitive }
