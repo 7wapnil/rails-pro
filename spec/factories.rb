@@ -69,6 +69,10 @@ FactoryBot.define do
       status Bet.statuses[:accepted]
     end
 
+    trait :sent_to_external_validation do
+      status Bet.statuses[:sent_to_external_validation]
+    end
+
     trait :win do
       result true
     end

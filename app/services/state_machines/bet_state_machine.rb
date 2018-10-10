@@ -46,6 +46,16 @@ module StateMachines
                       to: :sent_to_external_validation
         end
 
+        event :finish_external_validation_with_acceptance do
+          transitions from: :sent_to_external_validation,
+                      to: :accepted
+        end
+
+        event :finish_external_validation_with_rejection do
+          transitions from: :sent_to_external_validation,
+                      to: :rejected
+        end
+
         event :register_failure do
           transitions from: :sent_to_internal_validation,
                       to: :failed,
