@@ -2,7 +2,10 @@ module Forms
   class PasswordChange
     include ActiveModel::Model
 
-    attr_accessor :subject, :existing_password, :new_password, :new_password_confirmation
+    attr_accessor :subject,
+                  :existing_password,
+                  :new_password,
+                  :new_password_confirmation
 
     validates :subject,
               :existing_password,
