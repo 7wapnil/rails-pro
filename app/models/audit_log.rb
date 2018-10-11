@@ -30,6 +30,7 @@ class AuditLog
 
   def target
     return nil unless self[:context][:target_class]
+
     self[:context][:target_class]
       .to_s
       .camelize

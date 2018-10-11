@@ -11,6 +11,7 @@ module Mts
 
       def initialize(bets)
         raise NotImplementedError if bets.length > SUPPORTED_BETS_PER_REQUEST
+
         @bets = bets
       end
 
@@ -47,6 +48,7 @@ module Mts
         unless distribution_channel.channel == 'internet'
           raise NotImplementedError
         end
+
         {
           currency: bets_currency,
           channel: distribution_channel.channel,

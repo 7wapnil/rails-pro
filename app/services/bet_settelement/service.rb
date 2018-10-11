@@ -26,6 +26,7 @@ module BetSettelement
 
     def win_entry_request
       return unless @bet.result == true
+
       @win_entry_request ||= EntryRequest.create!(
         amount: @bet.win_amount,
         currency: @bet.currency,
@@ -39,6 +40,7 @@ module BetSettelement
 
     def refund_entry_request
       return if @bet.void_factor.nil?
+
       @refund_entry_request ||= EntryRequest.create!(
         amount: @bet.refund_amount,
         currency: @bet.currency,
