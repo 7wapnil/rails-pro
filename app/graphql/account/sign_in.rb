@@ -14,7 +14,7 @@ module Account
       if customer&.valid_password?(args[:input][:password])
         customer.update_tracked_fields!(@request)
         @current_customer = customer
-        log_record_event :customer_signed_in, customer
+        customer.log_event :customer_signed_in
         response(customer)
       else
         GraphQL::ExecutionError.new(

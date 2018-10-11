@@ -27,7 +27,7 @@ class CurrenciesController < ApplicationController
     @currency = Currency.new(currency_params)
 
     if @currency.save
-      log_record_event :currency_created, @currency
+      current_user.log_event :currency_created, @currency
       redirect_to currencies_path
     else
       render 'new'
@@ -38,7 +38,7 @@ class CurrenciesController < ApplicationController
     @currency = Currency.find(params[:id])
 
     if @currency.update(currency_params)
-      log_record_event :currency_updated, @currency
+      current_user.log_event :currency_updated, @currency
       redirect_to currencies_path
     else
       render 'edit'

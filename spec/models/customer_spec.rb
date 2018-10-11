@@ -10,6 +10,18 @@ describe Customer do
   it { should validate_presence_of(:first_name) }
   it { should validate_presence_of(:last_name) }
   it { should validate_presence_of(:date_of_birth) }
+  it { should validate_presence_of(:password) }
+
+  it { should validate_confirmation_of(:password) }
+
+  it do
+    should validate_length_of(:password)
+      .is_at_least(6)
+      .is_at_most(32)
+  end
+
+  it { should allow_value('foo@bar.com').for(:email) }
+  it { should_not allow_value('hello').for(:email) }
 
   it { should validate_uniqueness_of(:username).case_insensitive }
   it { should validate_uniqueness_of(:email).case_insensitive }

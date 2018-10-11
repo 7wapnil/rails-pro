@@ -1,4 +1,6 @@
 class VerificationDocument < ApplicationRecord
+  include Loggable
+
   acts_as_paranoid
 
   MAX_ATTACHMENT_SIZE = 2.megabytes.freeze
@@ -30,4 +32,10 @@ class VerificationDocument < ApplicationRecord
                                            application/pdf] }
 
   delegate :filename, to: :document
+
+  def loggable_attributes
+    { id: id,
+      kind: kind,
+      status: status }
+  end
 end

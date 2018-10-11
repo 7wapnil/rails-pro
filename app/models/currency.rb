@@ -1,4 +1,6 @@
 class Currency < ApplicationRecord
+  include Loggable
+
   has_many :entry_currency_rules
 
   accepts_nested_attributes_for :entry_currency_rules
@@ -12,5 +14,11 @@ class Currency < ApplicationRecord
 
   def to_s
     code
+  end
+
+  def loggable_attributes
+    { id: id,
+      code: code,
+      name: name }
   end
 end

@@ -3,11 +3,11 @@ module Mts
     # TODO: Extract parts to different classes
     class ValidationRequest # rubocop:disable Metrics/ClassLength
       SUPPORTED_BETS_PER_REQUEST = 1
-      MESSAGE_VERSION = '2.0'.freeze
+      MESSAGE_VERSION = '2.1'.freeze
       DEFAULT_STAKE_TYPE = 'total'.freeze
-      EXAMPLE_LIMIT_ID = 424
-      DEFAULT_SENDER_ID = 7669
+      DEFAULT_SENDER_ID = 25_238
       CUSTOMER_DEFAULT_LANGUAGE = 'EN'.freeze
+      DEFAULT_ODDS_CHANGE_BEHAVIOUR = 'none'.freeze
 
       def initialize(bets)
         raise NotImplementedError if bets.length > SUPPORTED_BETS_PER_REQUEST
@@ -28,7 +28,7 @@ module Mts
       end
 
       def ticket_id
-        'MTS_Test_' + timestamp.to_s
+        'MTS_Test_' + created_at.to_i.to_s
       end
 
       private
@@ -38,8 +38,10 @@ module Mts
       def root_attributes
         {
           version: MESSAGE_VERSION,
-          timestampUtc: timestamp,
-          ticketId: ticket_id
+          timestamp_utc: now_in_millisecons_epoch,
+          ticket_id: ticket_id,
+          test_source: !production_mode,
+          odds_change: DEFAULT_ODDS_CHANGE_BEHAVIOUR
         }
       end
 
@@ -52,7 +54,7 @@ module Mts
           channel: distribution_channel.channel,
           bookmaker_id: DEFAULT_SENDER_ID,
           end_customer: end_customer,
-          limit_id: EXAMPLE_LIMIT_ID
+          limit_id: Mts::Limit.some
         }
       end
 
@@ -67,7 +69,7 @@ module Mts
       def selections
         @bets.map do |bet|
           {
-            event_id: bet.odd.market.event.external_id_number,
+            event_id: bet.odd.market.event.external_id,
             id: Mts::UofId.id(bet.odd),
             odds: Mts::MtsDecimal.from_number(bet.odd_value)
           }
@@ -115,12 +117,20 @@ module Mts
 
       # getters
 
+      def production_mode
+        !ENV['MTS_MODE'] == 'production'
+      end
+
+      def now_in_millisecons_epoch
+        (Time.now.to_f * 1000).to_i
+      end
+
       def customer
         @customer ||= @bets.first.customer
       end
 
-      def timestamp
-        @timestamp ||= Time.now.to_i
+      def created_at
+        @created_at ||= now_in_millisecons_epoch
       end
 
       def bets_currency
