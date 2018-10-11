@@ -3,7 +3,7 @@ describe Mts::UofId do
   let(:event) do
     create(:event,
            title: title,
-           payload: '{"producer":{"origin":"radar","id":"1"}}')
+           payload: { "producer": { "origin": 'radar', "id": '1' } })
   end
   let(:market) { create(:market, event: event) }
   let(:odd) do

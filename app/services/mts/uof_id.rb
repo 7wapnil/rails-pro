@@ -6,7 +6,6 @@ module Mts
 
     def initialize(odd)
       @odd = odd
-      @event_payload = JSON.parse(@odd.market.event.payload)
       raise ArgumentError 'Not radar Event' unless radar_event?
     end
 
@@ -38,7 +37,9 @@ module Mts
     end
 
     def producer
-      @event_payload['producer']
+      producer_value = @odd.market.event.payload['producer']
+      raise 'Missing producer' unless producer_value
+      producer_value
     end
 
     def outcome_id
