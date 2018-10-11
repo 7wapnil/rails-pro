@@ -41,10 +41,20 @@ describe 'EntryRequests#index' do
     end
 
     it 'allows sorting by date' do
-      old_request = create(:entry_request, created_at: 1.day.ago)
+      oldest = EntryRequest.unscoped.order(created_at: :asc).first
       click_link('Date')
       first_row = page.first('table > tbody tr')
-      element_id = "entry-request-#{old_request.id}"
+      element_id = "entry-request-#{oldest.id}"
+
+      expect(first_row[:id]).to eq(element_id)
+    end
+
+    it 'allows sorting by kind' do
+      first_in_table = EntryRequest.unscoped.order(kind: :desc).first
+      click_link('Entry type')
+      first_row = page.first('table > tbody tr')
+      element_id = "entry-request-#{first_in_table.id}"
+
       expect(first_row[:id]).to eq(element_id)
     end
   end
