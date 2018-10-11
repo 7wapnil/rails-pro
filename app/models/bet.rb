@@ -9,22 +9,24 @@ class Bet < ApplicationRecord
   has_one :entry_request, as: :origin
 
   scope :expired_live, -> do
+    timeout = ENV.fetch('LIVE_TIMEOUT') { 10 }.to_i
     condition = 'bets.validation_ticket_sent_at <= :seconds_ago
                          AND bets.status = :status
                          AND events.traded_live = true'
     status_code = Bet.statuses[:sent_to_external_validation]
     joins(odd: { market: [:event] }).where(condition,
-                                           seconds_ago: 10.seconds.ago,
+                                           seconds_ago: timeout.seconds.ago,
                                            status: status_code)
   end
 
   scope :expired_prematch, -> do
+    timeout = ENV.fetch('PREMATCH_TIMEOUT') { 3 }.to_i
     condition = 'bets.validation_ticket_sent_at <= :seconds_ago
                          AND bets.status = :status
                          AND events.traded_live = false'
     status_code = Bet.statuses[:sent_to_external_validation]
     joins(odd: { market: [:event] }).where(condition,
-                                           seconds_ago: 3.seconds.ago,
+                                           seconds_ago: timeout.seconds.ago,
                                            status: status_code)
   end
 
