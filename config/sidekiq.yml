@@ -2,3 +2,16 @@
   - critical
   - mq
   - default
+  - expired_live
+  - expired_prematch
+
+:schedule:
+  check_bet_expirasy_live:
+    every: '10s'
+    class: Scheduled::ExpiringLiveWorker
+    queue: expired_live
+
+  check_bet_expirasy_prematch:
+    every: '3s'
+    class: Scheduled::ExpiringPrematchWorker
+    queue: expired_prematch

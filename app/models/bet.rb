@@ -8,6 +8,26 @@ class Bet < ApplicationRecord
   has_one :entry, as: :origin
   has_one :entry_request, as: :origin
 
+  scope :expired_live, -> do
+    condition = 'bets.validation_ticket_sent_at <= :seconds_ago
+                         AND bets.status = :status
+                         AND events.traded_live = true'
+    status_code = Bet.statuses[:sent_to_external_validation]
+    joins(odd: { market: [:event] }).where(condition,
+                                           seconds_ago: 10.seconds.ago,
+                                           status: status_code)
+  end
+
+  scope :expired_prematch, -> do
+    condition = 'bets.validation_ticket_sent_at <= :seconds_ago
+                         AND bets.status = :status
+                         AND events.traded_live = false'
+    status_code = Bet.statuses[:sent_to_external_validation]
+    joins(odd: { market: [:event] }).where(condition,
+                                           seconds_ago: 3.seconds.ago,
+                                           status: status_code)
+  end
+
   validates :odd_value,
             numericality: {
               equal_to: ->(bet) { bet.odd.value },

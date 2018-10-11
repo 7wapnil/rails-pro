@@ -48,6 +48,34 @@ describe Bet do
       win_amount: 0, refund_amount: 0.5 }
   ].freeze
 
+  describe 'Bet.expired_prematch' do
+    it 'Returns expired prematch bets' do
+      expired_bets = create_list(:bet, 2,
+                                 validation_ticket_sent_at: 6.seconds.ago,
+                                 status: :sent_to_external_validation)
+      create_list(:bet, 3,
+                  validation_ticket_sent_at: 1.seconds.ago,
+                  status: :sent_to_external_validation)
+      expected_bets = Bet.expired_prematch
+
+      expect(expected_bets).to eq(expired_bets)
+    end
+  end
+
+  describe 'Bet.expired_live' do
+    it 'Returns expired live bets' do
+      expired_bets = create_list(:bet, 2,
+                                 validation_ticket_sent_at: 10.seconds.ago,
+                                 status: :sent_to_external_validation)
+      create_list(:bet, 3,
+                  validation_ticket_sent_at: 1.seconds.ago,
+                  status: :sent_to_external_validation)
+      expected_bets = Bet.expired_prematch
+
+      expect(expected_bets).to eq(expired_bets)
+    end
+  end
+
   describe '.win_amount' do
     BET_SETTLEMENT_OUTCOMES_EXAMPLES.each do |example|
       it example[:name] do
