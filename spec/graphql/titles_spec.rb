@@ -40,6 +40,31 @@ describe 'GraphQL#titles' do
       end
     end
 
+    context 'with tournaments' do
+      let(:query) do
+        %({
+            titles {
+              id
+              tournaments {
+                id
+                name
+              }
+            }
+        })
+      end
+      let(:title) { create(:title) }
+
+      before do
+        create_list(:event_scope, 3, kind: :tournament, title: title)
+      end
+
+      it 'returns titles with tournaments' do
+        expect(result['data']).not_to be_nil
+        expect(result['data']['titles'].count).to eq(1)
+        expect(result['data']['titles'][0]['tournaments']).to eq(3)
+      end
+    end
+
     context 'single title' do
       let(:title) { create(:title) }
       let(:query) do
