@@ -2,6 +2,9 @@ module Visible
   extend ActiveSupport::Concern
 
   included do
+    scope :visible, -> { where(visible: true) }
+    scope :invisible, -> { where(visible: false) }
+
     def invisible!
       update(visible: false) if visible
     end
