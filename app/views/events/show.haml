@@ -38,9 +38,16 @@
             %th= 'Name'
             %th= 'Status'
             %th= 'Priority'
+            %th= 'Visibility'
+            %th
         %tbody
           - @event.markets.each do |market|
             %tr
               %td= market.name
               %td= market.status
               %td= market.priority
+              %td= visibility_badge(market.visible, market.id)
+              %td= visibility_toggle(market.visible, market.id,
+                                    update_visibility_market_path(market))
+- content_for :js do
+  = javascript_pack_tag 'visibility_toggle'
