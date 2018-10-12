@@ -5,6 +5,7 @@ class Market < ApplicationRecord
   after_create :emit_created
   after_update :emit_updated
 
+  scope :visible, -> { where(visible: true) }
   PRIORITIES_MAP = [
     { pattern: /- winner$/, priority: 1 }
   ].freeze

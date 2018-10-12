@@ -213,6 +213,7 @@ FactoryBot.define do
 
   factory :market do
     event
+    visible true
     name 'Winner Map (Train)'
     priority 2
     status 0
