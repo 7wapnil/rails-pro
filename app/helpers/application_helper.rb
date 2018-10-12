@@ -16,11 +16,11 @@ module ApplicationHelper
   def visibility_badge(visible, id)
     badge_style = "badge badge-#{visible ? 'success' : 'danger'}"
     badge_text = visible ? 'visible' : 'invisible'
-    content_tag(:span, class: badge_style, id: "badge_#{id}") { badge_text }
+    tag.span(class: badge_style, id: "badge_#{id}") { badge_text }
   end
 
   def visibility_toggle(visible, badge_id, toggle_endpoint)
-    content_tag(:div, class: 'form-check') do
+    tag.div(class: 'form-check') do
       concat check_box_tag('visible', visible, visible,
                            id: nil,
                            class: 'form-check-input visibility_toggle',
