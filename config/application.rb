@@ -22,6 +22,7 @@ module Arcanebet
     config.eager_load_paths << Rails.root.join('lib/hash_deep_formatter')
     config.eager_load_paths << Rails.root.join('lib/xml_parser')
     config.eager_load_paths << Rails.root.join('lib/logger')
+    config.eager_load_paths << Rails.root.join('lib/errors')
 
     # Settings in config/environments/*
     # take precedence over those specified here.
