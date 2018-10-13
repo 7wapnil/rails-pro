@@ -74,7 +74,8 @@ Rails.application.configure do
 
   config.action_dispatch.rack_cache = {
     metastore: "#{ENV['REDIS_URL']}/metastore",
-    entitystore: "#{ENV['REDIS_URL']}/entitystore"
+    entitystore: "#{ENV['REDIS_URL']}/entitystore",
+    verbose: false
   }
 
   # Use a real queuing backend for Active Job
