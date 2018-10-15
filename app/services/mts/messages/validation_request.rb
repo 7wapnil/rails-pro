@@ -115,8 +115,6 @@ module Mts
         }
       end
 
-      # getters
-
       def production_mode
         !ENV['MTS_MODE'] == 'production'
       end

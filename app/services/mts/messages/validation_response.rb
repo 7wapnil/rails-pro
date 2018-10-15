@@ -11,8 +11,6 @@ module Mts
                                          SUPPORTED_VALIDATION_RESPONSE_VERSION
       end
 
-      # getters
-
       def version
         @message[:version]
       end
@@ -20,8 +18,6 @@ module Mts
       def bets
         Bet.where(validation_ticket_id: ticket_id)
       end
-
-      # getters.validation_result
 
       def ticket_id
         result[:ticket_id]
