@@ -34,6 +34,10 @@ module Radar
         .call(product_id: product_id, start_at: start_at)
     end
 
+    def self.last_success_timestamp(product_id)
+      new(product_id: product_id).last_success_timestamp
+    end
+
     private
 
     def store_last_successful_alive!
