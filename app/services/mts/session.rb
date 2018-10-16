@@ -3,12 +3,11 @@ module Mts
     MTS_MQ_CONNECTION_PORT = 5671
     BUNNY_EXCEPTIONS = [Bunny::NetworkFailure,
                         Bunny::TCPConnectionFailed,
-                        Bunny::PossibleAuthenticationFailureException].freeze
+                        Bunny::PossibleAuthenticationFailureError].freeze
 
     def initialize(config = nil)
       # TODO: Validate config format for custom input
       @config = config || default_config
-      @session_recovery = SessionRecovery.new
     end
 
     def connection
@@ -27,9 +26,12 @@ module Mts
 
     def start_connection
       connection.start
+      SessionRecovery.new.recover_from_network_failure!
+      connection
     rescue *BUNNY_EXCEPTIONS
-      @session_recovery.recover_from_network_failure!
-      @session_recovery.register_failure!
+      exception_msg = "Mts connection lost with exception: #{BUNNY_EXCEPTIONS}"
+      Rails.logger.warn exception_msg
+      SessionRecovery.new.register_failure!
     end
 
     def default_config
