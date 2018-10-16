@@ -47,24 +47,53 @@ describe Mts::Session do
   end
 
   describe '.opened_connection' do
-    it 'returns opened connection for new connection' do
-      bunny_double = double
-      allow(Bunny).to receive(:new).and_return(bunny_double)
-      allow(subject.connection).to receive(:open?).and_return(false)
+    context 'connection is already open' do
+      it 'returns existing connection for opened connection' do
+        connection_double = double
+        allow(subject).to receive(:connection).and_return(connection_double)
 
-      expect(subject.connection).to receive(:start).and_return(:connection)
+        allow(connection_double).to receive(:open?).and_return(true)
 
-      expect(subject.opened_connection).to eq(:connection)
+        expect(subject.connection).to_not receive(:start_connection)
+        expect(subject.opened_connection).to eq(connection_double)
+      end
     end
 
-    it 'returns existing connection for opened connection' do
-      connection_stub = double
-      allow(subject).to receive(:connection).and_return(connection_stub)
-      allow(connection_stub).to receive(:open?).and_return(true)
+    context 'connection is not open' do
+      let(:connection_double) { double }
 
-      expect(subject.connection).to_not receive(:start)
+      before do
+        allow(connection_double).to receive(:open?).and_return(false)
+        allow(subject).to receive(:connection).and_return connection_double
+      end
 
-      expect(subject.opened_connection).to eq(connection_stub)
+      it 'returns new connection' do
+        expect(subject.connection).to receive(:start).and_return(:connection)
+        expect(subject.opened_connection).to eq(connection_double)
+      end
+
+      it 'calls connection recovery' do
+        allow(connection_double).to receive(:start).and_return(:nice)
+
+        expect_any_instance_of(Mts::SessionRecovery)
+          .to receive(:recover_from_network_failure!)
+        subject.opened_connection
+      end
+
+      [
+        Bunny::NetworkFailure.new(:msg, :cause),
+        Bunny::TCPConnectionFailed.new(:msg, :cause),
+        Bunny::PossibleAuthenticationFailureError.new(:msg, :cause, :third)
+      ].each do |exception|
+        it "catches #{exception.class.name}" do
+          allow(connection_double).to receive(:start).and_raise(exception)
+          allow(subject).to receive(:connection).and_return connection_double
+
+          expect_any_instance_of(Mts::SessionRecovery)
+            .to receive(:register_failure!)
+          subject.opened_connection
+        end
+      end
     end
   end
 
