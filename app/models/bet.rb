@@ -1,5 +1,6 @@
 class Bet < ApplicationRecord
   include StateMachines::BetStateMachine
+  ENTRY_REQUEST_WIN_KIND = EntryRequest.kinds[:win]
 
   belongs_to :customer
   belongs_to :odd
@@ -33,5 +34,13 @@ class Bet < ApplicationRecord
     return nil if result.nil?
     return 0 if void_factor.nil?
     amount * void_factor
+  end
+
+  def actual_payout
+    Entry.select(:amount)
+         .joins(:wallet)
+         .where(origin: self, kind: ENTRY_REQUEST_WIN_KIND)
+         .map(&:amount)
+         .inject(0) { |sum, x| sum + x }
   end
 end

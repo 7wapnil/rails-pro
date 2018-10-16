@@ -1,0 +1,48 @@
+.row.mt-4
+  .col-6.offset-3
+    = card header: t('entities.bets', count: 1), class: 'bet-info' do
+      %table.table
+        %tr
+          %td= t('attributes.id')
+          %td= @bet.id
+        %tr
+          %td= t('attributes.customer')
+          %td= link_to @bet.customer.username, @bet.customer
+        %tr
+          %td= t('attributes.event')
+          %td= link_to @bet.odd.market.event.name, @bet.odd.market.event
+        %tr
+          %td= t('attributes.market')
+          %td= @bet.odd.market.name
+        %tr
+          %td= t('attributes.selection')
+          %td= @bet.odd.name
+        %tr
+          %td= t('attributes.odd_value')
+          %td= @bet.odd_value
+        %tr
+          %td= t('attributes.stake')
+          %td
+            =number_with_precision @bet.amount, precision: 2
+            =@bet.currency.code
+        %tr
+          %td= t('attributes.bet_placement_time')
+          %td= l(@bet.created_at, format: :long)
+        %tr
+          %td= t('attributes.status')
+          %td= status_badge(@bet.status)
+        %tr
+          %td= t('attributes.settlement')
+          %td= outcome_badge(@bet.odd.won)
+        %tr
+          %td= t('attributes.possible_payout')
+          %td
+            =number_with_precision @bet.odd_value * @bet.amount, precision: 2
+            =@bet.currency.code
+        %tr
+          %td= t('attributes.actual_payout')
+          %td
+            =number_with_precision @bet.actual_payout, precision: 2
+            =@bet.currency.code
+      %hr
+      = link_back
