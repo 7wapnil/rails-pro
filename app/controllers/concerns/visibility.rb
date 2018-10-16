@@ -12,7 +12,10 @@ module Visibility
   private
 
   def set_visible_resource
-    klass = controller_name.singularize.capitalize.constantize
-    @visible_resource = klass.find(params[:id])
+    class_name = controller_name.singularize.camelize
+    klass = class_name.safe_constantize
+    @visible_resource = klass.find(params[:id]) if klass
+
+    raise "Can't find visible resource '#{class_name}'!" unless klass
   end
 end

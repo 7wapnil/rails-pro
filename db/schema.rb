@@ -80,7 +80,6 @@ ActiveRecord::Schema.define(version: 2018_10_12_071927) do
     t.boolean "result", default: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.datetime "validation_ticket_sent_at"
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
     t.index ["odd_id"], name: "index_bets_on_odd_id"
