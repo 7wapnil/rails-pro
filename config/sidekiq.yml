@@ -7,11 +7,11 @@
 
 :schedule:
   check_bet_expirasy_live:
-    every: <%= "#{ENV.fetch('LIVE_TIMEOUT') { 10 }}s" %>
+    every: <%= "#{ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT') { 10 }}s" %>
     class: Scheduled::ExpiringLiveWorker
     queue: expired_live
 
   check_bet_expirasy_prematch:
-    every: <%= "#{ENV.fetch('PREMATCH_TIMEOUT') { 3 }}s" %>
+    every: <%= "#{ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT') { 3 }}s" %>
     class: Scheduled::ExpiringPrematchWorker
     queue: expired_prematch

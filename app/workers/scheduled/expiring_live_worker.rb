@@ -4,9 +4,12 @@ module Scheduled
 
     def perform
       Bet.transaction do
+        Bet.expired_live.update_all(status: :cancelled)
         Bet.expired_live.in_batches do |bet|
-          # TODO: handle bet
-          # TODO: submit expiration message
+          WebSocket::Client.instance.emit(WebSocket::Signals::BET_CANCELLED,
+                                          id: bet.id,
+                                          customerId: bet.customer_id)
+          # TODO: implement expiration message submission
         end
       end
     end
