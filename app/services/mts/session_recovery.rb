@@ -2,7 +2,7 @@ module Mts
   class SessionRecovery
     def recover_from_network_failure!
       return if session_failure_getter.present?
-      Radar::Product.available_product_ids.each do |product_id|
+      OddsFeed::Radar::Product.available_product_ids.each do |product_id|
         AliveMessage.recover!(product_id: product_id)
       end
       session_clear
