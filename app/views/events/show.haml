@@ -50,4 +50,4 @@
               %td= visibility_toggle(market.visible, market.id,
                                     update_visibility_market_path(market))
 - content_for :js do
-  = javascript_pack_tag 'visibility_toggle'
+  = javascript_pack_tag 'visibility_toggle', 'data-turbolinks-track': 'reload'

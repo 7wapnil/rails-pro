@@ -1,6 +1,6 @@
 import $ from 'jquery';
 
-$(document).ready(() => {
+$(document).on('turbolinks:load', () => {
   function toggleBadge(visible, id) {
     const visibleOptions = { style: 'badge-success', text: 'visible' };
     const invisibleOptions = { style: 'badge-danger', text: 'invisible' };
