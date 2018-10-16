@@ -22,7 +22,8 @@ customers_to_create_count.times do
     last_sign_in_at: Faker::Time.between(Date.yesterday, Date.today).in_time_zone, # rubocop:disable Metrics/LineLength
     current_sign_in_ip: Faker::Internet.ip_v4_address,
     last_sign_in_ip: Faker::Internet.ip_v4_address,
-    password: 'iamverysecure'
+    password: 'iamverysecure',
+    activated: true
   )
 
   customers << customer

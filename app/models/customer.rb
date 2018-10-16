@@ -1,6 +1,7 @@
 class Customer < ApplicationRecord
   include Person
 
+  has_secure_token :activation_token
   acts_as_paranoid
 
   enum gender: {
@@ -9,7 +10,7 @@ class Customer < ApplicationRecord
   }
 
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable,
+         :recoverable, :rememberable, :trackable,
          authentication_keys: [:login]
 
   attr_accessor :login
@@ -41,11 +42,17 @@ class Customer < ApplicationRecord
             :first_name,
             :last_name,
             :date_of_birth,
+            :password,
             presence: true
+
+  validates :password, confirmation: true
+  validates :password, length: { minimum: 6, maximum: 32 }
+
+  validates :email, format: /\A[\w\d_\-\.]+@[\w\d_\-\.]+\z/
 
   validates :username, uniqueness: { case_sensitive: false }
   validates :email, uniqueness: { case_sensitive: false }
-  validates :verified, inclusion: { in: [true, false] }
+  validates :verified, :activated, inclusion: { in: [true, false] }
 
   ransack_alias :ip_address, :last_sign_in_ip_or_current_sign_in_ip
 
@@ -59,5 +66,12 @@ class Customer < ApplicationRecord
     query = verification_documents
     query = query.where(kind: kind) if kind
     query.with_deleted
+  end
+
+  def log_event(event, context = {})
+    Audit::Service.call(event: event,
+                        user: nil,
+                        customer: self,
+                        context: context)
   end
 end

@@ -387,6 +387,9 @@ GEM
     selenium-webdriver (3.14.1)
       childprocess (~> 0.5)
       rubyzip (~> 1.2, >= 1.2.2)
+    sendgrid-rails (3.1.0)
+      actionmailer (>= 3.0.0)
+      activesupport (>= 2.1.0)
     serverengine (2.0.7)
       sigdump (~> 0.2.2)
     sexp_processor (4.11.0)
@@ -503,6 +506,7 @@ DEPENDENCIES
   rubocop
   sass-rails (~> 5.0)
   selenium-webdriver
+  sendgrid-rails (~> 3.0)
   shoulda-matchers (~> 3.1)
   sidekiq
   simple_form

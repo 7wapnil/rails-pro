@@ -2,15 +2,17 @@ describe Mts::Messages::ValidationRequest do
   describe 'generates example message' do
     let(:example_json) do
       <<-EXAMPLE_JSON
-      {"version": "2.0", "timestampUtc": 1486541079460,
-      "ticketId": "MTS_Test_1486541079460",
+      {"version": "2.1", "timestampUtc": 1486541079460000, "testSource": true,
+      "ticketId": "MTS_Test_1486541079460000",
       "sender": {"currency": "EUR",
-       "channel": "internet", "bookmakerId": 7669,
+       "channel": "internet", "bookmakerId": 25238,
        "endCustomer": {"ip": "202.12.22.4", "languageId": "EN",
        "id": "12345678" },
-       "limitId": 424 }, "selections":
-      [{"eventId": 11050343, "id": "lcoo:42/1/*/X", "odds": 28700 }],
-      "bets": [{"id": "MTS_Test_1486541079460_0",
+       "limitId": 1355 }, "oddsChange": "none", "selections":
+      [{"eventId":  "sr:match:11050343",
+        "id": "uof:3/sr:sport:110/186/4?setnr=1&gamenr=2",
+        "odds": 28700 }],
+      "bets": [{"id": "MTS_Test_1486541079460000_0",
       "selectionRefs": [{"selectionIndex": 0, "banker": false }],
       "selectedSystems": [1], "stake": {"value": 10000, "type": "total"} }] }
       EXAMPLE_JSON
@@ -20,10 +22,18 @@ describe Mts::Messages::ValidationRequest do
       create(:customer, id: 123_456_78, last_sign_in_ip: '202.12.22.4')
     end
     let(:euro) { create(:currency, code: 'EUR') }
-    let(:event) { create(:event, external_id: 'sr:match:11050343') }
+    let(:title) { create(:title, external_id: 'sr:sport:110') }
+    let(:event) do
+      create(:event,
+             title: title,
+             external_id: 'sr:match:11050343')
+    end
     let(:market) { create(:market, event: event) }
     let(:odd) do
-      create(:odd, market: market, value: 2.87, external_id: 'lcoo:42/1/*/X')
+      create(:odd,
+             market: market,
+             value: 2.87,
+             external_id: 'sr:match:11050343:186/setnr=1|gamenr=2:4')
     end
     let(:bet) do
       create(:bet, amount: 1, odd_value: odd.value,

@@ -33,12 +33,6 @@ class Event < ApplicationRecord
     where(start_at: [Date.today.beginning_of_day..Date.today.end_of_day])
   end
 
-  def external_id_number
-    return nil unless external_id
-
-    external_id.split(':')[2].to_i
-  end
-
   def in_play?
     traded_live && start_at.past? && end_at.nil?
   end
@@ -58,7 +52,6 @@ class Event < ApplicationRecord
   # This is a good candidate to be extracted to a reusable concern
   def add_to_payload(addition)
     return unless addition
-
     payload&.merge!(addition)
     self.payload = addition unless payload
   end
@@ -80,7 +73,6 @@ class Event < ApplicationRecord
               .except(*excluded_keys)
               .transform_values! { |v| v[1] }
     return if changes.empty?
-
     WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
                                     id: id.to_s,
                                     changes: changes)

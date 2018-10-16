@@ -19,8 +19,7 @@ class CustomersController < ApplicationController
     @customer = find_customer
     @entries = @customer.entries.page(params[:page])
     @audit_logs = AuditLog
-                  .where(origin_kind: :customer,
-                         origin_id: @customer.id)
+                  .where(customer_id: @customer.id)
                   .page(params[:page])
   end
 

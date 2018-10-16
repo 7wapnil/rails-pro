@@ -1,11 +1,8 @@
 class AuditLogContext
   include Mongoid::Document
-  include ActiveModel::Validations
   include Mongoid::Attributes::Dynamic
 
   embedded_in :audit_log
-
-  field :target_id, type: Integer
 
   def updates
     self[:updates]

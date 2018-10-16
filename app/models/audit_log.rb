@@ -8,42 +8,31 @@ class AuditLog
   embeds_one :context, class_name: 'AuditLogContext', inverse_of: :audit_log
 
   field :event, type: String
-  field :origin_kind, type: String
-  field :origin_id, type: Integer
+  field :user_id, type: Integer
+  field :customer_id, type: Integer
 
-  validates :event,
-            :origin_kind,
-            :origin_id,
-            presence: true
+  validates :event, presence: true
 
-  def origin
-    self[:origin_kind]
-      .to_s
-      .camelize
-      .constantize
-      .find_by(id: self[:origin_id])
+  def user
+    @user ||= User.find_by(id: user_id)
   end
 
-  def origin_name
-    origin&.full_name
+  def user_name
+    user&.full_name
   end
 
-  def target
-    return nil unless self[:context][:target_class]
+  def customer
+    @customer ||= Customer.find_by(id: customer_id)
+  end
 
-    self[:context][:target_class]
-      .to_s
-      .camelize
-      .constantize
-      .find_by(id: self[:context][:target_id])
+  def customer_name
+    customer&.full_name
   end
 
   def interpolation
-    {
-      origin_id: origin_id,
-      origin_kind: origin_kind,
-      origin_name: origin_name,
-      target: target
-    }.merge(context.attributes.symbolize_keys)
+    attributes = { user_name: user_name,
+                   customer_name: customer_name }
+    return attributes unless context
+    attributes.merge(context.attributes.symbolize_keys)
   end
 end

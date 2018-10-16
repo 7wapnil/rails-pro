@@ -1,5 +1,6 @@
 class EntryRequest < ApplicationRecord
   include EntryKinds
+  include Loggable
 
   belongs_to :customer
   belongs_to :currency
@@ -41,6 +42,14 @@ class EntryRequest < ApplicationRecord
     return unless self[:result]
 
     @message = self[:result]['message']
+  end
+
+  def loggable_attributes
+    { id: id,
+      kind: kind,
+      amount: amount,
+      comment: comment,
+      mode: mode }
   end
 
   private

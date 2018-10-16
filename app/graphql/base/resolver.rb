@@ -21,16 +21,5 @@ module Base
       not_authenticated = auth_protected? && @current_customer.blank?
       raise GraphQL::ExecutionError, 'AUTH_REQUIRED' if not_authenticated
     end
-
-    def log_event(event, context)
-      Audit::Service.call(event: event,
-                          origin_kind: :customer,
-                          origin_id: @current_customer&.id,
-                          context: context)
-    end
-
-    def log_record_event(event, record)
-      log_event event, record.loggable_attributes
-    end
   end
 end
