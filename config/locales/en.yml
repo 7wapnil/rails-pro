@@ -12,7 +12,6 @@ en:
   reject: Reject
   view: View
   confirm_sure: Are you sure?
-  action: Action
   upload: Upload
   no_file: No File
   history: History
@@ -50,6 +49,11 @@ en:
     verified: Verified
     not_verified: Not verified
 
+  outcomes:
+    pending: Pending
+    won: Won
+    lost: Lost
+
   kinds:
     deposit: "Deposit"
     win: "Win"
@@ -82,6 +86,9 @@ en:
     events:
       one: Event
       other: Events
+    bets:
+      one: Bet
+      other: Bets
 
   attributes:
     username: Username
@@ -91,6 +98,7 @@ en:
     balance: Balance
     date: Date
     status: Status
+    customer: Customer
     customer_name: Customer name
     amount: Amount
     result: Result
@@ -125,12 +133,13 @@ en:
     bank_statement: Bank Statement
     credit_card: Credit Card
     other_document: Other Document
-    bet_id: Bet ID
     event: Event
     market: Market
-    odd_value: Odd Value
-    odd_name: Odd Name
-    outcome: Outcome
+    odd_value: Odd value
+    selection: Selection
+    stake: Stake
+    bet_placement_time: Bet placement time
+    settlement: Settlement
 
   documents:
     history_title: "Files history: %{document_type}"
