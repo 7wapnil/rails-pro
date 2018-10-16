@@ -39,6 +39,8 @@ Rails.application.routes.draw do
 
   resources :entry_requests, only: %i[index show create]
 
+  resources :bets, only: :index
+
   resources :currencies, only: %i[index new edit create update]
 
   scope 'documents' do

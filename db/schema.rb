@@ -141,6 +141,9 @@ ActiveRecord::Schema.define(version: 2018_10_12_071927) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.boolean "verified", default: false
+    t.boolean "activated", default: false
+    t.string "activation_token"
+    t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
     t.index ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true
     t.index ["username"], name: "index_customers_on_username", unique: true

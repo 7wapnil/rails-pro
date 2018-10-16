@@ -95,7 +95,6 @@ en:
     amount: Amount
     result: Result
     kind: Type
-    created_at: Created at
     entry_kind: Entry type
     currency_code: Currency
     initiator: Initiator
@@ -126,6 +125,12 @@ en:
     bank_statement: Bank Statement
     credit_card: Credit Card
     other_document: Other Document
+    bet_id: Bet ID
+    event: Event
+    market: Market
+    odd_value: Odd Value
+    odd_name: Odd Name
+    outcome: Outcome
 
   documents:
     history_title: "Files history: %{document_type}"
