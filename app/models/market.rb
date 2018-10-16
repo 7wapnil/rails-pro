@@ -6,7 +6,7 @@ class Market < ApplicationRecord
   PRIORITIES_MAP = [
     { pattern: /- winner$/, priority: 1 }
   ].freeze
-
+  PRIORITIES = [0, 1, 2].freeze
   DEFAULT_PRIORITY = 0
 
   STATUSES = {
