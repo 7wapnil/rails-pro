@@ -38,16 +38,19 @@ module Events
 
     def filter_by_id(query, id)
       return query if id.nil?
+
       query.where(id: id)
     end
 
     def filter_by_title(query, title_id)
       return query if title_id.nil?
+
       query.where(title_id: title_id)
     end
 
     def filter_by_tournament(query, tournament_id)
       return query if tournament_id.nil?
+
       query
         .joins(:scoped_events)
         .where(scoped_events: { event_scope_id: tournament_id })
