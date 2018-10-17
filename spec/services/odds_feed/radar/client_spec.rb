@@ -15,7 +15,7 @@ describe OddsFeed::Radar::Client do
                           'fixture' => ''
                         }
                       }
-        ))
+                    ))
     end
 
     context 'who am i request' do

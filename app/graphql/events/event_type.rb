@@ -19,6 +19,8 @@ module Events
       resolve ->(obj, _args, _ctx) { obj.end_at&.iso8601 }
     end
 
+    field :tournament, Types::ScopeType
+
     field :markets, function: Events::MarketsQuery.new
   end
 end
