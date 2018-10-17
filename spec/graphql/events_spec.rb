@@ -206,5 +206,31 @@ describe 'GraphQL#events' do
         expect(result['data']['events'].count).to eq(5)
       end
     end
+
+    context 'tournament' do
+      let(:tournament) { create(:event_scope, kind: :tournament) }
+      let(:query) do
+        %({ events (
+              filter: { tournamentId: #{tournament.id} }
+          ) {
+              id
+        } })
+      end
+
+      before do
+        other_title = create(:title)
+        create_list(:event_with_odds, 5, title: other_title)
+
+        events = create_list(:event_with_odds, 5, title: tournament.title)
+        events.each do |event|
+          event.event_scopes << tournament
+        end
+      end
+
+      it 'returns events by tournament ID' do
+        expect(result['data']).not_to be_nil
+        expect(result['data']['events'].count).to eq(5)
+      end
+    end
   end
 end
