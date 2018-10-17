@@ -4,6 +4,8 @@ class Event < ApplicationRecord
 
   UPDATABLE_ATTRIBUTES = %w[name description start_at end_at].freeze
 
+  PRIORITIES = [0, 1, 2].freeze
+
   STATUSES = {
     not_started: 0,
     started: 1,
@@ -17,6 +19,7 @@ class Event < ApplicationRecord
   has_many :event_scopes, through: :scoped_events
 
   validates :name, presence: true
+  validates :priority, inclusion: { in: PRIORITIES }
 
   enum status: STATUSES
 
