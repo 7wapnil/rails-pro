@@ -61,7 +61,7 @@ describe 'GraphQL#titles' do
       it 'returns titles with tournaments' do
         expect(result['data']).not_to be_nil
         expect(result['data']['titles'].count).to eq(1)
-        expect(result['data']['titles'][0]['tournaments']).to eq(3)
+        expect(result['data']['titles'][0]['tournaments'].count).to eq(3)
       end
     end
 
