@@ -17,6 +17,7 @@ module Customers
     def track_registration(customer)
       customer.log_event :customer_signed_up, customer
       return if @request.nil?
+
       customer.update_tracked_fields!(@request)
     end
 
