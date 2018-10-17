@@ -14,6 +14,7 @@ class Odd < ApplicationRecord
 
   def settle
     return :unsettled if won.nil?
+
     won ? :won : :lost
   end
 
