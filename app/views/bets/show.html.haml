@@ -33,7 +33,7 @@
           %td= status_badge(@bet.status)
         %tr
           %td= t('attributes.settlement')
-          %td= outcome_badge(@bet.odd.won)
+          %td= settle_badge(@bet.odd.settle)
         %tr
           %td= t('attributes.possible_payout')
           %td

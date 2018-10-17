@@ -5,6 +5,6 @@ class BetsController < ApplicationController
   end
 
   def show
-    @bet = Bet.find(params[:id])
+    @bet = Bet.includes(%i[currency odd]).find(params[:id])
   end
 end

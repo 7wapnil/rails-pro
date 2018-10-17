@@ -1,6 +1,5 @@
 class Bet < ApplicationRecord
   include StateMachines::BetStateMachine
-  ENTRY_REQUEST_WIN_KIND = EntryRequest.kinds[:win]
 
   belongs_to :customer
   belongs_to :odd
@@ -37,10 +36,9 @@ class Bet < ApplicationRecord
   end
 
   def actual_payout
-    Entry.select(:amount)
-         .joins(:wallet)
-         .where(origin: self, kind: ENTRY_REQUEST_WIN_KIND)
-         .map(&:amount)
-         .inject(0) { |sum, x| sum + x }
+    BalanceEntry
+      .joins(:entry)
+      .where(entries: { origin: self, kind: Entry.kinds[:win] })
+      .sum(:amount)
   end
 end
