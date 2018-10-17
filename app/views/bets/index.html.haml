@@ -1,0 +1,35 @@
+%h1.display-4
+  = t(:bets)
+
+%table.table
+  %thead
+    %tr
+      %th= t('attributes.username')
+      %th= t('attributes.bet_id')
+      %th= t('attributes.event')
+      %th= t('attributes.market')
+      %th= t('attributes.created_at')
+      %th= t('attributes.status')
+      %th= t('attributes.amount')
+      %th= t('attributes.odd_value')
+      %th= t('attributes.odd_name')
+      %th= t('attributes.outcome')
+  %tbody
+    - @bets.each do |bet|
+      %tr{ id: "bet-#{bet.id}" }
+        %td= link_to bet.customer.username, bet.customer
+        %td= bet.id
+        %td= link_to bet.odd.market.event.name, bet.odd.market.event
+        %td= bet.odd.market.name
+        %td= l(bet.created_at, format: :long)
+        %td= status_badge(bet.status)
+        %td
+          =number_with_precision bet.amount, precision: 2
+          =bet.currency.code
+        %td= bet.odd_value
+        %td= bet.odd.name
+        %td
+          =number_with_precision bet.amount * bet.odd_value, precision: 2
+          =bet.currency.code
+
+= paginate @bets
