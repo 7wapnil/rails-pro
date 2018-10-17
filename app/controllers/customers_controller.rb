@@ -40,6 +40,7 @@ class CustomersController < ApplicationController
       @document_type.to_sym
     )
     raise ArgumentError, 'Document type not supported' unless type_included
+
     @files = @customer.verification_documents.with_deleted.send(@document_type)
   end
 

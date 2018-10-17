@@ -35,6 +35,7 @@ module OddsFeed
         id = "#{@event.external_id}:#{@market_data['id']}"
         specs = specifiers
         return id if specs.empty?
+
         "#{id}/#{specs}"
       end
 
@@ -57,6 +58,7 @@ module OddsFeed
 
       def generate_odds!
         return if @market_data['outcome'].nil?
+
         @market_data['outcome'].each do |odd_data|
           generate_odd!(odd_data)
         rescue StandardError => e
@@ -84,6 +86,7 @@ module OddsFeed
 
       def odd_valid?(odd_id, odd_data)
         return true unless odd_data['odds'].blank?
+
         Rails.logger.info "Odd value for odd #{odd_id} is empty"
         false
       end

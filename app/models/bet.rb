@@ -26,12 +26,14 @@ class Bet < ApplicationRecord
   def win_amount
     return nil if result.nil?
     return 0 unless result
+
     (amount - refund_amount) * odd_value
   end
 
   def refund_amount
     return nil if result.nil?
     return 0 if void_factor.nil?
+
     amount * void_factor
   end
 end

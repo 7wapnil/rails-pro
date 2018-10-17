@@ -27,6 +27,7 @@ class Odd < ApplicationRecord
       changes[attr.to_sym] = changed[1] unless attr == 'updated_at'
     end
     return if changes.empty?
+
     WebSocket::Client.instance.emit(WebSocket::Signals::ODD_UPDATED,
                                     id: id.to_s,
                                     marketId: market.id.to_s,
