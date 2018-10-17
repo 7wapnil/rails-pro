@@ -31,6 +31,7 @@ module OddsFeed
                        input_data['market_status'] == 'suspended'
 
         return Market.statuses[:suspended] if is_suspended
+
         Market.statuses[:inactive]
       end
 

@@ -14,14 +14,15 @@ describe 'Customers#activity' do
 
     let(:authorization_time) { Time.zone.local(2018, 9, 11, 16, 29, 16) }
     let(:authorization_time_formatted) { '11 September 2018 16:29:16' }
+    let(:wallet) { create(:wallet, customer: customer) }
+    let(:rule) do
+      create(:entry_currency_rule,
+             currency: wallet.currency,
+             min_amount: 10,
+             max_amount: 500)
+    end
 
     it 'shows available entries' do
-      wallet = create(:wallet, customer: customer)
-      rule = create(:entry_currency_rule,
-                    currency: wallet.currency,
-                    min_amount: 10,
-                    max_amount: 500)
-
       create_list(
         :entry,
         10,
@@ -45,6 +46,26 @@ describe 'Customers#activity' do
 
     it 'shows no records note' do
       expect(page).to have_content I18n.t(:no_records)
+    end
+
+    it 'allows sorting by date' do
+      creation_date = Time.zone.local(2018, 9, 10, 10, 10, 10)
+      creation_date_formatted = '10 September 2018 10:10:10'
+      entries = create_list(
+        :entry,
+        10,
+        wallet: wallet,
+        kind: rule.kind,
+        amount: 100,
+        authorized_at: authorization_time
+      )
+      latest_entry = entries.first
+      latest_entry.update(created_at: creation_date)
+      visit page_path
+      click_link('Created at')
+      first_entry_date = page.first('table > tbody tr td')
+
+      expect(first_entry_date.text).to eq(creation_date_formatted)
     end
   end
 end

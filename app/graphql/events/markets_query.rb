@@ -17,6 +17,7 @@ module Events
     def resolve(obj, args)
       event_id = obj&.id || args[:eventId]
       raise 'Event ID is required' unless event_id
+
       query = Market
               .joins(:odds)
               .where(event_id: event_id)

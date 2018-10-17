@@ -17,6 +17,7 @@ module OddsFeed
         template = odd_template(collection, odd_id)
 
         raise "Odd template ID #{odd_id} not found" if template.nil?
+
         transpile(template['name'])
       end
 

@@ -3,8 +3,8 @@
     %table.table.table-hover
       %tbody
         %thead
-          %th= t('attributes.created_at')
-          %th= t('attributes.kind')
+          %th= sort_link(@search, :created_at, t('attributes.created_at'), default_order: :asc)
+          %th= sort_link(@search, :kind, t('attributes.kind'), default_order: :asc)
           %th= t('attributes.amount')
           %th= t('attributes.currency')
           %th= t('attributes.authorized_at')
