@@ -21,6 +21,13 @@
           %td= 'Status'
           %td= @event.status
         %tr
+          %td= 'Priority'
+          %td= select_tag :priority, options_for_select(Event::PRIORITIES, @event.priority),
+                                    class: 'priority_toggle form-control-sm',
+                                    data: { endpoint: event_path(@event),
+                                            resource: 'event',
+                                            initial_value: @event.priority }
+        %tr
           %td= 'Scopes'
           %td
             %ul.list-unstyled
