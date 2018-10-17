@@ -31,7 +31,8 @@ module Mts
         ssl: true,
         verify_peer: true,
         verify_peer_name: false,
-        allow_self_signed: false
+        allow_self_signed: false,
+        network_recovery_interval: 20
       }
     end
   end

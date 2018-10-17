@@ -4,12 +4,25 @@ describe Customer do
   it { should have_many(:entry_requests) }
   it { should have_and_belong_to_many(:labels) }
   it { should allow_value(true, false).for(:verified) }
+  it { should allow_value(true, false).for(:activated) }
 
   it { should validate_presence_of(:username) }
   it { should validate_presence_of(:email) }
   it { should validate_presence_of(:first_name) }
   it { should validate_presence_of(:last_name) }
   it { should validate_presence_of(:date_of_birth) }
+  it { should validate_presence_of(:password) }
+
+  it { should validate_confirmation_of(:password) }
+
+  it do
+    should validate_length_of(:password)
+      .is_at_least(6)
+      .is_at_most(32)
+  end
+
+  it { should allow_value('foo@bar.com').for(:email) }
+  it { should_not allow_value('hello').for(:email) }
 
   it { should validate_uniqueness_of(:username).case_insensitive }
   it { should validate_uniqueness_of(:email).case_insensitive }
@@ -28,6 +41,11 @@ describe Customer do
     expect(customer.sign_in_count).to eq(sign_in_count + 1)
     expect(customer.current_sign_in_at).not_to be_nil
     expect(customer.last_sign_in_at).not_to be_nil
+  end
+
+  it 'generates activation token on create' do
+    customer = create(:customer)
+    expect(customer.activation_token).to_not be_nil
   end
 
   context 'documents' do

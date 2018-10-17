@@ -1,0 +1,2 @@
+class FormInvalidError < StandardError
+end
