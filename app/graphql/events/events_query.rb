@@ -42,7 +42,7 @@ module Events
 
     def filter_by_title(query, title_id)
       return query if title_id.nil?
-      query.where(title: Title.find_by(id: title_id))
+      query.where(title_id: title_id)
     end
 
     def filter_by_tournament(query, tournament_id)
