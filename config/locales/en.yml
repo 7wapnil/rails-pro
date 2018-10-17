@@ -49,10 +49,10 @@ en:
     verified: Verified
     not_verified: Not verified
 
-  outcomes:
-    pending: Pending
-    won: Won
-    lost: Lost
+  settles:
+    unsettled: Pending
+    true: Won
+    false: Lost
 
   kinds:
     deposit: "Deposit"

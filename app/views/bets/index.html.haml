@@ -28,6 +28,6 @@
           =bet.currency.code
         %td= l(bet.created_at, format: :long)
         %td= status_badge(bet.status)
-        %td= outcome_badge(bet.odd.won)
+        %td= settle_badge(bet.odd.settle)
 
 = paginate @bets
