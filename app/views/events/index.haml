@@ -9,6 +9,9 @@
         %th= 'Start at'
         %th= 'Markets'
 
+        - EventScope.kinds.keys.map(&:capitalize).each do |scope_kind|
+          %th= scope_kind
+
     %tbody
       %tr
         %th
@@ -27,5 +30,11 @@
           %td= event.title.name
           %td= event.start_at ? l(event.start_at, format: :long) : '-'
           %td= event.markets.count
+
+          - EventScope.kinds.keys.each do |kind|
+            %td{ class: kind }
+              - event.event_scopes.where(kind: kind).each do |event_scope|
+                .event_scope= event_scope.name
+                %br
 
 = paginate @events
