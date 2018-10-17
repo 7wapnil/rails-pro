@@ -17,6 +17,7 @@ module Events
       query = Event
               .joins(markets: :odds)
               .group('events.id')
+              .order(:priority)
               .order(:start_at)
 
       query = query.where(id: filter[:id]) if filter[:id]
