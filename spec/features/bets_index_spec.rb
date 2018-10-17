@@ -3,7 +3,7 @@ describe 'Bets#index' do
     let(:per_page_count) { 10 }
 
     before do
-      create_list(:bet, 5)
+      create_list(:bet, per_page_count / 2)
 
       login_as create(:admin_user), scope: :user
       visit bets_path
@@ -12,19 +12,20 @@ describe 'Bets#index' do
     it 'shows bets list' do
       within 'table.table' do
         Bet.limit(per_page_count).each do |bet|
-          expect(page).to have_content(bet.customer.username)
           expect(page).to have_content(bet.id)
+          expect(page).to have_content(bet.customer.username)
           expect(page).to have_content(bet.odd.market.event.name)
           expect(page).to have_content(bet.odd.market.name)
-          expect(page).to have_content(bet.odd_value)
           expect(page).to have_content(bet.odd.name)
+          expect(page).to have_content(bet.odd_value)
+          expect(page).to have_content(bet.amount)
         end
       end
     end
 
     context 'pagination' do
       it 'is shown' do
-        create_list(:bet, 10)
+        create_list(:bet, per_page_count)
         visit bets_path
         expect(page).to have_selector('ul.pagination')
       end
