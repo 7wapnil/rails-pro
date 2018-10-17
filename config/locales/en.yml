@@ -140,6 +140,8 @@ en:
     stake: Stake
     bet_placement_time: Bet placement time
     settlement: Settlement
+    possible_payout: Possible payout
+    actual_payout: Actual payout
 
   documents:
     history_title: "Files history: %{document_type}"

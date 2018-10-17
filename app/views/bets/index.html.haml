@@ -17,7 +17,7 @@
   %tbody
     - @bets.each do |bet|
       %tr{ id: "bet-#{bet.id}" }
-        %td= bet.id
+        %td= link_to bet.id, bet
         %td= link_to bet.customer.username, bet.customer
         %td= link_to bet.odd.market.event.name, bet.odd.market.event
         %td= bet.odd.market.name

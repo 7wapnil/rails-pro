@@ -36,4 +36,11 @@ class Bet < ApplicationRecord
 
     amount * void_factor
   end
+
+  def actual_payout
+    BalanceEntry
+      .joins(:entry)
+      .where(entries: { origin: self, kind: Entry.kinds[:win] })
+      .sum(:amount)
+  end
 end
