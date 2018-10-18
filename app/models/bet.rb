@@ -8,24 +8,26 @@ class Bet < ApplicationRecord
   has_one :entry, as: :origin
   has_one :entry_request, as: :origin
 
-  scope :expired_live, -> do
-    timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT') { 10 }.to_i
-    condition = 'bets.validation_ticket_sent_at <= :expired_at
+  class << self
+    def expired_live
+      timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT') { 10 }.to_i
+      condition = 'bets.validation_ticket_sent_at <= :expired_at
                          AND events.traded_live = true'
-    sent_to_external_validation
-      .joins(odd: { market: [:event] })
-      .where(condition,
-             expired_at: timeout.seconds.ago)
-  end
+      sent_to_external_validation
+        .joins(odd: { market: [:event] })
+        .where(condition,
+               expired_at: timeout.seconds.ago)
+    end
 
-  scope :expired_prematch, -> do
-    timeout = ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT') { 3 }.to_i
-    condition = 'bets.validation_ticket_sent_at <= :expired_at
+    def expired_prematch
+      timeout = ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT') { 3 }.to_i
+      condition = 'bets.validation_ticket_sent_at <= :expired_at
                          AND events.traded_live = false'
-    sent_to_external_validation
-      .joins(odd: { market: [:event] })
-      .where(condition,
-             expired_at: timeout.seconds.ago)
+      sent_to_external_validation
+        .joins(odd: { market: [:event] })
+        .where(condition,
+               expired_at: timeout.seconds.ago)
+    end
   end
 
   validates :odd_value,
