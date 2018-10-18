@@ -39,6 +39,7 @@ module Mts
     def producer
       producer_value = @odd.market.event.payload['producer']
       raise 'Missing producer' unless producer_value
+
       producer_value
     end
 
