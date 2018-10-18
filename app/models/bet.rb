@@ -23,39 +23,11 @@ class Bet < ApplicationRecord
 
   delegate :market, to: :odd
 
-  scope :with_settlement_and_winnings, -> do
-    joins(:odd)
-      .select('bets.*, (bets.amount * bets.odd_value) AS winning,
-      odds.won as settlement')
-  end
+  scope :with_winnings, -> { select('bets.*, (bets.amount * bets.odd_value) AS winning') }
 
-  scope :sort_by_winning_asc, -> do
-    joins(:odd)
-      .select('bets.*, (bets.amount * bets.odd_value) as winning,
-      odds.won as settlement')
-      .order('winning')
-  end
+  scope :sort_by_winning_asc, -> { with_winnings.order('winning') }
 
-  scope :sort_by_winning_desc, -> do
-    joins(:odd)
-      .select('bets.*, (bets.amount * bets.odd_value) as winning,
-      odds.won as settlement')
-      .order('winning DESC')
-  end
-
-  scope :sort_by_settlement_asc, -> do
-    joins(:odd)
-      .select('bets.*, (bets.amount * bets.odd_value) as winning,
-      odds.won as settlement')
-      .order('settlement')
-  end
-
-  scope :sort_by_settlement_desc, -> do
-    joins(:odd)
-      .select('bets.*, (bets.amount * bets.odd_value) as winning,
-      odds.won as settlement')
-      .order('settlement DESC')
-  end
+  scope :sort_by_winning_desc, -> { with_winnings.order('winning DESC') }
 
   def win_amount
     return nil if result.nil?
@@ -80,16 +52,11 @@ class Bet < ApplicationRecord
 
   class << self
     def ransackable_scopes(_auth_object = nil)
-      %w[with_settlement_and_winnings]
+      %w[with_winnings]
     end
 
     def ransortable_attributes(auth_object = nil)
-      super(auth_object) + %i[
-        sort_by_winning_asc
-        sort_by_winning_desc
-        sort_by_settlement_asc
-        sort_by_settlement_desc
-      ]
+      super(auth_object) + %i[sort_by_winning_asc sort_by_winning_desc]
     end
   end
 end
