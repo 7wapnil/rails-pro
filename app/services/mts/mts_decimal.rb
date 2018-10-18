@@ -7,6 +7,7 @@ module Mts
     def self.from_number(number)
       mts_value = (number.to_d * 10_000).round
       raise ArgumentError unless (MIN_VALUE..MAX_VALUE).cover? mts_value
+
       mts_value
     end
   end

@@ -20,6 +20,7 @@ module OddsFeed
         unless tournament_fixture.present?
           raise OddsFeed::InvalidMessageError, 'Tournament fixture not found'
         end
+
         tournament_fixture['sport']
       end
 
@@ -52,6 +53,7 @@ module OddsFeed
       def event_name
         competitors = fixture['competitors']['competitor']
         raise NotImplementedError unless competitors.length == 2
+
         competitor1 = competitors[0]
         competitor2 = competitors[1]
         "#{competitor1['name']} VS #{competitor2['name']}"

@@ -39,12 +39,14 @@ module OddsFeed
 
       def bets_with_start_time
         return {} if input_data['start_time'].nil?
+
         Bet.where('bets.created_at >= ?',
                   to_datetime(input_data['start_time']))
       end
 
       def bets_with_end_time
         return {} if input_data['end_time'].nil?
+
         Bet.where('bets.created_at < ?',
                   to_datetime(input_data['end_time']))
       end

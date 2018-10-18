@@ -3,9 +3,9 @@
 %table.table
   %thead
     %tr
-      %th= t('attributes.date')
+      %th= sort_link(@search, :created_at, t('attributes.date'), default_order: :asc)
       %th= t('attributes.status')
-      %th= t('attributes.entry_kind')
+      %th= sort_link(@search, :kind, t('attributes.entry_kind'), default_order: :desc)
       %th= t('attributes.customer_name')
       %th= t('attributes.amount')
       %th= t('attributes.result')

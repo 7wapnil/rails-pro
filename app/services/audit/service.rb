@@ -18,8 +18,10 @@ module Audit
 
     def context
       return @context if @context.is_a?(Hash)
+
       is_loggable = @context.respond_to?(:loggable_attributes)
       return @context.loggable_attributes if is_loggable
+
       {}
     end
   end
