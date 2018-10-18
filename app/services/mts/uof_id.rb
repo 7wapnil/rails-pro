@@ -6,6 +6,7 @@ module Mts
 
     def initialize(odd)
       @odd = odd
+      raise ArgumentError 'Not radar Event' unless radar_event?
     end
 
     # "uof:<product_id>/<sport id>/<market id>/<outcome
@@ -27,11 +28,19 @@ module Mts
 
     private
 
-    PREMATCH_PRODUCT_ID = 3
-    LIVEODDS_PRODUCT_ID = 1
+    def radar_event?
+      producer['origin'] == 'radar'
+    end
 
     def product_id
-      @odd.market.event.traded_live? ? LIVEODDS_PRODUCT_ID : PREMATCH_PRODUCT_ID
+      producer['id'].to_i
+    end
+
+    def producer
+      producer_value = @odd.market.event.payload['producer']
+      raise 'Missing producer' unless producer_value
+
+      producer_value
     end
 
     def outcome_id

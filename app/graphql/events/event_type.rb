@@ -5,6 +5,7 @@ module Events
     field :id, !types.ID
     field :name, !types.String
     field :description, !types.String
+    field :priority, !types.Int
 
     field :title_name, types.String do
       resolve ->(obj, _args, _ctx) { obj.title_name }
@@ -17,6 +18,8 @@ module Events
     field :end_at, types.String do
       resolve ->(obj, _args, _ctx) { obj.end_at&.iso8601 }
     end
+
+    field :tournament, Types::ScopeType
 
     field :markets, function: Events::MarketsQuery.new
   end

@@ -33,6 +33,7 @@ class AuditLog
     attributes = { user_name: user_name,
                    customer_name: customer_name }
     return attributes unless context
+
     attributes.merge(context.attributes.symbolize_keys)
   end
 end

@@ -21,6 +21,13 @@
           %td= 'Status'
           %td= @event.status
         %tr
+          %td= 'Priority'
+          %td= select_tag :priority, options_for_select(Event::PRIORITIES, @event.priority),
+                                    class: 'priority_toggle form-control-sm',
+                                    data: { endpoint: event_path(@event),
+                                            resource: 'event',
+                                            initial_value: @event.priority }
+        %tr
           %td= 'Scopes'
           %td
             %ul.list-unstyled
@@ -41,13 +48,19 @@
             %th= 'Visibility'
             %th
         %tbody
-          - @event.markets.each do |market|
+          - @event.markets.order(priority: :asc).each do |market|
             %tr
               %td= market.name
               %td= market.status
-              %td= market.priority
+              %td
+                = select_tag :priority, options_for_select(Market::PRIORITIES, market.priority),
+                 class: 'priority_toggle',
+                 data: { endpoint: event_market_path(@event, market),
+                         resource: 'market',
+                         initial_value: market.priority }
               %td= visibility_badge(market.visible, market.id)
               %td= visibility_toggle(market.visible, market.id,
                                     update_visibility_market_path(market))
 - content_for :js do
+  = javascript_pack_tag 'priority_toggle', 'data-turbolinks-track': 'reload'
   = javascript_pack_tag 'visibility_toggle', 'data-turbolinks-track': 'reload'

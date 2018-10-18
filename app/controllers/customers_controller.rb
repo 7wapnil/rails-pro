@@ -17,7 +17,8 @@ class CustomersController < ApplicationController
 
   def activity
     @customer = find_customer
-    @entries = @customer.entries.page(params[:page])
+    @search = @customer.entries.search(query_params)
+    @entries = @search.result.page(params[:page])
     @audit_logs = AuditLog
                   .where(customer_id: @customer.id)
                   .page(params[:page])
@@ -40,6 +41,7 @@ class CustomersController < ApplicationController
       @document_type.to_sym
     )
     raise ArgumentError, 'Document type not supported' unless type_included
+
     @files = @customer.verification_documents.with_deleted.send(@document_type)
   end
 
