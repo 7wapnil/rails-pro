@@ -43,4 +43,11 @@
             %tr
               %td= market.name
               %td= market.status
-              %td= market.priority
+              %td
+                = select_tag :priority, options_for_select(Market::PRIORITIES, market.priority),
+                 class: 'priority_toggle',
+                 data: { endpoint: event_market_path(@event, market),
+                         resource: 'market',
+                         initial_value: market.priority }
+- content_for :js do
+  = javascript_pack_tag 'priority_toggle', 'data-turbolinks-track': 'reload'

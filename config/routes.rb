@@ -48,7 +48,9 @@ Rails.application.routes.draw do
 
   resources :activities, only: %i[index show]
 
-  resources :events, only: %i[index show]
+  resources :events, only: %i[index show] do
+    resources :markets, only: :update
+  end
 
   devise_for :users, controllers: {
     sessions: 'users/sessions'
