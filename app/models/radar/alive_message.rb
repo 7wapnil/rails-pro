@@ -8,6 +8,7 @@ module Radar
       @product_id = product_id
       @reported_at = reported_at
       @subscribed = subscribed
+      Rails.logger.info "Producer #{product_id} is alive"
     end
 
     def self.from_hash(data)
