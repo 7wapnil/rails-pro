@@ -9,7 +9,8 @@ module Scheduled
           WebSocket::Client.instance.emit(WebSocket::Signals::BET_CANCELLED,
                                           id: bet.id,
                                           customerId: bet.customer_id)
-          # TODO: implement expiration message submission
+          message = {}
+          Mts::MessagePublisher.publish!(message)
         end
       end
     end
