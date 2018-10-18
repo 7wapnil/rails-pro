@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_10_111229) do
+ActiveRecord::Schema.define(version: 2018_10_17_114742) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,6 +167,7 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
     t.string "origin_type"
     t.bigint "origin_id"
     t.datetime "authorized_at"
+    t.datetime "confirmed_at"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
   end
