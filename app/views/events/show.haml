@@ -46,7 +46,7 @@
             %th= 'Status'
             %th= 'Priority'
         %tbody
-          - @event.markets.each do |market|
+          - @event.markets.order(priority: :asc).each do |market|
             %tr
               %td= market.name
               %td= market.status
