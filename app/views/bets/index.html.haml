@@ -10,10 +10,11 @@
       %th= t('attributes.market')
       %th= t('attributes.selection')
       %th= t('attributes.odd_value')
-      %th= t('attributes.stake')
-      %th= t('attributes.bet_placement_time')
+      %th= sort_link @search, :amount, t('attributes.stake')
+      %th= sort_link @search, :winning, t('attributes.winnings')
+      %th= sort_link @search, :created_at, t('attributes.bet_placement_time')
       %th= t('attributes.status')
-      %th= t('attributes.settlement')
+      %th= sort_link @search, :settlement, t('attributes.settlement')
   %tbody
     - @bets.each do |bet|
       %tr{ id: "bet-#{bet.id}" }
@@ -25,6 +26,9 @@
         %td= bet.odd_value
         %td
           =number_with_precision bet.amount, precision: 2
+          =bet.currency.code
+        %td
+          =number_with_precision bet.winning, precision: 2
           =bet.currency.code
         %td= l(bet.created_at, format: :long)
         %td= status_badge(bet.status)

@@ -1,6 +1,6 @@
 class BetsController < ApplicationController
   def index
-    @search = Bet.search(query_params)
+    @search = Bet.with_settlement_and_winnings.search(query_params)
     @bets = @search.result.page(params[:page])
   end
 
