@@ -1,5 +1,6 @@
 module OddsFeed
   module Radar
+    # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
       def handle
         ActiveRecord::Base.transaction do
@@ -126,5 +127,6 @@ module OddsFeed
         MarketGenerator.new(event, market_data).generate
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

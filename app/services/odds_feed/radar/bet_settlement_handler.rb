@@ -43,7 +43,7 @@ module OddsFeed
           bet.settle!(result: outcome['result'] == '1',
                       void_factor: outcome['void_factor'])
         end
-        logger_level = bets.count > 0 ? :info : :debug
+        logger_level = bets.count.positive? ? :info : :debug
         Rails.logger.send(logger_level, "#{bets.count} bets settled")
 
         bets.find_in_batches { |batch| emit_websocket_signals(batch) }
