@@ -58,7 +58,7 @@ class EntryRequest < ApplicationRecord
     return unless amount && kind
 
     new_value = amount.abs
-    new_value = -new_value if CREDIT_KINDS.keys.include?(kind.to_sym)
+    new_value = -new_value if CREDIT_KINDS.key?(kind.to_sym)
 
     self.amount = new_value
   end

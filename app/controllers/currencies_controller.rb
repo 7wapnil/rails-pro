@@ -17,6 +17,7 @@ class CurrenciesController < ApplicationController
     @currency = Currency.find(params[:id])
     EntryKinds::KINDS.keys.each do |kind|
       next if @currency.entry_currency_rules.exists?(kind: kind)
+
       @currency.entry_currency_rules.build(kind: kind,
                                            min_amount: 0,
                                            max_amount: 0)

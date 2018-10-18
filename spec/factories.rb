@@ -135,6 +135,8 @@ FactoryBot.define do
     last_sign_in_ip { Faker::Internet.ip_v4_address }
     password 'iamverysecure'
     verified false
+    activated false
+    activation_token { Faker::Internet.password }
   end
 
   factory :label do
@@ -230,6 +232,18 @@ FactoryBot.define do
     won true
     value { Faker::Number.decimal(1, 2) }
     status 0
+
+    trait :settled_win do
+      won true
+    end
+
+    trait :settled_lost do
+      won false
+    end
+
+    trait :unsettled do
+      won nil
+    end
   end
 
   factory(:alive_message, class: Radar::AliveMessage) do

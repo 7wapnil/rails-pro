@@ -12,6 +12,12 @@ class Odd < ApplicationRecord
   validates :name, :value, :status, presence: true
   validates :value, numericality: { greater_than: 0 }
 
+  def settle
+    return :unsettled if won.nil?
+
+    won ? :won : :lost
+  end
+
   private
 
   def emit_created
@@ -27,6 +33,7 @@ class Odd < ApplicationRecord
       changes[attr.to_sym] = changed[1] unless attr == 'updated_at'
     end
     return if changes.empty?
+
     WebSocket::Client.instance.emit(WebSocket::Signals::ODD_UPDATED,
                                     id: id.to_s,
                                     marketId: market.id.to_s,

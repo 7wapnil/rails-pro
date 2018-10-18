@@ -11,10 +11,8 @@ module Account
       input = args[:input]
       return unless input
 
-      customer = Customer.create!(input.to_h)
-      customer.update_tracked_fields!(@request)
-      @current_customer = customer
-      customer.log_event :customer_signed_up, customer
+      customer = ::Customers::RegistrationService.call(input.to_h, @request)
+
       OpenStruct.new(user: customer,
                      token: JwtService.encode(id: customer.id,
                                               username: customer.username,

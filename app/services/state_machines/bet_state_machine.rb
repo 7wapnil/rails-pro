@@ -65,6 +65,7 @@ module StateMachines
         response = Mts::MessagePublisher
                    .publish!(request)
         return false if response == false
+
         update(validation_ticket_id: request.ticket_id,
                validation_ticket_sent_at: Time.zone.now)
       end

@@ -6,7 +6,7 @@ class Market < ApplicationRecord
   PRIORITIES_MAP = [
     { pattern: /- winner$/, priority: 1 }
   ].freeze
-
+  PRIORITIES = [0, 1, 2].freeze
   DEFAULT_PRIORITY = 0
 
   STATUSES = {
@@ -52,6 +52,7 @@ class Market < ApplicationRecord
       changes[attr.to_sym] = changed[1] if %w[name status].include?(attr)
     end
     return if changes.empty?
+
     WebSocket::Client.instance.emit(WebSocket::Signals::MARKET_UPDATED,
                                     id: id.to_s,
                                     eventId: event_id.to_s,

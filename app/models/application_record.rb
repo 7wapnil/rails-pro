@@ -5,6 +5,7 @@ class ApplicationRecord < ActiveRecord::Base
 
   def log_errors
     return unless errors.any?
+
     Rails.logger.warn "#{self.class}: #{errors.full_messages.join("\n")}"
   end
 end
