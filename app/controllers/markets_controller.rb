@@ -8,7 +8,6 @@ class MarketsController < ApplicationController
   private
 
   def market_params
-    # add more attributes if you need
     params.require(:market).permit(:priority)
   end
 end
