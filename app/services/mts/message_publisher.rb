@@ -1,5 +1,5 @@
 module Mts
-  class SubmissionPublisher
+  class MessagePublisher
     MTS_SUBMISSION_EXCHANGE_NAME = 'arcanebet_arcanebet-Submit'.freeze
 
     def initialize(message)
