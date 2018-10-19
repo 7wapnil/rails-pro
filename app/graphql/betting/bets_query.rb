@@ -4,13 +4,16 @@ module Betting
 
     description 'Get all bets'
 
-    def auth_protected?
-      false
-    end
+    argument :kind, types.String
 
     def resolve(_obj, args)
-
+      query = Bet
+              .where(customer: @current_customer)
+      if args[:kind]
+        query = query.joins(odd: { market: { event: :title } })
+                     .where('titles.kind = ?', Title.kinds[args[:kind]])
+      end
+      query.all
     end
-
   end
 end

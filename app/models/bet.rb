@@ -7,6 +7,9 @@ class Bet < ApplicationRecord
 
   has_one :entry, as: :origin
   has_one :entry_request, as: :origin
+  has_one :market, through: :odd
+  has_one :event, through: :market
+  has_one :title, through: :event
 
   validates :odd_value,
             numericality: {
@@ -20,8 +23,6 @@ class Bet < ApplicationRecord
               less_than_or_equal_to: 1
             },
             allow_nil: true
-
-  delegate :market, to: :odd
 
   def win_amount
     return nil if result.nil?
