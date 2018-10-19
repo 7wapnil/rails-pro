@@ -1,6 +1,6 @@
 class BetsController < ApplicationController
   def index
-    if !query_params.nil? && query_params[:created_at_lt].present?
+    if query_params && query_params[:created_at_lt].present?
       query_params[:created_at_lt] = query_params[:created_at_lt]
                                      .to_date
                                      .end_of_day
@@ -22,9 +22,9 @@ class BetsController < ApplicationController
   def collect_query_dates
     {
       created_at_gteq:
-        !query_params.nil? ? query_params[:created_at_gteq] : nil,
+        query_params ? query_params[:created_at_gteq] : nil,
       created_at_lt:
-        !query_params.nil? ? query_params[:created_at_lt] : nil
+        query_params ? query_params[:created_at_lt] : nil
     }
   end
 end

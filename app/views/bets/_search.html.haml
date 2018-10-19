@@ -9,25 +9,25 @@
     = f.label :id_eq, class: 'sr-only'
     = f.search_field :id_eq,
                              class: 'form-control',
-                             placeholder: 'Search ID',
+                             placeholder: t(:search, subject: t('attributes.bet_id')),
                              autocomplete: :off
   %th(colspan="2")
     = f.label :customer_username_cont, class: 'sr-only'
     = f.search_field :customer_username_cont,
                              class: 'form-control',
-                             placeholder: 'Search customer',
+                             placeholder: t(:search, subject: t('attributes.customer')),
                              autocomplete: :off
   %th(colspan="3")
     = f.label :created_at_gteq, class: 'sr-only'
     = f.search_field :created_at_gteq,
                              class: 'form-control form_date',
-                             placeholder: 'Search created at from',
+                             placeholder: t(:search, subject: t('from')),
                              value: dates[:created_at_gteq]
   %th(colspan="3")
     = f.label :created_at_lt, class: 'sr-only'
     = f.search_field :created_at_lt,
                              class: 'form-control form_date',
-                             placeholder: 'Search created at to',
+                             placeholder: t(:search, subject: t('to')),
                              value: dates[:created_at_lt]
   %th
     = f.submit class: 'btn btn-outline-dark btn-block'
