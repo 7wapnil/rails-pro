@@ -9,7 +9,7 @@ module Scheduled
           WebSocket::Client.instance.emit(WebSocket::Signals::BET_CANCELLED,
                                           id: bet.id,
                                           customerId: bet.customer_id)
-          message = {}
+          message = { bet: bet, body: 'message body...' }
           Mts::MessagePublisher.publish!(message)
         end
       end
