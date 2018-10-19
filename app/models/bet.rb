@@ -23,8 +23,6 @@ class Bet < ApplicationRecord
 
   delegate :market, to: :odd
 
-  scope :with_winnings, -> { select('bets.*, (bets.amount * bets.odd_value) AS winning') }
-
   scope :sort_by_winning_asc, -> { with_winnings.order('winning') }
 
   scope :sort_by_winning_desc, -> { with_winnings.order('winning DESC') }
@@ -48,6 +46,10 @@ class Bet < ApplicationRecord
       .joins(:entry)
       .where(entries: { origin: self, kind: Entry.kinds[:win] })
       .sum(:amount)
+  end
+
+  def self.with_winnings
+    select('bets.*, (bets.amount * bets.odd_value) AS winning')
   end
 
   class << self
