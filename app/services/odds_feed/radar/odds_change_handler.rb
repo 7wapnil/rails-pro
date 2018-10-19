@@ -71,6 +71,7 @@ module OddsFeed
 
       def event_end_time
         return nil unless event_status == Event.statuses[:ended]
+
         timestamp
       end
 

@@ -48,6 +48,30 @@ describe 'GraphQL#events' do
       end
     end
 
+    context 'ordered by priority' do
+      let(:query) do
+        %({
+            events {
+              id
+              name
+              priority
+            }
+        })
+      end
+
+      before do
+        create(:event_with_odds, title: title, priority: 1)
+        create(:event_with_odds, title: title, priority: 0)
+        create(:event_with_odds, title: title, priority: 2)
+      end
+
+      it 'returns events ordered by priority' do
+        event_result = result['data']['events'][0]
+
+        expect(event_result['priority']).to eq(0)
+      end
+    end
+
     context 'with markets priority' do
       let(:query) do
         %({
@@ -203,6 +227,32 @@ describe 'GraphQL#events' do
       end
 
       it 'returns events by title ID' do
+        expect(result['data']['events'].count).to eq(5)
+      end
+    end
+
+    context 'tournament' do
+      let(:tournament) { create(:event_scope, kind: :tournament) }
+      let(:query) do
+        %({ events (
+              filter: { tournamentId: #{tournament.id} }
+          ) {
+              id
+        } })
+      end
+
+      before do
+        other_title = create(:title)
+        create_list(:event_with_odds, 5, title: other_title)
+
+        events = create_list(:event_with_odds, 5, title: tournament.title)
+        events.each do |event|
+          event.event_scopes << tournament
+        end
+      end
+
+      it 'returns events by tournament ID' do
+        expect(result['data']).not_to be_nil
         expect(result['data']['events'].count).to eq(5)
       end
     end

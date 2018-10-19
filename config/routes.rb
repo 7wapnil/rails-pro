@@ -35,7 +35,7 @@ Rails.application.routes.draw do
 
   resources :entry_requests, only: %i[index show create]
 
-  resources :bets, only: :index
+  resources :bets, only: %i[index show]
 
   resources :currencies, only: %i[index new edit create update]
 
@@ -48,7 +48,9 @@ Rails.application.routes.draw do
 
   resources :activities, only: %i[index show]
 
-  resources :events, only: %i[index show]
+  resources :events, only: %i[index show update] do
+    resources :markets, only: :update
+  end
 
   devise_for :users, controllers: {
     sessions: 'users/sessions'
