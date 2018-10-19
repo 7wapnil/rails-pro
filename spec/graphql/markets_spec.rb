@@ -44,6 +44,30 @@ describe 'GraphQL#markets' do
       end
     end
 
+    context 'market visibility' do
+      let(:query) do
+        %({ markets (
+              eventId: #{event.id},
+          ) {
+              id
+        } })
+      end
+
+      before do
+        create_list(:market, 5, :with_odds, visible: false, event: event)
+        create_list(:market, 3, :with_odds, visible: true, event: event)
+      end
+
+      it 'returns only visible markets' do
+        expect(result['data']['markets'].count).to eq(3)
+      end
+
+      it 'does not return invisible markets' do
+        Market.update_all(visible: false)
+        expect(result['data']['markets'].count).to eq(0)
+      end
+    end
+
     context 'limited result' do
       let(:limit) { 3 }
       let(:query) do

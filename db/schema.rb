@@ -259,6 +259,7 @@ ActiveRecord::Schema.define(version: 2018_10_17_090113) do
     t.integer "priority"
     t.string "external_id"
     t.integer "status"
+    t.boolean "visible", default: true
     t.index ["event_id"], name: "index_markets_on_event_id"
     t.index ["external_id"], name: "index_markets_on_external_id"
   end
