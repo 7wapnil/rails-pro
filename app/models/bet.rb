@@ -7,6 +7,9 @@ class Bet < ApplicationRecord
 
   has_one :entry, as: :origin
   has_one :entry_request, as: :origin
+  has_one :market, through: :odd
+  has_one :event, through: :market
+  has_one :title, through: :event
 
   validates :odd_value,
             numericality: {
