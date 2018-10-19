@@ -26,6 +26,7 @@ describe Mts::Messages::ValidationRequest do
     let(:event) do
       create(:event,
              title: title,
+             payload: { "producer": { "origin": 'radar', "id": '3' } },
              external_id: 'sr:match:11050343')
     end
     let(:market) { create(:market, event: event) }

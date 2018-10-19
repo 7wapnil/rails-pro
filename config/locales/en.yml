@@ -133,11 +133,13 @@ en:
     bank_statement: Bank Statement
     credit_card: Credit Card
     other_document: Other Document
+    bet_id: Bet ID
     event: Event
     market: Market
     odd_value: Odd value
     selection: Selection
     stake: Stake
+    winnings: Winnings
     bet_placement_time: Bet placement time
     settlement: Settlement
     possible_payout: Possible payout

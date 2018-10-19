@@ -23,6 +23,10 @@ class Bet < ApplicationRecord
 
   delegate :market, to: :odd
 
+  scope :sort_by_winning_asc, -> { with_winnings.order('winning') }
+
+  scope :sort_by_winning_desc, -> { with_winnings.order('winning DESC') }
+
   def win_amount
     return nil if result.nil?
     return 0 unless result
@@ -42,5 +46,19 @@ class Bet < ApplicationRecord
       .joins(:entry)
       .where(entries: { origin: self, kind: Entry.kinds[:win] })
       .sum(:amount)
+  end
+
+  def self.with_winnings
+    select('bets.*, (bets.amount * bets.odd_value) AS winning')
+  end
+
+  class << self
+    def ransackable_scopes(_auth_object = nil)
+      %w[with_winnings]
+    end
+
+    def ransortable_attributes(auth_object = nil)
+      super(auth_object) + %i[sort_by_winning_asc sort_by_winning_desc]
+    end
   end
 end

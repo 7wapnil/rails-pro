@@ -48,6 +48,30 @@ describe 'GraphQL#events' do
       end
     end
 
+    context 'ordered by priority' do
+      let(:query) do
+        %({
+            events {
+              id
+              name
+              priority
+            }
+        })
+      end
+
+      before do
+        create(:event_with_odds, title: title, priority: 1)
+        create(:event_with_odds, title: title, priority: 0)
+        create(:event_with_odds, title: title, priority: 2)
+      end
+
+      it 'returns events ordered by priority' do
+        event_result = result['data']['events'][0]
+
+        expect(event_result['priority']).to eq(0)
+      end
+    end
+
     context 'with markets priority' do
       let(:query) do
         %({
