@@ -1,0 +1,33 @@
+- content_for :css do
+  = stylesheet_pack_tag 'flatpickr', media: :all, 'data-turbolinks-track': 'reload'
+
+- content_for :js do
+  = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
+
+%tr
+  %th(colspan="2")
+    = f.label :id_eq, class: 'sr-only'
+    = f.search_field :id_eq,
+                             class: 'form-control',
+                             placeholder: t(:search, subject: t('attributes.bet_id')),
+                             autocomplete: :off
+  %th(colspan="2")
+    = f.label :customer_username_cont, class: 'sr-only'
+    = f.search_field :customer_username_cont,
+                             class: 'form-control',
+                             placeholder: t(:search, subject: t('attributes.customer')),
+                             autocomplete: :off
+  %th(colspan="3")
+    = f.label :created_at_gteq, class: 'sr-only'
+    = f.search_field :created_at_gteq,
+                             class: 'form-control form_date',
+                             placeholder: t(:search, subject: t('from')),
+                             value: dates[:created_at_gteq]
+  %th(colspan="3")
+    = f.label :created_at_lt, class: 'sr-only'
+    = f.search_field :created_at_lt,
+                             class: 'form-control form_date',
+                             placeholder: t(:search, subject: t('to')),
+                             value: dates[:created_at_lt]
+  %th
+    = f.submit class: 'btn btn-outline-dark btn-block'
