@@ -1,4 +1,6 @@
 class Event < ApplicationRecord
+  include Visible
+
   after_create :emit_created
   after_update :emit_updated
 

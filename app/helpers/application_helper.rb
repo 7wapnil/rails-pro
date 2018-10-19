@@ -16,7 +16,8 @@ module ApplicationHelper
   def visibility_toggle(visible_resource, toggle_endpoint)
     tag.span(class: 'toggle_container') do
       toggle_id = "toggle_#{visible_resource.id}"
-      concat check_box_tag('visible', visible_resource.visible, visible_resource.visible,
+      concat check_box_tag('visible', visible_resource.visible,
+                           visible_resource.visible,
                            id: toggle_id,
                            class: 'toggle_button visibility_toggle',
                            data: { endpoint: toggle_endpoint })
