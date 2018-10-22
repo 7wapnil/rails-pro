@@ -58,7 +58,8 @@ class CsgoPrimer
       title: title,
       name: event_name,
       description: "#{tournament.name}: #{event_name}",
-      start_at: Time.zone.now.beginning_of_hour
+      start_at: Time.zone.now.beginning_of_hour,
+      traded_live: [true, false].sample
     }
 
     event = Event.new(default_attributes.merge(attributes))
