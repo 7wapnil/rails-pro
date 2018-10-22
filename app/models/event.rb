@@ -61,6 +61,10 @@ class Event < ApplicationRecord
     event_scopes.where(kind: :tournament).first
   end
 
+  def details
+    ::EventDetails::Factory.build(self)
+  end
+
   private
 
   def emit_created
