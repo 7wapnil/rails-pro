@@ -13,6 +13,10 @@ class Event < ApplicationRecord
     closed: 3
   }.freeze
 
+  ransacker :start_at, type: :date do
+    Arel.sql('date(start_at)')
+  end
+
   belongs_to :title
   has_many :markets
   has_many :scoped_events
