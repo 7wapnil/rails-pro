@@ -37,3 +37,8 @@ Sent when bets cancelled by odds provider
 * `id`:`String` - bet internal ID
 * `customerId`:`Integer` - ID of customer bet made by
 `app/models/bet.rb`
+
+#### `betPlaced`
+Report bet placement signal 
+**Data:**
+* `id`:`String` - bet internal ID

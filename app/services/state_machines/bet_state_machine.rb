@@ -46,6 +46,17 @@ module StateMachines
                       to: :sent_to_external_validation
         end
 
+        event :finish_external_validation_with_acceptance,
+              after: :on_successfull_bet_placement do
+          transitions from: :sent_to_external_validation,
+                      to: :accepted
+        end
+
+        event :finish_external_validation_with_rejection do
+          transitions from: :sent_to_external_validation,
+                      to: :rejected
+        end
+
         event :register_failure do
           transitions from: :sent_to_internal_validation,
                       to: :failed,
@@ -67,6 +78,12 @@ module StateMachines
         return false if response == false
 
         update(validation_ticket_id: request.ticket_id)
+      end
+
+      def on_successfull_bet_placement
+        entry.confirmed_at = Time.zone.now
+        WebSocket::Client.instance.emit(WebSocket::Signals::BET_PLACED,
+                                        id: id.to_s)
       end
     end
   end

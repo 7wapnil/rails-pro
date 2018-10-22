@@ -16,6 +16,8 @@ en:
   no_file: No File
   history: History
   action: Action
+  from: From
+  to: To
 
   created: "%{instance} created"
   updated: "%{instance} updated"
@@ -139,6 +141,7 @@ en:
     odd_value: Odd value
     selection: Selection
     stake: Stake
+    winnings: Winnings
     bet_placement_time: Bet placement time
     settlement: Settlement
     possible_payout: Possible payout
