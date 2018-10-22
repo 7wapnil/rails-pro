@@ -25,6 +25,10 @@ class Event < ApplicationRecord
 
   delegate :name, to: :title, prefix: true
 
+  def self.upcoming
+    where('start_at > ? AND end_at IS NULL', Time.zone.now)
+  end
+
   def self.in_play
     where(
       'start_at < ? AND end_at IS NULL AND traded_live IS TRUE',
