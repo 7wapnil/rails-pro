@@ -1,6 +1,13 @@
 class Bet < ApplicationRecord
   include StateMachines::BetStateMachine
 
+  PENDING_STATUSES_MASK = %w[
+    accepted
+    sent_to_external_validation
+    sent_to_internal_validation
+    validated_internally
+  ].freeze
+
   belongs_to :customer
   belongs_to :odd
   belongs_to :currency
@@ -16,7 +23,6 @@ class Bet < ApplicationRecord
               equal_to: ->(bet) { bet.odd.value },
               on: :create
             }
-  validates :result, inclusion: { in: [true, false] }
   validates :void_factor,
             numericality: {
               greater_than_or_equal_to: 0,
@@ -30,15 +36,23 @@ class Bet < ApplicationRecord
 
   scope :sort_by_winning_desc, -> { with_winnings.order('winning DESC') }
 
+  def display_status
+    if PENDING_STATUSES_MASK.include? status
+      'pending'
+    else
+      status
+    end
+  end
+
   def win_amount
-    return nil if result.nil?
-    return 0 unless result
+    return nil if settlement_status.nil?
+    return 0 unless won?
 
     (amount - refund_amount) * odd_value
   end
 
   def refund_amount
-    return nil if result.nil?
+    return nil if settlement_status.nil?
     return 0 if void_factor.nil?
 
     amount * void_factor

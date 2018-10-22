@@ -14,8 +14,15 @@ module StateMachines
       failed: 2
     }.freeze
 
+    BET_SETTLEMENT_STATUSES = {
+      lost: 0,
+      won: 1,
+      void: 2
+    }.freeze
+
     included do
       enum status: BET_STATUSES
+      enum settlement_status: BET_SETTLEMENT_STATUSES
 
       include AASM
 
@@ -55,8 +62,16 @@ module StateMachines
         event :settle do
           transitions from: :accepted,
                       to: :settled,
-                      after: proc { |args| update_attributes(args) }
+                      after: proc { |args| settle_as(args) }
         end
+      end
+
+      def settle_as(settlement_status:, void_factor:)
+        update(
+          status: :settled,
+          settlement_status: settlement_status,
+          void_factor: void_factor
+        )
       end
 
       def send_single_bet_to_external_validation

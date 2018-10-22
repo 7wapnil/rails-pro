@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_17_090113) do
+ActiveRecord::Schema.define(version: 2018_10_22_093705) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,9 +77,9 @@ ActiveRecord::Schema.define(version: 2018_10_17_090113) do
     t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "result", default: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
+    t.integer "settlement_status"
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
     t.index ["odd_id"], name: "index_bets_on_odd_id"

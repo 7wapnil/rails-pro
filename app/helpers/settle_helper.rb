@@ -1,11 +1,13 @@
 module SettleHelper
   SETTLE_MAPPING = {
-    unsettled: 'secondary',
-    won: 'success',
-    lost: 'danger'
+    'won' => 'success',
+    'lost' => 'danger',
+    'void' => 'primary'
   }.freeze
 
   def settle_badge(settle)
+    return unless SETTLE_MAPPING[settle]
+
     content_tag :span, class: "badge badge-#{SETTLE_MAPPING[settle]}" do
       t("settles.#{settle}")
     end
