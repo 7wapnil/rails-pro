@@ -224,6 +224,11 @@ FactoryBot.define do
     status { 0 }
     payload { {} }
 
+    trait :upcoming do
+      start_at { 1.hour.from_now }
+      end_at { nil }
+    end
+
     factory :event_with_market do
       after(:create) do |event|
         create(:market, event: event)

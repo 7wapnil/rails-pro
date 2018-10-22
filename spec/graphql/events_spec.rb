@@ -2,9 +2,7 @@ describe 'GraphQL#events' do
   let(:context) { {} }
   let(:variables) { {} }
   let(:result) do
-    ArcanebetSchema.execute(query,
-                            context: context,
-                            variables: variables)
+    ArcanebetSchema.execute(query, context: context, variables: variables)
   end
 
   let(:title) { create(:title, name: 'Counter-Strike') }
@@ -12,18 +10,18 @@ describe 'GraphQL#events' do
   describe 'query' do
     context 'basic query' do
       before do
-        create_list(:event_with_odds, 5, title: title)
+        create_list(:event_with_odds, 5, :upcoming, title: title)
       end
 
       let(:query) { %({ events { id name } }) }
 
-      it 'returns list of events' do
+      it 'returns list of upcoming events' do
         expect(result['data']['events'].count).to eq(5)
       end
     end
 
     context 'with markets' do
-      let!(:event) { create(:event_with_odds, title: title) }
+      let!(:event) { create(:event_with_odds, :upcoming, title: title) }
       let(:query) do
         %({
             events {
@@ -60,9 +58,9 @@ describe 'GraphQL#events' do
       end
 
       before do
-        create(:event_with_odds, title: title, priority: 1)
-        create(:event_with_odds, title: title, priority: 0)
-        create(:event_with_odds, title: title, priority: 2)
+        create(:event_with_odds, :upcoming, title: title, priority: 1)
+        create(:event_with_odds, :upcoming, title: title, priority: 0)
+        create(:event_with_odds, :upcoming, title: title, priority: 2)
       end
 
       it 'returns events ordered by priority' do
@@ -84,8 +82,7 @@ describe 'GraphQL#events' do
       end
 
       before do
-        event = create(:event_with_odds, title: title)
-        allow_any_instance_of(Market).to receive(:define_priority)
+        event = create(:event_with_odds, :upcoming, title: title)
         event.markets.update_all(status: Market::DEFAULT_STATUS,
                                  priority: 0)
 
@@ -103,7 +100,7 @@ describe 'GraphQL#events' do
     end
 
     context 'with odds' do
-      let!(:event) { create(:event_with_odds, title: title) }
+      let!(:event) { create(:event_with_odds, :upcoming, title: title) }
       let(:query) do
         %({
             events {
@@ -150,7 +147,7 @@ describe 'GraphQL#events' do
       end
 
       before do
-        create_list(:event_with_odds, 5, title: title)
+        create_list(:event_with_odds, 5, :upcoming, title: title)
       end
 
       it 'returns limited events' do
@@ -159,7 +156,7 @@ describe 'GraphQL#events' do
     end
 
     context 'single event' do
-      let(:event) { create(:event_with_odds) }
+      let(:event) { create(:event_with_odds, :upcoming) }
       let(:query) do
         %({ events (
               filter: { id: #{event.id} }
@@ -210,20 +207,8 @@ describe 'GraphQL#events' do
 
       before do
         other_title = create(:title)
-        create_list(
-          :event_with_odds,
-          5,
-          title: title,
-          start_at: 5.minutes.ago,
-          end_at: nil
-        )
-        create_list(
-          :event_with_odds,
-          5,
-          title: other_title,
-          start_at: 5.minutes.ago,
-          end_at: nil
-        )
+        create_list(:event_with_odds, 5, :upcoming, title: title)
+        create_list(:event_with_odds, 5, :upcoming, title: other_title)
       end
 
       it 'returns events by title ID' do
@@ -243,9 +228,13 @@ describe 'GraphQL#events' do
 
       before do
         other_title = create(:title)
-        create_list(:event_with_odds, 5, title: other_title)
+        create_list(:event_with_odds, 5, :upcoming, title: other_title)
 
-        events = create_list(:event_with_odds, 5, title: tournament.title)
+        events = create_list(
+          :event_with_odds, 5, :upcoming,
+          title: tournament.title
+        )
+
         events.each do |event|
           event.event_scopes << tournament
         end
