@@ -4,13 +4,20 @@ FactoryBot.define do
   factory :entry_currency_rule do
     currency
     kind { EntryRequest.kinds.keys.first }
-    min_amount { Faker::Number.decimal(3, 2) }
+    min_amount { Faker::Number.decimal(1, 2) }
     max_amount { Faker::Number.decimal(4, 2) }
   end
 
   factory :currency do
     name { Faker::Currency.name }
     code { Faker::Currency.code }
+
+    trait :with_bet_rule do
+      after(:create) do |currency|
+        bet_kind = EntryRequest.kinds[:bet]
+        create(:entry_currency_rule, currency: currency, kind: bet_kind)
+      end
+    end
   end
 
   factory :entry_request do
@@ -54,7 +61,7 @@ FactoryBot.define do
   end
 
   factory :bet do
-    customer
+    association :customer, :ready_to_bet
     odd
     currency
     amount { Faker::Number.decimal(2, 2) }
@@ -68,6 +75,17 @@ FactoryBot.define do
     trait :accepted do
       status Bet.statuses[:accepted]
     end
+
+    trait :sent_to_external_validation do
+      status Bet.statuses[:sent_to_external_validation]
+
+      after(:create) do |bet|
+        bet_kind = EntryRequest.kinds[:bet]
+        wallet = bet.customer.wallets.take
+        create(:entry, kind: bet_kind, origin: bet, wallet: wallet)
+      end
+    end
+
 
     trait :won do
       settlement_status :won
@@ -141,6 +159,13 @@ FactoryBot.define do
     verified false
     activated false
     activation_token { Faker::Internet.password }
+
+    trait :ready_to_bet do
+      after(:create) do |customer|
+        currency = create(:currency, :with_bet_rule)
+        create(:wallet, customer: customer, currency: currency)
+      end
+    end
   end
 
   factory :label do
