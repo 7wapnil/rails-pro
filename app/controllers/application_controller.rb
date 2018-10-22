@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   before_action :authenticate_user!
 
+  helper_method :query_params
   def current_customer
     nil
   end
@@ -9,9 +10,11 @@ class ApplicationController < ActionController::Base
 
   def query_params
     query = params[:query].dup
-    return unless query
+    return {} unless query
 
-    query.each { |key, value| query[key] = value.squish }
+    query.each do |key, value|
+      query[key] = value.is_a?(Array) ? value.map(&:squish) : value.squish
+    end
     query
   end
 end

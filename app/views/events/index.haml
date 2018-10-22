@@ -4,19 +4,20 @@
 - content_for :js do
   = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
 
-%h1.display-4= t('entities.events', count: @events.size)
+%h1.display-4= t('entities.events', count: @events.length)
 
 = search_form_for @search do |f|
   %table.table
     %thead
       %tr
-        %th= 'Name'
-        %th= 'Sport'
-        %th= 'Start at'
-        %th= 'Markets'
+        %th= sort_link(@search, :name, 'Name')
+        %th= sort_link(@search, :title_name, 'Sport')
+        %th= sort_link(@search, :start_at, 'Start at')
+        %th= sort_link(@search, :markets_count, 'Markets')
 
         - EventScope.kinds.keys.map(&:capitalize).each do |scope_kind|
-          %th= scope_kind
+          %th= sort_link(@search, :event_scopes_kind, [:event_scopes_kind, :event_scopes_name],
+                scope_kind, default_order:{ event_scopes_name: 'desc' })
 
     %tbody
       %tr
@@ -29,7 +30,7 @@
         %th
           = f.label :title_name_eq, class: 'sr-only'
           = f.select :title_name_eq,
-           options_for_select(@sports, params[:query]&.fetch(:title_name_eq)),
+           options_for_select(@sports, query_params[:title_name_eq]),
             { include_blank: true },
             class: 'form-control'
         %th
@@ -44,7 +45,7 @@
 
         %th
           = f.select :event_scopes_kind_eq,
-           options_for_select(EventScope.kinds, params[:query]&.fetch(:event_scopes_kind_eq)),
+           options_for_select(EventScope.kinds, query_params[:event_scopes_kind_eq]),
             { include_blank: true },
             class: 'form-control'
         %th

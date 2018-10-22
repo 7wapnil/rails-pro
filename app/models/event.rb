@@ -17,6 +17,10 @@ class Event < ApplicationRecord
     Arel.sql('date(start_at)')
   end
 
+  ransacker :markets_count, type: :date do
+    Arel.sql('markets_count')
+  end
+
   belongs_to :title
   has_many :markets
   has_many :scoped_events
@@ -28,6 +32,12 @@ class Event < ApplicationRecord
   enum status: STATUSES
 
   delegate :name, to: :title, prefix: true
+
+  def self.with_markets_count
+    select('events.*, COUNT(markets.id) as markets_count')
+      .left_outer_joins(:markets)
+      .group(:id)
+  end
 
   def self.in_play
     where(
