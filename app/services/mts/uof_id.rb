@@ -21,12 +21,15 @@ module Mts
         market_id,
         '/',
         outcome_id,
-        '?',
-        specifiers
+        specifiers_part
       ].join
     end
 
     private
+
+    def specifiers_part
+      specifiers.empty? ? nil : "?#{specifiers}"
+    end
 
     def radar_event?
       producer['origin'] == 'radar'
@@ -37,6 +40,8 @@ module Mts
     end
 
     def producer
+      raise 'Missing payload' unless @odd.market.event.payload
+
       producer_value = @odd.market.event.payload['producer']
       raise 'Missing producer' unless producer_value
 
@@ -60,7 +65,7 @@ module Mts
     end
 
     def parse_odd_external_id
-      %r{[a-z]*:[a-z]*:([0-9]*):([0-9]*)/([^:]*):([0-9]*)}
+      %r{[a-z]*:[a-z]*:([0-9]*):([0-9]*)[/]?([^:]*):([0-9]*)}
         .match(@odd.external_id)
     end
   end
