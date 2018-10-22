@@ -13,6 +13,14 @@ module Mts
 
     def opened_connection
       connection.open? ? connection : connection.start
+    rescue Bunny::TCPConnectionFailed => e
+      log_msg = %{
+            Connection to MTS failed \
+            error: #{e} \
+            config: '#{@config.delete(:password)}' \
+      }
+      Rails.logger.error(log_msg)
+      raise e
     end
 
     def within_connection
