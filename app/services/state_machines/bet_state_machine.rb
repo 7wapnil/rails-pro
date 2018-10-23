@@ -16,8 +16,7 @@ module StateMachines
 
     BET_SETTLEMENT_STATUSES = {
       lost: 0,
-      won: 1,
-      void: 2
+      won: 1
     }.freeze
 
     included do

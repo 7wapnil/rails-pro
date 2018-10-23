@@ -19,12 +19,4 @@ describe SettleHelper, type: :helper do
     expect(helper.settle_badge(bet.settlement_status))
       .to include('Lost')
   end
-
-  it 'void settle' do
-    bet = FactoryBot.create(:bet, :void)
-    expect(helper.settle_badge(bet.settlement_status))
-      .to include('badge-primary')
-    expect(helper.settle_badge(bet.settlement_status))
-      .to include('Void')
-  end
 end

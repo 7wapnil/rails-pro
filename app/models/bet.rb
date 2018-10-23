@@ -45,7 +45,7 @@ class Bet < ApplicationRecord
   end
 
   def win_amount
-    return nil if settlement_status.nil?
+    return nil unless settlement_status
     return 0 unless won?
 
     (amount - refund_amount) * odd_value

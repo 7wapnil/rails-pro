@@ -93,10 +93,6 @@ FactoryBot.define do
     trait :lost do
       settlement_status :lost
     end
-
-    trait :void do
-      settlement_status :void
-    end
   end
 
   # System

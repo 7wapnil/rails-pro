@@ -56,7 +56,6 @@ en:
   settles:
     won: Won
     lost: Lost
-    void: Void
 
   kinds:
     deposit: "Deposit"

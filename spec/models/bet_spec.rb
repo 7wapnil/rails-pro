@@ -105,27 +105,25 @@ describe Bet do
     end
   end
 
-  describe 'change settlement status' do
-    it 'set settlement status as won' do
-      bet = FactoryBot.create(:bet)
-      expect(bet.accepted!).to be_truthy
-      expect(bet.settle!(settlement_status: :won, void_factor: 0)).to be_truthy
-      expect(bet.settled?).to be_truthy
-      expect(bet.won?).to be_truthy
-    end
-    it 'set settlement status as lost' do
-      bet = FactoryBot.create(:bet)
-      expect(bet.accepted!).to be_truthy
-      expect(bet.settle!(settlement_status: :lost, void_factor: 0)).to be_truthy
-      expect(bet.settled?).to be_truthy
-      expect(bet.lost?).to be_truthy
-    end
-    it 'set settlement status as void' do
-      bet = FactoryBot.create(:bet)
-      expect(bet.accepted!).to be_truthy
-      expect(bet.settle!(settlement_status: :void, void_factor: 0)).to be_truthy
-      expect(bet.settled?).to be_truthy
-      expect(bet.void?).to be_truthy
+  describe '.settle!' do
+    context 'with accepted bet' do
+      let(:bet) { FactoryBot.create(:bet, :accepted) }
+      it 'set settlement status to won' do
+        expect(bet.settle!(settlement_status: :won, void_factor: 0.5))
+          .to be_truthy
+        expect(bet.settled?).to be_truthy
+        expect(bet.void_factor).to eq(0.5)
+        expect(bet.won?).to be_truthy
+        expect(bet.lost?).to be_falsey
+      end
+      it 'set settlement status to lost' do
+        expect(bet.settle!(settlement_status: :lost, void_factor: 0.7))
+          .to be_truthy
+        expect(bet.settled?).to be_truthy
+        expect(bet.void_factor).to eq(0.7)
+        expect(bet.won?).to be_falsey
+        expect(bet.lost?).to be_truthy
+      end
     end
   end
 end

@@ -1,8 +1,7 @@
 module SettleHelper
   SETTLE_MAPPING = {
     'won' => 'success',
-    'lost' => 'danger',
-    'void' => 'primary'
+    'lost' => 'danger'
   }.freeze
 
   def settle_badge(settle)
