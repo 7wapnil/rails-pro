@@ -40,8 +40,10 @@ module OddsFeed
         bets = bets_by_external_id(external_id)
 
         bets.each do |bet|
-          bet.settle!(result: outcome['result'] == '1',
-                      void_factor: outcome['void_factor'])
+          bet.settle!(
+            settlement_status: outcome['result'] == '1' ? :won : :lost,
+            void_factor: outcome['void_factor']
+          )
         end
         logger_level = bets.count.positive? ? :info : :debug
         Rails.logger.send(logger_level, "#{bets.count} bets settled")
@@ -67,7 +69,7 @@ module OddsFeed
           WebSocket::Client.instance.emit(WebSocket::Signals::BET_SETTLED,
                                           id: bet.id,
                                           customerId: bet.customer_id,
-                                          result: bet.result,
+                                          result: bet.won?,
                                           voidFactor: bet.void_factor)
         end
       end

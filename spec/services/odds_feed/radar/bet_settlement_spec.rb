@@ -88,9 +88,11 @@ describe OddsFeed::Radar::BetSettlementHandler do
     create_list(:bet, 5, status: Bet.statuses[:accepted]) # other bets
     subject.handle
 
-    expected_result = Bet.where(status: Bet.statuses[:settled],
-                                result: true,
-                                void_factor: 0.5)
+    expected_result = Bet.where(
+      status: Bet.statuses[:settled],
+      settlement_status: Bet.settlement_statuses[:won],
+      void_factor: 0.5
+    )
     expect(expected_result.count).to eq(5)
   end
 
