@@ -67,6 +67,7 @@ RSpec.configure do |config|
   config.before(:each) do
     # Drop all mongo record before each test
     AuditLog.delete_all
+    ArchivedEvent.delete_all
 
     # Stub web socket client
     allow(WebSocket::Client.instance).to receive(:emit)
