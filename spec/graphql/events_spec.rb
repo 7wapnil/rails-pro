@@ -20,6 +20,19 @@ describe 'GraphQL#events' do
       end
     end
 
+    context 'event visibility' do
+      before do
+        create_list(:event_with_odds, 2, visible: true, title: title)
+        create_list(:event_with_odds, 3, visible: false, title: title)
+      end
+
+      let(:query) { %({ events { id name } }) }
+
+      it 'returns only visible events' do
+        expect(result['data']['events'].count).to eq(2)
+      end
+    end
+
     context 'with markets' do
       let!(:event) { create(:event_with_odds, :upcoming, title: title) }
       let(:query) do
@@ -243,6 +256,39 @@ describe 'GraphQL#events' do
       it 'returns events by tournament ID' do
         expect(result['data']).not_to be_nil
         expect(result['data']['events'].count).to eq(5)
+      end
+    end
+
+    context 'details' do
+      let(:payload) do
+        { competitors: {
+          competitor: [
+            { id: 'sr:competitor:405125', name: 'Melichar N / Peschke K' },
+            { id: 'sr:competitor:169832', name: 'Mertens E / Schuurs D' }
+          ]
+        } }
+      end
+      let(:query) do
+        %({ events {
+              id
+              details {
+                competitors {
+                  id
+                  name
+                }
+              }
+        } })
+      end
+
+      before do
+        create(:event_with_odds, payload: payload)
+      end
+
+      it 'returns events with details' do
+        expect(result['data']).not_to be_nil
+        expect(result['data']['events'].count).to eq(1)
+        expect(result['data']['events'][0]['details']['competitors'].count)
+          .to eq(2)
       end
     end
   end
