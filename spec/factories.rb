@@ -86,7 +86,6 @@ FactoryBot.define do
       end
     end
 
-
     trait :won do
       settlement_status :won
     end
