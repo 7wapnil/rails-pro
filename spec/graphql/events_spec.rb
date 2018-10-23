@@ -22,6 +22,19 @@ describe 'GraphQL#events' do
       end
     end
 
+    context 'event visibility' do
+      before do
+        create_list(:event_with_odds, 2, visible: true, title: title)
+        create_list(:event_with_odds, 3, visible: false, title: title)
+      end
+
+      let(:query) { %({ events { id name } }) }
+
+      it 'returns only visible events' do
+        expect(result['data']['events'].count).to eq(2)
+      end
+    end
+
     context 'with markets' do
       let!(:event) { create(:event_with_odds, title: title) }
       let(:query) do

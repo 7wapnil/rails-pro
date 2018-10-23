@@ -6,6 +6,7 @@ module Events
     field :name, !types.String
     field :description, !types.String
     field :priority, !types.Int
+    field :visible, !types.Boolean
 
     field :title_name, types.String do
       resolve ->(obj, _args, _ctx) { obj.title_name }

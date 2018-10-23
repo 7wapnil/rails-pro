@@ -52,7 +52,7 @@ Rails.application.routes.draw do
 
   resources :activities, only: %i[index show]
 
-  resources :events, only: %i[index show update] do
+  resources :events, only: %i[index show update], concerns: :visible do
     resources :markets, only: :update
   end
 
