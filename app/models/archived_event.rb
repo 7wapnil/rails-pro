@@ -8,6 +8,7 @@ class ArchivedEvent
               class_name: 'ArchivedEventScope',
               inverse_of: :archived_event
 
+  field :external_id, type: String
   field :name, type: String
   field :description, type: String
   field :start_at, type: DateTime

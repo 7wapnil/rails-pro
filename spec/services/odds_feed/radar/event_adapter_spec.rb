@@ -26,7 +26,7 @@ describe OddsFeed::Radar::EventAdapter do
     expect(result).to be_a(Event)
     expect(ArchivedEvent.count).to eq(1)
     archived_event = ArchivedEvent.first
-    expect(archived_event.name).to eq(result.name)
+    expect(archived_event.external_id).to eq(result.external_id)
     expect(archived_event.scopes.count).to eq(result.event_scopes.size)
   end
 
