@@ -13,6 +13,9 @@
         - EventScope.kinds.keys.map(&:capitalize).each do |scope_kind|
           %th= scope_kind
 
+        %th= 'Wager'
+        %th= 'Bets'
+
     %tbody
       %tr
         %th
@@ -39,6 +42,8 @@
               - event.event_scopes.where(kind: kind).each do |event_scope|
                 .event_scope= event_scope.name
                 %br
+          %td= event.wager
+          %td= event.bets.count
 
 = paginate @events
 = content_for :js do
