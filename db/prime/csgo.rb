@@ -42,13 +42,13 @@ class CsgoPrimer
 
   REASONABLE_MATCH_TIME = 3.hours.freeze
 
-  def self.title
-    @title ||= Title.find_or_create_by!(name: 'CS:GO') do |title|
-      title.kind = :esports
-    end
-  end
-
   class << self
+    def title
+      @title ||= Title.find_or_create_by!(name: 'CS:GO') do |title|
+        title.kind = :esports
+      end
+    end
+
     def create_event(attributes)
       default_attributes, market_external_id, odd_external_id,
         teams, tournament = prepare_event_related_data
@@ -81,6 +81,7 @@ class CsgoPrimer
         name: event_name,
         description: "#{tournament.name}: #{event_name}",
         start_at: Time.zone.now.beginning_of_hour,
+        traded_live: [true, false].sample,
         payload: live_event_producer_payload,
         external_id: event_external_id
       }
