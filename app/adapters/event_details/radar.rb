@@ -8,18 +8,20 @@ module EventDetails
 
     def build_competitors
       event_competitors = competitors_payload
-      debug_msg = "No competitors found in event ID #{@event.id}"
-      return Rails.logger.debug debug_msg if event_competitors.nil?
+      if event_competitors.nil?
+        Rails.logger.debug "No competitors found in event ID #{@event.id}"
+        return []
+      end
 
-      competitors_payload.map do |item|
+      event_competitors.map do |item|
         Competitor.new(id: item['id'], name: item['name'])
       end
     end
 
     def competitors_payload
-      return if @event.payload.nil?
+      return nil if @event.payload.nil?
 
-      return if @event.payload['competitors'].nil?
+      return nil if @event.payload['competitors'].nil?
 
       competitors = @event.payload['competitors']['competitor']
       return [competitors] unless competitors.is_a?(Array)
