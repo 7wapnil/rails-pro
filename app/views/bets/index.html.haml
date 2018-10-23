@@ -1,33 +1,39 @@
 %h1.display-4
   = t(:bets)
 
-%table.table
-  %thead
-    %tr
-      %th= t('attributes.bet_id')
-      %th= t('attributes.customer')
-      %th= t('attributes.event')
-      %th= t('attributes.market')
-      %th= t('attributes.selection')
-      %th= t('attributes.odd_value')
-      %th= t('attributes.stake')
-      %th= t('attributes.bet_placement_time')
-      %th= t('attributes.status')
-      %th= t('attributes.settlement')
-  %tbody
-    - @bets.each do |bet|
-      %tr{ id: "bet-#{bet.id}" }
-        %td= link_to bet.id, bet
-        %td= link_to bet.customer.username, bet.customer
-        %td= link_to bet.odd.market.event.name, bet.odd.market.event
-        %td= bet.odd.market.name
-        %td= bet.odd.name
-        %td= bet.odd_value
-        %td
-          =number_with_precision bet.amount, precision: 2
-          =bet.currency.code
-        %td= l(bet.created_at, format: :long)
-        %td= status_badge(bet.status)
-        %td= settle_badge(bet.odd.settle)
+= search_form_for @search do |f|
+  %table.table
+    %thead
+      = render 'search', f: f, dates: @dates
+      %tr
+        %th= t('attributes.bet_id')
+        %th= t('attributes.customer')
+        %th= t('attributes.event')
+        %th= t('attributes.market')
+        %th= t('attributes.selection')
+        %th= t('attributes.odd_value')
+        %th= sort_link @search, :amount, t('attributes.stake')
+        %th= sort_link @search, :winning, t('attributes.winnings')
+        %th= sort_link @search, :created_at, t('attributes.bet_placement_time')
+        %th= t('attributes.status')
+        %th= t('attributes.settlement')
+    %tbody
+      - @bets.each do |bet|
+        %tr{ id: "bet-#{bet.id}" }
+          %td= link_to bet.id, bet
+          %td= link_to bet.customer.username, bet.customer
+          %td= link_to bet.odd.market.event.name, bet.odd.market.event
+          %td= bet.odd.market.name
+          %td= bet.odd.name
+          %td= bet.odd_value
+          %td
+            = number_with_precision bet.amount, precision: 2
+            = bet.currency.code
+          %td
+            = number_with_precision bet.winning, precision: 2
+            = bet.currency.code
+          %td= l(bet.created_at, format: :long)
+          %td= status_badge(bet.status)
+          %td= settle_badge(bet.odd.settle)
 
-= paginate @bets
+  = paginate @bets

@@ -78,4 +78,32 @@ describe Bet do
       end
     end
   end
+
+  describe 'with_winnings' do
+    it 'finds bets with calculated winnings' do
+      FactoryBot.create(:bet)
+      result = Bet.with_winnings.first
+      expect(result.winning).to eq(result.amount * result.odd_value)
+    end
+  end
+
+  describe 'sort_by_winning_asc' do
+    it 'finds bets with calculated winnings sorted asc' do
+      create_list(:bet, 2)
+      result = Bet.sort_by_winning_asc
+      first = result.first
+      last = result.last
+      expect(first.winning <= last.winning).to be_truthy
+    end
+  end
+
+  describe 'sort_by_winning_desc' do
+    it 'finds bets with calculated winnings sorted desc' do
+      create_list(:bet, 2)
+      result = Bet.sort_by_winning_desc
+      first = result.first
+      last = result.last
+      expect(first.winning >= last.winning).to be_truthy
+    end
+  end
 end

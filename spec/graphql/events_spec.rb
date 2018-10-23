@@ -22,6 +22,19 @@ describe 'GraphQL#events' do
       end
     end
 
+    context 'event visibility' do
+      before do
+        create_list(:event_with_odds, 2, visible: true, title: title)
+        create_list(:event_with_odds, 3, visible: false, title: title)
+      end
+
+      let(:query) { %({ events { id name } }) }
+
+      it 'returns only visible events' do
+        expect(result['data']['events'].count).to eq(2)
+      end
+    end
+
     context 'with markets' do
       let!(:event) { create(:event_with_odds, title: title) }
       let(:query) do
@@ -45,6 +58,30 @@ describe 'GraphQL#events' do
         expect(event_result['markets'][0]['id']).to eq(market.id.to_s)
         expect(event_result['markets'][0]['name']).to eq(market.name)
         expect(event_result['markets'][0]['status']).to eq('active')
+      end
+    end
+
+    context 'ordered by priority' do
+      let(:query) do
+        %({
+            events {
+              id
+              name
+              priority
+            }
+        })
+      end
+
+      before do
+        create(:event_with_odds, title: title, priority: 1)
+        create(:event_with_odds, title: title, priority: 0)
+        create(:event_with_odds, title: title, priority: 2)
+      end
+
+      it 'returns events ordered by priority' do
+        event_result = result['data']['events'][0]
+
+        expect(event_result['priority']).to eq(0)
       end
     end
 

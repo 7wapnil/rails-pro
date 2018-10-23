@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_10_111229) do
+ActiveRecord::Schema.define(version: 2018_10_19_082908) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -167,6 +167,7 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
     t.string "origin_type"
     t.bigint "origin_id"
     t.datetime "authorized_at"
+    t.datetime "confirmed_at"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
   end
@@ -227,6 +228,8 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
     t.datetime "remote_updated_at"
     t.boolean "traded_live", default: false
     t.integer "status", default: 0
+    t.integer "priority", limit: 2, default: 1
+    t.boolean "visible", default: true
     t.index ["external_id"], name: "index_events_on_external_id"
     t.index ["title_id"], name: "index_events_on_title_id"
   end
@@ -258,6 +261,7 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
     t.integer "priority"
     t.string "external_id"
     t.integer "status"
+    t.boolean "visible", default: true
     t.index ["event_id"], name: "index_markets_on_event_id"
     t.index ["external_id"], name: "index_markets_on_external_id"
   end

@@ -1,4 +1,6 @@
 class MarketsController < ApplicationController
+  include Visibility
+
   def update
     market = Market.find(params[:id])
     updated = market.update(market_params)
@@ -8,7 +10,6 @@ class MarketsController < ApplicationController
   private
 
   def market_params
-    # add more attributes if you need
     params.require(:market).permit(:priority)
   end
 end

@@ -9,6 +9,10 @@ Rails.application.routes.draw do
 
   resources :bonuses
 
+  concern :visible do
+    post :update_visibility, on: :member
+  end
+  resources :markets, concerns: :visible
   resources :customers, only: %i[index show] do
     member do
       get :account_management
@@ -48,7 +52,7 @@ Rails.application.routes.draw do
 
   resources :activities, only: %i[index show]
 
-  resources :events, only: %i[index show] do
+  resources :events, only: %i[index show update], concerns: :visible do
     resources :markets, only: :update
   end
 

@@ -14,8 +14,10 @@ module Events
 
     def resolve(_obj, args)
       query = Event
+              .visible
               .joins(markets: :odds)
               .group('events.id')
+              .order(:priority)
               .order(:start_at)
 
       filter_query(query, args)
