@@ -229,6 +229,7 @@ ActiveRecord::Schema.define(version: 2018_10_22_093705) do
     t.boolean "traded_live", default: false
     t.integer "status", default: 0
     t.integer "priority", limit: 2, default: 1
+    t.boolean "visible", default: true
     t.index ["external_id"], name: "index_events_on_external_id"
     t.index ["title_id"], name: "index_events_on_title_id"
   end

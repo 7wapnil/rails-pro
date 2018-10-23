@@ -44,6 +44,25 @@ describe 'GraphQL#markets' do
       end
     end
 
+    context 'ordering' do
+      let(:query) do
+        %({ markets (eventId: #{event.id}) {
+              id
+              name
+              priority
+        } })
+      end
+
+      it 'returns markets ordered by priority' do
+        create_list(:market, 3, :with_odds, event: event, priority: 2)
+        create_list(:market, 3, :with_odds, event: event, priority: 0)
+        create_list(:market, 3, :with_odds, event: event, priority: 1)
+
+        expect(result['data']['markets'].first['priority']).to eq(0)
+        expect(result['data']['markets'].last['priority']).to eq(2)
+      end
+    end
+
     context 'market visibility' do
       let(:query) do
         %({ markets (
