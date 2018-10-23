@@ -2,7 +2,7 @@ class EventsController < ApplicationController
   def index
     @search = base_query.search(query_params)
     @events = @search.result.page(params[:page])
-    @sports = Title.select(:name).distinct.pluck(:name)
+    @sports = Title.pluck(:name)
   end
 
   def show
