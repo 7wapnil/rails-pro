@@ -48,38 +48,66 @@ class CsgoPrimer
     end
   end
 
-  # rubocop:disable Metrics/MethodLength
-  def self.create_event(attributes)
-    tournament = EventScope.tournament.order(Arel.sql('RANDOM()')).first
-    teams = CSGO_TEAMS.sample(2)
-    event_name = "#{teams.first} vs #{teams.last}"
+  class << self
+    def create_event(attributes)
+      default_attributes, market_external_id, odd_external_id,
+        teams, tournament = prepare_event_related_data
 
-    default_attributes = {
-      title: title,
-      name: event_name,
-      description: "#{tournament.name}: #{event_name}",
-      start_at: Time.zone.now.beginning_of_hour
-    }
+      event = Event.new(default_attributes.merge(attributes))
+      event.event_scopes << tournament
+      event.save!
 
-    event = Event.new(default_attributes.merge(attributes))
-    event.event_scopes << tournament
-    event.save!
+      market = create_market(event, market_external_id)
+      create_odds(market, odd_external_id, teams)
+    end
 
-    market = event.markets.create!(
-      name: 'Match Winner',
-      priority: 1,
-      status: :active
-    )
+    private
 
-    teams.each do |name|
-      market.odds.create!(
-        name: name,
+    def prepare_event_related_data # rubocop:disable Metrics/MethodLength:
+      tournament = EventScope.tournament.order(Arel.sql('RANDOM()')).first
+      teams = CSGO_TEAMS.sample(2)
+      event_name = "#{teams.first} vs #{teams.last}"
+      match_id = Faker::Number.number(8)
+      event_external_id = ['sr', 'match', match_id].join(':')
+      market_external_id =
+        [event_external_id, Faker::Number.number(2)].join(':')
+      odd_external_id =
+        [market_external_id, Faker::Number.number(2)].join(':')
+      live_event_producer_payload =
+        { "producer": { "origin": 'radar', "id": '1' } }
+
+      default_attributes = {
+        title: title,
+        name: event_name,
+        description: "#{tournament.name}: #{event_name}",
+        start_at: Time.zone.now.beginning_of_hour,
+        payload: live_event_producer_payload,
+        external_id: event_external_id
+      }
+      [default_attributes, market_external_id,
+       odd_external_id, teams, tournament]
+    end
+
+    def create_odds(market, odd_external_id, teams)
+      teams.each do |name|
+        market.odds.create!(
+          name: name,
+          status: :active,
+          value: Faker::Number.between(1.1, 9.9).round(2),
+          external_id: odd_external_id
+        )
+      end
+    end
+
+    def create_market(event, market_external_id)
+      event.markets.create!(
+        name: 'Match Winner',
+        priority: 1,
         status: :active,
-        value: Faker::Number.between(1.1, 9.9).round(2)
+        external_id: market_external_id
       )
     end
   end
-  # rubocop:enable Metrics/MethodLength
 end
 
 puts 'Checking Title ...'

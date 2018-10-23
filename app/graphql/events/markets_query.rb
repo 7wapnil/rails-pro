@@ -23,7 +23,7 @@ module Events
               .joins(:odds)
               .where(event_id: event_id)
               .group('markets.id')
-              .order(priority: :desc)
+              .order(priority: :asc)
       query = query.where(id: args[:id]) if args[:id]
       query = query.where(priority: args[:priority]) if args[:priority]
       query = query.limit(args[:limit]) if args[:limit]

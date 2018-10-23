@@ -12,6 +12,7 @@
       %tr
         %th= sort_link(@search, :name, 'Name')
         %th= sort_link(@search, :title_name, 'Sport')
+        %th= 'Visible'
         %th= sort_link(@search, :start_at, 'Start at')
         %th= sort_link(@search, :markets_count, 'Markets')
 
@@ -57,6 +58,7 @@
         %tr{ id: "event-#{event.id}" }
           %td= link_to event.name, event
           %td= event.title.name
+          %td.toggle-holder= visibility_toggle(event, update_visibility_event_path(event))
           %td= event.start_at ? l(event.start_at, format: :long) : '-'
           %td= event.markets.count
 
@@ -67,3 +69,7 @@
                 %br
 
 = paginate @events
+= content_for :js do
+  = javascript_pack_tag 'visibility_toggle', 'data-turbolinks-track': 'reload'
+= content_for :css do
+  = stylesheet_pack_tag 'css/visibility_toggle'

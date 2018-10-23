@@ -7,6 +7,7 @@ module WebSocket
     ODD_CREATED = 'oddCreated'.freeze
     ODD_UPDATED = 'oddUpdated'.freeze
     BET_SETTLED = 'betSettled'.freeze
+    BET_PLACED = 'betPlaced'.freeze
     BET_CANCELLED = 'betCancelled'.freeze
   end
 end

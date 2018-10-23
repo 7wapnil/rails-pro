@@ -1,4 +1,6 @@
 class Event < ApplicationRecord
+  include Visible
+
   after_create :emit_created
   after_update :emit_updated
 
@@ -76,6 +78,10 @@ class Event < ApplicationRecord
 
   def tournament
     event_scopes.where(kind: :tournament).first
+  end
+
+  def details
+    ::EventDetails::Factory.build(self)
   end
 
   private

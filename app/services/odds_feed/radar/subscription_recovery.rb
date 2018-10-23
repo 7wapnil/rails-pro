@@ -14,6 +14,7 @@ module OddsFeed
       end
 
       def call
+        Rails.logger.info "Recovering #{@product_id} from #{@start_at}"
         return unless product_available?
         return unless rates_available?
 

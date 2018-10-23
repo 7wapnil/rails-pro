@@ -8,6 +8,10 @@ describe Event do
 
   it { should delegate_method(:name).to(:title).with_prefix }
 
+  it 'returns details adapter' do
+    expect(subject.details).to be_a(EventDetails::Base)
+  end
+
   describe '.in_play' do
     it 'includes started and not finished events that are traded live' do
       event = create(:event,

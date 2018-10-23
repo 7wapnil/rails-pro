@@ -1,5 +1,6 @@
 module OddsFeed
   module Radar
+    # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
       def handle
         ActiveRecord::Base.transaction do
@@ -48,6 +49,8 @@ module OddsFeed
       def markets_data
         data = event_data['odds']['market']
         data.is_a?(Array) ? data : [data]
+      rescue StandardError => e
+        Rails.logger.debug({ error: e, payload: @payload }.to_json)
       end
 
       def generate_markets
@@ -55,12 +58,15 @@ module OddsFeed
           generate_market!(event, market_data)
         rescue StandardError => e
           Rails.logger.error e
+          Rails.logger.debug({ error: e, payload: @payload }.to_json)
           next
         end
       end
 
       def event_data
         @payload['odds_change']
+      rescue StandardError => e
+        Rails.logger.debug({ error: e, payload: @payload }.to_json)
       end
 
       def event_status
@@ -117,9 +123,10 @@ module OddsFeed
       end
 
       def generate_market!(event, market_data)
-        Rails.logger.info "Generating market for event #{event.external_id}"
+        Rails.logger.debug "Generating market for event #{event.external_id}"
         MarketGenerator.new(event, market_data).generate
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

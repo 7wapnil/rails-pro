@@ -1,4 +1,6 @@
 class EventsController < ApplicationController
+  include Visibility
+
   def index
     @search = base_query.search(query_params)
     @events = @search.result.page(params[:page])
