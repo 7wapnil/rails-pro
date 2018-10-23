@@ -22,8 +22,17 @@ describe 'GraphQL#events' do
 
     context 'event visibility' do
       before do
-        create_list(:event_with_odds, 2, visible: true, title: title)
-        create_list(:event_with_odds, 3, visible: false, title: title)
+        create_list(
+          :event_with_odds, 2, :upcoming,
+          visible: true,
+          title: title
+        )
+
+        create_list(
+          :event_with_odds, 3, :upcoming,
+          visible: false,
+          title: title
+        )
       end
 
       let(:query) { %({ events { id name } }) }
@@ -281,7 +290,7 @@ describe 'GraphQL#events' do
       end
 
       before do
-        create(:event_with_odds, payload: payload)
+        create(:event_with_odds, :upcoming, payload: payload)
       end
 
       it 'returns events with details' do
