@@ -25,7 +25,7 @@ class Market < ApplicationRecord
   enum status: STATUSES
 
   belongs_to :event
-  has_many :odds
+  has_many :odds, dependent: :delete_all
 
   validates :name, :priority, :status, presence: true
   validates_with MarketStateValidator, restrictions: [

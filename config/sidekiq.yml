@@ -2,3 +2,7 @@
   - critical
   - mq
   - default
+:schedule:
+  unpopular_events_cleaner:
+    cron: '0 * * * *'
+    class: UnpopularEventsCleaner
