@@ -26,6 +26,7 @@ class Event < ApplicationRecord
 
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }
+  validates :external_id, uniqueness: true
 
   enum status: STATUSES
 

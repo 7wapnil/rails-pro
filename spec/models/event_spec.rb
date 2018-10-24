@@ -5,6 +5,7 @@ describe Event do
   it { should have_many(:event_scopes).through(:scoped_events) }
 
   it { should validate_presence_of(:name) }
+  it { should validate_uniqueness_of(:external_id) }
 
   it { should delegate_method(:name).to(:title).with_prefix }
 

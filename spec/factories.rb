@@ -221,7 +221,9 @@ FactoryBot.define do
     start_at { 2.hours.ago }
     end_at { 1.hours.ago }
     remote_updated_at { Time.zone.now }
-    external_id { '' }
+    sequence :external_id do |n|
+      "sr:match:#{n}"
+    end
     status { 0 }
     payload { {} }
 
