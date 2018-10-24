@@ -18,7 +18,7 @@
 
         - EventScope.kinds.keys.map(&:capitalize).each do |scope_kind|
           %th= scope_kind
-
+        %th= sort_link(@search, :traded_live, 'Live coverage')
     %tbody
       %tr
         %th
@@ -67,6 +67,7 @@
               - event.event_scopes.where(kind: kind).each do |event_scope|
                 .event_scope= event_scope.name
                 %br
+          %td= status_badge(event.traded_live ? 'live' : 'offline')
 
 = paginate @events
 = content_for :js do

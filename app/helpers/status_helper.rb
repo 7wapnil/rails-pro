@@ -10,7 +10,9 @@ module StatusHelper
     'sent_to_internal_validation' => 'info',
     'settled' => 'info',
     'succeeded' => 'success',
-    'validated_internally' => 'info'
+    'validated_internally' => 'info',
+    'live' => 'success',
+    'offline' => 'secondary'
   }.freeze
 
   def status_badge(status)
