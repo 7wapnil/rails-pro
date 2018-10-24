@@ -24,7 +24,6 @@ require 'rspec/rails'
 # require only the support files necessary.
 #
 Dir[Rails.root.join('spec/support/**/*.rb')].each { |f| require f }
-require 'services/service_spec'
 
 # Checks for pending migrations and applies them before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
@@ -67,6 +66,7 @@ RSpec.configure do |config|
   config.before(:each) do
     # Drop all mongo record before each test
     AuditLog.delete_all
+    ArchivedEvent.delete_all
 
     # Stub web socket client
     allow(WebSocket::Client.instance).to receive(:emit)

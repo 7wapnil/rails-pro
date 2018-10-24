@@ -36,6 +36,20 @@ class Bet < ApplicationRecord
 
   scope :sort_by_winning_desc, -> { with_winnings.order('winning DESC') }
 
+  class << self
+    def with_winnings
+      select('bets.*, (bets.amount * bets.odd_value) AS winning')
+    end
+
+    def ransackable_scopes(_auth_object = nil)
+      %w[with_winnings]
+    end
+
+    def ransortable_attributes(auth_object = nil)
+      super(auth_object) + %i[sort_by_winning_asc sort_by_winning_desc]
+    end
+  end
+
   def display_status
     if PENDING_STATUSES_MASK.include? status
       'pending'
@@ -63,19 +77,5 @@ class Bet < ApplicationRecord
       .joins(:entry)
       .where(entries: { origin: self, kind: Entry.kinds[:win] })
       .sum(:amount)
-  end
-
-  def self.with_winnings
-    select('bets.*, (bets.amount * bets.odd_value) AS winning')
-  end
-
-  class << self
-    def ransackable_scopes(_auth_object = nil)
-      %w[with_winnings]
-    end
-
-    def ransortable_attributes(auth_object = nil)
-      super(auth_object) + %i[sort_by_winning_asc sort_by_winning_desc]
-    end
   end
 end
