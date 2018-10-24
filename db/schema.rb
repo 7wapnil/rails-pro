@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_22_093705) do
+ActiveRecord::Schema.define(version: 2018_10_24_085226) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -234,6 +234,14 @@ ActiveRecord::Schema.define(version: 2018_10_22_093705) do
     t.index ["title_id"], name: "index_events_on_title_id"
   end
 
+  create_table "label_joins", force: :cascade do |t|
+    t.bigint "label_id"
+    t.integer "labelable_id"
+    t.string "labelable_type"
+    t.index ["label_id"], name: "index_label_joins_on_label_id"
+    t.index ["labelable_id", "labelable_type"], name: "index_label_joins_on_labelable_id_and_labelable_type"
+  end
+
   create_table "labels", force: :cascade do |t|
     t.string "name"
     t.text "description"
@@ -353,6 +361,7 @@ ActiveRecord::Schema.define(version: 2018_10_22_093705) do
   add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "event_scopes", "titles"
   add_foreign_key "events", "titles"
+  add_foreign_key "label_joins", "labels"
   add_foreign_key "markets", "events"
   add_foreign_key "odds", "markets"
   add_foreign_key "scoped_events", "event_scopes"
