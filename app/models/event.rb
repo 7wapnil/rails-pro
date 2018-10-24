@@ -21,6 +21,8 @@ class Event < ApplicationRecord
 
   belongs_to :title
   has_many :markets
+  has_many :label_joins, as: :labelable
+  has_many :labels, through: :label_joins
   has_many :scoped_events
   has_many :event_scopes, through: :scoped_events
 

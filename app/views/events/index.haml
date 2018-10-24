@@ -55,7 +55,11 @@
 
       - @events.each do |event|
         %tr{ id: "event-#{event.id}" }
-          %td= link_to event.name, event
+          %td
+            = link_to event.name, event
+            %br
+              - event.labels.each do |label|
+                %span.badge.badge-info= label.name
           %td= event.title.name
           %td.toggle-holder= visibility_toggle(event, update_visibility_event_path(event))
 

@@ -54,6 +54,7 @@ Rails.application.routes.draw do
 
   resources :events, only: %i[index show update], concerns: :visible do
     resources :markets, only: :update
+    post :update_labels, on: :member
   end
 
   devise_for :users, controllers: {
