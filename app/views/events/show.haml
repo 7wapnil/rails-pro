@@ -22,7 +22,7 @@
           %td= @event.status
         %tr
           %td= 'Live coverage'
-          %td= live_badge @event.traded_live
+          %td= status_badge(@event.traded_live ? 'live' : 'offline')
         %tr
           %td= 'Priority'
           %td= select_tag :priority, options_for_select(Event::PRIORITIES, @event.priority),

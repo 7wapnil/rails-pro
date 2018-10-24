@@ -39,7 +39,7 @@
               - event.event_scopes.where(kind: kind).each do |event_scope|
                 .event_scope= event_scope.name
                 %br
-          %td= live_badge event.traded_live
+          %td= status_badge(event.traded_live ? 'live' : 'offline')
 
 = paginate @events
 = content_for :js do

@@ -24,11 +24,4 @@ module ApplicationHelper
       concat label_tag('Visible', nil, for: toggle_id)
     end
   end
-
-  def live_badge(is_live, custom_labels = %w[live offline])
-    style = "badge badge-#{is_live ? 'success' : 'secondary'}"
-    label = custom_labels[is_live ? 0 : 1]
-
-    tag.span label, class: style
-  end
 end
