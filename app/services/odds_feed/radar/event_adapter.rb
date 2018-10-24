@@ -7,6 +7,7 @@ module OddsFeed
         find_or_create_tournament!
         find_or_create_season!
         find_or_create_country!
+        archive_event_and_scopes!
         @event
       end
 
@@ -117,6 +118,10 @@ module OddsFeed
           Rails.logger.info log_msg.squish
         end
         @event.event_scopes << scope
+      end
+
+      def archive_event_and_scopes!
+        EventArchive::Service.call(event: @event)
       end
     end
   end

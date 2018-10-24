@@ -45,16 +45,19 @@ en:
       notes: Notes
 
   statuses:
+    initial: Initial
     pending: Pending
     succeeded: Succeeded
     failed: Failed
     verified: Verified
     not_verified: Not verified
+    settled: Settled
+    live: Live
+    offline: Offline
 
   settles:
-    unsettled: Pending
-    true: Won
-    false: Lost
+    won: Won
+    lost: Lost
 
   kinds:
     deposit: "Deposit"

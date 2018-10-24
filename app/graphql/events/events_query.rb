@@ -32,7 +32,7 @@ module Events
       query = filter_by_title(query, filter[:titleId])
       query = filter_by_tournament(query, filter[:tournamentId])
       query = query.limit(args[:limit]) if args[:limit]
-      query = query.in_play if filter[:inPlay]
+      query = filter[:inPlay] ? query.in_play : query.upcoming
 
       query
     end

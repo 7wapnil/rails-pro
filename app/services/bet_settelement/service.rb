@@ -25,7 +25,7 @@ module BetSettelement
     end
 
     def win_entry_request
-      return unless @bet.result == true
+      return unless @bet.won?
 
       @win_entry_request ||= EntryRequest.create!(
         amount: @bet.win_amount,
