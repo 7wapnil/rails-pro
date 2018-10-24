@@ -35,10 +35,18 @@ class Event < ApplicationRecord
     where('start_at > ? AND end_at IS NULL', Time.zone.now)
   end
 
+  # 4 hours ago is a temporary workaround to reduce amount of live events
+  # Will be removed when proper event ending logic is implemented
   def self.in_play
     where(
-      'start_at < ? AND end_at IS NULL AND traded_live IS TRUE',
-      Time.zone.now
+      [
+        'start_at < ? AND ',
+        'start_at > ? AND ',
+        'end_at IS NULL AND ',
+        'traded_live IS TRUE'
+      ].join,
+      Time.zone.now,
+      4.hours.ago
     )
   end
 
