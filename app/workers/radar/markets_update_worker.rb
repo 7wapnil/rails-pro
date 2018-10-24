@@ -1,5 +1,8 @@
 module Radar
   class MarketsUpdateWorker < ApplicationWorker
+    sidekiq_options unique_across_queues: true,
+                    queue: 'market_templates_update'
+
     def perform
       Rails.logger.debug 'Updating BetRadar market templates'
       templates.each do |market_data|
