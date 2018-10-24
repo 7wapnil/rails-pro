@@ -8,6 +8,21 @@ class Bet < ApplicationRecord
   has_one :entry, as: :origin
   has_one :entry_request, as: :origin
 
+  validates :odd_value,
+            numericality: {
+              equal_to: ->(bet) { bet.odd.value },
+              on: :create
+            }
+  validates :result, inclusion: { in: [true, false] }
+  validates :void_factor,
+            numericality: {
+              greater_than_or_equal_to: 0,
+              less_than_or_equal_to: 1
+            },
+            allow_nil: true
+
+  delegate :market, to: :odd
+
   class << self
     def expired_live
       timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT') { 10 }.to_i
@@ -29,22 +44,7 @@ class Bet < ApplicationRecord
                expired_at: timeout.seconds.ago)
     end
   end
-
-  validates :odd_value,
-            numericality: {
-              equal_to: ->(bet) { bet.odd.value },
-              on: :create
-            }
-  validates :result, inclusion: { in: [true, false] }
-  validates :void_factor,
-            numericality: {
-              greater_than_or_equal_to: 0,
-              less_than_or_equal_to: 1
-            },
-            allow_nil: true
-
-  delegate :market, to: :odd
-
+  
   def win_amount
     return nil if result.nil?
     return 0 unless result
