@@ -15,6 +15,10 @@ class Event < ApplicationRecord
     closed: 3
   }.freeze
 
+  ransacker :start_at, type: :date do
+    Arel.sql('date(start_at)')
+  end
+
   belongs_to :title
   has_many :markets
   has_many :scoped_events
@@ -26,6 +30,10 @@ class Event < ApplicationRecord
   enum status: STATUSES
 
   delegate :name, to: :title, prefix: true
+
+  def self.upcoming
+    where('start_at > ? AND end_at IS NULL', Time.zone.now)
+  end
 
   def self.in_play
     where(

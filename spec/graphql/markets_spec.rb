@@ -46,7 +46,7 @@ describe 'GraphQL#markets' do
 
     context 'ordering' do
       let(:query) do
-        %({ markets (eventId: #{event.id}) {
+        %({ markets (eventId: #{event.id}, limit: null) {
               id
               name
               priority

@@ -23,12 +23,12 @@ FactoryBot.define do
   factory :entry_request do
     customer
     currency
-    status EntryRequest.statuses[:pending]
-    mode EntryRequest.modes[:cashier]
+    status { EntryRequest.statuses[:pending] }
+    mode { EntryRequest.modes[:cashier] }
     kind { EntryRequest.kinds.keys.first }
-    amount Random.new.rand(1.00..200.00).round(2)
-    association :initiator, factory: :customer
+    amount { Random.new.rand(1.00..200.00).round(2) }
     comment { Faker::Lorem.paragraph }
+    association :initiator, factory: :customer
   end
 
   factory :balance_entry do
@@ -41,12 +41,12 @@ FactoryBot.define do
     wallet
     kind { EntryRequest.kinds.keys.first }
     amount { Faker::Number.decimal(3, 2) }
-    authorized_at nil
+    authorized_at { nil }
   end
 
   factory :balance do
     wallet
-    kind Balance.kinds[:real_money]
+    kind { Balance.kinds[:real_money] }
     amount { Faker::Number.decimal(3, 2) }
   end
 
@@ -56,7 +56,7 @@ FactoryBot.define do
     amount { Faker::Number.decimal(3, 2) }
 
     trait :brick do
-      amount 100_000
+      amount { 100_000 }
     end
   end
 
@@ -66,18 +66,18 @@ FactoryBot.define do
     currency
     amount { Faker::Number.decimal(2, 2) }
     odd_value { odd.value }
-    status Bet.statuses[:initial]
+    status { Bet.statuses[:initial] }
 
     trait :settled do
-      status Bet.statuses[:settled]
+      status { Bet.statuses[:settled] }
     end
 
     trait :accepted do
-      status Bet.statuses[:accepted]
+      status { Bet.statuses[:accepted] }
     end
 
     trait :sent_to_external_validation do
-      status Bet.statuses[:sent_to_external_validation]
+      status { Bet.statuses[:sent_to_external_validation] }
 
       after(:create) do |bet|
         bet_kind = EntryRequest.kinds[:bet]
@@ -86,12 +86,12 @@ FactoryBot.define do
       end
     end
 
-    trait :win do
-      result true
+    trait :won do
+      settlement_status { :won }
     end
 
-    trait :lose do
-      result false
+    trait :lost do
+      settlement_status { :lost }
     end
   end
 
@@ -99,27 +99,27 @@ FactoryBot.define do
 
   factory :bonus do
     sequence(:code) { |n| "FOOBAR#{n}" }
-    kind 0
-    rollover_multiplier 10
-    max_rollover_per_bet 150.00
-    max_deposit_match 1000.00
-    min_odds_per_bet 1.6
-    min_deposit 10.00
+    kind { 0 }
+    rollover_multiplier { 10 }
+    max_rollover_per_bet { 150.00 }
+    max_deposit_match { 1000.00 }
+    min_odds_per_bet { 1.6 }
+    min_deposit { 10.00 }
     expires_at { Date.today.end_of_month }
-    valid_for_days 60
+    valid_for_days { 60 }
   end
 
   factory :user do
     email { Faker::Internet.email }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
-    password 'iamverysecure'
+    password { 'iamverysecure' }
 
     factory :admin_user do
-      email 'admin@email.com'
-      first_name 'Super'
-      last_name 'Admin'
-      password 'iamadminuser'
+      email { 'admin@email.com' }
+      first_name { 'Super' }
+      last_name { 'Admin' }
+      password { 'iamadminuser' }
     end
   end
 
@@ -150,9 +150,9 @@ FactoryBot.define do
     last_sign_in_at { Faker::Time.between(Date.yesterday, Date.today).in_time_zone } # rubocop:disable Metrics/LineLength
     current_sign_in_ip { Faker::Internet.ip_v4_address }
     last_sign_in_ip { Faker::Internet.ip_v4_address }
-    password 'iamverysecure'
-    verified false
-    activated false
+    password { 'iamverysecure' }
+    verified { false }
+    activated { false }
     activation_token { Faker::Internet.password }
 
     trait :ready_to_bet do
@@ -193,19 +193,19 @@ FactoryBot.define do
   factory :market_template do
     external_id { Faker::Number.between(1, 1000) }
     name { Faker::Name.unique.name }
-    groups 'all'
+    groups { 'all' }
     payload { { test: 1 } }
   end
 
   factory :title do
     name { Faker::Name.unique.name }
-    kind :esports
+    kind { :esports }
   end
 
   factory :event_scope do
     title
-    name 'FPSThailand CS:GO Pro League Season#4'
-    kind :tournament
+    name { 'FPSThailand CS:GO Pro League Season#4' }
+    kind { :tournament }
   end
 
   factory :scoped_event do
@@ -216,14 +216,19 @@ FactoryBot.define do
   factory :event do
     title
     visible { true }
-    name 'MiTH vs. Beyond eSports'
-    description 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' # rubocop:disable Metrics/LineLength
+    name { 'MiTH vs. Beyond eSports' }
+    description { 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' } # rubocop:disable Metrics/LineLength
     start_at { 2.hours.ago }
     end_at { 1.hours.ago }
     remote_updated_at { Time.zone.now }
-    external_id ''
-    status 0
+    external_id { '' }
+    status { 0 }
     payload { {} }
+
+    trait :upcoming do
+      start_at { 1.hour.from_now }
+      end_at { nil }
+    end
 
     factory :event_with_market do
       after(:create) do |event|
@@ -240,10 +245,10 @@ FactoryBot.define do
 
   factory :market do
     event
-    visible true
-    name 'Winner Map (Train)'
-    priority 2
-    status 0
+    visible { true }
+    name { 'Winner Map (Train)' }
+    priority { 2 }
+    status { 0 }
 
     trait :with_odds do
       after(:create) do |market|
@@ -254,28 +259,16 @@ FactoryBot.define do
 
   factory :odd do
     market
-    name 'MiTH'
-    won true
+    name { 'MiTH' }
+    won { true }
     value { Faker::Number.decimal(1, 2) }
-    status 0
-
-    trait :settled_win do
-      won true
-    end
-
-    trait :settled_lost do
-      won false
-    end
-
-    trait :unsettled do
-      won nil
-    end
+    status { 0 }
   end
 
   factory(:alive_message, class: Radar::AliveMessage) do
-    product_id 1
-    reported_at Time.now.to_i
-    subscribed true
+    product_id { 1 }
+    reported_at { Time.now.to_i }
+    subscribed { true }
 
     initialize_with do
       new(
@@ -288,8 +281,8 @@ FactoryBot.define do
 
   factory :verification_document do
     customer
-    kind 0
-    status 0
+    kind { 0 }
+    status { 0 }
 
     after(:build) do |doc|
       file_path = Rails.root.join('spec',
