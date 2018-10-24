@@ -31,7 +31,8 @@ class Customer < ApplicationRecord
   has_many :entry_requests
   has_many :initiated_entry_requests, as: :initiator, class_name: 'EntryRequest'
   has_one :address
-  has_and_belongs_to_many :labels
+  has_many :label_joins, as: :labelable
+  has_many :labels, through: :label_joins
   has_many :verification_documents
 
   # Devise Validatable module creates all needed
