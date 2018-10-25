@@ -1,21 +1,27 @@
 describe BetExternalValidation::Service do
   describe '.call' do
-    let(:bet) { create(:bet) }
+    let(:bet) { create(:bet, :sent_to_external_validation) }
 
     context 'stubbed mode' do
-      before do
-        expect(Mts::Mode).to receive(:stubbed?).and_return(true)
-        described_class.call(bet)
+      context 'with stubbed call' do
+        before do
+          allow(Mts::Mode).to receive(:stubbed?).and_return(true)
+          described_class.call(bet)
+        end
+
+        it 'avoids external validation by publishing ticket to MTS' do
+          expect(Mts::MessagePublisherWorker)
+            .to_not have_enqueued_sidekiq_job([bet.id])
+        end
       end
 
-      it 'avoids external validation by publishing ticket to MTS' do
-        expect(Mts::MessagePublisherWorker)
-          .to_not have_enqueued_sidekiq_job([bet.id])
-      end
+      it 'perform dummy validation' do
+        allow(Mts::Mode).to receive(:stubbed?).and_return(true)
 
-      it 'perform dummy valdiation' do
         expect(BetExternalValidation::PublisherStub)
-          .to have_received(:call).with([bet.id])
+          .to receive(:perform_async).with([bet.id])
+
+        described_class.call(bet)
       end
     end
 
