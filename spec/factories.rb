@@ -258,6 +258,10 @@ FactoryBot.define do
     priority { 2 }
     status { 0 }
 
+    sequence :external_id do |n|
+      "sr:match:#{n}:209/setnr=2|gamenrX=#{n}|gamenrY=#{n}"
+    end
+
     trait :with_odds do
       after(:create) do |market|
         create_list(:odd, 2, market: market)
@@ -271,6 +275,11 @@ FactoryBot.define do
     won { true }
     value { Faker::Number.decimal(1, 2) }
     status { 0 }
+
+
+    sequence :external_id do |n|
+      "sr:match:#{n}:280/hcp=0.5:#{n}"
+    end
   end
 
   factory(:alive_message, class: Radar::AliveMessage) do

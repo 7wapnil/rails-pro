@@ -1,6 +1,5 @@
 class Odd < ApplicationRecord
-  after_create :emit_created
-  after_update :emit_updated
+  include HasUniqueExternalId
 
   enum status: {
     inactive: 0,
@@ -11,6 +10,9 @@ class Odd < ApplicationRecord
 
   validates :name, :value, :status, presence: true
   validates :value, numericality: { greater_than: 0 }
+
+  after_create :emit_created
+  after_update :emit_updated
 
   private
 

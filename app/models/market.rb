@@ -1,5 +1,6 @@
 class Market < ApplicationRecord
   include Visible
+  include HasUniqueExternalId
 
   before_validation :define_priority, if: :name_changed?
   after_create :emit_created
