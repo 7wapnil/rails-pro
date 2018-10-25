@@ -13,6 +13,10 @@
 
         - EventScope.kinds.keys.map(&:capitalize).each do |scope_kind|
           %th= scope_kind
+
+        %th= 'Wager'
+        %th= 'Bets'
+
         %th= sort_link(@search, :traded_live, 'Live coverage')
 
         %th
@@ -31,6 +35,8 @@
               - event.event_scopes.where(kind: kind).each do |event_scope|
                 .event_scope= event_scope.name
                 %br
+          %td= event.wager
+          %td= event.bets.count
           %td= status_badge(event.traded_live ? 'live' : 'offline')
           %td
 

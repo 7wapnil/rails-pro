@@ -21,6 +21,7 @@ class Event < ApplicationRecord
 
   belongs_to :title
   has_many :markets
+  has_many :bets, through: :markets
   has_many :scoped_events
   has_many :event_scopes, through: :scoped_events
 
@@ -68,6 +69,10 @@ class Event < ApplicationRecord
 
     payload&.merge!(addition)
     self.payload = addition unless payload
+  end
+
+  def wager
+    bets.sum(:amount)
   end
 
   def tournament
