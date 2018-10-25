@@ -85,7 +85,7 @@ module StateMachines
       end
 
       def send_single_bet_to_external_validation
-        Mts::MessagePublisherWorker.perform_async([id])
+        BetExternalValidation::Service.call(self)
       end
 
       def on_successfull_bet_placement
