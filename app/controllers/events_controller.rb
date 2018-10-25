@@ -3,7 +3,7 @@ class EventsController < ApplicationController
   include Labelable
 
   def index
-    @search = Event.order(start_at: :desc).search(query_params)
+    @search = Event.includes(:labels).order(start_at: :desc).search(query_params)
     @events = @search.result.page(params[:page])
     @sports = Title.pluck(:name)
   end
