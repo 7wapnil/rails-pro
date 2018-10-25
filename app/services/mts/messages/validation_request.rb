@@ -43,7 +43,7 @@ module Mts
           version: MESSAGE_VERSION,
           timestamp_utc: now_in_millisecons_epoch,
           ticket_id: ticket_id,
-          test_source: !production_mode,
+          test_source: !Mts::Mode.production?,
           odds_change: DEFAULT_ODDS_CHANGE_BEHAVIOUR
         }
       end
@@ -117,10 +117,6 @@ module Mts
           end_customer_device_id: false,
           end_customer_languge: true
         }
-      end
-
-      def production_mode
-        !ENV['MTS_MODE'] == 'production'
       end
 
       def now_in_millisecons_epoch
