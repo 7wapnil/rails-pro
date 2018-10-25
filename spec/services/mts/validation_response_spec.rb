@@ -47,17 +47,8 @@ describe Mts::Messages::ValidationResponse do
       expect(subject.rejected?).to eq true
     end
 
-    it 'detects reason code' do
-      expect(subject.result.reason.code).to eq(-401)
-    end
-
-    it 'detects reason message' do
-      expect(subject.result.reason.message)
-        .to include 'Match is not found in MTS'
-    end
-
     it 'detects version' do
-      expect(subject.message.version).to eq '2.1'
+      expect(subject.version).to eq '2.1'
     end
   end
 
@@ -67,7 +58,7 @@ describe Mts::Messages::ValidationResponse do
       expect_any_instance_of(described_class)
         .to receive(:parse).with(input_json).once.and_call_original
       response = described_class.new(input_json)
-      expect(response.instance_variable_get(:@message).foo).to eq 'bar'
+      expect(response.instance_variable_get(:@message)[:foo]).to eq 'bar'
     end
 
     it 'rejects processing unknown version' do

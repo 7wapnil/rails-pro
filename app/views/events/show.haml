@@ -21,6 +21,16 @@
           %td= 'Status'
           %td= @event.status
         %tr
+          %td= 'Live coverage'
+          %td= status_badge(@event.traded_live ? 'live' : 'offline')
+        %tr
+          %td= 'Priority'
+          %td= select_tag :priority, options_for_select(Event::PRIORITIES, @event.priority),
+                                    class: 'priority_toggle form-control-sm',
+                                    data: { endpoint: event_path(@event),
+                                            resource: 'event',
+                                            initial_value: @event.priority }
+        %tr
           %td= 'Scopes'
           %td
             %ul.list-unstyled
@@ -28,6 +38,9 @@
                 %li
                   %b= "#{scope.kind}:"
                   %span= scope.name
+        %tr
+          %td Visible
+          %td= visibility_toggle(@event, update_visibility_event_path(@event))
       %hr
       = link_back
 
@@ -38,8 +51,9 @@
             %th= 'Name'
             %th= 'Status'
             %th= 'Priority'
+            %th= 'Visibility'
         %tbody
-          - @event.markets.each do |market|
+          - @event.markets.order(:priority, :name).each do |market|
             %tr
               %td= market.name
               %td= market.status
@@ -49,5 +63,9 @@
                  data: { endpoint: event_market_path(@event, market),
                          resource: 'market',
                          initial_value: market.priority }
+              %td= visibility_toggle(market, update_visibility_market_path(market))
 - content_for :js do
   = javascript_pack_tag 'priority_toggle', 'data-turbolinks-track': 'reload'
+  = javascript_pack_tag 'visibility_toggle', 'data-turbolinks-track': 'reload'
+- content_for :css do
+  = stylesheet_pack_tag 'css/visibility_toggle'

@@ -1,8 +1,12 @@
 class Event < ApplicationRecord
+  include Visible
+
   after_create :emit_created
   after_update :emit_updated
 
   UPDATABLE_ATTRIBUTES = %w[name description start_at end_at].freeze
+
+  PRIORITIES = [0, 1, 2].freeze
 
   STATUSES = {
     not_started: 0,
@@ -11,16 +15,25 @@ class Event < ApplicationRecord
     closed: 3
   }.freeze
 
+  ransacker :start_at, type: :date do
+    Arel.sql('date(start_at)')
+  end
+
   belongs_to :title
   has_many :markets
   has_many :scoped_events
   has_many :event_scopes, through: :scoped_events
 
   validates :name, presence: true
+  validates :priority, inclusion: { in: PRIORITIES }
 
   enum status: STATUSES
 
   delegate :name, to: :title, prefix: true
+
+  def self.upcoming
+    where('start_at > ? AND end_at IS NULL', Time.zone.now)
+  end
 
   def self.in_play
     where(
@@ -59,6 +72,10 @@ class Event < ApplicationRecord
 
   def tournament
     event_scopes.where(kind: :tournament).first
+  end
+
+  def details
+    ::EventDetails::Factory.build(self)
   end
 
   private

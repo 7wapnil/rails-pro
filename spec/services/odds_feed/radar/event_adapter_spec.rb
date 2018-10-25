@@ -22,6 +22,14 @@ describe OddsFeed::Radar::EventAdapter do
       .to eq('2016-10-31T18:00:00+00:00'.to_time)
   end
 
+  it 'creates event_archive record at MongoDB' do
+    expect(result).to be_a(Event)
+    expect(ArchivedEvent.count).to eq(1)
+    archived_event = ArchivedEvent.first
+    expect(archived_event.external_id).to eq(result.external_id)
+    expect(archived_event.scopes.count).to eq(result.event_scopes.size)
+  end
+
   it 'returns generated event name' do
     expect(result.name).to eq('IK Oddevold VS Tvaakers IF')
   end

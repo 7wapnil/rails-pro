@@ -27,7 +27,7 @@ describe BetSettelement::Service do
 
     context 'bet that can be settled' do
       context 'entire win bet' do
-        let(:bet) { create(:bet, :settled, :win) }
+        let(:bet) { create(:bet, :settled, :won) }
 
         subject { described_class.new(bet) }
 
@@ -83,7 +83,7 @@ describe BetSettelement::Service do
       end
 
       context 'half win bet, half refund' do
-        let(:bet) { create(:bet, :settled, :win, void_factor: 0.5) }
+        let(:bet) { create(:bet, :settled, :won, void_factor: 0.5) }
 
         subject { described_class.new(bet) }
 
@@ -161,7 +161,7 @@ describe BetSettelement::Service do
       end
 
       context 'bet lose, half refund' do
-        let(:bet) { create(:bet, :settled, :lose, void_factor: 0.5) }
+        let(:bet) { create(:bet, :settled, :lost, void_factor: 0.5) }
 
         subject { described_class.new(bet) }
 

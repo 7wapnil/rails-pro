@@ -1,19 +1,28 @@
 class Bet < ApplicationRecord
   include StateMachines::BetStateMachine
 
+  PENDING_STATUSES_MASK = %w[
+    accepted
+    sent_to_external_validation
+    sent_to_internal_validation
+    validated_internally
+  ].freeze
+
   belongs_to :customer
   belongs_to :odd
   belongs_to :currency
 
   has_one :entry, as: :origin
   has_one :entry_request, as: :origin
+  has_one :market, through: :odd
+  has_one :event, through: :market
+  has_one :title, through: :event
 
   validates :odd_value,
             numericality: {
               equal_to: ->(bet) { bet.odd.value },
               on: :create
             }
-  validates :result, inclusion: { in: [true, false] }
   validates :void_factor,
             numericality: {
               greater_than_or_equal_to: 0,
@@ -23,7 +32,23 @@ class Bet < ApplicationRecord
 
   delegate :market, to: :odd
 
+  scope :sort_by_winning_asc, -> { with_winnings.order('winning') }
+
+  scope :sort_by_winning_desc, -> { with_winnings.order('winning DESC') }
+
   class << self
+    def with_winnings
+      select('bets.*, (bets.amount * bets.odd_value) AS winning')
+    end
+
+    def ransackable_scopes(_auth_object = nil)
+      %w[with_winnings]
+    end
+
+    def ransortable_attributes(auth_object = nil)
+      super(auth_object) + %i[sort_by_winning_asc sort_by_winning_desc]
+    end
+
     def expired_live
       timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT') { 10 }.to_i
       condition = 'bets.validation_ticket_sent_at <= :expired_at
@@ -44,16 +69,24 @@ class Bet < ApplicationRecord
                expired_at: timeout.seconds.ago)
     end
   end
-  
+
+  def display_status
+    if PENDING_STATUSES_MASK.include? status
+      'pending'
+    else
+      status
+    end
+  end
+
   def win_amount
-    return nil if result.nil?
-    return 0 unless result
+    return nil unless settlement_status
+    return 0 unless won?
 
     (amount - refund_amount) * odd_value
   end
 
   def refund_amount
-    return nil if result.nil?
+    return nil if settlement_status.nil?
     return 0 if void_factor.nil?
 
     amount * void_factor

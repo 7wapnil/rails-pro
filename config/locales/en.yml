@@ -16,6 +16,8 @@ en:
   no_file: No File
   history: History
   action: Action
+  from: From
+  to: To
 
   created: "%{instance} created"
   updated: "%{instance} updated"
@@ -43,16 +45,19 @@ en:
       notes: Notes
 
   statuses:
+    initial: Initial
     pending: Pending
     succeeded: Succeeded
     failed: Failed
     verified: Verified
     not_verified: Not verified
+    settled: Settled
+    live: Live
+    offline: Offline
 
   settles:
-    unsettled: Pending
-    true: Won
-    false: Lost
+    won: Won
+    lost: Lost
 
   kinds:
     deposit: "Deposit"
@@ -139,6 +144,7 @@ en:
     odd_value: Odd value
     selection: Selection
     stake: Stake
+    winnings: Winnings
     bet_placement_time: Bet placement time
     settlement: Settlement
     possible_payout: Possible payout

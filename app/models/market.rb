@@ -1,4 +1,6 @@
 class Market < ApplicationRecord
+  include Visible
+
   before_validation :define_priority, if: :name_changed?
   after_create :emit_created
   after_update :emit_updated

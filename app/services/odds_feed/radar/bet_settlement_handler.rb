@@ -35,15 +35,18 @@ module OddsFeed
       end
 
       def update_bets(external_id, outcome)
-        Rails.logger.info "Settling bets for odd with EID #{external_id}"
+        Rails.logger.debug "Settling bets for odd with EID #{external_id}"
 
         bets = bets_by_external_id(external_id)
 
         bets.each do |bet|
-          bet.settle!(result: outcome['result'] == '1',
-                      void_factor: outcome['void_factor'])
+          bet.settle!(
+            settlement_status: outcome['result'] == '1' ? :won : :lost,
+            void_factor: outcome['void_factor']
+          )
         end
-        Rails.logger.info "#{bets.count} bets settled"
+        logger_level = bets.count.positive? ? :info : :debug
+        Rails.logger.send(logger_level, "#{bets.count} bets settled")
 
         bets.find_in_batches { |batch| emit_websocket_signals(batch) }
       end
@@ -66,7 +69,7 @@ module OddsFeed
           WebSocket::Client.instance.emit(WebSocket::Signals::BET_SETTLED,
                                           id: bet.id,
                                           customerId: bet.customer_id,
-                                          result: bet.result,
+                                          result: bet.won?,
                                           voidFactor: bet.void_factor)
         end
       end

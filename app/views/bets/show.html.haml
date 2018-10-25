@@ -23,26 +23,26 @@
         %tr
           %td= t('attributes.stake')
           %td
-            =number_with_precision @bet.amount, precision: 2
-            =@bet.currency.code
+            = number_with_precision @bet.amount, precision: 2
+            = @bet.currency.code
         %tr
           %td= t('attributes.bet_placement_time')
           %td= l(@bet.created_at, format: :long)
         %tr
           %td= t('attributes.status')
-          %td= status_badge(@bet.status)
+          %td= status_badge(@bet.display_status)
         %tr
           %td= t('attributes.settlement')
-          %td= settle_badge(@bet.odd.settle)
+          %td= settle_badge(@bet.settlement_status)
         %tr
           %td= t('attributes.possible_payout')
           %td
-            =number_with_precision @bet.odd_value * @bet.amount, precision: 2
-            =@bet.currency.code
+            = number_with_precision @bet.winning, precision: 2
+            = @bet.currency.code
         %tr
           %td= t('attributes.actual_payout')
           %td
-            =number_with_precision @bet.actual_payout, precision: 2
-            =@bet.currency.code
+            = number_with_precision @bet.actual_payout, precision: 2
+            = @bet.currency.code
       %hr
       = link_back
