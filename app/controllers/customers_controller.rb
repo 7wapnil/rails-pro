@@ -1,4 +1,6 @@
 class CustomersController < ApplicationController
+  include Labelable
+
   def index
     @search = Customer.search(query_params)
     @customers = @search.result.page(params[:page])
@@ -66,20 +68,7 @@ class CustomersController < ApplicationController
     redirect_to documents_customer_path(@customer)
   end
 
-  def update_labels
-    customer = find_customer
-    if labels_params[:ids].include? '0'
-      customer.labels.clear
-    else
-      customer.label_ids = labels_params[:ids]
-    end
-  end
-
   private
-
-  def labels_params
-    params.require(:labels).permit(ids: [])
-  end
 
   def find_customer
     Customer.find(params[:id])

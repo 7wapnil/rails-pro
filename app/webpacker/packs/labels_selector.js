@@ -8,7 +8,7 @@ const processLabels = () => {
     xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
   })
 
-  const selectElement = $('#customers_labels')
+  const selectElement = $('#select_labels')
   const saveLabelsBtn = $('#save_labels')
 
   saveLabelsBtn.on('click', () => {

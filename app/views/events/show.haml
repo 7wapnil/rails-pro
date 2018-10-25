@@ -23,17 +23,7 @@
         %tr
           %td= 'Labels'
           %td
-            = collection_select(:labels,
-                            :ids,
-                            @labels,
-                            :id,
-                            :name,
-                            { selected: @event.labels.map(&:id) },
-                            { class: 'form-control',
-                              id: 'customers_labels',
-                              multiple: true,
-                              data: { placeholder: 'Add event label',
-                                      update_url: update_labels_event_path(@event) } })
+            = labels_selector(@event, @labels)
             %button.btn.btn-success.mt-2{ disabled: true, id: 'save_labels' }= t(:save)
         %tr
           %td= 'Priority'
@@ -77,9 +67,9 @@
                          initial_value: market.priority }
               %td= visibility_toggle(market, update_visibility_market_path(market))
 - content_for :js do
-  = javascript_pack_tag 'customers/labels_selector'
+  = javascript_pack_tag 'labels_selector'
   = javascript_pack_tag 'priority_toggle', 'data-turbolinks-track': 'reload'
   = javascript_pack_tag 'visibility_toggle', 'data-turbolinks-track': 'reload'
 - content_for :css do
-  = stylesheet_pack_tag 'customers/labels_selector'
+  = stylesheet_pack_tag 'labels_selector'
   = stylesheet_pack_tag 'css/visibility_toggle'

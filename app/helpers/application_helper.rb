@@ -24,4 +24,21 @@ module ApplicationHelper
       concat label_tag('Visible', nil, for: toggle_id)
     end
   end
+
+  def labels_selector(labelable, labels)
+    update_url = polymorphic_url([:update_labels, labelable])
+    placeholder = "Add #{labelable.class.to_s.downcase} label"
+
+    collection_select(:labels,
+                      :ids,
+                      labels,
+                      :id,
+                      :name,
+                      { selected: labelable.labels.map(&:id) },
+                      class: 'form-control',
+                      id: 'select_labels',
+                      multiple: true,
+                      data: { placeholder: placeholder,
+                              update_url: update_url })
+  end
 end

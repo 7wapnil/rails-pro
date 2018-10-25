@@ -1,5 +1,4 @@
 module Labelable
-
   extend ActiveSupport::Concern
 
   included do
@@ -15,7 +14,6 @@ module Labelable
   end
 
   private
-
 
   def labels_params
     params.require(:labels).permit(ids: [])
