@@ -37,6 +37,8 @@ module OddsFeed
           template.scan(/\{([^\}]*)/).each do |matches|
             token = matches.first
             result = result.gsub("{#{token}}", token_value(token))
+          rescue StandardError => error
+            Rails.logger.warn error
           end
           result
         end
