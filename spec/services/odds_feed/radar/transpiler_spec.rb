@@ -11,7 +11,7 @@ describe OddsFeed::Radar::Transpiler do
   end
   let(:event) { create(:event, payload: event_payload) }
   let(:market_id) { '1' }
-  let(:specifiers) { 'set=1|game=2|point=3' }
+  let(:specifiers) { 'set=1|game=2|point=3|variant=sr:exact_goals:9+' }
   subject do
     OddsFeed::Radar::Transpiler.new(event, market_id, specifiers)
   end
@@ -52,7 +52,6 @@ describe OddsFeed::Radar::Transpiler do
     end
 
     it 'takes odd values from market variants API' do
-      subject.instance_variable_set(:@specifiers, 'variant=sr:exact_goals:9+')
       allow(subject).to receive(:variant_odds) do
         {
           'outcomes' => {
@@ -73,6 +72,7 @@ describe OddsFeed::Radar::Transpiler do
     end
 
     it 'raises an error' do
+      allow(subject).to receive(:variant_odds).and_return({})
       create(:market_template,
              external_id: market_id,
              name: 'Market name',
