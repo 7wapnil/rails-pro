@@ -206,6 +206,9 @@ FactoryBot.define do
     title
     name { 'FPSThailand CS:GO Pro League Season#4' }
     kind { :tournament }
+    sequence :external_id do |n|
+      "sr:tournament:#{n}"
+    end
   end
 
   factory :scoped_event do

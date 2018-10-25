@@ -1,5 +1,6 @@
 class Event < ApplicationRecord
   include Visible
+  include HasUniqueExternalId
 
   after_create :emit_created
   after_update :emit_updated
@@ -26,7 +27,6 @@ class Event < ApplicationRecord
 
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }
-  validates :external_id, uniqueness: true
 
   enum status: STATUSES
 
