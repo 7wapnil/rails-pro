@@ -20,9 +20,9 @@ class Event < ApplicationRecord
   end
 
   belongs_to :title
-  has_many :markets
+  has_many :markets, dependent: :delete_all
   has_many :bets, through: :markets
-  has_many :scoped_events
+  has_many :scoped_events, dependent: :delete_all
   has_many :event_scopes, through: :scoped_events
 
   validates :name, presence: true

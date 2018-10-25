@@ -2,3 +2,8 @@
   - critical
   - mq
   - default
+
+:schedule:
+  unpopular_events_cleaner:
+    cron: <%= "#{ENV.fetch('UNPOPULAR_EVENTS_CLEANER_CRON') { '0 * * * *' }}" %>
+    class: UnpopularEventsCleanWorker
