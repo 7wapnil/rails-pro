@@ -200,6 +200,9 @@ FactoryBot.define do
   factory :title do
     name { Faker::Name.unique.name }
     kind { :esports }
+    sequence :external_id do |n|
+      "sr:sport:#{n}"
+    end
   end
 
   factory :event_scope do
