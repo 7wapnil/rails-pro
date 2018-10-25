@@ -52,6 +52,8 @@ en:
     verified: Verified
     not_verified: Not verified
     settled: Settled
+    live: Live
+    offline: Offline
 
   settles:
     won: Won
