@@ -26,6 +26,15 @@
             = labels_selector(@event, @labels)
             %button.btn.btn-success.mt-2{ disabled: true, id: 'save_labels' }= t(:save)
         %tr
+          %td='Bets'
+          %td= @event.bets.count
+        %tr
+          %td= 'Wager'
+          %td= @event.wager
+        %tr
+          %td= 'Live coverage'
+          %td= status_badge(@event.traded_live ? 'live' : 'offline')
+        %tr
           %td= 'Priority'
           %td= select_tag :priority, options_for_select(Event::PRIORITIES, @event.priority),
                                     class: 'priority_toggle form-control-sm',

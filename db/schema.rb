@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_24_085226) do
+ActiveRecord::Schema.define(version: 2018_10_24_134333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -342,7 +342,7 @@ ActiveRecord::Schema.define(version: 2018_10_24_085226) do
   add_foreign_key "balances", "wallets"
   add_foreign_key "bets", "currencies"
   add_foreign_key "bets", "customers"
-  add_foreign_key "bets", "odds"
+  add_foreign_key "bets", "odds", on_delete: :cascade
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "entries", "wallets"
@@ -353,10 +353,10 @@ ActiveRecord::Schema.define(version: 2018_10_24_085226) do
   add_foreign_key "event_scopes", "titles"
   add_foreign_key "events", "titles"
   add_foreign_key "label_joins", "labels"
-  add_foreign_key "markets", "events"
-  add_foreign_key "odds", "markets"
+  add_foreign_key "markets", "events", on_delete: :cascade
+  add_foreign_key "odds", "markets", on_delete: :cascade
   add_foreign_key "scoped_events", "event_scopes"
-  add_foreign_key "scoped_events", "events"
+  add_foreign_key "scoped_events", "events", on_delete: :cascade
   add_foreign_key "verification_documents", "customers"
   add_foreign_key "wallets", "currencies"
   add_foreign_key "wallets", "customers"
