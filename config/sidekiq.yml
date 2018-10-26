@@ -4,6 +4,6 @@
   - default
 
 :schedule:
-  unpopular_events_cleaner:
+  unpopular_events_clean_worker:
     cron: <%= "#{ENV.fetch('UNPOPULAR_EVENTS_CLEANER_CRON') { '0 * * * *' }}" %>
     class: UnpopularEventsCleanWorker
