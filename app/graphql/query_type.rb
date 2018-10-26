@@ -1,6 +1,7 @@
 QueryType = GraphQL::ObjectType.define do
   name 'Query'
 
+  field :app, function: App::AppQuery.new
   field :wallets, function: Wallets::WalletsQuery.new
   field :titles, function: Titles::TitlesQuery.new
   field :events, function: Events::EventsQuery.new
