@@ -1,4 +1,11 @@
 sneakers_logger = ::LogStashLogger.new(type: :stdout)
+
+LogStashLogger.configure do |config|
+  config.customize_event do |event|
+    SensitiveDataFilter.filter(event)
+  end
+end
+
 sneakers_logger.level = ENV['RAILS_LOG_LEVEL'] || :debug
 
 Sneakers.configure workers: 1,

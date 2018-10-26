@@ -101,6 +101,11 @@ Rails.application.configure do
 
   if ENV['RAILS_LOG_TO_STDOUT'].present?
     config.logger = ::LogStashLogger.new(type: :stdout)
+    LogStashLogger.configure do |config|
+      config.customize_event do |event|
+        SensitiveDataFilter.filter(event)
+      end
+    end
   end
 
   # Do not dump schema after migrations.
