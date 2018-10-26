@@ -20,6 +20,8 @@ class Event < ApplicationRecord
   has_many :bets, through: :markets
   has_many :scoped_events, dependent: :delete_all
   has_many :event_scopes, through: :scoped_events
+  has_many :label_joins, as: :labelable
+  has_many :labels, through: :label_joins
 
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }
@@ -49,6 +51,22 @@ class Event < ApplicationRecord
 
   def self.today
     where(start_at: [Date.today.beginning_of_day..Date.today.end_of_day])
+  end
+
+  def self.unpopular_live
+    left_outer_joins(markets: { odds: :bets })
+      .where(traded_live: true)
+      .where(bets: { id: nil })
+      .where('events.end_at IS NOT NULL')
+      .where('events.end_at < ?', Time.zone.now)
+  end
+
+  def self.unpopular_pre_live
+    left_outer_joins(markets: { odds: :bets })
+      .where(traded_live: false)
+      .where(bets: { id: nil })
+      .where('events.start_at IS NOT NULL')
+      .where('events.start_at < ?', Time.zone.now)
   end
 
   def in_play?
