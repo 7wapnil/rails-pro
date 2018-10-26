@@ -71,6 +71,10 @@ class Event < ApplicationRecord
     self.payload = addition unless payload
   end
 
+  def wager
+    bets.sum(:amount)
+  end
+
   def tournament
     event_scopes.where(kind: :tournament).first
   end
