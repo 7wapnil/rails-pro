@@ -20,6 +20,8 @@ class Event < ApplicationRecord
   has_many :bets, through: :markets
   has_many :scoped_events, dependent: :delete_all
   has_many :event_scopes, through: :scoped_events
+  has_many :label_joins, as: :labelable
+  has_many :labels, through: :label_joins
 
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }

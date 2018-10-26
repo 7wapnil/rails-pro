@@ -18,25 +18,29 @@
       %th= sort_link(@search, :traded_live, 'Live coverage')
 
       %th
-  %tbody
-    - @events.each do |event|
-      %tr{ id: "event-#{event.id}" }
-        %td= link_to event.name, event
-        %td= event.title.name
-        %td.toggle-holder= visibility_toggle(event, update_visibility_event_path(event))
+    %tbody
+      - @events.each do |event|
+        %tr{ id: "event-#{event.id}" }
+          %td
+            = link_to event.name, event
+            %br
+              - event.labels.each do |label|
+                %span.badge.badge-info= label.name
+          %td= event.title.name
+          %td.toggle-holder= visibility_toggle(event, update_visibility_event_path(event))
 
-        %td= event.start_at ? l(event.start_at, format: :long) : '-'
-        %td= event.markets.count
+          %td= event.start_at ? l(event.start_at, format: :long) : '-'
+          %td= event.markets.count
 
-        - EventScope.kinds.keys.each do |kind|
-          %td{ class: kind }
-            - event.event_scopes.where(kind: kind).each do |event_scope|
-              .event_scope= event_scope.name
-              %br
-        %td= event.wager
-        %td= event.bets.count
-        %td= status_badge(event.traded_live ? 'live' : 'offline')
-        %td
+          - EventScope.kinds.keys.each do |kind|
+            %td{ class: kind }
+              - event.event_scopes.where(kind: kind).each do |event_scope|
+                .event_scope= event_scope.name
+                %br
+          %td= event.wager
+          %td= event.bets.count
+          %td= status_badge(event.traded_live ? 'live' : 'offline')
+          %td
 
 = paginate @events
 = content_for :js do
