@@ -7,3 +7,6 @@
   unpopular_events_cleaner:
     cron: <%= "#{ENV.fetch('UNPOPULAR_EVENTS_CLEANER_CRON') { '0 * * * *' }}" %>
     class: UnpopularEventsCleanWorker
+  pre_match_markets_close_worker:
+    cron: <%= "#{ENV.fetch('PRE_MATCH_MARKET_CLOSE_CRON') { '*/15 * * * * *' }}" %>
+    class: PreMatchMarketsCloseWorker
