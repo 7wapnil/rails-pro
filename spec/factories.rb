@@ -1,4 +1,7 @@
 FactoryBot.define do
+  factory :label_join do
+    label { nil }
+  end
   # Financials
 
   factory :entry_currency_rule do
@@ -224,10 +227,15 @@ FactoryBot.define do
     external_id { '' }
     status { 0 }
     payload { {} }
+    traded_live false
 
     trait :upcoming do
       start_at { 1.hour.from_now }
       end_at { nil }
+    end
+
+    trait :live do
+      traded_live true
     end
 
     factory :event_with_market do

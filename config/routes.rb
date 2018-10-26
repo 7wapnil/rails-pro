@@ -13,8 +13,13 @@ Rails.application.routes.draw do
   concern :visible do
     post :update_visibility, on: :member
   end
+
+  concern :labelable do
+    post :update_labels, on: :member
+  end
+
   resources :markets, concerns: :visible
-  resources :customers, only: %i[index show] do
+  resources :customers, only: %i[index show], concerns: :labelable do
     member do
       get :account_management
       get :activity
@@ -53,7 +58,8 @@ Rails.application.routes.draw do
 
   resources :activities, only: %i[index show]
 
-  resources :events, only: %i[index show update], concerns: :visible do
+  resources :events, only: %i[index show update],
+                     concerns: %i[visible labelable] do
     resources :markets, only: :update
   end
 
