@@ -30,11 +30,7 @@ module ApplicationHelper
     update_url = polymorphic_url([:update_labels, labelable])
     placeholder = "Add #{labelable.class.to_s.downcase} label"
 
-    collection_select(:labels,
-                      :ids,
-                      labels,
-                      :id,
-                      :name,
+    collection_select(:labels, :ids, labels, :id, :name,
                       { selected: labelable.labels.map(&:id) },
                       class: 'form-control labels_selector',
                       id: element_id,

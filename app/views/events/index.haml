@@ -24,7 +24,7 @@
           %td
             = link_to event.name, event
             %br
-              - event.labels.each do |label|
+              - event.markets.map(&:labels).flatten.each do |label|
                 %span.badge.badge-info= label.name
           %td= event.title.name
           %td.toggle-holder= visibility_toggle(event, update_visibility_event_path(event))
