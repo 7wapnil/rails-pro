@@ -3,8 +3,10 @@ class EventsController < ApplicationController
   include Labelable
 
   def index
-    @search = base_query.includes(:labels).search(query_params)
-    @events = @search.result.page(params[:page])
+    @search = base_scope
+              .includes(:labels)
+              .search(query_params)
+    @events = @search.result.order(start_at: :desc).page(params[:page])
     @sports = Title.pluck(:name)
   end
 
@@ -26,8 +28,8 @@ class EventsController < ApplicationController
     params.require(:event).permit(:priority)
   end
 
-  def base_query
-    scope = Event.order(start_at: :desc)
+  def base_scope
+    scope = Event
     sorting_query = query_params[:s]
     is_string = sorting_query.is_a?(String)
     return scope unless is_string && sorting_query.starts_with?('markets_count')
