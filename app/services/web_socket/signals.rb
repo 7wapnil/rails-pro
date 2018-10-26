@@ -1,5 +1,6 @@
 module WebSocket
   class Signals
+    APP_STATE_UPDATED = 'appStateUpdated'.freeze
     EVENT_CREATED = 'eventCreated'.freeze
     EVENT_UPDATED = 'eventUpdated'.freeze
     MARKET_CREATED = 'marketCreated'.freeze
