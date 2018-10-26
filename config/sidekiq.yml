@@ -4,6 +4,9 @@
   - default
 
 :schedule:
-  unpopular_events_cleaner:
-    cron: <%= "#{ENV.fetch('UNPOPULAR_EVENTS_CLEANER_CRON') { '0 * * * *' }}" %>
-    class: UnpopularEventsCleanWorker
+  unpopular_live_events_clean_worker:
+    cron: <%= "#{ENV.fetch('UNPOPULAR_LIVE_EVENTS_CLEANER_CRON') { '0 * * * *' }}" %>
+    class: UnpopularLiveEventsCleanWorker
+  unpopular_pre_live_events_clean_worker:
+    cron: <%= "#{ENV.fetch('UNPOPULAR_PRE_LIVE_EVENTS_CLEANER_CRON') { '0 * * * *' }}" %>
+    class: UnpopularPreLiveEventsCleanWorker
