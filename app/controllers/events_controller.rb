@@ -13,7 +13,7 @@ class EventsController < ApplicationController
 
   def show
     @event = Event.find(params.require(:id))
-    @labels = Label.all
+    @labels = Label.where(kind: :event)
   end
 
   def update
