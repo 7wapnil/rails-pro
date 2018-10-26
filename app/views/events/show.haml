@@ -24,7 +24,8 @@
           %td= 'Labels'
           %td
             = labels_selector(@event, @labels)
-            %button.btn.btn-success.mt-2{ disabled: true, id: 'save_labels' }= t(:save)
+            %button.btn.btn-success.mt-2.save_labels{ disabled: true,
+             data: {label_selector: "event_#{@event.id}"} }= t(:save)
         %tr
           %td='Bets'
           %td= @event.bets.count
@@ -62,6 +63,7 @@
             %th= 'Name'
             %th= 'Status'
             %th= 'Priority'
+            %th= 'Labels'
             %th= 'Visibility'
         %tbody
           - @event.markets.order(:priority, :name).each do |market|
@@ -74,6 +76,13 @@
                  data: { endpoint: event_market_path(@event, market),
                          resource: 'market',
                          initial_value: market.priority }
+              %td
+                .selection_input
+                  = labels_selector(market, Label.where(kind: :market))
+                .selection_button
+                  %button.btn.btn-success.mt-2.save_labels{ disabled: true,
+                   data: {label_selector: "market_#{market.id}"} }= t(:save)
+
               %td= visibility_toggle(market, update_visibility_market_path(market))
 - content_for :js do
   = javascript_pack_tag 'labels_selector'
