@@ -1,63 +1,33 @@
-- content_for :css do
-  = stylesheet_pack_tag 'flatpickr', media: :all, 'data-turbolinks-track': 'reload'
+%h1.display-4= t('entities.events', count: @events.size)
 
-- content_for :js do
-  = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
+= render 'search'
 
-%h1.display-4= t('entities.events', count: @events.length)
+%table.table
+  %thead
+    %tr
+      %th= sort_link(@search, :name, 'Name')
+      %th= sort_link(@search, :title_name, 'Sport')
+      %th= sort_link(@search, :visible, 'Visible')
+      %th= sort_link(@search, :start_at, 'Start at')
+      %th= sort_link(@search, :markets_count, 'Markets')
 
-= search_form_for @search do |f|
-  %table.table
-    %thead
-      %tr
-        %th= sort_link(@search, :name, 'Name')
-        %th= sort_link(@search, :title_name, 'Sport')
-        %th= 'Visible'
-        %th= sort_link(@search, :start_at, 'Start at')
-        %th= sort_link(@search, :markets_count, 'Markets')
-
-        - EventScope.kinds.keys.map(&:capitalize).each do |scope_kind|
-          %th= sort_link(@search, :event_scopes_kind, [:event_scopes_kind, :event_scopes_name],
+      - EventScope.kinds.keys.map(&:capitalize).each do |scope_kind|
+        %th= sort_link(@search, :event_scopes_kind, [:event_scopes_kind, :event_scopes_name],
                 scope_kind, default_order:{ event_scopes_name: 'desc' })
-        %th= sort_link(@search, :traded_live, 'Live coverage')
+
+      %th= 'Wager'
+      %th= 'Bets'
+      %th= sort_link(@search, :traded_live, 'Live coverage')
+
+      %th
     %tbody
-      %tr
-        %th
-          = f.label :name_cont, class: 'sr-only'
-          = f.search_field :name_cont,
-                           class: 'form-control',
-                           placeholder: t(:search, subject: 'Name'),
-                           autocomplete: :off
-        %th
-          = f.label :title_name_eq, class: 'sr-only'
-          = f.select :title_name_eq,
-           options_for_select(@sports, query_params[:title_name_eq]),
-            { include_blank: true },
-            class: 'form-control'
-        %th
-        %th
-          = f.search_field :start_at_date_equals,
-                           class: 'form-control',
-                           placeholder: 'Date',
-                           autocomplete: :off,
-                           as: :date_picker,
-                           class: 'form_date form-control'
-
-        %th
-
-        %th
-          = f.select :event_scopes_kind_eq,
-           options_for_select(EventScope.kinds, query_params[:event_scopes_kind_eq]),
-            { include_blank: true },
-            class: 'form-control'
-        %th
-          = f.search_field :event_scopes_name_cont, class: 'form-control', placeholder: 'Scope name'
-        %th
-          = f.submit class: 'btn btn-outline-dark btn-block'
-
       - @events.each do |event|
         %tr{ id: "event-#{event.id}" }
-          %td= link_to event.name, event
+          %td
+            = link_to event.name, event
+            %br
+              - event.labels.each do |label|
+                %span.badge.badge-info= label.name
           %td= event.title.name
           %td.toggle-holder= visibility_toggle(event, update_visibility_event_path(event))
           %td= event.start_at ? l(event.start_at, format: :long) : '-'
@@ -68,6 +38,8 @@
               - event.event_scopes.where(kind: kind).each do |event_scope|
                 .event_scope= event_scope.name
                 %br
+          %td= event.wager
+          %td= event.bets.count
           %td= status_badge(event.traded_live ? 'live' : 'offline')
 
 = paginate @events

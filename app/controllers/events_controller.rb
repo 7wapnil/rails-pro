@@ -1,14 +1,16 @@
 class EventsController < ApplicationController
   include Visibility
+  include Labelable
 
   def index
-    @search = base_query.search(query_params)
+    @search = base_query.includes(:labels).search(query_params)
     @events = @search.result.page(params[:page])
     @sports = Title.pluck(:name)
   end
 
   def show
     @event = Event.find(params.require(:id))
+    @labels = Label.all
   end
 
   def update

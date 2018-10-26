@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_user!
 
   helper_method :query_params
+
   def current_customer
     nil
   end

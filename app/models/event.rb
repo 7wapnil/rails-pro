@@ -15,18 +15,17 @@ class Event < ApplicationRecord
     closed: 3
   }.freeze
 
-  ransacker :start_at, type: :date do
-    Arel.sql('date(start_at)')
-  end
-
-  ransacker :markets_count, type: :date do
+  ransacker :markets_count do
     Arel.sql('markets_count')
   end
 
   belongs_to :title
-  has_many :markets
-  has_many :scoped_events
+  has_many :markets, dependent: :delete_all
+  has_many :bets, through: :markets
+  has_many :scoped_events, dependent: :delete_all
   has_many :event_scopes, through: :scoped_events
+  has_many :label_joins, as: :labelable
+  has_many :labels, through: :label_joins
 
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }
@@ -45,10 +44,18 @@ class Event < ApplicationRecord
     where('start_at > ? AND end_at IS NULL', Time.zone.now)
   end
 
+  # 4 hours ago is a temporary workaround to reduce amount of live events
+  # Will be removed when proper event ending logic is implemented
   def self.in_play
     where(
-      'start_at < ? AND end_at IS NULL AND traded_live IS TRUE',
-      Time.zone.now
+      [
+        'start_at < ? AND ',
+        'start_at > ? AND ',
+        'end_at IS NULL AND ',
+        'traded_live IS TRUE'
+      ].join,
+      Time.zone.now,
+      4.hours.ago
     )
   end
 
@@ -78,6 +85,10 @@ class Event < ApplicationRecord
 
     payload&.merge!(addition)
     self.payload = addition unless payload
+  end
+
+  def wager
+    bets.sum(:amount)
   end
 
   def tournament
