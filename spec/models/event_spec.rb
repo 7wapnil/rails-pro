@@ -48,6 +48,15 @@ describe Event do
 
       expect(Event.in_play).not_to include(event)
     end
+
+    it 'doesn\'t include events that started longer than 4 hours ago' do
+      event = create(:event,
+                     start_at: 245.minutes.ago,
+                     end_at: nil,
+                     traded_live: true)
+
+      expect(Event.in_play).not_to include(event)
+    end
   end
 
   describe '.upcoming' do
