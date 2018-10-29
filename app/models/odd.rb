@@ -7,6 +7,7 @@ class Odd < ApplicationRecord
   }
 
   belongs_to :market
+  has_many :bets
 
   validates :name, :value, :status, presence: true
   validates :value, numericality: { greater_than: 0 }

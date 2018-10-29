@@ -48,6 +48,26 @@ class Bet < ApplicationRecord
     def ransortable_attributes(auth_object = nil)
       super(auth_object) + %i[sort_by_winning_asc sort_by_winning_desc]
     end
+
+    def expired_live
+      timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT') { 10 }.to_i
+      condition = 'bets.validation_ticket_sent_at <= :expired_at
+                         AND events.traded_live = true'
+      sent_to_external_validation
+        .joins(odd: { market: [:event] })
+        .where(condition,
+               expired_at: timeout.seconds.ago)
+    end
+
+    def expired_prematch
+      timeout = ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT') { 3 }.to_i
+      condition = 'bets.validation_ticket_sent_at <= :expired_at
+                         AND events.traded_live = false'
+      sent_to_external_validation
+        .joins(odd: { market: [:event] })
+        .where(condition,
+               expired_at: timeout.seconds.ago)
+    end
   end
 
   def display_status

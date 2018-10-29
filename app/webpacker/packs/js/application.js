@@ -11,6 +11,9 @@ document.addEventListener('turbolinks:load', () => {
 
   $('.nav-link').removeClass('active')
   $(`.nav-link[data-target-controller='${controllerName}']`).addClass('active')
+  $('[data-button-back]').click(() => {
+    window.history.back()
+  })
 
   Noty.overrideDefaults({
     layout: 'topRight',
@@ -18,21 +21,17 @@ document.addEventListener('turbolinks:load', () => {
     timeout: 2000
   })
 
-  $('.flash-message').each(() => {
-    const options = {}
+  $('.flash-message').each((index, el) => {
+    const options = el.dataset
     const typesMap = {
       notice: 'info',
       error: 'error',
       success: 'success',
       alert: 'warning'
     }
-    $.each($(this).data(), (key, value) => {
-      let attributeValue = value
-      if (key === 'type' && typesMap[attributeValue]) {
-        attributeValue = typesMap[attributeValue]
-      }
-      options[key] = attributeValue
-    })
+    if (options && options.type) {
+      options.type = typesMap[options.type]
+    }
     new Noty(options).show()
   })
 

@@ -1,4 +1,7 @@
 FactoryBot.define do
+  factory :label_join do
+    label { nil }
+  end
   # Financials
 
   factory :entry_currency_rule do
