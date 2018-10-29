@@ -1,5 +1,5 @@
 module Mts
-  class MessagePublisherWorker < ApplicationWorker
+  class ValidationMessagePublisherWorker < ApplicationWorker
     def perform(ids)
       raise NotImplementedError unless ids.length == 1
 
