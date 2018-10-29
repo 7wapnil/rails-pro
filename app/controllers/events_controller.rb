@@ -11,8 +11,12 @@ class EventsController < ApplicationController
   end
 
   def show
-    @event = Event.find(params.require(:id))
-    @labels = Label.all
+    @event = Event.includes(:labels, :event_scopes, :title, markets: [:labels])
+                  .order('markets.priority ASC, markets.name ASC')
+                  .find(params.require(:id))
+
+    @labels = Label.where(kind: :event)
+    @market_labels = Label.where(kind: :market)
   end
 
   def update

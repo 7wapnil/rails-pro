@@ -18,7 +18,7 @@ Rails.application.routes.draw do
     post :update_labels, on: :member
   end
 
-  resources :markets, concerns: :visible
+  resources :markets, concerns: %i[visible labelable]
   resources :customers, only: %i[index show], concerns: :labelable do
     member do
       get :account_management
