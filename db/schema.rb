@@ -79,6 +79,7 @@ ActiveRecord::Schema.define(version: 2018_10_24_134333) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
+    t.datetime "validation_ticket_sent_at"
     t.integer "settlement_status"
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
