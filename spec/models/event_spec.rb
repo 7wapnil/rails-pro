@@ -88,7 +88,10 @@ describe Event do
     end
 
     it 'doesn\'t include not finished live events' do
-      event = create(:event, traded_live: true, start_at: 5.minutes.ago, end_at: nil)
+      event = create(:event,
+                     traded_live: true,
+                     start_at: 5.minutes.ago,
+                     end_at: nil)
       expect(Event.unpopular_live).not_to include(event)
     end
 

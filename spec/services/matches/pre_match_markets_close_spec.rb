@@ -4,7 +4,8 @@ describe Markets::PreMatchMarketsCloseService do
 
   context 'upcoming pre-match event' do
     before do
-      @event = FactoryBot.create(:event_with_market, start_at: 1.minute.from_now)
+      @event = FactoryBot.create(:event_with_market,
+                                 start_at: 1.minute.from_now)
       subject.call
     end
 
@@ -16,8 +17,9 @@ describe Markets::PreMatchMarketsCloseService do
 
   context 'not upcoming pre-match event' do
     before do
-      @event = FactoryBot.create(:event_with_market, traded_live: true,
-                        start_at: (delay * 2).minutes.from_now)
+      @event = FactoryBot.create(:event_with_market,
+                                 traded_live: true,
+                                 start_at: (delay * 2).minutes.from_now)
       subject.call
     end
 
@@ -29,8 +31,9 @@ describe Markets::PreMatchMarketsCloseService do
 
   context 'upcoming live event' do
     before do
-      @event = FactoryBot.create(:event_with_market, traded_live: true,
-                        start_at: 1.minute.from_now)
+      @event = FactoryBot.create(:event_with_market,
+                                 traded_live: true,
+                                 start_at: 1.minute.from_now)
       subject.call
     end
 
