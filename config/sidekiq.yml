@@ -7,6 +7,9 @@
   - expired_prematch
 
 :schedule:
+  pre_match_markets_close_worker:
+    cron: <%= "#{ENV.fetch('PRE_MATCH_MARKET_CLOSE_CRON') { '*/15 * * * * *' }}" %>
+    class: PreMatchMarketsCloseWorker
   regular_market_templates_update:
     cron: <%= "#{ENV.fetch('MARKET_TEMPLATES_UPDATE_CRON') { '0 20 * * 6' }}" %>
     class: Radar::MarketsUpdateWorker
