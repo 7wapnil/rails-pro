@@ -9,6 +9,14 @@
     %thead
       %tr
         %th
+          .filter_title ID:
+          .filter_field
+            = f.label :id_eq, class: 'sr-only'
+            = f.search_field :id_eq,
+                                 class: 'form-control',
+                                 placeholder: 'ID',
+                                 autocomplete: :off
+        %th
           .filter_title Name:
           .filter_field
             = f.label :name_cont, class: 'sr-only'
