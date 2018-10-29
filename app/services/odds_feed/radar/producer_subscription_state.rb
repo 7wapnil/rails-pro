@@ -24,6 +24,10 @@ module OddsFeed
           .call(product_id: @producer_id, start_at: available_recovery_time)
       end
 
+      def subscription_report_expired?
+        Time.zone.at(last_subscribed_reported_timestamp) <= 1.minute.ago
+      end
+
       private
 
       def available_recovery_time

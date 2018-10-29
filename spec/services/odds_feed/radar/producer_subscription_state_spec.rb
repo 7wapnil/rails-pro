@@ -64,4 +64,26 @@ describe OddsFeed::Radar::ProducerSubscriptionState do
       Timecop.return
     end
   end
+
+  describe '.subscription_report_expired?' do
+    it 'returns true if last report older or eq to 1 minute ago' do
+      time = Time.zone.now
+      Timecop.freeze(time)
+      allow(subject)
+        .to receive(:last_subscribed_reported_timestamp)
+        .and_return((time - 1.minute).to_i)
+      expect(subject.subscription_report_expired?).to be_truthy
+      Timecop.return
+    end
+
+    it 'returns false if report exists newer than 1 minute ago' do
+      time = Time.zone.now
+      Timecop.freeze(time)
+      allow(subject)
+        .to receive(:last_subscribed_reported_timestamp)
+        .and_return((time - 59.seconds).to_i)
+      expect(subject.subscription_report_expired?).to be_falsey
+      Timecop.return
+    end
+  end
 end
