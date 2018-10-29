@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_22_093705) do
+ActiveRecord::Schema.define(version: 2018_10_24_134333) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -150,15 +150,6 @@ ActiveRecord::Schema.define(version: 2018_10_22_093705) do
     t.index ["username"], name: "index_customers_on_username", unique: true
   end
 
-  create_table "customers_labels", id: false, force: :cascade do |t|
-    t.bigint "customer_id"
-    t.bigint "label_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.index ["customer_id"], name: "index_customers_labels_on_customer_id"
-    t.index ["label_id"], name: "index_customers_labels_on_label_id"
-  end
-
   create_table "entries", force: :cascade do |t|
     t.bigint "wallet_id"
     t.integer "kind"
@@ -233,6 +224,14 @@ ActiveRecord::Schema.define(version: 2018_10_22_093705) do
     t.boolean "visible", default: true
     t.index ["external_id"], name: "index_events_on_external_id"
     t.index ["title_id"], name: "index_events_on_title_id"
+  end
+
+  create_table "label_joins", force: :cascade do |t|
+    t.bigint "label_id"
+    t.integer "labelable_id"
+    t.string "labelable_type"
+    t.index ["label_id"], name: "index_label_joins_on_label_id"
+    t.index ["labelable_id", "labelable_type"], name: "index_label_joins_on_labelable_id_and_labelable_type"
   end
 
   create_table "labels", force: :cascade do |t|
@@ -344,7 +343,7 @@ ActiveRecord::Schema.define(version: 2018_10_22_093705) do
   add_foreign_key "balances", "wallets"
   add_foreign_key "bets", "currencies"
   add_foreign_key "bets", "customers"
-  add_foreign_key "bets", "odds"
+  add_foreign_key "bets", "odds", on_delete: :cascade
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "entries", "wallets"
@@ -354,10 +353,11 @@ ActiveRecord::Schema.define(version: 2018_10_22_093705) do
   add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "event_scopes", "titles"
   add_foreign_key "events", "titles"
-  add_foreign_key "markets", "events"
-  add_foreign_key "odds", "markets"
+  add_foreign_key "label_joins", "labels"
+  add_foreign_key "markets", "events", on_delete: :cascade
+  add_foreign_key "odds", "markets", on_delete: :cascade
   add_foreign_key "scoped_events", "event_scopes"
-  add_foreign_key "scoped_events", "events"
+  add_foreign_key "scoped_events", "events", on_delete: :cascade
   add_foreign_key "verification_documents", "customers"
   add_foreign_key "wallets", "currencies"
   add_foreign_key "wallets", "customers"

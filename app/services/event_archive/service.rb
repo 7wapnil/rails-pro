@@ -25,7 +25,7 @@ module EventArchive
       @event.event_scopes.each do |scope|
         ArchivedEventScope.create!(
           name: scope.name,
-          kind: scope.kind,
+          kind: EventScope.kinds.key(scope.kind),
           archived_event: @archived_event
         )
       end
