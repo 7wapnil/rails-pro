@@ -15,6 +15,10 @@ class Event < ApplicationRecord
     closed: 3
   }.freeze
 
+  ransacker :markets_count do
+    Arel.sql('markets_count')
+  end
+
   belongs_to :title
   has_many :markets, dependent: :delete_all
   has_many :bets, through: :markets
@@ -29,6 +33,12 @@ class Event < ApplicationRecord
   enum status: STATUSES
 
   delegate :name, to: :title, prefix: true
+
+  def self.with_markets_count
+    select('events.*, COUNT(markets.id) as markets_count')
+      .left_outer_joins(:markets)
+      .group(:id)
+  end
 
   def self.upcoming
     where('start_at > ? AND end_at IS NULL', Time.zone.now)
