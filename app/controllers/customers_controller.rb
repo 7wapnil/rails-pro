@@ -8,7 +8,7 @@ class CustomersController < ApplicationController
 
   def show
     @customer = find_customer
-    @labels = @labels = Label.where(kind: :customer)
+    @labels = Label.where(kind: :customer)
   end
 
   def account_management

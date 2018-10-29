@@ -12,8 +12,9 @@ class EventsController < ApplicationController
   end
 
   def show
-    @event = Event.find(params.require(:id))
+    @event = Event.includes(:labels, :title).find(params.require(:id))
     @labels = Label.where(kind: :event)
+    @market_labels = Label.where(kind: :market)
   end
 
   def update

@@ -66,9 +66,14 @@
             %th= 'Labels'
             %th= 'Visibility'
         %tbody
-          - @event.markets.order(:priority, :name).each do |market|
+          - @event.markets.includes(:labels).order(:priority, :name).each do |market|
             %tr
-              %td= market.name
+              %td
+                = market.name
+                %br
+                - market.labels.each do |label|
+                  %span.badge.badge-info= label.name
+
               %td= market.status
               %td
                 = select_tag :priority, options_for_select(Market::PRIORITIES, market.priority),
@@ -78,7 +83,7 @@
                          initial_value: market.priority }
               %td
                 .selection_input
-                  = labels_selector(market, Label.where(kind: :market))
+                  = labels_selector(market, @market_labels)
                 .selection_button
                   %button.btn.btn-success.mt-2.save_labels{ disabled: true,
                    data: {label_selector: "market_#{market.id}"} }= t(:save)
