@@ -10,8 +10,8 @@ module ApplicationHelper
   end
 
   def link_back
-    link_to t(:back), 'javascript:window.history.back();',
-            class: 'btn btn-outline-dark'
+    link_to t(:back), '#',
+            class: 'btn btn-outline-dark', data: { button_back: true }
   end
 
   def visibility_toggle(visible_resource, toggle_endpoint)

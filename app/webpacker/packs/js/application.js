@@ -11,6 +11,9 @@ document.addEventListener('turbolinks:load', () => {
 
   $('.nav-link').removeClass('active')
   $(`.nav-link[data-target-controller='${controllerName}']`).addClass('active')
+  $('[data-button-back]').click(() => {
+    window.history.back()
+  })
 
   Noty.overrideDefaults({
     layout: 'topRight',
