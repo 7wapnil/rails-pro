@@ -31,7 +31,7 @@ module ApplicationHelper
     placeholder = "Add #{labelable.class.to_s.downcase} label"
 
     collection_select(:labels, :ids, labels, :id, :name,
-                      { selected: labelable.labels.map(&:id) },
+                      { selected: labelable.labels.ids },
                       class: 'form-control labels_selector',
                       id: element_id,
                       multiple: true,
