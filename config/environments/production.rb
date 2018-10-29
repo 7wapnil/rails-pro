@@ -100,12 +100,7 @@ Rails.application.configure do
   config.active_support.deprecation = :notify
 
   if ENV['RAILS_LOG_TO_STDOUT'].present?
-    config.logger = ::LogStashLogger.new(type: :stdout)
-    LogStashLogger.configure do |config|
-      config.customize_event do |event|
-        SensitiveDataFilter.filter(event)
-      end
-    end
+    config.logger = ::MaskedLogStashLoggerFactory.build(type: :stdout)
   end
 
   # Do not dump schema after migrations.
