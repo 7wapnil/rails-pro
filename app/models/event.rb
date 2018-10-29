@@ -30,6 +30,10 @@ class Event < ApplicationRecord
 
   delegate :name, to: :title, prefix: true
 
+  def self.start_time_offset
+    4.hours.ago
+  end
+
   def self.upcoming
     where('start_at > ? AND end_at IS NULL', Time.zone.now)
   end
@@ -45,7 +49,7 @@ class Event < ApplicationRecord
         'traded_live IS TRUE'
       ].join,
       Time.zone.now,
-      4.hours.ago
+      start_time_offset
     )
   end
 
