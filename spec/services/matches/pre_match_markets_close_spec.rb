@@ -2,23 +2,41 @@ describe Markets::PreMatchMarketsCloseService do
   subject { described_class.new }
   let(:delay) { ENV.fetch('UPCOMING_EVENT_MINUTES_DELAY') { 5 }.to_i }
 
-  it 'calls Markets::PreMatchMarketsCloseService' do
-    subject.call
+  context 'upcoming pre-match event' do
+    before do
+      @event = FactoryBot.create(:event_with_market, start_at: 1.minute.from_now)
+      subject.call
+    end
+
+    it 'closes markets' do
+      market = Market.where(event: @event).first
+      expect(market.status).to eq('suspended')
+    end
   end
 
-  it 'closes markets of upcoming pre-match events' do
-    FactoryBot.create(:event_with_market, start_at: 1.minute.from_now)
-    expect(subject.call).to eq(1)
+  context 'not upcoming pre-match event' do
+    before do
+      @event = FactoryBot.create(:event_with_market, traded_live: true,
+                        start_at: (delay * 2).minutes.from_now)
+      subject.call
+    end
+
+    it 'doesn\'t close markets' do
+      market = Market.where(event: @event).first
+      expect(market.status).to eq('inactive')
+    end
   end
 
-  it 'doesn\'t close markets of not upcoming pre-match events' do
-    FactoryBot.create(:event_with_market, :live,
-                      start_at: (delay * 2).minutes.from_now)
-    expect(subject.call).to eq(0)
-  end
+  context 'upcoming live event' do
+    before do
+      @event = FactoryBot.create(:event_with_market, traded_live: true,
+                        start_at: 1.minute.from_now)
+      subject.call
+    end
 
-  it 'doesn\'t close markets of upcoming live events' do
-    FactoryBot.create(:event_with_market, :live, start_at: 1.minute.from_now)
-    expect(subject.call).to eq(0)
+    it 'doesn\'t close markets' do
+      market = Market.where(event: @event).first
+      expect(market.status).to eq('inactive')
+    end
   end
 end

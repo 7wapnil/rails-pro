@@ -224,7 +224,6 @@ FactoryBot.define do
     start_at { 2.hours.ago }
     end_at { 1.hours.ago }
     remote_updated_at { Time.zone.now }
-    traded_live false
     external_id { '' }
     status { 0 }
     payload { {} }
@@ -232,10 +231,6 @@ FactoryBot.define do
     trait :upcoming do
       start_at { 1.hour.from_now }
       end_at { nil }
-    end
-
-    trait :live do
-      traded_live true
     end
 
     factory :event_with_market do
