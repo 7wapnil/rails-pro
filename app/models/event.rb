@@ -19,6 +19,14 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     Arel.sql('markets_count')
   end
 
+  ransacker :bets_count do
+    Arel.sql('bets_count')
+  end
+
+  ransacker :wager do
+    Arel.sql('wager')
+  end
+
   belongs_to :title
   has_many :markets, dependent: :delete_all
   has_many :bets, through: :markets
@@ -35,9 +43,21 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   delegate :name, to: :title, prefix: true
 
   def self.with_markets_count
-    select('events.*, COUNT(markets.id) as markets_count')
-      .left_outer_joins(:markets)
+    query = <<-SQL
+      events.*,
+      (SELECT COUNT(markets.id) from markets WHERE markets.event_id = events.id) as markets_count
+    SQL
+    select(query).group(:id)
+  end
+
+  def self.with_bets_count
+    select('events.*, COUNT(bets.id) as bets_count')
+      .left_outer_joins(:bets)
       .group(:id)
+  end
+
+  def self.with_wager
+    select('events.*, COALESCE(SUM(bets.amount) ,0) as wager').group(:id)
   end
 
   def self.upcoming
@@ -101,10 +121,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
     payload&.merge!(addition)
     self.payload = addition unless payload
-  end
-
-  def wager
-    bets.sum(:amount)
   end
 
   def tournament

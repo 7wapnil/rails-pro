@@ -6,18 +6,17 @@
   %thead
     %tr
       %th= sort_link(@search, :name, 'Name')
-      %th= sort_link(@search, :title_name, 'Sport')
-      %th= sort_link(@search, :visible, 'Visible')
+      %th= 'Sport'
+      %th= 'Visible'
       %th= sort_link(@search, :start_at, 'Start at')
       %th= sort_link(@search, :markets_count, 'Markets')
 
       - EventScope.kinds.keys.map(&:capitalize).each do |scope_kind|
-        %th= sort_link(@search, :event_scopes_kind, [:event_scopes_kind, :event_scopes_name],
-                scope_kind, default_order:{ event_scopes_name: 'desc' })
+        %th= scope_kind
 
-      %th= 'Wager'
-      %th= 'Bets'
-      %th= sort_link(@search, :traded_live, 'Live coverage')
+      %th= sort_link(@search, :wager, 'Wager')
+      %th= sort_link(@search, :bets_count, 'Bets')
+      %th= 'Live coverage'
 
       %th
     %tbody
@@ -31,7 +30,7 @@
           %td= event.title.name
           %td.toggle-holder= visibility_toggle(event, update_visibility_event_path(event))
           %td= event.start_at ? l(event.start_at, format: :long) : '-'
-          %td= event.markets.count
+          %td= event.markets_count
 
           - EventScope.kinds.keys.each do |kind|
             %td{ class: kind }
@@ -39,7 +38,7 @@
                 .event_scope= event_scope.name
                 %br
           %td= event.wager
-          %td= event.bets.count
+          %td= event.bets_count
           %td= status_badge(event.traded_live ? 'live' : 'offline')
 
 = paginate @events
