@@ -1,5 +1,6 @@
 class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Visible
+  include HasUniqueExternalId
 
   after_create :emit_created
   after_update :emit_updated

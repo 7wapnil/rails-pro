@@ -21,13 +21,31 @@ module OddsFeed
       end
 
       def create_or_update_market!
-        attributes = { name: transpiler.market_name,
-                       status: market_status }
-        msg = "Updating market with external ID #{external_id}, #{attributes}"
+        # rubocop:disable Metrics/LineLength
+        msg = "Updating market with external ID #{external_id}, #{market_attributes}"
+        # rubocop:enable Metrics/LineLength
         Rails.logger.debug msg
-        market.assign_attributes(attributes)
-        market.save!
+
+        market.assign_attributes(market_attributes)
+
+        begin
+          market.save!
+        rescue ActiveRecord::RecordInvalid => e
+          Rails.logger.warn ["Market ID #{external_id} creating failed", e]
+
+          @market = nil
+          update_market_attributes!
+        end
         market
+      end
+
+      def update_market_attributes!
+        market.assign_attributes(market_attributes)
+        market.save!
+      end
+
+      def market_attributes
+        { name: transpiler.market_name, status: market_status }
       end
 
       # TODO: use external id generator
@@ -70,18 +88,33 @@ module OddsFeed
       def generate_odd!(odd_data)
         odd_id = "#{market.external_id}:#{odd_data['id']}"
         Rails.logger.debug "Updating odd with external ID #{odd_id}"
+
         return unless odd_valid?(odd_id, odd_data)
 
-        odd = Odd.find_or_initialize_by(external_id: odd_id,
-                                        market: market)
-        attributes = { name: transpiler.odd_name(odd_data['id']),
-                       status: odd_data['active'].to_i,
-                       value: odd_data['odds'] }
+        odd = prepare_odd(odd_id, odd_data)
 
+        attributes = odd.attributes.slice(:name, :status, :value)
         Rails.logger.debug "Updating odd external ID #{odd_id}, #{attributes}"
 
+        begin
+          odd.save!
+        rescue ActiveRecord::RecordInvalid => e
+          Rails.logger.warn ["Odd ID #{odd_id} creating failed", e]
+          odd = prepare_odd(odd_id, odd_data)
+          odd.save!
+        end
+      end
+
+      def prepare_odd(external_id, payload)
+        odd = Odd.find_or_initialize_by(external_id: external_id,
+                                        market: market)
+        attributes = { name: transpiler.odd_name(payload['id']),
+                       status: payload['active'].to_i,
+                       value: payload['odds'] }
+
         odd.assign_attributes(attributes)
-        odd.save!
+
+        odd
       end
 
       def odd_valid?(odd_id, odd_data)

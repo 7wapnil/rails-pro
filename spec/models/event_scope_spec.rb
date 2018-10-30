@@ -6,4 +6,6 @@ describe EventScope do
   it { should define_enum_for(:kind) }
 
   it { should validate_presence_of(:name) }
+
+  it_behaves_like 'has unique :external_id'
 end

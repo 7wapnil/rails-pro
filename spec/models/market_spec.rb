@@ -8,6 +8,8 @@ describe Market do
   it { should validate_presence_of(:priority) }
   it { should validate_presence_of(:status) }
 
+  it_behaves_like 'has unique :external_id'
+
   context 'callbacks' do
     it 'calls priority definition before validation' do
       allow(subject).to receive(:define_priority)
