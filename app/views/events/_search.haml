@@ -9,12 +9,12 @@
     %thead
       %tr
         %th
-          .filter_title ID:
+          .filter_title= "#{t('attributes.id')}:"
           .filter_field
             = f.label :id_eq, class: 'sr-only'
             = f.search_field :id_eq,
                                  class: 'form-control',
-                                 placeholder: 'ID',
+                                 placeholder: t('attributes.id'),
                                  autocomplete: :off
         %th
           .filter_title Name:
