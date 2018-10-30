@@ -88,10 +88,9 @@ module OddsFeed
       def generate_odd!(odd_data)
         odd_id = "#{market.external_id}:#{odd_data['id']}"
         Rails.logger.debug "Updating odd with external ID #{odd_id}"
-        odd = prepare_odd(odd_id, odd_data)
 
-        attributes = odd.attributes.slice(:name, :status, :value)
-        Rails.logger.debug "Updating odd ID #{odd_id}, #{attributes}"
+        odd = prepare_odd(odd_id, odd_data)
+        Rails.logger.debug "Updating odd ID #{odd_id}, #{odd_data}"
 
         begin
           odd.save!
@@ -105,15 +104,10 @@ module OddsFeed
       def prepare_odd(external_id, payload)
         odd = Odd.find_or_initialize_by(external_id: external_id,
                                         market: market)
-        status = payload['active'].to_i
-        value = payload['odds']
-
-        invalid_msg = "Odd ID #{payload['id']} is invalid, #{payload}"
-        raise invalid_msg if odd.new_record? && status == 1 && value.blank?
 
         odd.assign_attributes(name: transpiler.odd_name(payload['id']),
-                              status: status,
-                              value: value)
+                              status: payload['active'].to_i,
+                              value: payload['odds'])
         odd
       end
 
