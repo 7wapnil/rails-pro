@@ -134,8 +134,20 @@ describe OddsFeed::Radar::MarketGenerator do
                         external_id: external_id,
                         event: event,
                         status: :active)
-        create(:odd, external_id: "#{external_id}:1", market: market, value: 1.0)
-        create(:odd, external_id: "#{external_id}:2", market: market, value: 1.0)
+
+        create(
+          :odd,
+          external_id: "#{external_id}:1",
+          market: market,
+          value: 1.0
+        )
+
+        create(
+          :odd,
+          external_id: "#{external_id}:2",
+          market: market,
+          value: 1.0
+        )
 
         subject.generate
         expect(Odd.find_by(external_id: "#{external_id}:1").value).to eq(1.3)
