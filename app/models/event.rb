@@ -1,4 +1,4 @@
-class Event < ApplicationRecord
+class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Visible
 
   after_create :emit_created
@@ -14,6 +14,10 @@ class Event < ApplicationRecord
     ended: 2,
     closed: 3
   }.freeze
+
+  ransacker :markets_count do
+    Arel.sql('markets_count')
+  end
 
   belongs_to :title
   has_many :markets, dependent: :delete_all
@@ -32,6 +36,12 @@ class Event < ApplicationRecord
 
   def self.start_time_offset
     4.hours.ago
+  end
+
+  def self.with_markets_count
+    select('events.*, COUNT(markets.id) as markets_count')
+      .left_outer_joins(:markets)
+      .group(:id)
   end
 
   def self.upcoming

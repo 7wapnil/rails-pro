@@ -6,50 +6,45 @@ const processLabels = () => {
   // Send CSRF header with every ajax request
   $(document).ajaxSend((event, xhr) => {
     xhr.setRequestHeader('X-CSRF-Token', $('meta[name="csrf-token"]').attr('content'))
-  })
+  });
 
-  const selectElement = $('#select_labels')
-  const saveLabelsBtn = $('#save_labels')
-
-  saveLabelsBtn.on('click', () => {
-    let ids = selectElement.val()
+  $('.save_labels').click(function() {
+    const selectorElement = $(`#${this.dataset.labelSelector}`);
+    const trigger = this;
+    let ids = selectorElement.val()
     if (!ids.length) {
       ids = [0]
     }
-
-    saveLabelsBtn.prop('disabled', true)
-
-    $.post(selectElement.data('updateUrl'), { labels: { ids } })
+    $.post(selectorElement.data('updateUrl'), { labels: { ids } })
       .done(() => {
         new Noty({
           type: 'success',
-          text: 'Customer labels updated',
+          text: 'Labels updated',
           timeout: 3000
         }).show()
+        trigger.disabled = true;
       })
       .fail((err) => {
         new Noty({
           type: 'error',
           text: `${err.status}: ${err.statusText}`,
           timeout: 2000
-        }).show()
-        saveLabelsBtn.prop('disabled', false)
+        }).show();
+        trigger.disabled = false;
       })
-  })
+  });
 
-  selectElement
-    .select2({
-      minimumInputLength: 0
-    })
-    .on('change', () => {
-      saveLabelsBtn.prop('disabled', false)
-    })
-}
+  $('.labels_selector').select2({
+    minimumInputLength: 0
+  }).on('change', (element) => {
+    $(`[data-label-selector='${element.target.id}']`).prop('disabled', false)
+  });
+};
 
-let loaded = false
+let loaded = false;
 if (!loaded) {
   document.addEventListener('turbolinks:load', processLabels)
   loaded = true
 }
 
-processLabels()
+processLabels();

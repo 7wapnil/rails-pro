@@ -1,6 +1,6 @@
 describe BetPlacement::SubmissionService do
   before do
-    allow(Mts::SubmissionPublisher).to receive(:publish!)
+    allow(Mts::MessagePublisher).to receive(:publish!)
   end
 
   let(:bet) { create(:bet) }
