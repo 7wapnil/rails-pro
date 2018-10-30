@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tournaments xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" generated_at="2018-10-30T06:58:28+00:00" xmlns="http://schemas.sportradar.com/sportsapi/v1/unified" xsi:schemaLocation="http://schemas.sportradar.com/sportsapi/v1/unified http://schemas.sportradar.com/bsa-staging/unified/v1/xml/endpoints/unified/tournaments.xsd">
+<tournament id="sr:tournament:7" name="UEFA Champions League">
+    <sport id="sr:sport:1" name="Soccer"/>
+    <category id="sr:category:393" name="International Clubs"/>
+    <current_season id="sr:season:54533" name="UEFA Champions League 18/19" start_date="2018-06-26" end_date="2019-06-02" year="18/19"/>
+    <season_coverage_info season_id="sr:season:54533" scheduled="188" played="140" max_coverage_level="platinum" max_covered="48" min_coverage_level="bronze"/>
+</tournament>
+</tournaments>

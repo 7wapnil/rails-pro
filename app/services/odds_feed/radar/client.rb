@@ -50,6 +50,14 @@ module OddsFeed
         request(route)
       end
 
+      # All available tournaments for all sports request
+      # Returns a list of tournaments with sport, category, current season
+      # and season coverage
+      def tournaments
+        route = "/sports/#{@language}/tournaments.xml"
+        request(route)
+      end
+
       def market_variants(market_id, variant_urn)
         route = [
           '/descriptions',
