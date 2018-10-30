@@ -149,6 +149,9 @@ en:
     settlement: Settlement
     possible_payout: Possible payout
     actual_payout: Actual payout
+    label_name: Label name
+    label_kind: Label kind
+    label_description: Label description
 
   documents:
     history_title: "Files history: %{document_type}"
