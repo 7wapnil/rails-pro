@@ -9,6 +9,8 @@ module Mts
       CUSTOMER_DEFAULT_LANGUAGE = 'EN'.freeze
       DEFAULT_ODDS_CHANGE_BEHAVIOUR = 'none'.freeze
 
+      attr_reader :bets
+
       def initialize(bets)
         raise NotImplementedError if bets.length > SUPPORTED_BETS_PER_REQUEST
 
@@ -19,7 +21,7 @@ module Mts
         root_attributes.merge(
           sender: sender,
           selections: selections,
-          bets: bets
+          bets: formatted_bets
         )
       end
 
@@ -78,7 +80,7 @@ module Mts
         end
       end
 
-      def bets
+      def formatted_bets
         @bets.map.with_index do |bet, index|
           {
             id: [ticket_id, index].join('_'),
