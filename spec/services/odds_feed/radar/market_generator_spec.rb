@@ -31,6 +31,42 @@ describe OddsFeed::Radar::MarketGenerator do
     let(:chosen_market) { market_payload[3] }
     let(:external_id) { 'sr:match:1234:123/set=2|game=3|point=1' }
 
+    describe '#create_or_update_market!' do
+      context 'initialized market already exists' do
+        it 'updates existing market' do
+          initialized_market = build(
+            :market,
+            external_id: external_id,
+            event: event,
+            status: :active
+          )
+
+          existing_market = create(
+            :market,
+            external_id: external_id,
+            event: event,
+            status: :active
+          )
+
+          allow(subject)
+            .to receive(:market)
+            .and_return(initialized_market, existing_market)
+
+          expect(existing_market).to receive(:assign_attributes).once
+
+          expect(existing_market)
+            .to receive(:save!)
+            .and_raise(ActiveRecord::RecordInvalid)
+
+          expect(existing_market)
+            .to receive(:save!)
+            .and_return(true)
+
+          subject.send(:create_or_update_market!)
+        end
+      end
+    end
+
     it 'generates new market if not exists in db' do
       subject.generate
       market = Market.find_by(external_id: external_id)

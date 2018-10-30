@@ -21,13 +21,31 @@ module OddsFeed
       end
 
       def create_or_update_market!
-        attributes = { name: transpiler.market_name,
-                       status: market_status }
-        msg = "Updating market with external ID #{external_id}, #{attributes}"
+        # rubocop:disable Metrics/LineLength
+        msg = "Updating market with external ID #{external_id}, #{market_attributes}"
+        # rubocop:enable Metrics/LineLength
         Rails.logger.debug msg
-        market.assign_attributes(attributes)
-        market.save!
+
+        market.assign_attributes(market_attributes)
+
+        begin
+          market.save!
+        rescue ActiveRecord::RecordInvalid => e
+          Rails.logger.warn ["Market ID #{external_id} creating failed", e]
+
+          @market = nil
+          update_market_attributes!
+        end
         market
+      end
+
+      def update_market_attributes!
+        market.assign_attributes(market_attributes)
+        market.save!
+      end
+
+      def market_attributes
+        { name: transpiler.market_name, status: market_status }
       end
 
       # TODO: use external id generator

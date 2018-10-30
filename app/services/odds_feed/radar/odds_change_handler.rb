@@ -112,7 +112,7 @@ module OddsFeed
           event.save!
           ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
         rescue ActiveRecord::RecordInvalid => e
-          Rails.logger.warn ['Event creating failed', e]
+          Rails.logger.warn ["Event ID #{external_id} creating failed", e]
           @event = Event.find_by!(external_id: external_id)
         end
       end
