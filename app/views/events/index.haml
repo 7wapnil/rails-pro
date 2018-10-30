@@ -5,19 +5,19 @@
 %table.table
   %thead
     %tr
-      %th= sort_link(@search, :name, 'Name')
-      %th= 'Sport'
-      %th= 'Visible'
-      %th= sort_link(@search, :start_at, 'Start at')
-      %th= sort_link(@search, :markets_count, 'Markets')
+      %th= sort_link(@search, :name, t('attributes.name'))
+      %th= t('attributes.sport')
+      %th= t('attributes.visible')
+      %th= sort_link(@search, :start_at, t('attributes.start_at'))
+      %th= sort_link(@search, :markets_count, t('entities.markets.other'))
 
       - EventScope.kinds.keys.map(&:capitalize).each do |scope_kind|
         %th= scope_kind
 
-      %th= sort_link(@search, :wager, 'Wager')
-      %th= sort_link(@search, :bets_count, 'Bets')
+      %th= sort_link(@search, :wager, t('attributes.wager'))
+      %th= sort_link(@search, :bets_count, t('entities.bets.other'))
       %th= 'Profit/Loss'
-      %th= 'Live coverage'
+      %th= t('attributes.live_coverage')
 
       %th
     %tbody
