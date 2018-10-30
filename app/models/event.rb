@@ -1,4 +1,4 @@
-class Event < ApplicationRecord
+class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Visible
   include HasUniqueExternalId
 

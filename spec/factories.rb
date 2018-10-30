@@ -279,7 +279,6 @@ FactoryBot.define do
     value { Faker::Number.decimal(1, 2) }
     status { 0 }
 
-
     sequence :external_id do |n|
       "sr:match:#{n}:280/hcp=0.5:#{n}"
     end
