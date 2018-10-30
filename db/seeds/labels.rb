@@ -1,4 +1,4 @@
-puts 'Checking customer labels list ...'
+puts 'Checking labels list ...'
 
 customer_labels = [
   { name: 'normal' },
@@ -27,8 +27,34 @@ customer_labels = [
   { name: 'youtuber' }
 ]
 
+event_labels = [
+  { name: 'event_label' },
+  { name: 'cool_event' },
+  { name: 'new_event' },
+  { name: 'hot_event' }
+]
+
+market_labels = [
+  { name: 'market_label' },
+  { name: 'market_top10' },
+  { name: 'market_hot' },
+  { name: 'market_new' }
+]
+
 customer_labels.each do |payload|
-  Label.find_or_create_by!(name: payload[:name]) do |label|
+  Label.find_or_create_by!(name: payload[:name], kind: :customer) do |label|
+    label.name = payload[:name]
+  end
+end
+
+event_labels.each do |payload|
+  Label.find_or_create_by!(name: payload[:name], kind: :event) do |label|
+    label.name = payload[:name]
+  end
+end
+
+market_labels.each do |payload|
+  Label.find_or_create_by!(name: payload[:name], kind: :market) do |label|
     label.name = payload[:name]
   end
 end

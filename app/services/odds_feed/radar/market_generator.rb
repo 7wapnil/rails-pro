@@ -105,7 +105,7 @@ module OddsFeed
       def odd_valid?(odd_id, odd_data)
         return true unless odd_data['odds'].blank?
 
-        Rails.logger.warn "Odd value for odd #{odd_id} is empty"
+        Rails.logger.warn "Odd ID '#{odd_id}' is invalid, data: #{odd_data}"
         false
       end
 
