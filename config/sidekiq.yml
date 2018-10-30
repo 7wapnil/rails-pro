@@ -15,3 +15,7 @@
   unpopular_pre_live_events_clean_worker:
     cron: <%= "#{ENV.fetch('UNPOPULAR_PRE_LIVE_EVENTS_CLEANER_CRON') { '0 * * * *' }}" %>
     class: UnpopularPreLiveEventsCleanWorker
+  missing_heartbeat_worker:
+    cron: <%= "#{ENV.fetch('MISSING_HEARTBEAT_WATCHDOG_CRON') { '*/1 * * * *' }}" %>
+    class: Radar::MissingHeartbeatWorker
+    queue: critical
