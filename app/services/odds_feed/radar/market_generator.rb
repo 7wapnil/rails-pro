@@ -99,7 +99,18 @@ module OddsFeed
         Rails.logger.debug "Updating odd external ID #{odd_id}, #{attributes}"
 
         odd.assign_attributes(attributes)
-        odd.save!
+
+        begin
+          odd.save!
+        rescue ActiveRecord::RecordInvalid => e
+          odd = Odd.find_or_initialize_by(external_id: odd_id,
+                                          market: market)
+          attributes = { name: transpiler.odd_name(odd_data['id']),
+                         status: odd_data['active'].to_i,
+                         value: odd_data['odds'] }
+          odd.assign_attributes(attributes)
+          odd.save!
+        end
       end
 
       def odd_valid?(odd_id, odd_data)
