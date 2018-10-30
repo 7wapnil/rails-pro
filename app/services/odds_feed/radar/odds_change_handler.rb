@@ -24,7 +24,7 @@ module OddsFeed
 
           Rails.logger.info msg.squish
 
-          create_event!
+          create_or_find_event!
         end
       end
 
@@ -106,10 +106,15 @@ module OddsFeed
         event_data['event_id']
       end
 
-      def create_event!
+      def create_or_find_event!
         @event = api_event
-        event.save!
-        ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
+        begin
+          event.save!
+          ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
+        rescue ActiveRecord::RecordInvalid => e
+          Rails.logger.warn ["Event ID #{external_id} creating failed", e]
+          @event = Event.find_by!(external_id: external_id)
+        end
       end
 
       def check_message_time
