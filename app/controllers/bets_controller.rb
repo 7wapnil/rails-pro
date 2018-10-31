@@ -6,7 +6,13 @@ class BetsController < ApplicationController
                                      .end_of_day
     end
     @dates = collect_query_dates
-    @search = Bet.with_winnings.search(query_params)
+    @search = Bet.includes(:market)
+                 .with_winnings
+                 .with_sport
+                 .with_tournament
+                 .with_country
+                 .search(query_params)
+
     @bets = @search.result.page(params[:page])
   end
 

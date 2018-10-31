@@ -158,6 +158,8 @@ en:
     start_at: Start at
     live_coverage: Live coverage
     visible: Visible
+    country: Country
+    tournament: Tournament
 
   documents:
     history_title: "Files history: %{document_type}"
