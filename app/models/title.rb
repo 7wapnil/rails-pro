@@ -9,6 +9,6 @@ class Title < ApplicationRecord
     sports: 1
   }
 
-  validates :name, presence: true
+  validates :name, :kind, presence: true
   validates :name, uniqueness: true
 end

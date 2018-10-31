@@ -1,25 +1,49 @@
 module OddsFeed
   module Radar
-    class TournamentFetcher < ApplicationService
-      def call
-        payload = api_client.tournaments
-        payload['tournaments']['tournament'].each do |tournament|
-          parse!(tournament)
-        end
+    class EventScopeService < ApplicationService
+      SPORT_KIND_MAPPING = {
+        'Alpine Skiing' => :sports,
+        'American Football' => :sports,
+        'Bandy' => :sports,
+        'Badminton' => :sports,
+        'Baseball' => :sports,
+        'Basketball' => :sports,
+        'CS:GO' => :esports,
+        'Counter-Strike' => :esports,
+        'Cricket' => :sports,
+        'Cycling' => :sports,
+        'Dota 2' => :esports,
+        'Floorball' => :sports,
+        'Futsal' => :sports,
+        'Golf' => :sports,
+        'Handball' => :sports,
+        'Ice Hockey' => :sports,
+        'League of Legends' => :esports,
+        'Kabaddi' => :sports,
+        'Motorsport' => :sports,
+        'Rugby' => :sports,
+        'Rink Hockey' => :sports,
+        'Snooker' => :sports,
+        'Snowboard' => :sports,
+        'Soccer' => :sports,
+        'Squash' => :sports,
+        'Table Tennis' => :sports,
+        'Tennis' => :sports,
+        'Volleyball' => :sports,
+        'Waterpolo' => :sports
+      }.freeze
+      def initialize(payload)
+        @payload = payload
       end
 
-      def parse!(tournament)
-        find_or_create_title!(tournament['sport'])
-        find_or_create_tournament!(tournament)
-        find_or_create_country!(tournament['category'])
-        find_or_create_season!(tournament['current_season'])
+      def call
+        find_or_create_title!(@payload['sport'])
+        find_or_create_tournament!(@payload)
+        find_or_create_country!(@payload['category'])
+        find_or_create_season!(@payload['current_season'])
       end
 
       private
-
-      def api_client
-        @api_client ||= Client.new
-      end
 
       def find_or_create_title!(title)
         Rails.logger.info "Title data received: #{title}"
@@ -33,6 +57,7 @@ module OddsFeed
           external_id: title['id']
         ) do |object|
           object.name = title['name']
+          object.kind = SPORT_KIND_MAPPING[title['name']]
         end
       end
 

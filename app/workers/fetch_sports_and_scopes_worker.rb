@@ -4,6 +4,10 @@ class FetchSportsAndScopesWorker
   include Sidekiq::Worker
 
   def perform
-    OddsFeed::Radar::TournamentFetcher.call
+    api_client = OddsFeed::Radar::Client.new
+    api_client.tournaments['tournaments']['tournament']
+              .each do |tournament|
+      ::Radar::TournamentCreateWorker.perform_async(tournament)
+    end
   end
 end
