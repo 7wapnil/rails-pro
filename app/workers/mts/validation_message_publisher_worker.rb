@@ -12,7 +12,7 @@ module Mts
     def publish_single_bet_validation(id)
       bet = Bet.find(id)
       message = Mts::Messages::ValidationRequest.new([bet])
-      response = Mts::SubmissionPublisher.publish!(message)
+      response = Mts::MessagePublisher.publish!(message)
       raise if response == false
 
       bet.update(validation_ticket_id: message.ticket_id,

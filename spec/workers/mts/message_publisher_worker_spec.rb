@@ -1,4 +1,4 @@
-describe Mts::MessagePublisherWorker do
+describe Mts::ValidationMessagePublisherWorker do
   it { is_expected.to be_processed_in :default }
 
   describe '.perform' do
@@ -14,7 +14,7 @@ describe Mts::MessagePublisherWorker do
         expect(Mts::Messages::ValidationRequest)
           .to receive(:new).with([bet])
                            .and_return(OpenStruct.new(ticket_id: ticket_id))
-        expect(Mts::SubmissionPublisher).to receive('publish!').and_return(true)
+        expect(Mts::MessagePublisher).to receive('publish!').and_return(true)
         subject.perform([bet.id])
       end
 
@@ -23,7 +23,7 @@ describe Mts::MessagePublisherWorker do
           allow(Mts::Messages::ValidationRequest)
             .to receive(:new).with([bet])
                              .and_return(OpenStruct.new(ticket_id: ticket_id))
-          allow(Mts::SubmissionPublisher)
+          allow(Mts::MessagePublisher)
             .to receive('publish!').and_return(true)
 
           subject.perform([bet.id])
@@ -36,7 +36,7 @@ describe Mts::MessagePublisherWorker do
 
       context 'with unexpected response from server' do
         before do
-          allow(Mts::SubmissionPublisher)
+          allow(Mts::MessagePublisher)
             .to receive('publish!').and_return(false)
         end
 

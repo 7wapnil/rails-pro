@@ -10,7 +10,7 @@ describe BetExternalValidation::Service do
         end
 
         it 'avoids external validation by publishing ticket to MTS' do
-          expect(Mts::MessagePublisherWorker)
+          expect(Mts::ValidationMessagePublisherWorker)
             .to_not have_enqueued_sidekiq_job([bet.id])
         end
       end
@@ -32,7 +32,7 @@ describe BetExternalValidation::Service do
       end
 
       it 'performs external validation by publishing ticket to MTS' do
-        expect(Mts::MessagePublisherWorker)
+        expect(Mts::ValidationMessagePublisherWorker)
           .to have_enqueued_sidekiq_job([bet.id])
       end
     end
