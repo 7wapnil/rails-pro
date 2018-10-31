@@ -2,6 +2,7 @@ class ApplicationState
   include Singleton
 
   attr_reader :status
+  attr_accessor :flags
 
   STATUSES = {
     inactive: 0,
@@ -10,6 +11,7 @@ class ApplicationState
 
   def initialize
     @status = :active
+    @flags = []
   end
 
   def status=(status)

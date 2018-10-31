@@ -1,5 +1,5 @@
 describe 'GraphQL#app' do
-  let(:query) { %({ app { status statuses} }) }
+  let(:query) { %({ app { status statuses flags} }) }
   let(:context) { {} }
   let(:variables) { {} }
   let(:result) do
@@ -16,6 +16,13 @@ describe 'GraphQL#app' do
 
   it 'returns available statuses' do
     expect(result['data']['app']['statuses'])
-      .to match_array(["inactive", "active"])
+      .to match_array(%w[inactive active])
+  end
+
+  it 'returns available flags' do
+    ApplicationState.instance.flags = []
+    ApplicationState.instance.flags << 'exampleFlag'
+    expect(result['data']['app']['flags'])
+      .to match_array(['exampleFlag'])
   end
 end
