@@ -20,18 +20,19 @@
             = "#{t('attributes.label_kind')}:"
             = f.label :kind_eq, class: 'sr-only'
           .filter_field
-            = f.select :kind_eq, options_for_select(Label.kinds, query_params ? query_params[:kind_eq] : nil),
-                            { include_blank: true },
-                            class: 'form-control'
+            = f.select :kind_eq,
+                          options_for_select(Label.kinds, query_params ? query_params[:kind_eq] : nil),
+                          { include_blank: true },
+                          class: 'form-control'
         %th
           .filter_title
-            ="#{t('attributes.label_description')}:"
+            = "#{t('attributes.label_description')}:"
             = f.label :description_cont, class: 'sr-only'
           .filter_field
             = f.search_field :description_cont,
-                           class: 'form-control',
-                           placeholder: t(:search, subject: :description),
-                           autocomplete: :off
+                                class: 'form-control',
+                                placeholder: t(:search, subject: :description),
+                                autocomplete: :off
         %th
           = f.submit class: 'btn btn-outline-dark btn-block'
     %tbody
