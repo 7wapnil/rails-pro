@@ -4,9 +4,12 @@ class EventsController < ApplicationController
   include DateIntervalFilters
 
   def index
-    @search = base_scope
-              .includes(:labels)
-              .search(prepare_interval_filter(query_params, :start_at))
+    @search = Event.includes(:labels)
+                   .with_markets_count
+                   .with_wager
+                   .with_bets_count
+                   .search(prepare_interval_filter(query_params, :start_at))
+
     @events = @search.result.order(start_at: :desc).page(params[:page])
     @sports = Title.pluck(:name)
   end
@@ -31,14 +34,5 @@ class EventsController < ApplicationController
 
   def event_params
     params.require(:event).permit(:priority)
-  end
-
-  def base_scope
-    scope = Event
-    sorting_query = query_params[:s]
-    is_string = sorting_query.is_a?(String)
-    return scope unless is_string && sorting_query.starts_with?('markets_count')
-
-    scope.with_markets_count
   end
 end

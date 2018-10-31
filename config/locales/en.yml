@@ -94,6 +94,9 @@ en:
     bets:
       one: Bet
       other: Bets
+    markets:
+      one: Market
+      other: Markets
 
   attributes:
     username: Username
@@ -149,6 +152,12 @@ en:
     settlement: Settlement
     possible_payout: Possible payout
     actual_payout: Actual payout
+    sport: Sport
+    wager: Wager
+    name: Name
+    start_at: Start at
+    live_coverage: Live coverage
+    visible: Visible
 
   documents:
     history_title: "Files history: %{document_type}"
