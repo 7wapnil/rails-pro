@@ -5,7 +5,7 @@ class BetsController < ApplicationController
     @search = Bet.with_winnings
                  .search(prepare_interval_filter(query_params, :created_at))
 
-    @bets = @search.result.page(params[:page])
+    @bets = @search.result.order(id: :desc).page(params[:page])
   end
 
   def show
