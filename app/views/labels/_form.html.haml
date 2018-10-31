@@ -6,6 +6,7 @@
 .row
   .col-6.offset-3
     = f.input :name, required: true
+    = f.input :kind, as: :select, collection: Label.kinds.keys, include_blank: false
     = f.input :description
     = f.button :submit, t(:save), class: 'btn btn-success'
     = link_to t(:back), labels_path

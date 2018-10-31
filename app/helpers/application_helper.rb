@@ -10,8 +10,8 @@ module ApplicationHelper
   end
 
   def link_back
-    link_to t(:back), 'javascript:window.history.back();',
-            class: 'btn btn-outline-dark'
+    link_to t(:back), '#',
+            class: 'btn btn-outline-dark', data: { button_back: true }
   end
 
   def visibility_toggle(visible_resource, toggle_endpoint)
@@ -26,18 +26,15 @@ module ApplicationHelper
     end
   end
 
-  def labels_selector(labelable, labels)
+  def labels_selector(labelable, labels, element_id = nil)
+    element_id ||= "#{labelable.class.to_s.downcase}_#{labelable.id}"
     update_url = polymorphic_url([:update_labels, labelable])
     placeholder = "Add #{labelable.class.to_s.downcase} label"
 
-    collection_select(:labels,
-                      :ids,
-                      labels,
-                      :id,
-                      :name,
-                      { selected: labelable.labels.map(&:id) },
-                      class: 'form-control',
-                      id: 'select_labels',
+    collection_select(:labels, :ids, labels, :id, :name,
+                      { selected: labelable.labels.ids },
+                      class: 'form-control labels_selector',
+                      id: element_id,
                       multiple: true,
                       data: { placeholder: placeholder,
                               update_url: update_url })

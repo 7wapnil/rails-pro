@@ -42,7 +42,7 @@ store:
   steps:
     - script:
       name: bundle-install
-      code: bundle install
+      code: bundle install --without development test
 
     - bashaus/yarn-install
 

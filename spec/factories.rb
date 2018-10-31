@@ -203,12 +203,18 @@ FactoryBot.define do
   factory :title do
     name { Faker::Name.unique.name }
     kind { :esports }
+    sequence :external_id do |n|
+      "sr:sport:#{n}"
+    end
   end
 
   factory :event_scope do
     title
     name { 'FPSThailand CS:GO Pro League Season#4' }
     kind { :tournament }
+    sequence :external_id do |n|
+      "sr:tournament:#{n}"
+    end
   end
 
   factory :scoped_event do
@@ -224,18 +230,15 @@ FactoryBot.define do
     start_at { 2.hours.ago }
     end_at { 1.hours.ago }
     remote_updated_at { Time.zone.now }
-    external_id { '' }
+    sequence :external_id do |n|
+      "sr:match:#{n}"
+    end
     status { 0 }
     payload { {} }
-    traded_live false
 
     trait :upcoming do
       start_at { 1.hour.from_now }
       end_at { nil }
-    end
-
-    trait :live do
-      traded_live true
     end
 
     factory :event_with_market do
@@ -258,6 +261,10 @@ FactoryBot.define do
     priority { 2 }
     status { 0 }
 
+    sequence :external_id do |n|
+      "sr:match:#{n}:209/setnr=2|gamenrX=#{n}|gamenrY=#{n}"
+    end
+
     trait :with_odds do
       after(:create) do |market|
         create_list(:odd, 2, market: market)
@@ -271,6 +278,10 @@ FactoryBot.define do
     won { true }
     value { Faker::Number.decimal(1, 2) }
     status { 0 }
+
+    sequence :external_id do |n|
+      "sr:match:#{n}:280/hcp=0.5:#{n}"
+    end
   end
 
   factory(:alive_message, class: Radar::AliveMessage) do

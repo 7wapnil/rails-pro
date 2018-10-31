@@ -4,16 +4,22 @@ class EventsController < ApplicationController
 
   def index
     @search = Event.includes(:labels)
-                   .order(start_at: :desc)
+                   .with_markets_count
+                   .with_wager
+                   .with_bets_count
                    .search(query_params)
 
-    @events = @search.result.page(params[:page])
+    @events = @search.result.order(start_at: :desc).page(params[:page])
     @sports = Title.pluck(:name)
   end
 
   def show
-    @event = Event.find(params.require(:id))
-    @labels = Label.all
+    @event = Event.includes(:labels, :event_scopes, :title, markets: [:labels])
+                  .order('markets.priority ASC, markets.name ASC')
+                  .find(params.require(:id))
+
+    @labels = Label.where(kind: :event)
+    @market_labels = Label.where(kind: :market)
   end
 
   def update

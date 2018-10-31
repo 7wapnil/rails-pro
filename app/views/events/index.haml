@@ -1,26 +1,30 @@
-%h1.display-4= t('entities.events', count: @events.size)
+%h1.display-4= 'Events'
 
 = render 'search'
 
 %table.table
   %thead
     %tr
-      %th= 'Name'
-      %th= 'Sport'
-      %th= sort_link(@search, :visible, 'Visible')
-      %th= 'Start at'
-      %th= 'Markets'
+      %th= t('attributes.id')
+      %th= sort_link(@search, :name, t('attributes.name'))
+      %th= t('attributes.sport')
+      %th= t('attributes.visible')
+      %th= sort_link(@search, :start_at, t('attributes.start_at'))
+      %th= sort_link(@search, :markets_count, t('entities.markets.other'))
+
       - EventScope.kinds.keys.map(&:capitalize).each do |scope_kind|
         %th= scope_kind
 
-      %th= 'Wager'
-      %th= 'Bets'
-      %th= sort_link(@search, :traded_live, 'Live coverage')
+      %th= sort_link(@search, :wager, t('attributes.wager'))
+      %th= sort_link(@search, :bets_count, t('entities.bets.other'))
+      %th= 'Profit/Loss'
+      %th= t('attributes.live_coverage')
 
       %th
     %tbody
       - @events.each do |event|
         %tr{ id: "event-#{event.id}" }
+          %td= event.id
           %td
             = link_to event.name, event
             %br
@@ -28,9 +32,8 @@
                 %span.badge.badge-info= label.name
           %td= event.title.name
           %td.toggle-holder= visibility_toggle(event, update_visibility_event_path(event))
-
           %td= event.start_at ? l(event.start_at, format: :long) : '-'
-          %td= event.markets.count
+          %td= event.markets_count
 
           - EventScope.kinds.keys.each do |kind|
             %td{ class: kind }
@@ -38,9 +41,9 @@
                 .event_scope= event_scope.name
                 %br
           %td= event.wager
-          %td= event.bets.count
-          %td= status_badge(event.traded_live ? 'live' : 'offline')
+          %td= event.bets_count
           %td
+          %td= status_badge(event.traded_live ? 'live' : 'offline')
 
 = paginate @events
 = content_for :js do

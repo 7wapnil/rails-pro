@@ -1,5 +1,5 @@
 module Mts
-  class SubmissionPublisher
+  class MessagePublisher
     MTS_SUBMISSION_EXCHANGE_NAME = 'arcanebet_arcanebet-Submit'.freeze
 
     def initialize(message)
@@ -11,6 +11,8 @@ module Mts
     end
 
     def publish!
+      Rails.logger
+           .info("MTS Validation requested for bets #{@message.bets.map(&:id)}")
       ::Mts::SingleSession.instance.session.within_connection do |conn|
         create_exchange(conn)
           .publish(

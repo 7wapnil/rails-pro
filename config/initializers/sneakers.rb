@@ -1,4 +1,5 @@
-sneakers_logger = ::LogStashLogger.new(type: :stdout)
+sneakers_logger = ::MaskedLogStashLoggerFactory.build(type: :stdout)
+
 sneakers_logger.level = ENV['RAILS_LOG_LEVEL'] || :debug
 
 Sneakers.configure workers: 1,

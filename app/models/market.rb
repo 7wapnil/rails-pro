@@ -1,5 +1,6 @@
 class Market < ApplicationRecord
   include Visible
+  include HasUniqueExternalId
 
   before_validation :define_priority, if: :name_changed?
   after_create :emit_created
@@ -27,6 +28,8 @@ class Market < ApplicationRecord
   belongs_to :event
   has_many :odds, dependent: :delete_all
   has_many :bets, through: :odds
+  has_many :label_joins, as: :labelable
+  has_many :labels, through: :label_joins
 
   validates :name, :priority, :status, presence: true
   validates_with MarketStateValidator, restrictions: [

@@ -19,4 +19,5 @@
 
   .row
     %div.col.text-right
-      %button.btn.btn-success{ disabled: true, id: 'save_labels' }= t(:save)
+      %button.btn.btn-success.save_labels{ disabled: true,
+       data: {label_selector: "customer_#{@customer.id}"} }= t(:save)
