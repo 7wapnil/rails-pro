@@ -2,7 +2,7 @@ describe Customer do
   it { should have_one(:address) }
   it { should have_many(:wallets) }
   it { should have_many(:entry_requests) }
-  it { should have_and_belong_to_many(:labels) }
+  it { should have_many(:labels) }
   it { should allow_value(true, false).for(:verified) }
   it { should allow_value(true, false).for(:activated) }
 

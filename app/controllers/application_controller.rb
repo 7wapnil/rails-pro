@@ -10,10 +10,8 @@ class ApplicationController < ActionController::Base
   protected
 
   def query_params
-    query = params[:query].dup
-    return unless query
-
-    query.each { |key, value| query[key] = value.squish }
-    query
+    (params[:query].dup || {}).transform_values do |value|
+      value.is_a?(Array) ? value.map(&:squish) : value.squish
+    end
   end
 end

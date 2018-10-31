@@ -4,5 +4,5 @@ class ArchivedEventScope
   embedded_in :archived_event
 
   field :name, type: String
-  field :kind, type: Integer
+  field :kind, type: String
 end

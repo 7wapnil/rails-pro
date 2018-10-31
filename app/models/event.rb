@@ -1,4 +1,4 @@
-class Event < ApplicationRecord
+class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Visible
 
   after_create :emit_created
@@ -15,15 +15,17 @@ class Event < ApplicationRecord
     closed: 3
   }.freeze
 
-  ransacker :start_at, type: :date do
-    Arel.sql('date(start_at)')
+  ransacker :markets_count do
+    Arel.sql('markets_count')
   end
 
   belongs_to :title
-  has_many :markets
+  has_many :markets, dependent: :delete_all
   has_many :bets, through: :markets
-  has_many :scoped_events
+  has_many :scoped_events, dependent: :delete_all
   has_many :event_scopes, through: :scoped_events
+  has_many :label_joins, as: :labelable
+  has_many :labels, through: :label_joins
 
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }
@@ -32,19 +34,49 @@ class Event < ApplicationRecord
 
   delegate :name, to: :title, prefix: true
 
+  def self.with_markets_count
+    select('events.*, COUNT(markets.id) as markets_count')
+      .left_outer_joins(:markets)
+      .group(:id)
+  end
+
   def self.upcoming
     where('start_at > ? AND end_at IS NULL', Time.zone.now)
   end
 
+  # 4 hours ago is a temporary workaround to reduce amount of live events
+  # Will be removed when proper event ending logic is implemented
   def self.in_play
     where(
-      'start_at < ? AND end_at IS NULL AND traded_live IS TRUE',
-      Time.zone.now
+      [
+        'start_at < ? AND ',
+        'start_at > ? AND ',
+        'end_at IS NULL AND ',
+        'traded_live IS TRUE'
+      ].join,
+      Time.zone.now,
+      4.hours.ago
     )
   end
 
   def self.today
     where(start_at: [Date.today.beginning_of_day..Date.today.end_of_day])
+  end
+
+  def self.unpopular_live
+    left_outer_joins(markets: { odds: :bets })
+      .where(traded_live: true)
+      .where(bets: { id: nil })
+      .where('events.end_at IS NOT NULL')
+      .where('events.end_at < ?', Time.zone.now)
+  end
+
+  def self.unpopular_pre_live
+    left_outer_joins(markets: { odds: :bets })
+      .where(traded_live: false)
+      .where(bets: { id: nil })
+      .where('events.start_at IS NOT NULL')
+      .where('events.start_at < ?', Time.zone.now)
   end
 
   def in_play?

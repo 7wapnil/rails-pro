@@ -1,5 +1,5 @@
 module Mts
-  class MessagePublisherWorker < ApplicationWorker
+  class ValidationMessagePublisherWorker < ApplicationWorker
     def perform(ids)
       @ids = ids
       raise NotImplementedError unless ids.length == 1
@@ -15,7 +15,8 @@ module Mts
       response = Mts::SubmissionPublisher.publish!(message)
       raise if response == false
 
-      bet.update(validation_ticket_id: message.ticket_id)
+      bet.update(validation_ticket_id: message.ticket_id,
+                 validation_ticket_sent_at: Time.zone.now)
     end
   end
 end
