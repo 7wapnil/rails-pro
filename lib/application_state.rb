@@ -9,10 +9,7 @@ class ApplicationState
     active: 1
   }.freeze
 
-  ALLOWED_FLAGS = %i[
-    prematch_odds_feed_offline
-    live_odds_feed_offline
-  ].freeze
+  ALLOWED_FLAGS = Radar::Producer.failure_flag_keys
 
   def initialize
     @status = :active
