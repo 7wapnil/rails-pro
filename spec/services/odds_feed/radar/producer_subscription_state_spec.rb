@@ -1,5 +1,5 @@
 describe OddsFeed::Radar::ProducerSubscriptionState do
-  let(:product_id) { 1 }
+  let(:product_id) { Radar::Producer.radar_ids.sample }
   subject { described_class.new(product_id) }
 
   describe '.subscribed!' do
