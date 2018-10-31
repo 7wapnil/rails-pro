@@ -1,11 +1,12 @@
 class EventsController < ApplicationController
   include Visibility
   include Labelable
+  include DateIntervalFilters
 
   def index
     @search = base_scope
               .includes(:labels)
-              .search(query_params)
+              .search(prepare_interval_filter(query_params, :start_at))
     @events = @search.result.order(start_at: :desc).page(params[:page])
     @sports = Title.pluck(:name)
   end
