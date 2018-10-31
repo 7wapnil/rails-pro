@@ -19,10 +19,15 @@ describe 'GraphQL#app' do
       .to match_array(%w[inactive active])
   end
 
-  it 'returns available flags' do
-    ApplicationState.instance.flags = []
-    ApplicationState.instance.flags << 'exampleFlag'
-    expect(result['data']['app']['flags'])
-      .to match_array(['exampleFlag'])
+  context 'with one valid flag added ' do
+    before do
+      ApplicationState.instance.instance_variable_set(:@flags, [])
+      ApplicationState.instance.enable_flag(:prematch_odds_feed_offline)
+    end
+
+    it 'returns available flags' do
+      expect(result['data']['app']['flags'])
+        .to match_array(['prematch_odds_feed_offline'])
+    end
   end
 end
