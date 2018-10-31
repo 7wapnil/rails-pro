@@ -12,27 +12,28 @@
             = f.label :name_cont, class: 'sr-only'
           .filter_field
             = f.search_field :name_cont,
-                           class: 'form-control',
-                           placeholder: t(:search, subject: :name),
-                           autocomplete: :off
+                              class: 'form-control',
+                              placeholder: t(:search, subject: :name),
+                              autocomplete: :off
         %th
           .filter_title
             = "#{t('attributes.label_kind')}:"
             = f.label :kind_eq, class: 'sr-only'
           .filter_field
             = f.select :kind_eq,
-                          options_for_select(Label.kinds, query_params ? query_params[:kind_eq] : nil),
-                          { include_blank: true },
-                          class: 'form-control'
+                        options_for_select(Label.kinds, query_params ? query_params[:kind_eq] : nil),
+                        { include_blank: true },
+                        class: 'form-control'
+
         %th
           .filter_title
             = "#{t('attributes.label_description')}:"
             = f.label :description_cont, class: 'sr-only'
           .filter_field
             = f.search_field :description_cont,
-                                class: 'form-control',
-                                placeholder: t(:search, subject: :description),
-                                autocomplete: :off
+                              class: 'form-control',
+                              placeholder: t(:search, subject: :description),
+                              autocomplete: :off
         %th
           = f.submit class: 'btn btn-outline-dark btn-block'
     %tbody
@@ -42,8 +43,7 @@
           %td= label.kind
           %td= label.description
           %td= link_to t(:delete),
-            label,
-            method: :delete,
-          data: { confirm: t(:confirmation) }
-
+                        label,
+                        method: :delete,
+                        data: { confirm: t(:confirmation) }
 = paginate @labels
