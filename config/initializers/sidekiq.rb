@@ -1,1 +1,1 @@
-Sidekiq::Logging.logger = ::LogStashLogger.new(type: :stdout)
+Sidekiq::Logging.logger = ::MaskedLogStashLoggerFactory.build(type: :stdout)
