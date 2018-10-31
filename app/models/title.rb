@@ -1,4 +1,6 @@
 class Title < ApplicationRecord
+  include HasUniqueExternalId
+
   has_many :events, dependent: :destroy
   has_many :event_scopes, dependent: :destroy
   has_many :tournaments, -> { where kind: :tournament },

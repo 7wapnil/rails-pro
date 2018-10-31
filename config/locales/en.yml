@@ -94,6 +94,9 @@ en:
     bets:
       one: Bet
       other: Bets
+    markets:
+      one: Market
+      other: Markets
 
   attributes:
     username: Username
@@ -152,6 +155,12 @@ en:
     label_name: Label name
     label_kind: Label kind
     label_description: Label description
+    sport: Sport
+    wager: Wager
+    name: Name
+    start_at: Start at
+    live_coverage: Live coverage
+    visible: Visible
 
   documents:
     history_title: "Files history: %{document_type}"

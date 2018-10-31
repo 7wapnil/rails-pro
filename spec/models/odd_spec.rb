@@ -8,6 +8,10 @@ describe Odd do
   it { should validate_presence_of(:status) }
   it { should validate_numericality_of(:value).is_greater_than(0) }
 
+  it_behaves_like 'has unique :external_id' do
+    subject { create(:odd) }
+  end
+
   context 'callbacks' do
     it 'emits web socket event on create' do
       odd = create(:odd)

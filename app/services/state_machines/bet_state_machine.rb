@@ -85,14 +85,7 @@ module StateMachines
       end
 
       def send_single_bet_to_external_validation
-        request = Mts::Messages::ValidationRequest
-                  .new([self])
-        response = Mts::MessagePublisher
-                   .publish!(request)
-        return false if response == false
-
-        update(validation_ticket_id: request.ticket_id,
-               validation_ticket_sent_at: Time.zone.now)
+        Mts::ValidationMessagePublisherWorker.perform_async([id])
       end
 
       def on_successfull_bet_placement
