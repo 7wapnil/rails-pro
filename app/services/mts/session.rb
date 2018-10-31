@@ -1,6 +1,9 @@
 module Mts
   class Session
     MTS_MQ_CONNECTION_PORT = 5671
+    BUNNY_TCP_CONNECTION_EXCEPTIONS =
+      [Bunny::TCPConnectionFailed,
+       Bunny::TCPConnectionFailedForAllHosts].freeze
 
     def initialize(config = nil)
       # TODO: Validate config format for custom input
@@ -13,6 +16,13 @@ module Mts
 
     def opened_connection
       connection.open? ? connection : connection.start
+    rescue *BUNNY_TCP_CONNECTION_EXCEPTIONS => e
+      log_msg = {
+        error: e,
+        config: @config
+      }
+      Rails.logger.error(log_msg)
+      raise e
     end
 
     def within_connection

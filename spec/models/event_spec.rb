@@ -8,6 +8,8 @@ describe Event do
 
   it { should delegate_method(:name).to(:title).with_prefix }
 
+  it_behaves_like 'has unique :external_id'
+
   it 'returns details adapter' do
     expect(subject.details).to be_a(EventDetails::Base)
   end
