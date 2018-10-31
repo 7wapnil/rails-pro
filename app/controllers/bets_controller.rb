@@ -7,7 +7,7 @@ class BetsController < ApplicationController
     end
     @dates = collect_query_dates
     @search = Bet.with_winnings.search(query_params)
-    @bets = @search.result.page(params[:page])
+    @bets = @search.result.order(id: :desc).page(params[:page])
   end
 
   def show

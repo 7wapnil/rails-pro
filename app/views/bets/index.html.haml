@@ -6,7 +6,7 @@
     %thead
       = render 'search', f: f, dates: @dates
       %tr
-        %th= t('attributes.bet_id')
+        %th= sort_link @search, :id, t('attributes.bet_id'), default_order: :asc
         %th= t('attributes.customer')
         %th= t('attributes.event')
         %th= t('attributes.market')
