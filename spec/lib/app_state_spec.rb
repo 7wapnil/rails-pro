@@ -1,13 +1,13 @@
 describe ApplicationState.instance do
   let(:valid_flag) { ApplicationState::ALLOWED_FLAGS.sample }
 
-  context '.initialize' do
+  describe '.initialize' do
     it 'defines defaults status as active' do
       expect(subject.status).to eq(:active)
     end
   end
 
-  context '.status=' do
+  describe '.status=' do
     it 'sends web socket event on status change' do
       subject.status = :inactive
       expect(WebSocket::Client.instance)
@@ -23,7 +23,7 @@ describe ApplicationState.instance do
   context 'flags feature' do
     before(:each) { subject.instance_variable_set(:@flags, []) }
 
-    context '.enable_flag' do
+    describe '.enable_flag' do
       let(:expected_flags_state) { [valid_flag] }
 
       before { subject.enable_flag(valid_flag) }
@@ -65,7 +65,7 @@ describe ApplicationState.instance do
       end
     end
 
-    context '.disable_flag' do
+    describe '.disable_flag' do
       let(:expected_flags_state) { [] }
 
       before do
