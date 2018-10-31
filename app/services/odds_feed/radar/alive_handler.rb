@@ -3,9 +3,7 @@ module OddsFeed
     class AliveHandler < RadarMessageHandler
       def handle
         message = ::Radar::AliveMessage.from_hash(alive_message_data)
-        message.save
-
-        message.recover_subscription! unless message.subscribed?
+        message.process!
       end
 
       private

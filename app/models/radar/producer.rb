@@ -56,7 +56,11 @@ module Radar
     end
 
     def raise_failure_flag!
-      ApplicationState.set_flag(failure_flag_key)
+      ApplicationState.instance.enable_flag(failure_flag_key)
+    end
+
+    def clear_failure_flag!
+      ApplicationState.instance.disable_flag(failure_flag_key)
     end
 
     def check_subscription_expiration

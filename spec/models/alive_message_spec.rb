@@ -50,15 +50,60 @@ describe Radar::AliveMessage do
     end
   end
 
-  describe '.save' do
-    it 'reports subscribed state if subscribed' do
-      time = Time.zone.now
-      Timecop.freeze(time)
-      message = build(:alive_message,
-                      product_id: 1, reported_at: time, subscribed: true)
-      expect(message.subscription_state).to receive(:subscribed!).with(time)
-      message.save
-      Timecop.return
+  context '.process!' do
+    describe '.subscribed_message_save' do
+      let(:time) { Time.local(2018, 12, 1, 10, 5, 0) }
+      let(:message) do
+        build(:alive_message,
+              product_id: 1, reported_at: time, subscribed: true)
+      end
+
+      before do
+        Timecop.freeze(Time.local(2018, 9, 1, 10, 5, 0))
+      end
+
+      after do
+        Timecop.return
+      end
+
+      it 'reports subscribed state' do
+        expect(message)
+          .to receive(:subscribed!).with(time).once
+        message.process!
+      end
+
+      it 'raises failure flag' do
+        message.process!
+        expect(ApplicationState.instance.flags)
+          .to_not include(message.producer.failure_flag_key)
+      end
+    end
+    describe '.unsubscribed_message_save' do
+      let(:time) { Time.local(2018, 12, 1, 10, 5, 0) }
+      let(:message) do
+        build(:alive_message,
+              product_id: 1, reported_at: time, subscribed: false)
+      end
+
+      before do
+        Timecop.freeze(Time.local(2018, 9, 1, 10, 5, 0))
+      end
+
+      after do
+        Timecop.return
+      end
+
+      it 'reports subscribed state' do
+        expect(message)
+          .to receive(:recover_subscription!).once
+        message.process!
+      end
+
+      it 'raises failure flag' do
+        message.process!
+        expect(ApplicationState.instance.flags)
+          .to include(message.producer.failure_flag_key)
+      end
     end
   end
 end

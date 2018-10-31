@@ -6,11 +6,11 @@ module Radar
     alias_method 'subscribed?', :subscribed
 
     delegate :recover_subscription!, to: :subscription_state
+    delegate :subscribed!, to: :subscription_state
 
     def initialize(product_id:, reported_at:, subscribed:)
       @product_id = product_id
-      @subscription_state =
-        ::OddsFeed::Radar::ProducerSubscriptionState.new(product_id)
+      @subscription_state = producer.subscription_state
       @reported_at = reported_at
       @subscribed = subscribed
       Rails.logger.info "Producer #{product_id} is alive"
@@ -29,8 +29,24 @@ module Radar
       )
     end
 
-    def save
-      @subscription_state.subscribed!(reported_at) if subscribed?
+    def producer
+      Radar::Producer.find_by_id(@product_id)
+    end
+
+    def process!
+      subscribed? ? subscribed_message_save : unsubscribed_message_save
+    end
+
+    def subscribed_message_save
+      subscribed!(reported_at)
+      producer.clear_failure_flag!
+      true
+    end
+
+    def unsubscribed_message_save
+      producer.raise_failure_flag!
+      recover_subscription!
+      true
     end
   end
 end
