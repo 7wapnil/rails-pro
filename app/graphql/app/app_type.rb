@@ -4,5 +4,6 @@ module App
 
     field :status, !types.String
     field :statuses, !types[types.String]
+    field :flags, !types[types.String]
   end
 end

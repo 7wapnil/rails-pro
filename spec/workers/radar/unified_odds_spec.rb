@@ -36,49 +36,48 @@ describe Radar::UnifiedOdds do
   describe 'work' do
     before do
       Sneakers.logger.level = Logger::ERROR
-      allow(subject).to receive(:handle)
     end
 
-    it 'routes odds_change to Radar::OddsChangeHandler' do
+    it 'routes odds_change to Radar::OddsChangeWorker' do
+      expect(Radar::OddsChangeWorker)
+        .to receive(:perform_async)
+        .with(minimal_valid_odds_change_xml)
       subject.work(minimal_valid_odds_change_xml)
-      expect(subject)
-        .to have_received(:handle)
-        .with(instance_of(OddsFeed::Radar::OddsChangeHandler))
     end
 
-    it 'routes alive to Radar::AliveHandler' do
+    it 'routes alive to Radar::AliveWorker' do
+      expect(Radar::AliveWorker)
+        .to receive(:perform_async)
+        .with(minimal_valid_alive_xml)
       subject.work(minimal_valid_alive_xml)
-      expect(subject)
-        .to have_received(:handle)
-        .with(instance_of(OddsFeed::Radar::AliveHandler))
     end
 
-    it 'routes alive to Radar::BetSettlementHandler' do
+    it 'routes alive to Radar::BetSettlementWorker' do
+      expect(Radar::BetSettlementWorker)
+        .to receive(:perform_async)
+        .with(minimal_valid_bet_settlement_xml)
       subject.work(minimal_valid_bet_settlement_xml)
-      expect(subject)
-        .to have_received(:handle)
-        .with(instance_of(OddsFeed::Radar::BetSettlementHandler))
     end
 
-    it 'routes bet stop to Radar::BetStopHandler' do
+    it 'routes bet stop to Radar::BetStopWorker' do
+      expect(Radar::BetStopWorker)
+        .to receive(:perform_async)
+        .with(minimal_valid_bet_stop_xml)
       subject.work(minimal_valid_bet_stop_xml)
-      expect(subject)
-        .to have_received(:handle)
-        .with(instance_of(OddsFeed::Radar::BetStopHandler))
     end
 
-    it 'routes bet cancel to Radar::BetCancelHandler' do
+    it 'routes bet cancel to Radar::BetCancelWorker' do
+      expect(Radar::BetCancelWorker)
+        .to receive(:perform_async)
+        .with(minimal_valid_bet_cancel_xml)
       subject.work(minimal_valid_bet_cancel_xml)
-      expect(subject)
-        .to have_received(:handle)
-        .with(instance_of(OddsFeed::Radar::BetCancelHandler))
     end
 
-    it 'routes alive to Radar::FixtureChangeHandler' do
+    it 'routes alive to Radar::FixtureChangeWorker' do
+      expect(Radar::FixtureChangeWorker)
+        .to receive(:perform_async)
+        .with(minimal_valid_fixture_change_xml)
       subject.work(minimal_valid_fixture_change_xml)
-      expect(subject)
-        .to have_received(:handle)
-        .with(instance_of(OddsFeed::Radar::FixtureChangeHandler))
     end
 
     it 'raises NotImplementedError on any unknown input' do

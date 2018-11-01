@@ -152,6 +152,9 @@ en:
     settlement: Settlement
     possible_payout: Possible payout
     actual_payout: Actual payout
+    label_name: Label name
+    label_kind: Label kind
+    label_description: Label description
     sport: Sport
     wager: Wager
     name: Name

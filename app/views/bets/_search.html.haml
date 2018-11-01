@@ -4,30 +4,46 @@
 - content_for :js do
   = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
 
-%tr
-  %th(colspan="2")
-    = f.label :id_eq, class: 'sr-only'
-    = f.search_field :id_eq,
-                             class: 'form-control',
-                             placeholder: t(:search, subject: t('attributes.bet_id')),
-                             autocomplete: :off
-  %th(colspan="2")
-    = f.label :customer_username_cont, class: 'sr-only'
-    = f.search_field :customer_username_cont,
-                             class: 'form-control',
-                             placeholder: t(:search, subject: t('attributes.customer')),
-                             autocomplete: :off
-  %th(colspan="3")
-    = f.label :created_at_gteq, class: 'sr-only'
-    = f.search_field :created_at_gteq,
-                             class: 'form-control form_date',
-                             placeholder: t(:search, subject: t('from')),
-                             value: query_params[:created_at_gteq] || l(Date.today, format: :date_picker)
-  %th(colspan="3")
-    = f.label :created_at_lteq, class: 'sr-only'
-    = f.search_field :created_at_lteq,
-                             class: 'form-control form_date',
-                             placeholder: t(:search, subject: t('to')),
-                             value: query_params ? query_params[:created_at_lteq] : nil
-  %th
-    = f.submit class: 'btn btn-outline-dark btn-block'
+= search_form_for @search do |f|
+  %table.table
+    %thead
+      %tr
+        %th
+          .filter_title
+            = "#{t('attributes.bet_id')}:"
+          .filter_field
+            = f.label :id_eq, class: 'sr-only'
+            = f.search_field :id_eq,
+                              class: 'form-control',
+                              placeholder: t('attributes.bet_id'),
+                              autocomplete: :off
+        %th
+          .filter_title
+            = "#{t('attributes.customer')}:"
+          .filter_field
+            = f.label :customer_username_cont, class: 'sr-only'
+            = f.search_field :customer_username_cont,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: t('attributes.customer')),
+                              autocomplete: :off
+        %th
+          .filter_title
+            = "#{t(:search, subject: t('from'))}:"
+          .filter_field
+            = f.label :created_at_gteq, class: 'sr-only'
+            = f.search_field :created_at_gteq,
+                              class: 'form-control form_date',
+                              placeholder: t(:search, subject: t('from')),
+                              value: query_params[:created_at_gteq] || l(Date.today, format: :date_picker)
+        %th
+          .filter_title
+            = "#{t(:search, subject: t('to'))}:"
+          .filter_field
+            = f.label :created_at_lteq, class: 'sr-only'
+            = f.search_field :created_at_lteq,
+                              class: 'form-control form_date',
+                              placeholder: t(:search, subject: t('to')),
+                              value: query_params ? query_params[:created_at_lteq] : nil
+
+        %th
+          = f.submit class: 'btn btn-outline-dark btn-block'

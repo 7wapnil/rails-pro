@@ -5,6 +5,7 @@
   - market_templates_update
   - expired_live
   - expired_prematch
+  - odds_feed
 
 :schedule:
   pre_match_markets_close_worker:
@@ -33,3 +34,9 @@
     every: <%= "#{ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT') { 3 }}s" %>
     class: Scheduled::ExpiringPrematchWorker
     queue: expired_prematch
+
+  missing_heartbeat_worker:
+    cron: <%= "#{ENV.fetch('MISSING_HEARTBEAT_WATCHDOG_CRON') { '0 * * * *' }}" %>
+    class: Radar::MissingHeartbeatWorker
+    queue: critical
+
