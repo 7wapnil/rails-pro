@@ -34,16 +34,18 @@ module Radar
     end
 
     def process!
-      subscribed? ? subscribed_message_save : unsubscribed_message_save
+      subscribed? ? process_subscribed_message : process_unsubscribed_message
     end
 
-    def subscribed_message_save
+    private
+
+    def process_subscribed_message
       subscribed!(reported_at)
       producer.clear_failure_flag!
       true
     end
 
-    def unsubscribed_message_save
+    def process_unsubscribed_message
       producer.raise_failure_flag!
       recover_subscription!
       true
