@@ -1,11 +1,16 @@
 module Radar
   class AliveMessage
     attr_accessor :product_id, :reported_at, :subscribed
+    attr_reader :subscription_state
 
     alias_method 'subscribed?', :subscribed
 
+    delegate :recover_subscription!, to: :subscription_state
+    delegate :subscribed!, to: :subscription_state
+
     def initialize(product_id:, reported_at:, subscribed:)
       @product_id = product_id
+      @subscription_state = producer.subscription_state
       @reported_at = reported_at
       @subscribed = subscribed
       Rails.logger.info "Producer #{product_id} is alive"
@@ -24,41 +29,26 @@ module Radar
       )
     end
 
-    def save
-      store_last_successful_alive! if subscribed?
+    def producer
+      Radar::Producer.find_by_id(@product_id)
     end
 
-    def recover!
-      start_at = last_success_timestamp
-      start_at = nil if Time.zone.at(start_at) < 72.hours.ago
-      OddsFeed::Radar::SubscriptionRecovery
-        .call(product_id: product_id, start_at: start_at)
+    def process!
+      subscribed? ? process_subscribed_message : process_unsubscribed_message
     end
 
     private
 
-    def store_last_successful_alive!
-      timestamp = reported_at.to_i
-      timestamp_expired = last_success_timestamp > timestamp
-      return if timestamp_expired
-
-      update_last_success_timestamp(timestamp)
+    def process_subscribed_message
+      subscribed!(reported_at)
+      producer.clear_failure_flag!
+      true
     end
 
-    def update_last_success_timestamp(timestamp)
-      Rails.cache.write(last_success_at_key, timestamp)
-    end
-
-    def last_success_timestamp
-      Rails.cache.read(last_success_at_key).to_i
-    end
-
-    def last_success_at_key
-      last_successful_alive_message_key(product_id: product_id)
-    end
-
-    def last_successful_alive_message_key(product_id:)
-      "radar:last_successful_alive_message:#{product_id}"
+    def process_unsubscribed_message
+      producer.raise_failure_flag!
+      recover_subscription!
+      true
     end
   end
 end
