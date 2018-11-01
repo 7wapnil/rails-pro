@@ -172,6 +172,7 @@ en:
   date:
     formats:
       default: "%-d %B %Y"
+      date_picker: "%-d %B %Y"
 
   messages:
     entry_request_created: "Entry request successfully created"
