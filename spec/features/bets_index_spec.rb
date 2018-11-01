@@ -10,7 +10,7 @@ describe 'Bets#index' do
     end
 
     it 'shows bets list' do
-      within 'table.table' do
+      within 'table.table.entities' do
         Bet.limit(per_page_count).each do |bet|
           expect(page).to have_content(bet.id)
           expect(page).to have_content(bet.customer.username)
