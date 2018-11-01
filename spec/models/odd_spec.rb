@@ -4,9 +4,18 @@ describe Odd do
   it { should belong_to(:market) }
 
   it { should validate_presence_of(:name) }
-  it { should validate_presence_of(:value) }
   it { should validate_presence_of(:status) }
   it { should validate_numericality_of(:value).is_greater_than(0) }
+
+  it 'validates value on create is status active' do
+    subject.status = 1
+    should validate_presence_of(:value).on(:create)
+  end
+
+  it 'not validates value on create if status inactive' do
+    subject.status = 0
+    should_not validate_presence_of(:value).on(:create)
+  end
 
   it_behaves_like 'has unique :external_id' do
     subject { create(:odd) }
