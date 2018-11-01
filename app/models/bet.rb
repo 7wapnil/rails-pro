@@ -1,4 +1,4 @@
-class Bet < ApplicationRecord
+class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include StateMachines::BetStateMachine
 
   PENDING_STATUSES_MASK = %w[
@@ -37,6 +37,44 @@ class Bet < ApplicationRecord
   scope :sort_by_winning_desc, -> { with_winnings.order('winning DESC') }
 
   class << self
+    def with_country
+      sub_query = <<~SQL
+        SELECT  event_scopes.name FROM event_scopes
+         INNER JOIN scoped_events ON event_scopes.id = scoped_events.event_scope_id
+         INNER JOIN events ON scoped_events.event_id = events.id
+         INNER JOIN markets ON events.id = markets.event_id
+         INNER JOIN odds ON markets.id = odds.market_id
+         WHERE odds.id = bets.odd_id AND event_scopes.kind = #{EventScope.kinds[:country]} LIMIT 1
+      SQL
+      sql = "bets.*, (#{sub_query}) AS country"
+      select(sql)
+    end
+
+    def with_tournament
+      sub_query = <<~SQL
+        SELECT  event_scopes.name FROM event_scopes
+         INNER JOIN scoped_events ON event_scopes.id = scoped_events.event_scope_id
+         INNER JOIN events ON scoped_events.event_id = events.id
+         INNER JOIN markets ON events.id = markets.event_id
+         INNER JOIN odds ON markets.id = odds.market_id
+         WHERE odds.id = bets.odd_id AND event_scopes.kind = #{EventScope.kinds[:tournament]} LIMIT 1
+      SQL
+      sql = "bets.*, (#{sub_query}) AS tournament"
+      select(sql)
+    end
+
+    def with_sport
+      sub_query = <<~SQL
+        SELECT  titles.name FROM titles
+         INNER JOIN events ON events.title_id = titles.id
+         INNER JOIN markets ON markets.event_id = events.id
+         INNER JOIN odds ON markets.id = odds.market_id
+         WHERE odds.id = bets.odd_id LIMIT 1
+      SQL
+      sql = "bets.*, (#{sub_query}) AS sport"
+      select(sql)
+    end
+
     def with_winnings
       select('bets.*, (bets.amount * bets.odd_value) AS winning')
     end

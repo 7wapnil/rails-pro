@@ -6,7 +6,7 @@
 %table.table.entities
   %thead
     %tr
-      %th= t('attributes.bet_id')
+      %th= sort_link @search, :id, t('attributes.bet_id'), default_order: :asc
       %th= t('attributes.customer')
       %th= t('attributes.event')
       %th= t('attributes.market')
@@ -17,6 +17,9 @@
       %th= sort_link @search, :created_at, t('attributes.bet_placement_time')
       %th= t('attributes.status')
       %th= t('attributes.settlement')
+      %th= t('attributes.sport')
+      %th= t('attributes.country')
+      %th= t('attributes.tournament')
   %tbody
     - @bets.each do |bet|
       %tr{ id: "bet-#{bet.id}" }
@@ -35,5 +38,8 @@
         %td= l(bet.created_at, format: :long)
         %td= status_badge(bet.display_status)
         %td= settle_badge(bet.settlement_status)
+        %td= bet.sport
+        %td= bet.country
+        %td= bet.tournament
 
 = paginate @bets
