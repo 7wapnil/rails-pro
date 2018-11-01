@@ -32,6 +32,7 @@ class Market < ApplicationRecord
   has_many :labels, through: :label_joins
 
   validates :name, :priority, :status, presence: true
+  validates :ready, inclusion: { in: [true, false] }
   validates_with MarketStateValidator, restrictions: [
     %i[active cancelled],
     %i[inactive cancelled],

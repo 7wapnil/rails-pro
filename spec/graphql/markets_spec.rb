@@ -37,6 +37,11 @@ describe 'GraphQL#markets' do
         expect(result['data']['markets'].count).to eq(5)
       end
 
+      it 'returns markets ready only' do
+        create_list(:market, 5, :with_odds, event: event, ready: false)
+        expect(result['data']['markets'].count).to eq(0)
+      end
+
       it 'returns markets filtered by priority' do
         create_list(:market, 5, :with_odds, event: event, priority: 0)
         create_list(:market, 5, :with_odds, event: event, priority: 1)
