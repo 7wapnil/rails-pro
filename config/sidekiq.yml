@@ -5,6 +5,7 @@
   - market_templates_update
   - expired_live
   - expired_prematch
+  - odds_feed
 
 :schedule:
   pre_match_markets_close_worker:

@@ -12,49 +12,42 @@ module Radar
     MATCHERS = {
       event_processing: {
         matchers: %w[<odds_change].freeze,
-        klass: OddsFeed::Radar::OddsChangeHandler
+        klass: OddsChangeWorker
       },
       alive: {
         matchers: %w[<alive].freeze,
-        klass: OddsFeed::Radar::AliveHandler
+        klass: AliveWorker
       },
       bet_settlement: {
         matchers: %w[<bet_settlement].freeze,
-        klass: OddsFeed::Radar::BetSettlementHandler
+        klass: BetSettlementWorker
       },
       bet_stop: {
         matchers: %w[<bet_stop].freeze,
-        klass: OddsFeed::Radar::BetStopHandler
+        klass: BetStopWorker
       },
       bet_cancel: {
         matchers: %w[<bet_cancel].freeze,
-        klass: OddsFeed::Radar::BetCancelHandler
+        klass: BetCancelWorker
       },
       fixture_change: {
         matchers: %w[<fixture_change].freeze,
-        klass: OddsFeed::Radar::FixtureChangeHandler
+        klass: FixtureChangeWorker
       }
     }.freeze
 
     def work(msg)
-      initialized_handler = match_result(msg, scan_payload(msg))
-      handle(initialized_handler)
-    end
-
-    def handle(handler)
-      handler.handle
-    rescue StandardError => e
-      logger.error e
+      match_result(scan_payload(msg)).perform_async(msg)
     end
 
     private
 
-    def match_result(payload, scan_result)
+    def match_result(scan_result)
       MATCHERS.each do |_, rule|
         rule_matchers = rule[:matchers]
         klass = rule[:klass]
         found = rule_matchers.any? { |matcher| scan_result.include?(matcher) }
-        return klass.new(XmlParser.parse(payload)) if found
+        return klass if found
       end
       logger.warn 'No worker found for message'
       raise NotImplementedError
