@@ -1,45 +1,14 @@
 module OddsFeed
   module Radar
     class EventScopeService < ApplicationService
-      SPORT_KIND_MAPPING = {
-        'Alpine Skiing' => :sports,
-        'American Football' => :sports,
-        'Bandy' => :sports,
-        'Badminton' => :sports,
-        'Baseball' => :sports,
-        'Basketball' => :sports,
-        'CS:GO' => :esports,
-        'Counter-Strike' => :esports,
-        'Cricket' => :sports,
-        'Cycling' => :sports,
-        'Dota 2' => :esports,
-        'Floorball' => :sports,
-        'Futsal' => :sports,
-        'Golf' => :sports,
-        'Handball' => :sports,
-        'Ice Hockey' => :sports,
-        'League of Legends' => :esports,
-        'Kabaddi' => :sports,
-        'Motorsport' => :sports,
-        'Rugby' => :sports,
-        'Rink Hockey' => :sports,
-        'Snooker' => :sports,
-        'Snowboard' => :sports,
-        'Soccer' => :sports,
-        'Squash' => :sports,
-        'Table Tennis' => :sports,
-        'Tennis' => :sports,
-        'Volleyball' => :sports,
-        'Waterpolo' => :sports
-      }.freeze
       def initialize(payload)
         @payload = payload
       end
 
       def call
         find_or_create_title!(@payload['sport'])
-        find_or_create_tournament!(@payload)
         find_or_create_country!(@payload['category'])
+        find_or_create_tournament!(@payload)
         find_or_create_season!(@payload['current_season'])
       end
 
@@ -57,24 +26,9 @@ module OddsFeed
           external_id: title['id']
         ) do |object|
           object.name = title['name']
-          object.kind = SPORT_KIND_MAPPING[title['name']]
-        end
-      end
-
-      def find_or_create_tournament!(tournament)
-        Rails.logger.info "Tournament data received: #{tournament}"
-
-        unless tournament
-          Rails.logger.info 'Tournament is missing, exiting'
-          return
-        end
-
-        @tournament = EventScope.find_or_create_by!(
-          external_id: tournament['id'],
-          title: @title
-        ) do |event_scope|
-          event_scope.name = tournament['name']
-          event_scope.kind = :tournament
+          object.kind = OddsFeed::Radar::SportKindMappingService.call(
+            title['name']
+          )
         end
       end
 
@@ -87,12 +41,29 @@ module OddsFeed
         end
 
         @country = EventScope.find_or_create_by!(
-          external_id: country['id'],
-          title: @title,
-          event_scope: @tournament
+          external_id: country['id']
         ) do |event_scope|
+          event_scope.title = @title
           event_scope.name = country['name']
           event_scope.kind = :country
+        end
+      end
+
+      def find_or_create_tournament!(tournament)
+        Rails.logger.info "Tournament data received: #{tournament}"
+
+        unless tournament
+          Rails.logger.info 'Tournament is missing, exiting'
+          return
+        end
+
+        @tournament = EventScope.find_or_create_by!(
+          external_id: tournament['id']
+        ) do |event_scope|
+          event_scope.title = @title
+          event_scope.event_scope = @country
+          event_scope.name = tournament['name']
+          event_scope.kind = :tournament
         end
       end
 
@@ -105,10 +76,10 @@ module OddsFeed
         end
 
         @season = EventScope.find_or_create_by!(
-          external_id: season['id'],
-          event_scope: @country,
-          title: @title
+          external_id: season['id']
         ) do |event_scope|
+          event_scope.title = @title
+          event_scope.event_scope = @tournament
           event_scope.name = season['name']
           event_scope.kind = :season
         end

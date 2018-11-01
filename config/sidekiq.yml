@@ -8,7 +8,7 @@
 
 :schedule:
   fetch_sports_and_scopes_worker:
-    cron: <%= "#{ENV.fetch('FETCH_SPORTS_AND_SCOPES_CRON') { '0 * *' }}" %>
+    cron: <%= ENV.fetch('FETCH_SPORTS_AND_SCOPES_CRON') { "0 0 0 * *" } %>
     class: FetchSportsAndScopesWorker
 
   pre_match_markets_close_worker:

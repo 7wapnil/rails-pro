@@ -31,36 +31,36 @@ describe OddsFeed::Radar::EventScopeService do
       expect(title.kind).to eq('sports')
     end
 
-    it 'creates tournament' do
-      title = Title.find_by(external_id: title_external_id)
-      tournament = EventScope.find_by(
-        external_id: tournament_external_id
-      )
-      expect(tournament).is_a? EventScope
-      expect(tournament.name).to eq(tournament_name)
-      expect(tournament.title).to eq(title)
-      expect(tournament.kind).to eq('tournament')
-    end
-
     it 'creates country' do
       title = Title.find_by(external_id: title_external_id)
-      tournament = EventScope.find_by(
-        external_id: tournament_external_id
-      )
       country = EventScope.find_by(
         external_id: country_external_id
       )
       expect(country).is_a? EventScope
       expect(country.name).to eq(country_name)
       expect(country.title).to eq(title)
-      expect(country.event_scope).to eq(tournament)
       expect(country.kind).to eq('country')
+    end
+
+    it 'creates tournament' do
+      title = Title.find_by(external_id: title_external_id)
+      country = EventScope.find_by(
+        external_id: country_external_id
+      )
+      tournament = EventScope.find_by(
+        external_id: tournament_external_id
+      )
+      expect(tournament).is_a? EventScope
+      expect(tournament.name).to eq(tournament_name)
+      expect(tournament.title).to eq(title)
+      expect(tournament.event_scope).to eq(country)
+      expect(tournament.kind).to eq('tournament')
     end
 
     it 'creates season' do
       title = Title.find_by(external_id: title_external_id)
-      country = EventScope.find_by(
-        external_id: country_external_id
+      tournament = EventScope.find_by(
+        external_id: tournament_external_id
       )
       season = EventScope.find_by(
         external_id: season_external_id
@@ -68,7 +68,7 @@ describe OddsFeed::Radar::EventScopeService do
       expect(season).is_a? EventScope
       expect(season.name).to eq(season_name)
       expect(season.title).to eq(title)
-      expect(season.event_scope).to eq(country)
+      expect(season.event_scope).to eq(tournament)
       expect(season.kind).to eq('season')
     end
   end
