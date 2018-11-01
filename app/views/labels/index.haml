@@ -13,6 +13,11 @@
                            placeholder: t(:search, subject: :name),
                            autocomplete: :off
         %th
+          = f.label :kind_eq, class: 'sr-only'
+          = f.select :kind_eq, options_for_select(Label.kinds, query_params ? query_params[:kind_eq] : nil),
+                           { include_blank: true },
+                           class: 'form-control'
+        %th
           = f.label :description_cont, class: 'sr-only'
           = f.search_field :description_cont,
                            class: 'form-control',
@@ -24,6 +29,7 @@
       - @labels.each do |label|
         %tr{ id: "label-#{label.id}" }
           %td= link_to label.name, edit_label_path(label)
+          %td= label.kind
           %td= label.description
           %td= link_to t(:delete),
             label,

@@ -8,19 +8,20 @@
 
 :schedule:
   pre_match_markets_close_worker:
-    cron: <%= "#{ENV.fetch('PRE_MATCH_MARKET_CLOSE_CRON') { '*/15 * * * * *' }}" %>
+    every: <%= "#{ENV.fetch('PRE_MATCH_MARKETS_CLOSE_TIMEOUT') { 5 }}m" %>
     class: PreMatchMarketsCloseWorker
+
   regular_market_templates_update:
-    cron: <%= "#{ENV.fetch('MARKET_TEMPLATES_UPDATE_CRON') { '0 20 * * 6' }}" %>
+    cron: <%= ENV.fetch('MARKET_TEMPLATES_UPDATE_CRON') { "0 20 * * 6" } %>
     class: Radar::MarketsUpdateWorker
     queue: market_templates_update
 
   unpopular_live_events_clean_worker:
-    cron: <%= "#{ENV.fetch('UNPOPULAR_LIVE_EVENTS_CLEANER_CRON') { '0 * * * *' }}" %>
+    cron: <%= ENV.fetch('UNPOPULAR_LIVE_EVENTS_CLEANER_CRON') { "0 * * * *" } %>
     class: UnpopularLiveEventsCleanWorker
 
   unpopular_pre_live_events_clean_worker:
-    cron: <%= "#{ENV.fetch('UNPOPULAR_PRE_LIVE_EVENTS_CLEANER_CRON') { '0 * * * *' }}" %>
+    cron: <%= ENV.fetch('UNPOPULAR_PRE_LIVE_EVENTS_CLEANER_CRON') { "0 * * * *" } %>
     class: UnpopularPreLiveEventsCleanWorker
 
   check_bet_expirasy_live:
@@ -29,6 +30,6 @@
     queue: expired_live
 
   check_bet_expirasy_prematch:
-      every: <%= "#{ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT') { 3 }}s" %>
-      class: Scheduled::ExpiringPrematchWorker
-      queue: expired_prematch
+    every: <%= "#{ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT') { 3 }}s" %>
+    class: Scheduled::ExpiringPrematchWorker
+    queue: expired_prematch

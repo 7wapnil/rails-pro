@@ -1,5 +1,6 @@
 class MarketsController < ApplicationController
   include Visibility
+  include Labelable
 
   def update
     market = Market.find(params[:id])
