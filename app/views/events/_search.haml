@@ -9,6 +9,14 @@
     %thead
       %tr
         %th
+          .filter_title= "#{t('attributes.id')}:"
+          .filter_field
+            = f.label :id_eq, class: 'sr-only'
+            = f.search_field :id_eq,
+                                 class: 'form-control',
+                                 placeholder: t('attributes.id'),
+                                 autocomplete: :off
+        %th
           .filter_title Name:
           .filter_field
             = f.label :name_cont, class: 'sr-only'
@@ -48,7 +56,7 @@
             = f.search_field :start_at_gteq,
                                    class: 'form-control form_date',
                                    placeholder: t(:search, subject: t('from')),
-                                   value: query_params ? query_params[:start_at_gteq] : nil
+                                   value: query_params[:start_at_gteq] || l(Date.today, format: :date_picker)
 
         %th
           .filter_title='To date:'

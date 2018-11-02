@@ -11,7 +11,8 @@ module App
     def resolve(_obj, _args)
       app_state = ::ApplicationState
       OpenStruct.new(status: app_state.instance.status,
-                     statuses: app_state::STATUSES.keys)
+                     statuses: app_state::STATUSES.keys,
+                     flags: app_state.instance.flags)
     end
   end
 end

@@ -1,4 +1,6 @@
 class Title < ApplicationRecord
+  include HasUniqueExternalId
+
   scope :with_active_events_amount, -> {
     select('titles.*')
       .select('count(ae.id) as active_events_amount')

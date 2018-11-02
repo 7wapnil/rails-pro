@@ -24,9 +24,36 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
   it 'does not request API if event exists in db' do
     create(:event, external_id: event_id)
-    allow(subject).to receive(:create_event!)
+    allow(subject).to receive(:create_or_find_event!)
     subject.handle
-    expect(subject).not_to have_received(:create_event!)
+    expect(subject).not_to have_received(:create_or_find_event!)
+  end
+
+  describe '#create_or_find_event!' do
+    it 'saves event retrieved from the API' do
+      expect(event).to receive(:save!).and_return(true)
+      subject.send(:create_or_find_event!)
+    end
+
+    context 'fails to save event because it already exists' do
+      let!(:existing_event) do
+        create(:event, title: build(:title), external_id: event_id)
+      end
+
+      it 'raises ActiveRecord::RecordInvalid on event save attempt' do
+        expect(event).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
+        subject.send(:create_or_find_event!)
+      end
+
+      it 'finds existing event' do
+        expect(Event)
+          .to receive(:find_by!)
+          .with(external_id: event_id)
+          .and_return(existing_event)
+
+        subject.send(:create_or_find_event!)
+      end
+    end
   end
 
   it 'raises InvalidMessageError if message is late' do
