@@ -11,8 +11,8 @@ class BetsController < ApplicationController
 
     @bets = @search.result.order(id: :desc).page(params[:page])
     @sports = Title.pluck(:name)
-    @tournaments = EventScope.tournaments.pluck(:name)
-    @countries = EventScope.countries.pluck(:name)
+    @tournaments = EventScope.tournament.pluck(:name)
+    @countries = EventScope.country.pluck(:name)
   end
 
   def show

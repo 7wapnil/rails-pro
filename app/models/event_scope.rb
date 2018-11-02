@@ -12,9 +12,5 @@ class EventScope < ApplicationRecord
     season: 2
   }
 
-  scope :tournaments, -> { where(kind: :tournament) }
-  scope :countries, -> { where(kind: :country) }
-  scope :seasons, -> { where(kind: :season) }
-
   validates :name, presence: true
 end

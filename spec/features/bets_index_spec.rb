@@ -135,7 +135,7 @@ describe 'Bets#index' do
       end
 
       context 'by Tournament' do
-        let(:tournament) { EventScope.tournaments.first }
+        let(:tournament) { EventScope.tournament.first }
         it 'found' do
           bet = create(:bet)
           bet.event.event_scopes << tournament
