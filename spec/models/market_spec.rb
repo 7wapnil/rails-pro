@@ -9,10 +9,6 @@ describe Market do
   it { should validate_presence_of(:status) }
   it { should allow_value(true, false).for(:ready) }
 
-  it 'ready by default' do
-    expect(create(:market).ready).to eq(true)
-  end
-
   it_behaves_like 'has unique :external_id'
 
   context 'callbacks' do
