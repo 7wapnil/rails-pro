@@ -90,12 +90,15 @@ class CsgoPrimer
     end
 
     def create_odds(market, odd_external_id, teams)
-      teams.each do |name|
+      teams.each_with_index do |name, index|
         market.odds.create!(
           name: name,
           status: :active,
           value: Faker::Number.between(1.1, 9.9).round(2),
-          external_id: odd_external_id
+          external_id: [
+            odd_external_id,
+            index
+          ].join('')
         )
       end
     end
@@ -117,10 +120,12 @@ title = CsgoPrimer.title
 
 puts 'Checking Tournaments ...'
 
-CsgoPrimer::CSGO_TOURNAMENTS.each do |name|
+CsgoPrimer::CSGO_TOURNAMENTS.each_with_index do |name, index|
   EventScope.find_or_create_by!(name: name) do |tournament|
     tournament.title = title
     tournament.kind = :tournament
+    tournament.external_id =
+      ['sr:tournament', index].join(':')
   end
 end
 
