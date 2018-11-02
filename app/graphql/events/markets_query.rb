@@ -22,7 +22,6 @@ module Events
               .visible
               .joins(:odds)
               .where(event_id: event_id)
-              .where(ready: true)
               .group('markets.id')
               .order(priority: :asc)
       query = query.where(id: args[:id]) if args[:id]

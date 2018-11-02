@@ -260,7 +260,6 @@ FactoryBot.define do
     name { 'Winner Map (Train)' }
     priority { 2 }
     status { 0 }
-    ready { true }
 
     sequence :external_id do |n|
       "sr:match:#{n}:209/setnr=2|gamenrX=#{n}|gamenrY=#{n}"

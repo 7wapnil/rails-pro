@@ -7,7 +7,6 @@ describe Market do
   it { should validate_presence_of(:name) }
   it { should validate_presence_of(:priority) }
   it { should validate_presence_of(:status) }
-  it { should allow_value(true, false).for(:ready) }
 
   it_behaves_like 'has unique :external_id'
 
