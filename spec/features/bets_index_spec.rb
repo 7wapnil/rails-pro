@@ -135,7 +135,7 @@ describe 'Bets#index' do
       end
 
       context 'by Tournament' do
-        let(:tournament) { EventScope.where(kind: :tournament).first }
+        let(:tournament) { EventScope.tournaments.first }
         it 'found' do
           bet = create(:bet)
           bet.event.event_scopes << tournament
@@ -157,7 +157,7 @@ describe 'Bets#index' do
         end
 
         it 'not found' do
-          picked_tournament = EventScope.where(kind: :tournament).first.name
+          picked_tournament = tournament.name
           select picked_tournament, from: 'Event scope Name equals'
           click_on('Search')
 
