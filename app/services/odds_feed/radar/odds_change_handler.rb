@@ -128,8 +128,7 @@ module OddsFeed
       end
 
       def generate_market!(event, market_data)
-        Rails.logger.debug "Generating market for event #{event.external_id}"
-        MarketGenerator.new(event, market_data).generate
+        ::Radar::MarketGeneratorWorker.perform_async(event.id, market_data)
       end
     end
     # rubocop:enable Metrics/ClassLength
