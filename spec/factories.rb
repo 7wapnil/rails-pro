@@ -215,6 +215,10 @@ FactoryBot.define do
     sequence :external_id do |n|
       "sr:tournament:#{n}"
     end
+    factory :event_scope_country do
+      kind { :country }
+      name { Faker::Address.country }
+    end
   end
 
   factory :scoped_event do
