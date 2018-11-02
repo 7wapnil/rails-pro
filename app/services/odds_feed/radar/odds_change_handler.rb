@@ -57,7 +57,7 @@ module OddsFeed
         markets_data.each do |market_data|
           generate_market!(event, market_data)
         rescue StandardError => e
-          Rails.logger.error e
+          Rails.logger.error e.message
           Rails.logger.debug({ error: e, payload: @payload }.to_json)
           next
         end
@@ -112,7 +112,8 @@ module OddsFeed
           event.save!
           ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
         rescue ActiveRecord::RecordInvalid => e
-          Rails.logger.warn ["Event ID #{external_id} creating failed", e]
+          Rails.logger.warn ["Event ID #{external_id} creating failed",
+                             e.message]
           @event = Event.find_by!(external_id: external_id)
         end
       end

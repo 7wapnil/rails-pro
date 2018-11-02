@@ -5,7 +5,7 @@ module Radar
     def perform(payload)
       worker_class.new(XmlParser.parse(payload)).handle
     rescue StandardError => e
-      Rails.logger.error e
+      Rails.logger.error e.message
     end
 
     def worker_class

@@ -31,7 +31,8 @@ module OddsFeed
         begin
           market.save!
         rescue ActiveRecord::RecordInvalid => e
-          Rails.logger.warn ["Market ID #{external_id} creating failed", e]
+          Rails.logger.warn ["Market ID #{external_id} creating failed",
+                             e.message]
 
           @market = nil
           update_market_attributes!
@@ -80,7 +81,7 @@ module OddsFeed
         @market_data['outcome'].each do |odd_data|
           generate_odd!(odd_data)
         rescue StandardError => e
-          Rails.logger.error e
+          Rails.logger.error e.message
           next
         end
       end
