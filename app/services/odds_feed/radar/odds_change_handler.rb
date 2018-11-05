@@ -55,7 +55,7 @@ module OddsFeed
 
       def generate_markets
         markets_data.each do |market_data|
-          generate_market!(event, market_data)
+          generate_market!(market_data)
         rescue StandardError => e
           Rails.logger.error e
           Rails.logger.debug({ error: e, payload: @payload }.to_json)
@@ -127,7 +127,7 @@ module OddsFeed
         raise InvalidMessageError, msg
       end
 
-      def generate_market!(event, market_data)
+      def generate_market!(market_data)
         ::Radar::MarketGeneratorWorker.perform_async(event.id, market_data)
       end
     end

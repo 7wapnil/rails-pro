@@ -132,7 +132,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
       subject.handle
       expect(subject)
         .to have_received(:generate_market!)
-        .with(anything, payload_single_market['odds_change']['odds']['market'])
+        .with(payload_single_market['odds_change']['odds']['market'])
         .once
     end
   end
