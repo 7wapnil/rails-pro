@@ -43,4 +43,3 @@
     cron: <%= "#{ENV.fetch('MISSING_HEARTBEAT_WATCHDOG_CRON') { '0 * * * *' }}" %>
     class: Radar::MissingHeartbeatWorker
     queue: critical
-
