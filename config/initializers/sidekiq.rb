@@ -12,5 +12,5 @@ Sidekiq.configure_server do |config|
     )
     SidekiqScheduler::Scheduler.instance.reload_schedule!
   end
-  config.options[:job_logger] = SilenceJobLogger
+  config.options[:job_logger] = Sidekiq::SilenceJobLogger
 end

@@ -1,5 +1,7 @@
-class SilenceJobLogger
-  def call(_item, _queue)
-    yield
+module Sidekiq
+  class SilenceJobLogger
+    def call(*)
+      yield
+    end
   end
 end
