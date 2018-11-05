@@ -30,7 +30,7 @@ module OddsFeed
 
         begin
           market.save!
-        rescue ActiveRecord::RecordInvalid => e
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
           Rails.logger.warn ["Market ID #{external_id} creating failed",
                              e.message]
 
@@ -95,7 +95,7 @@ module OddsFeed
 
         begin
           odd.save!
-        rescue ActiveRecord::RecordInvalid => e
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
           Rails.logger.warn ["Odd ID #{odd_id} creating failed", e]
           odd = prepare_odd(odd_id, odd_data)
           odd.save!
