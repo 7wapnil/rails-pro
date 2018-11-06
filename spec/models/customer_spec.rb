@@ -29,6 +29,22 @@ describe Customer do
 
   it { should act_as_paranoid }
 
+  it 'not valid when age is less than 18' do
+    customer = build(:customer, date_of_birth: 17.years.ago)
+    customer.valid?
+    message = I18n.t('errors.messages.age_adult')
+
+    expect(customer.errors.messages[:date_of_birth]).to include(message)
+  end
+
+  it 'valid when age is greater than 18' do
+    customer = build(:customer, date_of_birth: 19.years.ago)
+    customer.valid?
+    message = I18n.t('errors.messages.age_adult')
+
+    expect(customer.errors.messages[:date_of_birth]).to_not include(message)
+  end
+
   it 'updates tracked fields' do
     customer = create(:customer)
     sign_in_count = customer.sign_in_count

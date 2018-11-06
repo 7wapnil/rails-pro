@@ -56,7 +56,7 @@ describe 'GraphQL#SignUp' do
         email: 'test@email.com',
         first_name: 'Test',
         last_name: 'User',
-        date_of_birth: '01-01-2018',
+        date_of_birth: '01-01-1998',
         password: '123456',
         password_confirmation: '123456'
       } }
