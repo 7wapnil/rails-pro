@@ -2,27 +2,36 @@ describe AgeValidator do
   context '#validate' do
     let(:errors_messages) { Hash[date_of_birth: []] }
     let(:message) { I18n.t('errors.messages.age_adult') }
+    let(:adult_age) { AgeValidator::ADULT_AGE }
 
-    it 'add error message when age is less than 18' do
+    before do
+      Timecop.freeze
+    end
+
+    after do
+      Timecop.return
+    end
+
+    it 'adds error message when age is less than 18' do
       record = double('record', errors: errors_messages,
-                                date_of_birth: 17.years.ago)
+                                date_of_birth: adult_age.year.ago + 1.day)
 
       described_class.new.validate(record)
       expect(errors_messages[:date_of_birth]).to include(message)
     end
 
-    it "don't add error message when age is greater than 18" do
+    it "doesn't add error message when age is greater than adult age" do
       record = double('record', errors: errors_messages,
-                                date_of_birth: 19.years.ago)
+                                date_of_birth: adult_age.year.ago - 1.day)
 
       described_class.new.validate(record)
 
       expect(errors_messages[:date_of_birth]).to_not include(message)
     end
 
-    it "don't add error message when age is equals 18" do
+    it "doesn't add error message when age is equals adult age" do
       record = double('record', errors: errors_messages,
-                                date_of_birth: 18.years.ago)
+                                date_of_birth: adult_age.years.ago)
 
       described_class.new.validate(record)
 
