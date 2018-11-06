@@ -37,7 +37,7 @@
 
           - EventScope.kinds.keys.each do |kind|
             %td{ class: kind }
-              - event.event_scopes.where(kind: kind).each do |event_scope|
+              - event.event_scopes.group_by(&:kind)[kind]&.each do |event_scope|
                 .event_scope= event_scope.name
                 %br
           %td= event.wager

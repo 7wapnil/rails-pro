@@ -4,7 +4,7 @@ class EventsController < ApplicationController
   include DateIntervalFilters
 
   def index
-    @search = Event.includes(:labels)
+    @search = Event.includes(:labels, :event_scopes)
                    .with_markets_count
                    .with_wager
                    .with_bets_count
