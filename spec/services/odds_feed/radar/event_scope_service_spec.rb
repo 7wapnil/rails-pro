@@ -30,7 +30,7 @@ describe OddsFeed::Radar::EventScopeService do
           .to receive(:save!)
           .and_raise(ActiveRecord::RecordInvalid)
 
-        subject.call
+        subject.send(:find_or_create_title!, payload['sport'])
       end
 
       it 'returns existing title' do
@@ -39,7 +39,7 @@ describe OddsFeed::Radar::EventScopeService do
           .with(external_id: title_payload[:external_id])
           .and_return(existing_title)
 
-        subject.call
+        subject.send(:find_or_create_title!, payload['sport'])
       end
     end
   end
@@ -59,6 +59,7 @@ describe OddsFeed::Radar::EventScopeService do
     before do
       allow(EventScope)
         .to receive(:find_or_initialize_by)
+        .with(hash_including(kind: :country))
         .and_return(initialized_country)
     end
 
@@ -68,7 +69,7 @@ describe OddsFeed::Radar::EventScopeService do
           .to receive(:save!)
           .and_raise(ActiveRecord::RecordInvalid)
 
-        subject.call
+        subject.send(:find_or_create_country!, payload['category'])
       end
 
       it 'returns existing country' do
@@ -77,7 +78,7 @@ describe OddsFeed::Radar::EventScopeService do
           .with(kind: :country, external_id: country_payload[:external_id])
           .and_return(existing_country)
 
-        subject.call
+        subject.send(:find_or_create_country!, payload['category'])
       end
     end
   end
