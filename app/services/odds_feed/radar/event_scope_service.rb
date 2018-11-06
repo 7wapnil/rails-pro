@@ -49,22 +49,24 @@ module OddsFeed
         save_country! unless @country.persisted?
       end
 
-      def find_or_create_tournament!(tournament)
-        Rails.logger.info "Tournament data received: #{tournament}"
+      def find_or_create_tournament!(payload)
+        Rails.logger.debug "Tournament data received: #{payload}"
 
-        unless tournament
-          Rails.logger.info 'Tournament is missing, exiting'
+        unless payload.is_a?(Hash)
+          Rails.logger.warn ['Tournament is missing, exiting', @payload]
           return
         end
 
-        @tournament = EventScope.find_or_create_by!(
-          external_id: tournament['id']
-        ) do |event_scope|
-          event_scope.title = @title
-          event_scope.event_scope = @country
-          event_scope.name = tournament['name']
-          event_scope.kind = :tournament
+        @tournament = EventScope.find_or_initialize_by(
+          kind: :tournament,
+          external_id: payload['id']
+        ) do |tournament|
+          tournament.title = @title
+          tournament.event_scope = @country
+          tournament.name = payload['name']
         end
+
+        save_tournament! unless @tournament.persisted?
       end
 
       def find_or_create_season!(season)
@@ -89,14 +91,30 @@ module OddsFeed
         @title.save!
       rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
         Rails.logger.warn ["Title ID #{title_id} creating failed", e.message]
+
         @title = Title.find_by!(external_id: title_id)
       end
 
       def save_country!
         @country.save!
       rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-        Rails.logger.warn ["Country ID #{title_id} creating failed", e.message]
+        Rails.logger.warn ["Country ID #{country_id} creating failed", e.message]
+
         @country = EventScope.find_by!(external_id: country_id, kind: :country)
+      end
+
+      def save_tournament!
+        @tournament.save!
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+        Rails.logger.warn [
+          "Tournament ID #{tournament_id} creating failed",
+          e.message
+        ]
+
+        @tournament = EventScope.find_by!(
+          external_id: tournament_id,
+          kind: :tournament
+        )
       end
 
       def title_id
@@ -105,6 +123,10 @@ module OddsFeed
 
       def country_id
         @payload['category']['id']
+      end
+
+      def tournament_id
+        @payload['id']
       end
     end
   end

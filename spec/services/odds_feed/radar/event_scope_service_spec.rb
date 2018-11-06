@@ -83,6 +83,45 @@ describe OddsFeed::Radar::EventScopeService do
     end
   end
 
+  describe '#find_or_create_tournament!' do
+    let(:tournament_payload) do
+      {
+        kind: :tournament,
+        name: payload['name'],
+        external_id: payload['id']
+      }
+    end
+
+    let!(:existing_tournament) { create(:event_scope, tournament_payload) }
+    let(:initialized_tournament) { build(:event_scope, tournament_payload) }
+
+    before do
+      allow(EventScope)
+        .to receive(:find_or_initialize_by)
+        .with(hash_including(kind: :tournament))
+        .and_return(initialized_tournament)
+    end
+
+    context 'record created simultaneously' do
+      it 'fails to save the initialized tournament' do
+        expect(initialized_tournament)
+          .to receive(:save!)
+          .and_raise(ActiveRecord::RecordInvalid)
+
+        subject.send(:find_or_create_tournament!, payload)
+      end
+
+      it 'returns existing tournament' do
+        expect(EventScope)
+          .to receive(:find_by!)
+          .with(kind: :tournament, external_id: tournament_payload[:external_id])
+          .and_return(existing_tournament)
+
+        subject.send(:find_or_create_tournament!, payload)
+      end
+    end
+  end
+
   context '.call' do
     let(:title_external_id) { payload['sport']['id'] }
     let(:title_name) { payload['sport']['name'] }
