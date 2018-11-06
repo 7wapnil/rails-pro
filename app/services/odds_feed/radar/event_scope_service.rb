@@ -22,7 +22,7 @@ module OddsFeed
           return
         end
 
-        @title = Title.find_or_initialize_by(external_id: title_id()) do |title|
+        @title = Title.find_or_initialize_by(external_id: title_id) do |title|
           title.name = payload['name']
           title.kind = SportKind.from_title(payload['name'])
         end
@@ -30,21 +30,23 @@ module OddsFeed
         save_title! unless @title.persisted?
       end
 
-      def find_or_create_country!(country)
-        Rails.logger.info "Country data received: #{country}"
+      def find_or_create_country!(payload)
+        Rails.logger.debug "Country data received: #{payload}"
 
-        unless country
-          Rails.logger.info 'Country is missing, exiting'
+        unless payload.is_a?(Hash)
+          Rails.logger.warn ['Country is missing, exiting', @payload]
           return
         end
 
-        @country = EventScope.find_or_create_by!(
-          external_id: country['id']
-        ) do |event_scope|
-          event_scope.title = @title
-          event_scope.name = country['name']
-          event_scope.kind = :country
+        @country = EventScope.find_or_initialize_by(
+          kind: :country,
+          external_id: payload['id']
+        ) do |country|
+          country.title = @title
+          country.name = payload['name']
         end
+
+        save_country! unless @country.persisted?
       end
 
       def find_or_create_tournament!(tournament)
@@ -86,13 +88,23 @@ module OddsFeed
       def save_title!
         @title.save!
       rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-        Rails.logger.warn ["Title ID #{title_id} creating failed",
-                           e.message]
+        Rails.logger.warn ["Title ID #{title_id} creating failed", e.message]
         @title = Title.find_by!(external_id: title_id)
+      end
+
+      def save_country!
+        @country.save!
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+        Rails.logger.warn ["Country ID #{title_id} creating failed", e.message]
+        @country = EventScope.find_by!(external_id: country_id, kind: :country)
       end
 
       def title_id
         @payload['sport']['id']
+      end
+
+      def country_id
+        @payload['category']['id']
       end
     end
   end

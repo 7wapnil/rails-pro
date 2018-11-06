@@ -44,6 +44,44 @@ describe OddsFeed::Radar::EventScopeService do
     end
   end
 
+  describe '#find_or_create_country!' do
+    let(:country_payload) do
+      {
+        kind: :country,
+        name: payload['category']['name'],
+        external_id: payload['category']['id']
+      }
+    end
+
+    let!(:existing_country) { create(:event_scope, country_payload) }
+    let(:initialized_country) { build(:event_scope, country_payload) }
+
+    before do
+      allow(EventScope)
+        .to receive(:find_or_initialize_by)
+        .and_return(initialized_country)
+    end
+
+    context 'record created simultaneously' do
+      it 'fails to save the initialized country' do
+        expect(initialized_country)
+          .to receive(:save!)
+          .and_raise(ActiveRecord::RecordInvalid)
+
+        subject.call
+      end
+
+      it 'returns existing country' do
+        expect(EventScope)
+          .to receive(:find_by!)
+          .with(kind: :country, external_id: country_payload[:external_id])
+          .and_return(existing_country)
+
+        subject.call
+      end
+    end
+  end
+
   context '.call' do
     let(:title_external_id) { payload['sport']['id'] }
     let(:title_name) { payload['sport']['name'] }
