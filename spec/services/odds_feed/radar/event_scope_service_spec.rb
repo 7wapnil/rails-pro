@@ -7,6 +7,43 @@ describe OddsFeed::Radar::EventScopeService do
 
   subject { OddsFeed::Radar::EventScopeService.new(payload) }
 
+  describe '#find_or_create_title!' do
+    context 'record created simultaneously' do
+      let(:title_payload) do
+        {
+          name: payload['sport']['name'],
+          external_id: payload['sport']['id']
+        }
+      end
+
+      let!(:existing_title) { create(:title, title_payload) }
+      let(:initialized_title) { build(:title, title_payload) }
+
+      before do
+        allow(Title)
+          .to receive(:find_or_initialize_by)
+          .and_return(initialized_title)
+      end
+
+      it 'fails to save the initialized title' do
+        expect(initialized_title)
+          .to receive(:save!)
+          .and_raise(ActiveRecord::RecordInvalid)
+
+        subject.call
+      end
+
+      it 'returns existing title' do
+        expect(Title)
+          .to receive(:find_by!)
+          .with(external_id: title_payload[:external_id])
+          .and_return(existing_title)
+
+        subject.call
+      end
+    end
+  end
+
   context '.call' do
     let(:title_external_id) { payload['sport']['id'] }
     let(:title_name) { payload['sport']['name'] }

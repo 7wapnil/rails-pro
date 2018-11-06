@@ -14,22 +14,20 @@ module OddsFeed
 
       private
 
-      def find_or_create_title!(title)
-        Rails.logger.info "Title data received: #{title}"
+      def find_or_create_title!(payload)
+        Rails.logger.debug "Title data received: #{payload}"
 
-        unless title
-          Rails.logger.info 'Title is missing, exiting'
+        unless payload.is_a?(Hash)
+          Rails.logger.warn ['Title is missing, exiting', @payload]
           return
         end
 
-        @title = Title.find_or_create_by!(
-          external_id: title['id']
-        ) do |object|
-          object.name = title['name']
-          object.kind = OddsFeed::Radar::SportKindMappingService.call(
-            title['name']
-          )
+        @title = Title.find_or_initialize_by(external_id: title_id()) do |title|
+          title.name = payload['name']
+          title.kind = SportKind.from_title(payload['name'])
         end
+
+        save_title! unless @title.persisted?
       end
 
       def find_or_create_country!(country)
@@ -83,6 +81,18 @@ module OddsFeed
           event_scope.name = season['name']
           event_scope.kind = :season
         end
+      end
+
+      def save_title!
+        @title.save!
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+        Rails.logger.warn ["Title ID #{title_id} creating failed",
+                           e.message]
+        @title = Title.find_by!(external_id: title_id)
+      end
+
+      def title_id
+        @payload['sport']['id']
       end
     end
   end
