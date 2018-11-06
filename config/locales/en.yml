@@ -164,6 +164,7 @@ en:
     visible: Visible
     country: Country
     tournament: Tournament
+    event_status: Event Status
 
   documents:
     history_title: "Files history: %{document_type}"

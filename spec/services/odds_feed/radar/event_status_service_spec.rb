@@ -1,0 +1,130 @@
+describe OddsFeed::Radar::EventStatusService do
+  let(:payload_not_started) do
+    XmlParser.parse(
+      file_fixture('event_status_not_started_message.xml').read
+    )['odds_change']['sport_event_status']
+  end
+  let(:payload_in_progress) do
+    XmlParser.parse(
+      file_fixture('event_status_in_progress_message.xml').read
+    )['odds_change']['sport_event_status']
+  end
+  let(:payload_ended) do
+    XmlParser.parse(
+      file_fixture('event_status_ended_message.xml').read
+    )['odds_change']['sport_event_status']
+  end
+
+  subject { OddsFeed::Radar::EventStatusService.new }
+
+  let(:result_not_started) { subject.call(payload_not_started) }
+  let(:result_in_progress) { subject.call(payload_in_progress) }
+  let(:result_ended) { subject.call(payload_ended) }
+
+  let(:match_status) do
+    OddsFeed::Radar::MatchStatusMappingService.new
+  end
+
+  describe 'not started event message' do
+    context '.call' do
+      it 'returns correct status' do
+        expect(result_not_started[:status_code]).to eq(
+          payload_not_started['match_status']
+        )
+        expect(result_not_started[:status]).to eq(
+          match_status.call(
+            payload_not_started['match_status'].to_i
+          )
+        )
+      end
+
+      it 'don\'t returns score' do
+        expect(result_not_started[:score]).to be_nil
+      end
+
+      it 'don\'t returns time' do
+        expect(result_not_started[:time]).to be_nil
+      end
+
+      it 'returns empty period scores' do
+        expect(result_not_started[:period_scores]).to be_empty
+      end
+
+      it 'returns falsey finished value' do
+        expect(result_not_started[:finished]).to be_falsey
+      end
+    end
+  end
+
+  describe 'in progress event message with one period' do
+    context '.call' do
+      it 'returns correct status' do
+        expect(result_in_progress[:status_code]).to eq(
+          payload_in_progress['match_status']
+        )
+        expect(result_in_progress[:status]).to eq(
+          match_status.call(
+            payload_in_progress['match_status'].to_i
+          )
+        )
+      end
+
+      it 'returns correct score' do
+        expect(result_in_progress[:score]).to eq(
+          # rubocop:disable Metrics/LineLength
+          "#{payload_in_progress['home_score']}:#{payload_in_progress['away_score']}"
+          # rubocop:enable Metrics/LineLength
+        )
+      end
+
+      it 'returns correct time' do
+        expect(result_in_progress[:time]).to eq(
+          payload_in_progress['clock']['match_time']
+        )
+      end
+
+      it 'returns period scores' do
+        expect(result_in_progress[:period_scores]).to_not be_empty
+        expect(result_in_progress[:period_scores].count).to eq(1)
+      end
+
+      it 'returns falsey finished value' do
+        expect(result_in_progress[:finished]).to be_falsey
+      end
+    end
+  end
+
+  describe 'finished event message with multiple periods' do
+    context '.call' do
+      it 'returns correct status' do
+        expect(result_ended[:status_code]).to eq(payload_ended['match_status'])
+        expect(result_ended[:status]).to eq(
+          match_status.call(
+            payload_ended['match_status'].to_i
+          )
+        )
+      end
+
+      it 'returns correct score' do
+        expect(result_ended[:score]).to eq(
+          "#{payload_ended['home_score']}:#{payload_ended['away_score']}"
+        )
+      end
+
+      it 'don\'t returns time' do
+        expect(result_ended[:time]).to be_nil
+      end
+
+      it 'returns period scores' do
+        expect(result_ended[:period_scores]).to_not be_empty
+        expect(result_ended[:period_scores].count).to eq(
+          payload_ended['period_scores']['period_score'].size
+        )
+      end
+
+      it 'returns truthy finished value' do
+        expect(result_ended[:finished]).to be_truthy
+      end
+    end
+  end
+end
