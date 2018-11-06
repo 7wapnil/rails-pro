@@ -126,6 +126,14 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
     payload&.merge!(addition)
     self.payload = addition unless payload
+
+    return unless addition[:event_status]
+
+    WebSocket::Client.instance.emit(
+      WebSocket::Signals::EVENT_UPDATED,
+      id: id.to_s,
+      changes: { event_status: addition[:event_status] }
+    )
   end
 
   def tournament
