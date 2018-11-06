@@ -64,13 +64,13 @@ describe Bet do
   end
 
   describe 'Bet.expired_live' do
-    # TODO: Fix this test, it is wrong
-    xit 'Returns expired live bets' do
+    it 'Returns expired live bets' do
       timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT') { 10 }.to_i
+      expired_time = (timeout + 3).seconds.ago
+      live_event = create(:event_with_odds, traded_live: true)
       expired_bets = create_list(:bet, 2,
-                                 validation_ticket_sent_at: (timeout + 3)
-                                                              .seconds
-                                                              .ago,
+                                 odd: live_event.markets.first.odds.first,
+                                 validation_ticket_sent_at: expired_time,
                                  status: :sent_to_external_validation)
       create_list(:bet, 3,
                   validation_ticket_sent_at: 1.seconds.ago,
