@@ -29,6 +29,35 @@ describe Customer do
 
   it { should act_as_paranoid }
 
+  describe 'adult age validation' do
+    let(:adult_age) { AgeValidator::ADULT_AGE }
+
+    before do
+      Timecop.freeze
+    end
+
+    after do
+      Timecop.return
+    end
+
+    it 'not valid when age is less than adult age' do
+      kid_age = adult_age.years.ago + 1.day
+      customer = build(:customer, date_of_birth: kid_age)
+      customer.valid?
+      message = I18n.t('errors.messages.age_adult')
+
+      expect(customer.errors.messages[:date_of_birth]).to include(message)
+    end
+
+    it 'valid when age is equals adult age' do
+      customer = build(:customer, date_of_birth: adult_age.years.ago)
+      customer.valid?
+      message = I18n.t('errors.messages.age_adult')
+
+      expect(customer.errors.messages[:date_of_birth]).to_not include(message)
+    end
+  end
+
   it 'updates tracked fields' do
     customer = create(:customer)
     sign_in_count = customer.sign_in_count
