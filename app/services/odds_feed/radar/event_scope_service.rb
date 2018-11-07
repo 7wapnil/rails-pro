@@ -19,12 +19,7 @@ module OddsFeed
       private
 
       def find_or_create_title!(payload)
-        Rails.logger.debug "Title data received: #{payload}"
-
-        unless payload.is_a?(Hash)
-          Rails.logger.warn ['Title is missing, exiting', @payload]
-          return
-        end
+        return unless payload_valid_for?('Title', payload)
 
         @title = Title.find_or_initialize_by(external_id: title_id) do |title|
           title.name = payload['name']
@@ -35,12 +30,7 @@ module OddsFeed
       end
 
       def find_or_create_country!(payload)
-        Rails.logger.debug "Country data received: #{payload}"
-
-        unless payload.is_a?(Hash)
-          Rails.logger.warn ['Country is missing, exiting', @payload]
-          return
-        end
+        return unless payload_valid_for?('Country', payload)
 
         @country = EventScope.find_or_initialize_by(
           kind: :country,
@@ -54,12 +44,7 @@ module OddsFeed
       end
 
       def find_or_create_tournament!(payload)
-        Rails.logger.debug "Tournament data received: #{payload}"
-
-        unless payload.is_a?(Hash)
-          Rails.logger.warn ['Tournament is missing, exiting', @payload]
-          return
-        end
+        return unless payload_valid_for?('Tournament', payload)
 
         @tournament = EventScope.find_or_initialize_by(
           kind: :tournament,
@@ -74,12 +59,7 @@ module OddsFeed
       end
 
       def find_or_create_season!(payload)
-        Rails.logger.debug "Season data received: #{payload}"
-
-        unless payload.is_a?(Hash)
-          Rails.logger.warn ['Season is missing, exiting', @payload]
-          return
-        end
+        return unless payload_valid_for?('Season', payload)
 
         @season = EventScope.find_or_initialize_by(
           kind: :season,
@@ -91,6 +71,17 @@ module OddsFeed
         end
 
         save_season! unless @season.persisted?
+      end
+
+      def payload_valid_for?(scope, payload)
+        Rails.logger.debug "#{scope} data received: #{payload}"
+
+        unless payload.is_a?(Hash)
+          Rails.logger.warn ["#{scope} is missing, exiting", @payload]
+          return false
+        end
+
+        true
       end
 
       def save_title!
