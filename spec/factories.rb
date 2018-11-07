@@ -147,7 +147,7 @@ FactoryBot.define do
     last_name { Faker::Name.last_name }
     date_of_birth { rand(18..50).years.ago }
     gender { Customer.genders.keys.sample }
-    phone { Faker::PhoneNumber.phone_number }
+    phone { "+37258389#{rand(100..999)}" }
     sign_in_count { [*1..200].sample }
     current_sign_in_at { Faker::Time.between(1.week.ago, Date.today).in_time_zone } # rubocop:disable Metrics/LineLength
     last_sign_in_at { Faker::Time.between(Date.yesterday, Date.today).in_time_zone } # rubocop:disable Metrics/LineLength

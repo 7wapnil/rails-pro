@@ -58,6 +58,19 @@ describe Customer do
     end
   end
 
+  describe 'phone validation' do
+    it 'valid when has correct format' do
+      customer = build(:customer, phone: '37258383943')
+
+      expect(customer.errors.messages[:phone]).to be_empty
+    end
+    it 'not valid' do
+      customer = build(:customer, phone: '999999999999')
+
+      expect(customer.errors.messages[:phone]).to be_empty
+    end
+  end
+
   it 'updates tracked fields' do
     customer = create(:customer)
     sign_in_count = customer.sign_in_count
