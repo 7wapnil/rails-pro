@@ -122,6 +122,45 @@ describe OddsFeed::Radar::EventScopeService do
     end
   end
 
+  describe '#find_or_create_season!' do
+    let(:season_payload) do
+      {
+        kind: :season,
+        name: payload['current_season']['name'],
+        external_id: payload['current_season']['id']
+      }
+    end
+
+    let!(:existing_season) { create(:event_scope, season_payload) }
+    let(:initialized_season) { build(:event_scope, season_payload) }
+
+    before do
+      allow(EventScope)
+        .to receive(:find_or_initialize_by)
+        .with(hash_including(kind: :season))
+        .and_return(initialized_season)
+    end
+
+    context 'record created simultaneously' do
+      it 'fails to save the initialized season' do
+        expect(initialized_season)
+          .to receive(:save!)
+          .and_raise(ActiveRecord::RecordInvalid)
+
+        subject.send(:find_or_create_season!, payload)
+      end
+
+      it 'returns existing season' do
+        expect(EventScope)
+          .to receive(:find_by!)
+          .with(kind: :season, external_id: season_payload[:external_id])
+          .and_return(existing_season)
+
+        subject.send(:find_or_create_season!, payload)
+      end
+    end
+  end
+
   context '.call' do
     let(:title_external_id) { payload['sport']['id'] }
     let(:title_name) { payload['sport']['name'] }

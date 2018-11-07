@@ -3,6 +3,10 @@ module OddsFeed
     class EventScopeService < ApplicationService
       def initialize(payload)
         @payload = payload
+        @title = nil
+        @country = nil
+        @tournament = nil
+        @season = nil
       end
 
       def call
@@ -69,22 +73,24 @@ module OddsFeed
         save_tournament! unless @tournament.persisted?
       end
 
-      def find_or_create_season!(season)
-        Rails.logger.info "Season data received: #{season}"
+      def find_or_create_season!(payload)
+        Rails.logger.debug "Season data received: #{payload}"
 
-        unless season
-          Rails.logger.info 'Season is missing, exiting'
+        unless payload.is_a?(Hash)
+          Rails.logger.warn ['Season is missing, exiting', @payload]
           return
         end
 
-        @season = EventScope.find_or_create_by!(
-          external_id: season['id']
-        ) do |event_scope|
-          event_scope.title = @title
-          event_scope.event_scope = @tournament
-          event_scope.name = season['name']
-          event_scope.kind = :season
+        @season = EventScope.find_or_initialize_by(
+          kind: :season,
+          external_id: payload['id']
+        ) do |season|
+          season.title = @title
+          season.event_scope = @tournament
+          season.name = payload['name']
         end
+
+        save_season! unless @season.persisted?
       end
 
       def save_title!
@@ -117,6 +123,14 @@ module OddsFeed
         )
       end
 
+      def save_season!
+        @season.save!
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+        Rails.logger.warn ["Season ID #{season_id} creating failed", e.message]
+
+        @season = EventScope.find_by!(external_id: season_id, kind: :season)
+      end
+
       def title_id
         @payload['sport']['id']
       end
@@ -127,6 +141,10 @@ module OddsFeed
 
       def tournament_id
         @payload['id']
+      end
+
+      def season_id
+        @payload['current_season']['id']
       end
     end
   end
