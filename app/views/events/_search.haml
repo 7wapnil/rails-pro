@@ -65,7 +65,7 @@
             = f.search_field :start_at_lteq,
                                    class: 'form-control form_date',
                                    placeholder: t(:search, subject: t('to')),
-                                   value: query_params ? query_params[:start_at_lteq] : nil
+                                   value: query_params[:start_at_lteq] || l(Date.today, format: :date_picker)
 
         %th
           .filter_title Scope kind:

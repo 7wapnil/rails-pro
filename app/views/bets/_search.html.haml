@@ -43,7 +43,7 @@
             = f.search_field :created_at_lteq,
                               class: 'form-control form_date',
                               placeholder: t(:search, subject: t('to')),
-                              value: query_params ? query_params[:created_at_lteq] : nil
+                              value: query_params[:created_at_lteq] || l(Date.today, format: :date_picker)
 
         %th
           = f.submit class: 'btn btn-outline-dark btn-block'
