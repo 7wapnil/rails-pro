@@ -18,6 +18,17 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_one :event, through: :market
   has_one :title, through: :event
 
+  has_many :tournaments,
+           -> { where(kind: :tournament) },
+           through: :event,
+           source: :event_scopes,
+           class_name: 'EventScope'
+  has_many :countries,
+           -> { where(kind: :country) },
+           through: :event,
+           source: :event_scopes,
+           class_name: 'EventScope'
+
   validates :odd_value,
             numericality: {
               equal_to: ->(bet) { bet.odd.value },

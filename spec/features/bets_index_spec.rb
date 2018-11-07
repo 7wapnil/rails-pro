@@ -3,6 +3,11 @@ describe 'Bets#index' do
     let(:per_page_count) { 10 }
 
     before do
+      create(:event_scope, kind: :tournament, name: 'X-Bet')
+      create(:event_scope, kind: :tournament, name: 'Crazy PANDAS')
+      create(:event_scope_country, name: 'Pakistan')
+      create(:event_scope_country, name: 'France')
+      create(:event_scope_country, name: 'Germany')
       create_list(:bet, per_page_count / 2)
 
       login_as create(:admin_user), scope: :user
@@ -32,6 +37,188 @@ describe 'Bets#index' do
 
       it 'is hidden' do
         expect(page).not_to have_selector('ul.pagination')
+      end
+    end
+
+    describe 'sorting' do
+      context 'by ID' do
+        it 'by default in DESC direction' do
+          within 'table.table.entities tbody' do
+            rows = page.all('tr')
+            bets_ids = rows.map do |row|
+              row[:id].delete('bet-').to_i
+            end
+            sorted_ids = bets_ids.sort { |x, y| y <=> x }
+
+            expect(bets_ids).to eq(sorted_ids)
+          end
+        end
+
+        it 'in ASC direction' do
+          click_link('Bet ID')
+          within 'table.table.entities tbody' do
+            rows = page.all('tr')
+            bets_ids = rows.map do |row|
+              row[:id].delete('bet-').to_i
+            end
+            sorted_ids = bets_ids.sort { |x, y| x <=> y }
+
+            expect(bets_ids).to eq(sorted_ids)
+          end
+        end
+      end
+
+      context 'by dates interval' do
+        it 'by default starts from today' do
+          start_date = find('#query_created_at_gteq').value.to_date
+
+          expect(start_date).to eq(Date.today)
+        end
+      end
+    end
+
+    describe 'filtering' do
+      context 'by Bet ID' do
+        it 'found' do
+          bet = Bet.all.sample
+          fill_in('Bet ID', with: bet.id)
+          click_on('Search')
+
+          within 'table.table.entities tbody' do
+            expect(page).to have_content(bet.id)
+            expect(page).to have_content(bet.customer.username)
+            expect(page).to have_css('tr', count: 1)
+          end
+        end
+
+        it 'not fount' do
+          fill_in('Bet ID', with: -1)
+          click_on('Search')
+
+          within 'table.table.entities tbody' do
+            expect(page).to_not have_css('tr')
+          end
+        end
+      end
+
+      context 'by Sport' do
+        it 'found' do
+          bet = Bet.first
+          picked_sport = bet.title.name
+          available_sports = page.find('#query_title_name_eq')
+                                 .all('option')
+                                 .map(&:text)
+                                 .reject(&:blank?)
+          select picked_sport, from: 'Title Name equals'
+          click_on('Search')
+
+          within 'table.table.entities tbody' do
+            expect(page).to have_content(bet.id)
+            expect(page).to have_content(bet.title.name)
+            (available_sports - [picked_sport]).each do |sport|
+              expect(page).to_not have_content(sport)
+            end
+          end
+        end
+
+        it 'not found' do
+          bet = Bet.first
+          picked_sport = bet.title.name
+          Title.update_all(name: 'Dota2')
+          select picked_sport, from: 'Title Name equals'
+          click_on('Search')
+
+          within 'table.table.entities tbody' do
+            expect(page).to_not have_css('tr')
+          end
+        end
+      end
+
+      context 'by Tournament' do
+        let(:tournament) { EventScope.tournament.first }
+        it 'found' do
+          bet = create(:bet)
+          bet.event.event_scopes << tournament
+          picked_tournament = tournament.name
+          available_tournaments = page.find('#query_tournaments_name_eq')
+                                      .all('option')
+                                      .map(&:text)
+                                      .reject(&:blank?)
+          select picked_tournament, from: 'Event scope Name equals'
+          click_on('Search')
+
+          within 'table.table.entities tbody' do
+            expect(page).to have_content(bet.id)
+            expect(page).to have_content(bet.title.name)
+            (available_tournaments - [picked_tournament]).each do |tournament|
+              expect(page).to_not have_content(tournament)
+            end
+          end
+        end
+
+        it 'not found' do
+          picked_tournament = tournament.name
+          select picked_tournament, from: 'Event scope Name equals'
+          click_on('Search')
+
+          within 'table.table.entities tbody' do
+            expect(page).to_not have_css('tr')
+          end
+        end
+      end
+
+      context 'by Country' do
+        let(:france) { EventScope.find_by_name('France') }
+        let(:pakistan) { EventScope.find_by_name('Pakistan') }
+        let(:germany) { EventScope.find_by_name('Germany') }
+
+        let(:bet_pakistan) { create(:bet) }
+        let(:bet_france) { create(:bet) }
+        let(:bet_germany) { create(:bet) }
+
+        before do
+          bet_pakistan.event.event_scopes << pakistan
+          bet_france.event.event_scopes << france
+          bet_germany.event.event_scopes << germany
+        end
+
+        it 'found by one country' do
+          select pakistan.name, from: 'Event scope Name in'
+          click_on 'Search'
+
+          within 'table.table.entities tbody' do
+            expect(page).to have_content(bet_pakistan.id)
+            expect(page).to have_content(bet_pakistan.countries.first.name)
+            expect(page).to_not have_content(bet_france.id)
+            expect(page).to_not have_content(bet_france.countries.first.name)
+          end
+        end
+
+        it 'found by multiple countries' do
+          dropdown = page.find('select#query_countries_name_in')
+          dropdown.select(pakistan.name)
+          dropdown.select(france.name)
+          click_on 'Search'
+
+          within 'table.table.entities tbody' do
+            expect(page).to have_content(bet_pakistan.id)
+            expect(page).to have_content(bet_pakistan.countries.first.name)
+            expect(page).to have_content(bet_france.id)
+            expect(page).to have_content(bet_france.countries.first.name)
+            expect(page).to_not have_content(bet_germany.id)
+            expect(page).to_not have_content(bet_germany.countries.first.name)
+          end
+        end
+
+        it 'not found' do
+          bet_france.event.event_scopes.delete_all
+          select france.name, from: 'Event scope Name in'
+          click_on 'Search'
+
+          within 'table.table.entities tbody' do
+            expect(page).to_not have_css('tr')
+          end
+        end
       end
     end
   end
