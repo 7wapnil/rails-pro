@@ -5,7 +5,6 @@ describe Title do
   it { should define_enum_for(:kind) }
 
   it { should validate_presence_of(:name) }
-  it { should validate_presence_of(:kind) }
   it { should validate_uniqueness_of(:name) }
 
   it_behaves_like 'has unique :external_id'

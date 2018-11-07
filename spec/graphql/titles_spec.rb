@@ -80,5 +80,37 @@ describe 'GraphQL#titles' do
         expect(result['data']['titles'][0]['id']).to eq(title.id.to_s)
       end
     end
+
+    context 'with amounts' do
+      let(:title) { create(:title) }
+      let(:query) do
+        %({
+            titles {
+              id
+              eventsAmount
+              hasLive
+            }
+        })
+      end
+
+      before do
+        create(:event,
+               title: title,
+               start_at: Time.now,
+               end_at: nil,
+               traded_live: false)
+        create(:event,
+               title: title,
+               start_at: Time.now,
+               end_at: nil,
+               traded_live: true)
+      end
+
+      it 'returns titles with amounts' do
+        expect(result['data']['titles'].count).to eq(1)
+        expect(result['data']['titles'][0]['eventsAmount']).to eq(2)
+        expect(result['data']['titles'][0]['hasLive']).to eq(true)
+      end
+    end
   end
 end

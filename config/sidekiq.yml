@@ -8,6 +8,10 @@
   - odds_feed
 
 :schedule:
+  fetch_sports_and_scopes_worker:
+    cron: <%= ENV.fetch('FETCH_SPORTS_AND_SCOPES_CRON') { "0 0 0 * *" } %>
+    class: FetchSportsAndScopesWorker
+
   pre_match_markets_close_worker:
     every: <%= "#{ENV.fetch('PRE_MATCH_MARKETS_CLOSE_TIMEOUT') { 5 }}m" %>
     class: PreMatchMarketsCloseWorker
@@ -39,4 +43,3 @@
     cron: <%= "#{ENV.fetch('MISSING_HEARTBEAT_WATCHDOG_CRON') { '0 * * * *' }}" %>
     class: Radar::MissingHeartbeatWorker
     queue: critical
-

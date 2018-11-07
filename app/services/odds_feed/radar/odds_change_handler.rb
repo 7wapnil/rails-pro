@@ -55,9 +55,9 @@ module OddsFeed
 
       def generate_markets
         markets_data.each do |market_data|
-          generate_market!(event, market_data)
+          generate_market!(market_data)
         rescue StandardError => e
-          Rails.logger.error e
+          Rails.logger.error e.message
           Rails.logger.debug({ error: e, payload: @payload }.to_json)
           next
         end
@@ -111,8 +111,9 @@ module OddsFeed
         begin
           event.save!
           ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
-        rescue ActiveRecord::RecordInvalid => e
-          Rails.logger.warn ["Event ID #{external_id} creating failed", e]
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+          Rails.logger.warn ["Event ID #{external_id} creating failed",
+                             e.message]
           @event = Event.find_by!(external_id: external_id)
         end
       end
@@ -127,9 +128,8 @@ module OddsFeed
         raise InvalidMessageError, msg
       end
 
-      def generate_market!(event, market_data)
-        Rails.logger.debug "Generating market for event #{event.external_id}"
-        MarketGenerator.new(event, market_data).generate
+      def generate_market!(market_data)
+        ::Radar::MarketGeneratorWorker.perform_async(event.id, market_data)
       end
     end
     # rubocop:enable Metrics/ClassLength

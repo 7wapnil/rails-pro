@@ -9,8 +9,11 @@ class Odd < ApplicationRecord
   belongs_to :market
   has_many :bets
 
-  validates :name, :value, :status, presence: true
-  validates :value, numericality: { greater_than: 0 }
+  validates :name, :status, presence: true
+  validates :value, presence: true,
+                    on: :create,
+                    if: proc { |odd| odd.active? }
+  validates :value, numericality: { greater_than: 0 }, allow_nil: true
 
   after_create :emit_created
   after_update :emit_updated

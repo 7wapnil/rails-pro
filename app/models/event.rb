@@ -43,6 +43,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   delegate :name, to: :title, prefix: true
 
+  def self.start_time_offset
+    4.hours.ago
+  end
+
   def self.with_markets_count
     query = <<-SQL
       events.*,
@@ -76,7 +80,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
         'traded_live IS TRUE'
       ].join,
       Time.zone.now,
-      4.hours.ago
+      start_time_offset
     )
   end
 

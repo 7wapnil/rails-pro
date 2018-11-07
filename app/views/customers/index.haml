@@ -1,53 +1,27 @@
 %h1.display-4= t(:customers)
 
-= search_form_for @search do |f|
-  %table.table
-    %thead
-      %tr
-        %th= t('attributes.username')
-        %th= t('attributes.email')
-        %th= t('attributes.ip_address')
-        %th= t('attributes.id')
-        %th= t('attributes.balance')
+= render 'search'
 
-    %tbody
-      %tr
-        %th
-          = f.label :username_cont, class: 'sr-only'
-          = f.search_field :username_cont,
-                           class: 'form-control',
-                           placeholder: t(:search, subject: :username),
-                           autocomplete: :off
-        %th
-          = f.label :email_cont, class: 'sr-only'
-          = f.search_field :email_cont,
-                           class: 'form-control',
-                           placeholder: t(:search, subject: :email),
-                           autocomplete: :off
-        %th
-          = f.label :ip_address_eq, class: 'sr-only'
-          = f.search_field :ip_address_eq,
-                           class: 'form-control',
-                           placeholder: t(:search, subject: 'IP address'),
-                           autocomplete: :off
-        %th
-          = f.label :id_eq, class: 'sr-only'
-          = f.search_field :id_eq,
-                           class: 'form-control',
-                           placeholder: t(:search, subject: 'ID'),
-                           autocomplete: :off
-        %th
-          = f.submit class: 'btn btn-outline-dark btn-block'
-      - @customers.each do |customer|
-        %tr{ id: "customer-#{customer.id}" }
-          %td
-            = link_to customer.username, customer
-            %br
-            - customer.labels.each do |label|
-              %span.badge.badge-info= label.name
-          %td= customer.email
-          %td= customer.last_sign_in_ip
-          %td= customer.id
-          %td= wallet_balances_for(customer)
+%table.table.entities
+  %thead
+    %tr
+      %th= t('attributes.username')
+      %th= t('attributes.email')
+      %th= t('attributes.ip_address')
+      %th= t('attributes.id')
+      %th= t('attributes.balance')
+
+  %tbody
+    - @customers.each do |customer|
+      %tr{ id: "customer-#{customer.id}" }
+        %td
+          = link_to customer.username, customer
+          %br
+          - customer.labels.each do |label|
+            %span.badge.badge-info= label.name
+        %td= customer.email
+        %td= customer.last_sign_in_ip
+        %td= customer.id
+        %td= wallet_balances_for(customer)
 
 = paginate @customers

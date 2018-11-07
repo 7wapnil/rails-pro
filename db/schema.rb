@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_26_112944) do
+ActiveRecord::Schema.define(version: 2018_11_01_114907) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,8 +79,8 @@ ActiveRecord::Schema.define(version: 2018_10_26_112944) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.datetime "validation_ticket_sent_at"
     t.integer "settlement_status"
+    t.datetime "validation_ticket_sent_at"
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
     t.index ["odd_id"], name: "index_bets_on_odd_id"
@@ -203,7 +203,7 @@ ActiveRecord::Schema.define(version: 2018_10_26_112944) do
     t.datetime "updated_at", null: false
     t.string "external_id"
     t.index ["event_scope_id"], name: "index_event_scopes_on_event_scope_id"
-    t.index ["external_id"], name: "index_event_scopes_on_external_id"
+    t.index ["external_id"], name: "index_event_scopes_on_external_id", unique: true
     t.index ["title_id"], name: "index_event_scopes_on_title_id"
   end
 
@@ -222,7 +222,7 @@ ActiveRecord::Schema.define(version: 2018_10_26_112944) do
     t.integer "status", default: 0
     t.integer "priority", limit: 2, default: 1
     t.boolean "visible", default: true
-    t.index ["external_id"], name: "index_events_on_external_id"
+    t.index ["external_id"], name: "index_events_on_external_id", unique: true
     t.index ["title_id"], name: "index_events_on_title_id"
   end
 
@@ -264,7 +264,7 @@ ActiveRecord::Schema.define(version: 2018_10_26_112944) do
     t.integer "status"
     t.boolean "visible", default: true
     t.index ["event_id"], name: "index_markets_on_event_id"
-    t.index ["external_id"], name: "index_markets_on_external_id"
+    t.index ["external_id"], name: "index_markets_on_external_id", unique: true
   end
 
   create_table "odds", force: :cascade do |t|
@@ -276,7 +276,7 @@ ActiveRecord::Schema.define(version: 2018_10_26_112944) do
     t.string "external_id"
     t.decimal "value"
     t.integer "status"
-    t.index ["external_id"], name: "index_odds_on_external_id"
+    t.index ["external_id"], name: "index_odds_on_external_id", unique: true
     t.index ["market_id"], name: "index_odds_on_market_id"
   end
 
@@ -295,7 +295,7 @@ ActiveRecord::Schema.define(version: 2018_10_26_112944) do
     t.datetime "updated_at", null: false
     t.integer "kind", default: 0
     t.string "external_id"
-    t.index ["external_id"], name: "index_titles_on_external_id"
+    t.index ["external_id"], name: "index_titles_on_external_id", unique: true
   end
 
   create_table "users", force: :cascade do |t|

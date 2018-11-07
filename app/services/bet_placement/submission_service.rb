@@ -10,7 +10,7 @@ module BetPlacement
     def call
       @bet.send_to_internal_validation!
       @entry = WalletEntry::AuthorizationService.call(entry_request)
-      if @entry_request.failed?
+      unless @entry_request.succeeded?
         @bet.register_failure!(@entry_request.result_message)
         return @bet
       end
