@@ -3,12 +3,12 @@ describe Radar::BaseUofWorker do
   let(:parsed_xml) { {} }
 
   describe '.perform' do
+    subject(:worker) { described_class.new }
+
     let(:handler_instance) { instance_double('SomeFeedHandler', handle: true) }
     let(:handler) do
       instance_double('SomeFeedHandler', new: handler_instance)
     end
-
-    subject(:worker) { described_class.new }
 
     it { expect(described_class).to be < ApplicationWorker }
     it { is_expected.to be_processed_in :odds_feed }
@@ -39,7 +39,7 @@ describe Radar::BaseUofWorker do
       end
     end
 
-    context 'with failure from worker_class' do
+    context 'with broken worker_class' do
       let(:error_message) { Faker::Lorem.paragraph }
       let!(:broken_handler) do
         handler = instance_double('BrokenFeedHandler')
@@ -51,6 +51,13 @@ describe Radar::BaseUofWorker do
         allow(worker).to receive(:worker_class).and_return(broken_handler)
         allow(Rails.logger).to receive(:error)
         worker.perform(xml)
+      rescue StandardError
+        StandardError
+      end
+
+      it 'raises an error back so that the worker fails' do
+        expect { worker.perform(xml) }
+          .to raise_error(StandardError, error_message)
       end
 
       it 'passes error message to logs' do
