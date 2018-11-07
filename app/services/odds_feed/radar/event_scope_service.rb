@@ -1,6 +1,11 @@
 module OddsFeed
   module Radar
     class EventScopeService < ApplicationService
+      attr_reader :title,
+                  :country,
+                  :tournament,
+                  :season
+
       def initialize(payload)
         @payload = payload
         @title = nil
@@ -40,7 +45,7 @@ module OddsFeed
           country.name = payload['name']
         end
 
-        save_country! unless @country.persisted?
+        save_scope!(:country) unless @country.persisted?
       end
 
       def find_or_create_tournament!(payload)
@@ -55,7 +60,7 @@ module OddsFeed
           tournament.name = payload['name']
         end
 
-        save_tournament! unless @tournament.persisted?
+        save_scope!(:tournament) unless @tournament.persisted?
       end
 
       def find_or_create_season!(payload)
@@ -70,7 +75,7 @@ module OddsFeed
           season.name = payload['name']
         end
 
-        save_season! unless @season.persisted?
+        save_scope!(:season) unless @season.persisted?
       end
 
       def payload_valid_for?(scope, payload)
@@ -84,6 +89,18 @@ module OddsFeed
         true
       end
 
+      def save_scope!(kind)
+        send(kind).save!
+      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+        instance_variable_set("@#{kind}", nil)
+
+        scope_id = scope_id(kind)
+        Rails.logger.warn ["#{kind} ID #{scope_id} creating failed", e.message]
+
+        scope = EventScope.find_by!(external_id: scope_id, kind: kind)
+        instance_variable_set("@#{kind}", scope)
+      end
+
       def save_title!
         @title.save!
       rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
@@ -92,50 +109,19 @@ module OddsFeed
         @title = Title.find_by!(external_id: title_id)
       end
 
-      def save_country!
-        @country.save!
-      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-        Rails.logger.warn ["Country ID #{country_id} creating failed", e.message]
-
-        @country = EventScope.find_by!(external_id: country_id, kind: :country)
-      end
-
-      def save_tournament!
-        @tournament.save!
-      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-        Rails.logger.warn [
-          "Tournament ID #{tournament_id} creating failed",
-          e.message
-        ]
-
-        @tournament = EventScope.find_by!(
-          external_id: tournament_id,
-          kind: :tournament
-        )
-      end
-
-      def save_season!
-        @season.save!
-      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-        Rails.logger.warn ["Season ID #{season_id} creating failed", e.message]
-
-        @season = EventScope.find_by!(external_id: season_id, kind: :season)
+      def scope_id(kind)
+        case kind
+        when :country
+          @payload['category']['id']
+        when :tournament
+          @payload['id']
+        when :season
+          @payload['current_season']['id']
+        end
       end
 
       def title_id
         @payload['sport']['id']
-      end
-
-      def country_id
-        @payload['category']['id']
-      end
-
-      def tournament_id
-        @payload['id']
-      end
-
-      def season_id
-        @payload['current_season']['id']
       end
     end
   end
