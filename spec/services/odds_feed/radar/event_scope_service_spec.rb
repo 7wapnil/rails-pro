@@ -114,7 +114,8 @@ describe OddsFeed::Radar::EventScopeService do
       it 'returns existing tournament' do
         expect(EventScope)
           .to receive(:find_by!)
-          .with(kind: :tournament, external_id: tournament_payload[:external_id])
+          .with(kind: :tournament,
+                external_id: tournament_payload[:external_id])
           .and_return(existing_tournament)
 
         subject.send(:find_or_create_tournament!, payload)
