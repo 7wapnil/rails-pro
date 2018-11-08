@@ -1,7 +1,7 @@
-describe Markets::PreMatchMarketsCloseService do
+describe Markets::PreMatchMarketsClosingService do
   subject { described_class.new }
   let(:delay) do
-    ::Markets::PreMatchMarketsCloseService::UPCOMING_EVENT_MINUTES_DELAY
+    ::Markets::PreMatchMarketsClosingService::UPCOMING_EVENT_MINUTES_DELAY
   end
 
   context '.call' do
