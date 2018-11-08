@@ -13,9 +13,10 @@
     class: Radar::EventScopesLoadingWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
-  pre_match_markets_close_worker:
-    every: <%= "#{ENV.fetch('PRE_MATCH_MARKETS_CLOSE_TIMEOUT') { 5 }}m" %>
+  pre_match_markets_closing:
+    every: <%= ENV.fetch('PRE_MATCH_MARKETS_CLOSING_INTERVAL', '5m') %>
     class: PreMatchMarketsCloseWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
   regular_market_templates_update:
     cron: <%= ENV.fetch('MARKET_TEMPLATES_UPDATE_CRON') { "0 20 * * 6" } %>
