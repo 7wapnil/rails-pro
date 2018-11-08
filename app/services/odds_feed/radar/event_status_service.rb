@@ -7,8 +7,28 @@ module OddsFeed
 
       def call(payload)
         @payload = payload
-        {} unless payload
 
+        if payload.nil?
+          no_payload_result!
+        else
+          result
+        end
+      end
+
+      private
+
+      def no_payload_result!
+        {
+          status_code: nil,
+          status: nil,
+          score: nil,
+          time: nil,
+          period_scores: [],
+          finished: false
+        }
+      end
+
+      def result
         {
           status_code: @payload['match_status'],
           status: @match_status.call(@payload['match_status']),
@@ -19,8 +39,6 @@ module OddsFeed
             !@payload['results'].nil? && !@payload['results']['result'].nil?
         }
       end
-
-      private
 
       def process_score!(payload)
         return nil unless payload['home_score'] && payload['away_score']

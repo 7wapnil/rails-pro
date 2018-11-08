@@ -30,7 +30,7 @@ module Events
     field :markets, function: Events::MarketsQuery.new
 
     field :event_status, Types::EventStatusType do
-      resolve ->(obj, _args, _ctx) { obj.payload[:event_status] }
+      resolve ->(obj, _args, _ctx) { obj.payload['event_status'] }
     end
   end
 end
