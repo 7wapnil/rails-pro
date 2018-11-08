@@ -74,6 +74,12 @@ describe Customer do
     end
   end
 
+  it 'saves phone number without extra symbols' do
+    customer = create(:customer, phone: '+37258383943')
+
+    expect(customer.phone).to eq('37258383943')
+  end
+
   it 'updates tracked fields' do
     customer = create(:customer)
     sign_in_count = customer.sign_in_count
