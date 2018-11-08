@@ -10,6 +10,9 @@ class BetsController < ApplicationController
                  .search(prepare_interval_filter(query_params, :created_at))
 
     @bets = @search.result.order(id: :desc).page(params[:page])
+    @sports = Title.pluck(:name)
+    @tournaments = EventScope.tournament.pluck(:name)
+    @countries = EventScope.country.pluck(:name)
   end
 
   def show

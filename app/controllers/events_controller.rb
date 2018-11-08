@@ -4,13 +4,13 @@ class EventsController < ApplicationController
   include DateIntervalFilters
 
   def index
-    @search = Event.includes(:labels)
+    @search = Event.includes(:labels, :event_scopes)
                    .with_markets_count
                    .with_wager
                    .with_bets_count
                    .search(prepare_interval_filter(query_params, :start_at))
 
-    @events = @search.result.order(start_at: :desc).page(params[:page])
+    @events = @search.result.order(start_at: :asc).page(params[:page])
     @sports = Title.pluck(:name)
   end
 

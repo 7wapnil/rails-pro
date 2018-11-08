@@ -1,10 +1,10 @@
-describe OddsFeed::Radar::EventScopeService do
+describe OddsFeed::Radar::EventScopesService do
   subject(:service) { described_class.new(payload) }
 
   let(:payload) do
     XmlParser.parse(
       file_fixture('tournaments_response.xml').read
-    )['tournaments']['tournament']
+    )['tournaments']['tournament'][0]
   end
 
   describe '#find_or_create_title!' do

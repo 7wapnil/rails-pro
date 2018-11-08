@@ -1,5 +1,5 @@
 module Markets
-  class PreMatchMarketsCloseService < ApplicationService
+  class PreMatchMarketsClosingService < ApplicationService
     UPCOMING_EVENT_MINUTES_DELAY =
       ENV.fetch('UPCOMING_EVENT_MINUTES_DELAY') { 5 }.to_i
 

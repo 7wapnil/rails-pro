@@ -1,9 +1,9 @@
 require 'sidekiq-scheduler'
 
-class PreMatchMarketsCloseWorker
+class UnpopularLiveEventsCleanUpWorker
   include Sidekiq::Worker
 
   def perform
-    Markets::PreMatchMarketsCloseService.call
+    Event.unpopular_live.delete_all
   end
 end

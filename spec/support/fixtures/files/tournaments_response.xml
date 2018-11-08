@@ -27,4 +27,28 @@
       scheduled="188"
       season_id="sr:season:54533"/>
   </tournament>
+  <tournament
+    id="sr:tournament:8"
+    name="LaLiga">
+    <sport
+      id="sr:sport:1"
+      name="Soccer"/>
+    <category
+      country_code="ESP"
+      id="sr:category:32"
+      name="Spain"/>
+    <current_season
+      end_date="2019-05-20"
+      id="sr:season:55917"
+      name="LaLiga 18/19"
+      start_date="2018-08-17"
+      year="18/19"/>
+    <season_coverage_info
+      max_coverage_level="platinum"
+      max_covered="110"
+      min_coverage_level="silver"
+      played="111"
+      scheduled="382"
+      season_id="sr:season:55917"/>
+  </tournament>
 </tournaments>

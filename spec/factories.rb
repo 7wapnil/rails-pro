@@ -145,7 +145,7 @@ FactoryBot.define do
 
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
-    date_of_birth { Faker::Date.birthday }
+    date_of_birth { rand(18..50).years.ago }
     gender { Customer.genders.keys.sample }
     phone { Faker::PhoneNumber.phone_number }
     sign_in_count { [*1..200].sample }
@@ -214,6 +214,10 @@ FactoryBot.define do
     kind { :tournament }
     sequence :external_id do |n|
       "sr:tournament:#{n}"
+    end
+    factory :event_scope_country do
+      kind { :country }
+      name { Faker::Address.country }
     end
   end
 

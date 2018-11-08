@@ -1,6 +1,6 @@
 module OddsFeed
   module Radar
-    class EventScopeService < ApplicationService
+    class EventScopesService < ApplicationService
       attr_reader :title,
                   :country,
                   :tournament,
