@@ -3,10 +3,8 @@ module OddsFeed
     class EventAdapter < BaseAdapter
       def result
         @event = Event.new event_attributes
-        find_or_create_title!
-        find_or_create_tournament!
-        find_or_create_season!
-        find_or_create_country!
+        attach_title!
+        attach_scopes!
         archive_event_and_scopes!
         @event
       end
@@ -60,14 +58,15 @@ module OddsFeed
         "#{competitor1['name']} VS #{competitor2['name']}"
       end
 
-      def find_or_create_title!
+      def attach_title!
         Rails.logger.info "Title data received: #{title_fixture}"
-        id = title_fixture['id']
+        @event.title = Title.find_by!(external_id: title_fixture['id'])
+      end
 
-        @event.title = Title.find_or_create_by!(external_id: id) do |title|
-          title.name = title_fixture['name']
-          Rails.logger.info "Creating new title with name '#{title.name}'"
-        end
+      def attach_scopes!
+        find_or_create_tournament!
+        find_or_create_season!
+        find_or_create_country!
       end
 
       def find_or_create_tournament!

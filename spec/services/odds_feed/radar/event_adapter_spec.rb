@@ -6,7 +6,7 @@ describe OddsFeed::Radar::EventAdapter do
     )['fixtures_fixture']['fixture']
   end
   let(:result) { subject.result }
-  let(:title) { create(:title, external_id: 'sr:sport:1', name: 'Soccer') }
+  let!(:title) { create(:title, external_id: 'sr:sport:1', name: 'Soccer') }
 
   subject { OddsFeed::Radar::EventAdapter.new(payload) }
 
@@ -41,16 +41,14 @@ describe OddsFeed::Radar::EventAdapter do
   end
 
   context 'title' do
-    it 'creates if not exists in db' do
-      expect(result.title).not_to be_nil
+    it 'loads if exists in db' do
+      expect(result.title.id).to eq(title.id)
       expect(result.title.external_id).to eq('sr:sport:1')
-      expect(result.title.name).to eq('Soccer')
     end
 
-    it 'loads if exists in db' do
-      existing = create(:title, name: 'Soccer', external_id: 'sr:sport:1')
-      expect(result.title.id).to eq(existing.id)
-      expect(result.title.external_id).to eq('sr:sport:1')
+    it 'raises error if title not exists' do
+      payload['tournament']['sport']['id'] = 'sr:sport:unknown'
+      expect { result }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
@@ -118,11 +116,6 @@ describe OddsFeed::Radar::EventAdapter do
   end
 
   context 'invalid data' do
-    it 'raises error if title data is invalid' do
-      payload['tournament']['sport'] = {}
-      expect { result }.to raise_error(ActiveRecord::RecordInvalid)
-    end
-
     it 'raises error if tournament data is invalid' do
       payload['tournament'] = {}
       expect { result }.to raise_error(OddsFeed::InvalidMessageError)

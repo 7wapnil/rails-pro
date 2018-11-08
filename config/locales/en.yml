@@ -142,6 +142,7 @@ en:
     credit_card: Credit Card
     other_document: Other Document
     bet_id: Bet ID
+    event_id: Event ID
     event: Event
     market: Market
     odd_value: Odd value
@@ -187,3 +188,4 @@ en:
         not_negative: "of %{instance} cannot be negative"
       wrong_login_credentials: "Wrong username, email or password"
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
+      age_adult: "Must be adult!"

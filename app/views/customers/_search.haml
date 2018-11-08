@@ -1,0 +1,42 @@
+= search_form_for @search do |f|
+  %table.table.search
+    %thead
+      %tr
+        %th
+          .filter_title
+            = "#{t('attributes.customer_name')}:"
+          .filter_field
+            = f.label :username_cont, class: 'sr-only'
+            = f.search_field :username_cont,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: :username),
+                              autocomplete: :off
+        %th
+          .filter_title
+            = "#{t('attributes.email')}:"
+          .filter_field
+            = f.label :email_cont, class: 'sr-only'
+            = f.search_field :email_cont,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: :email),
+                              autocomplete: :off
+        %th
+          .filter_title
+            = "#{t('attributes.ip_address')}:"
+          .filter_field
+            = f.label :ip_address_eq, class: 'sr-only'
+            = f.search_field :ip_address_eq,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: 'IP address'),
+                              autocomplete: :off
+        %th
+          .filter_field
+            = "#{t('attributes.id')}:"
+          .filter_field
+            = f.label :id_eq, class: 'sr-only'
+            = f.search_field :id_eq,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: 'ID'),
+                              autocomplete: :off
+        %th
+          = f.submit class: 'btn btn-outline-dark btn-block'

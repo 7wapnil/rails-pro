@@ -3,10 +3,8 @@ module OddsFeed
     # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
       def handle
-        ActiveRecord::Base.transaction do
-          create_or_update_event!
-          touch_event!
-        end
+        create_or_update_event!
+        touch_event!
         generate_markets
         event
       end
@@ -47,17 +45,25 @@ module OddsFeed
       end
 
       def markets_data
-        data = event_data['odds']['market']
-        data.is_a?(Array) ? data : [data]
-      rescue StandardError => e
-        Rails.logger.debug({ error: e, payload: @payload }.to_json)
+        odds_payload = event_data['odds']
+
+        unless odds_payload.is_a?(Hash)
+          raise ArgumentError, 'Odds payload is missing'
+        end
+
+        markets_payload = odds_payload['market']
+
+        return markets_payload if markets_payload.is_a?(Array)
+        return [markets_payload] if markets_payload.is_a?(Hash)
+
+        []
       end
 
       def generate_markets
         markets_data.each do |market_data|
-          generate_market!(event, market_data)
+          generate_market!(market_data)
         rescue StandardError => e
-          Rails.logger.error e
+          Rails.logger.error e.message
           Rails.logger.debug({ error: e, payload: @payload }.to_json)
           next
         end
@@ -111,8 +117,9 @@ module OddsFeed
         begin
           event.save!
           ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
-        rescue ActiveRecord::RecordInvalid => e
-          Rails.logger.warn ["Event ID #{external_id} creating failed", e]
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+          Rails.logger.warn ["Event ID #{external_id} creating failed",
+                             e.message]
           @event = Event.find_by!(external_id: external_id)
         end
       end
@@ -127,9 +134,8 @@ module OddsFeed
         raise InvalidMessageError, msg
       end
 
-      def generate_market!(event, market_data)
-        Rails.logger.debug "Generating market for event #{event.external_id}"
-        MarketGenerator.new(event, market_data).generate
+      def generate_market!(market_data)
+        ::Radar::MarketGeneratorWorker.perform_async(event.id, market_data)
       end
     end
     # rubocop:enable Metrics/ClassLength
