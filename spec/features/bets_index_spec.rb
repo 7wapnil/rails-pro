@@ -187,10 +187,8 @@ describe 'Bets#index' do
           click_on 'Search'
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(bet_pakistan.id)
-            expect(page).to have_content(bet_pakistan.countries.first.name)
-            expect(page).to_not have_content(bet_france.id)
-            expect(page).to_not have_content(bet_france.countries.first.name)
+            expect(page).to have_selector("tr#bet-#{bet_pakistan.id}")
+            expect(page).to_not have_selector("tr#bet-#{bet_france.id}")
           end
         end
 
@@ -201,12 +199,13 @@ describe 'Bets#index' do
           click_on 'Search'
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(bet_pakistan.id)
-            expect(page).to have_content(bet_pakistan.countries.first.name)
-            expect(page).to have_content(bet_france.id)
-            expect(page).to have_content(bet_france.countries.first.name)
-            expect(page).to_not have_content(bet_germany.id)
-            expect(page).to_not have_content(bet_germany.countries.first.name)
+            bet_pakistan_selector = "tr#bet-#{bet_pakistan.id}"
+            bet_france_selector = "tr#bet-#{bet_france.id}"
+            bet_germany_selector = "tr#bet-#{bet_germany.id}"
+
+            expect(page).to_not have_selector(bet_germany_selector)
+            expect(page).to have_selector(bet_france_selector)
+            expect(page).to have_selector(bet_pakistan_selector)
           end
         end
 
