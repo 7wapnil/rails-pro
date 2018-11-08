@@ -3,10 +3,8 @@ module OddsFeed
     # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
       def handle
-        ActiveRecord::Base.transaction do
-          create_or_update_event!
-          touch_event!
-        end
+        create_or_update_event!
+        touch_event!
         generate_markets
         event
       end
