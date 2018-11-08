@@ -1,14 +1,15 @@
 describe OddsFeed::Radar::EventScopeService do
+  subject(:service) { described_class.new(payload) }
+
   let(:payload) do
     XmlParser.parse(
       file_fixture('tournaments_response.xml').read
     )['tournaments']['tournament']
   end
 
-  subject { OddsFeed::Radar::EventScopeService.new(payload) }
-
+  # TODO: check according to '#find_or_create_season!'
   describe '#find_or_create_title!' do
-    context 'record created simultaneously' do
+    context 'with records created simultaneously' do
       let(:title_payload) do
         {
           name: payload['sport']['name'],
@@ -30,7 +31,7 @@ describe OddsFeed::Radar::EventScopeService do
           .to receive(:save!)
           .and_raise(ActiveRecord::RecordInvalid)
 
-        subject.send(:find_or_create_title!, payload['sport'])
+        service.send(:find_or_create_title!, payload['sport'])
       end
 
       it 'returns existing title' do
@@ -39,11 +40,12 @@ describe OddsFeed::Radar::EventScopeService do
           .with(external_id: title_payload[:external_id])
           .and_return(existing_title)
 
-        subject.send(:find_or_create_title!, payload['sport'])
+        service.send(:find_or_create_title!, payload['sport'])
       end
     end
   end
 
+  # TODO: check according to '#find_or_create_season!'
   describe '#find_or_create_country!' do
     let(:country_payload) do
       {
@@ -69,7 +71,7 @@ describe OddsFeed::Radar::EventScopeService do
           .to receive(:save!)
           .and_raise(ActiveRecord::RecordInvalid)
 
-        subject.send(:find_or_create_country!, payload['category'])
+        service.send(:find_or_create_country!, payload['category'])
       end
 
       it 'returns existing country' do
@@ -78,11 +80,12 @@ describe OddsFeed::Radar::EventScopeService do
           .with(kind: :country, external_id: country_payload[:external_id])
           .and_return(existing_country)
 
-        subject.send(:find_or_create_country!, payload['category'])
+        service.send(:find_or_create_country!, payload['category'])
       end
     end
   end
 
+  # TODO: check according to '#find_or_create_season!'
   describe '#find_or_create_tournament!' do
     let(:tournament_payload) do
       {
@@ -108,7 +111,7 @@ describe OddsFeed::Radar::EventScopeService do
           .to receive(:save!)
           .and_raise(ActiveRecord::RecordInvalid)
 
-        subject.send(:find_or_create_tournament!, payload)
+        service.send(:find_or_create_tournament!, payload)
       end
 
       it 'returns existing tournament' do
@@ -118,7 +121,7 @@ describe OddsFeed::Radar::EventScopeService do
                 external_id: tournament_payload[:external_id])
           .and_return(existing_tournament)
 
-        subject.send(:find_or_create_tournament!, payload)
+        service.send(:find_or_create_tournament!, payload)
       end
     end
   end
@@ -140,29 +143,48 @@ describe OddsFeed::Radar::EventScopeService do
         .to receive(:find_or_initialize_by)
         .with(hash_including(kind: :season))
         .and_return(initialized_season)
+
+      allow(initialized_season)
+        .to receive(:save!)
+        .and_call_original
+
+      allow(EventScope)
+        .to receive(:find_by!)
+        .and_call_original
+
+      service.send(:find_or_create_season!, payload)
     end
 
-    context 'record created simultaneously' do
-      it 'fails to save the initialized season' do
+    context 'with simultaneously createded records' do
+      it 'calls initialized seson save!' do
         expect(initialized_season)
-          .to receive(:save!)
-          .and_raise(ActiveRecord::RecordInvalid)
+          .to have_received(:save!)
+      end
 
-        subject.send(:find_or_create_season!, payload)
+      it 'fails to save the initialized season' do
+        expect { initialized_season.save! }
+          .to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'queries event scope for existing season' do
+        expect(EventScope)
+          .to have_received(:find_by!)
+          .with(kind: :season, external_id: season_payload[:external_id])
       end
 
       it 'returns existing season' do
-        expect(EventScope)
-          .to receive(:find_by!)
-          .with(kind: :season, external_id: season_payload[:external_id])
-          .and_return(existing_season)
-
-        subject.send(:find_or_create_season!, payload)
+        expect(
+          EventScope
+            .find_by!(
+              kind: :season,
+              external_id: season_payload[:external_id]
+            )
+        ).to eq existing_season
       end
     end
   end
 
-  context '.call' do
+  describe '.call' do
     let(:title_external_id) { payload['sport']['id'] }
     let(:title_name) { payload['sport']['name'] }
 
@@ -175,56 +197,60 @@ describe OddsFeed::Radar::EventScopeService do
     let(:season_external_id) { payload['current_season']['id'] }
     let(:season_name) { payload['current_season']['name'] }
 
+    let(:title) { Title.find_by(external_id: title_external_id) }
+    let(:country) { EventScope.find_by(external_id: country_external_id) }
+    let(:tournament) { EventScope.find_by(external_id: tournament_external_id) }
+    let(:season) { EventScope.find_by(external_id: season_external_id) }
+
     before do
-      subject.call
+      service.call
     end
 
-    it 'creates title without kind' do
-      title = Title.find_by(external_id: title_external_id)
-      expect(title).is_a? Title
-      expect(title.name).to eq(title_name)
-      expect(title.kind).to eq('sports')
+    it('creates title as Title') { expect(title).is_a? Title }
+
+    it 'fills title without kind' do
+      expect(title)
+        .to have_attributes(
+          name: title_name,
+          kind: 'sports'
+        )
     end
 
-    it 'creates country' do
-      title = Title.find_by(external_id: title_external_id)
-      country = EventScope.find_by(
-        external_id: country_external_id
-      )
-      expect(country).is_a? EventScope
-      expect(country.name).to eq(country_name)
-      expect(country.title).to eq(title)
-      expect(country.kind).to eq('country')
+    it('creates country as EventScope') { expect(country).is_a? EventScope }
+
+    it 'fills country attributes' do
+      expect(country)
+        .to have_attributes(
+          name: country_name,
+          title: title,
+          kind: 'country'
+        )
     end
 
-    it 'creates tournament' do
-      title = Title.find_by(external_id: title_external_id)
-      country = EventScope.find_by(
-        external_id: country_external_id
-      )
-      tournament = EventScope.find_by(
-        external_id: tournament_external_id
-      )
+    it('creates tournament as EventScope') do
       expect(tournament).is_a? EventScope
-      expect(tournament.name).to eq(tournament_name)
-      expect(tournament.title).to eq(title)
-      expect(tournament.event_scope).to eq(country)
-      expect(tournament.kind).to eq('tournament')
     end
 
-    it 'creates season' do
-      title = Title.find_by(external_id: title_external_id)
-      tournament = EventScope.find_by(
-        external_id: tournament_external_id
-      )
-      season = EventScope.find_by(
-        external_id: season_external_id
-      )
-      expect(season).is_a? EventScope
-      expect(season.name).to eq(season_name)
-      expect(season.title).to eq(title)
-      expect(season.event_scope).to eq(tournament)
-      expect(season.kind).to eq('season')
+    it 'fills tournament attributes' do
+      expect(tournament)
+        .to have_attributes(
+          name: tournament_name,
+          title: title,
+          event_scope: country,
+          kind: 'tournament'
+        )
+    end
+
+    it('creates season as EventScope') { expect(season).is_a? EventScope }
+
+    it 'fills season attributes' do
+      expect(season)
+        .to have_attributes(
+          name: season_name,
+          title: title,
+          event_scope: tournament,
+          kind: 'season'
+        )
     end
   end
 end
