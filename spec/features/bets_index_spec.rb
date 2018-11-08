@@ -1,3 +1,7 @@
+RSpec.configure do |c|
+  c.include ResourceTableHelpers
+end
+
 describe 'Bets#index' do
   context 'signed in' do
     let(:per_page_count) { 10 }
@@ -85,8 +89,7 @@ describe 'Bets#index' do
           click_on('Search')
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(bet.id)
-            expect(page).to have_content(bet.customer.username)
+            expect(page).to have_selector(resource_row_selector(bet))
             expect(page).to have_css('tr', count: 1)
           end
         end
@@ -113,7 +116,7 @@ describe 'Bets#index' do
           click_on('Search')
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(bet.id)
+            expect(page).to have_selector(resource_row_selector(bet))
             expect(page).to have_content(bet.title.name)
             (available_sports - [picked_sport]).each do |sport|
               expect(page).to_not have_content(sport)
@@ -148,7 +151,7 @@ describe 'Bets#index' do
           click_on('Search')
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(bet.id)
+            expect(page).to have_selector(resource_row_selector(bet))
             expect(page).to have_content(bet.title.name)
             (available_tournaments - [picked_tournament]).each do |tournament|
               expect(page).to_not have_content(tournament)
@@ -187,8 +190,8 @@ describe 'Bets#index' do
           click_on 'Search'
 
           within 'table.table.entities tbody' do
-            expect(page).to have_selector("tr#bet-#{bet_pakistan.id}")
-            expect(page).to_not have_selector("tr#bet-#{bet_france.id}")
+            expect(page).to have_selector(resource_row_selector(bet_pakistan))
+            expect(page).to_not have_selector(resource_row_selector(bet_france))
           end
         end
 
@@ -199,9 +202,9 @@ describe 'Bets#index' do
           click_on 'Search'
 
           within 'table.table.entities tbody' do
-            bet_pakistan_selector = "tr#bet-#{bet_pakistan.id}"
-            bet_france_selector = "tr#bet-#{bet_france.id}"
-            bet_germany_selector = "tr#bet-#{bet_germany.id}"
+            bet_pakistan_selector = resource_row_selector(bet_pakistan)
+            bet_france_selector = resource_row_selector(bet_france)
+            bet_germany_selector = resource_row_selector(bet_germany)
 
             expect(page).to_not have_selector(bet_germany_selector)
             expect(page).to have_selector(bet_france_selector)
