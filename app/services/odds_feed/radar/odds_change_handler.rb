@@ -45,10 +45,18 @@ module OddsFeed
       end
 
       def markets_data
-        data = event_data['odds']['market']
-        data.is_a?(Array) ? data : [data]
-      rescue StandardError => e
-        Rails.logger.debug({ error: e, payload: @payload }.to_json)
+        odds_payload = event_data['odds']
+
+        unless odds_payload.is_a?(Hash)
+          raise ArgumentError, 'Odds payload is missing'
+        end
+
+        markets_payload = odds_payload['market']
+
+        return markets_payload if markets_payload.is_a?(Array)
+        return [markets_payload] if markets_payload.is_a?(Hash)
+
+        []
       end
 
       def generate_markets
