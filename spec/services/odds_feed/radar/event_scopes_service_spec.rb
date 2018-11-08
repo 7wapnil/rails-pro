@@ -1,11 +1,11 @@
-describe OddsFeed::Radar::EventScopeService do
+describe OddsFeed::Radar::EventScopesService do
   let(:payload) do
     XmlParser.parse(
       file_fixture('tournaments_response.xml').read
-    )['tournaments']['tournament']
+    )['tournaments']['tournament'][0]
   end
 
-  subject { OddsFeed::Radar::EventScopeService.new(payload) }
+  subject { OddsFeed::Radar::EventScopesService.new(payload) }
 
   context '.call' do
     let(:title_external_id) { payload['sport']['id'] }

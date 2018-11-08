@@ -8,9 +8,10 @@
   - odds_feed
 
 :schedule:
-  fetch_sports_and_scopes_worker:
-    cron: <%= ENV.fetch('FETCH_SPORTS_AND_SCOPES_CRON') { "0 0 0 * *" } %>
-    class: FetchSportsAndScopesWorker
+  radar_event_scopes_loading:
+    every: <%= ENV.fetch('RADAR_EVENT_SCOPES_LOADING_INTERVAL', '1w') %>
+    class: Radar::EventScopesLoadingWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
   pre_match_markets_close_worker:
     every: <%= "#{ENV.fetch('PRE_MATCH_MARKETS_CLOSE_TIMEOUT') { 5 }}m" %>

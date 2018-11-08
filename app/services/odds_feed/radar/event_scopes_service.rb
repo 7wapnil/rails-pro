@@ -1,6 +1,6 @@
 module OddsFeed
   module Radar
-    class EventScopeService < ApplicationService
+    class EventScopesService < ApplicationService
       def initialize(payload)
         @payload = payload
       end
