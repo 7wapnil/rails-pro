@@ -23,13 +23,15 @@
     class: Radar::MarketsUpdateWorker
     queue: market_templates_update
 
-  unpopular_live_events_clean_worker:
-    cron: <%= ENV.fetch('UNPOPULAR_LIVE_EVENTS_CLEANER_CRON') { "0 * * * *" } %>
-    class: UnpopularLiveEventsCleanWorker
+  unpopular_live_events_clean_up:
+    every: <%= ENV.fetch('UNPOPULAR_LIVE_EVENTS_CLEAN_UP_INTERVAL', '1h') %>
+    class: UnpopularLiveEventsCleanUpWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
-  unpopular_pre_live_events_clean_worker:
-    cron: <%= ENV.fetch('UNPOPULAR_PRE_LIVE_EVENTS_CLEANER_CRON') { "0 * * * *" } %>
-    class: UnpopularPreLiveEventsCleanWorker
+  unpopular_pre_live_events_clean_up:
+    every: <%= ENV.fetch('UNPOPULAR_PRE_LIVE_EVENTS_CLEAN_UP_INTERVAL', '1h') %>
+    class: UnpopularPreLiveEventsCleanUpWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
   check_bet_expirasy_live:
     every: <%= "#{ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT') { 10 }}s" %>
