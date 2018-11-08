@@ -55,6 +55,7 @@ class Customer < ApplicationRecord
   validates :username, uniqueness: { case_sensitive: false }
   validates :email, uniqueness: { case_sensitive: false }
   validates :verified, :activated, inclusion: { in: [true, false] }
+  validates :phone, phone: true
   validates_with AgeValidator
 
   ransack_alias :ip_address, :last_sign_in_ip_or_current_sign_in_ip
@@ -76,5 +77,14 @@ class Customer < ApplicationRecord
                         user: nil,
                         customer: self,
                         context: context)
+  end
+
+  def parsed_phone
+    Phonelib.parse(phone)
+  end
+
+  def phone=(phone_number)
+    normalized_phone = phone_number.gsub(/\D/, '')
+    write_attribute(:phone, normalized_phone)
   end
 end
