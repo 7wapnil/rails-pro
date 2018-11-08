@@ -15,8 +15,6 @@ class Customer < ApplicationRecord
 
   attr_accessor :login
 
-  before_save :normalize_phone_number
-
   def self.find_first_by_auth_conditions(warden_conditions)
     conditions = warden_conditions.dup
     if (login = conditions.delete(:login))
@@ -85,9 +83,8 @@ class Customer < ApplicationRecord
     Phonelib.parse(phone)
   end
 
-  private
-
-  def normalize_phone_number
-    phone&.gsub!(/\D/, '')
+  def phone=(phone_number)
+    normalized_phone = phone_number.gsub(/\D/, '')
+    write_attribute(:phone, normalized_phone)
   end
 end
