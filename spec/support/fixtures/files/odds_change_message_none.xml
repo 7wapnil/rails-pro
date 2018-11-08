@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<odds_change event_id="sr:match:1234" timestamp="1533729711000" product="2">
-  <sport_event_status status="1" reporting="1" match_status="1" home_score="2" away_score="0">
-    <clock match_time="10:00" remaining_time="50:00" stopped="true"/>
-  </sport_event_status>
-  <odds>
-  </odds>
-</odds_change>
