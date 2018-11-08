@@ -7,9 +7,8 @@ describe OddsFeed::Radar::EventScopeService do
     )['tournaments']['tournament']
   end
 
-  # TODO: check according to '#find_or_create_season!'
   describe '#find_or_create_title!' do
-    context 'with records created simultaneously' do
+    context 'with simultaneously created records' do
       let(:title_payload) do
         {
           name: payload['sport']['name'],
@@ -24,28 +23,42 @@ describe OddsFeed::Radar::EventScopeService do
         allow(Title)
           .to receive(:find_or_initialize_by)
           .and_return(initialized_title)
+
+        allow(initialized_title)
+          .to receive(:save!)
+          .and_call_original
+
+        allow(Title)
+          .to receive(:find_by!)
+          .and_call_original
+
+        service.send(:find_or_create_title!, payload['sport'])
+      end
+
+      it 'calls save on initialized title' do
+        expect(initialized_title)
+          .to have_received(:save!).once
       end
 
       it 'fails to save the initialized title' do
-        expect(initialized_title)
-          .to receive(:save!)
-          .and_raise(ActiveRecord::RecordInvalid)
+        expect { initialized_title.save! }
+          .to raise_error(ActiveRecord::RecordInvalid)
+      end
 
-        service.send(:find_or_create_title!, payload['sport'])
+      it 'queries for existing title' do
+        expect(Title)
+          .to have_received(:find_by!)
+          .with(external_id: title_payload[:external_id]).once
       end
 
       it 'returns existing title' do
-        expect(Title)
-          .to receive(:find_by!)
-          .with(external_id: title_payload[:external_id])
-          .and_return(existing_title)
-
-        service.send(:find_or_create_title!, payload['sport'])
+        expect(
+          Title.find_by!(external_id: title_payload[:external_id])
+        ).to eq(existing_title)
       end
     end
   end
 
-  # TODO: check according to '#find_or_create_season!'
   describe '#find_or_create_country!' do
     let(:country_payload) do
       {
@@ -63,29 +76,46 @@ describe OddsFeed::Radar::EventScopeService do
         .to receive(:find_or_initialize_by)
         .with(hash_including(kind: :country))
         .and_return(initialized_country)
+
+      allow(initialized_country)
+        .to receive(:save!)
+        .and_call_original
+
+      allow(EventScope)
+        .to receive(:find_by!)
+        .and_call_original
+
+      service.send(:find_or_create_country!, payload['category'])
     end
 
-    context 'record created simultaneously' do
-      it 'fails to save the initialized country' do
+    context 'with simultaneously created records' do
+      it 'receives save on initialized country' do
         expect(initialized_country)
-          .to receive(:save!)
-          .and_raise(ActiveRecord::RecordInvalid)
+          .to have_received(:save!).once
+      end
 
-        service.send(:find_or_create_country!, payload['category'])
+      it 'fails to save the initialized country' do
+        expect { initialized_country.save! }
+          .to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'queries event scope for existing country' do
+        expect(EventScope)
+          .to have_received(:find_by!)
+          .with(kind: :country, external_id: country_payload[:external_id])
+          .once
       end
 
       it 'returns existing country' do
-        expect(EventScope)
-          .to receive(:find_by!)
-          .with(kind: :country, external_id: country_payload[:external_id])
-          .and_return(existing_country)
-
-        service.send(:find_or_create_country!, payload['category'])
+        expect(
+          EventScope.find_by!(
+            kind: :country, external_id: country_payload[:external_id]
+          )
+        ).to eq(existing_country)
       end
     end
   end
 
-  # TODO: check according to '#find_or_create_season!'
   describe '#find_or_create_tournament!' do
     let(:tournament_payload) do
       {
@@ -103,25 +133,42 @@ describe OddsFeed::Radar::EventScopeService do
         .to receive(:find_or_initialize_by)
         .with(hash_including(kind: :tournament))
         .and_return(initialized_tournament)
+
+      allow(initialized_tournament)
+        .to receive(:save!)
+        .and_call_original
+
+      allow(EventScope)
+        .to receive(:find_by!)
+        .and_call_original
+
+      service.send(:find_or_create_tournament!, payload)
     end
 
-    context 'record created simultaneously' do
-      it 'fails to save the initialized tournament' do
+    context 'with simultaneously created records' do
+      it 'calls save on initialized tournament' do
         expect(initialized_tournament)
-          .to receive(:save!)
-          .and_raise(ActiveRecord::RecordInvalid)
+          .to have_received(:save!).once
+      end
 
-        service.send(:find_or_create_tournament!, payload)
+      it 'fails to save the initialized tournament' do
+        expect { initialized_tournament.save! }
+          .to raise_error(ActiveRecord::RecordInvalid)
+      end
+
+      it 'queiries event scope for existing tournamnet' do
+        expect(EventScope)
+          .to have_received(:find_by!)
+          .with(kind: :tournament,
+                external_id: tournament_payload[:external_id]).once
       end
 
       it 'returns existing tournament' do
-        expect(EventScope)
-          .to receive(:find_by!)
-          .with(kind: :tournament,
-                external_id: tournament_payload[:external_id])
-          .and_return(existing_tournament)
-
-        service.send(:find_or_create_tournament!, payload)
+        expect(
+          EventScope.find_by!(
+            kind: :tournament, external_id: tournament_payload[:external_id]
+          )
+        ).to eq existing_tournament
       end
     end
   end
@@ -155,10 +202,10 @@ describe OddsFeed::Radar::EventScopeService do
       service.send(:find_or_create_season!, payload)
     end
 
-    context 'with simultaneously createded records' do
-      it 'calls initialized seson save!' do
+    context 'with simultaneously created records' do
+      it 'calls initialized season save!' do
         expect(initialized_season)
-          .to have_received(:save!)
+          .to have_received(:save!).once
       end
 
       it 'fails to save the initialized season' do
@@ -170,15 +217,14 @@ describe OddsFeed::Radar::EventScopeService do
         expect(EventScope)
           .to have_received(:find_by!)
           .with(kind: :season, external_id: season_payload[:external_id])
+          .once
       end
 
       it 'returns existing season' do
         expect(
-          EventScope
-            .find_by!(
-              kind: :season,
-              external_id: season_payload[:external_id]
-            )
+          EventScope.find_by!(
+            kind: :season, external_id: season_payload[:external_id]
+          )
         ).to eq existing_season
       end
     end
