@@ -59,15 +59,18 @@ describe Customer do
   end
 
   describe 'phone validation' do
-    it 'valid when has correct format' do
+    it 'valid when phone number correct' do
       customer = build(:customer, phone: '37258383943')
+      customer.valid?
 
       expect(customer.errors.messages[:phone]).to be_empty
     end
-    it 'not valid' do
-      customer = build(:customer, phone: '999999999999')
 
-      expect(customer.errors.messages[:phone]).to be_empty
+    it 'not valid when phone number incorrect' do
+      customer = build(:customer, phone: '999999999999')
+      customer.valid?
+
+      expect(customer.errors.messages[:phone]).to_not be_empty
     end
   end
 
