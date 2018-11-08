@@ -17,7 +17,8 @@
       end_date="2019-06-02"
       id="sr:season:54533"
       name="UEFA Champions League 18/19"
-      start_date="2018-06-26" year="18/19"/>
+      start_date="2018-06-26"
+      year="18/19"/>
     <season_coverage_info
       max_coverage_level="platinum"
       max_covered="48"
