@@ -1,32 +1,19 @@
 describe OddsFeed::Radar::EventStatusService do
-  let(:payload_not_started) do
-    XmlParser.parse(
-      file_fixture('event_status_not_started_message.xml').read
-    )['odds_change']['sport_event_status']
-  end
-  let(:payload_in_progress) do
-    XmlParser.parse(
-      file_fixture('event_status_in_progress_message.xml').read
-    )['odds_change']['sport_event_status']
-  end
-  let(:payload_ended) do
-    XmlParser.parse(
-      file_fixture('event_status_ended_message.xml').read
-    )['odds_change']['sport_event_status']
-  end
-
-  subject { OddsFeed::Radar::EventStatusService.new }
-
-  let(:result_not_started) { subject.call(payload_not_started) }
-  let(:result_in_progress) { subject.call(payload_in_progress) }
-  let(:result_ended) { subject.call(payload_ended) }
+  subject(:service) { described_class.new }
 
   let(:match_status) do
     OddsFeed::Radar::MatchStatusMappingService.new
   end
 
-  describe 'not started event message' do
-    context '.call' do
+  describe '.call' do
+    context 'when not started event message' do
+      let(:payload_not_started) do
+        XmlParser.parse(
+          file_fixture('event_status_not_started_message.xml').read
+        )['odds_change']['sport_event_status']
+      end
+      let(:result_not_started) { service.call(payload_not_started) }
+
       it 'returns correct status' do
         expect(result_not_started[:status_code]).to eq(
           payload_not_started['match_status']
@@ -38,11 +25,11 @@ describe OddsFeed::Radar::EventStatusService do
         )
       end
 
-      it 'don\'t returns score' do
+      it 'doesn\'t returns score' do
         expect(result_not_started[:score]).to be_nil
       end
 
-      it 'don\'t returns time' do
+      it 'doesn\'t returns time' do
         expect(result_not_started[:time]).to be_nil
       end
 
@@ -54,10 +41,15 @@ describe OddsFeed::Radar::EventStatusService do
         expect(result_not_started[:finished]).to be_falsey
       end
     end
-  end
 
-  describe 'in progress event message with one period' do
-    context '.call' do
+    context 'when in progress event message with one period' do
+      let(:payload_in_progress) do
+        XmlParser.parse(
+          file_fixture('event_status_in_progress_message.xml').read
+        )['odds_change']['sport_event_status']
+      end
+      let(:result_in_progress) { service.call(payload_in_progress) }
+
       it 'returns correct status' do
         expect(result_in_progress[:status_code]).to eq(
           payload_in_progress['match_status']
@@ -92,10 +84,15 @@ describe OddsFeed::Radar::EventStatusService do
         expect(result_in_progress[:finished]).to be_falsey
       end
     end
-  end
 
-  describe 'finished event message with multiple periods' do
-    context '.call' do
+    context 'when finished event message with multiple periods' do
+      let(:payload_ended) do
+        XmlParser.parse(
+          file_fixture('event_status_ended_message.xml').read
+        )['odds_change']['sport_event_status']
+      end
+      let(:result_ended) { service.call(payload_ended) }
+
       it 'returns correct status' do
         expect(result_ended[:status_code]).to eq(payload_ended['match_status'])
         expect(result_ended[:status]).to eq(
@@ -111,7 +108,7 @@ describe OddsFeed::Radar::EventStatusService do
         )
       end
 
-      it 'don\'t returns time' do
+      it 'doesn\'t returns time' do
         expect(result_ended[:time]).to be_nil
       end
 
