@@ -13,4 +13,6 @@ class ArchivedEvent
   field :description, type: String
   field :start_at, type: DateTime
   field :payload, type: Hash
+
+  index({ external_id: 1 }, unique: true, name: 'external_id_index')
 end
