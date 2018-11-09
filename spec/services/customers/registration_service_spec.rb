@@ -8,6 +8,7 @@ describe Customers::RegistrationService do
       first_name: 'Test',
       last_name: 'User',
       date_of_birth: '01-01-1999',
+      phone: '37258383943',
       password: '123456',
       password_confirmation: '123456' }
   end

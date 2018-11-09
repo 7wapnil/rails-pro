@@ -19,10 +19,6 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
-# Monkey patches
-#
-# - sidekiq-scheduler with Sidekiq::SilentScheduler
-
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
@@ -41,7 +37,7 @@ gem 'ransack'
 gem 'airbrake', '~> 7.3'
 gem 'sidekiq'
 gem 'sidekiq-failures'
-gem 'sidekiq-scheduler', '3.0.0'
+gem 'sidekiq-scheduler'
 gem 'sidekiq-unique-jobs'
 gem 'graphql-errors'
 gem 'redis', '~> 4.0'
@@ -60,6 +56,7 @@ gem 'logstash-event'
 gem 'logstash-logger'
 gem 'aasm'
 gem 'sendgrid-rails', '~> 3.0'
+gem 'phonelib'
 
 # To be moved back to development and test group
 gem 'faker', github: 'stympy/faker', branch: 'master'

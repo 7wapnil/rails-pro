@@ -58,6 +58,28 @@ describe Customer do
     end
   end
 
+  describe 'phone validation' do
+    it 'valid when phone number correct' do
+      customer = build(:customer, phone: '37258383943')
+      customer.valid?
+
+      expect(customer.errors.messages[:phone]).to be_empty
+    end
+
+    it 'not valid when phone number incorrect' do
+      customer = build(:customer, phone: '999999999999')
+      customer.valid?
+
+      expect(customer.errors.messages[:phone]).to_not be_empty
+    end
+  end
+
+  it 'saves phone number without extra symbols' do
+    customer = create(:customer, phone: '+37258383943')
+
+    expect(customer.phone).to eq('37258383943')
+  end
+
   it 'updates tracked fields' do
     customer = create(:customer)
     sign_in_count = customer.sign_in_count

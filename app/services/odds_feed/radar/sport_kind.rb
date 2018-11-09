@@ -1,7 +1,7 @@
 module OddsFeed
   module Radar
     # rubocop:disable Metrics/ClassLength
-    class SportKindMappingService < ApplicationService
+    class SportKind
       SPORT_KIND_MAP = {
         '7BallRun' => :sports,
         'Alpine Skiing' => :sports,
@@ -163,12 +163,8 @@ module OddsFeed
         'Wrestling' => :sports
       }.freeze
 
-      def initialize(name)
-        @name = name
-      end
-
-      def call
-        SPORT_KIND_MAP[@name]
+      def self.from_title(title_name)
+        SPORT_KIND_MAP[title_name]
       end
     end
     # rubocop:enable Metrics/ClassLength

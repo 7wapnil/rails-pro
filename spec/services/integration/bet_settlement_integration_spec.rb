@@ -114,7 +114,4 @@ describe 'BetSettlementHandler integration' do
 
     expect(BalanceEntry.sum(&:amount)).to be_within(0.01).of(70)
   end
-
-  xit 'handles currency rule violation on win'
-  xit 'handles currency rule violation on refund'
 end
