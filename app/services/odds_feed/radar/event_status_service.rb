@@ -8,16 +8,12 @@ module OddsFeed
       def call(payload)
         @payload = payload
 
-        if payload.nil?
-          no_payload_result!
-        else
-          result
-        end
+        payload.nil? ? no_payload_result : result
       end
 
       private
 
-      def no_payload_result!
+      def no_payload_result
         {
           status_code: nil,
           status: nil,
@@ -47,9 +43,7 @@ module OddsFeed
       end
 
       def process_time!
-        return nil unless @payload['clock']
-
-        @payload['clock']['match_time']
+        @payload.dig('clock', 'match_time')
       end
 
       def process_periods!
