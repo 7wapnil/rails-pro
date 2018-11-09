@@ -12,6 +12,7 @@
     cron: <%= "#{ENV.fetch('MISSING_HEARTBEAT_WATCHDOG_CRON') { '0 * * * *' }}" %>
     class: Radar::MissingHeartbeatWorker
     queue: critical
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
   radar_event_scopes_loading:
     every: <%= ENV.fetch('RADAR_EVENT_SCOPES_LOADING_INTERVAL', '1w') %>
@@ -22,20 +23,23 @@
     cron: <%= ENV.fetch('MARKET_TEMPLATES_UPDATE_CRON') { "0 20 * * 6" } %>
     class: Radar::MarketsUpdateWorker
     queue: market_templates_update
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
   check_bet_expirasy_live:
     every: <%= "#{ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT') { 10 }}s" %>
     class: Scheduled::ExpiringLiveWorker
     queue: expired_live
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
   check_bet_expirasy_prematch:
     every: <%= "#{ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT') { 3 }}s" %>
     class: Scheduled::ExpiringPrematchWorker
     queue: expired_prematch
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
   pre_match_markets_closing:
     every: <%= ENV.fetch('PRE_MATCH_MARKETS_CLOSING_INTERVAL', '5m') %>
-    class: PreMatchMarketsCloseWorker
+    class: PreMatchMarketsClosingWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
   unpopular_live_events_clean_up:
