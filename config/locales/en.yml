@@ -24,6 +24,7 @@ en:
   deleted: "%{instance} deleted"
   new_instance: "New %{instance}"
   edit_instance: "Edit %{instance}"
+  attribute_updated: "%{attribute} updated!"
 
   says_at: "%{who} at %{when}"
 

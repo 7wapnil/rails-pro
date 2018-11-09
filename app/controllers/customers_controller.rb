@@ -64,11 +64,10 @@ class CustomersController < ApplicationController
   def update_promotional_subscription
     @customer = find_customer
     agreed = customer_params[:agreed_with_promotional]
-    updated = @customer.update_column(:agreed_with_promotional, agreed)
-    status = updated ? :ok : :unprocessable_entity
-    message = updated ? 'Updated!' : @customer.errors.full_messages.first
+    @customer.update_column(:agreed_with_promotional, agreed)
+    message = I18n.t('attribute_updated', attribute: 'Promotional agreement')
 
-    render json: { message: message }, status: status
+    render json: { message: message }
   end
 
   def update_customer_status

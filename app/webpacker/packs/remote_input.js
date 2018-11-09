@@ -27,7 +27,7 @@ $(document).on('turbolinks:load', () => {
         element.value = !element.value
         new Noty({
           type: 'error',
-          text: `${err.status}: ${err.message}`,
+          text: `${err.status}: ${err.statusText}`,
           timeout: 2000
         }).show();
       }
