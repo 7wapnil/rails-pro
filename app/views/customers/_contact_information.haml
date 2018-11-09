@@ -9,3 +9,18 @@
     %tr
       %td= t(:address)
       %td= @customer.address
+    %tr
+      %td= t('attributes.country')
+      %td= @customer.address&.country
+    %tr
+      %td= t('attributes.street_address')
+      %td= @customer.address&.street_address
+    %tr
+      %td= t('attributes.zip_code')
+      %td= @customer.address&.zip_code
+    %tr
+      %td= t('attributes.city')
+      %td= @customer.address&.city
+    %tr
+      %td= t('attributes.state')
+      %td= @customer.address&.state
