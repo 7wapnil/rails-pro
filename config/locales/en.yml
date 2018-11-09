@@ -164,6 +164,7 @@ en:
     visible: Visible
     country: Country
     tournament: Tournament
+    promotional: Receive promotional content
 
   documents:
     history_title: "Files history: %{document_type}"

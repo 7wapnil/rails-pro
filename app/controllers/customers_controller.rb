@@ -61,6 +61,16 @@ class CustomersController < ApplicationController
     redirect_to documents_customer_path(@customer)
   end
 
+  def update_promotional_subscription
+    @customer = find_customer
+    agreed = customer_params[:agreed_with_promotional]
+    updated = @customer.update_column(:agreed_with_promotional, agreed)
+    status = updated ? :ok : :unprocessable_entity
+    message = updated ? 'Updated!' : @customer.errors.full_messages.first
+
+    render json: { message: message }, status: status
+  end
+
   def update_customer_status
     @customer = find_customer
 
@@ -69,6 +79,10 @@ class CustomersController < ApplicationController
   end
 
   private
+
+  def customer_params
+    params.require(:customer).permit(:agreed_with_promotional)
+  end
 
   def find_customer
     Customer.find(params[:id])
