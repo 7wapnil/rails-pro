@@ -11,5 +11,10 @@ module Account
     field :gender, types.String
     field :first_name, !types.String
     field :last_name, !types.String
+    field :street_address, types.String
+    field :zip_code, types.String
+    field :country, types.String
+    field :city, types.String
+    field :state, types.String
   end
 end
