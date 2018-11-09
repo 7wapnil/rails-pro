@@ -54,12 +54,15 @@
                   %b= "#{scope.kind}:"
                   %span= scope.name
         %tr
+          %td= t('attributes.event_status')
+          %td= @event.payload['event_status']
+        %tr
           %td Visible
           %td= visibility_toggle(@event, update_visibility_event_path(@event))
       %hr
       = link_back
 
-    = card header: t('entities.markets'), class: 'markets-info' do
+    = card header: t('entities.markets', count: 5), class: 'markets-info mb-3' do
       %table.table
         %thead
           %tr

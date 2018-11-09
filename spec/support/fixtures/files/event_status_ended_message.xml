@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<odds_change timestamp="1506179771502" event_id="sr:match:12366090" product="1">
+  <sport_event_status away_suspend="0" home_suspend="0" away_score="1" home_score="3" match_status="100" status="3">
+    <period_scores>
+      <period_score away_score="1" home_score="0" number="1" match_status_code="6"/>
+      <period_score away_score="0" home_score="3" number="2" match_status_code="7"/>
+    </period_scores>
+    <results>
+      <result away_score="1" home_score="3" match_status_code="100"/>
+    </results>
+  </sport_event_status>
+</odds_change>
