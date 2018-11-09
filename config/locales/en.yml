@@ -165,6 +165,7 @@ en:
     visible: Visible
     country: Country
     tournament: Tournament
+    event_status: Event Status
     promotional: Receive promotional content
 
   documents:
