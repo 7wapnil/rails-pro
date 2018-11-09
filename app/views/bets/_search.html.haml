@@ -72,7 +72,7 @@
             = f.select :countries_name_in,
                         options_for_select(@countries, query_params ? query_params[:countries_name_in] : nil),
                         { include_blank: true},
-                        multiple: true, size: 3,
+                        multiple: true, size: 1,
                         class: 'form-control'
 
         %th
