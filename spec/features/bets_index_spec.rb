@@ -1,7 +1,3 @@
-RSpec.configure do |c|
-  c.include ResourceTableHelpers
-end
-
 describe 'Bets#index' do
   context 'signed in' do
     let(:per_page_count) { 10 }
