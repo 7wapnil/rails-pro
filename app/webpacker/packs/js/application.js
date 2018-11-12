@@ -2,6 +2,7 @@ import 'bootstrap/dist/js/bootstrap'
 import Noty from 'noty'
 import Rails from 'rails-ujs'
 import Turbolinks from 'turbolinks'
+import 'select2/dist/js/select2.full.min'
 
 Rails.start()
 Turbolinks.start()
@@ -34,5 +35,5 @@ document.addEventListener('turbolinks:load', () => {
     }
     new Noty(options).show()
   })
-
+  $('.multi-select').select2()
 })

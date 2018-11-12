@@ -73,7 +73,7 @@
                         options_for_select(@countries, query_params ? query_params[:countries_name_in] : nil),
                         { include_blank: true},
                         multiple: true, size: 1,
-                        class: 'form-control'
+                        class: 'form-control multi-select'
 
         %th
           = f.submit class: 'btn btn-outline-dark btn-block'
