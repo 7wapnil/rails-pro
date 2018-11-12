@@ -140,7 +140,7 @@ module OddsFeed
         return if event.remote_updated_at.utc <= timestamp
 
         msg = "Message came at #{timestamp}, but last update was #{last_update}"
-        raise InvalidMessageError, msg
+        Rails.logger.warn msg
       end
 
       def generate_market!(market_data)
