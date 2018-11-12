@@ -48,7 +48,7 @@ describe Bet do
 
   describe 'Bet.expired_prematch' do
     it 'Returns expired prematch bets' do
-      timeout = ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT') { 3 }.to_i
+      timeout = ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT_SECONDS', 3).to_i
       expired_bets = create_list(:bet, 2,
                                  validation_ticket_sent_at: (timeout + 3)
                                                               .seconds
@@ -65,7 +65,7 @@ describe Bet do
 
   describe 'Bet.expired_live' do
     it 'Returns expired live bets' do
-      timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT') { 10 }.to_i
+      timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10).to_i
       expired_time = (timeout + 3).seconds.ago
       live_event = create(:event_with_odds, traded_live: true)
       expired_bets = create_list(:bet, 2,
