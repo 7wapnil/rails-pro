@@ -11,6 +11,7 @@ module Account
     field :gender, types.String
     field :first_name, !types.String
     field :last_name, !types.String
+    field :agreed_with_promotional, !types.Boolean
     field :address_street_address, types.String
     field :address_zip_code, types.String
     field :address_country, types.String

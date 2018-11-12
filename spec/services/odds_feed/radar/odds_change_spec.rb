@@ -79,7 +79,11 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
   it 'adds producer id to event payload' do
     payload_addition = {
-      producer: { origin: :radar, id: payload['odds_change']['product'] }
+      producer: { origin: :radar, id: payload['odds_change']['product'] },
+      event_status:
+        OddsFeed::Radar::EventStatusService.new.call(
+          payload['odds_change']['sport_event_status']
+        )
     }
 
     allow(Event).to receive(:find_by) { event }

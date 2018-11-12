@@ -24,6 +24,7 @@ module EventArchive
     def archive_scopes!
       @event.event_scopes.each do |scope|
         ArchivedEventScope.create!(
+          external_id: scope.external_id,
           name: scope.name,
           kind: EventScope.kinds.key(scope.kind),
           archived_event: @archived_event

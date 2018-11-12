@@ -24,6 +24,7 @@ en:
   deleted: "%{instance} deleted"
   new_instance: "New %{instance}"
   edit_instance: "Edit %{instance}"
+  attribute_updated: "%{attribute} updated!"
 
   says_at: "%{who} at %{when}"
 
@@ -164,6 +165,8 @@ en:
     visible: Visible
     country: Country
     tournament: Tournament
+    event_status: Event Status
+    promotional: Receive promotional content
 
   documents:
     history_title: "Files history: %{document_type}"
