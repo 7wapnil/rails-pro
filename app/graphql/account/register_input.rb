@@ -16,5 +16,6 @@ module Account
     argument :zip_code, !types.String
     argument :gender, !types.Int
     argument :phone, !types.String
+    argument :agreed_with_promotional, !types.Boolean
   end
 end

@@ -46,7 +46,8 @@ describe 'GraphQL#SignUp' do
         state: 'State',
         zip_code: '123',
         street_address: 'Street Addr',
-        phone: '1232132132'
+        phone: '1232132132',
+        agreed_with_promotional: true
       } }
     end
 
@@ -72,7 +73,8 @@ describe 'GraphQL#SignUp' do
         state: 'State',
         zip_code: '123',
         street_address: 'Street Addr',
-        phone: '37258383943'
+        phone: '37258383943',
+        agreed_with_promotional: true
       } }
     end
 
