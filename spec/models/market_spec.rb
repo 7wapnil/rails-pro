@@ -23,17 +23,26 @@ describe Market do
       subject.validate
       expect(subject).not_to have_received(:define_priority)
     end
+  end
 
+  context 'priority' do
     it 'defines 0 priority by default' do
       subject.name = 'Unknown name'
       subject.validate
       expect(subject.priority).to eq(0)
     end
 
-    it 'defines 1 priority for match winner market' do
-      subject.name = 'Match - winner'
-      subject.validate
-      expect(subject.priority).to eq(1)
+    [
+      'Match - winner',
+      'Market 1x2',
+      '1x2',
+      '1x2 Market'
+    ].each do |market_name|
+      it "defines 1 priority for market name '#{market_name}'" do
+        subject.name = market_name
+        subject.validate
+        expect(subject.priority).to eq(1)
+      end
     end
   end
 

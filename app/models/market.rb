@@ -7,7 +7,8 @@ class Market < ApplicationRecord
   after_update :emit_updated
 
   PRIORITIES_MAP = [
-    { pattern: /- winner$/, priority: 1 }
+    { pattern: /- winner$/, priority: 1 },
+    { pattern: /1x2/, priority: 1 }
   ].freeze
   PRIORITIES = [0, 1, 2].freeze
   DEFAULT_PRIORITY = 0
