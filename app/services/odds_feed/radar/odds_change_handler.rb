@@ -54,7 +54,10 @@ module OddsFeed
         odds_payload = event_data['odds']
 
         unless odds_payload.is_a?(Hash)
-          raise ArgumentError, 'Odds payload is missing'
+          raise(
+            ArgumentError,
+            "Wrong type #{odds_payload.class} for odds payload: #{odds_payload}"
+          )
         end
 
         markets_payload = odds_payload['market']
