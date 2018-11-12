@@ -1,5 +1,7 @@
 module Mts
   class ValidationMessagePublisherWorker < ApplicationWorker
+    sidekiq_options retry: 3
+
     def perform(ids)
       @ids = ids
       raise NotImplementedError unless ids.length == 1
