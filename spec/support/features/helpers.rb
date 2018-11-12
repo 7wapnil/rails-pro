@@ -12,4 +12,8 @@ module FeatureHelpers
   def expect_to_have_notification(expected_text)
     expect(page).to have_css(".flash-message[data-text=\"#{expected_text}\"]")
   end
+
+  def resource_row_selector(resource)
+    "tr##{resource.class.to_s.downcase}-#{resource.id}"
+  end
 end

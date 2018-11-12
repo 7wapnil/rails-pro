@@ -85,8 +85,7 @@ describe 'Bets#index' do
           click_on('Search')
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(bet.id)
-            expect(page).to have_content(bet.customer.username)
+            expect(page).to have_selector(resource_row_selector(bet))
             expect(page).to have_css('tr', count: 1)
           end
         end
@@ -113,7 +112,7 @@ describe 'Bets#index' do
           click_on('Search')
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(bet.id)
+            expect(page).to have_selector(resource_row_selector(bet))
             expect(page).to have_content(bet.title.name)
             (available_sports - [picked_sport]).each do |sport|
               expect(page).to_not have_content(sport)
@@ -148,7 +147,7 @@ describe 'Bets#index' do
           click_on('Search')
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(bet.id)
+            expect(page).to have_selector(resource_row_selector(bet))
             expect(page).to have_content(bet.title.name)
             (available_tournaments - [picked_tournament]).each do |tournament|
               expect(page).to_not have_content(tournament)
@@ -187,10 +186,8 @@ describe 'Bets#index' do
           click_on 'Search'
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(bet_pakistan.id)
-            expect(page).to have_content(bet_pakistan.countries.first.name)
-            expect(page).to_not have_content(bet_france.id)
-            expect(page).to_not have_content(bet_france.countries.first.name)
+            expect(page).to have_selector(resource_row_selector(bet_pakistan))
+            expect(page).to_not have_selector(resource_row_selector(bet_france))
           end
         end
 
@@ -201,12 +198,13 @@ describe 'Bets#index' do
           click_on 'Search'
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(bet_pakistan.id)
-            expect(page).to have_content(bet_pakistan.countries.first.name)
-            expect(page).to have_content(bet_france.id)
-            expect(page).to have_content(bet_france.countries.first.name)
-            expect(page).to_not have_content(bet_germany.id)
-            expect(page).to_not have_content(bet_germany.countries.first.name)
+            bet_pakistan_selector = resource_row_selector(bet_pakistan)
+            bet_france_selector = resource_row_selector(bet_france)
+            bet_germany_selector = resource_row_selector(bet_germany)
+
+            expect(page).to_not have_selector(bet_germany_selector)
+            expect(page).to have_selector(bet_france_selector)
+            expect(page).to have_selector(bet_pakistan_selector)
           end
         end
 
