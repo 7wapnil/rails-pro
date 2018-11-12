@@ -54,10 +54,8 @@ module OddsFeed
         odds_payload = event_data['odds']
 
         unless odds_payload.is_a?(Hash)
-          raise(
-            ArgumentError,
-            "Wrong type #{odds_payload.class} for odds payload: #{odds_payload}"
-          )
+          Rails.logger.info("Odds payload is missing for Event #{external_id}")
+          return
         end
 
         markets_payload = odds_payload['market']
