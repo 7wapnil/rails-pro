@@ -19,6 +19,10 @@ gem 'jbuilder', '~> 2.5'
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
 
+# Monkey patches
+#
+# - sidekiq_scheduler with Sidekiq::SilentScheduler
+
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
 
@@ -37,7 +41,7 @@ gem 'ransack'
 gem 'airbrake', '~> 7.3'
 gem 'sidekiq'
 gem 'sidekiq-failures'
-gem 'sidekiq-scheduler'
+gem 'sidekiq-scheduler', '3.0.0'
 gem 'sidekiq-unique-jobs'
 gem 'graphql-errors'
 gem 'redis', '~> 4.0'
