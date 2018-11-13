@@ -99,7 +99,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
     end
 
     def expired_live
-      timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT') { 10 }.to_i
+      timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10).to_i
       condition = 'bets.validation_ticket_sent_at <= :expired_at
                          AND events.traded_live = true'
       sent_to_external_validation
@@ -109,7 +109,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
     end
 
     def expired_prematch
-      timeout = ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT') { 3 }.to_i
+      timeout = ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT_SECONDS', 3).to_i
       condition = 'bets.validation_ticket_sent_at <= :expired_at
                          AND events.traded_live = false'
       sent_to_external_validation
