@@ -1,7 +1,6 @@
 require 'sidekiq-scheduler'
 
-class UnpopularPreLiveEventsCleanUpWorker
-  include Sidekiq::Worker
+class UnpopularPreLiveEventsCleanUpWorker < ApplicationWorker
 
   def perform
     Event

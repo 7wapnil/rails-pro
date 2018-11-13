@@ -1,8 +1,7 @@
 require 'sidekiq-scheduler'
 
 module Radar
-  class EventScopesLoadingWorker
-    include Sidekiq::Worker
+  class EventScopesLoadingWorker < ApplicationWorker
 
     def perform
       tournaments_response.each do |tournament|
