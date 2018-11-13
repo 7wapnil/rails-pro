@@ -24,14 +24,36 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
   it 'does not request API if event exists in db' do
     create(:event, external_id: event_id)
-    allow(subject).to receive(:create_event!)
+    allow(subject).to receive(:create_or_find_event!)
     subject.handle
-    expect(subject).not_to have_received(:create_event!)
+    expect(subject).not_to have_received(:create_or_find_event!)
   end
 
-  it 'raises InvalidMessageError if message is late' do
-    create(:event, external_id: event_id, remote_updated_at: Time.now + 300)
-    expect { subject.handle }.to raise_error(OddsFeed::InvalidMessageError)
+  describe '#create_or_find_event!' do
+    it 'saves event retrieved from the API' do
+      expect(event).to receive(:save!).and_return(true)
+      subject.send(:create_or_find_event!)
+    end
+
+    context 'fails to save event because it already exists' do
+      let!(:existing_event) do
+        create(:event, title: build(:title), external_id: event_id)
+      end
+
+      it 'raises ActiveRecord::RecordInvalid on event save attempt' do
+        expect(event).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
+        subject.send(:create_or_find_event!)
+      end
+
+      it 'finds existing event' do
+        expect(Event)
+          .to receive(:find_by!)
+          .with(external_id: event_id)
+          .and_return(existing_event)
+
+        subject.send(:create_or_find_event!)
+      end
+    end
   end
 
   it 'updates event status from message' do
@@ -52,7 +74,11 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
   it 'adds producer id to event payload' do
     payload_addition = {
-      producer: { origin: :radar, id: payload['odds_change']['product'] }
+      producer: { origin: :radar, id: payload['odds_change']['product'] },
+      event_status:
+        OddsFeed::Radar::EventStatusService.new.call(
+          payload['odds_change']['sport_event_status']
+        )
     }
 
     allow(Event).to receive(:find_by) { event }
@@ -105,7 +131,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
       subject.handle
       expect(subject)
         .to have_received(:generate_market!)
-        .with(anything, payload_single_market['odds_change']['odds']['market'])
+        .with(payload_single_market['odds_change']['odds']['market'])
         .once
     end
   end

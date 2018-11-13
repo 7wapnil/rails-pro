@@ -9,5 +9,13 @@ module Account
     argument :date_of_birth, !types.String
     argument :password, !types.String
     argument :password_confirmation, !types.String
+    argument :country, !types.String
+    argument :city, !types.String
+    argument :street_address, !types.String
+    argument :state, !types.String
+    argument :zip_code, !types.String
+    argument :gender, !types.Int
+    argument :phone, !types.String
+    argument :agreed_with_promotional, !types.Boolean
   end
 end

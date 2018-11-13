@@ -10,7 +10,7 @@ describe 'Customers#index' do
     end
 
     it 'shows customers list' do
-      within 'table.table' do
+      within 'table.table.entities' do
         Customer.limit(per_page_count).each do |customer|
           expect(page).to have_content(customer.username)
           expect(page).to have_content(customer.email)
@@ -23,7 +23,7 @@ describe 'Customers#index' do
     it 'shows only not deleted customers in a list' do
       deleted_customers = create_list(:customer, 5, deleted_at: Date.new)
 
-      within 'table.table' do
+      within 'table.table.entities' do
         deleted_customers.each do |customer|
           expect(page).not_to have_content("#{customer.username} ")
           expect(page).not_to have_content(customer.email)
@@ -49,68 +49,68 @@ describe 'Customers#index' do
       end
 
       it 'searches by username contains' do
-        within 'table' do
+        within 'table.search' do
           fill_in :query_username_cont, with: 'john'
           click_submit
         end
 
-        within 'table > tbody' do
+        within 'table.entities > tbody' do
           expect(page).to have_content(john.username)
         end
       end
 
       it 'searches by email contains' do
-        within 'table' do
+        within 'table.search' do
           fill_in :query_email_cont, with: 'doe@email'
           click_submit
         end
 
-        within 'table > tbody' do
+        within 'table.entities > tbody' do
           expect(page).to have_content(john.email)
         end
       end
 
       it 'searches by last sign in ip address' do
-        within 'table' do
+        within 'table.search' do
           fill_in :query_ip_address_eq, with: john.last_sign_in_ip
           click_submit
         end
 
-        within 'table > tbody' do
+        within 'table.entities > tbody' do
           expect(page).to have_content(john.last_sign_in_ip)
         end
       end
 
       it 'searches by current sign in ip address' do
-        within 'table' do
+        within 'table.search' do
           fill_in :query_ip_address_eq, with: john.current_sign_in_ip
           click_submit
         end
 
-        within 'table > tbody' do
+        within 'table.entities > tbody' do
           expect(page).to have_content(john.last_sign_in_ip)
         end
       end
 
       it 'searches by id' do
-        within 'table' do
+        within 'table.search' do
           fill_in :query_id_eq, with: john.id
           click_submit
         end
 
-        within 'table > tbody' do
+        within 'table.entities > tbody' do
           expect(page).to have_content(john.id)
           expect(page).to have_content(john.username)
         end
       end
 
       it 'trims whitespaces from the query' do
-        within 'table' do
+        within 'table.search' do
           fill_in :query_username_cont, with: '  john '
           click_submit
         end
 
-        within 'table > tbody' do
+        within 'table.entities > tbody' do
           expect(page).to have_content(john.username)
         end
       end

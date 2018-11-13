@@ -1,11 +1,10 @@
 module OddsFeed
   module Radar
+    # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
       def handle
-        ActiveRecord::Base.transaction do
-          create_or_update_event!
-          touch_event!
-        end
+        create_or_update_event!
+        touch_event!
         generate_markets
         event
       end
@@ -23,44 +22,64 @@ module OddsFeed
 
           Rails.logger.info msg.squish
 
-          create_event!
+          create_or_find_event!
         end
       end
 
       def touch_event!
         event.add_to_payload(
-          producer: { origin: :radar, id: event_data['product'] }
+          producer: { origin: :radar, id: event_data['product'] },
+          event_status:
+            OddsFeed::Radar::EventStatusService.new.call(
+              event_data['sport_event_status']
+            )
         )
-
         updates = { remote_updated_at: timestamp,
                     status: event_status,
                     end_at: event_end_time }
+        log_updates!(updates)
+        event.assign_attributes(updates)
+        event.save!
+      end
 
+      def log_updates!(updates)
         msg = <<-MESSAGE
             Updating event with ID #{external_id}, \
             product ID #{event_data['product']}, attributes #{updates}
         MESSAGE
         Rails.logger.info msg
-        event.assign_attributes(updates)
-        event.save!
       end
 
       def markets_data
-        data = event_data['odds']['market']
-        data.is_a?(Array) ? data : [data]
+        odds_payload = event_data['odds']
+
+        unless odds_payload.is_a?(Hash)
+          Rails.logger.info("Odds payload is missing for Event #{external_id}")
+          return []
+        end
+
+        markets_payload = odds_payload['market']
+
+        return markets_payload if markets_payload.is_a?(Array)
+        return [markets_payload] if markets_payload.is_a?(Hash)
+
+        []
       end
 
       def generate_markets
         markets_data.each do |market_data|
-          generate_market!(event, market_data)
+          generate_market!(market_data)
         rescue StandardError => e
-          Rails.logger.error e
+          Rails.logger.error e.message
+          Rails.logger.debug({ error: e, payload: @payload }.to_json)
           next
         end
       end
 
       def event_data
         @payload['odds_change']
+      rescue StandardError => e
+        Rails.logger.debug({ error: e, payload: @payload }.to_json)
       end
 
       def event_status
@@ -71,6 +90,7 @@ module OddsFeed
 
       def event_end_time
         return nil unless event_status == Event.statuses[:ended]
+
         timestamp
       end
 
@@ -99,10 +119,16 @@ module OddsFeed
         event_data['event_id']
       end
 
-      def create_event!
+      def create_or_find_event!
         @event = api_event
-        event.save!
-        ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
+        begin
+          event.save!
+          ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
+        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+          Rails.logger.warn ["Event ID #{external_id} creating failed",
+                             e.message]
+          @event = Event.find_by!(external_id: external_id)
+        end
       end
 
       def check_message_time
@@ -112,13 +138,13 @@ module OddsFeed
         return if event.remote_updated_at.utc <= timestamp
 
         msg = "Message came at #{timestamp}, but last update was #{last_update}"
-        raise InvalidMessageError, msg
+        Rails.logger.warn msg
       end
 
-      def generate_market!(event, market_data)
-        Rails.logger.info "Generating market for event #{event.external_id}"
-        MarketGenerator.new(event, market_data).generate
+      def generate_market!(market_data)
+        ::Radar::MarketGeneratorWorker.perform_async(event.id, market_data)
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

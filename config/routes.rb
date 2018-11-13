@@ -1,4 +1,5 @@
 require 'sidekiq/web'
+require 'sidekiq-scheduler/web'
 
 Rails.application.routes.draw do
   get '/health-check', to: 'health_checks#show'
@@ -9,12 +10,23 @@ Rails.application.routes.draw do
 
   resources :bonuses
 
-  resources :customers, only: %i[index show] do
+  concern :visible do
+    post :update_visibility, on: :member
+  end
+
+  concern :labelable do
+    post :update_labels, on: :member
+  end
+
+  resources :markets, concerns: %i[visible labelable]
+  resources :customers, only: %i[index show], concerns: :labelable do
     member do
       get :account_management
       get :activity
       get :notes
+      post :update_promotional_subscription
       post :update_customer_status
+      post :reset_password_to_default
       post :update_labels
       post :upload_documents
       scope '/documents' do
@@ -35,6 +47,8 @@ Rails.application.routes.draw do
 
   resources :entry_requests, only: %i[index show create]
 
+  resources :bets, only: %i[index show]
+
   resources :currencies, only: %i[index new edit create update]
 
   scope 'documents' do
@@ -46,7 +60,10 @@ Rails.application.routes.draw do
 
   resources :activities, only: %i[index show]
 
-  resources :events, only: %i[index show]
+  resources :events, only: %i[index show update],
+                     concerns: %i[visible labelable] do
+    resources :markets, only: :update
+  end
 
   devise_for :users, controllers: {
     sessions: 'users/sessions'

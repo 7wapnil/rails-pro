@@ -9,8 +9,11 @@ module Mts
       CUSTOMER_DEFAULT_LANGUAGE = 'EN'.freeze
       DEFAULT_ODDS_CHANGE_BEHAVIOUR = 'none'.freeze
 
+      attr_reader :bets
+
       def initialize(bets)
         raise NotImplementedError if bets.length > SUPPORTED_BETS_PER_REQUEST
+
         @bets = bets
       end
 
@@ -18,7 +21,7 @@ module Mts
         root_attributes.merge(
           sender: sender,
           selections: selections,
-          bets: bets
+          bets: formatted_bets
         )
       end
 
@@ -40,7 +43,7 @@ module Mts
           version: MESSAGE_VERSION,
           timestamp_utc: now_in_millisecons_epoch,
           ticket_id: ticket_id,
-          test_source: !production_mode,
+          test_source: !Mts::Mode.production?,
           odds_change: DEFAULT_ODDS_CHANGE_BEHAVIOUR
         }
       end
@@ -49,6 +52,7 @@ module Mts
         unless distribution_channel.channel == 'internet'
           raise NotImplementedError
         end
+
         {
           currency: bets_currency,
           channel: distribution_channel.channel,
@@ -76,7 +80,7 @@ module Mts
         end
       end
 
-      def bets
+      def formatted_bets
         @bets.map.with_index do |bet, index|
           {
             id: [ticket_id, index].join('_'),
@@ -113,12 +117,6 @@ module Mts
           end_customer_device_id: false,
           end_customer_languge: true
         }
-      end
-
-      # getters
-
-      def production_mode
-        !ENV['MTS_MODE'] == 'production'
       end
 
       def now_in_millisecons_epoch

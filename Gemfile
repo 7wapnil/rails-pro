@@ -3,7 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.5.1'
 
-gem 'rails', '~> 5.2.0'
+gem 'rails', '~> 5.2.1'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.11'
 gem 'sass-rails', '~> 5.0'
@@ -18,6 +18,10 @@ gem 'jbuilder', '~> 2.5'
 
 # Use ActiveStorage variant
 # gem 'mini_magick', '~> 4.8'
+
+# Monkey patches
+#
+# - sidekiq_scheduler with Sidekiq::SilentScheduler
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.1.0', require: false
@@ -36,6 +40,9 @@ gem 'kaminari-mongoid'
 gem 'ransack'
 gem 'airbrake', '~> 7.3'
 gem 'sidekiq'
+gem 'sidekiq-failures'
+gem 'sidekiq-scheduler', '3.0.0'
+gem 'sidekiq-unique-jobs'
 gem 'graphql-errors'
 gem 'redis', '~> 4.0'
 gem 'redis-rails'
@@ -53,6 +60,7 @@ gem 'logstash-event'
 gem 'logstash-logger'
 gem 'aasm'
 gem 'sendgrid-rails', '~> 3.0'
+gem 'phonelib'
 
 # To be moved back to development and test group
 gem 'faker', github: 'stympy/faker', branch: 'master'

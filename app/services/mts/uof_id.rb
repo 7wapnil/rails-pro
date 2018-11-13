@@ -6,6 +6,7 @@ module Mts
 
     def initialize(odd)
       @odd = odd
+      raise ArgumentError 'Not radar Event' unless radar_event?
     end
 
     # "uof:<product_id>/<sport id>/<market id>/<outcome
@@ -20,18 +21,31 @@ module Mts
         market_id,
         '/',
         outcome_id,
-        '?',
-        specifiers
+        specifiers_part
       ].join
     end
 
     private
 
-    PREMATCH_PRODUCT_ID = 3
-    LIVEODDS_PRODUCT_ID = 1
+    def specifiers_part
+      specifiers.empty? ? nil : "?#{specifiers}"
+    end
+
+    def radar_event?
+      producer['origin'] == 'radar'
+    end
 
     def product_id
-      @odd.market.event.traded_live? ? LIVEODDS_PRODUCT_ID : PREMATCH_PRODUCT_ID
+      producer['id'].to_i
+    end
+
+    def producer
+      raise 'Missing payload' unless @odd.market.event.payload
+
+      producer_value = @odd.market.event.payload['producer']
+      raise 'Missing producer' unless producer_value
+
+      producer_value
     end
 
     def outcome_id
@@ -51,7 +65,7 @@ module Mts
     end
 
     def parse_odd_external_id
-      %r{[a-z]*:[a-z]*:([0-9]*):([0-9]*)/([^:]*):([0-9]*)}
+      %r{[a-z]*:[a-z]*:([0-9]*):([0-9]*)[/]?([^:]*):([0-9]*)}
         .match(@odd.external_id)
     end
   end

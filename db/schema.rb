@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_10_111229) do
+ActiveRecord::Schema.define(version: 2018_11_08_072147) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -77,9 +77,10 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
     t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "result", default: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
+    t.integer "settlement_status"
+    t.datetime "validation_ticket_sent_at"
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
     t.index ["odd_id"], name: "index_bets_on_odd_id"
@@ -143,19 +144,11 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
     t.boolean "verified", default: false
     t.boolean "activated", default: false
     t.string "activation_token"
+    t.boolean "agreed_with_promotional", default: false
     t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
     t.index ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true
     t.index ["username"], name: "index_customers_on_username", unique: true
-  end
-
-  create_table "customers_labels", id: false, force: :cascade do |t|
-    t.bigint "customer_id"
-    t.bigint "label_id"
-    t.datetime "created_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.datetime "updated_at", default: -> { "CURRENT_TIMESTAMP" }, null: false
-    t.index ["customer_id"], name: "index_customers_labels_on_customer_id"
-    t.index ["label_id"], name: "index_customers_labels_on_label_id"
   end
 
   create_table "entries", force: :cascade do |t|
@@ -167,6 +160,7 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
     t.string "origin_type"
     t.bigint "origin_id"
     t.datetime "authorized_at"
+    t.datetime "confirmed_at"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
   end
@@ -210,7 +204,7 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
     t.datetime "updated_at", null: false
     t.string "external_id"
     t.index ["event_scope_id"], name: "index_event_scopes_on_event_scope_id"
-    t.index ["external_id"], name: "index_event_scopes_on_external_id"
+    t.index ["external_id"], name: "index_event_scopes_on_external_id", unique: true
     t.index ["title_id"], name: "index_event_scopes_on_title_id"
   end
 
@@ -227,8 +221,18 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
     t.datetime "remote_updated_at"
     t.boolean "traded_live", default: false
     t.integer "status", default: 0
-    t.index ["external_id"], name: "index_events_on_external_id"
+    t.integer "priority", limit: 2, default: 1
+    t.boolean "visible", default: true
+    t.index ["external_id"], name: "index_events_on_external_id", unique: true
     t.index ["title_id"], name: "index_events_on_title_id"
+  end
+
+  create_table "label_joins", force: :cascade do |t|
+    t.bigint "label_id"
+    t.integer "labelable_id"
+    t.string "labelable_type"
+    t.index ["label_id"], name: "index_label_joins_on_label_id"
+    t.index ["labelable_id", "labelable_type"], name: "index_label_joins_on_labelable_id_and_labelable_type"
   end
 
   create_table "labels", force: :cascade do |t|
@@ -237,6 +241,7 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
+    t.integer "kind", default: 0
     t.index ["deleted_at"], name: "index_labels_on_deleted_at"
   end
 
@@ -258,8 +263,9 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
     t.integer "priority"
     t.string "external_id"
     t.integer "status"
+    t.boolean "visible", default: true
     t.index ["event_id"], name: "index_markets_on_event_id"
-    t.index ["external_id"], name: "index_markets_on_external_id"
+    t.index ["external_id"], name: "index_markets_on_external_id", unique: true
   end
 
   create_table "odds", force: :cascade do |t|
@@ -271,7 +277,7 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
     t.string "external_id"
     t.decimal "value"
     t.integer "status"
-    t.index ["external_id"], name: "index_odds_on_external_id"
+    t.index ["external_id"], name: "index_odds_on_external_id", unique: true
     t.index ["market_id"], name: "index_odds_on_market_id"
   end
 
@@ -290,7 +296,7 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
     t.datetime "updated_at", null: false
     t.integer "kind", default: 0
     t.string "external_id"
-    t.index ["external_id"], name: "index_titles_on_external_id"
+    t.index ["external_id"], name: "index_titles_on_external_id", unique: true
   end
 
   create_table "users", force: :cascade do |t|
@@ -339,7 +345,7 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
   add_foreign_key "balances", "wallets"
   add_foreign_key "bets", "currencies"
   add_foreign_key "bets", "customers"
-  add_foreign_key "bets", "odds"
+  add_foreign_key "bets", "odds", on_delete: :cascade
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "entries", "wallets"
@@ -349,10 +355,11 @@ ActiveRecord::Schema.define(version: 2018_10_10_111229) do
   add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "event_scopes", "titles"
   add_foreign_key "events", "titles"
-  add_foreign_key "markets", "events"
-  add_foreign_key "odds", "markets"
+  add_foreign_key "label_joins", "labels"
+  add_foreign_key "markets", "events", on_delete: :cascade
+  add_foreign_key "odds", "markets", on_delete: :cascade
   add_foreign_key "scoped_events", "event_scopes"
-  add_foreign_key "scoped_events", "events"
+  add_foreign_key "scoped_events", "events", on_delete: :cascade
   add_foreign_key "verification_documents", "customers"
   add_foreign_key "wallets", "currencies"
   add_foreign_key "wallets", "customers"

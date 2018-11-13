@@ -7,9 +7,10 @@ module Account
     field :username, !types.String
     field :verified, !types.Boolean
     field :date_of_birth, !types.String
-    field :phone, !types.String
-    field :gender, !types.String
+    field :phone, types.String
+    field :gender, types.String
     field :first_name, !types.String
     field :last_name, !types.String
+    field :agreed_with_promotional, !types.Boolean
   end
 end

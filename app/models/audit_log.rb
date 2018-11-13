@@ -30,9 +30,14 @@ class AuditLog
   end
 
   def interpolation
-    attributes = { user_name: user_name,
-                   customer_name: customer_name }
+    attributes = {
+      user_id: user_id,
+      customer_id: customer_id,
+      user_name: user_name,
+      customer_name: customer_name
+    }
     return attributes unless context
+
     attributes.merge(context.attributes.symbolize_keys)
   end
 end

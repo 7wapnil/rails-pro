@@ -1,0 +1,82 @@
+- content_for :css do
+  = stylesheet_pack_tag 'flatpickr', media: :all, 'data-turbolinks-track': 'reload'
+
+- content_for :js do
+  = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
+
+= search_form_for @search do |f|
+  %table.table
+    %thead
+      %tr
+        %th
+          .filter_title= "#{t('attributes.event_id')}:"
+          .filter_field
+            = f.label :id_eq, class: 'sr-only'
+            = f.search_field :id_eq,
+                                 class: 'form-control',
+                                 placeholder: t('attributes.id'),
+                                 autocomplete: :off
+        %th
+          .filter_title Name:
+          .filter_field
+            = f.label :name_cont, class: 'sr-only'
+            = f.search_field :name_cont,
+                                 class: 'form-control',
+                                 placeholder: t(:search, subject: 'Name'),
+                                 autocomplete: :off
+        %th
+          .filter_title Sport:
+          .filter_field
+            = f.label :title_name_eq, class: 'sr-only'
+            = f.select :title_name_eq,
+                 options_for_select(@sports, query_params ? query_params[:title_name_eq] : nil),
+                  { include_blank: true },
+                  class: 'form-control'
+        %th
+          .filter_title Visibility:
+          .filter_field
+            = f.label :visible_eq, class: 'sr-only'
+            = f.select :visible_eq,
+                 options_for_select({'Visible': true, 'Invisible': false}, query_params ? query_params[:visible_eq] : nil),
+                  { include_blank: true },
+                  class: 'form-control'
+        %th
+          .filter_title Live:
+          .filter_field
+          = f.select :traded_live_eq,
+                 options_for_select({'Yes': true, 'No': false}, query_params ? query_params[:traded_live_eq] : nil),
+                  { include_blank: true },
+                  class: 'form-control'
+        %th
+      %tr
+        %th
+          .filter_title='From date:'
+          .filter_field
+            = f.label :start_at_gteq, class: 'sr-only'
+            = f.search_field :start_at_gteq,
+                                   class: 'form-control form_date',
+                                   placeholder: t(:search, subject: t('from')),
+                                   value: query_params[:start_at_gteq] || l(Date.today, format: :date_picker)
+
+        %th
+          .filter_title='To date:'
+          .filter_field
+            = f.label :start_at_lteq, class: 'sr-only'
+            = f.search_field :start_at_lteq,
+                                   class: 'form-control form_date',
+                                   placeholder: t(:search, subject: t('to')),
+                                   value: query_params[:start_at_lteq] || l(Date.today, format: :date_picker)
+
+        %th
+          .filter_title Scope kind:
+          .filter_field
+            = f.select :event_scopes_kind_eq,
+                 options_for_select(EventScope.kinds, query_params ? query_params[:event_scopes_kind_eq] : nil),
+                  { include_blank: true },
+                  class: 'form-control'
+        %th
+          .filter_title Scope name:
+          .filter_field
+            = f.search_field :event_scopes_name_cont, class: 'form-control', placeholder: 'Scope name'
+        %th
+          = f.submit class: 'btn btn-outline-dark btn-block'

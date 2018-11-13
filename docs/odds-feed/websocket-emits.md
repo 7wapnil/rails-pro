@@ -7,6 +7,9 @@ event updated
 **Data:**
 * `id`:`String` - event internal ID
 * `name`:`String` - event name
+* `event_status`:`EventStatus` - event status details, for `EventStatus`
+details check `app/graphql/types/event_status_type.rb` and
+`app/graphql/types/period_score_type.rb`
 
 #### `updateMarket`
 Sent when new market appears or at least one field of existing
@@ -37,3 +40,8 @@ Sent when bets cancelled by odds provider
 * `id`:`String` - bet internal ID
 * `customerId`:`Integer` - ID of customer bet made by
 `app/models/bet.rb`
+
+#### `betPlaced`
+Report bet placement signal 
+**Data:**
+* `id`:`String` - bet internal ID

@@ -42,7 +42,7 @@ store:
   steps:
     - script:
       name: bundle-install
-      code: bundle install
+      code: bundle install --without development test
 
     - bashaus/yarn-install
 
@@ -112,7 +112,8 @@ deploy:
         aws ecs describe-task-definition \
             --query 'taskDefinition.containerDefinitions' \
             --task-definition $(terraform output task_definition) > td.json
-        jq '.[].command=["rake","db:migrate"] | .[].cpu=50' td.json > $WERCKER_SOURCE_DIR/migrate.json
+        jq '.[].command=["rake","db:migrate"] | .[].cpu=50 | .[].memory=256' \
+            td.json > $WERCKER_SOURCE_DIR/migrate.json
 
     - 1science/aws-ecs:
         key: $AWS_ACCESS_KEY_ID

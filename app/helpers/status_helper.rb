@@ -1,8 +1,18 @@
 module StatusHelper
   STATUS_MAPPING = {
+    'accepted' => 'success',
+    'cancelled' => 'danger',
+    'failed' => 'danger',
+    'initial' => 'secondary',
     'pending' => 'secondary',
+    'rejected' => 'danger',
+    'sent_to_external_validation' => 'info',
+    'sent_to_internal_validation' => 'info',
+    'settled' => 'info',
     'succeeded' => 'success',
-    'failed' => 'danger'
+    'validated_internally' => 'info',
+    'live' => 'success',
+    'offline' => 'secondary'
   }.freeze
 
   def status_badge(status)

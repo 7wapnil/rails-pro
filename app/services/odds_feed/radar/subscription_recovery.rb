@@ -14,19 +14,23 @@ module OddsFeed
       end
 
       def call
+        Rails.logger.info "Recovering #{@product_id} from #{@start_at}"
         return unless product_available?
         return unless rates_available?
+
         response = api_client.product_recovery_initiate_request(
           product_code: code,
           after: start_at
         )
         return unless response['response']['response_code'] == 'ACCEPTED'
+
         write_previous_recovery_timestamp(Time.zone.now.to_i)
       end
 
       def rates_available?
         last_call = previous_recovery_timestamp
         return true unless last_call
+
         Time.at(last_call) < Time.zone.now - 30.seconds
       end
 

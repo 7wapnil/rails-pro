@@ -10,6 +10,7 @@ module Account
     def resolve(_obj, args)
       input = args[:input]
       return unless input
+
       customer = ::Customers::RegistrationService.call(input.to_h, @request)
 
       OpenStruct.new(user: customer,

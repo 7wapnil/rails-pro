@@ -16,8 +16,6 @@ describe Bet do
       .on(:create)
   end
 
-  it { should allow_value(true, false).for(:result) }
-
   it do
     should validate_numericality_of(:void_factor)
       .is_greater_than_or_equal_to(0)
@@ -28,25 +26,60 @@ describe Bet do
   BET_SETTLEMENT_OUTCOMES_EXAMPLES = [
     { name: 'Lose entire bet',
       amount: 1, odd_value: 1.0, void_factor: nil,
-      result: 0,
+      settlement_status: :lost,
       win_amount: 0, refund_amount: 0 },
     { name: 'Win entire bet',
       amount: 1, odd_value: 1.345, void_factor: nil,
-      result: 1,
+      settlement_status: :won,
       win_amount: 1.345, refund_amount: 0 },
     { name: 'Refund entire bet',
       amount: 1, odd_value: 1.345, void_factor: 1,
-      result: 0,
+      settlement_status: :lost,
       win_amount: 0, refund_amount: 1 },
     { name: 'Refund half bet and win other half',
       amount: 1, odd_value: 1.345, void_factor: 0.5,
-      result: 1,
+      settlement_status: :won,
       win_amount: 1.345 * 0.5, refund_amount: 0.5 },
     { name: 'Refund half bet and lose other half',
       amount: 1, odd_value: 1.345, void_factor: 0.5,
-      result: 0,
+      settlement_status: :lost,
       win_amount: 0, refund_amount: 0.5 }
   ].freeze
+
+  describe 'Bet.expired_prematch' do
+    it 'Returns expired prematch bets' do
+      timeout = ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT_SECONDS', 3).to_i
+      expired_bets = create_list(:bet, 2,
+                                 validation_ticket_sent_at: (timeout + 3)
+                                                              .seconds
+                                                              .ago,
+                                 status: :sent_to_external_validation)
+      create_list(:bet, 3,
+                  validation_ticket_sent_at: 1.seconds.ago,
+                  status: :sent_to_external_validation)
+      expected_bets = Bet.expired_prematch
+
+      expect(expected_bets).to eq(expired_bets)
+    end
+  end
+
+  describe 'Bet.expired_live' do
+    it 'Returns expired live bets' do
+      timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10).to_i
+      expired_time = (timeout + 3).seconds.ago
+      live_event = create(:event_with_odds, traded_live: true)
+      expired_bets = create_list(:bet, 2,
+                                 odd: live_event.markets.first.odds.first,
+                                 validation_ticket_sent_at: expired_time,
+                                 status: :sent_to_external_validation)
+      create_list(:bet, 3,
+                  validation_ticket_sent_at: 1.seconds.ago,
+                  status: :sent_to_external_validation)
+      expected_bets = Bet.expired_live
+
+      expect(expected_bets).to eq(expired_bets)
+    end
+  end
 
   describe '.win_amount' do
     BET_SETTLEMENT_OUTCOMES_EXAMPLES.each do |example|
@@ -56,7 +89,7 @@ describe Bet do
                 amount: example[:amount],
                 odd_value: example[:odd_value],
                 void_factor: example[:void_factor],
-                result: example[:result])
+                settlement_status: example[:settlement_status])
 
         expect(bet.win_amount).to be_within(0.01).of(example[:win_amount])
       end
@@ -71,10 +104,60 @@ describe Bet do
                 amount: example[:amount],
                 odd_value: example[:odd_value],
                 void_factor: example[:void_factor],
-                result: example[:result])
+                settlement_status: example[:settlement_status])
 
         expect(bet.refund_amount)
           .to be_within(0.01).of(example[:refund_amount])
+      end
+    end
+  end
+
+  describe 'with_winnings' do
+    it 'finds bets with calculated winnings' do
+      FactoryBot.create(:bet)
+      result = Bet.with_winnings.first
+      expect(result.winning).to eq(result.amount * result.odd_value)
+    end
+  end
+
+  describe 'sort_by_winning_asc' do
+    it 'finds bets with calculated winnings sorted asc' do
+      create_list(:bet, 2)
+      result = Bet.sort_by_winning_asc
+      first = result.first
+      last = result.last
+      expect(first.winning <= last.winning).to be_truthy
+    end
+  end
+
+  describe 'sort_by_winning_desc' do
+    it 'finds bets with calculated winnings sorted desc' do
+      create_list(:bet, 2)
+      result = Bet.sort_by_winning_desc
+      first = result.first
+      last = result.last
+      expect(first.winning >= last.winning).to be_truthy
+    end
+  end
+
+  describe '.settle!' do
+    context 'with accepted bet' do
+      let(:bet) { FactoryBot.create(:bet, :accepted) }
+      it 'set settlement status to won' do
+        expect(bet.settle!(settlement_status: :won, void_factor: 0.5))
+          .to be_truthy
+        expect(bet.settled?).to be_truthy
+        expect(bet.void_factor).to eq(0.5)
+        expect(bet.won?).to be_truthy
+        expect(bet.lost?).to be_falsey
+      end
+      it 'set settlement status to lost' do
+        expect(bet.settle!(settlement_status: :lost, void_factor: 0.7))
+          .to be_truthy
+        expect(bet.settled?).to be_truthy
+        expect(bet.void_factor).to eq(0.7)
+        expect(bet.won?).to be_falsey
+        expect(bet.lost?).to be_truthy
       end
     end
   end

@@ -8,6 +8,12 @@ describe Event do
 
   it { should delegate_method(:name).to(:title).with_prefix }
 
+  it_behaves_like 'has unique :external_id'
+
+  it 'returns details adapter' do
+    expect(subject.details).to be_a(EventDetails::Base)
+  end
+
   describe '.in_play' do
     it 'includes started and not finished events that are traded live' do
       event = create(:event,
@@ -43,6 +49,37 @@ describe Event do
                      traded_live: false)
 
       expect(Event.in_play).not_to include(event)
+    end
+
+    it 'doesn\'t include events that started longer than 4 hours ago' do
+      event = create(:event,
+                     start_at: 245.minutes.ago,
+                     end_at: nil,
+                     traded_live: true)
+
+      expect(Event.in_play).not_to include(event)
+    end
+  end
+
+  describe '.upcoming' do
+    it 'includes not started events' do
+      event = create(:event, start_at: 5.minutes.from_now, end_at: nil)
+      expect(Event.upcoming).to include(event)
+    end
+
+    it 'doesn\'t include started events' do
+      event = create(:event, start_at: 5.minutes.ago)
+      expect(Event.upcoming).not_to include(event)
+    end
+
+    it 'doesn\'t include ended events' do
+      event = create(:event, start_at: 1.hour.ago, end_at: 5.minutes.ago)
+      expect(Event.upcoming).not_to include(event)
+    end
+
+    it 'doesn\'t include events with :end_at in future' do
+      event = create(:event, start_at: 1.hour.ago, end_at: 5.minutes.from_now)
+      expect(Event.upcoming).not_to include(event)
     end
   end
 

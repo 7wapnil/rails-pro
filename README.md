@@ -4,6 +4,12 @@
 
 ArcaneBet betting backend
 
+## Project documentation
+
+- Odds feed
+    - [WebSocket signals documentation](docs/odds-feed/websocket-emits.md)
+
+
 ## Development
 
 The project ships with `docker-compose.example.yml` file meant for local development. In order to use it you need to have Docker and Docker Compose installed on your machine.

@@ -1,4 +1,53 @@
 :queues:
   - critical
-  - mq
   - default
+  - expired_live
+  - expired_prematch
+  - market_templates_update
+  - mq
+  - odds_feed
+
+:schedule:
+  mts_live_validation:
+    every: <%= "#{ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10)}s" %>
+    class: Scheduled::ExpiringLiveWorker
+    queue: expired_live
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+
+  mts_prematch_validation:
+    every: <%= "#{ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT_SECONDS', 3)}s" %>
+    class: Scheduled::ExpiringPrematchWorker
+    queue: expired_prematch
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+
+  missing_heartbeat_check:
+    every: <%= ENV.fetch('MISSING_HEARTBEAT_CHECK_INTERVAL', '1m') %>
+    class: Radar::MissingHeartbeatWorker
+    queue: critical
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+
+  pre_match_markets_closing:
+    every: <%= ENV.fetch('PRE_MATCH_MARKETS_CLOSING_TIMEOUT', '5m') %>
+    class: PreMatchMarketsClosingWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+
+  radar_event_scopes_loading:
+    every: <%= ENV.fetch('RADAR_EVENT_SCOPES_LOADING_INTERVAL', '1w') %>
+    class: Radar::EventScopesLoadingWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+
+  radar_market_templates_update:
+    every: <%= ENV.fetch('RADAR_MARKET_TEMPLATES_UPDATE_INTERVAL', '1w') %>
+    class: Radar::MarketsUpdateWorker
+    queue: market_templates_update
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+
+  unpopular_live_events_clean_up:
+    every: <%= ENV.fetch('UNPOPULAR_LIVE_EVENTS_CLEAN_UP_INTERVAL', '1h') %>
+    class: UnpopularLiveEventsCleanUpWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+
+  unpopular_pre_live_events_clean_up:
+    every: <%= ENV.fetch('UNPOPULAR_PRE_LIVE_EVENTS_CLEAN_UP_INTERVAL', '1h') %>
+    class: UnpopularPreLiveEventsCleanUpWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>

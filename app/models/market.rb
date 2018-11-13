@@ -1,12 +1,16 @@
 class Market < ApplicationRecord
+  include Visible
+  include HasUniqueExternalId
+
   before_validation :define_priority, if: :name_changed?
   after_create :emit_created
   after_update :emit_updated
 
   PRIORITIES_MAP = [
-    { pattern: /- winner$/, priority: 1 }
+    { pattern: /^Winner/, priority: 1 },
+    { pattern: /1x2/, priority: 1 }
   ].freeze
-
+  PRIORITIES = [0, 1, 2].freeze
   DEFAULT_PRIORITY = 0
 
   STATUSES = {
@@ -23,7 +27,10 @@ class Market < ApplicationRecord
   enum status: STATUSES
 
   belongs_to :event
-  has_many :odds
+  has_many :odds, -> { order(id: :asc) }, dependent: :delete_all
+  has_many :bets, through: :odds
+  has_many :label_joins, as: :labelable
+  has_many :labels, through: :label_joins
 
   validates :name, :priority, :status, presence: true
   validates_with MarketStateValidator, restrictions: [
@@ -52,6 +59,7 @@ class Market < ApplicationRecord
       changes[attr.to_sym] = changed[1] if %w[name status].include?(attr)
     end
     return if changes.empty?
+
     WebSocket::Client.instance.emit(WebSocket::Signals::MARKET_UPDATED,
                                     id: id.to_s,
                                     eventId: event_id.to_s,

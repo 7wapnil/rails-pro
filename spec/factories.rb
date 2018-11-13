@@ -1,27 +1,37 @@
 FactoryBot.define do
+  factory :label_join do
+    label { nil }
+  end
   # Financials
 
   factory :entry_currency_rule do
     currency
     kind { EntryRequest.kinds.keys.first }
-    min_amount { Faker::Number.decimal(3, 2) }
+    min_amount { Faker::Number.decimal(1, 2) }
     max_amount { Faker::Number.decimal(4, 2) }
   end
 
   factory :currency do
     name { Faker::Currency.name }
     code { Faker::Currency.code }
+
+    trait :with_bet_rule do
+      after(:create) do |currency|
+        bet_kind = EntryRequest.kinds[:bet]
+        create(:entry_currency_rule, currency: currency, kind: bet_kind)
+      end
+    end
   end
 
   factory :entry_request do
     customer
     currency
-    status EntryRequest.statuses[:pending]
-    mode EntryRequest.modes[:cashier]
+    status { EntryRequest.statuses[:pending] }
+    mode { EntryRequest.modes[:cashier] }
     kind { EntryRequest.kinds.keys.first }
-    amount Random.new.rand(1.00..200.00).round(2)
-    association :initiator, factory: :customer
+    amount { Random.new.rand(1.00..200.00).round(2) }
     comment { Faker::Lorem.paragraph }
+    association :initiator, factory: :customer
   end
 
   factory :balance_entry do
@@ -34,12 +44,12 @@ FactoryBot.define do
     wallet
     kind { EntryRequest.kinds.keys.first }
     amount { Faker::Number.decimal(3, 2) }
-    authorized_at nil
+    authorized_at { nil }
   end
 
   factory :balance do
     wallet
-    kind Balance.kinds[:real_money]
+    kind { Balance.kinds[:real_money] }
     amount { Faker::Number.decimal(3, 2) }
   end
 
@@ -49,32 +59,42 @@ FactoryBot.define do
     amount { Faker::Number.decimal(3, 2) }
 
     trait :brick do
-      amount 100_000
+      amount { 100_000 }
     end
   end
 
   factory :bet do
-    customer
+    association :customer, :ready_to_bet
     odd
     currency
     amount { Faker::Number.decimal(2, 2) }
     odd_value { odd.value }
-    status Bet.statuses[:initial]
+    status { Bet.statuses[:initial] }
 
     trait :settled do
-      status Bet.statuses[:settled]
+      status { Bet.statuses[:settled] }
     end
 
     trait :accepted do
-      status Bet.statuses[:accepted]
+      status { Bet.statuses[:accepted] }
     end
 
-    trait :win do
-      result true
+    trait :sent_to_external_validation do
+      status { Bet.statuses[:sent_to_external_validation] }
+
+      after(:create) do |bet|
+        bet_kind = EntryRequest.kinds[:bet]
+        wallet = bet.customer.wallets.take
+        create(:entry, kind: bet_kind, origin: bet, wallet: wallet)
+      end
     end
 
-    trait :lose do
-      result false
+    trait :won do
+      settlement_status { :won }
+    end
+
+    trait :lost do
+      settlement_status { :lost }
     end
   end
 
@@ -82,27 +102,27 @@ FactoryBot.define do
 
   factory :bonus do
     sequence(:code) { |n| "FOOBAR#{n}" }
-    kind 0
-    rollover_multiplier 10
-    max_rollover_per_bet 150.00
-    max_deposit_match 1000.00
-    min_odds_per_bet 1.6
-    min_deposit 10.00
+    kind { 0 }
+    rollover_multiplier { 10 }
+    max_rollover_per_bet { 150.00 }
+    max_deposit_match { 1000.00 }
+    min_odds_per_bet { 1.6 }
+    min_deposit { 10.00 }
     expires_at { Date.today.end_of_month }
-    valid_for_days 60
+    valid_for_days { 60 }
   end
 
   factory :user do
     email { Faker::Internet.email }
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
-    password 'iamverysecure'
+    password { 'iamverysecure' }
 
     factory :admin_user do
-      email 'admin@email.com'
-      first_name 'Super'
-      last_name 'Admin'
-      password 'iamadminuser'
+      email { 'admin@email.com' }
+      first_name { 'Super' }
+      last_name { 'Admin' }
+      password { 'iamadminuser' }
     end
   end
 
@@ -125,18 +145,25 @@ FactoryBot.define do
 
     first_name { Faker::Name.first_name }
     last_name { Faker::Name.last_name }
-    date_of_birth { Faker::Date.birthday }
+    date_of_birth { rand(18..50).years.ago }
     gender { Customer.genders.keys.sample }
-    phone { Faker::PhoneNumber.phone_number }
+    phone { "+37258389#{rand(100..999)}" }
     sign_in_count { [*1..200].sample }
     current_sign_in_at { Faker::Time.between(1.week.ago, Date.today).in_time_zone } # rubocop:disable Metrics/LineLength
     last_sign_in_at { Faker::Time.between(Date.yesterday, Date.today).in_time_zone } # rubocop:disable Metrics/LineLength
     current_sign_in_ip { Faker::Internet.ip_v4_address }
     last_sign_in_ip { Faker::Internet.ip_v4_address }
-    password 'iamverysecure'
-    verified false
-    activated false
+    password { 'iamverysecure' }
+    verified { false }
+    activated { false }
     activation_token { Faker::Internet.password }
+
+    trait :ready_to_bet do
+      after(:create) do |customer|
+        currency = create(:currency, :with_bet_rule)
+        create(:wallet, customer: customer, currency: currency)
+      end
+    end
   end
 
   factory :label do
@@ -169,19 +196,29 @@ FactoryBot.define do
   factory :market_template do
     external_id { Faker::Number.between(1, 1000) }
     name { Faker::Name.unique.name }
-    groups 'all'
+    groups { 'all' }
     payload { { test: 1 } }
   end
 
   factory :title do
     name { Faker::Name.unique.name }
-    kind :esports
+    kind { :esports }
+    sequence :external_id do |n|
+      "sr:sport:#{n}"
+    end
   end
 
   factory :event_scope do
     title
-    name 'FPSThailand CS:GO Pro League Season#4'
-    kind :tournament
+    name { 'FPSThailand CS:GO Pro League Season#4' }
+    kind { :tournament }
+    sequence :external_id do |n|
+      "sr:tournament:#{n}"
+    end
+    factory :event_scope_country do
+      kind { :country }
+      name { Faker::Address.country }
+    end
   end
 
   factory :scoped_event do
@@ -191,14 +228,22 @@ FactoryBot.define do
 
   factory :event do
     title
-    name 'MiTH vs. Beyond eSports'
-    description 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' # rubocop:disable Metrics/LineLength
+    visible { true }
+    name { 'MiTH vs. Beyond eSports' }
+    description { 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' } # rubocop:disable Metrics/LineLength
     start_at { 2.hours.ago }
     end_at { 1.hours.ago }
     remote_updated_at { Time.zone.now }
-    external_id ''
-    status 0
+    sequence :external_id do |n|
+      "sr:match:#{n}"
+    end
+    status { 0 }
     payload { {} }
+
+    trait :upcoming do
+      start_at { 1.hour.from_now }
+      end_at { nil }
+    end
 
     factory :event_with_market do
       after(:create) do |event|
@@ -215,9 +260,14 @@ FactoryBot.define do
 
   factory :market do
     event
-    name 'Winner Map (Train)'
-    priority 2
-    status 0
+    visible { true }
+    name { 'Winner Map (Train)' }
+    priority { 2 }
+    status { 0 }
+
+    sequence :external_id do |n|
+      "sr:match:#{n}:209/setnr=2|gamenrX=#{n}|gamenrY=#{n}"
+    end
 
     trait :with_odds do
       after(:create) do |market|
@@ -228,16 +278,20 @@ FactoryBot.define do
 
   factory :odd do
     market
-    name 'MiTH'
-    won true
+    name { 'MiTH' }
+    won { true }
     value { Faker::Number.decimal(1, 2) }
-    status 0
+    status { 0 }
+
+    sequence :external_id do |n|
+      "sr:match:#{n}:280/hcp=0.5:#{n}"
+    end
   end
 
   factory(:alive_message, class: Radar::AliveMessage) do
-    product_id 1
-    reported_at Time.now.to_i
-    subscribed true
+    product_id { 1 }
+    reported_at { Time.now.to_i }
+    subscribed { true }
 
     initialize_with do
       new(
@@ -250,8 +304,8 @@ FactoryBot.define do
 
   factory :verification_document do
     customer
-    kind 0
-    status 0
+    kind { 0 }
+    status { 0 }
 
     after(:build) do |doc|
       file_path = Rails.root.join('spec',

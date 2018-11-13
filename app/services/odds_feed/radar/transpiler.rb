@@ -4,8 +4,10 @@ module OddsFeed
       def initialize(event, market_id, specifiers = '')
         @event = event
         @market_id = market_id
-        @specifiers = specifiers
         @client = Client.new
+        @tokens = specifiers.split('|')
+                            .map { |spec| spec.split('=') }
+                            .to_h
       end
 
       def market_name
@@ -17,44 +19,31 @@ module OddsFeed
         template = odd_template(collection, odd_id)
 
         raise "Odd template ID #{odd_id} not found" if template.nil?
+
         transpile(template['name'])
       end
 
       def transpile(value)
-        result = value
-        value.scan(/\{([^\}]*)/).each do |matches|
-          token = matches.first
-          result = result.gsub("{#{token}}", token_value(token))
-        end
-        result
+        interpreter.parse(value)
       end
 
       private
+
+      def interpreter
+        @interpreter ||= OddsFeed::Radar::Transpiling::Interpreter
+                         .new(@event, @tokens)
+      end
 
       def variant?
         market_template.payload['outcomes'].nil? && variant_value.present?
       end
 
       def token_value(token)
-        tokens[token] || ''
+        @tokens[token] || ''
       end
 
       def variant_value
         token_value('variant')
-      end
-
-      def tokens
-        tokens = @specifiers.split('|')
-                            .map { |spec| spec.split('=') }
-                            .to_h
-
-        competitors = @event.payload['competitors']['competitor']
-        unless competitors.blank?
-          competitors.each.with_index do |competitor, i|
-            tokens["$competitor#{i + 1}"] = competitor['name']
-          end
-        end
-        tokens
       end
 
       def market_template

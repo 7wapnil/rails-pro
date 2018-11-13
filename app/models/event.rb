@@ -1,8 +1,13 @@
-class Event < ApplicationRecord
+class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
+  include Visible
+  include HasUniqueExternalId
+
   after_create :emit_created
   after_update :emit_updated
 
   UPDATABLE_ATTRIBUTES = %w[name description start_at end_at].freeze
+
+  PRIORITIES = [0, 1, 2].freeze
 
   STATUSES = {
     not_started: 0,
@@ -11,21 +16,71 @@ class Event < ApplicationRecord
     closed: 3
   }.freeze
 
+  ransacker :markets_count do
+    Arel.sql('markets_count')
+  end
+
+  ransacker :bets_count do
+    Arel.sql('bets_count')
+  end
+
+  ransacker :wager do
+    Arel.sql('wager')
+  end
+
   belongs_to :title
-  has_many :markets
-  has_many :scoped_events
+  has_many :markets, dependent: :delete_all
+  has_many :bets, through: :markets
+  has_many :scoped_events, dependent: :delete_all
   has_many :event_scopes, through: :scoped_events
+  has_many :label_joins, as: :labelable
+  has_many :labels, through: :label_joins
 
   validates :name, presence: true
+  validates :priority, inclusion: { in: PRIORITIES }
 
   enum status: STATUSES
 
   delegate :name, to: :title, prefix: true
 
+  def self.start_time_offset
+    4.hours.ago
+  end
+
+  def self.with_markets_count
+    query = <<-SQL
+      events.*,
+      (SELECT COUNT(markets.id) from markets WHERE markets.event_id = events.id) as markets_count
+    SQL
+    select(query).group(:id)
+  end
+
+  def self.with_bets_count
+    select('events.*, COUNT(bets.id) as bets_count')
+      .left_outer_joins(:bets)
+      .group(:id)
+  end
+
+  def self.with_wager
+    select('events.*, COALESCE(SUM(bets.amount) ,0) as wager').group(:id)
+  end
+
+  def self.upcoming
+    where('start_at > ? AND end_at IS NULL', Time.zone.now)
+  end
+
+  # 4 hours ago is a temporary workaround to reduce amount of live events
+  # Will be removed when proper event ending logic is implemented
   def self.in_play
     where(
-      'start_at < ? AND end_at IS NULL AND traded_live IS TRUE',
-      Time.zone.now
+      [
+        'start_at < ? AND ',
+        'start_at > ? AND ',
+        'end_at IS NULL AND ',
+        'traded_live IS TRUE'
+      ].join,
+      Time.zone.now,
+      start_time_offset
     )
   end
 
@@ -52,12 +107,25 @@ class Event < ApplicationRecord
   # This is a good candidate to be extracted to a reusable concern
   def add_to_payload(addition)
     return unless addition
+
     payload&.merge!(addition)
     self.payload = addition unless payload
+
+    return unless addition[:event_status]
+
+    WebSocket::Client.instance.emit(
+      WebSocket::Signals::EVENT_UPDATED,
+      id: id.to_s,
+      changes: { event_status: addition[:event_status] }
+    )
   end
 
   def tournament
     event_scopes.where(kind: :tournament).first
+  end
+
+  def details
+    ::EventDetails::Factory.build(self)
   end
 
   private
@@ -73,6 +141,7 @@ class Event < ApplicationRecord
               .except(*excluded_keys)
               .transform_values! { |v| v[1] }
     return if changes.empty?
+
     WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
                                     id: id.to_s,
                                     changes: changes)

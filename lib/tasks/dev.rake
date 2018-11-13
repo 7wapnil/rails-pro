@@ -4,6 +4,7 @@ namespace :dev do
     Rake::Task['dev:prime:csgo'].invoke
     Rake::Task['dev:prime:customers'].invoke
     Rake::Task['dev:prime:entries'].invoke
+    Rake::Task['dev:prime:bets'].invoke
   end
 
   namespace :prime do
@@ -20,6 +21,28 @@ namespace :dev do
     desc 'Populates database with sample trading entries'
     task entries: :environment do
       require Rails.root.join('db/prime/entries')
+    end
+
+    desc 'Populates database with sample bet entries'
+    task bets: :environment do
+      require Rails.root.join('db/prime/bets')
+    end
+  end
+
+  namespace :odds_feed do
+    desc 'Deletes all odds feed produced data'
+    task clear: :environment do
+      puts 'Destroying odds ...'
+      Odd.destroy_all
+      puts 'Done!'
+
+      puts 'Destroying markets ...'
+      Market.destroy_all
+      puts 'Done!'
+
+      puts 'Destroying events ...'
+      Event.destroy_all
+      puts 'Done!'
     end
   end
 end

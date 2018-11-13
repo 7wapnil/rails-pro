@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tournaments
+  generated_at="2018-10-30T06:58:28+00:00"
+  xmlns="http://schemas.sportradar.com/sportsapi/v1/unified"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://schemas.sportradar.com/sportsapi/v1/unified http://schemas.sportradar.com/bsa-staging/unified/v1/xml/endpoints/unified/tournaments.xsd">
+  <tournament
+    id="sr:tournament:7"
+    name="UEFA Champions League">
+    <sport
+      id="sr:sport:1"
+      name="Soccer"/>
+    <category
+      id="sr:category:393"
+      name="International Clubs"/>
+    <current_season
+      end_date="2019-06-02"
+      id="sr:season:54533"
+      name="UEFA Champions League 18/19"
+      start_date="2018-06-26"
+      year="18/19"/>
+    <season_coverage_info
+      max_coverage_level="platinum"
+      max_covered="48"
+      min_coverage_level="bronze"
+      played="140"
+      scheduled="188"
+      season_id="sr:season:54533"/>
+  </tournament>
+  <tournament
+    id="sr:tournament:8"
+    name="LaLiga">
+    <sport
+      id="sr:sport:1"
+      name="Soccer"/>
+    <category
+      country_code="ESP"
+      id="sr:category:32"
+      name="Spain"/>
+    <current_season
+      end_date="2019-05-20"
+      id="sr:season:55917"
+      name="LaLiga 18/19"
+      start_date="2018-08-17"
+      year="18/19"/>
+    <season_coverage_info
+      max_coverage_level="platinum"
+      max_covered="110"
+      min_coverage_level="silver"
+      played="111"
+      scheduled="382"
+      season_id="sr:season:55917"/>
+  </tournament>
+</tournaments>

@@ -39,6 +39,8 @@ module OddsFeed
       def product_recovery_initiate_request(product_code:, after: nil)
         route = "/#{product_code}/recovery/initiate_request"
         route += "?after=#{after}" if after
+
+        Rails.logger.info("Calling subscription recovery on #{route}")
         post(route)
       end
 
@@ -47,6 +49,14 @@ module OddsFeed
       # and attributes
       def markets
         route = "/descriptions/#{@language}/markets.xml?include_mappings=false"
+        request(route)
+      end
+
+      # All available tournaments for all sports request
+      # Returns a list of tournaments with sport, category, current season
+      # and season coverage
+      def tournaments
+        route = "/sports/#{@language}/tournaments.xml"
         request(route)
       end
 
@@ -68,6 +78,9 @@ module OddsFeed
         response = self.class.send(method, path, @options).parsed_response
         Rails.logger.debug "Radar API response: #{response}"
         response
+      rescue RuntimeError, MultiXml::ParseError => e
+        Rails.logger.error e.message
+        raise HTTParty::InvalidResponseError, 'Failed to parse API response'
       end
 
       def post(path)

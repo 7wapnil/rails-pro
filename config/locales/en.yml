@@ -12,17 +12,19 @@ en:
   reject: Reject
   view: View
   confirm_sure: Are you sure?
-  action: Action
   upload: Upload
   no_file: No File
   history: History
   action: Action
+  from: From
+  to: To
 
   created: "%{instance} created"
   updated: "%{instance} updated"
   deleted: "%{instance} deleted"
   new_instance: "New %{instance}"
   edit_instance: "Edit %{instance}"
+  attribute_updated: "%{attribute} updated!"
 
   says_at: "%{who} at %{when}"
 
@@ -44,11 +46,19 @@ en:
       notes: Notes
 
   statuses:
+    initial: Initial
     pending: Pending
     succeeded: Succeeded
     failed: Failed
     verified: Verified
     not_verified: Not verified
+    settled: Settled
+    live: Live
+    offline: Offline
+
+  settles:
+    won: Won
+    lost: Lost
 
   kinds:
     deposit: "Deposit"
@@ -82,6 +92,12 @@ en:
     events:
       one: Event
       other: Events
+    bets:
+      one: Bet
+      other: Bets
+    markets:
+      one: Market
+      other: Markets
 
   attributes:
     username: Username
@@ -91,11 +107,11 @@ en:
     balance: Balance
     date: Date
     status: Status
+    customer: Customer
     customer_name: Customer name
     amount: Amount
     result: Result
     kind: Type
-    created_at: Created at
     entry_kind: Entry type
     currency_code: Currency
     initiator: Initiator
@@ -126,6 +142,31 @@ en:
     bank_statement: Bank Statement
     credit_card: Credit Card
     other_document: Other Document
+    bet_id: Bet ID
+    event_id: Event ID
+    event: Event
+    market: Market
+    odd_value: Odd value
+    selection: Selection
+    stake: Stake
+    winnings: Winnings
+    bet_placement_time: Bet placement time
+    settlement: Settlement
+    possible_payout: Possible payout
+    actual_payout: Actual payout
+    label_name: Label name
+    label_kind: Label kind
+    label_description: Label description
+    sport: Sport
+    wager: Wager
+    name: Name
+    start_at: Start at
+    live_coverage: Live coverage
+    visible: Visible
+    country: Country
+    tournament: Tournament
+    event_status: Event Status
+    promotional: Receive promotional content
 
   documents:
     history_title: "Files history: %{document_type}"
@@ -138,6 +179,7 @@ en:
   date:
     formats:
       default: "%-d %B %Y"
+      date_picker: "%-d %B %Y"
 
   messages:
     entry_request_created: "Entry request successfully created"
@@ -149,3 +191,4 @@ en:
         not_negative: "of %{instance} cannot be negative"
       wrong_login_credentials: "Wrong username, email or password"
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
+      age_adult: "Must be adult!"

@@ -1,31 +1,52 @@
-%h1.display-4= t('entities.events', count: @events.count)
+%h1.display-4= 'Events'
 
-= search_form_for @search do |f|
-  %table.table
-    %thead
-      %tr
-        %th= 'Name'
-        %th= 'Sport'
-        %th= 'Start at'
-        %th= 'Markets'
+= render 'search'
 
+%table.table
+  %thead
+    %tr
+      %th= t('attributes.event_id')
+      %th= sort_link(@search, :name, t('attributes.name'))
+      %th= t('attributes.sport')
+      %th= t('attributes.visible')
+      %th= sort_link(@search, :start_at, t('attributes.start_at'))
+      %th= sort_link(@search, :markets_count, t('entities.markets.other'))
+
+      - EventScope.kinds.keys.map(&:capitalize).each do |scope_kind|
+        %th= scope_kind
+
+      %th= sort_link(@search, :wager, t('attributes.wager'))
+      %th= sort_link(@search, :bets_count, t('entities.bets.other'))
+      %th= 'Profit/Loss'
+      %th= t('attributes.live_coverage')
+
+      %th
     %tbody
-      %tr
-        %th
-          = f.label :name_cont, class: 'sr-only'
-          = f.search_field :name_cont,
-                           class: 'form-control',
-                           placeholder: t(:search, subject: 'Name'),
-                           autocomplete: :off
-        %th
-        %th
-        %th
-          = f.submit class: 'btn btn-outline-dark btn-block'
       - @events.each do |event|
         %tr{ id: "event-#{event.id}" }
-          %td= link_to event.name, event
+          %td= event.id
+          %td
+            = link_to event.name, event
+            %br
+              - event.labels.each do |label|
+                %span.badge.badge-info= label.name
           %td= event.title.name
+          %td.toggle-holder= visibility_toggle(event, update_visibility_event_path(event))
           %td= event.start_at ? l(event.start_at, format: :long) : '-'
-          %td= event.markets.count
+          %td= event.markets_count
+
+          - EventScope.kinds.keys.each do |kind|
+            %td{ class: kind }
+              - event.event_scopes.group_by(&:kind)[kind]&.each do |event_scope|
+                .event_scope= event_scope.name
+                %br
+          %td= event.wager
+          %td= event.bets_count
+          %td
+          %td= status_badge(event.traded_live ? 'live' : 'offline')
 
 = paginate @events
+= content_for :js do
+  = javascript_pack_tag 'visibility_toggle', 'data-turbolinks-track': 'reload'
+= content_for :css do
+  = stylesheet_pack_tag 'css/visibility_toggle'

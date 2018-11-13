@@ -14,8 +14,14 @@ module StateMachines
       failed: 2
     }.freeze
 
+    BET_SETTLEMENT_STATUSES = {
+      lost: 0,
+      won: 1
+    }.freeze
+
     included do
       enum status: BET_STATUSES
+      enum settlement_status: BET_SETTLEMENT_STATUSES
 
       include AASM
 
@@ -46,6 +52,17 @@ module StateMachines
                       to: :sent_to_external_validation
         end
 
+        event :finish_external_validation_with_acceptance,
+              after: :on_successfull_bet_placement do
+          transitions from: :sent_to_external_validation,
+                      to: :accepted
+        end
+
+        event :finish_external_validation_with_rejection do
+          transitions from: :sent_to_external_validation,
+                      to: :rejected
+        end
+
         event :register_failure do
           transitions from: :sent_to_internal_validation,
                       to: :failed,
@@ -55,17 +72,26 @@ module StateMachines
         event :settle do
           transitions from: :accepted,
                       to: :settled,
-                      after: proc { |args| update_attributes(args) }
+                      after: proc { |args| settle_as(args) }
         end
       end
 
+      def settle_as(settlement_status:, void_factor:)
+        update(
+          status: :settled,
+          settlement_status: settlement_status,
+          void_factor: void_factor
+        )
+      end
+
       def send_single_bet_to_external_validation
-        request = Mts::Messages::ValidationRequest
-                  .new([self])
-        response = Mts::SubmissionPublisher
-                   .publish!(request)
-        return false if response == false
-        update(validation_ticket_id: request.ticket_id)
+        BetExternalValidation::Service.call(self)
+      end
+
+      def on_successfull_bet_placement
+        entry.confirmed_at = Time.zone.now
+        WebSocket::Client.instance.emit(WebSocket::Signals::BET_PLACED,
+                                        id: id.to_s)
       end
     end
   end

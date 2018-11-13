@@ -2,7 +2,7 @@ describe Customer do
   it { should have_one(:address) }
   it { should have_many(:wallets) }
   it { should have_many(:entry_requests) }
-  it { should have_and_belong_to_many(:labels) }
+  it { should have_many(:labels) }
   it { should allow_value(true, false).for(:verified) }
   it { should allow_value(true, false).for(:activated) }
 
@@ -28,6 +28,57 @@ describe Customer do
   it { should validate_uniqueness_of(:email).case_insensitive }
 
   it { should act_as_paranoid }
+
+  describe 'adult age validation' do
+    let(:adult_age) { AgeValidator::ADULT_AGE }
+
+    before do
+      Timecop.freeze
+    end
+
+    after do
+      Timecop.return
+    end
+
+    it 'not valid when age is less than adult age' do
+      kid_age = adult_age.years.ago + 1.day
+      customer = build(:customer, date_of_birth: kid_age)
+      customer.valid?
+      message = I18n.t('errors.messages.age_adult')
+
+      expect(customer.errors.messages[:date_of_birth]).to include(message)
+    end
+
+    it 'valid when age is equals adult age' do
+      customer = build(:customer, date_of_birth: adult_age.years.ago)
+      customer.valid?
+      message = I18n.t('errors.messages.age_adult')
+
+      expect(customer.errors.messages[:date_of_birth]).to_not include(message)
+    end
+  end
+
+  describe 'phone validation' do
+    it 'valid when phone number correct' do
+      customer = build(:customer, phone: '37258383943')
+      customer.valid?
+
+      expect(customer.errors.messages[:phone]).to be_empty
+    end
+
+    it 'not valid when phone number incorrect' do
+      customer = build(:customer, phone: '999999999999')
+      customer.valid?
+
+      expect(customer.errors.messages[:phone]).to_not be_empty
+    end
+  end
+
+  it 'saves phone number without extra symbols' do
+    customer = create(:customer, phone: '+37258383943')
+
+    expect(customer.phone).to eq('37258383943')
+  end
 
   it 'updates tracked fields' do
     customer = create(:customer)

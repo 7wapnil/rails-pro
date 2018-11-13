@@ -3,7 +3,7 @@ module WebSocket
     include Singleton
 
     def emit!(event, data = {})
-      Rails.logger.info "Sending websocket event '#{event}', data: #{data}"
+      Rails.logger.debug "Sending websocket event '#{event}', data: #{data}"
       message = ActiveSupport::JSON.encode(event: event, data: data)
       connection.publish(channel_name, message)
     end
@@ -11,7 +11,7 @@ module WebSocket
     def emit(event, data = {})
       emit!(event, data)
     rescue StandardError => e
-      Rails.logger.error e
+      Rails.logger.error e.message
       false
     end
 

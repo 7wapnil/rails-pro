@@ -1,4 +1,6 @@
 class CustomersController < ApplicationController
+  include Labelable
+
   def index
     @search = Customer.search(query_params)
     @customers = @search.result.page(params[:page])
@@ -6,7 +8,7 @@ class CustomersController < ApplicationController
 
   def show
     @customer = find_customer
-    @labels = Label.all
+    @labels = Label.where(kind: :customer)
   end
 
   def account_management
@@ -17,7 +19,8 @@ class CustomersController < ApplicationController
 
   def activity
     @customer = find_customer
-    @entries = @customer.entries.page(params[:page])
+    @search = @customer.entries.search(query_params)
+    @entries = @search.result.page(params[:page])
     @audit_logs = AuditLog
                   .where(customer_id: @customer.id)
                   .page(params[:page])
@@ -40,6 +43,7 @@ class CustomersController < ApplicationController
       @document_type.to_sym
     )
     raise ArgumentError, 'Document type not supported' unless type_included
+
     @files = @customer.verification_documents.with_deleted.send(@document_type)
   end
 
@@ -57,6 +61,15 @@ class CustomersController < ApplicationController
     redirect_to documents_customer_path(@customer)
   end
 
+  def update_promotional_subscription
+    @customer = find_customer
+    agreed = customer_params[:agreed_with_promotional]
+    @customer.update_column(:agreed_with_promotional, agreed)
+    message = I18n.t('attribute_updated', attribute: 'Promotional agreement')
+
+    render json: { message: message }
+  end
+
   def update_customer_status
     @customer = find_customer
 
@@ -64,19 +77,23 @@ class CustomersController < ApplicationController
     redirect_to documents_customer_path(@customer)
   end
 
-  def update_labels
-    customer = find_customer
-    if labels_params[:ids].include? '0'
-      customer.labels.clear
-    else
-      customer.label_ids = labels_params[:ids]
-    end
+  def reset_password_to_default
+    @customer = find_customer
+    o = [
+      ('a'..'z'),
+      ('A'..'Z'),
+      ('0'..'9'),
+      %w[! @ # $ % ? : { }]
+    ].flat_map(&:to_a)
+    new_password = (0...16).map { o[rand(o.length)] }.join
+    @customer.update(password: new_password)
+    render json: { password: new_password }
   end
 
   private
 
-  def labels_params
-    params.require(:labels).permit(ids: [])
+  def customer_params
+    params.require(:customer).permit(:agreed_with_promotional)
   end
 
   def find_customer
