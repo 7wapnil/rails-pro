@@ -55,7 +55,7 @@ module OddsFeed
 
         unless odds_payload.is_a?(Hash)
           Rails.logger.info("Odds payload is missing for Event #{external_id}")
-          return
+          return []
         end
 
         markets_payload = odds_payload['market']
