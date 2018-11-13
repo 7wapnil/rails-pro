@@ -531,7 +531,7 @@ DEPENDENCIES
   shoulda-matchers (~> 3.1)
   sidekiq
   sidekiq-failures
-  sidekiq-scheduler
+  sidekiq-scheduler (= 3.0.0)
   sidekiq-unique-jobs
   simple_form
   sneakers (~> 2.7.0)
