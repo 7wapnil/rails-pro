@@ -36,6 +36,12 @@ class Customer < ApplicationRecord
   has_many :verification_documents
 
   accepts_nested_attributes_for :address
+  delegate :street_address,
+           :zip_code,
+           :country,
+           :state,
+           :city,
+           to: :address, allow_nil: true, prefix: true
   # Devise Validatable module creates all needed
   # validations for a user email and password.
 

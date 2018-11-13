@@ -167,6 +167,10 @@ en:
     tournament: Tournament
     event_status: Event Status
     promotional: Receive promotional content
+    street_address: Street address
+    zip_code: ZIP
+    city: City
+    state: State
 
   documents:
     history_title: "Files history: %{document_type}"
