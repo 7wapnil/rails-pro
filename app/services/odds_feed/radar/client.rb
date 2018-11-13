@@ -39,6 +39,8 @@ module OddsFeed
       def product_recovery_initiate_request(product_code:, after: nil)
         route = "/#{product_code}/recovery/initiate_request"
         route += "?after=#{after}" if after
+
+        Rails.logger.info("Calling subscription recovery on #{route}")
         post(route)
       end
 
