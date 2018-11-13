@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       get :notes
       post :update_promotional_subscription
       post :update_customer_status
+      post :reset_password_to_default
       post :update_labels
       post :upload_documents
       scope '/documents' do

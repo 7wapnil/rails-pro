@@ -12,6 +12,7 @@
     "apollo-link-http": "^1.5.4",
     "bootstrap": "^4.1.1",
     "caniuse-lite": "^1.0",
+    "copy-text-to-clipboard": "^1.0.4",
     "css-loader": "^0.28.11",
     "flatpickr": "^4.5.0",
     "graphql": "^0.13.2",

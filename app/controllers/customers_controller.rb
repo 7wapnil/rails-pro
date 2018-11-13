@@ -77,6 +77,19 @@ class CustomersController < ApplicationController
     redirect_to documents_customer_path(@customer)
   end
 
+  def reset_password_to_default
+    @customer = find_customer
+    o = [
+      ('a'..'z'),
+      ('A'..'Z'),
+      ('0'..'9'),
+      %w[! @ # $ % ? : { }]
+    ].flat_map(&:to_a)
+    new_password = (0...16).map { o[rand(o.length)] }.join
+    @customer.update(password: new_password)
+    render json: { password: new_password }
+  end
+
   private
 
   def customer_params
