@@ -33,7 +33,7 @@ describe Market do
     end
 
     [
-      'Match - winner',
+      'Winner of the match',
       'Market 1x2',
       '1x2',
       '1x2 Market'
