@@ -88,22 +88,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     where(start_at: [Date.today.beginning_of_day..Date.today.end_of_day])
   end
 
-  def self.unpopular_live
-    left_outer_joins(markets: { odds: :bets })
-      .where(traded_live: true)
-      .where(bets: { id: nil })
-      .where('events.end_at IS NOT NULL')
-      .where('events.end_at < ?', Time.zone.now - 24.hours)
-  end
-
-  def self.unpopular_pre_live
-    left_outer_joins(markets: { odds: :bets })
-      .where(traded_live: false)
-      .where(bets: { id: nil })
-      .where('events.start_at IS NOT NULL')
-      .where('events.start_at < ?', Time.zone.now - 24.hours)
-  end
-
   def in_play?
     traded_live && start_at.past? && end_at.nil?
   end

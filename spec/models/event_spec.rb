@@ -83,66 +83,6 @@ describe Event do
     end
   end
 
-  describe '.unpopular_live' do
-    it 'includes finished live events' do
-      event = create(:event, traded_live: true, end_at: 25.hours.ago)
-      expect(Event.unpopular_live).to include(event)
-    end
-
-    it 'doesn\'t include not finished live events' do
-      event = create(:event,
-                     traded_live: true,
-                     start_at: 5.minutes.ago,
-                     end_at: nil)
-      expect(Event.unpopular_live).not_to include(event)
-    end
-
-    it 'doesn\'t include live events finished less than a day ago' do
-      event = create(:event,
-                     traded_live: true,
-                     start_at: 26.hours.ago,
-                     end_at: 23.hours.ago)
-      expect(Event.unpopular_live).not_to include(event)
-    end
-
-    it 'doesn\'t include pre live events' do
-      event = create(:event, end_at: 25.hours.ago)
-      expect(Event.unpopular_live).not_to include(event)
-    end
-
-    it 'doesn\'t include live events with :end_at in future' do
-      event = create(:event, traded_live: true, end_at: 5.minutes.from_now)
-      expect(Event.unpopular_live).not_to include(event)
-    end
-  end
-
-  describe '.unpopular_pre_live' do
-    it 'includes finished pre live events' do
-      event = create(:event, start_at: 25.hours.ago)
-      expect(Event.unpopular_pre_live).to include(event)
-    end
-
-    it 'doesn\'t include not started pre live events' do
-      event = create(:event, start_at: 5.minutes.from_now)
-      expect(Event.unpopular_pre_live).not_to include(event)
-    end
-
-    it 'doesn\'t include pre live events started less than a day ago' do
-      event = create(:event, start_at: 23.hours.ago)
-      expect(Event.unpopular_pre_live).not_to include(event)
-    end
-
-    it 'doesn\'t include live events' do
-      event = create(:event, traded_live: true, start_at: 25.hours.ago)
-      expect(Event.unpopular_pre_live).not_to include(event)
-    end
-
-    it 'doesn\'t include pre live events with :start_at in future' do
-      event = create(:event, start_at: 5.minutes.from_now)
-      expect(Event.unpopular_pre_live).not_to include(event)
-    end
-  end
-
   describe '#in_play?' do
     it 'is true when started, not finished and is traded live' do
       event = create(:event,
