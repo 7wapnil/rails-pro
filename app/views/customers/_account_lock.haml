@@ -1,0 +1,19 @@
+- content_for :css do
+  = stylesheet_pack_tag 'flatpickr', media: :all, 'data-turbolinks-track': 'reload'
+  = stylesheet_pack_tag 'css/visibility_toggle'
+
+- content_for :js do
+  = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
+  = javascript_pack_tag 'customers/locked_toggle', 'data-turbolinks-track': 'reload'
+  = javascript_pack_tag 'customers/locked_until', 'data-turbolinks-track': 'reload'
+
+= card header: t(:account_lock), class: 'account-lock' do
+  %table.table
+    %tr
+      %td= t(:lock)
+      %td.toggle-holder= locked_toggle(@customer, update_lock_customer_path(@customer))
+    %tr
+      %td= t(:lock_until)
+      %td
+        %input.form-control.form_date.locked_until{value: @customer.locked_until ? l(@customer.locked_until) : nil,
+          data: { endpoint: update_lock_customer_path(@customer) } }

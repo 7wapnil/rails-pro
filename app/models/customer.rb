@@ -54,7 +54,7 @@ class Customer < ApplicationRecord
 
   validates :username, uniqueness: { case_sensitive: false }
   validates :email, uniqueness: { case_sensitive: false }
-  validates :verified, :activated, inclusion: { in: [true, false] }
+  validates :verified, :activated, :locked, inclusion: { in: [true, false] }
   validates :phone, phone: true
   validates_with AgeValidator
 
@@ -86,5 +86,9 @@ class Customer < ApplicationRecord
   def phone=(phone_number)
     normalized_phone = phone_number.gsub(/\D/, '')
     write_attribute(:phone, normalized_phone)
+  end
+
+  def locked?
+    locked || (locked_until && Time.zone.now < locked_until)
   end
 end
