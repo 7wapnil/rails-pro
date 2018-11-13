@@ -85,7 +85,7 @@ describe Event do
 
   describe '.unpopular_live' do
     it 'includes finished live events' do
-      event = create(:event, traded_live: true, end_at: 5.minutes.ago)
+      event = create(:event, traded_live: true, end_at: 25.hours.ago)
       expect(Event.unpopular_live).to include(event)
     end
 
@@ -97,8 +97,16 @@ describe Event do
       expect(Event.unpopular_live).not_to include(event)
     end
 
+    it 'doesn\'t include live events finished less than a day ago' do
+      event = create(:event,
+                     traded_live: true,
+                     start_at: 26.hours.ago,
+                     end_at: 23.hours.ago)
+      expect(Event.unpopular_live).not_to include(event)
+    end
+
     it 'doesn\'t include pre live events' do
-      event = create(:event, end_at: 5.minutes.ago)
+      event = create(:event, end_at: 25.hours.ago)
       expect(Event.unpopular_live).not_to include(event)
     end
 
@@ -110,7 +118,7 @@ describe Event do
 
   describe '.unpopular_pre_live' do
     it 'includes finished pre live events' do
-      event = create(:event, start_at: 5.minutes.ago)
+      event = create(:event, start_at: 25.hours.ago)
       expect(Event.unpopular_pre_live).to include(event)
     end
 
@@ -119,8 +127,13 @@ describe Event do
       expect(Event.unpopular_pre_live).not_to include(event)
     end
 
+    it 'doesn\'t include pre live events started less than a day ago' do
+      event = create(:event, start_at: 23.hours.ago)
+      expect(Event.unpopular_pre_live).not_to include(event)
+    end
+
     it 'doesn\'t include live events' do
-      event = create(:event, traded_live: true, start_at: 5.minutes.ago)
+      event = create(:event, traded_live: true, start_at: 25.hours.ago)
       expect(Event.unpopular_pre_live).not_to include(event)
     end
 
