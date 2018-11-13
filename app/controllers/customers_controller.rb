@@ -84,7 +84,7 @@ class CustomersController < ApplicationController
       ('A'..'Z'),
       ('0'..'9'),
       %w[! @ # $ % ? : { }]
-    ].map(&:to_a).flatten
+    ].flat_map(&:to_a)
     new_password = (0...16).map { o[rand(o.length)] }.join
     @customer.update(password: new_password)
     render json: { password: new_password }
