@@ -94,7 +94,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
       .where(bets: { id: nil })
       .where('events.end_at IS NOT NULL')
       .where('events.end_at < ?', Time.zone.now - 24.hours)
-      .group(:id)
   end
 
   def self.unpopular_pre_live
@@ -103,7 +102,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
       .where(bets: { id: nil })
       .where('events.start_at IS NOT NULL')
       .where('events.start_at < ?', Time.zone.now - 24.hours)
-      .group(:id)
   end
 
   def in_play?
