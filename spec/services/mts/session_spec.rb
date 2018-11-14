@@ -46,7 +46,7 @@ describe Mts::Session do
     end
   end
 
-  describe '.opened_connection' do
+  describe '#opened_connection' do
     context 'connection is already open' do
       it 'returns existing connection for opened connection' do
         connection_double = double
@@ -67,9 +67,9 @@ describe Mts::Session do
         allow(subject).to receive(:connection).and_return connection_double
       end
 
-      it 'returns new connection' do
-        expect(subject.connection).to receive(:start).and_return(:connection)
-        expect(subject.opened_connection).to eq(connection_double)
+      it 'calls #start_connection' do
+        expect(subject).to receive(:start_connection)
+        subject.opened_connection
       end
 
       it 'calls connection recovery' do

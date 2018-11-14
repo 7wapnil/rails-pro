@@ -3,7 +3,8 @@ module Mts
     def recover_from_network_failure!
       return if session_failure_getter.present?
       OddsFeed::Radar::Product.available_product_ids.each do |product_id|
-        Radar::AliveMessage.recover!(product_id: product_id)
+        producer = ::Radar::Producer.find_by_id(product_id)
+        producer.recover_subscription!
       end
       session_clear
     end
