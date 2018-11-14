@@ -1,8 +1,6 @@
 require 'sidekiq-scheduler'
 
-class PreMatchMarketsClosingWorker
-  include Sidekiq::Worker
-
+class PreMatchMarketsClosingWorker < ApplicationWorker
   def perform
     Markets::PreMatchMarketsClosingService.call
   end
