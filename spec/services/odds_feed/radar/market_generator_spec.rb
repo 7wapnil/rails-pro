@@ -71,7 +71,7 @@ describe OddsFeed::Radar::MarketGenerator do
     it 'generates new market with default priority' do
       subject.generate
       market = Market.find_by(external_id: external_id)
-      expect(market.priority).to eq(0)
+      expect(market.priority).to eq(1)
     end
 
     it 'sends websocket message on new market creation' do
