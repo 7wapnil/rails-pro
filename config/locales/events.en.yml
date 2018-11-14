@@ -1,6 +1,7 @@
 en:
   events:
     customer_signed_in: "Customer (%{customer_name}) just signed in"
+    locked_customer_sign_in_attempt: "Locked customer (%{customer_name}) just attempted to sign in"
     customer_signed_up: "Customer with ID %{customer_id}, username '%{customer_name}' just signed up"
     currency_created: "Currency '%{code}' added by %{user_name}"
     currency_updated: "Currency '%{code}' updated by %{user_name}"

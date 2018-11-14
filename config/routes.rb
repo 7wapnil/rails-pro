@@ -29,6 +29,7 @@ Rails.application.routes.draw do
       post :update_customer_status
       post :reset_password_to_default
       post :update_labels
+      post :update_lock
       post :upload_documents
       scope '/documents' do
         root to: 'customers#documents', as: :documents

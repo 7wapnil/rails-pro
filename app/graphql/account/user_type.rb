@@ -12,5 +12,10 @@ module Account
     field :first_name, !types.String
     field :last_name, !types.String
     field :agreed_with_promotional, !types.Boolean
+    field :address_street_address, types.String
+    field :address_zip_code, types.String
+    field :address_country, types.String
+    field :address_city, types.String
+    field :address_state, types.String
   end
 end

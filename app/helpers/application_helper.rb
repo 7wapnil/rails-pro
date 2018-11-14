@@ -26,6 +26,18 @@ module ApplicationHelper
     end
   end
 
+  def locked_toggle(locked_resource, toggle_endpoint)
+    tag.span(class: 'toggle_container') do
+      toggle_id = "toggle_#{locked_resource.class.name}_#{locked_resource.id}"
+      concat check_box_tag('visible', locked_resource.locked,
+                           locked_resource.locked,
+                           id: toggle_id,
+                           class: 'toggle_button locked_toggle',
+                           data: { endpoint: toggle_endpoint })
+      concat label_tag('Locked', nil, for: toggle_id)
+    end
+  end
+
   def labels_selector(labelable, labels, element_id = nil)
     element_id ||= "#{labelable.class.to_s.downcase}_#{labelable.id}"
     update_url = polymorphic_url([:update_labels, labelable])

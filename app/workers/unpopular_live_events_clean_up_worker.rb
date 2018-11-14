@@ -1,8 +1,6 @@
 require 'sidekiq-scheduler'
 
-class UnpopularLiveEventsCleanUpWorker
-  include Sidekiq::Worker
-
+class UnpopularLiveEventsCleanUpWorker < ApplicationWorker
   def perform
     Event
       .left_outer_joins(markets: { odds: :bets })

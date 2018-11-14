@@ -51,3 +51,8 @@
     every: <%= ENV.fetch('UNPOPULAR_PRE_LIVE_EVENTS_CLEAN_UP_INTERVAL', '1h') %>
     class: UnpopularPreLiveEventsCleanUpWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+
+  customer_lock_table_clean_up:
+    every: <%= ENV.fetch('CUSTOMER_LOCK_TABLE_CLEAN_UP_INTERVAL', '1d') %>
+    class: CustomerLockTableCleanupWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
