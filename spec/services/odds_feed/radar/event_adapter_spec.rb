@@ -115,14 +115,26 @@ describe OddsFeed::Radar::EventAdapter do
         expect { result }.to raise_error(NotImplementedError)
       end
 
-      it 'raises error if title not exists' do
-        payload['tournament']['sport']['id'] = 'sr:sport:unknown'
-        expect { result }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
       it 'raises error if tournament data is invalid' do
         payload['tournament'] = {}
         expect { result }.to raise_error(OddsFeed::InvalidMessageError)
+      end
+    end
+
+    context 'with missing data in db' do
+      it 'enqueue EventScopesLoadingWorker on RecordNotFound' do
+        allow(EventScope)
+          .to receive(:find_by!).and_raise(ActiveRecord::RecordNotFound)
+        allow(Radar::EventScopesLoadingWorker).to receive(:perform_async)
+
+        expect { result }.to raise_error(ActiveRecord::RecordNotFound)
+        expect(Radar::EventScopesLoadingWorker)
+          .to have_received(:perform_async).once
+      end
+
+      it 'raises error if title not exists' do
+        payload['tournament']['sport']['id'] = 'sr:sport:unknown'
+        expect { result }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it 'raises error if season data is invalid' do
