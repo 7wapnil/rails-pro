@@ -1,0 +1,13 @@
+= render 'customers/heading'
+
+.row
+  .col-md-3
+    .mt-4= render 'customers/navigation'
+  .col-md-9{ id:'customer-bets' }
+    = render 'bets_search'
+    = render 'bets_table'
+
+= paginate @bets
+
+- content_for :js do
+  = javascript_pack_tag 'customers/navigation_links'
