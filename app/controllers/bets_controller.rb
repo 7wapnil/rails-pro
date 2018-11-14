@@ -2,17 +2,10 @@ class BetsController < ApplicationController
   include DateIntervalFilters
 
   def index
-    @search = Bet.includes(:market)
-                 .with_winnings
-                 .with_sport
-                 .with_tournament
-                 .with_country
-                 .search(prepare_interval_filter(query_params, :created_at))
-
+    query = prepare_interval_filter(query_params, :created_at)
+    @filter = BetsFilter.new(Bet, query)
+    @search = @filter.search
     @bets = @search.result.order(id: :desc).page(params[:page])
-    @sports = Title.order(:name).pluck(:name)
-    @tournaments = EventScope.order(:name).tournament.pluck(:name)
-    @countries = EventScope.country.order(:name).pluck(:name)
   end
 
   def show

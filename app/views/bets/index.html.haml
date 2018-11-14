@@ -1,7 +1,7 @@
 %h1.display-4
   = t(:bets)
 
-= render 'search'
-= render 'table'
+= render 'search', search_path: bets_path, excluded_columns: []
+= render 'table', excluded_columns: []
 
 = paginate @bets

@@ -1,4 +1,4 @@
-class CustomersController < ApplicationController # rubocop:disable Metrics/ClassLength
+class CustomersController < ApplicationController # rubocop:disable Metrics/ClassLength, Metrics/LineLength
   include Labelable
   include DateIntervalFilters
 
@@ -39,20 +39,10 @@ class CustomersController < ApplicationController # rubocop:disable Metrics/Clas
 
   def bets
     @customer = find_customer
-
-    @search = @customer.bets.includes(:market)
-                       .with_winnings
-                       .with_sport
-                       .with_tournament
-                       .with_country
-                       .search(
-                         prepare_interval_filter(query_params, :created_at)
-                       )
-
+    query = prepare_interval_filter(query_params, :created_at)
+    @filter = BetsFilter.new(@customer.bets, query)
+    @search = @filter.search
     @bets = @search.result.order(id: :desc).page(params[:page])
-    @sports = Title.order(:name).pluck(:name)
-    @tournaments = EventScope.order(:name).tournament.pluck(:name)
-    @countries = EventScope.country.order(:name).pluck(:name)
   end
 
   def documents_history
