@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_13_081953) do
+ActiveRecord::Schema.define(version: 2018_11_13_135145) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -84,6 +84,22 @@ ActiveRecord::Schema.define(version: 2018_11_13_081953) do
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
     t.index ["odd_id"], name: "index_bets_on_odd_id"
+  end
+
+  create_table "betting_limits", force: :cascade do |t|
+    t.bigint "customer_id"
+    t.bigint "title_id"
+    t.bigint "currency_id"
+    t.integer "live_bet_delay"
+    t.integer "user_max_bet"
+    t.decimal "user_stake_factor"
+    t.integer "max_loss"
+    t.integer "max_win"
+    t.decimal "live_stake_factor"
+    t.index ["currency_id"], name: "index_betting_limits_on_currency_id"
+    t.index ["customer_id", "title_id"], name: "index_betting_limits_on_customer_id_and_title_id", unique: true
+    t.index ["customer_id"], name: "index_betting_limits_on_customer_id"
+    t.index ["title_id"], name: "index_betting_limits_on_title_id"
   end
 
   create_table "bonuses", force: :cascade do |t|
@@ -348,6 +364,9 @@ ActiveRecord::Schema.define(version: 2018_11_13_081953) do
   add_foreign_key "bets", "currencies"
   add_foreign_key "bets", "customers"
   add_foreign_key "bets", "odds", on_delete: :cascade
+  add_foreign_key "betting_limits", "currencies"
+  add_foreign_key "betting_limits", "customers"
+  add_foreign_key "betting_limits", "titles"
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "entries", "wallets"

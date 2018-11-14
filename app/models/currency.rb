@@ -8,8 +8,13 @@ class Currency < ApplicationRecord
   validates :name, :code, presence: true
   validates_associated :entry_currency_rules
 
+  scope :primary_currency, -> {
+    where(primary: true)
+      .first
+  }
+
   def self.build_default
-    new(code: 'EUR', name: 'Euro')
+    new(code: 'EUR', name: 'Euro', primary: true)
   end
 
   def to_s

@@ -24,6 +24,7 @@ Rails.application.routes.draw do
       get :account_management
       get :activity
       get :notes
+      get :betting_limits
       post :update_promotional_subscription
       post :update_customer_status
       post :reset_password_to_default
@@ -38,6 +39,7 @@ Rails.application.routes.draw do
       end
     end
   end
+  resources :betting_limits, only: %i[create update]
 
   post '/customer_attachment_upload',
        to: 'api_upload#customer_attachment_upload'
