@@ -4,7 +4,7 @@
 - content_for :js do
   = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
 
-= search_form_for @search do |f|
+= search_form_for @search, url: (local_assigns[:search_url] || bets_path) do |f|
   %table.table
     %thead
       %tr
@@ -17,15 +17,16 @@
                               class: 'form-control',
                               placeholder: t('attributes.bet_id'),
                               autocomplete: :off
-        %th
-          .filter_title
-            = "#{t('attributes.customer')}:"
-          .filter_field
-            = f.label :customer_username_cont, class: 'sr-only'
-            = f.search_field :customer_username_cont,
-                              class: 'form-control',
-                              placeholder: t(:search, subject: t('attributes.customer')),
-                              autocomplete: :off
+        - unless local_assigns[:excluded_columns]&.include?(:customer)
+          %th
+            .filter_title
+              = "#{t('attributes.customer')}:"
+            .filter_field
+              = f.label :customer_username_cont, class: 'sr-only'
+              = f.search_field :customer_username_cont,
+                                class: 'form-control',
+                                placeholder: t(:search, subject: t('attributes.customer')),
+                                autocomplete: :off
         %th
           .filter_title
             = "#{t(:search, subject: t('from'))}:"

@@ -4,8 +4,9 @@
   .col-md-3
     .mt-4= render 'customers/navigation'
   .col-md-9{ id:'customer-bets' }
-    = render 'bets_search'
-    = render 'bets_table'
+    = render partial: 'bets/search', locals: { excluded_columns: [:customer],
+     search_url: bets_customer_path }
+    = render partial: 'bets/table', locals: { excluded_columns: [:customer] }
 
 = paginate @bets
 

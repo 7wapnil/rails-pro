@@ -1,8 +1,9 @@
-
 %table.table.entities
   %thead
     %tr
       %th= sort_link @search, :id, t('attributes.bet_id'), default_order: :asc
+      - unless local_assigns[:excluded_columns]&.include?(:customer)
+        %th= t('attributes.customer')
       %th= t('attributes.event')
       %th= t('attributes.market')
       %th= t('attributes.selection')
@@ -19,6 +20,8 @@
     - @bets.each do |bet|
       %tr{ id: "bet-#{bet.id}" }
         %td= link_to bet.id, bet
+        - unless local_assigns[:excluded_columns]&.include?(:customer)
+          %td= link_to bet.customer.username, bet.customer
         %td= link_to bet.odd.market.event.name, bet.odd.market.event
         %td= bet.odd.market.name
         %td= bet.odd.name
