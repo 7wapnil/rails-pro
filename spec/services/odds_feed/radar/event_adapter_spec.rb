@@ -6,9 +6,39 @@ describe OddsFeed::Radar::EventAdapter do
     )['fixtures_fixture']['fixture']
   end
   let(:result) { subject.result }
-  let!(:title) { create(:title, external_id: 'sr:sport:1', name: 'Soccer') }
+  let(:title) { create(:title, external_id: 'sr:sport:1', name: 'Soccer') }
 
-  subject { OddsFeed::Radar::EventAdapter.new(payload) }
+  subject { described_class.new(payload) }
+
+  let(:tournament) do
+    create(:event_scope,
+           name: 'Div 1 Sodra',
+           external_id: 'sr:tournament:68',
+           kind: :tournament,
+           title: title)
+  end
+
+  let(:season) do
+    create(:event_scope,
+           name: 'Div 1, Sodra 2016',
+           external_id: 'sr:season:12346',
+           kind: :season,
+           title: title)
+  end
+
+  let(:country) do
+    create(:event_scope,
+           name: 'Sweden',
+           external_id: 'sr:category:9',
+           kind: :country,
+           title: title)
+  end
+
+  before do
+    tournament
+    season
+    country
+  end
 
   it 'returns filled event' do
     expected_payload = {
@@ -53,65 +83,29 @@ describe OddsFeed::Radar::EventAdapter do
   end
 
   context 'tournament' do
-    it 'creates if not exists in db' do
-      tournament = result.event_scopes.detect(&:tournament?)
-      expect(tournament).not_to be_nil
-      expect(tournament.external_id).to eq('sr:tournament:68')
-      expect(tournament.name).to eq('Div 1 Sodra')
-    end
-
-    it 'loads if exists in db' do
-      existing = create(:event_scope,
-                        name: 'Div 1 Sodra',
-                        external_id: 'sr:tournament:68',
-                        kind: :tournament,
-                        title: title)
-      tournament = result.event_scopes.detect(&:tournament?)
-      expect(tournament.id).to eq(existing.id)
-      expect(tournament.external_id).to eq('sr:tournament:68')
-      expect(tournament.name).to eq('Div 1 Sodra')
+    it 'loads existing tournament from db' do
+      result_tournament = result.event_scopes.detect(&:tournament?)
+      expect(result_tournament.id).to eq(tournament.id)
+      expect(result_tournament.external_id).to eq('sr:tournament:68')
+      expect(result_tournament.name).to eq('Div 1 Sodra')
     end
   end
 
   context 'season' do
-    it 'creates if not exists in db' do
-      season = result.event_scopes.detect(&:season?)
-      expect(season).not_to be_nil
-      expect(season.external_id).to eq('sr:season:12346')
-      expect(season.name).to eq('Div 1, Sodra 2016')
-    end
-
-    it 'loads if exists in db' do
-      existing = create(:event_scope,
-                        name: 'Div 1, Sodra 2016',
-                        external_id: 'sr:season:12346',
-                        kind: :season,
-                        title: title)
-      season = result.event_scopes.detect(&:season?)
-      expect(season.id).to eq(existing.id)
-      expect(season.external_id).to eq('sr:season:12346')
-      expect(season.name).to eq('Div 1, Sodra 2016')
+    it 'loads existing season from db' do
+      result_season = result.event_scopes.detect(&:season?)
+      expect(result_season.id).to eq(season.id)
+      expect(result_season.external_id).to eq('sr:season:12346')
+      expect(result_season.name).to eq('Div 1, Sodra 2016')
     end
   end
 
   context 'country' do
-    it 'creates if not exists in db' do
-      country = result.event_scopes.detect(&:country?)
-      expect(country).not_to be_nil
-      expect(country.external_id).to eq('sr:category:9')
-      expect(country.name).to eq('Sweden')
-    end
-
-    it 'loads if exists in db' do
-      existing = create(:event_scope,
-                        name: 'Sweden',
-                        external_id: 'sr:category:9',
-                        kind: :country,
-                        title: title)
-      country = result.event_scopes.detect(&:country?)
-      expect(country.id).to eq(existing.id)
-      expect(country.external_id).to eq('sr:category:9')
-      expect(country.name).to eq('Sweden')
+    it 'loads existing country from db' do
+      result_country = result.event_scopes.detect(&:country?)
+      expect(result_country.id).to eq(country.id)
+      expect(result_country.external_id).to eq('sr:category:9')
+      expect(result_country.name).to eq('Sweden')
     end
   end
 
@@ -123,12 +117,12 @@ describe OddsFeed::Radar::EventAdapter do
 
     it 'raises error if season data is invalid' do
       payload['season'] = {}
-      expect { result }.to raise_error(ActiveRecord::RecordInvalid)
+      expect { result }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
     it 'raises error if country data is invalid' do
       payload['tournament']['category'] = {}
-      expect { result }.to raise_error(ActiveRecord::RecordInvalid)
+      expect { result }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 end
