@@ -24,7 +24,7 @@ module OddsFeed
       private
 
       def generate_market_id
-        return @market_id if @specs.nil?
+        return @market_id unless @specs.present?
 
         "#{@market_id}/#{@specs}"
       end

@@ -1,23 +1,21 @@
-describe OddsFeed::Radar::MarketGenerator do
+describe OddsFeed::Radar::MarketGenerator::Service do
   let(:market_payload) do
     data = XmlParser.parse(file_fixture('odds_change_message.xml').read)
     data['odds_change']['odds']['market']
   end
   let(:chosen_market) { nil }
   let(:event) { create(:event, external_id: 'sr:match:1234') }
-  let(:transpiler) { OddsFeed::Radar::Transpiler.new(event, '123') }
 
-  subject { OddsFeed::Radar::MarketGenerator.new(event, chosen_market) }
+  subject do
+    OddsFeed::Radar::MarketGenerator::Service.new(event.id, chosen_market)
+  end
 
   before do
-    allow(transpiler).to receive(:transpile).and_return('transpiler value')
-    allow(subject).to receive(:transpiler).and_return(transpiler)
-
     payload = {
       outcomes: {
         outcome: [
-          { 'id': '1' },
-          { 'id': '2' }
+          { 'id': '1', name: 'Odd 1 name' },
+          { 'id': '2', name: 'Odd 2 name' }
         ]
       }
     }.deep_stringify_keys
@@ -63,19 +61,19 @@ describe OddsFeed::Radar::MarketGenerator do
     end
 
     it 'generates new market if not exists in db' do
-      subject.generate
+      subject.call
       market = Market.find_by(external_id: external_id)
       expect(market).not_to be_nil
     end
 
     it 'generates new market with default priority' do
-      subject.generate
+      subject.call
       market = Market.find_by(external_id: external_id)
       expect(market.priority).to eq(0)
     end
 
     it 'sends websocket message on new market creation' do
-      subject.generate
+      subject.call
       market = Market.find_by!(external_id: external_id)
 
       expect(WebSocket::Client.instance)
@@ -90,7 +88,7 @@ describe OddsFeed::Radar::MarketGenerator do
                       external_id: external_id,
                       event: event,
                       status: :active)
-      subject.generate
+      subject.call
       updated_market = Market.find_by(external_id: external_id)
       expect(updated_market.updated_at).not_to eq(market.updated_at)
     end
@@ -103,7 +101,7 @@ describe OddsFeed::Radar::MarketGenerator do
              priority: 0,
              status: :suspended)
 
-      subject.generate
+      subject.call
       expect(WebSocket::Client.instance)
         .not_to have_received(:emit)
         .with(WebSocket::Signals::MARKET_UPDATED)
@@ -116,7 +114,7 @@ describe OddsFeed::Radar::MarketGenerator do
         { status: '1', result: 'active' }
       ].each do |expectation|
         chosen_market['status'] = expectation[:status]
-        subject.generate
+        subject.call
         market = Market.find_by(external_id: external_id)
         expect(market.status).to eq(expectation[:result])
       end
@@ -124,7 +122,7 @@ describe OddsFeed::Radar::MarketGenerator do
 
     context 'odds' do
       it 'creates odds if not exist in db' do
-        subject.generate
+        subject.call
         expect(Odd.find_by(external_id: "#{external_id}:1")).not_to be_nil
         expect(Odd.find_by(external_id: "#{external_id}:2")).not_to be_nil
       end
@@ -149,22 +147,13 @@ describe OddsFeed::Radar::MarketGenerator do
           value: 1.0
         )
 
-        subject.generate
+        subject.call
         expect(Odd.find_by(external_id: "#{external_id}:1").value).to eq(1.3)
         expect(Odd.find_by(external_id: "#{external_id}:2").value).to eq(1.7)
       end
 
-      it 'skips single odd handling on error' do
-        allow(subject).to receive(:generate_odd!).and_raise(StandardError)
-        subject.generate
-        expect(subject)
-          .to have_received(:generate_odd!)
-          .exactly(2)
-          .times
-      end
-
       it 'sends websocket message on new odd creation' do
-        subject.generate
+        subject.call
 
         odd = Odd.find_by!(external_id: "#{external_id}:1")
         expect(WebSocket::Client.instance)
@@ -174,42 +163,6 @@ describe OddsFeed::Radar::MarketGenerator do
                 marketId: odd.market.id.to_s,
                 eventId: odd.market.event.id.to_s)
       end
-
-      describe '#generate_odd!' do
-        let(:market) do
-          create(
-            :market,
-            external_id: external_id,
-            event: event,
-            status: :active
-          )
-        end
-
-        let(:odd_data) do
-          { 'id' => '1', 'active' => '1', 'odds' => '1.85' }
-        end
-
-        it 'retries to find the odd if fails to save the duplicate' do
-          odd_payload = { external_id: "#{external_id}:1", market: market }
-
-          existing_odd = create(:odd, odd_payload)
-          initialized_odd = build(:odd, odd_payload)
-
-          allow(Odd)
-            .to receive(:find_or_initialize_by)
-            .and_return(initialized_odd, existing_odd)
-
-          expect(initialized_odd)
-            .to receive(:save!)
-            .and_raise(ActiveRecord::RecordInvalid)
-
-          expect(existing_odd)
-            .to receive(:save!)
-            .and_return(true)
-
-          subject.send(:generate_odd!, odd_data)
-        end
-      end
     end
   end
 
@@ -218,8 +171,10 @@ describe OddsFeed::Radar::MarketGenerator do
     let(:external_id) { 'sr:match:1234:188' }
 
     it 'generates market external ID without specs' do
-      allow(subject).to receive(:generate_odds!)
-      subject.generate
+      create(:market_template, external_id: '188',
+                               name: 'Template name')
+
+      subject.call
       market = Market.find_by(external_id: external_id)
       expect(market).not_to be_nil
     end
