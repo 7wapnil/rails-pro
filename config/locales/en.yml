@@ -194,5 +194,9 @@ en:
       with_instance:
         not_negative: "of %{instance} cannot be negative"
       wrong_login_credentials: "Wrong username, email or password"
+      account_locked:
+        default: "Account is locked%{additional_info}"
+        additional_info:
+          until: " until %{until_date}"
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
       age_adult: "Must be adult!"

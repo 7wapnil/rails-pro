@@ -1,3 +1,4 @@
+# rubocop:disable Metrics/ClassLength
 class CustomersController < ApplicationController
   include Labelable
 
@@ -90,6 +91,12 @@ class CustomersController < ApplicationController
     render json: { password: new_password }
   end
 
+  def update_lock
+    @customer = find_customer
+    update_lock_status
+    update_locked_until
+  end
+
   private
 
   def customer_params
@@ -112,4 +119,20 @@ class CustomersController < ApplicationController
   def customer_verification_status
     params.require(:verified)
   end
+
+  def update_lock_status
+    return unless params.key?(:locked)
+
+    @customer.update_column(:locked, params[:locked] == 'true')
+  end
+
+  def update_locked_until
+    return unless params.key?(:locked_until)
+
+    @customer.update_column(
+      :locked_until,
+      params[:locked_until]
+    )
+  end
 end
+# rubocop:enable Metrics/ClassLength
