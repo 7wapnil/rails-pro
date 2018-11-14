@@ -7,32 +7,28 @@ describe OddsFeed::Radar::EventAdapter do
   end
   let(:title) { create(:title, external_id: 'sr:sport:1', name: 'Soccer') }
 
-  let(:tournament) do
+  let!(:tournament) do
     create(:event_scope,
            name: 'Div 1 Sodra',
            external_id: 'sr:tournament:68',
            kind: :tournament,
            title: title)
   end
-  let(:season) do
+
+  let!(:season) do
     create(:event_scope,
            name: 'Div 1, Sodra 2016',
            external_id: 'sr:season:12346',
            kind: :season,
            title: title)
   end
-  let(:country) do
+
+  let!(:country) do
     create(:event_scope,
            name: 'Sweden',
            external_id: 'sr:category:9',
            kind: :country,
            title: title)
-  end
-
-  before do
-    tournament
-    season
-    country
   end
 
   describe '#result' do
