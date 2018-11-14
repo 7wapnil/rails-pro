@@ -81,9 +81,10 @@ describe Mts::Session do
       end
 
       [
-        Bunny::NetworkFailure.new(:msg, :cause),
-        Bunny::TCPConnectionFailed.new(:msg, :cause),
-        Bunny::PossibleAuthenticationFailureError.new(:msg, :cause, :third)
+        Bunny::NetworkFailure.new('Boom!', '1'),
+        Bunny::TCPConnectionFailed.new('Boom!', '2'),
+        Bunny::TCPConnectionFailedForAllHosts.new,
+        Bunny::PossibleAuthenticationFailureError.new('Boom', '3', '4')
       ].each do |exception|
         it "catches #{exception.class.name}" do
           allow(connection_double).to receive(:start).and_raise(exception)
