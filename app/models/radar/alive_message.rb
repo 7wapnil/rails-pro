@@ -37,10 +37,6 @@ module Radar
       subscribed? ? process_subscribed_message : process_unsubscribed_message
     end
 
-    def self.last_success_timestamp(product_id)
-      new(product_id: product_id).last_success_timestamp
-    end
-
     private
 
     def process_subscribed_message
