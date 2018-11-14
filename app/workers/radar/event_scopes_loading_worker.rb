@@ -2,7 +2,6 @@ require 'sidekiq-scheduler'
 
 module Radar
   class EventScopesLoadingWorker < ApplicationWorker
-
     def perform
       tournaments_response.each do |tournament|
         EventScopesCreatingWorker.perform_async(tournament)

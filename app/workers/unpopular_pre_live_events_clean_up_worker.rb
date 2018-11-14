@@ -1,7 +1,6 @@
 require 'sidekiq-scheduler'
 
 class UnpopularPreLiveEventsCleanUpWorker < ApplicationWorker
-
   def perform
     Event
       .left_outer_joins(markets: { odds: :bets })
