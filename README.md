@@ -32,11 +32,15 @@ To launch the application stack run:
 $ docker-compose up -d
 ```
 
-To attach to container and interact with byebug debugger console (given that your web container name is `arcanebet_web_1`) run:
+To attach to container and interact with byebug/pry debugger console run:
 
 ```
-$ docker exec arcanebet_web_1
+$ docker ps # take PID of web container
+
+$ docker attach <container PID>
 ```
+
+To detach without terminating process use shortcut: `Ctrl + P + Q`.
 
 ### Database setup
 

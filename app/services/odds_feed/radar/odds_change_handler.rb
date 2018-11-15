@@ -70,19 +70,19 @@ module OddsFeed
       end
 
       def markets_data
-        odds_payload = event_data['odds']
+        @markets_data ||= Array[fetch_markets_data].compact.flatten
+      end
 
-        unless odds_payload.is_a?(Hash)
-          Rails.logger.info("Odds payload is missing for Event #{external_id}")
-          return []
-        end
+      def fetch_markets_data
+        return odds_payload['market'] if odds_payload.is_a?(Hash)
 
-        markets_payload = odds_payload['market']
-
-        return markets_payload if markets_payload.is_a?(Array)
-        return [markets_payload] if markets_payload.is_a?(Hash)
+        Rails.logger.info("Odds payload is missing for Event #{external_id}")
 
         []
+      end
+
+      def odds_payload
+        @odds_payload ||= event_data['odds']
       end
 
       def generate_markets
