@@ -37,7 +37,25 @@ $(document).on('turbolinks:load', () => {
     })
   });
 
-  $('#customer_locked, #customer_lock_reason, #customer_locked_until').change(function() {
+  lockToggleInput.change(function() {
+    if (!this.checked) {
+      lockReasonSelector.val('');
+      lockedUntilInput.val('');
+    }
+    form.submit();
+  });
+
+  lockReasonSelector.change(function() {
+    if (this.value.length) {
+      lockToggleInput.prop('checked', true);
+    }
+    form.submit();
+  });
+
+  lockedUntilInput.change(function() {
+    if (this.value.length) {
+      lockToggleInput.prop('checked', true)
+    }
     form.submit();
   });
 });
