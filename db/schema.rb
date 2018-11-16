@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_13_135145) do
+ActiveRecord::Schema.define(version: 2018_11_15_115847) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -163,6 +163,7 @@ ActiveRecord::Schema.define(version: 2018_11_13_135145) do
     t.boolean "agreed_with_promotional", default: false
     t.boolean "locked", default: false
     t.datetime "locked_until"
+    t.integer "lock_reason"
     t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
     t.index ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true

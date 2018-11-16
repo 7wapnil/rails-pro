@@ -7,6 +7,8 @@ module Radar
 
     attr_reader :radar_id, :code
 
+    delegate :recover_subscription!, to: :subscription_state
+
     class << self
       def radar_ids
         RADAR_AVAILABLE_PRODUCERS.map { |producer| producer[:radar_id] }

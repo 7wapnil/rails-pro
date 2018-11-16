@@ -9,6 +9,15 @@ class Customer < ApplicationRecord
     female: 1
   }
 
+  enum lock_reason: {
+    self_exclusion: 0,
+    cooling_off: 1,
+    locked: 2,
+    closed: 3,
+    password_recovery: 4,
+    fraud: 5
+  }
+
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable,
          authentication_keys: [:login]
