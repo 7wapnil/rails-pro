@@ -6,6 +6,8 @@ $(document).on('turbolinks:load', () => {
   const lockToggleInput = $('#customer_locked');
   const lockReasonSelector = $('#customer_lock_reason');
   const lockedUntilInput = $('#customer_locked_until');
+  // Hack for datepicker change event duplicate on clear
+  let datePickerValue = lockedUntilInput.val();
 
   if (!lockToggleInput.prop('checked')) {
     lockToggleInput.attr('disabled', 'disabled')
@@ -64,7 +66,7 @@ $(document).on('turbolinks:load', () => {
     if (this.value) {
       enableLockToggleInput();
       lockedUntilInput.removeAttr('disabled');
-    } else if (!lockedUntilInput.val()) {
+    } else {
       dropLock();
     }
     form.submit();
@@ -72,6 +74,9 @@ $(document).on('turbolinks:load', () => {
 
   lockedUntilInput.change(function() {
     if (!this.value && !lockReasonSelector.val()) dropLock();
-    form.submit();
+    if (datePickerValue !== lockedUntilInput.val()) {
+      datePickerValue = lockedUntilInput.val();
+      form.submit();
+    }
   });
 });
