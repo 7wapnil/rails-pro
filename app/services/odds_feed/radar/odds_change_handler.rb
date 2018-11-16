@@ -69,22 +69,6 @@ module OddsFeed
         Rails.logger.info processing_msg.squish
       end
 
-      def markets_data
-        @markets_data ||= Array[fetch_markets_data].compact.flatten
-      end
-
-      def fetch_markets_data
-        return odds_payload['market'] if odds_payload.is_a?(Hash)
-
-        Rails.logger.info("Odds payload is missing for Event #{external_id}")
-
-        []
-      end
-
-      def odds_payload
-        @odds_payload ||= event_data['odds']
-      end
-
       def generate_markets
         markets_data.each do |market_data|
           generate_market!(market_data)
@@ -93,6 +77,30 @@ module OddsFeed
           Rails.logger.debug({ error: e, payload: @payload }.to_json)
           next
         end
+      end
+
+      def markets_data
+        @markets_data ||= Array[fetch_markets_data].compact.flatten
+      end
+
+      def fetch_markets_data
+        return markets_payload if markets_payload.is_a?(Enumerable)
+
+        log_missing_payload if odds_payload.is_a?(Hash)
+
+        []
+      end
+
+      def markets_payload
+        @markets_payload ||= odds_payload.to_h['market']
+      end
+
+      def odds_payload
+        @odds_payload ||= event_data['odds']
+      end
+
+      def log_missing_payload
+        Rails.logger.info("Odds payload is missing for Event #{external_id}")
       end
 
       def event_data

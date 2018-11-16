@@ -156,7 +156,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
             id: 124,
             specifiers: 'set=2|game=3|point=1',
             status: -1,
-            outcome: [ {id: 1, odds: 1.3, active: 1}]
+            outcome: [{ id: 1, odds: 1.3, active: 1 }]
           }
         end
       end
@@ -177,13 +177,13 @@ describe OddsFeed::Radar::OddsChangeHandler do
               id: 124,
               specifiers: 'set=2|game=3|point=1',
               status: -1,
-              outcome: [ {id: 1, odds: 1.3, active: 1}]
+              outcome: [{ id: 1, odds: 1.3, active: 1 }]
             },
             {
               id: 125,
               specifiers: 'set=2|game=3|point=1',
               status: -1,
-              outcome: [ {id: 2, odds: 1.3, active: 1}]
+              outcome: [{ id: 2, odds: 1.3, active: 1 }]
             }
           ]
         end
@@ -196,7 +196,6 @@ describe OddsFeed::Radar::OddsChangeHandler do
         expect(subject).to have_received(:generate_market!).twice
       end
     end
-
 
     context 'markets_data prepared for wrong markets_payload' do
       let(:payload) do
