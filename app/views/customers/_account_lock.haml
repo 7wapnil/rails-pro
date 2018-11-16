@@ -4,16 +4,30 @@
 
 - content_for :js do
   = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
-  = javascript_pack_tag 'customers/locked_toggle', 'data-turbolinks-track': 'reload'
-  = javascript_pack_tag 'customers/locked_until', 'data-turbolinks-track': 'reload'
+  = javascript_pack_tag 'customers/account_lock', 'data-turbolinks-track': 'reload'
 
-= card header: t(:account_lock), class: 'account-lock' do
-  %table.table
-    %tr
-      %td= t(:lock)
-      %td.toggle-holder= locked_toggle(@customer, update_lock_customer_path(@customer))
-    %tr
-      %td= t(:lock_until)
-      %td
-        %input.form-control.form_date.locked_until{value: @customer.locked_until ? l(@customer.locked_until) : nil,
-          data: { endpoint: update_lock_customer_path(@customer) } }
+= card header: t('attributes.account_lock'), class: 'account-lock' do
+  = simple_form_for @customer,
+    url: update_lock_customer_path,
+    html: { id: 'update_lock_customer_form' } do |f|
+    %table.table
+      %tr
+        %td= t('attributes.lock')
+        %td= locked_toggle(@customer, update_lock_customer_path(@customer))
+      %tr
+        %td= t('attributes.lock_reason')
+        %td
+          = f.input :lock_reason,
+                    label: false,
+                    collection: Customer.lock_reasons,
+                    include_blank: true,
+                    label_method: ->(k) { t("lock_reasons.#{k.first}") },
+                    value_method: ->(k) { k.first }
+      %tr
+        %td= t('attributes.lock_until')
+        %td
+          = f.input :locked_until,
+                    as: :date_picker,
+                    label: false,
+                    class: 'form-control form_date',
+                    value: @customer.locked_until ? l(@customer.locked_until) : nil
