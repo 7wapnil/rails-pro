@@ -77,6 +77,14 @@ en:
     user: User
     customer: Customer
 
+  lock_reasons:
+    self_exclusion: Self-exclusion
+    cooling_off: Cooling off
+    locked: Lock
+    closed: Closed
+    password_recovery: Password recovery
+    fraud: Fraud
+
   entities:
     wallet: Wallet
     balance: Balance
@@ -188,7 +196,8 @@ en:
       date_picker: "%-d %B %Y"
 
   messages:
-    entry_request_created: "Entry request successfully created"
+    entry_request_created: Entry request successfully created
+    customer_lock_status_changed: Customer lock status was changed
 
   errors:
     messages:

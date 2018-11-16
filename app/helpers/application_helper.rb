@@ -28,8 +28,10 @@ module ApplicationHelper
 
   def locked_toggle(locked_resource, toggle_endpoint)
     tag.span(class: 'toggle_container') do
-      toggle_id = "toggle_#{locked_resource.class.name}_#{locked_resource.id}"
-      concat check_box_tag('visible', locked_resource.locked,
+      class_name_downcase = locked_resource.class.name.to_s.downcase
+      toggle_id = "#{class_name_downcase}_locked"
+      concat check_box_tag("#{class_name_downcase}[locked]",
+                           true,
                            locked_resource.locked,
                            id: toggle_id,
                            class: 'toggle_button locked_toggle',

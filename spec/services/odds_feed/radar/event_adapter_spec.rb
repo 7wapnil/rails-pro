@@ -5,130 +5,143 @@ describe OddsFeed::Radar::EventAdapter do
       file_fixture('radar_event_fixture.xml').read
     )['fixtures_fixture']['fixture']
   end
-  let(:result) { subject.result }
-  let!(:title) { create(:title, external_id: 'sr:sport:1', name: 'Soccer') }
+  let(:title) { create(:title, external_id: 'sr:sport:1', name: 'Soccer') }
 
-  subject { OddsFeed::Radar::EventAdapter.new(payload) }
-
-  it 'returns filled event' do
-    expected_payload = {
-      'competitors': payload['competitors']
-    }.stringify_keys
-
-    expect(result).to be_a(Event)
-    expect(result.external_id).to eq('sr:match:8696826')
-    expect(result.payload).to eq(expected_payload)
-    expect(result.start_at)
-      .to eq('2016-10-31T18:00:00+00:00'.to_time)
+  let!(:tournament) do
+    create(:event_scope,
+           name: 'Div 1 Sodra',
+           external_id: 'sr:tournament:68',
+           kind: :tournament,
+           title: title)
   end
 
-  it 'creates event_archive record at MongoDB' do
-    expect(result).to be_a(Event)
-    expect(ArchivedEvent.count).to eq(1)
-    archived_event = ArchivedEvent.first
-    expect(archived_event.external_id).to eq(result.external_id)
-    expect(archived_event.scopes.count).to eq(result.event_scopes.size)
+  let!(:season) do
+    create(:event_scope,
+           name: 'Div 1, Sodra 2016',
+           external_id: 'sr:season:12346',
+           kind: :season,
+           title: title)
   end
 
-  it 'returns generated event name' do
-    expect(result.name).to eq('IK Oddevold VS Tvaakers IF')
+  let!(:country) do
+    create(:event_scope,
+           name: 'Sweden',
+           external_id: 'sr:category:9',
+           kind: :country,
+           title: title)
   end
 
-  it 'raises an error if competitors amount is wrong' do
-    payload['competitors']['competitor']
-      .push('Test competitor')
-    expect { result }.to raise_error(NotImplementedError)
-  end
+  describe '#result' do
+    subject(:result) { described_class.new(payload).result }
 
-  context 'title' do
-    it 'loads if exists in db' do
-      expect(result.title.id).to eq(title.id)
-      expect(result.title.external_id).to eq('sr:sport:1')
+    describe 'return value' do
+      let(:expected_payload) do
+        {
+          'competitors': payload['competitors']
+        }.stringify_keys
+      end
+
+      it('returns correct object') { expect(result).to be_a(Event) }
+      it 'returns filled event' do
+        expect(result).to have_attributes(
+          external_id: event_id,
+          payload: expected_payload,
+          start_at: '2016-10-31T18:00:00+00:00'.to_time
+        )
+      end
     end
 
-    it 'raises error if title not exists' do
-      payload['tournament']['sport']['id'] = 'sr:sport:unknown'
-      expect { result }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-  end
+    describe 'archive_event_and_scopes!' do
+      before do
+        allow(EventArchive::Service).to receive(:call)
+        result
+      end
 
-  context 'tournament' do
-    it 'creates if not exists in db' do
-      tournament = result.event_scopes.detect(&:tournament?)
-      expect(tournament).not_to be_nil
-      expect(tournament.external_id).to eq('sr:tournament:68')
-      expect(tournament.name).to eq('Div 1 Sodra')
+      it 'archives the event' do
+        expect(EventArchive::Service).to have_received(:call).once
+      end
     end
 
-    it 'loads if exists in db' do
-      existing = create(:event_scope,
-                        name: 'Div 1 Sodra',
-                        external_id: 'sr:tournament:68',
-                        kind: :tournament,
-                        title: title)
-      tournament = result.event_scopes.detect(&:tournament?)
-      expect(tournament.id).to eq(existing.id)
-      expect(tournament.external_id).to eq('sr:tournament:68')
-      expect(tournament.name).to eq('Div 1 Sodra')
-    end
-  end
+    # TODO: Refactor to EventArchive::Service spec
+    context 'with real EventArchive::Service' do
+      let(:archived_event) { ArchivedEvent.first }
 
-  context 'season' do
-    it 'creates if not exists in db' do
-      season = result.event_scopes.detect(&:season?)
-      expect(season).not_to be_nil
-      expect(season.external_id).to eq('sr:season:12346')
-      expect(season.name).to eq('Div 1, Sodra 2016')
+      before { result }
+
+      it 'creates one event_archive record at MongoDB' do
+        expect(ArchivedEvent.count).to eq(1)
+      end
+
+      it 'arhives event with correct external id' do
+        expect(archived_event.external_id).to eq(result.external_id)
+      end
+
+      it 'arhives event with correct scope size' do
+        expect(archived_event.scopes.count).to eq(result.event_scopes.size)
+      end
     end
 
-    it 'loads if exists in db' do
-      existing = create(:event_scope,
-                        name: 'Div 1, Sodra 2016',
-                        external_id: 'sr:season:12346',
-                        kind: :season,
-                        title: title)
-      season = result.event_scopes.detect(&:season?)
-      expect(season.id).to eq(existing.id)
-      expect(season.external_id).to eq('sr:season:12346')
-      expect(season.name).to eq('Div 1, Sodra 2016')
-    end
-  end
-
-  context 'country' do
-    it 'creates if not exists in db' do
-      country = result.event_scopes.detect(&:country?)
-      expect(country).not_to be_nil
-      expect(country.external_id).to eq('sr:category:9')
-      expect(country.name).to eq('Sweden')
+    it 'returns generated event name' do
+      expect(result.name).to eq('IK Oddevold VS Tvaakers IF')
     end
 
-    it 'loads if exists in db' do
-      existing = create(:event_scope,
-                        name: 'Sweden',
-                        external_id: 'sr:category:9',
-                        kind: :country,
-                        title: title)
-      country = result.event_scopes.detect(&:country?)
-      expect(country.id).to eq(existing.id)
-      expect(country.external_id).to eq('sr:category:9')
-      expect(country.name).to eq('Sweden')
-    end
-  end
-
-  context 'invalid data' do
-    it 'raises error if tournament data is invalid' do
-      payload['tournament'] = {}
-      expect { result }.to raise_error(OddsFeed::InvalidMessageError)
+    it 'loads title from db' do
+      expect(result.title).to eq title
     end
 
-    it 'raises error if season data is invalid' do
-      payload['season'] = {}
-      expect { result }.to raise_error(ActiveRecord::RecordInvalid)
+    it 'loads existing tournament from db' do
+      result_tournament = result.event_scopes.detect(&:tournament?)
+      expect(result_tournament).to eq tournament
     end
 
-    it 'raises error if country data is invalid' do
-      payload['tournament']['category'] = {}
-      expect { result }.to raise_error(ActiveRecord::RecordInvalid)
+    it 'loads existing season from db' do
+      result_season = result.event_scopes.detect(&:season?)
+      expect(result_season).to eq season
+    end
+
+    it 'loads existing country from db' do
+      result_country = result.event_scopes.detect(&:country?)
+      expect(result_country).to eq country
+    end
+
+    context 'with invalid data' do
+      it 'raises an error if competitors amount is wrong' do
+        payload['competitors']['competitor']
+          .push('Third competitor')
+        expect { result }.to raise_error(NotImplementedError)
+      end
+
+      it 'raises error if tournament data is invalid' do
+        payload['tournament'] = {}
+        expect { result }.to raise_error(OddsFeed::InvalidMessageError)
+      end
+    end
+
+    context 'with missing data in db' do
+      it 'enqueue EventScopesLoadingWorker on RecordNotFound' do
+        allow(EventScope)
+          .to receive(:find_by!).and_raise(ActiveRecord::RecordNotFound)
+        allow(Radar::EventScopesLoadingWorker).to receive(:perform_async)
+
+        expect { result }.to raise_error(ActiveRecord::RecordNotFound)
+        expect(Radar::EventScopesLoadingWorker)
+          .to have_received(:perform_async).once
+      end
+
+      it 'raises error if title not exists' do
+        payload['tournament']['sport']['id'] = 'sr:sport:unknown'
+        expect { result }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it 'raises error if season data is invalid' do
+        payload['season'] = {}
+        expect { result }.to raise_error(ActiveRecord::RecordNotFound)
+      end
+
+      it 'raises error if country data is invalid' do
+        payload['tournament']['category'] = {}
+        expect { result }.to raise_error(ActiveRecord::RecordNotFound)
+      end
     end
   end
 end

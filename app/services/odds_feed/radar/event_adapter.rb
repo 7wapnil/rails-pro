@@ -59,64 +59,59 @@ module OddsFeed
       end
 
       def attach_title!
-        Rails.logger.info "Title data received: #{title_fixture}"
+        Rails.logger.debug "Title data received: #{title_fixture}"
         @event.title = Title.find_by!(external_id: title_fixture['id'])
       end
 
       def attach_scopes!
-        find_or_create_tournament!
-        find_or_create_season!
-        find_or_create_country!
+        attach_tournament!
+        attach_season!
+        attach_country!
       end
 
-      def find_or_create_tournament!
+      def attach_tournament!
         data = tournament_fixture
-        Rails.logger.info "Tournament data received: #{data}"
-        find_or_create_scope!(external_id: data['id'],
-                              kind: :tournament,
-                              name: tournament_fixture['name'],
-                              title: @event.title)
+        Rails.logger.debug "Tournament data received: #{data}"
+        find_scope!(external_id: data['id'],
+                    kind: :tournament,
+                    name: tournament_fixture['name'],
+                    title: @event.title)
       end
 
-      def find_or_create_season!
-        Rails.logger.info "Season data received: #{season_fixture}"
+      def attach_season!
+        Rails.logger.debug "Season data received: #{season_fixture}"
 
         unless season_fixture
           Rails.logger.info 'Season fixture is missing in payload, exiting'
           return
         end
 
-        find_or_create_scope!(external_id: season_fixture['id'],
-                              name: season_fixture['name'],
-                              kind: :season,
-                              title: @event.title)
+        find_scope!(external_id: season_fixture['id'],
+                    name: season_fixture['name'],
+                    kind: :season,
+                    title: @event.title)
       end
 
-      def find_or_create_country!
-        Rails.logger.info "Country data received: #{country_fixture}"
+      def attach_country!
+        Rails.logger.debug "Country data received: #{country_fixture}"
 
         unless country_fixture
           Rails.logger.info 'Country fixture is missing in payload, exiting'
           return
         end
 
-        find_or_create_scope!(external_id: country_fixture['id'],
-                              name: country_fixture['name'],
-                              kind: :country,
-                              title: @event.title)
+        find_scope!(external_id: country_fixture['id'],
+                    name: country_fixture['name'],
+                    kind: :country,
+                    title: @event.title)
       end
 
-      def find_or_create_scope!(attributes)
-        scope = EventScope.find_or_create_by!(attributes) do |obj|
-          log_msg = <<-MESSAGE
-            Create new scope kind '#{obj.kind}' \
-            with external ID '#{obj.external_id}' \
-            and name '#{obj.name}'
-          MESSAGE
-
-          Rails.logger.info log_msg.squish
-        end
+      def find_scope!(attributes)
+        scope = EventScope.find_by!(attributes)
         @event.event_scopes << scope
+      rescue ActiveRecord::RecordNotFound => e
+        ::Radar::EventScopesLoadingWorker.perform_async
+        raise e
       end
 
       def archive_event_and_scopes!

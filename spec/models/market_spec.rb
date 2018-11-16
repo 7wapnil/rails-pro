@@ -26,10 +26,10 @@ describe Market do
   end
 
   context 'priority' do
-    it 'defines 0 priority by default' do
+    it 'defines 1 priority by default' do
       subject.name = 'Unknown name'
       subject.validate
-      expect(subject.priority).to eq(0)
+      expect(subject.priority).to eq(1)
     end
 
     [
@@ -41,7 +41,7 @@ describe Market do
       it "defines 1 priority for market name '#{market_name}'" do
         subject.name = market_name
         subject.validate
-        expect(subject.priority).to eq(1)
+        expect(subject.priority).to eq(0)
       end
     end
   end
