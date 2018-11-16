@@ -1,7 +1,7 @@
 describe BettingLimitFacade do
   describe '.for_customer' do
     let!(:customer_with_limits) do
-      FactoryBot.create(:customer_with_betting_limits)
+      create(:customer_with_betting_limits)
     end
 
     subject(:result) do
