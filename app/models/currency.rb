@@ -9,8 +9,7 @@ class Currency < ApplicationRecord
   validates_associated :entry_currency_rules
 
   scope :primary_currency, -> {
-    where(primary: true)
-      .first
+    find_by(primary: true)
   }
 
   def self.build_default

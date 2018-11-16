@@ -1,7 +1,6 @@
 class BettingLimitsController < ApplicationController
   def create
-    @betting_limit = BettingLimit.new(payload_params)
-    @betting_limit.save!
+    @betting_limit = BettingLimit.create!(payload_params)
     current_user.log_event :betting_limit_updated, @betting_limit
     redirect_to betting_limits_customer_path(@betting_limit.customer)
   end

@@ -3,11 +3,11 @@ class BettingLimitFacade
 
   def initialize(customer)
     @customer = customer
+    @old_elements = []
+    @new_elements = []
   end
 
   def for_customer
-    @old_elements = []
-    @new_elements = []
     limits = collect_limits_for_customer!
     process_collected_limits!(limits)
     @old_elements + @new_elements
@@ -24,6 +24,7 @@ class BettingLimitFacade
                  .order(:name)
                  .to_a
                  .each_with_object({}) { |v, h| h[v.id] = [] }
+    title_list[nil] = [] # global limit nil title
     title_list.merge customer_limits
   end
 
@@ -38,18 +39,9 @@ class BettingLimitFacade
       end
 
       @new_elements.push(
-        limit: initialize_betting_limit!(title),
+        limit: BettingLimit.new(customer: @customer, title: title),
         title: title
       )
     end
-  end
-
-  def initialize_betting_limit!(title)
-    primary_currency = Currency.primary_currency
-    BettingLimit.new(
-      customer: @customer,
-      title: title,
-      currency: primary_currency
-    )
   end
 end

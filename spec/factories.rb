@@ -105,7 +105,6 @@ FactoryBot.define do
 
   factory :betting_limit do
     customer
-    currency
     title
     live_bet_delay { Faker::Number.between(1, 10) }
     user_max_bet { Faker::Number.between(1, 1000) }
@@ -182,9 +181,9 @@ FactoryBot.define do
       end
     end
 
-    factory :customer_with_betting_limit do
+    factory :customer_with_betting_limits do
       after(:create) do |customer|
-        create(:currency, primary: true)
+        create(:betting_limit, customer: customer, title: nil)
         title = create(:title)
         create(:betting_limit, customer: customer, title: title)
       end
