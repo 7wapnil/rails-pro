@@ -179,6 +179,10 @@ en:
     zip_code: ZIP
     city: City
     state: State
+    account_lock: Account Lock
+    lock: Lock
+    lock_reason: Lock reason
+    lock_until: Lock until
 
   documents:
     history_title: "Files history: %{document_type}"

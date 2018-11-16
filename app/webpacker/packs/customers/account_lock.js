@@ -7,6 +7,11 @@ $(document).on('turbolinks:load', () => {
   const lockReasonSelector = $('#customer_lock_reason');
   const lockedUntilInput = $('#customer_locked_until');
 
+  if (!lockToggleInput.prop('checked')) {
+    lockToggleInput.attr('disabled', 'disabled')
+    lockedUntilInput.attr('disabled', 'disabled')
+  }
+
   form.submit(function(e) {
     e.preventDefault();
     const reason = lockReasonSelector.val().length ? lockReasonSelector.val() : null;
@@ -37,25 +42,36 @@ $(document).on('turbolinks:load', () => {
     })
   });
 
+  function enableLockToggleInput() {
+    lockToggleInput.removeAttr('disabled');
+    lockToggleInput.prop('checked', true);
+  }
+
+  function dropLock() {
+    lockToggleInput.prop('checked', false)
+    lockToggleInput.attr('disabled', 'disabled');
+    lockReasonSelector.val('');
+    lockedUntilInput.val('');
+    lockedUntilInput.attr('disabled', 'disabled');
+  }
+
   lockToggleInput.change(function() {
-    if (!this.checked) {
-      lockReasonSelector.val('');
-      lockedUntilInput.val('');
-    }
+    if (!this.checked) dropLock();
     form.submit();
   });
 
   lockReasonSelector.change(function() {
-    if (this.value.length) {
-      lockToggleInput.prop('checked', true);
+    if (this.value) {
+      enableLockToggleInput();
+      lockedUntilInput.removeAttr('disabled');
+    } else if (!lockedUntilInput.val()) {
+      dropLock();
     }
     form.submit();
   });
 
   lockedUntilInput.change(function() {
-    if (this.value.length) {
-      lockToggleInput.prop('checked', true)
-    }
+    if (!this.value && !lockReasonSelector.val()) dropLock();
     form.submit();
   });
 });
