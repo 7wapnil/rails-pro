@@ -12,3 +12,5 @@ en:
     entry_request_created: "Entry (%{kind}) created by %{user_name} for %{customer_name}"
     entry_creation_failed: "Entry (%{kind}) failed to create from request by %{user_name}"
     document_status_updated: "%{customer_name} document '%{kind}' %{status} by %{user_name}"
+    betting_limit_created: "Betting limit for customer (%{customer_name}) added by %{user_name}"
+    betting_limit_updated: "Betting limit for customer (%{customer_name}) updated by %{user_name}"

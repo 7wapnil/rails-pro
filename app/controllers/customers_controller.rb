@@ -37,6 +37,13 @@ class CustomersController < ApplicationController
     @customer = find_customer
   end
 
+  def betting_limits
+    @customer = find_customer
+    @customer_limits = BettingLimitFacade
+                       .new(@customer)
+                       .for_customer
+  end
+
   def documents_history
     @customer = find_customer
     @document_type = document_type

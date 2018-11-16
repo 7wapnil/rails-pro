@@ -44,6 +44,8 @@ en:
       activity: Activity
       account_management: Account management
       notes: Notes
+      documents: Documents
+      betting_limits: Betting Limits
 
   statuses:
     initial: Initial

@@ -14,6 +14,11 @@ FactoryBot.define do
   factory :currency do
     name { Faker::Currency.name }
     code { Faker::Currency.code }
+    primary { false }
+
+    trait :primary do
+      primary { true }
+    end
 
     trait :with_bet_rule do
       after(:create) do |currency|
@@ -98,6 +103,17 @@ FactoryBot.define do
     end
   end
 
+  factory :betting_limit do
+    customer
+    title
+    live_bet_delay { Faker::Number.between(1, 10) }
+    user_max_bet { Faker::Number.between(1, 1000) }
+    max_loss { Faker::Number.between(1, 1000) }
+    max_win { Faker::Number.between(1, 1000) }
+    user_stake_factor { Faker::Number.decimal(1, 1) }
+    live_stake_factor { Faker::Number.decimal(1, 1) }
+  end
+
   # System
 
   factory :bonus do
@@ -162,6 +178,14 @@ FactoryBot.define do
       after(:create) do |customer|
         currency = create(:currency, :with_bet_rule)
         create(:wallet, customer: customer, currency: currency)
+      end
+    end
+
+    factory :customer_with_betting_limits do
+      after(:create) do |customer|
+        create(:betting_limit, customer: customer, title: nil)
+        title = create(:title)
+        create(:betting_limit, customer: customer, title: title)
       end
     end
   end
