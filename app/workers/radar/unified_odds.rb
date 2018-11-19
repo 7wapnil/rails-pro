@@ -5,7 +5,7 @@ module Radar
                env: nil,
                exchange: ENV['RADAR_MQ_EXCHANGE'],
                exchange_options: { passive: true },
-               routing_key: '#',
+               routing_key: ['*.*.*.*.*.*.*.123123.#', '*.*.*.*.*.*.*.-.#'],
                durable: false,
                ack: false
 
