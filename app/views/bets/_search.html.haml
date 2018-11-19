@@ -4,7 +4,7 @@
 - content_for :js do
   = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
 
-= search_form_for @search, url: search_path do |f|
+= search_form_for filter.search, url: search_path do |f|
   %table.table
     %thead
       %tr
@@ -52,7 +52,7 @@
           .filter_field
             = f.label :title_name_eq, class: 'sr-only'
             = f.select :title_name_eq,
-                        options_for_select(@filter.sports, query_params ? query_params[:title_name_eq] : nil),
+                        options_for_select(filter.sports, query_params[:title_name_eq]),
                         { include_blank: true },
                         class: 'form-control'
 
@@ -62,7 +62,7 @@
           .filter_field
             = f.label :tournaments_name_eq, class: 'sr-only'
             = f.select :tournaments_name_eq,
-                        options_for_select(@filter.tournaments, query_params ? query_params[:tournaments_name_eq] : nil),
+                        options_for_select(filter.tournaments, query_params[:tournaments_name_eq]),
                         { include_blank: true },
                         class: 'form-control'
         %th
@@ -71,7 +71,7 @@
           .filter_field
             = f.label :countries_name_in, class: 'sr-only'
             = f.select :countries_name_in,
-                        options_for_select(@filter.countries, query_params ? query_params[:countries_name_in] : nil),
+                        options_for_select(filter.countries, query_params[:countries_name_in]),
                         { include_blank: true},
                         multiple: true, size: 1,
                         class: 'form-control multi-select'

@@ -4,11 +4,13 @@
   .col-md-3
     .mt-4= render 'customers/navigation'
   .col-md-9{ id:'customer-bets' }
-    = render partial: 'bets/search', locals: { excluded_columns: [:customer],
-     search_path: bets_customer_path }
-    = render partial: 'bets/table', locals: { excluded_columns: [:customer] }
+    = render partial: 'bets/search', locals: { excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:customers],
+     search_path: bets_customer_path,
+     filter: @filter }
+    = render partial: 'bets/table', locals: { excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:customers],
+     filter: @filter }
 
-= paginate @bets
+= paginate @filter.bets
 
 - content_for :js do
   = javascript_pack_tag 'customers/navigation_links'

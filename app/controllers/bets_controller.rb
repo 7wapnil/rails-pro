@@ -3,9 +3,9 @@ class BetsController < ApplicationController
 
   def index
     query = prepare_interval_filter(query_params, :created_at)
-    @filter = BetsFilter.new(Bet, query)
-    @search = @filter.search
-    @bets = @search.result.order(id: :desc).page(params[:page])
+    @filter = BetsFilter.new(bets_source: Bet,
+                             query: query,
+                             page: params[:page])
   end
 
   def show

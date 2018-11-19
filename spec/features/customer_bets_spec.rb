@@ -1,9 +1,10 @@
 describe 'Customers#bets' do
   let(:customer) { create(:customer) }
   let(:page_path) { bets_customer_path(customer) }
+  let(:admin) { create(:admin_user) }
 
   before do
-    login_as create(:admin_user), scope: :user
+    login_as admin, scope: :user
     visit page_path
   end
 

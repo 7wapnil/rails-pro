@@ -9,7 +9,7 @@ describe BetsFilter do
 
   let!(:sport) { create(:title, name: Faker::Esport.game) }
 
-  let(:filter) { described_class.new(Bet, {}) }
+  let(:filter) { described_class.new(bets_source: Bet) }
 
   it 'returns sports' do
     expect(filter.sports).to include(sport.name)

@@ -1,9 +1,15 @@
 class BetsFilter
+  EXCLUDED_COLUMNS = {
+    customers: %i[customer],
+    bets: []
+  }.freeze
+
   attr_reader :bets_source
 
-  def initialize(bets_source, query_params)
+  def initialize(bets_source:, query: {}, page: nil)
     @bets_source = bets_source
-    @query_params = query_params
+    @query_params = query
+    @page = page
   end
 
   def sports
@@ -25,5 +31,9 @@ class BetsFilter
                            .with_tournament
                            .with_country
                            .search(@query_params)
+  end
+
+  def bets
+    @bets ||= search.result.order(id: :desc).page(@page)
   end
 end

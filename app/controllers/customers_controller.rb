@@ -41,9 +41,9 @@ class CustomersController < ApplicationController
   def bets
     @customer = find_customer
     query = prepare_interval_filter(query_params, :created_at)
-    @filter = BetsFilter.new(@customer.bets, query)
-    @search = @filter.search
-    @bets = @search.result.order(id: :desc).page(params[:page])
+    @filter = BetsFilter.new(bets_source: @customer.bets,
+                             query: query,
+                             page: params[:page])
   end
 
   def documents_history
