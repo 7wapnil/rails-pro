@@ -4,7 +4,7 @@ module OddsFeed
       def result
         @event = Event.new event_attributes
         attach_title!
-        attach_scopes!
+        find_or_create_scopes!
         archive_event_and_scopes!
         @event
       end
@@ -63,22 +63,22 @@ module OddsFeed
         @event.title = Title.find_by!(external_id: title_fixture['id'])
       end
 
-      def attach_scopes!
-        attach_tournament!
-        attach_season!
-        attach_country!
+      def find_or_create_scopes!
+        find_or_create_tournament!
+        find_or_create_season!
+        find_or_create_country!
       end
 
-      def attach_tournament!
+      def find_or_create_tournament!
         data = tournament_fixture
         Rails.logger.debug "Tournament data received: #{data}"
-        find_scope!(external_id: data['id'],
-                    kind: :tournament,
-                    name: tournament_fixture['name'],
-                    title: @event.title)
+        find_or_create_scope!(external_id: data['id'],
+                              kind: :tournament,
+                              name: tournament_fixture['name'],
+                              title: @event.title)
       end
 
-      def attach_season!
+      def find_or_create_season!
         Rails.logger.debug "Season data received: #{season_fixture}"
 
         unless season_fixture
@@ -86,13 +86,13 @@ module OddsFeed
           return
         end
 
-        find_scope!(external_id: season_fixture['id'],
-                    name: season_fixture['name'],
-                    kind: :season,
-                    title: @event.title)
+        find_or_create_scope!(external_id: season_fixture['id'],
+                              name: season_fixture['name'],
+                              kind: :season,
+                              title: @event.title)
       end
 
-      def attach_country!
+      def find_or_create_country!
         Rails.logger.debug "Country data received: #{country_fixture}"
 
         unless country_fixture
@@ -100,18 +100,22 @@ module OddsFeed
           return
         end
 
-        find_scope!(external_id: country_fixture['id'],
-                    name: country_fixture['name'],
-                    kind: :country,
-                    title: @event.title)
+        find_or_create_scope!(external_id: country_fixture['id'],
+                              name: country_fixture['name'],
+                              kind: :country,
+                              title: @event.title)
       end
 
-      def find_scope!(attributes)
-        scope = EventScope.find_by!(attributes)
+      def find_or_create_scope!(attributes)
+        scope = EventScope.find_or_create_by!(attributes) do |obj|
+          log_msg = <<-MESSAGE
+            Create new scope kind '#{obj.kind}' \
+            with external ID '#{obj.external_id}' \
+            and name '#{obj.name}'
+          MESSAGE
+          Rails.logger.info log_msg.squish
+        end
         @event.event_scopes << scope
-      rescue ActiveRecord::RecordNotFound => e
-        ::Radar::EventScopesLoadingWorker.perform_async
-        raise e
       end
 
       def archive_event_and_scopes!

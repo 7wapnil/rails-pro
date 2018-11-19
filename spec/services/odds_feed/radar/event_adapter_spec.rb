@@ -1,38 +1,83 @@
 describe OddsFeed::Radar::EventAdapter do
-  let(:event_id) { 'sr:match:8696826' }
   let(:payload) do
     XmlParser.parse(
       file_fixture('radar_event_fixture.xml').read
     )['fixtures_fixture']['fixture']
   end
-  let(:title) { create(:title, external_id: 'sr:sport:1', name: 'Soccer') }
-
-  let!(:tournament) do
-    create(:event_scope,
-           name: 'Div 1 Sodra',
-           external_id: 'sr:tournament:68',
-           kind: :tournament,
-           title: title)
+  let(:event_id) { 'sr:match:8696826' }
+  let(:event_name) { 'IK Oddevold VS Tvaakers IF' }
+  let(:tournament_attributes) do
+    {
+      name: 'Div 1 Sodra',
+      external_id: 'sr:tournament:68',
+      kind: 'tournament',
+      title: title
+    }
   end
-
-  let!(:season) do
-    create(:event_scope,
-           name: 'Div 1, Sodra 2016',
-           external_id: 'sr:season:12346',
-           kind: :season,
-           title: title)
+  let(:season_attributes) do
+    {
+      name: 'Div 1, Sodra 2016',
+      external_id: 'sr:season:12346',
+      kind: 'season',
+      title: title
+    }
   end
-
-  let!(:country) do
-    create(:event_scope,
-           name: 'Sweden',
-           external_id: 'sr:category:9',
-           kind: :country,
-           title: title)
+  let(:country_attributes) do
+    {
+      name: 'Sweden',
+      external_id: 'sr:category:9',
+      kind: 'country',
+      title: title
+    }
   end
+  let!(:title) { create(:title, external_id: 'sr:sport:1', name: 'Soccer') }
 
   describe '#result' do
     subject(:result) { described_class.new(payload).result }
+
+    let(:tournament) { build(:event_scope, tournament_attributes) }
+    let(:season) { build(:event_scope, season_attributes) }
+    let(:country) { build(:event_scope, country_attributes) }
+
+    context 'when database have all scopes' do
+      before do
+        tournament.save!
+        season.save!
+        country.save!
+      end
+
+      it 'loads existing tournament from db' do
+        result_tournament = result.event_scopes.detect(&:tournament?)
+        expect(result_tournament).to eq tournament
+      end
+
+      it 'loads existing season from db' do
+        result_season = result.event_scopes.detect(&:season?)
+        expect(result_season).to eq season
+      end
+
+      it 'loads existing country from db' do
+        result_country = result.event_scopes.detect(&:country?)
+        expect(result_country).to eq country
+      end
+    end
+
+    context 'when database does not have scopes for give event' do
+      it 'creates tournament scope from event payload' do
+        result_tournament = result.event_scopes.detect(&:tournament?)
+        expect(result_tournament).to have_attributes(tournament_attributes)
+      end
+
+      it 'creates season scope from event payload' do
+        result_season = result.event_scopes.detect(&:season?)
+        expect(result_season).to have_attributes(season_attributes)
+      end
+
+      it 'creates country scope from event payload' do
+        result_country = result.event_scopes.detect(&:country?)
+        expect(result_country).to have_attributes(country_attributes)
+      end
+    end
 
     describe 'return value' do
       let(:expected_payload) do
@@ -82,26 +127,11 @@ describe OddsFeed::Radar::EventAdapter do
     end
 
     it 'returns generated event name' do
-      expect(result.name).to eq('IK Oddevold VS Tvaakers IF')
+      expect(result.name).to eq(event_name)
     end
 
     it 'loads title from db' do
       expect(result.title).to eq title
-    end
-
-    it 'loads existing tournament from db' do
-      result_tournament = result.event_scopes.detect(&:tournament?)
-      expect(result_tournament).to eq tournament
-    end
-
-    it 'loads existing season from db' do
-      result_season = result.event_scopes.detect(&:season?)
-      expect(result_season).to eq season
-    end
-
-    it 'loads existing country from db' do
-      result_country = result.event_scopes.detect(&:country?)
-      expect(result_country).to eq country
     end
 
     context 'with invalid data' do
@@ -115,31 +145,9 @@ describe OddsFeed::Radar::EventAdapter do
         payload['tournament'] = {}
         expect { result }.to raise_error(OddsFeed::InvalidMessageError)
       end
-    end
-
-    context 'with missing data in db' do
-      it 'enqueue EventScopesLoadingWorker on RecordNotFound' do
-        allow(EventScope)
-          .to receive(:find_by!).and_raise(ActiveRecord::RecordNotFound)
-        allow(Radar::EventScopesLoadingWorker).to receive(:perform_async)
-
-        expect { result }.to raise_error(ActiveRecord::RecordNotFound)
-        expect(Radar::EventScopesLoadingWorker)
-          .to have_received(:perform_async).once
-      end
 
       it 'raises error if title not exists' do
         payload['tournament']['sport']['id'] = 'sr:sport:unknown'
-        expect { result }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it 'raises error if season data is invalid' do
-        payload['season'] = {}
-        expect { result }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it 'raises error if country data is invalid' do
-        payload['tournament']['category'] = {}
         expect { result }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
