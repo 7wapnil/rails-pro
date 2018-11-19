@@ -7,12 +7,13 @@ module OddsFeed
         end
 
         def call
-          return if @market_data.outcome.nil?
+          return if @market_data.outcome.blank?
 
           @market_data.outcome.each do |odd_data|
             generate_odd!(odd_data)
           rescue StandardError => e
             Rails.logger.error e.message
+
             next
           end
         end
@@ -20,6 +21,8 @@ module OddsFeed
         private
 
         def generate_odd!(odd_data)
+          return odd_data_is_not_payload(odd_data) unless odd_data.is_a?(Hash)
+
           odd_id = "#{@market_data.external_id}:#{odd_data['id']}"
           Rails.logger.debug "Updating odd with external ID #{odd_id}"
 
@@ -30,9 +33,16 @@ module OddsFeed
             odd.save!
           rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
             Rails.logger.warn ["Odd ID #{odd_id} creating failed", e]
+
             odd = prepare_odd(odd_id, odd_data)
             odd.save!
           end
+        end
+
+        def odd_data_is_not_payload(odd_data)
+          Rails.logger.warn(
+            "Odd data should be a payload, but received: `#{odd_data}`"
+          )
         end
 
         def prepare_odd(external_id, payload)

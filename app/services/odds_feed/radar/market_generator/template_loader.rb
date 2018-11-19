@@ -34,6 +34,7 @@ module OddsFeed
 
         def outcomes
           collection = variant? ? variant_odds : stored_template.payload
+
           return [] if collection['outcomes'].nil?
           return [] if collection['outcomes']['outcome'].empty?
 
