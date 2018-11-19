@@ -9,6 +9,12 @@ class Customer < ApplicationRecord
     female: 1
   }
 
+  enum account_kind: {
+    regular: 0,
+    staff: 1,
+    test: 2
+  }
+
   enum lock_reason: {
     self_exclusion: 0,
     cooling_off: 1,
