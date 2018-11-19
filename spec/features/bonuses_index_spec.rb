@@ -116,9 +116,9 @@ describe 'Bonuses#index' do
 
     context 'sorting' do
       before do
-        create :bonus, code: 'ARCANE100', expires_at: Date.today + 15.days
-        create :bonus, code: 'WELCOME500', expires_at: Date.today + 10.days
-        create :bonus, code: 'BETFORFREE', expires_at: Date.today + 5.days
+        create :bonus, code: 'ARCANE100', expires_at: 15.days.from_now
+        create :bonus, code: 'WELCOME500', expires_at: 10.days.from_now
+        create :bonus, code: 'BETFORFREE', expires_at: 5.days.from_now
 
         visit bonuses_path
       end

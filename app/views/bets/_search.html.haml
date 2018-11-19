@@ -35,7 +35,7 @@
             = f.search_field :created_at_gteq,
                               class: 'form-control form_date',
                               placeholder: t(:search, subject: t('from')),
-                              value: query_params[:created_at_gteq] || l(Date.today, format: :date_picker)
+                              value: query_params[:created_at_gteq] || l(Time.zone.now.to_date, format: :date_picker)
         %th
           .filter_title
             = "#{t(:search, subject: t('to'))}:"
@@ -44,7 +44,7 @@
             = f.search_field :created_at_lteq,
                               class: 'form-control form_date',
                               placeholder: t(:search, subject: t('to')),
-                              value: query_params[:created_at_lteq] || l(Date.today, format: :date_picker)
+                              value: query_params[:created_at_lteq] || l(Time.zone.now.to_date, format: :date_picker)
       %tr
         %th
           .filter_title

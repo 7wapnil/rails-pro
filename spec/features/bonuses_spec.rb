@@ -38,7 +38,7 @@ describe 'Bonuses' do
         select :deposit, from: :bonus_kind
         fill_in :bonus_rollover_multiplier, with: 10
         fill_in :bonus_max_rollover_per_bet, with: 150
-        fill_in :bonus_expires_at, with: I18n.l(Date.today.end_of_month)
+        fill_in :bonus_expires_at, with: I18n.l(Time.zone.now.end_of_month)
         fill_in :bonus_max_deposit_match, with: 500
         fill_in :bonus_min_odds_per_bet, with: 1.70
         fill_in :bonus_min_deposit, with: 25
