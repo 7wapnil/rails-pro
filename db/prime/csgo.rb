@@ -28,16 +28,16 @@ class CsgoPrimer
   ].freeze
 
   CSGO_TOURNAMENTS = [
-    'X-BET.CO INVITATIONAL',
-    'SL COLOGNE 2018 QUALIFIER',
-    'SEA MAIN SEASON 27',
-    'EGEND SERIES 5',
-    'EM SYDNEY',
-    'TARSERIES QUALIFIER',
-    'USION.BET MASTERS',
-    'AMDOM PREMIER',
-    'ETSPAWN CUP',
-    'OCASE CHALLENGE'
+    'Esl Anz Championship',
+    'King of Nordic',
+    'Esl Meisterschaft',
+    'Esl Proximus Championship',
+    'Esl Championnat National',
+    'Farms Championship',
+    'Esl UK Premiership',
+    'Esl Southeast Europe Championship',
+    'Esl Masters España',
+    'ESL Pro League'
   ].freeze
 
   REASONABLE_MATCH_TIME = 3.hours.freeze

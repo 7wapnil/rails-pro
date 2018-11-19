@@ -9,7 +9,7 @@ class Currency < ApplicationRecord
   validates_associated :entry_currency_rules
 
   def self.build_default
-    new(code: 'EUR', name: 'Euro')
+    new(code: 'EUR', name: 'Euro', primary: true)
   end
 
   def to_s

@@ -45,6 +45,8 @@ en:
       account_management: Account management
       notes: Notes
       bets: Bets
+      documents: Documents
+      betting_limits: Betting Limits
 
   statuses:
     initial: Initial
@@ -75,6 +77,14 @@ en:
   initiators:
     user: User
     customer: Customer
+
+  lock_reasons:
+    self_exclusion: Self-exclusion
+    cooling_off: Cooling off
+    locked: Lock
+    closed: Closed
+    password_recovery: Password recovery
+    fraud: Fraud
 
   entities:
     wallet: Wallet
@@ -172,6 +182,10 @@ en:
     zip_code: ZIP
     city: City
     state: State
+    account_lock: Account Lock
+    lock: Lock
+    lock_reason: Lock reason
+    lock_until: Lock until
 
   documents:
     history_title: "Files history: %{document_type}"
@@ -187,7 +201,8 @@ en:
       date_picker: "%-d %B %Y"
 
   messages:
-    entry_request_created: "Entry request successfully created"
+    entry_request_created: Entry request successfully created
+    customer_lock_status_changed: Customer lock status was changed
 
   errors:
     messages:

@@ -38,6 +38,13 @@ class CustomersController < ApplicationController
     @customer = find_customer
   end
 
+  def betting_limits
+    @customer = find_customer
+    @customer_limits = BettingLimitFacade
+                       .new(@customer)
+                       .for_customer
+  end
+
   def bets
     @customer = find_customer
     query = prepare_interval_filter(query_params, :created_at)
@@ -102,8 +109,14 @@ class CustomersController < ApplicationController
 
   def update_lock
     @customer = find_customer
-    update_lock_status
-    update_locked_until
+    @customer.update_columns(
+      locked: params[:locked] == 'true',
+      lock_reason: params[:lock_reason] != '' ? params[:lock_reason] : nil,
+      locked_until: params[:locked_until]
+    )
+    render json: {
+      message: I18n.t('messages.customer_lock_status_changed')
+    }
   end
 
   private
@@ -127,21 +140,6 @@ class CustomersController < ApplicationController
 
   def customer_verification_status
     params.require(:verified)
-  end
-
-  def update_lock_status
-    return unless params.key?(:locked)
-
-    @customer.update_column(:locked, params[:locked] == 'true')
-  end
-
-  def update_locked_until
-    return unless params.key?(:locked_until)
-
-    @customer.update_column(
-      :locked_until,
-      params[:locked_until]
-    )
   end
 end
 # rubocop:enable Metrics/ClassLength
