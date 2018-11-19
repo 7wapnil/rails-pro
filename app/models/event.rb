@@ -128,6 +128,12 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     ::EventDetails::Factory.build(self)
   end
 
+  def producer
+    Radar::Producer.find_by_id(
+      payload&.dig('producer', 'id')
+    )
+  end
+
   private
 
   def emit_created

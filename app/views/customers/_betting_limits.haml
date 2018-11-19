@@ -9,7 +9,7 @@
           %h5.mb-0
             %button.btn.btn-link{data: { toggle: 'collapse', target: "#collapseSport#{data[:title].id}" }}= data[:title].name
             - if data[:limit].id
-              %span.badge.badge-pill.badge-success Setted
+              %span.badge.badge-pill.badge-success= t('attributes.setted')
         .collapse{id: "collapseSport#{data[:title].id}", data: { parent: '#limitsBySportAccordion' } }
           .card-body
             = render 'customers/limit_form', limit: data[:limit]
