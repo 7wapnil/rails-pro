@@ -47,13 +47,7 @@ describe Bet do
   ].freeze
 
   describe 'Bet.expired_prematch' do
-    before do
-      Timecop.freeze
-    end
-
-    after do
-      Timecop.return
-    end
+    include_context 'frozen_time'
 
     it 'Returns expired prematch bets' do
       timeout = ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT_SECONDS', 3).to_i
@@ -72,13 +66,7 @@ describe Bet do
   end
 
   describe 'Bet.expired_live' do
-    before do
-      Timecop.freeze
-    end
-
-    after do
-      Timecop.return
-    end
+    include_context 'frozen_time'
 
     it 'Returns expired live bets' do
       timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10).to_i
