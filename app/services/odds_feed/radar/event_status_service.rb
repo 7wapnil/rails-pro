@@ -6,15 +6,17 @@ module OddsFeed
       end
 
       def call(payload)
-        @payload = payload
+        @event_id = payload[:event_id]
+        @payload = payload[:data]
 
-        payload.nil? ? no_payload_result : result
+        @payload.nil? ? no_payload_result : result
       end
 
       private
 
       def no_payload_result
         {
+          id: @event_id,
           status_code: nil,
           status: nil,
           score: nil,
@@ -26,6 +28,7 @@ module OddsFeed
 
       def result
         {
+          id: @event_id,
           status_code: @payload['match_status'],
           status: @match_status.call(@payload['match_status']),
           score: process_score!(@payload),
@@ -62,10 +65,15 @@ module OddsFeed
 
       def process_single_period!(period)
         {
+          id: complex_period_id(period),
           score: process_score!(period),
           status_code: period['match_status_code'],
           status: @match_status.call(period['match_status_code'])
         }
+      end
+
+      def complex_period_id(period)
+        @event_id.to_i * 1000 + period['match_status_code'].to_i
       end
     end
   end

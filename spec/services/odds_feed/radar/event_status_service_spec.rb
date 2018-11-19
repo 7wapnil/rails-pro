@@ -12,7 +12,9 @@ describe OddsFeed::Radar::EventStatusService do
           file_fixture('event_status_not_started_message.xml').read
         )['odds_change']['sport_event_status']
       end
-      let(:result_not_started) { service.call(payload_not_started) }
+      let(:result_not_started) do
+        service.call(event_id: 1, data: payload_not_started)
+      end
 
       it 'returns correct status' do
         expect(result_not_started[:status_code]).to eq(
@@ -48,7 +50,9 @@ describe OddsFeed::Radar::EventStatusService do
           file_fixture('event_status_in_progress_message.xml').read
         )['odds_change']['sport_event_status']
       end
-      let(:result_in_progress) { service.call(payload_in_progress) }
+      let(:result_in_progress) do
+        service.call(event_id: 1, data: payload_in_progress)
+      end
 
       it 'returns correct status' do
         expect(result_in_progress[:status_code]).to eq(
@@ -91,7 +95,9 @@ describe OddsFeed::Radar::EventStatusService do
           file_fixture('event_status_ended_message.xml').read
         )['odds_change']['sport_event_status']
       end
-      let(:result_ended) { service.call(payload_ended) }
+      let(:result_ended) do
+        service.call(event_id: 1, data: payload_ended)
+      end
 
       it 'returns correct status' do
         expect(result_ended[:status_code]).to eq(payload_ended['match_status'])

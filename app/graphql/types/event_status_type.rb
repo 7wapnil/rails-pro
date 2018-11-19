@@ -1,6 +1,9 @@
 Types::EventStatusType = GraphQL::ObjectType.define do
   name 'EventStatus'
 
+  field :id, !types.ID do
+    resolve ->(obj, _args, _ctx) { obj['event_id'].to_i }
+  end
   field :status_code, types.Int do
     resolve ->(obj, _args, _ctx) { obj['status_code'] }
   end

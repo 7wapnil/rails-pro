@@ -77,7 +77,8 @@ describe OddsFeed::Radar::OddsChangeHandler do
       producer: { origin: :radar, id: payload['odds_change']['product'] },
       event_status:
         OddsFeed::Radar::EventStatusService.new.call(
-          payload['odds_change']['sport_event_status']
+          event_id: event.id,
+          data: payload['odds_change']['sport_event_status']
         )
     }
 

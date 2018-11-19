@@ -31,7 +31,7 @@ module OddsFeed
           producer: { origin: :radar, id: event_data['product'] },
           event_status:
             OddsFeed::Radar::EventStatusService.new.call(
-              event_data['sport_event_status']
+              event_id: event.id, data: event_data['sport_event_status']
             )
         )
         updates = { remote_updated_at: timestamp,
