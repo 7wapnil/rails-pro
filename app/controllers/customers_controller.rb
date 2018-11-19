@@ -1,6 +1,7 @@
 # rubocop:disable Metrics/ClassLength
 class CustomersController < ApplicationController
   include Labelable
+  include DateIntervalFilters
 
   def index
     @search = Customer.search(query_params)
@@ -42,6 +43,14 @@ class CustomersController < ApplicationController
     @customer_limits = BettingLimitFacade
                        .new(@customer)
                        .for_customer
+  end
+
+  def bets
+    @customer = find_customer
+    query = prepare_interval_filter(query_params, :created_at)
+    @filter = BetsFilter.new(bets_source: @customer.bets,
+                             query: query,
+                             page: params[:page])
   end
 
   def documents_history

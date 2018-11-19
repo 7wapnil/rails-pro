@@ -44,6 +44,7 @@ class Customer < ApplicationRecord
   has_many :labels, through: :label_joins
   has_many :verification_documents
   has_many :betting_limits
+  has_many :bets
 
   delegate :street_address,
            :zip_code,

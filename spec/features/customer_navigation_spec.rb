@@ -30,4 +30,11 @@ context 'Customers#show navigation' do
       expect(current_path).to eq notes_customer_path(customer)
     end
   end
+
+  it 'navigates to customers#bets' do
+    within 'ul.navigation' do
+      click_link I18n.t('navigation.customer.bets')
+      expect(current_path).to eq bets_customer_path(customer)
+    end
+  end
 end
