@@ -16,6 +16,18 @@ module OddsFeed
             next
           end
 
+          event_id = @market_data.event.external_id
+          current_time = Time.now.utc.to_i * 1000
+          process_time = ((current_time - @market_data.timestamp) / 1000.0).round(3)
+          processing_msg = <<-MESSAGE
+            Market updated for event ID '#{event_id}' \
+            market ID '#{@market_data.id}', \
+            current time: '#{current_time}', \
+            message time: '#{@market_data.timestamp}',\
+            execution: #{process_time} seconds
+          MESSAGE
+          Rails.logger.info processing_msg.squish
+
           WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_CREATED,
                                           id: @market_data.event.id.to_s)
         end
@@ -24,10 +36,15 @@ module OddsFeed
 
         def generate_odd!(odd_data)
           odd_id = "#{@market_data.external_id}:#{odd_data['id']}"
-          Rails.logger.debug "Updating odd with external ID #{odd_id}"
-
           odd = prepare_odd(odd_id, odd_data)
-          Rails.logger.debug "Updating odd ID #{odd_id}, #{odd_data}"
+          log_msg = <<-MESSAGE
+            Updating odd ID #{odd_id}, \
+            market ID #{@market_data.id}, \
+            event ID #{@market_data.event.id}, \
+            #{odd_data}
+          MESSAGE
+
+          Rails.logger.info log_msg.squish
 
           begin
             odd.save!
