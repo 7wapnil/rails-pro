@@ -142,8 +142,11 @@ module OddsFeed
       end
 
       def generate_market!(market_data)
-        ::Radar::MarketGeneratorWorker
-          .perform_async(event.id, market_data, event_data['timestamp'].to_i)
+        ::OddsFeed::Radar::MarketGenerator::Service.call(
+          event.id,
+          market_data,
+          event_data['timestamp'].to_i
+        )
       end
     end
     # rubocop:enable Metrics/ClassLength
