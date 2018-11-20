@@ -85,4 +85,66 @@ describe Radar::UnifiedOdds do
         .to raise_error(NotImplementedError)
     end
   end
+
+  describe '.routing_key' do
+    subject(:key) { described_class.routing_key }
+
+    context 'without environment setup' do
+      let(:time_pattern) { '1%H%M%S%L' }
+      it 'returns array of keys to listen all and generates node id' do
+        Timecop.freeze do
+          time = Time.now.strftime(time_pattern)
+          expect(key).to match_array(
+            [
+              "*.*.*.*.*.*.*.#{time}.#",
+              '*.*.*.*.*.*.*.-.#'
+            ]
+          )
+        end
+      end
+    end
+
+    context 'with ENV overrides' do
+      it 'returns node_id key with provided key' do
+        allow(ENV).to receive(:[])
+          .with('RADAR_MQ_NODE_ID').and_return('777')
+        allow(ENV).to receive(:[])
+          .with('RADAR_MQ_LISTEN_ALL').and_return(nil)
+        expect(key).to match_array(
+          [
+            '*.*.*.*.*.*.*.777.#',
+            '*.*.*.*.*.*.*.-.#'
+          ]
+        )
+      end
+
+      it 'drop listen all key if necessary' do
+        allow(ENV).to receive(:[])
+          .with('RADAR_MQ_NODE_ID').and_return('123')
+        allow(ENV).to receive(:[])
+          .with('RADAR_MQ_LISTEN_ALL').and_return('false')
+        expect(key).to match_array(
+          [
+            '*.*.*.*.*.*.*.123.#'
+          ]
+        )
+      end
+    end
+    context 'explicit argument overrides all' do
+      subject(:key) do
+        described_class.routing_key(node_id: 666, listen_all: false)
+      end
+      it 'returns array based on params passed' do
+        allow(ENV).to receive(:[])
+          .with('RADAR_MQ_NODE_ID').and_return('777')
+        allow(ENV).to receive(:[])
+          .with('RADAR_MQ_LISTEN_ALL').and_return('true')
+        expect(key).to match_array(
+          [
+            '*.*.*.*.*.*.*.666.#'
+          ]
+        )
+      end
+    end
+  end
 end
