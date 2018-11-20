@@ -3,7 +3,8 @@ module OddsFeed
     module MarketGenerator
       class Service < ::ApplicationService
         def initialize(event_id, payload, timestamp)
-          @market_data = MarketData.new(Event.find(event_id), payload, timestamp)
+          @market_data =
+            MarketData.new(Event.find(event_id), payload, timestamp)
         end
 
         def call
@@ -13,6 +14,7 @@ module OddsFeed
 
         private
 
+        # rubocop:disable Metrics/MethodLength
         def create_or_update_market!
           external_id = @market_data.external_id
           msg = <<-MESSAGE
@@ -34,6 +36,7 @@ module OddsFeed
             update_market_attributes!
           end
         end
+        # rubocop:enable Metrics/MethodLength
 
         def market
           @market_data.market_model

@@ -6,6 +6,8 @@ module OddsFeed
           @market_data = market_data
         end
 
+        # rubocop:disable Metrics/MethodLength
+        # rubocop:disable Metrics/AbcSize
         def call
           return if @market_data.outcome.nil?
 
@@ -18,7 +20,8 @@ module OddsFeed
 
           event_id = @market_data.event.external_id
           current_time = Time.now.utc.to_i * 1000
-          process_time = ((current_time - @market_data.timestamp) / 1000.0).round(3)
+          process_time =
+            ((current_time - @market_data.timestamp) / 1000.0).round(3)
           processing_msg = <<-MESSAGE
             Market updated for event ID '#{event_id}' \
             market ID '#{@market_data.id}', \
@@ -31,6 +34,7 @@ module OddsFeed
           WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_CREATED,
                                           id: @market_data.event.id.to_s)
         end
+        # rubocop:enable Metrics/AbcSize
 
         private
 
@@ -54,6 +58,7 @@ module OddsFeed
             odd.save!
           end
         end
+        # rubocop:enable Metrics/MethodLength
 
         def prepare_odd(external_id, payload)
           odd = Odd.find_or_initialize_by(external_id: external_id,
