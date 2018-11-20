@@ -15,6 +15,9 @@ module OddsFeed
             Rails.logger.error e.message
             next
           end
+
+          WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_CREATED,
+                                          id: @market_data.event.id.to_s)
         end
 
         private
