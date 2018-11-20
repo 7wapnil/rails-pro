@@ -34,7 +34,7 @@ describe Market do
 
     [
       'Winner',
-      '1x2',
+      '1x2'
     ].each do |market_name|
       it "defines 1 priority for market name '#{market_name}'" do
         subject.name = market_name
