@@ -33,10 +33,8 @@ describe Market do
     end
 
     [
-      'Winner of the match',
-      'Market 1x2',
+      'Winner',
       '1x2',
-      '1x2 Market'
     ].each do |market_name|
       it "defines 1 priority for market name '#{market_name}'" do
         subject.name = market_name
