@@ -2,11 +2,12 @@ module OddsFeed
   module Radar
     module MarketGenerator
       class MarketData
-        attr_reader :event
+        attr_reader :event, :timestamp
 
-        def initialize(event, payload)
+        def initialize(event, payload, timestamp)
           @event = event
           @payload = payload
+          @timestamp = timestamp
           @interpreter = OddsFeed::Radar::Transpiling::Interpreter.new(event,
                                                                        tokens)
         end
