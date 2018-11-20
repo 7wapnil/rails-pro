@@ -6,7 +6,7 @@ module Radar
       listen_all = ENV['RADAR_MQ_LISTEN_ALL'] != 'false' if listen_all.nil?
       listen_all_key = '*.*.*.*.*.*.*.-.#'
 
-      node_id ||= ENV['RADAR_MQ_LISTEN_NODE_ID'] || Time.now.strftime('1%H%M%S%L')
+      node_id ||= ENV['RADAR_MQ_NODE_ID'] || Time.now.strftime('1%H%M%S%L')
       listen_node_key = "*.*.*.*.*.*.*.#{node_id}.#"
 
       [].tap do |routing_key|
