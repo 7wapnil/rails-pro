@@ -1,11 +1,25 @@
 module Radar
   class UnifiedOdds
     include Sneakers::Worker
+
+    def self.routing_key(node_id: nil, listen_all: nil)
+      listen_all = ENV['RADAR_MQ_LISTEN_ALL'] != 'false' if listen_all.nil?
+      listen_all_key = '*.*.*.*.*.*.*.-.#'
+
+      node_id ||= ENV['RADAR_MQ_NODE_ID'] || Time.now.strftime('1%H%M%S%L')
+      listen_node_key = "*.*.*.*.*.*.*.#{node_id}.#"
+
+      [].tap do |routing_key|
+        routing_key << listen_node_key
+        routing_key << listen_all_key if listen_all
+      end
+    end
+
     from_queue '',
                env: nil,
                exchange: ENV['RADAR_MQ_EXCHANGE'],
                exchange_options: { passive: true },
-               routing_key: '#',
+               routing_key: routing_key,
                durable: false,
                ack: false
 
