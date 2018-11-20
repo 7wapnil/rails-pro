@@ -47,7 +47,7 @@ module OddsFeed
             Updating event with ID #{external_id}, \
             product ID #{event_data['product']}, attributes #{updates}
         MESSAGE
-        Rails.logger.info msg.squish
+        Rails.logger.info msg
       end
 
       def markets_data

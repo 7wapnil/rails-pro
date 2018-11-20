@@ -7,8 +7,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
   let(:event) { create(:event, external_id: 'sr:match:1234') }
 
   subject do
-    OddsFeed::Radar::MarketGenerator::Service
-      .new(event.id, chosen_market, Time.now.utc.to_i * 1000)
+    OddsFeed::Radar::MarketGenerator::Service.new(event.id, chosen_market)
   end
 
   before do
