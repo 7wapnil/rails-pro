@@ -8,6 +8,10 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
     validated_internally
   ].freeze
 
+  default_scope do
+    left_outer_joins(:customer).where(customers: { account_kind: :regular })
+  end
+
   belongs_to :customer
   belongs_to :odd
   belongs_to :currency
@@ -102,7 +106,8 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
       timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10).to_i
       condition = 'bets.validation_ticket_sent_at <= :expired_at
                          AND events.traded_live = true'
-      sent_to_external_validation
+      unscoped
+        .sent_to_external_validation
         .joins(odd: { market: [:event] })
         .where(condition,
                expired_at: timeout.seconds.ago)
@@ -112,7 +117,8 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
       timeout = ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT_SECONDS', 3).to_i
       condition = 'bets.validation_ticket_sent_at <= :expired_at
                          AND events.traded_live = false'
-      sent_to_external_validation
+      unscoped
+        .sent_to_external_validation
         .joins(odd: { market: [:event] })
         .where(condition,
                expired_at: timeout.seconds.ago)

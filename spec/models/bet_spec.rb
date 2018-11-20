@@ -165,4 +165,34 @@ describe Bet do
       end
     end
   end
+
+  describe 'filter out non-regular customers bets' do
+    let(:regular_customer) { create(:customer, account_kind: :regular) }
+    let(:test_customer) { create(:customer, account_kind: :test) }
+    let(:event) { create(:event_with_odds) }
+
+    before do
+      event_odd = event.markets.first.odds.first
+      event_odd.bets << create(:bet, customer: regular_customer, amount: 15)
+      event_odd.bets << create(:bet, customer: regular_customer, amount: 20)
+      event_odd.bets << create(:bet, customer: test_customer)
+    end
+
+    it 'returns bets from regular customer' do
+      expect(Bet.all).to eq(regular_customer.bets)
+    end
+    it 'does not return bets from test customer' do
+      expect(Bet.all).to_not include(test_customer.bets)
+    end
+
+    it 'count of bets calculations' do
+      bets_count = Event.with_bets_count.find(event.id).bets_count
+
+      expect(bets_count).to eq(2)
+    end
+
+    it 'wager calculations' do
+      expect(Event.with_wager.find(event.id).wager).to eq(35)
+    end
+  end
 end
