@@ -163,8 +163,7 @@ module OddsFeed
       def generate_market!(market_data)
         ::OddsFeed::Radar::MarketGenerator::Service.call(
           event.id,
-          market_data,
-          event_data['timestamp'].to_i
+          market_data
         )
       end
     end
