@@ -90,7 +90,7 @@ class CustomersController < ApplicationController
   def update_customer_status
     @customer = find_customer
 
-    @customer.update(verified: customer_verification_status == 'true')
+    @customer.update_column(:verified, customer_verification_status == 'true')
     redirect_to documents_customer_path(@customer)
   end
 
