@@ -62,6 +62,7 @@ gem 'aasm'
 gem 'sendgrid-rails', '~> 3.0'
 gem 'phonelib'
 gem 'cryptocompare'
+gem 'recaptcha'
 
 # To be moved back to development and test group
 gem 'faker', github: 'stympy/faker', branch: 'master'

@@ -234,3 +234,7 @@ en:
       betting_limits: "Betting limits validation failed"
       deposit_limits: "Deposit limit reached, please try again later"
       provider_disconnected: "Provider is disconnected"
+
+  recaptcha:
+    errors:
+      verification_failed: 'Captcha verification has been failed.'
