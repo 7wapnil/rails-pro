@@ -3,9 +3,12 @@ module OddsFeed
     # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
       def handle
+        log_processing(moment: 'started')
         create_or_update_event!
         touch_event!
         generate_markets
+        log_processing(moment: 'finished')
+
         event
       end
 
@@ -47,7 +50,23 @@ module OddsFeed
             Updating event with ID #{external_id}, \
             product ID #{event_data['product']}, attributes #{updates}
         MESSAGE
-        Rails.logger.info msg.squish
+        Rails.logger.info msg
+      end
+
+      def log_processing(moment:)
+        timestamp_integer = event_data['timestamp'].to_i
+        current_time = Time.now.utc.to_i * 1000
+        process_time =
+          ((current_time - timestamp_integer) / 1000.0).round(3)
+        processing_msg = <<-MESSAGE
+          Odds change message for event ID '#{external_id}' \
+          processing #{moment}. \
+          message time: '#{timestamp_integer}',\
+          current time: '#{current_time}', \
+          execution: #{process_time} seconds
+        MESSAGE
+
+        Rails.logger.info processing_msg.squish
       end
 
       def markets_data
@@ -142,8 +161,10 @@ module OddsFeed
       end
 
       def generate_market!(market_data)
-        ::Radar::MarketGeneratorWorker
-          .perform_async(event.id, market_data, event_data['timestamp'].to_i)
+        ::OddsFeed::Radar::MarketGenerator::Service.call(
+          event.id,
+          market_data
+        )
       end
     end
     # rubocop:enable Metrics/ClassLength
