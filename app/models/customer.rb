@@ -124,9 +124,9 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength:
   end
 
   def check_account_transition_rule
-    return if !account_kind_changed? || account_kind_was.nil?
+    return unless account_kind_changed?
 
     msg = "can't transit customer account kind"
-    raise msg unless account_kind_was == 'regular'
+    raise msg if account_kind_was != 'regular'
   end
 end
