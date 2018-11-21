@@ -53,6 +53,22 @@ module OddsFeed
         Rails.logger.info msg
       end
 
+      def log_processing(moment:)
+        timestamp_integer = event_data['timestamp'].to_i
+        current_time = Time.now.utc.to_i * 1000
+        process_time =
+          ((current_time - timestamp_integer) / 1000.0).round(3)
+        processing_msg = <<-MESSAGE
+          Odds change message for event ID '#{external_id}' \
+          processing #{moment}. \
+          message time: '#{timestamp_integer}',\
+          current time: '#{current_time}', \
+          execution: #{process_time} seconds
+        MESSAGE
+
+        Rails.logger.info processing_msg.squish
+      end
+
       def markets_data
         odds_payload = event_data['odds']
 
@@ -151,22 +167,6 @@ module OddsFeed
           event_data['timestamp'].to_i
         )
       end
-    end
-
-    def log_processing(moment:)
-      timestamp_integer = event_data['timestamp'].to_i
-      current_time = Time.now.utc.to_i * 1000
-      process_time =
-        ((current_time - timestamp_integer) / 1000.0).round(3)
-      processing_msg = <<-MESSAGE
-        Odds change message for event ID '#{external_id}' \
-        processing #{moment}. \
-        message time: '#{timestamp_integer}',\
-        current time: '#{current_time}', \
-        execution: #{process_time} seconds
-      MESSAGE
-
-      Rails.logger.info processing_msg.squish
     end
     # rubocop:enable Metrics/ClassLength
   end
