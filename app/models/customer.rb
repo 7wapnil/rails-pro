@@ -1,6 +1,7 @@
-class Customer < ApplicationRecord
+class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength:
   include Person
 
+  after_validation :check_account_transition_rule
   has_secure_token :activation_token
   acts_as_paranoid
 
@@ -120,5 +121,12 @@ class Customer < ApplicationRecord
 
   def locked?
     locked || (locked_until && Time.zone.now < locked_until)
+  end
+
+  def check_account_transition_rule
+    return if !account_kind_changed? || account_kind_was.nil?
+
+    msg = "can't transit customer account kind"
+    raise msg unless account_kind_was == 'regular'
   end
 end
