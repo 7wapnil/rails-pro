@@ -127,6 +127,14 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
     end
   end
 
+  def potential_win
+    amount * odd_value
+  end
+
+  def potential_loss
+    amount
+  end
+
   def win_amount
     return nil unless settlement_status
     return 0 unless won?

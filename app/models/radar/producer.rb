@@ -19,10 +19,9 @@ module Radar
       end
 
       def find_by_id(id)
-        new(
-          RADAR_AVAILABLE_PRODUCERS
-            .detect { |producer| producer[:radar_id] == id }
-        )
+        producer = RADAR_AVAILABLE_PRODUCERS
+                   .detect { |el| el[:radar_id] == id.to_i }
+        new(producer) unless producer.nil?
       end
 
       def find_by_code(code)
@@ -63,6 +62,10 @@ module Radar
 
     def clear_failure_flag!
       ApplicationState.instance.disable_flag(failure_flag_key)
+    end
+
+    def live?
+      code == :live
     end
 
     def check_subscription_expiration

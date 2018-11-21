@@ -3,8 +3,34 @@ describe BetPlacement::SubmissionService do
     allow_any_instance_of(Mts::ValidationMessagePublisherWorker)
       .to receive(:perform)
   end
-
-  let(:bet) { create(:bet) }
+  let!(:currency) { create(:currency) }
+  let!(:bet_rule) do
+    create(
+      :entry_currency_rule,
+      currency: currency,
+      kind: EntryRequest.kinds[:bet],
+      max_amount: 0,
+      min_amount: -100
+    )
+  end
+  let!(:wallet) do
+    create(
+      :wallet,
+      :brick,
+      currency: currency
+    )
+  end
+  let!(:bet) do
+    create(
+      :bet,
+      customer: wallet.customer,
+      currency: currency,
+      amount: 100
+    )
+  end
+  let!(:balance) do
+    create(:balance, wallet: wallet, amount: bet.amount * 2)
+  end
 
   subject { described_class.new(bet) }
 
@@ -12,33 +38,74 @@ describe BetPlacement::SubmissionService do
 
   it_behaves_like 'callable service'
 
-  it 'creates an entry request from bet' do
-    expect(bet_request).to be_an EntryRequest
+  describe '.call' do
+    context 'with any wallet amount' do
+      it 'creates an entry request from bet' do
+        expect(bet_request).to be_an EntryRequest
 
-    expect(bet_request)
-      .to have_attributes(
-        amount: -bet.amount,
-        currency: bet.currency,
-        kind: 'bet',
-        mode: 'sports_ticket',
-        initiator: bet.customer,
-        customer: bet.customer,
-        origin: bet
-      )
-  end
+        expect(bet_request)
+          .to have_attributes(
+            amount: -bet.amount,
+            currency: bet.currency,
+            kind: 'bet',
+            mode: 'sports_ticket',
+            initiator: bet.customer,
+            customer: bet.customer,
+            origin: bet
+          )
+      end
 
-  it 'calls WalletEntry::Service with entry request' do
-    expect(WalletEntry::AuthorizationService)
-      .to receive(:call).with(bet_request)
-    subject.call
-  end
+      it 'calls WalletEntry::Service with entry request' do
+        expect(WalletEntry::AuthorizationService)
+          .to receive(:call).with(bet_request)
+        subject.call
+      end
+    end
 
-  it 'updates bet status and message from request on failure' do
-    bet.update_attributes(status: Bet.statuses[:initial], message: :foo)
+    context 'with valid betting limit' do
+      before do
+        create(
+          :betting_limit,
+          title: nil,
+          customer: bet.customer,
+          live_bet_delay: 10,
+          user_max_bet: bet.amount + 1,
+          max_loss: bet.amount + 1,
+          max_win: bet.amount * bet.odd_value + 1,
+          user_stake_factor: 1,
+          live_stake_factor: 1
+        )
+      end
 
-    subject.call
+      it 'updates bet status as valid' do
+        subject.call
 
-    expect(bet.status).to eq bet_request.status
-    expect(bet.message).to eq bet_request.result_message
+        expect(bet.status).to eq 'sent_to_external_validation'
+        expect(bet.message).to be_nil
+      end
+    end
+
+    context 'with invalid betting limit' do
+      before do
+        create(
+          :betting_limit,
+          title: nil,
+          customer: bet.customer,
+          live_bet_delay: 10,
+          user_max_bet: bet.amount - 1,
+          max_loss: bet.amount - 1,
+          max_win: bet.amount * bet.odd_value - 1,
+          user_stake_factor: 2,
+          live_stake_factor: 2
+        )
+      end
+
+      it 'updates bet status and message on failure' do
+        subject.call
+
+        expect(bet.status).to eq 'failed'
+        expect(bet.message).to be_a String
+      end
+    end
   end
 end

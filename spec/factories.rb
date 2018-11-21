@@ -13,7 +13,7 @@ FactoryBot.define do
 
   factory :currency do
     name { Faker::Currency.name }
-    code { Faker::Currency.code }
+    code { Currency.available_currency_codes.sample }
     primary { false }
 
     trait :primary do

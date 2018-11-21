@@ -8,6 +8,10 @@ class Currency < ApplicationRecord
   validates :name, :code, presence: true
   validates_associated :entry_currency_rules
 
+  def self.available_currency_codes
+    %w[EUR BTC USD INR ZAR]
+  end
+
   def self.build_default
     new(code: 'EUR', name: 'Euro', primary: true)
   end

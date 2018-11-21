@@ -186,6 +186,7 @@ en:
     lock: Lock
     lock_reason: Lock reason
     lock_until: Lock until
+    setted: Setted
 
   documents:
     history_title: "Files history: %{document_type}"
@@ -216,3 +217,5 @@ en:
           until: " until %{until_date}"
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
       age_adult: "Must be adult!"
+      betting_limits: "Betting limits validation failed"
+
