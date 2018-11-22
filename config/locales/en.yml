@@ -18,6 +18,7 @@ en:
   action: Action
   from: From
   to: To
+  days: "%{days} days"
 
   created: "%{instance} created"
   updated: "%{instance} updated"
@@ -47,6 +48,7 @@ en:
       bets: Bets
       documents: Documents
       betting_limits: Betting Limits
+      deposit_limit: Deposit Limit
 
   statuses:
     initial: Initial
@@ -204,6 +206,8 @@ en:
   messages:
     entry_request_created: Entry request successfully created
     customer_lock_status_changed: Customer lock status was changed
+    deposit_limits:
+      delete: "Are you sure you want to delete customer (%{customer_name}) deposit limit?"
 
   errors:
     messages:
@@ -218,4 +222,5 @@ en:
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
       age_adult: "Must be adult!"
       betting_limits: "Betting limits validation failed"
+      deposit_limits: "Deposit limit reached, please try again later"
 

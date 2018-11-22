@@ -45,6 +45,19 @@ class CustomersController < ApplicationController
                        .for_customer
   end
 
+  def deposit_limit
+    @customer = find_customer
+    @deposit_limit = DepositLimit
+                     .find_or_initialize_by(customer: @customer)
+    @customer_currencies =
+      Currency
+      .joins(:wallets)
+      .where(
+        'currencies.primary = true OR wallets.customer_id = ?',
+        @customer.id
+      )
+  end
+
   def bets
     @customer = find_customer
     query = prepare_interval_filter(query_params, :created_at)

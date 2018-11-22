@@ -14,3 +14,4 @@ en:
     document_status_updated: "%{customer_name} document '%{kind}' %{status} by %{user_name}"
     betting_limit_created: "Betting limit for customer (%{customer_name}) added by %{user_name}"
     betting_limit_updated: "Betting limit for customer (%{customer_name}) updated by %{user_name}"
+    deposit_limit_validation_failed: "Deposit limit validation failed for %{customer_name}"
