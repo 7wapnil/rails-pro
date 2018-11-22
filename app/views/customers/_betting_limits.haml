@@ -1,5 +1,5 @@
 = card class: 'mb-4', header: t(:global_customer_betting_limit) do
-  = render 'customers/limit_form', limit: @customer_limits.select { |el| el[:title].nil? }.first[:limit]
+  = render 'customers/betting_limit_form', limit: @customer_limits.select { |el| el[:title].nil? }.first[:limit]
 
 = card class: 'mb-4', header: t(:customer_betting_limits_by_sport) do
   .accordion(id='limitsBySportAccordion')
@@ -12,4 +12,4 @@
               %span.badge.badge-pill.badge-success= t('attributes.setted')
         .collapse{id: "collapseSport#{data[:title].id}", data: { parent: '#limitsBySportAccordion' } }
           .card-body
-            = render 'customers/limit_form', limit: data[:limit]
+            = render 'customers/betting_limit_form', limit: data[:limit]
