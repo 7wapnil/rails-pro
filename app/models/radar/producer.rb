@@ -57,11 +57,13 @@ module Radar
     end
 
     def raise_failure_flag!
-      ApplicationState.instance.enable_flag(failure_flag_key)
+      flag = live? ? :live_connected : :pre_live_connected
+      ApplicationState.instance.send("#{flag}=", false)
     end
 
     def clear_failure_flag!
-      ApplicationState.instance.disable_flag(failure_flag_key)
+      flag = live? ? :live_connected : :pre_live_connected
+      ApplicationState.instance.send("#{flag}=", true)
     end
 
     def live?

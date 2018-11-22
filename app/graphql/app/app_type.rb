@@ -4,6 +4,7 @@ module App
 
     field :status, !types.String
     field :statuses, !types[types.String]
-    field :flags, !types[types.String]
+    field :live_connected, !types.Boolean
+    field :pre_live_connected, !types.Boolean
   end
 end
