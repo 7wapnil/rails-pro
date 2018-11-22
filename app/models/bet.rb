@@ -8,10 +8,6 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
     validated_internally
   ].freeze
 
-  default_scope do
-    left_outer_joins(:customer).where(customers: { account_kind: :regular })
-  end
-
   belongs_to :customer
   belongs_to :odd
   belongs_to :currency
@@ -52,6 +48,10 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   scope :sort_by_winning_desc, -> { with_winnings.order('winning DESC') }
 
   class << self
+    def from_regular_customers
+      left_outer_joins(:customer).where(customers: { account_kind: :regular })
+    end
+
     def with_country
       sub_query = <<~SQL
         SELECT  event_scopes.name FROM event_scopes
@@ -106,8 +106,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
       timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10).to_i
       condition = 'bets.validation_ticket_sent_at <= :expired_at
                          AND events.traded_live = true'
-      unscoped
-        .sent_to_external_validation
+      sent_to_external_validation
         .joins(odd: { market: [:event] })
         .where(condition,
                expired_at: timeout.seconds.ago)
@@ -117,8 +116,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
       timeout = ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT_SECONDS', 3).to_i
       condition = 'bets.validation_ticket_sent_at <= :expired_at
                          AND events.traded_live = false'
-      unscoped
-        .sent_to_external_validation
+      sent_to_external_validation
         .joins(odd: { market: [:event] })
         .where(condition,
                expired_at: timeout.seconds.ago)

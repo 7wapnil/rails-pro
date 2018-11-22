@@ -61,7 +61,7 @@ describe Bet do
                   status: :sent_to_external_validation)
       expected_bets = Bet.expired_prematch
 
-      expect(expected_bets).to eq(expired_bets)
+      expect(expected_bets).to match_array(expired_bets)
     end
   end
 
@@ -81,7 +81,7 @@ describe Bet do
                   status: :sent_to_external_validation)
       expected_bets = Bet.expired_live
 
-      expect(expected_bets).to eq(expired_bets)
+      expect(expected_bets).to match_array(expired_bets)
     end
   end
 
@@ -179,10 +179,10 @@ describe Bet do
     end
 
     it 'returns bets from regular customer' do
-      expect(Bet.all).to eq(regular_customer.bets)
+      expect(Bet.from_regular_customers).to eq(regular_customer.bets)
     end
     it 'does not return bets from test customer' do
-      expect(Bet.all).to_not include(test_customer.bets)
+      expect(Bet.from_regular_customers).to_not include(test_customer.bets)
     end
 
     it 'count of bets calculations' do
