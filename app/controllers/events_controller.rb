@@ -16,7 +16,7 @@ class EventsController < ApplicationController
 
   def show
     @event =
-      Event.includes(:labels, :event_scopes, :title, markets: %i[labels odds])
+      Event.includes(:labels, :event_scopes, :title, markets: [:labels])
            .order('markets.priority ASC, markets.name ASC')
            .find(params.require(:id))
 
