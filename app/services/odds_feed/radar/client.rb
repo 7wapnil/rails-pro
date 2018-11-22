@@ -70,6 +70,7 @@ module OddsFeed
           variant_urn
         ].join('/')
 
+        Rails.logger.info "Loading market template on: #{route}"
         request(route)
       end
 
