@@ -218,4 +218,5 @@ en:
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
       age_adult: "Must be adult!"
       betting_limits: "Betting limits validation failed"
+      provider_disconnected: "Provider is disconnected"
 
