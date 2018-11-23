@@ -440,4 +440,9 @@
       <attribute name="is_flex_score" description="Outcomes should be adjusted according to score specifier"/>
     </attributes>
   </market>
+  <market id="40" name="Anytime goalscorer" groups="all">
+    <outcomes>
+      <outcome id="1716" name="no goal"/>
+    </outcomes>
+  </market>
 </market_descriptions>
