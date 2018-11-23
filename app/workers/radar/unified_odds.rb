@@ -51,7 +51,9 @@ module Radar
     }.freeze
 
     def work(msg)
-      match_result(scan_payload(msg)).perform_async(msg)
+      match_result(scan_payload(msg))
+        .perform_async(msg,
+                       ::Process.clock_gettime(::Process::CLOCK_MONOTONIC))
     end
 
     private
