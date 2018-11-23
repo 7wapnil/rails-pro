@@ -15,7 +15,7 @@ module Users
 
     # POST /resource/sign_in
     def create
-      return super if !@login_user&.brute_forced? || verify_recaptcha
+      return super if !@login_user&.suspected_login? || verify_recaptcha
 
       self.resource = resource_class.new(sign_in_params)
       flash[:alert] = flash[:recaptcha_error]
@@ -38,11 +38,9 @@ module Users
     private
 
     def find_login_user
-      @login_user = resource_class.find_by(identity_params)
-    end
-
-    def identity_params
-      sign_in_params.slice('email')
+      @login_user = resource_class.find_for_authentication(
+        email: sign_in_params[:email]
+      )
     end
 
     def after_sign_out_path_for(_resource_or_scope)

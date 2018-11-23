@@ -238,3 +238,8 @@ en:
   recaptcha:
     errors:
       verification_failed: 'Captcha verification has been failed.'
+
+  mailers:
+    arcanebet_mailer:
+      suspected_login:
+        subject: Suspected login attempts
