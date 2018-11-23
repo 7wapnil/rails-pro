@@ -26,6 +26,7 @@ Rails.application.routes.draw do
       get :notes
       get :betting_limits
       get :bets
+      get :impersonate
       post :update_promotional_subscription
       post :update_customer_status
       post :reset_password_to_default
