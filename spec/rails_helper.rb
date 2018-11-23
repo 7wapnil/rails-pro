@@ -70,6 +70,9 @@ RSpec.configure do |config|
 
     # Stub web socket client
     allow(WebSocket::Client.instance).to receive(:emit)
+
+    # Drop stored application state
+    Rails.cache.delete(ApplicationState::STATE_STORAGE_KEY)
   end
 end
 

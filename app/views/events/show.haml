@@ -76,11 +76,10 @@
             %tr
               %td
                 = market.name
-                - unless market.odds.empty?
-                  %ul
-                    - market.odds.each do |odd|
-                      %li= odd.name
                 %br
+                - if market.specifier
+                  = market.specifier
+                  %br
                 - market.labels.each do |label|
                   %span.badge.badge-info= label.name
 

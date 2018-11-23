@@ -167,7 +167,7 @@ FactoryBot.define do
     max_deposit_match { 1000.00 }
     min_odds_per_bet { 1.6 }
     min_deposit { 10.00 }
-    expires_at { Date.today.end_of_month }
+    expires_at { Time.zone.now.end_of_month }
     valid_for_days { 60 }
   end
 
@@ -208,8 +208,8 @@ FactoryBot.define do
     gender { Customer.genders.keys.sample }
     phone { "+37258389#{rand(100..999)}" }
     sign_in_count { [*1..200].sample }
-    current_sign_in_at { Faker::Time.between(1.week.ago, Date.today).in_time_zone } # rubocop:disable Metrics/LineLength
-    last_sign_in_at { Faker::Time.between(Date.yesterday, Date.today).in_time_zone } # rubocop:disable Metrics/LineLength
+    current_sign_in_at { Faker::Time.between(1.week.ago, Time.zone.now).in_time_zone } # rubocop:disable Metrics/LineLength
+    last_sign_in_at { Faker::Time.between(Date.yesterday, Time.zone.now).in_time_zone } # rubocop:disable Metrics/LineLength
     current_sign_in_ip { Faker::Internet.ip_v4_address }
     last_sign_in_ip { Faker::Internet.ip_v4_address }
     password { 'iamverysecure' }

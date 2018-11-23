@@ -300,5 +300,24 @@ describe 'GraphQL#events' do
           .to eq(2)
       end
     end
+
+    context 'live' do
+      let(:query) do
+        %({ events {
+              id
+              live
+        } })
+      end
+
+      it 'returns events with live flag true' do
+        create(:event_with_odds, traded_live: true)
+        expect(result['data']['events'][0]['live']).to be_truthy
+      end
+
+      it 'returns events with live flag false' do
+        create(:event_with_odds, traded_live: false)
+        expect(result['data']['events'][0]['live']).to be_falsy
+      end
+    end
   end
 end

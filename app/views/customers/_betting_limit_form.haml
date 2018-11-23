@@ -1,0 +1,13 @@
+= simple_form_for limit do |f|
+  = f.input :customer_id, as: :hidden
+  = f.input :title_id, as: :hidden
+  .row
+    .col-6= f.input :live_bet_delay, as: :integer, input_html: { min: 0 }, required: false
+    .col-6= f.input :user_max_bet, as: :integer, input_html: { min: 0 }, required: false
+  .row
+    .col-6= f.input :max_loss, as: :integer, input_html: { min: 0 }, required: false
+    .col-6= f.input :max_win, as: :integer, input_html: { min: 0 }, required: false
+  .row
+    .col-6= f.input :user_stake_factor, as: :decimal, input_html: { min: 0 }, required: false
+    .col-6= f.input :live_stake_factor, as: :decimal, input_html: { min: 0 }, required: false
+  = f.submit t(:save), class: 'btn btn-outline-dark'
