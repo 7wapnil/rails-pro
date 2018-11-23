@@ -40,6 +40,7 @@ module Radar
       Rails.logger.send(
         level,
         jid: jid,
+        worker: self.class.name,
         message: message,
         job_performing_time: performing_time.round(3),
         job_execution_time: execution_time.round(3),
