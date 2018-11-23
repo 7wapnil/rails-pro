@@ -1,6 +1,6 @@
 module Radar
   class BaseUofWorker < ApplicationWorker
-    sidekiq_options queue: :odds_feed, retry: 3
+    sidekiq_options retry: 3
 
     def perform(payload)
       worker_class.new(XmlParser.parse(payload)).handle
