@@ -9,9 +9,7 @@ module BetPlacement
 
     def call
       @bet.send_to_internal_validation!
-      return @bet unless limits_validation_succeeded?
-
-      return @bet unless entry_request_succeeded?
+      return @bet unless valid?
 
       @bet.finish_internal_validation_successfully! do
         @bet.send_to_external_validation!
@@ -21,6 +19,16 @@ module BetPlacement
 
     private
 
+    def valid?
+      return false unless limits_validation_succeeded?
+
+      return false unless provider_connected?
+
+      return false unless entry_request_succeeded?
+
+      true
+    end
+
     def limits_validation_succeeded?
       BetPlacement::BettingLimitsValidationService.call(@bet)
       unless @bet.errors.empty?
@@ -28,6 +36,16 @@ module BetPlacement
         return false
       end
       true
+    end
+
+    def provider_connected?
+      app_state = ApplicationState.instance
+      connected = app_state.live_connected
+      connected = app_state.pre_live_connected if @bet.event.traded_live
+      return true if connected
+
+      @bet.register_failure!(I18n.t('errors.messages.provider_disconnected'))
+      false
     end
 
     def entry_request_succeeded?

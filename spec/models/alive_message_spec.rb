@@ -76,8 +76,7 @@ describe Radar::AliveMessage do
       end
 
       it 'removes failure flag' do
-        expect(ApplicationState.instance.flags)
-          .to_not include(message.producer.failure_flag_key)
+        expect(ApplicationState.instance.live_connected).to be_truthy
       end
     end
 
@@ -97,8 +96,7 @@ describe Radar::AliveMessage do
       end
 
       it 'raises failure flag' do
-        expect(ApplicationState.instance.flags)
-          .to include(message.producer.failure_flag_key)
+        expect(ApplicationState.instance.live_connected).to be_falsy
       end
     end
   end

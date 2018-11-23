@@ -9,10 +9,11 @@ module App
     end
 
     def resolve(_obj, _args)
-      app_state = ::ApplicationState
-      OpenStruct.new(status: app_state.instance.status,
-                     statuses: app_state::STATUSES.keys,
-                     flags: app_state.instance.flags)
+      app_state = ::ApplicationState.instance
+      OpenStruct.new(status: app_state.status,
+                     statuses: ::ApplicationState::STATUSES.keys,
+                     live_connected: app_state.live_connected,
+                     pre_live_connected: app_state.pre_live_connected)
     end
   end
 end
