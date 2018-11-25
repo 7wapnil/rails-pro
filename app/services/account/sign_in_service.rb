@@ -43,10 +43,15 @@ module Account
       response
     end
 
-    def account_locked_response
-      customer.log_event(:locked_customer_sign_in_attempt)
+    private
 
-      GraphQL::ExecutionError.new(account_locked_message)
+    attr_reader :customer, :password, :captcha
+
+    # Need to mock `request` to make `verify_recaptcha` works
+    def request; end
+
+    def captcha_verified?
+      verify_recaptcha(response: captcha.to_s, skip_remote_ip: true)
     end
 
     def account_locked_message
@@ -67,6 +72,12 @@ module Account
       )
     end
 
+    def account_locked_response
+      customer.log_event(:locked_customer_sign_in_attempt)
+
+      GraphQL::ExecutionError.new(account_locked_message)
+    end
+
     def response
       OpenStruct.new(user: customer, token: token)
     end
@@ -77,17 +88,6 @@ module Account
         username: customer.username,
         email:    customer.email
       )
-    end
-
-    private
-
-    attr_reader :customer, :password, :captcha
-
-    # Need to mock `request` to make `verify_recaptcha` works
-    def request; end
-
-    def captcha_verified?
-      verify_recaptcha(response: captcha.to_s, skip_remote_ip: true)
     end
   end
 end
