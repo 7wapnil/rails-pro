@@ -9,7 +9,6 @@ module Users
     prepend_before_action :verify_captcha,  only: %i[create]
     prepend_before_action :find_login_user, only: %i[new create]
 
-
     # GET /resource/sign_in
     # def new
     #   super
