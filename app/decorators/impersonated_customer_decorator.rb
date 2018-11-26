@@ -1,8 +1,5 @@
-class ImpersonatedCustomerDecorator < ApplicationDecorator
-  decorates :customer
-  delegate_all
-
-  attr_accessor :impersonated_by
+class ImpersonatedCustomerDecorator < SimpleDelegator
+  attr_reader :impersonated_by
 
   def initialize(model, impersonated_by)
     @impersonated_by = impersonated_by
@@ -10,7 +7,7 @@ class ImpersonatedCustomerDecorator < ApplicationDecorator
   end
 
   def log_event(event, context = {})
-    Audit::Service.call(event: "impersonated.#{event}",
+    Audit::Service.call(event: event,
                         user: impersonated_by,
                         customer: model,
                         context: context)
