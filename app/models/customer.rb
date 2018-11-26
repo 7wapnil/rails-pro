@@ -1,4 +1,4 @@
-class Customer < ApplicationRecord
+class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Person
 
   has_secure_token :activation_token
@@ -114,5 +114,18 @@ class Customer < ApplicationRecord
 
   def locked?
     locked || (locked_until && Time.zone.now < locked_until)
+  end
+
+  def deposit_limit
+    DepositLimit.find_or_initialize_by(customer: self)
+  end
+
+  def used_currencies
+    Currency
+      .joins(:wallets)
+      .where(
+        'currencies.primary = true OR wallets.customer_id = ?',
+        id
+      )
   end
 end

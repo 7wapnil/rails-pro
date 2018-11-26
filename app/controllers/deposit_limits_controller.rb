@@ -14,7 +14,7 @@ class DepositLimitsController < ApplicationController
 
   def destroy
     @deposit_limit = DepositLimit.find(params[:id])
-    @deposit_limit.destroy
+    @deposit_limit.destroy!
     current_user.log_event :deposit_limit_deleted
 
     redirect_to gambling_limits_customer_path(@deposit_limit.customer)

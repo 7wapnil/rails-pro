@@ -6,18 +6,17 @@ module DepositLimitsValidation
 
     def call
       @customer = @entry_request.customer
-      @deposit_limit = DepositLimit
-                       .find_by(customer: @customer)
+      @deposit_limit = @customer.deposit_limit
       return unless @deposit_limit
 
       @limit_currency = @deposit_limit.currency
       @money_converter = MoneyConverter::Service.new
-      sum_amounts!
+      apply_deposit_limit!
     end
 
     private
 
-    def sum_amounts!
+    def apply_deposit_limit!
       sum = initial_value
       entries.each do |entry|
         sum += @money_converter.convert(

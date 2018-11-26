@@ -47,15 +47,6 @@ class CustomersController < ApplicationController
 
   def deposit_limit
     @customer = find_customer
-    @deposit_limit = DepositLimit
-                     .find_or_initialize_by(customer: @customer)
-    @customer_currencies =
-      Currency
-      .joins(:wallets)
-      .where(
-        'currencies.primary = true OR wallets.customer_id = ?',
-        @customer.id
-      )
   end
 
   def bets
