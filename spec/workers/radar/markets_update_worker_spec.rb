@@ -17,7 +17,7 @@ describe Radar::MarketsUpdateWorker do
 
   it 'inserts new template in db if not exists' do
     subject.perform
-    expect(MarketTemplate.count).to eq(5)
+    expect(MarketTemplate.count).to eq(6)
   end
 
   it 'updates template in db if exists' do
@@ -53,6 +53,24 @@ describe Radar::MarketsUpdateWorker do
   it 'skips creation on invalid data without breaking execution' do
     response['market_descriptions']['market'][0]['name'] = ''
     subject.perform
-    expect(MarketTemplate.count).to eq(4)
+    expect(MarketTemplate.count).to eq(5)
+  end
+
+  it 'saves markets with single outcome as array' do
+    template_id = '40'
+    expected_payload = {
+      outcomes: {
+        outcome: [
+          { 'id': '1716', 'name': 'no goal' }
+        ]
+      },
+      specifiers: nil,
+      attributes: nil
+    }.deep_stringify_keys!
+
+    subject.perform
+
+    expect(MarketTemplate.find_by(external_id: template_id).payload)
+      .to eq(expected_payload)
   end
 end
