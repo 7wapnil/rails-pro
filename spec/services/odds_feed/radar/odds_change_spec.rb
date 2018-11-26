@@ -12,7 +12,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
   subject { OddsFeed::Radar::OddsChangeHandler.new(payload) }
 
   before do
-    allow(subject).to receive(:generate_market!)
+    allow(subject).to receive(:call_markets_generator).and_return(timestamp)
     allow(subject).to receive(:timestamp).and_return(timestamp)
     allow(subject).to receive(:api_event).and_return(event)
   end
@@ -108,33 +108,8 @@ describe OddsFeed::Radar::OddsChangeHandler do
     subject.handle
   end
 
-  it 'calls market generator for every market data row' do
-    subject.handle
-    expect(subject)
-      .to have_received(:generate_market!)
-      .exactly(5)
-      .times
-  end
-
-  it 'skips single market generation on error' do
-    allow(subject).to receive(:generate_market!).and_raise(StandardError)
-    subject.handle
-    expect(subject)
-      .to have_received(:generate_market!)
-      .exactly(5)
-      .times
-  end
-
   describe '#market data' do
     subject { OddsFeed::Radar::OddsChangeHandler.new(payload_single_market) }
-
-    it 'calls market generator for single market' do
-      subject.handle
-      expect(subject)
-        .to have_received(:generate_market!)
-        .with(payload_single_market['odds_change']['odds']['market'])
-        .once
-    end
 
     context 'event_data odds empty' do
       let(:payload) do
@@ -145,7 +120,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
       subject { OddsFeed::Radar::OddsChangeHandler.new(payload) }
 
       it 'does not generate markets' do
-        expect(subject).to_not have_received(:generate_market!)
+        expect(subject).to_not have_received(:call_markets_generator)
       end
     end
 
@@ -164,8 +139,8 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
       before { subject.handle }
 
-      it 'calls generate markets once' do
-        expect(subject).to have_received(:generate_market!).once
+      it 'calls generate markets' do
+        expect(subject).to have_received(:call_markets_generator)
       end
     end
 
@@ -192,8 +167,8 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
       before { subject.handle }
 
-      it 'calls generate markets once' do
-        expect(subject).to have_received(:generate_market!).twice
+      it 'calls generate markets' do
+        expect(subject).to have_received(:call_markets_generator)
       end
     end
 
@@ -208,7 +183,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
       before { subject.handle }
 
       it 'does not generate markets' do
-        expect(subject).not_to have_received(:generate_market!)
+        expect(subject).not_to have_received(:call_markets_generator)
       end
     end
   end
