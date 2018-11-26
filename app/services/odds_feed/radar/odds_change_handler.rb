@@ -2,13 +2,12 @@ module OddsFeed
   module Radar
     # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
+
       def handle
-        log_processing(moment: 'started')
         create_or_update_event!
         touch_event!
         generate_markets
         log_processing(moment: 'finished')
-
         event
       end
 
@@ -70,13 +69,12 @@ module OddsFeed
       end
 
       def generate_markets
-        markets_data.each do |market_data|
-          generate_market!(market_data)
-        rescue StandardError => e
-          Rails.logger.error e.message
-          Rails.logger.debug({ error: e, payload: @payload }.to_json)
-          next
-        end
+        return if markets_data.empty?
+        call_markets_generator
+      end
+
+      def call_markets_generator
+        ::OddsFeed::Radar::MarketGenerator::Service.call(event.id, markets_data)
       end
 
       def markets_data
@@ -166,13 +164,6 @@ module OddsFeed
 
         msg = "Message came at #{timestamp}, but last update was #{last_update}"
         Rails.logger.warn msg
-      end
-
-      def generate_market!(market_data)
-        ::OddsFeed::Radar::MarketGenerator::Service.call(
-          event.id,
-          market_data
-        )
       end
     end
     # rubocop:enable Metrics/ClassLength

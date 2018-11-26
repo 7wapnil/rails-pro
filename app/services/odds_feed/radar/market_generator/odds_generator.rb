@@ -4,26 +4,32 @@ module OddsFeed
       class OddsGenerator < ::ApplicationService
         def initialize(market_data)
           @market_data = market_data
+          @odds = []
         end
 
         def call
           return if @market_data.outcome.blank?
 
-          @market_data.outcome.each do |odd_data|
-            generate_odd!(odd_data)
-          rescue StandardError => e
-            Rails.logger.error e.message
-
-            next
-          end
-
-          WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_CREATED,
-                                          id: @market_data.event.id.to_s)
+          generate_odds
         end
 
         private
 
-        def generate_odd!(odd_data)
+        def build_odds
+          @market_data.outcome.each do |odd_data|
+            @odds << build_odd(odd_data)
+          end
+        end
+
+        def generate_odds
+          build_odds
+          Odd.import([:name, :status, :value, :market_id, :external_id],
+                     @odds,
+                     on_duplicate_key_update: { conflict_target: [:external_id],
+                                                columns: [:status, :value] })
+        end
+
+        def build_odd(odd_data)
           return odd_data_is_not_payload(odd_data) unless odd_data.is_a?(Hash)
 
           odd_id = "#{@market_data.external_id}:#{odd_data['id']}"
@@ -32,14 +38,7 @@ module OddsFeed
           odd = prepare_odd(odd_id, odd_data)
           Rails.logger.debug "Updating odd ID #{odd_id}, #{odd_data}"
 
-          begin
-            odd.save!
-          rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-            Rails.logger.warn ["Odd ID #{odd_id} creating failed", e]
-
-            odd = prepare_odd(odd_id, odd_data)
-            odd.save!
-          end
+          odd
         end
 
         def odd_data_is_not_payload(odd_data)
@@ -49,13 +48,11 @@ module OddsFeed
         end
 
         def prepare_odd(external_id, payload)
-          odd = Odd.find_or_initialize_by(external_id: external_id,
-                                          market: @market_data.market_model)
-
-          odd.assign_attributes(name: @market_data.odd_name(payload['id']),
-                                status: payload['active'].to_i,
-                                value: payload['odds'])
-          odd
+          Odd.new(external_id: external_id,
+                  market: @market_data.market_model,
+                  name: @market_data.odd_name(payload['id']),
+                  status: payload['active'].to_i,
+                  value: payload['odds'])
         end
       end
     end

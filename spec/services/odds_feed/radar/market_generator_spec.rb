@@ -1,13 +1,12 @@
 describe OddsFeed::Radar::MarketGenerator::Service do
-  let(:market_payload) do
+  let(:markets_payload) do
     data = XmlParser.parse(file_fixture('odds_change_message.xml').read)
     data['odds_change']['odds']['market']
   end
-  let(:chosen_market) { nil }
   let(:event) { create(:event, external_id: 'sr:match:1234') }
 
   subject do
-    OddsFeed::Radar::MarketGenerator::Service.new(event.id, chosen_market)
+    OddsFeed::Radar::MarketGenerator::Service.new(event.id, markets_payload)
   end
 
   before do
@@ -26,39 +25,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
   end
 
   context 'market with outcomes' do
-    let(:chosen_market) { market_payload[3] }
     let(:external_id) { 'sr:match:1234:123/set=2|game=3|point=1' }
-
-    describe '#create_or_update_market!' do
-      context 'initialized market already exists' do
-        it 'updates existing market' do
-          market_payload = {
-            external_id: external_id,
-            event: event,
-            status: :active
-          }
-
-          initialized_market = build(:market, market_payload)
-          existing_market = create(:market, market_payload)
-
-          allow(subject)
-            .to receive(:market)
-            .and_return(initialized_market, existing_market)
-
-          expect(existing_market).to receive(:assign_attributes).once
-
-          expect(existing_market)
-            .to receive(:save!)
-            .and_raise(ActiveRecord::RecordInvalid)
-
-          expect(existing_market)
-            .to receive(:save!)
-            .and_return(true)
-
-          subject.send(:create_or_update_market!)
-        end
-      end
-    end
 
     it 'generates new market if not exists in db' do
       subject.call
