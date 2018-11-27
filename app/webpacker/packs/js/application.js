@@ -9,9 +9,11 @@ Turbolinks.start()
 
 document.addEventListener('turbolinks:load', () => {
   const controllerName = $('body').data('controller')
-
+  const currentPath = window.location.pathname + window.location.search
   $('.nav-link').removeClass('active')
   $(`.nav-link[data-target-controller='${controllerName}']`).addClass('active')
+
+  $(`.nav-tabs a.nav-link[href='${currentPath}']`).addClass('active')
   $('[data-button-back]').click(() => {
     window.history.back()
   })
