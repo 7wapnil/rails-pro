@@ -13,6 +13,12 @@ module OddsFeed
           Rails.logger.info 'Title was not found, creating new'
 
           create_title!
+        rescue ActiveRecord::RecordInvalid
+          Rails.logger.info 'Title cannot be set, exiting'
+        rescue ActiveRecord::RecordNotUnique
+          Rails.logger.info 'Title is not unique, try to reload AR relation'
+
+          reload_and_find_title!
         end
 
         private
@@ -20,9 +26,15 @@ module OddsFeed
         attr_reader :id, :name
 
         def found_title
-          @found_title ||= Title.find_by(
-            'external_id = ? OR name = ?', id, name
-          )
+          @found_title ||= Title.find_by(search_params)
+        end
+
+        def reload_and_find_title!
+          Title.all.reload.find_by!(search_params)
+        end
+
+        def search_params
+          ['external_id = ? OR name = ?', id, name]
         end
 
         def create_title!

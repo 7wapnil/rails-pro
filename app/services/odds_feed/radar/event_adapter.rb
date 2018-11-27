@@ -61,8 +61,6 @@ module OddsFeed
       def attach_title!
         Rails.logger.debug "Title data received: #{title_fixture}"
         @event.title = EventAdapter::TitleSelector.call(payload: title_fixture)
-      rescue ActiveRecord::RecordInvalid
-        Rails.logger.info 'Title cannot be set, exiting'
       end
 
       def find_or_create_scopes!
