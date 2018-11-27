@@ -14,3 +14,5 @@ en:
     document_status_updated: "%{customer_name} document '%{kind}' %{status} by %{user_name}"
     betting_limit_created: "Betting limit for customer (%{customer_name}) added by %{user_name}"
     betting_limit_updated: "Betting limit for customer (%{customer_name}) updated by %{user_name}"
+    customer_personal_information_updated: "Personal information updated by %{user_name} for %{customer_name}"
+    customer_contact_information_updated: "Contact information updated by %{user_name} for %{customer_name}"

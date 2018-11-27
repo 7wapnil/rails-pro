@@ -1,23 +1,55 @@
 = card header: t(:contact_information), class: 'contact-information' do
-  %table.table
-    %tr
-      %td= t(:email)
-      %td= @customer.email
-    %tr
-      %td= t(:phone_number)
-      %td= @customer.phone
-    %tr
-      %td= t('attributes.country')
-      %td= @customer.address_country
-    %tr
-      %td= t('attributes.street_address')
-      %td= @customer.address_street_address
-    %tr
-      %td= t('attributes.zip_code')
-      %td= @customer.address_zip_code
-    %tr
-      %td= t('attributes.city')
-      %td= @customer.address_city
-    %tr
-      %td= t('attributes.state')
-      %td= @customer.address_state
+  = simple_form_for @customer, url: update_contact_information_customer_path do |f|
+    %table.table
+      %tr
+        %td= t(:email)
+        %td
+          = f.input :email,
+                    label: false,
+                    required: true
+      %tr
+        %td= t(:phone_number)
+        %td
+          = f.input :phone,
+                    as: :phone,
+                    label: false,
+                    required: true
+      %tr
+        %td= t('attributes.country')
+        %td
+          = f.input :address_country,
+                    as: :country_collection,
+                    label: false,
+                    input_html: { data: { current: @customer.address_country }},
+                    required: true
+      %tr
+        %td= t('attributes.street_address')
+        %td
+          = f.input :address_street_address,
+                    label: false,
+                    required: true
+      %tr
+        %td= t('attributes.zip_code')
+        %td
+          = f.input :address_zip_code,
+                    label: false,
+                    required: true
+      %tr
+        %td= t('attributes.city')
+        %td
+          = f.input :address_city,
+                    label: false,
+                    required: true
+      %tr
+        %td= t('attributes.state')
+        %td
+          = f.input :address_state,
+                    label: false,
+                    required: true
+      %tr
+        %td.text-right(colspan="2")
+          = f.submit t(:save), class: 'btn btn-outline-dark'
+
+- content_for :js do
+  = javascript_pack_tag 'input_mask', 'data-turbolinks-track': 'reload'
+  = javascript_pack_tag 'countries', 'data-turbolinks-track': 'reload'
