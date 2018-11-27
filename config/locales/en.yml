@@ -16,6 +16,8 @@ en:
   no_file: No File
   history: History
   action: Action
+  actions: Actions
+  details: Details
   from: From
   to: To
 
@@ -112,7 +114,10 @@ en:
     markets:
       one: Market
       other: Markets
-
+    document: Document
+    documents: Documents
+    comments: Comments
+    comment: Comment
   attributes:
     username: Username
     email: Email
@@ -189,7 +194,8 @@ en:
     lock: Lock
     lock_reason: Lock reason
     lock_until: Lock until
-    setted: Setted
+    setted: Setted,
+    text: Text
 
   documents:
     history_title: "Files history: %{document_type}"
