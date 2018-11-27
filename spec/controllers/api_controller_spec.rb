@@ -1,4 +1,4 @@
-RSpec.describe ApiController, type: :controller do
+describe ApiController, type: :controller do
   context '#current_customer' do
     let(:user) { create(:user) }
     let(:customer) { create(:customer) }
