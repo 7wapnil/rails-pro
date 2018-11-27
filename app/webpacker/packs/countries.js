@@ -21,7 +21,7 @@ document.addEventListener('turbolinks:load', () => {
       .values(countries)
       .map(country => createCountryOption(country)))
     .val(countrySelect.data('current'));
-  countrySelect.change(function () {
+  countrySelect.change(() => {
     if (phoneInput) {
       phoneInput.val('');
       Object

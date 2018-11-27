@@ -104,6 +104,9 @@ class CustomersController < ApplicationController
     ].flat_map(&:to_a)
     new_password = (0...16).map { o[rand(o.length)] }.join
     @customer.update(password: new_password)
+    current_user.log_event :password_reset_to_default,
+                           nil,
+                           @customer
     render json: { password: new_password }
   end
 
@@ -142,6 +145,9 @@ class CustomersController < ApplicationController
       lock_reason: params[:lock_reason] != '' ? params[:lock_reason] : nil,
       locked_until: params[:locked_until]
     )
+    current_user.log_event :customer_lock_status_updated,
+                           nil,
+                           @customer
     render json: {
       message: I18n.t('messages.customer_lock_status_changed')
     }
