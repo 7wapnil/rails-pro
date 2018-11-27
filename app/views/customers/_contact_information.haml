@@ -11,16 +11,16 @@
         %td= t(:phone_number)
         %td
           = f.input :phone,
+                    as: :phone,
                     label: false,
-                    input_html: { class: 'phone-input', data: { inputmask: '\'mask\': \'+999999999999\'' } },
                     required: true
       %tr
         %td= t('attributes.country')
         %td
           = f.input :address_country,
-                    as: :select,
+                    as: :country_collection,
                     label: false,
-                    input_html: { class: 'country-select', data: { current: @customer.address_country }},
+                    input_html: { data: { current: @customer.address_country }},
                     required: true
       %tr
         %td= t('attributes.street_address')

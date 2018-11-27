@@ -112,7 +112,6 @@ class CustomersController < ApplicationController
 
   def update_personal_information
     @customer = find_customer
-    puts params[:customer][:date_of_birth]
     @customer.update_columns(
       first_name: params[:customer][:first_name],
       last_name: params[:customer][:last_name],
