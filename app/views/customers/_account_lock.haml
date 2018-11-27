@@ -30,4 +30,4 @@
                     as: :date_picker,
                     label: false,
                     class: 'form-control form_date',
-                    value: @customer.locked_until ? l(@customer.locked_until) : nil
+                    input_html: { value: @customer.locked_until ? l(@customer.locked_until) : nil }
