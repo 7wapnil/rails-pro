@@ -80,8 +80,7 @@ class CustomersController < ApplicationController
 
   def update_promotional_subscription
     @customer = find_customer
-    agreed = customer_params[:agreed_with_promotional]
-    @customer.update_column(:agreed_with_promotional, agreed)
+    @customer.update!(promotional_subscription_params)
     message = I18n.t('attribute_updated', attribute: 'Promotional agreement')
 
     render json: { message: message }
@@ -89,8 +88,7 @@ class CustomersController < ApplicationController
 
   def update_customer_status
     @customer = find_customer
-
-    @customer.update_column(:verified, customer_verification_status == 'true')
+    @customer.update!(status_params)
     redirect_to documents_customer_path(@customer)
   end
 
@@ -103,7 +101,7 @@ class CustomersController < ApplicationController
       %w[! @ # $ % ? : { }]
     ].flat_map(&:to_a)
     new_password = (0...16).map { o[rand(o.length)] }.join
-    @customer.update(password: new_password)
+    @customer.update!(password: new_password)
     current_user.log_event :password_reset_to_default,
                            nil,
                            @customer
@@ -112,12 +110,7 @@ class CustomersController < ApplicationController
 
   def update_personal_information
     @customer = find_customer
-    @customer.update_columns(
-      first_name: params[:customer][:first_name],
-      last_name: params[:customer][:last_name],
-      gender: params[:customer][:gender],
-      date_of_birth: params[:customer][:date_of_birth]
-    )
+    @customer.update!(personal_information_params)
     current_user.log_event :customer_personal_information_updated,
                            nil,
                            @customer
@@ -126,11 +119,7 @@ class CustomersController < ApplicationController
 
   def update_contact_information
     @customer = find_customer
-    @customer.update_columns(
-      email: params[:customer][:email],
-      phone: params[:customer][:phone]
-    )
-    update_customer_address!
+    @customer.update!(contact_information_params)
     current_user.log_event :customer_contact_information_updated,
                            nil,
                            @customer
@@ -139,11 +128,7 @@ class CustomersController < ApplicationController
 
   def update_lock
     @customer = find_customer
-    @customer.update_columns(
-      locked: params[:locked] == 'true',
-      lock_reason: params[:lock_reason] != '' ? params[:lock_reason] : nil,
-      locked_until: params[:locked_until]
-    )
+    @customer.update!(lock_params)
     current_user.log_event :customer_lock_status_updated,
                            nil,
                            @customer
@@ -154,8 +139,37 @@ class CustomersController < ApplicationController
 
   private
 
-  def customer_params
+  def promotional_subscription_params
     params.require(:customer).permit(:agreed_with_promotional)
+  end
+
+  def status_params
+    params.require(:customer).permit(:verified)
+  end
+
+  def personal_information_params
+    params
+      .require(:customer)
+      .permit(
+        :first_name,
+        :last_name,
+        :gender,
+        :date_of_birth
+      )
+  end
+
+  def contact_information_params
+    params
+      .require(:customer)
+      .permit(
+        :email,
+        :phone,
+        address_attributes: %i[country street_address zip_code city state]
+      )
+  end
+
+  def lock_params
+    params.require(:customer).permit(:locked, :lock_reason, :locked_until)
   end
 
   def find_customer
@@ -173,16 +187,6 @@ class CustomersController < ApplicationController
 
   def customer_verification_status
     params.require(:verified)
-  end
-
-  def update_customer_address!
-    @customer.address.update_columns(
-      country: params[:customer][:address_country],
-      street_address: params[:customer][:address_street_address],
-      zip_code: params[:customer][:address_zip_code],
-      city: params[:customer][:address_city],
-      state: params[:customer][:address_state]
-    )
   end
 end
 # rubocop:enable Metrics/ClassLength
