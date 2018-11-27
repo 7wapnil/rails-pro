@@ -1,7 +1,9 @@
 module Radar
   class MarketsUpdateWorker < ApplicationWorker
-    sidekiq_options unique_across_queues: true,
-                    queue: 'market_templates_update'
+    include ::QueueName
+
+    sidekiq_options queue: queue_name,
+                    unique_across_queues: true
 
     def perform
       Rails.logger.debug 'Updating BetRadar market templates'
