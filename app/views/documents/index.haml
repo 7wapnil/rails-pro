@@ -1,5 +1,14 @@
 %h1.display-4= t('navigation.documents')
-%table.table
+%ul.nav.nav-tabs#documents_tabs
+  %li.nav-item
+    = link_to t('navigation.document.pending'), documents_path(tab: :pending),
+     class: 'nav-link',
+     data: { 'target-controller': params[:tab].blank? ? 'documents' : nil }
+  %li.nav-item
+    = link_to t('navigation.document.recently_auctioned'), documents_path(tab: :auctioned),
+     class: 'nav-link'
+
+%table.table.entities
   %thead
     %tr
       %th= t('attributes.username')
@@ -8,28 +17,19 @@
       %th= t('attributes.status')
       %th.text-center= t('action')
   %tbody
-  - @documents.each do |document|
-    %tr
-      %td= link_to document.customer.username, documents_customer_path(id: document.customer.id)
-      %td= t("attributes.#{document.kind}")
-      %td= l(document.created_at, format: :short)
-      %td= status_badge(document.status)
-      %td.text-center
-        .dropdown
-          %button#dropdownMenuButton.btn.btn-outline-dark.mr-2.dropdown-toggle{ aria: { expanded: false, haspopup: true },
-                                                                                         'data-toggle' => 'dropdown',
-                                                                                         type: :button }
-            = t(:action)
-          .dropdown-menu{ 'aria-labelledby' => 'dropdownMenuButton' }
-            = link_to t(:view),
-                                    rails_blob_path(document.document),
-                                    class: 'dropdown-item',
-                                    target: :blank
-            = link_to t(:confirm),
-                                    document_status_path(status: :confirmed,
-                                                                         id: document.id),
-                                                                         class: 'dropdown-item'
-            = link_to t(:reject),
-                                    document_status_path(status: :rejected,
-                                                                         id: document.id),
-                                                                         class: 'dropdown-item'
+    - @documents.each do |document|
+      %tr{id:"document-#{document.id}"}
+        %td= link_to document.customer.username, documents_customer_path(id: document.customer.id)
+        %td= t("attributes.#{document.kind}")
+        %td= l(document.created_at, format: :short)
+        %td= status_badge(document.status)
+        %td.text-center
+          .dropdown
+            %button#dropdownMenuButton.btn.btn-outline-dark.mr-2.dropdown-toggle{ aria: { expanded: false, haspopup: true },
+                                                                                           'data-toggle': 'dropdown',
+                                                                                           type: :button }
+              = t(:action)
+            .dropdown-menu{ 'aria-labelledby': 'dropdownMenuButton' }
+              = link_to t(:view), rails_blob_path(document.document), class: 'dropdown-item', target: :blank
+              = link_to t(:confirm), document_status_path(status: :confirmed, id: document.id), class: 'dropdown-item'
+              = link_to t(:reject), document_status_path(status: :rejected, id: document.id), class: 'dropdown-item'

@@ -39,6 +39,9 @@ en:
 
   navigation:
     documents: Documents
+    document:
+      pending: Pending documents
+      recently_auctioned: Recently auctioned
     customer:
       account: Account
       activity: Activity
