@@ -5,6 +5,7 @@ const copy = require('copy-text-to-clipboard');
 
 document.addEventListener('turbolinks:load', () => {
   $('button.reset_password').click(function() {
+    if (!confirm(this.dataset.message)) return; // eslint-disable-line no-restricted-globals
     const path = this.dataset.endpoint;
     const data = { authenticity_token: $('[name="csrf-token"]')[0].content };
     let newPassword;

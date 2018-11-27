@@ -1,8 +1,13 @@
 describe 'Events#index' do
   context 'signed in' do
+    include_context 'frozen_time'
+
     before do
       login_as create(:admin_user), scope: :user
+
+      Timecop.travel(Time.zone.now.middle_of_day)
     end
+
     context 'events table' do
       let(:event) { create(:event) }
       let(:scope_kinds) { EventScope.kinds.keys }

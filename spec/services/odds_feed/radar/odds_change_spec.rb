@@ -125,7 +125,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
       .times
   end
 
-  context 'market data' do
+  describe '#market data' do
     subject { OddsFeed::Radar::OddsChangeHandler.new(payload_single_market) }
 
     it 'calls market generator for single market' do
@@ -134,6 +134,82 @@ describe OddsFeed::Radar::OddsChangeHandler do
         .to have_received(:generate_market!)
         .with(payload_single_market['odds_change']['odds']['market'])
         .once
+    end
+
+    context 'event_data odds empty' do
+      let(:payload) do
+        payload_single_market.tap do |payload|
+          payload['odds_change']['odds'] = []
+        end
+      end
+      subject { OddsFeed::Radar::OddsChangeHandler.new(payload) }
+
+      it 'does not generate markets' do
+        expect(subject).to_not have_received(:generate_market!)
+      end
+    end
+
+    context 'markets_data prepared for one markets_payload' do
+      let(:payload) do
+        payload_single_market.tap do |payload|
+          payload['odds_change']['odds']['market'] = {
+            id: 124,
+            specifiers: 'set=2|game=3|point=1',
+            status: -1,
+            outcome: [{ id: 1, odds: 1.3, active: 1 }]
+          }
+        end
+      end
+      subject { OddsFeed::Radar::OddsChangeHandler.new(payload) }
+
+      before { subject.handle }
+
+      it 'calls generate markets once' do
+        expect(subject).to have_received(:generate_market!).once
+      end
+    end
+
+    context 'markets_data prepared for multiple markets_payload' do
+      let(:payload) do
+        payload_single_market.tap do |payload|
+          payload['odds_change']['odds']['market'] = [
+            {
+              id: 124,
+              specifiers: 'set=2|game=3|point=1',
+              status: -1,
+              outcome: [{ id: 1, odds: 1.3, active: 1 }]
+            },
+            {
+              id: 125,
+              specifiers: 'set=2|game=3|point=1',
+              status: -1,
+              outcome: [{ id: 2, odds: 1.3, active: 1 }]
+            }
+          ]
+        end
+      end
+      subject { OddsFeed::Radar::OddsChangeHandler.new(payload) }
+
+      before { subject.handle }
+
+      it 'calls generate markets once' do
+        expect(subject).to have_received(:generate_market!).twice
+      end
+    end
+
+    context 'markets_data prepared for wrong markets_payload' do
+      let(:payload) do
+        payload_single_market.tap do |payload|
+          payload['odds_change']['odds']['market'] = 'wrong'
+        end
+      end
+      subject { OddsFeed::Radar::OddsChangeHandler.new(payload) }
+
+      before { subject.handle }
+
+      it 'does not generate markets' do
+        expect(subject).not_to have_received(:generate_market!)
+      end
     end
   end
 end

@@ -9,6 +9,10 @@ module Events
     field :priority, !types.Int
     field :visible, !types.Boolean
 
+    field :live, types.Boolean do
+      resolve ->(obj, _args, _ctx) { obj.traded_live }
+    end
+
     field :title_name, types.String do
       resolve ->(obj, _args, _ctx) { obj.title_name }
     end

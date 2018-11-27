@@ -1,6 +1,4 @@
 describe ApplicationState.instance do
-  let(:valid_flag) { ApplicationState::ALLOWED_FLAGS.sample }
-
   describe '.initialize' do
     it 'defines defaults status as active' do
       expect(subject.status).to eq(:active)
@@ -20,91 +18,33 @@ describe ApplicationState.instance do
     end
   end
 
-  context 'flags feature' do
-    before(:each) { subject.instance_variable_set(:@flags, []) }
+  describe 'storage' do
+    subject { ApplicationState.new }
 
-    describe '.enable_flag' do
-      let(:expected_flags_state) { [valid_flag] }
-
-      before { subject.enable_flag(valid_flag) }
-
-      it 'adds flag to flags array' do
-        expect(subject.flags).to match_array(expected_flags_state)
-      end
-
-      it 'emits web socket event on flags change' do
-        expect(WebSocket::Client.instance)
-          .to have_received(:emit)
-          .with(
-            WebSocket::Signals::APP_STATE_UPDATED,
-            flags: expected_flags_state
-          )
-      end
-
-      context 'guards' do
-        it 'does not allow to enable not allowed flag' do
-          expect { subject.enable_flag(:invalid) }.to raise_error(ArgumentError)
-        end
-
-        context 'idempotent' do
-          before { 2.times { subject.enable_flag(valid_flag) } }
-
-          it 'does not produce duplicates' do
-            expect(subject.flags).to match_array(expected_flags_state)
-          end
-
-          it 'does not emit ws events without change' do
-            expect(WebSocket::Client.instance)
-              .to have_received(:emit)
-              .with(
-                WebSocket::Signals::APP_STATE_UPDATED,
-                flags: expected_flags_state
-              ).once
-          end
-        end
-      end
+    it 'reads actual state from storage on init' do
+      expect(subject.live_connected).to be_truthy
+      expect(subject.pre_live_connected).to be_truthy
     end
 
-    describe '.disable_flag' do
-      let(:expected_flags_state) { [] }
+    it 'notify state update on init' do
+      ApplicationState.new
+      expect(WebSocket::Client.instance)
+        .to have_received(:emit)
+        .with(WebSocket::Signals::APP_STATE_UPDATED, anything)
+    end
 
-      before do
-        subject.instance_variable_set(:@flags, [valid_flag])
-        subject.disable_flag(valid_flag)
-      end
+    it 'stores state on update' do
+      allow(subject).to receive(:store_app_state)
+      subject.live_connected = false
+      expect(subject).to have_received(:store_app_state)
+    end
 
-      it 'disables the flag' do
-        expect(subject.flags).to match_array(expected_flags_state)
-      end
-
-      it 'emits web socket event on flags change' do
-        expect(WebSocket::Client.instance)
-          .to have_received(:emit)
-          .with(
-            WebSocket::Signals::APP_STATE_UPDATED,
-            flags: expected_flags_state
-          )
-      end
-
-      context 'guards' do
-        it 'does not allow to disabled not allowed flag' do
-          expect { subject.disable_flag(:invalid_flag) }
-            .to raise_error(ArgumentError)
-        end
-
-        context 'tolerant to repeated calls' do
-          before { 2.times { subject.disable_flag(valid_flag) } }
-
-          it 'does not emit ws events without change' do
-            expect(WebSocket::Client.instance)
-              .to have_received(:emit)
-              .with(
-                WebSocket::Signals::APP_STATE_UPDATED,
-                flags: expected_flags_state
-              ).once
-          end
-        end
-      end
+    it 'emits websocket on state update' do
+      subject.live_connected = false
+      expect(WebSocket::Client.instance)
+        .to have_received(:emit)
+        .twice
+        .with(WebSocket::Signals::APP_STATE_UPDATED, anything)
     end
   end
 end

@@ -11,11 +11,10 @@ describe Radar::BaseUofWorker do
     end
 
     it { expect(described_class).to be < ApplicationWorker }
-    it { is_expected.to be_processed_in :odds_feed }
 
     context 'without worker_class defined' do
       it 'raises NotImplementedError' do
-        expect { worker.perform(xml) }.to raise_error(NotImplementedError)
+        expect { worker.perform(xml, 0) }.to raise_error(NotImplementedError)
       end
     end
 
@@ -23,7 +22,7 @@ describe Radar::BaseUofWorker do
       before do
         allow(worker).to receive(:worker_class).and_return(handler)
         allow(XmlParser).to receive(:parse).and_return(parsed_xml)
-        worker.perform(xml)
+        worker.perform(xml, 0)
       end
 
       it 'parses payload with correct parser' do
@@ -50,18 +49,14 @@ describe Radar::BaseUofWorker do
       before do
         allow(worker).to receive(:worker_class).and_return(broken_handler)
         allow(Rails.logger).to receive(:error)
-        worker.perform(xml)
+        worker.perform(xml, 0)
       rescue StandardError
         StandardError
       end
 
       it 'raises an error back so that the worker fails' do
-        expect { worker.perform(xml) }
+        expect { worker.perform(xml, 0) }
           .to raise_error(StandardError, error_message)
-      end
-
-      it 'passes error message to logs' do
-        expect(Rails.logger).to have_received(:error).with(error_message).once
       end
     end
   end

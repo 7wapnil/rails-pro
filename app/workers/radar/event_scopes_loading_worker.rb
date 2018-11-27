@@ -1,7 +1,11 @@
-require 'sidekiq-scheduler'
-
 module Radar
   class EventScopesLoadingWorker < ApplicationWorker
+    include ::QueueName
+
+    sidekiq_options queue: queue_name,
+                    lock: :until_executed,
+                    on_conflict: :log
+
     def perform
       tournaments_response.each do |tournament|
         EventScopesCreatingWorker.perform_async(tournament)

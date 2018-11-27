@@ -46,6 +46,14 @@ class Market < ApplicationRecord
     %i[cancelled settled]
   ]
 
+  def specifier
+    external_id
+      .match(%r{\/.+$})
+      &.to_s
+      &.[](1..-1)
+      &.gsub! '|', ', '
+  end
+
   private
 
   def emit_created

@@ -77,6 +77,9 @@
               %td
                 = market.name
                 %br
+                - if market.specifier
+                  = market.specifier
+                  %br
                 - market.labels.each do |label|
                   %span.badge.badge-info= label.name
 

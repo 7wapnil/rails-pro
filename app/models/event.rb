@@ -56,13 +56,26 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def self.with_bets_count
-    select('events.*, COUNT(bets.id) as bets_count')
-      .left_outer_joins(:bets)
+    sub_query = <<~SQL
+      (SELECT COUNT(bets.id) FROM bets
+        INNER JOIN customers ON customers.id = bets.customer_id
+        INNER JOIN odds ON odds.id = bets.odd_id
+        INNER JOIN markets ON markets.id = odds.market_id
+        WHERE markets.event_id = events.id AND customers.account_kind = #{Customer.account_kinds[:regular]} LIMIT 1)
+    SQL
+    select("events.*, #{sub_query} as bets_count")
       .group(:id)
   end
 
   def self.with_wager
-    select('events.*, COALESCE(SUM(bets.amount) ,0) as wager').group(:id)
+    sub_query = <<~SQL
+      (SELECT COALESCE(SUM(bets.amount) ,0) FROM bets
+        INNER JOIN customers ON customers.id = bets.customer_id
+        INNER JOIN odds ON odds.id = bets.odd_id
+        INNER JOIN markets ON markets.id = odds.market_id
+        WHERE markets.event_id = events.id AND customers.account_kind = #{Customer.account_kinds[:regular]} LIMIT 1)
+    SQL
+    select("events.*, #{sub_query} as wager").group(:id)
   end
 
   def self.upcoming

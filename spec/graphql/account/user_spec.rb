@@ -18,6 +18,7 @@ describe 'GraphQL#SignUp' do
         email
         username
         verified
+        regular
       }
     })
   end
@@ -26,5 +27,6 @@ describe 'GraphQL#SignUp' do
     expect(result['data']['user']).not_to be_nil
     expect(result['data']['user']['id']).to eq(customer.id.to_s)
     expect(result['data']['user']['verified']).to eq(false)
+    expect(result['data']['user']['regular']).to eq(true)
   end
 end

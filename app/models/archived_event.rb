@@ -10,6 +10,7 @@ class ArchivedEvent
 
   field :external_id, type: String
   field :name, type: String
+  field :title_name, type: String
   field :description, type: String
   field :start_at, type: DateTime
   field :payload, type: Hash

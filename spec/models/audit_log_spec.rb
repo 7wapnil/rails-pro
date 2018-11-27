@@ -1,10 +1,6 @@
 describe AuditLog do
   it { should validate_presence_of(:event) }
 
-  before do
-    AuditLog.delete_all
-  end
-
   it 'stores in logs db' do
     customer = create(:customer)
     AuditLog.create!(event: 'test.event',

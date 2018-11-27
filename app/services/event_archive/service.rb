@@ -15,6 +15,7 @@ module EventArchive
       @archived_event = ArchivedEvent.create!(
         external_id: @event.external_id,
         name: @event.name,
+        title_name: @event.title.name,
         description: @event.name,
         start_at: @event.start_at,
         payload: @event.payload
@@ -26,7 +27,7 @@ module EventArchive
         ArchivedEventScope.create!(
           external_id: scope.external_id,
           name: scope.name,
-          kind: EventScope.kinds.key(scope.kind),
+          kind: scope.kind,
           archived_event: @archived_event
         )
       end

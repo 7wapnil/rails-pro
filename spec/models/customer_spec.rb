@@ -58,6 +58,24 @@ describe Customer do
     end
   end
 
+  describe 'account transition' do
+    let(:error_message) { "can't transit customer account kind" }
+
+    it 'from regular' do
+      customer = create(:customer, account_kind: :regular)
+      customer.account_kind = :test
+      customer.password = 'password'
+      expect { customer.save }.to_not raise_error(error_message)
+    end
+
+    it "can't transit from other kinds" do
+      customer = create(:customer, account_kind: :staff)
+      customer.account_kind = :test
+      customer.password = 'password'
+      expect { customer.save }.to raise_error(error_message)
+    end
+  end
+
   describe 'phone validation' do
     it 'valid when phone number correct' do
       customer = build(:customer, phone: '37258383943')

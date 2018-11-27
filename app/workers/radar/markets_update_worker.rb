@@ -1,7 +1,9 @@
 module Radar
   class MarketsUpdateWorker < ApplicationWorker
-    sidekiq_options unique_across_queues: true,
-                    queue: 'market_templates_update'
+    include ::QueueName
+
+    sidekiq_options queue: queue_name,
+                    unique_across_queues: true
 
     def perform
       Rails.logger.debug 'Updating BetRadar market templates'
@@ -22,7 +24,7 @@ module Radar
                  .find_or_initialize_by(external_id: market_data['id'])
       template.name = market_data['name']
       template.groups = market_data['groups']
-      template.payload = { outcomes: market_data['outcomes'],
+      template.payload = { outcomes: prepare_outcomes(market_data),
                            specifiers: market_data['specifiers'],
                            attributes: market_data['attributes'] }
       template.save!
@@ -31,6 +33,18 @@ module Radar
 
     def client
       @client ||= OddsFeed::Radar::Client.new
+    end
+
+    private
+
+    def prepare_outcomes(market_data)
+      return unless market_data['outcomes']
+
+      market_data['outcomes'].tap do |outcomes|
+        outcome_list = outcomes['outcome']
+        outcomes['outcome'] =
+          outcome_list.is_a?(Hash) ? [outcome_list] : outcome_list
+      end
     end
   end
 end

@@ -1,7 +1,6 @@
 class DocumentsController < ApplicationController
   def index
-    @documents = VerificationDocument
-                 .where(status: :pending)
+    @documents = documents_base_query
   end
 
   def status
@@ -13,6 +12,12 @@ class DocumentsController < ApplicationController
   end
 
   private
+
+  def documents_base_query
+    return VerificationDocument.auctioned if params[:tab] == 'auctioned'
+
+    VerificationDocument.pending
+  end
 
   def document_id
     params.require(:id)

@@ -1,5 +1,9 @@
 module Radar
   class LiveCoverageBookingWorker < ApplicationWorker
+    include ::QueueName
+
+    sidekiq_options queue: queue_name
+
     def perform(event_external_id)
       event = Event.find_by!(external_id: event_external_id)
 

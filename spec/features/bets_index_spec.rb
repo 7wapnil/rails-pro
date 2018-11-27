@@ -72,7 +72,7 @@ describe 'Bets#index' do
         it 'by default starts from today' do
           start_date = find('#query_created_at_gteq').value.to_date
 
-          expect(start_date).to eq(Date.today)
+          expect(start_date).to eq(Time.zone.now.to_date)
         end
       end
     end
