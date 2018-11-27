@@ -107,6 +107,34 @@ class CustomersController < ApplicationController
     render json: { password: new_password }
   end
 
+  def update_personal_information
+    @customer = find_customer
+    puts params[:customer][:date_of_birth]
+    @customer.update_columns(
+      first_name: params[:customer][:first_name],
+      last_name: params[:customer][:last_name],
+      gender: params[:customer][:gender],
+      date_of_birth: params[:customer][:date_of_birth]
+    )
+    current_user.log_event :customer_personal_information_updated,
+                           nil,
+                           @customer
+    redirect_to customer_path(@customer)
+  end
+
+  def update_contact_information
+    @customer = find_customer
+    @customer.update_columns(
+      email: params[:customer][:email],
+      phone: params[:customer][:phone]
+    )
+    update_customer_address!
+    current_user.log_event :customer_contact_information_updated,
+                           nil,
+                           @customer
+    redirect_to customer_path(@customer)
+  end
+
   def update_lock
     @customer = find_customer
     @customer.update_columns(
@@ -140,6 +168,16 @@ class CustomersController < ApplicationController
 
   def customer_verification_status
     params.require(:verified)
+  end
+
+  def update_customer_address!
+    @customer.address.update_columns(
+      country: params[:customer][:address_country],
+      street_address: params[:customer][:address_street_address],
+      zip_code: params[:customer][:address_zip_code],
+      city: params[:customer][:address_city],
+      state: params[:customer][:address_state]
+    )
   end
 end
 # rubocop:enable Metrics/ClassLength
