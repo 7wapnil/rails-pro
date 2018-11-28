@@ -1,6 +1,7 @@
 :queues:
   - default
   - radar_odds_change
+  - radar_fixture_change
   - radar_alive
   - radar_bet_cancel
   - radar_bet_settlement
