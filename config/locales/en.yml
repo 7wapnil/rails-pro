@@ -41,7 +41,7 @@ en:
     documents: Documents
     document:
       pending: Pending documents
-      recently_auctioned: Recently auctioned
+      recently_actioned: Recently actioned
     customer:
       account: Account
       activity: Activity
