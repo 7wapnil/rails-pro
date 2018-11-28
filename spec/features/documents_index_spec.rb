@@ -44,5 +44,73 @@ describe 'Documentss#index' do
         end
       end
     end
+
+    describe 'sorting' do
+      context 'by created_at' do
+        let!(:doc_old) { create(:verification_document, created_at: 1.day.ago) }
+        let!(:doc) { create(:verification_document) }
+        let(:link_title) { I18n.t('attributes.created_at') }
+        let(:sort_link) { find_link(link_title) }
+
+        it 'in asc direction' do
+          sort_link.click if sort_in_desc_direction?(sort_link['href'])
+          sort_link.click
+          within 'table.table.entities tbody'do
+            document_ids = page.all('tr').map do |row|
+              row[:id].delete('document-').to_i
+            end
+
+            expect(document_ids).to eq([doc_old.id, doc.id])
+          end
+        end
+
+        it 'in desc direction' do
+          click_link(link_title) if sort_in_asc_direction?(sort_link['href'])
+          click_link link_title
+          within 'table.table.entities tbody'do
+            document_ids = page.all('tr').map do |row|
+              row[:id].delete('document-').to_i
+            end
+
+            expect(document_ids).to eq([doc.id, doc_old.id])
+          end
+        end
+      end
+
+      context 'by username' do
+        let(:first_doc) { create(:verification_document) }
+        let(:last_doc) { create(:verification_document) }
+        let(:link_title) { I18n.t('attributes.username') }
+        let(:sort_link) { find_link(link_title) }
+
+        before do
+          first_doc.customer.update_column(:username, 'bar')
+          last_doc.customer.update_column(:username, 'foo')
+        end
+
+        it 'in asc direction' do
+          click_link(link_title) if sort_in_desc_direction?(sort_link['href'])
+          click_link(link_title)
+          within 'table.table.entities tbody'do
+            document_ids = page.all('tr').map do |row|
+              row[:id].delete('document-').to_i
+            end
+            expect(document_ids).to eq([first_doc.id, last_doc.id])
+          end
+        end
+
+        it 'in desc direction' do
+          click_link(link_title) if sort_in_asc_direction?(sort_link['href'])
+          click_link(link_title)
+          within 'table.table.entities tbody' do
+            document_ids = page.all('tr').map do |row|
+              row[:id].delete('document-').to_i
+            end
+
+            expect(document_ids).to eq([last_doc.id, first_doc.id])
+          end
+        end
+      end
+    end
   end
 end
