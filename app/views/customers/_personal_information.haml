@@ -1,5 +1,5 @@
 = card header: t(:personal_information), class: 'personal-information' do
-  = simple_form_for @customer, url: update_personal_information_customer_path do |f|
+  = simple_form_for @customer, html: { class: 'personal-information-form' }, url: update_personal_information_customer_path do |f|
     %table.table
       %tr
         %td= t(:first_name)

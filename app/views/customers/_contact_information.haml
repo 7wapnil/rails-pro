@@ -1,5 +1,5 @@
 = card header: t(:contact_information), class: 'contact-information' do
-  = simple_form_for @customer, url: update_contact_information_customer_path do |f|
+  = simple_form_for @customer, html: { class: 'contact-information-form' }, url: update_contact_information_customer_path do |f|
     %table.table
       %tr
         %td= t(:email)
@@ -14,7 +14,7 @@
                     as: :phone,
                     label: false,
                     required: true
-      = f.simple_fields_for :address do |a|
+      = f.simple_fields_for :address, wrapper: :inline_form do |a|
         %tr
           %td= t('attributes.country')
           %td

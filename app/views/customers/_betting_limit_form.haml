@@ -1,4 +1,4 @@
-= simple_form_for limit do |f|
+= simple_form_for limit, html: { class: "#{class_prefix}-form" } do |f|
   = f.input :customer_id, as: :hidden
   = f.input :title_id, as: :hidden
   .row
