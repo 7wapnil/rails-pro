@@ -11,7 +11,6 @@ describe Radar::BaseUofWorker do
     end
 
     it { expect(described_class).to be < ApplicationWorker }
-    it { is_expected.to be_processed_in :odds_feed }
 
     context 'without worker_class defined' do
       it 'raises NotImplementedError' do

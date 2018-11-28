@@ -48,6 +48,10 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   scope :sort_by_winning_desc, -> { with_winnings.order('winning DESC') }
 
   class << self
+    def from_regular_customers
+      left_outer_joins(:customer).where(customers: { account_kind: :regular })
+    end
+
     def with_country
       sub_query = <<~SQL
         SELECT  event_scopes.name FROM event_scopes

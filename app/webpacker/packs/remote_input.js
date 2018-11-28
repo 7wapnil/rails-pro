@@ -14,6 +14,7 @@ $(document).on('turbolinks:load', () => {
     const element = this
     $.ajax({
       type: requestMethod,
+      dataType: 'JSON',
       url: path,
       data,
       success(response) {

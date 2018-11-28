@@ -77,6 +77,19 @@ describe OddsFeed::Radar::EventAdapter do
         result_country = result.event_scopes.detect(&:country?)
         expect(result_country).to have_attributes(country_attributes)
       end
+
+      context 'creates title for event' do
+        let(:result_title) { result.title }
+
+        before { Title.destroy_all }
+
+        it { expect { result.title }.to change(Title, :count).by(1) }
+
+        it 'with copied attributes' do
+          expect(result_title.name).to        eq(title.name)
+          expect(result_title.external_id).to eq(title.external_id)
+        end
+      end
     end
 
     describe 'return value' do
@@ -144,11 +157,6 @@ describe OddsFeed::Radar::EventAdapter do
       it 'raises error if tournament data is invalid' do
         payload['tournament'] = {}
         expect { result }.to raise_error(OddsFeed::InvalidMessageError)
-      end
-
-      it 'raises error if title not exists' do
-        payload['tournament']['sport']['id'] = 'sr:sport:unknown'
-        expect { result }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end

@@ -39,6 +39,9 @@ en:
 
   navigation:
     documents: Documents
+    document:
+      pending: Pending documents
+      recently_auctioned: Recently auctioned
     customer:
       account: Account
       activity: Activity
@@ -204,6 +207,7 @@ en:
   messages:
     entry_request_created: Entry request successfully created
     customer_lock_status_changed: Customer lock status was changed
+    reset_password_confirmation: "Are you sure you want to reset customer (%{customer_name}) password?"
 
   errors:
     messages:

@@ -20,11 +20,14 @@ $(document).on('turbolinks:load', () => {
     const lockedUntil = lockedUntilInput.val().length ? lockedUntilInput.val() : null;
     $.ajax({
       type: 'POST',
+      dataType: 'JSON',
       url: this.action,
       data: {
-        locked: lockToggleInput.prop('checked'),
-        lock_reason: reason,
-        locked_until: lockedUntil,
+        customer: {
+          locked: lockToggleInput.prop('checked'),
+          lock_reason: reason || null,
+          locked_until: lockedUntil
+        },
         authenticity_token: $('[name="csrf-token"]')[0].content
       },
       success(response) {
