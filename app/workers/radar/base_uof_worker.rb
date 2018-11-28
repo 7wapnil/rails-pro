@@ -31,6 +31,7 @@ module Radar
       log_process(:error, error.message)
     end
 
+    # rubocop:disable Metrics/MethodLength
     def log_process(level, message)
       current_time = ::Process.clock_gettime(::Process::CLOCK_MONOTONIC)
       performing_time = @enqueued_at.zero? ? 0 : current_time - @enqueued_at
@@ -49,5 +50,6 @@ module Radar
         overall_processing_time: processing_time.round(3)
       )
     end
+    # rubocop:enable Metrics/MethodLength
   end
 end
