@@ -20,3 +20,5 @@ en:
     customer_contact_information_updated: "Contact information updated by %{user_name} for %{customer_name}"
     customer_locked: "Customer (%{customer_name}) locked by %{user_name} with '%{reason}' reason  until %{date}"
     customer_unlocked: "Customer (%{customer_name}) unlocked by %{user_name}"
+    impersonate_customer: "Customer (%{customer_name}) impersonated by (%{user_name})"
+    

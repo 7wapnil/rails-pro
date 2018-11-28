@@ -1,3 +1,4 @@
 %h1.display-4= @customer.username
+%span= link_to 'Impersonate', impersonate_customer_path(@customer), target: :blank, class: 'btn btn-success'
 - @customer.labels.each do |label|
   %span.badge.badge-dark= label.name

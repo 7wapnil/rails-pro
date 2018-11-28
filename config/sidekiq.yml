@@ -1,5 +1,16 @@
 :queues:
   - default
+  - radar_odds_change
+  - radar_fixture_change
+  - radar_alive
+  - radar_bet_cancel
+  - radar_bet_settlement
+  - radar_bet_stop
+  - radar_event_scopes_creating
+  - radar_event_scopes_loading
+  - radar_live_coverage_booking
+  - radar_markets_update
+  - radar_missing_heartbeat
   - expired_live
   - expired_prematch
   - mq

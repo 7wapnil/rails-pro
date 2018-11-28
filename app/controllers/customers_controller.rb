@@ -13,6 +13,14 @@ class CustomersController < ApplicationController
     @labels = Label.where(kind: :customer)
   end
 
+  def impersonate
+    customer = find_customer
+    frontend_url = Customers::ImpersonationService.call(current_user, customer)
+    current_user.log_event(:impersonate_customer, {}, customer)
+
+    redirect_to frontend_url
+  end
+
   def account_management
     @customer = find_customer
     @entry_request = EntryRequest.new(customer: @customer)
