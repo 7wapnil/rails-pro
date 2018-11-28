@@ -128,7 +128,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
         id
       )
   end
-  
+
   def check_account_transition_rule
     return unless account_kind_changed?
 
