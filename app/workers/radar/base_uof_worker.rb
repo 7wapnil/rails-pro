@@ -42,6 +42,8 @@ module Radar
         jid: jid,
         worker: self.class.name,
         message: message,
+        current_time: current_time,
+        job_enqueued_at: @enqueued_at,
         job_performing_time: performing_time.round(3),
         job_execution_time: execution_time.round(3),
         overall_processing_time: processing_time.round(3)
