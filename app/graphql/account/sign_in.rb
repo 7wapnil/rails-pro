@@ -14,7 +14,7 @@ module Account
       if customer&.valid_password?(args[:input][:password])
         customer.update_tracked_fields!(@request)
         @current_customer = customer
-        return account_locked_response(customer) if customer.locked?
+        return account_locked_response(customer) if customer.locked
 
         customer.log_event :customer_signed_in
         response(customer)
