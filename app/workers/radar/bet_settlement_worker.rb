@@ -1,6 +1,9 @@
 module Radar
   class BetSettlementWorker < BaseUofWorker
-    sidekiq_options queue: :uof_priority, retry: 0
+    include ::QueueName
+
+    sidekiq_options queue: queue_name,
+                    retry: 0
 
     def worker_class
       OddsFeed::Radar::BetSettlementHandler

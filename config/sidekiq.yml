@@ -1,12 +1,8 @@
 :queues:
-  - uof_priority
-  - missing_heartbeat
   - default
   - expired_live
   - expired_prematch
-  - market_templates_update
   - mq
-  - odds_feed
 
 :schedule:
   mts_live_validation:
@@ -24,7 +20,6 @@
   missing_heartbeat_check:
     every: <%= ENV.fetch('MISSING_HEARTBEAT_CHECK_INTERVAL', '1m') %>
     class: Radar::MissingHeartbeatWorker
-    queue: missing_heartbeat
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
   pre_match_markets_closing:
@@ -40,7 +35,6 @@
   radar_market_templates_update:
     every: <%= ENV.fetch('RADAR_MARKET_TEMPLATES_UPDATE_INTERVAL', '1w') %>
     class: Radar::MarketsUpdateWorker
-    queue: market_templates_update
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
   unpopular_live_events_clean_up:

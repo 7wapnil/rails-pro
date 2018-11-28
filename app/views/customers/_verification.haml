@@ -10,10 +10,10 @@
           = t(:action)
         .dropdown-menu{ 'aria-labelledby' => 'customerStatusDropdown' }
           = link_to t(:verified),
-                                update_customer_status_customer_path(verified: true),
+                                update_customer_status_customer_path(customer: { verified: true }),
                                                                      method: :post,
                                                                      class: 'dropdown-item'
           = link_to t(:not_verified),
-                                update_customer_status_customer_path(verified: false),
+                                update_customer_status_customer_path(customer: { verified: false }),
                                                                      method: :post,
                                                                      class: 'dropdown-item'

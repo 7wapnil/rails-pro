@@ -17,5 +17,8 @@ module Account
     field :address_country, types.String
     field :address_city, types.String
     field :address_state, types.String
+    field :regular, types.Boolean do
+      resolve ->(obj, _args, _ctx) { obj.regular? }
+    end
   end
 end

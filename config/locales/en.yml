@@ -40,6 +40,9 @@ en:
 
   navigation:
     documents: Documents
+    document:
+      pending: Pending documents
+      recently_auctioned: Recently auctioned
     customer:
       account: Account
       activity: Activity
@@ -208,6 +211,7 @@ en:
     customer_lock_status_changed: Customer lock status was changed
     deposit_limits:
       delete: "Are you sure you want to delete customer (%{customer_name}) deposit limit?"
+    reset_password_confirmation: "Are you sure you want to reset customer (%{customer_name}) password?"
 
   errors:
     messages:

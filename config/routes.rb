@@ -31,6 +31,8 @@ Rails.application.routes.draw do
       post :update_customer_status
       post :reset_password_to_default
       post :update_labels
+      patch :update_personal_information
+      patch :update_contact_information
       post :update_lock
       post :upload_documents
       scope '/documents' do

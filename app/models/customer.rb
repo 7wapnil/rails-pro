@@ -1,12 +1,19 @@
 class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Person
 
+  after_validation :check_account_transition_rule
   has_secure_token :activation_token
   acts_as_paranoid
 
   enum gender: {
     male: 0,
     female: 1
+  }
+
+  enum account_kind: {
+    regular: 0,
+    staff: 1,
+    test: 2
   }
 
   enum lock_reason: {
@@ -18,9 +25,9 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     fraud: 5
   }
 
-  devise :database_authenticatable, :registerable,
+  devise :database_authenticatable, :registerable, :validatable,
          :recoverable, :rememberable, :trackable,
-         authentication_keys: [:login]
+         authentication_keys: [:login], password_length: 6..32
 
   attr_accessor :login
 
@@ -39,7 +46,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_many :entries, through: :wallets
   has_many :entry_requests
   has_many :initiated_entry_requests, as: :initiator, class_name: 'EntryRequest'
-  has_one :address
+  has_one :address, autosave: true, dependent: :destroy
   has_many :label_joins, as: :labelable
   has_many :labels, through: :label_joins
   has_many :verification_documents
@@ -68,20 +75,13 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
             :first_name,
             :last_name,
             :date_of_birth,
-            :password,
             presence: true
-
-  validates :password, confirmation: true
-  validates :password, length: { minimum: 6, maximum: 32 }
-
-  validates :email, format: /\A[\w\d_\-\.]+@[\w\d_\-\.]+\z/
 
   validates :username, uniqueness: { case_sensitive: false }
   validates :email, uniqueness: { case_sensitive: false }
   validates :verified, :activated, :locked, inclusion: { in: [true, false] }
   validates :phone, phone: true
   validates_with AgeValidator
-
   ransack_alias :ip_address, :last_sign_in_ip_or_current_sign_in_ip
 
   VerificationDocument::KINDS.keys.each do |kind|
@@ -127,5 +127,12 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
         'currencies.primary = true OR wallets.customer_id = ?',
         id
       )
+  end
+  
+  def check_account_transition_rule
+    return unless account_kind_changed?
+
+    msg = "can't transit customer account kind"
+    raise msg if account_kind_was != 'regular'
   end
 end

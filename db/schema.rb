@@ -162,6 +162,7 @@ ActiveRecord::Schema.define(version: 2018_11_22_070446) do
     t.boolean "locked", default: false
     t.datetime "locked_until"
     t.integer "lock_reason"
+    t.integer "account_kind", default: 0
     t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
     t.index ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true
