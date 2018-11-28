@@ -5,8 +5,10 @@ module WebSocket
     EVENT_UPDATED = 'eventUpdated'.freeze
     MARKET_CREATED = 'marketCreated'.freeze
     MARKET_UPDATED = 'marketUpdated'.freeze
+    MARKETS_UPDATED = 'marketsUpdated'.freeze
     ODD_CREATED = 'oddCreated'.freeze
     ODD_UPDATED = 'oddUpdated'.freeze
+    ODDS_UPDATED = 'oddsUpdated'.freeze
     BET_SETTLED = 'betSettled'.freeze
     BET_PLACED = 'betPlaced'.freeze
     BET_CANCELLED = 'betCancelled'.freeze

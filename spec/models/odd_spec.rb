@@ -17,10 +17,6 @@ describe Odd do
     should_not validate_presence_of(:value).on(:create)
   end
 
-  it_behaves_like 'has unique :external_id' do
-    subject { create(:odd) }
-  end
-
   context 'callbacks' do
     it 'emits web socket event on create' do
       odd = create(:odd)

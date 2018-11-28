@@ -11,7 +11,6 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 2018_11_27_075222) do
-
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -179,6 +178,15 @@ ActiveRecord::Schema.define(version: 2018_11_27_075222) do
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
     t.index ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true
     t.index ["username"], name: "index_customers_on_username", unique: true
+  end
+
+  create_table "deposit_limits", force: :cascade do |t|
+    t.bigint "customer_id"
+    t.bigint "currency_id"
+    t.integer "range"
+    t.decimal "value"
+    t.index ["currency_id"], name: "index_deposit_limits_on_currency_id"
+    t.index ["customer_id"], name: "index_deposit_limits_on_customer_id"
   end
 
   create_table "entries", force: :cascade do |t|
@@ -380,6 +388,8 @@ ActiveRecord::Schema.define(version: 2018_11_27_075222) do
   add_foreign_key "betting_limits", "titles"
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
+  add_foreign_key "deposit_limits", "currencies"
+  add_foreign_key "deposit_limits", "customers"
   add_foreign_key "entries", "wallets"
   add_foreign_key "entry_currency_rules", "currencies"
   add_foreign_key "entry_requests", "currencies"

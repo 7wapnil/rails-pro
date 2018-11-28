@@ -3,12 +3,9 @@ module OddsFeed
     # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
       def handle
-        log_processing(moment: 'started')
         create_or_update_event!
         touch_event!
         generate_markets
-        log_processing(moment: 'finished')
-
         event
       end
 
@@ -53,30 +50,14 @@ module OddsFeed
         Rails.logger.info msg
       end
 
-      def log_processing(moment:)
-        timestamp_integer = event_data['timestamp'].to_i
-        current_time = Time.now.utc.to_i * 1000
-        process_time =
-          ((current_time - timestamp_integer) / 1000.0).round(3)
-        processing_msg = <<-MESSAGE
-          Odds change message for event ID '#{external_id}' \
-          processing #{moment}. \
-          message time: '#{timestamp_integer}',\
-          current time: '#{current_time}', \
-          execution: #{process_time} seconds
-        MESSAGE
+      def generate_markets
+        return if markets_data.empty?
 
-        Rails.logger.info processing_msg.squish
+        call_markets_generator
       end
 
-      def generate_markets
-        markets_data.each do |market_data|
-          generate_market!(market_data)
-        rescue StandardError => e
-          Rails.logger.error e.message
-          Rails.logger.debug({ error: e, payload: @payload }.to_json)
-          next
-        end
+      def call_markets_generator
+        ::OddsFeed::Radar::MarketGenerator::Service.call(event.id, markets_data)
       end
 
       def markets_data
@@ -166,13 +147,6 @@ module OddsFeed
 
         msg = "Message came at #{timestamp}, but last update was #{last_update}"
         Rails.logger.warn msg
-      end
-
-      def generate_market!(market_data)
-        ::OddsFeed::Radar::MarketGenerator::Service.call(
-          event.id,
-          market_data
-        )
       end
     end
     # rubocop:enable Metrics/ClassLength

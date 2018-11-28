@@ -11,13 +11,6 @@ module OddsFeed
                                                                        tokens)
         end
 
-        def market_model
-          @market_model ||= Market.find_or_initialize_by(
-            external_id: external_id,
-            event: @event
-          )
-        end
-
         def id
           @payload['id']
         end
