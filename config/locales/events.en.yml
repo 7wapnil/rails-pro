@@ -14,6 +14,7 @@ en:
     document_status_updated: "%{customer_name} document '%{kind}' %{status} by %{user_name}"
     betting_limit_created: "Betting limit added by %{user_name} for %{customer_name}"
     betting_limit_updated: "Betting limit updated by %{user_name} for %{customer_name}"
+    deposit_limit_validation_failed: "Deposit limit validation failed for %{customer_name}"
     password_reset_to_default: "Password resetted to default by %{user_name} for %{customer_name}"
     customer_lock_status_updated: "Lock status updated by %{user_name} for %{customer_name}"
     customer_personal_information_updated: "Personal information updated by %{user_name} for %{customer_name}"

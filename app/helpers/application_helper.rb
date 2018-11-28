@@ -53,4 +53,14 @@ module ApplicationHelper
                       data: { placeholder: placeholder,
                               update_url: update_url })
   end
+
+  def dropdown_content_for_days_range(resource)
+    named_ranges = resource.class::NAMED_RANGES
+    return named_ranges if named_ranges.key?(resource.range)
+
+    { resource.range => I18n.t('days', days: resource.range) }
+      .merge(named_ranges)
+      .sort
+      .to_h
+  end
 end

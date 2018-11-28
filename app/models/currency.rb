@@ -2,6 +2,7 @@ class Currency < ApplicationRecord
   include Loggable
 
   has_many :entry_currency_rules
+  has_many :wallets
 
   accepts_nested_attributes_for :entry_currency_rules
 

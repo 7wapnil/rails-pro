@@ -37,6 +37,29 @@ FactoryBot.define do
     amount { Random.new.rand(1.00..200.00).round(2) }
     comment { Faker::Lorem.paragraph }
     association :initiator, factory: :customer
+
+    trait :with_entry do
+      after(:create) do |entry_request|
+        create(
+          :entry_currency_rule,
+          currency: entry_request.currency,
+          kind: entry_request.kind,
+          min_amount: 0,
+          max_amount: entry_request.amount
+        )
+        wallet = create(
+          :wallet,
+          customer: entry_request.customer,
+          currency: entry_request.currency
+        )
+        create(
+          :entry,
+          wallet: wallet,
+          kind: entry_request.kind,
+          amount: entry_request.amount
+        )
+      end
+    end
   end
 
   factory :balance_entry do
@@ -112,6 +135,26 @@ FactoryBot.define do
     max_win { Faker::Number.between(1, 1000) }
     user_stake_factor { Faker::Number.decimal(1, 1) }
     live_stake_factor { Faker::Number.decimal(1, 1) }
+  end
+
+  factory :deposit_limit do
+    customer
+    currency
+    value { Faker::Number.decimal(3, 1) }
+    range { 30 }
+
+    trait :reached do
+      after(:create) do |deposit_limit|
+        create(
+          :entry_request,
+          :with_entry,
+          customer: deposit_limit.customer,
+          currency: deposit_limit.currency,
+          kind: :deposit,
+          amount: deposit_limit.value
+        )
+      end
+    end
   end
 
   # System

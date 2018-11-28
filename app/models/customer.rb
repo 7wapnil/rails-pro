@@ -1,4 +1,4 @@
-class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength:
+class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Person
 
   after_validation :check_account_transition_rule
@@ -114,6 +114,19 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength:
 
   def locked?
     locked || (locked_until && Time.zone.now < locked_until)
+  end
+
+  def deposit_limit
+    DepositLimit.find_or_initialize_by(customer: self)
+  end
+
+  def used_currencies
+    Currency
+      .joins(:wallets)
+      .where(
+        'currencies.primary = true OR wallets.customer_id = ?',
+        id
+      )
   end
 
   def check_account_transition_rule

@@ -45,6 +45,10 @@ class CustomersController < ApplicationController
                        .for_customer
   end
 
+  def deposit_limit
+    @customer = find_customer
+  end
+
   def bets
     @customer = find_customer
     query = prepare_interval_filter(query_params, :created_at)
