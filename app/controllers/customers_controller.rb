@@ -115,6 +115,9 @@ class CustomersController < ApplicationController
                            nil,
                            @customer
     redirect_to customer_path(@customer)
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:error] = e.message
+    redirect_to customer_path(@customer)
   end
 
   def update_contact_information
@@ -123,6 +126,9 @@ class CustomersController < ApplicationController
     current_user.log_event :customer_contact_information_updated,
                            nil,
                            @customer
+    redirect_to customer_path(@customer)
+  rescue ActiveRecord::RecordInvalid => e
+    flash[:error] = e.message
     redirect_to customer_path(@customer)
   end
 

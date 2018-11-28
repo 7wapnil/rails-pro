@@ -1,7 +1,6 @@
 import $ from 'jquery';
 import { countries } from 'countries-list';
 import { isValidNumber } from 'libphonenumber-js';
-import Noty from 'noty';
 
 document.addEventListener('turbolinks:load', () => {
   const countrySelect = $('.country-select');
@@ -47,17 +46,5 @@ document.addEventListener('turbolinks:load', () => {
       }
       return true;
     });
-
-    phoneInput.closest('form')
-      .submit(function (e) {
-        if (isValidNumber(phoneInput.val())) return;
-        e.preventDefault();
-        this.find('button[type="submit"]').removeAttribute('disabled');
-        new Noty({
-          type: 'error',
-          text: 'Phone number is invalid',
-          timeout: 3000
-        }).show()
-      });
   }
 });
