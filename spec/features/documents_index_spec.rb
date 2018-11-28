@@ -35,7 +35,7 @@ describe 'Documents#index' do
       end
 
       it 'displays recently auctioned' do
-        click_on(I18n.t('navigation.document.recently_auctioned'))
+        click_on(I18n.t('navigation.document.recently_actioned'))
 
         within 'table.table.entities tbody' do
           expect(page).to have_selector("tr#document-#{rejected.id}")
