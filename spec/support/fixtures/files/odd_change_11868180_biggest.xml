@@ -1,0 +1,958 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<odds_change product="3" event_id="sr:match:11868180" timestamp="1542974536440">
+  <sport_event_status status="0" match_status="0"/>
+  <odds_generation_properties expected_totals="2.71223" expected_supremacy="0.24064"/>
+  <odds>
+    <market status="1" id="546">
+      <outcome id="1718" odds="2.35" probabilities="0.407474" active="1"/>
+      <outcome id="1719" odds="3.3" probabilities="0.287704" active="1"/>
+      <outcome id="1720" odds="2.73" probabilities="0.349269" active="1"/>
+      <outcome id="1721" odds="2.58" probabilities="0.370406" active="1"/>
+      <outcome id="1722" odds="2.66" probabilities="0.358964" active="1"/>
+      <outcome id="1723" odds="4.17" probabilities="0.226183" active="1"/>
+    </market>
+    <market status="1" id="542">
+      <outcome id="1718" odds="5.65" probabilities="0.16396" active="1"/>
+      <outcome id="1719" odds="1.65" probabilities="0.585499" active="1"/>
+      <outcome id="1720" odds="10.75" probabilities="0.0855837" active="1"/>
+      <outcome id="1721" odds="1.97" probabilities="0.483909" active="1"/>
+      <outcome id="1722" odds="6.0" probabilities="0.15443" active="1"/>
+      <outcome id="1723" odds="1.82" probabilities="0.526618" active="1"/>
+    </market>
+    <market status="1" id="545">
+      <outcome id="1718" odds="4.18" probabilities="0.224636" active="1"/>
+      <outcome id="1719" odds="1.94" probabilities="0.495804" active="1"/>
+      <outcome id="1720" odds="6.88" probabilities="0.135333" active="1"/>
+      <outcome id="1721" odds="1.92" probabilities="0.500794" active="1"/>
+      <outcome id="1722" odds="4.47" probabilities="0.209758" active="1"/>
+      <outcome id="1723" odds="2.2" probabilities="0.433675" active="1"/>
+    </market>
+    <market status="1" id="551">
+      <outcome id="1803" odds="3.28" probabilities="0.280325" active="1"/>
+      <outcome id="1750" odds="4.6" probabilities="0.197975" active="1"/>
+      <outcome id="1751" odds="6.19" probabilities="0.146296" active="1"/>
+      <outcome id="1752" odds="50.3" probabilities="0.017739" active="1"/>
+      <outcome id="1753" odds="110.0" probabilities="0.00807918" active="1"/>
+      <outcome id="1754" odds="6.22" probabilities="0.145726" active="1"/>
+      <outcome id="1755" odds="8.11" probabilities="0.111258" active="1"/>
+      <outcome id="1756" odds="19.62" probabilities="0.0456122" active="1"/>
+      <outcome id="1757" odds="25.6" probabilities="0.0349107" active="1"/>
+      <outcome id="1758" odds="114.0" probabilities="0.00780125" active="1"/>
+      <outcome id="1759" odds="208.0" probabilities="0.00427836" active="1"/>
+    </market>
+    <market status="1" id="548">
+      <outcome id="1804" odds="10.87" probabilities="0.0717405" active="1"/>
+      <outcome id="1730" odds="2.04" probabilities="0.422426" active="1"/>
+      <outcome id="1731" odds="1.44" probabilities="0.635869" active="1"/>
+      <outcome id="1732" odds="1.2" probabilities="0.789427" active="1"/>
+      <outcome id="1733" odds="1.11" probabilities="0.869141" active="1"/>
+      <outcome id="1734" odds="1.08" probabilities="0.90704" active="1"/>
+      <outcome id="1735" odds="1.88" probabilities="0.464415" active="1"/>
+      <outcome id="1736" odds="1.47" probabilities="0.617972" active="1"/>
+      <outcome id="1737" odds="1.33" probabilities="0.697687" active="1"/>
+      <outcome id="1738" odds="1.27" probabilities="0.735586" active="1"/>
+      <outcome id="1739" odds="2.32" probabilities="0.367001" active="1"/>
+      <outcome id="1740" odds="1.94" probabilities="0.446715" active="1"/>
+      <outcome id="1741" odds="1.81" probabilities="0.484614" active="1"/>
+      <outcome id="1742" odds="3.51" probabilities="0.233272" active="1"/>
+      <outcome id="1743" odds="3.05" probabilities="0.271171" active="1"/>
+      <outcome id="1744" odds="6.72" probabilities="0.117614" active="1"/>
+      <outcome id="1745" odds="30.0" probabilities="0.0212193" active="1"/>
+    </market>
+    <market status="1" id="45">
+      <outcome id="276" odds="6.79" probabilities="0.0935506" active="1"/>
+      <outcome id="278" odds="8.97" probabilities="0.0697522" active="1"/>
+      <outcome id="288" odds="7.3" probabilities="0.0866185" active="1"/>
+      <outcome id="280" odds="17.64" probabilities="0.034672" active="1"/>
+      <outcome id="290" odds="14.29" probabilities="0.0430557" active="1"/>
+      <outcome id="300" odds="22.76" probabilities="0.0267333" active="1"/>
+      <outcome id="282" odds="46.65" probabilities="0.0129259" active="1"/>
+      <outcome id="292" odds="37.64" probabilities="0.0160514" active="1"/>
+      <outcome id="302" odds="60.4" probabilities="0.00996631" active="1"/>
+      <outcome id="274" odds="8.73" probabilities="0.0717405" active="1"/>
+      <outcome id="286" odds="4.9" probabilities="0.132849" active="1"/>
+      <outcome id="298" odds="10.12" probabilities="0.0615023" active="1"/>
+      <outcome id="310" odds="47.64" probabilities="0.0126544" active="1"/>
+      <outcome id="284" odds="8.08" probabilities="0.0779036" active="1"/>
+      <outcome id="294" odds="12.76" probabilities="0.0483704" active="1"/>
+      <outcome id="296" odds="8.69" probabilities="0.0721309" active="1"/>
+      <outcome id="304" odds="30.26" probabilities="0.0200222" active="1"/>
+      <outcome id="306" odds="20.42" probabilities="0.0298574" active="1"/>
+      <outcome id="308" odds="27.26" probabilities="0.022262" active="1"/>
+      <outcome id="314" odds="96.6" probabilities="0.00621589" active="1"/>
+      <outcome id="316" odds="64.9" probabilities="0.00926925" active="1"/>
+      <outcome id="318" odds="86.9" probabilities="0.00691124" active="1"/>
+      <outcome id="320" odds="174.0" probabilities="0.00343539" active="1"/>
+      <outcome id="312" odds="145.0" probabilities="0.00412539" active="1"/>
+      <outcome id="322" odds="409.0" probabilities="0.00146459" active="1"/>
+      <outcome id="324" odds="23.43" probabilities="0.0259597" active="1"/>
+    </market>
+    <market status="1" id="552">
+      <outcome id="1805" odds="2.79" probabilities="0.314104" active="1"/>
+      <outcome id="1746" odds="1.63" probabilities="0.563647" active="1"/>
+      <outcome id="1747" odds="1.44" probabilities="0.651001" active="1"/>
+      <outcome id="1748" odds="2.9" probabilities="0.301389" active="1"/>
+      <outcome id="1749" odds="23.68" probabilities="0.0348945" active="1"/>
+    </market>
+    <market status="1" id="553">
+      <outcome id="1805" odds="3.95" probabilities="0.214343" active="1"/>
+      <outcome id="1746" odds="1.56" probabilities="0.591273" active="1"/>
+      <outcome id="1747" odds="1.31" probabilities="0.719296" active="1"/>
+      <outcome id="1748" odds="2.28" probabilities="0.386132" active="1"/>
+      <outcome id="1749" odds="12.34" probabilities="0.066361" active="1"/>
+    </market>
+    <market status="1" id="549">
+      <outcome id="1805" odds="3.77" probabilities="0.226183" active="1"/>
+      <outcome id="1746" odds="1.56" probabilities="0.589728" active="1"/>
+      <outcome id="1747" odds="1.33" probabilities="0.711345" active="1"/>
+      <outcome id="1748" odds="2.37" probabilities="0.37081" active="1"/>
+      <outcome id="1749" odds="13.13" probabilities="0.0624719" active="1"/>
+    </market>
+    <market status="1" id="550">
+      <outcome id="1805" odds="3.02" probabilities="0.287704" active="1"/>
+      <outcome id="1746" odds="1.58" probabilities="0.585372" active="1"/>
+      <outcome id="1747" odds="1.39" probabilities="0.675909" active="1"/>
+      <outcome id="1748" odds="2.79" probabilities="0.313144" active="1"/>
+      <outcome id="1749" odds="22.56" probabilities="0.0363871" active="1"/>
+    </market>
+    <market status="1" id="540">
+      <outcome id="1718" odds="6.47" probabilities="0.143095" active="1"/>
+      <outcome id="1719" odds="1.74" probabilities="0.552083" active="1"/>
+      <outcome id="1720" odds="6.73" probabilities="0.13739" active="1"/>
+      <outcome id="1721" odds="1.65" probabilities="0.582285" active="1"/>
+      <outcome id="1722" odds="7.48" probabilities="0.123489" active="1"/>
+      <outcome id="1723" odds="2.06" probabilities="0.461658" active="1"/>
+    </market>
+    <market status="1" id="541">
+      <outcome id="1718" odds="4.61" probabilities="0.203403" active="1"/>
+      <outcome id="1719" odds="1.95" probabilities="0.491775" active="1"/>
+      <outcome id="1720" odds="4.92" probabilities="0.19018" active="1"/>
+      <outcome id="1721" odds="1.82" probabilities="0.529495" active="1"/>
+      <outcome id="1722" odds="5.31" probabilities="0.176144" active="1"/>
+      <outcome id="1723" odds="2.33" probabilities="0.409003" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="21" specifiers="variant=sr:exact_goals:6+">
+      <outcome id="sr:exact_goals:6+:68" odds="12.51" probabilities="0.0717405" active="1"/>
+      <outcome id="sr:exact_goals:6+:69" odds="5.3" probabilities="0.171454" active="1"/>
+      <outcome id="sr:exact_goals:6+:70" odds="3.66" probabilities="0.250972" active="1"/>
+      <outcome id="sr:exact_goals:6+:71" odds="4.28" probabilities="0.213443" active="1"/>
+      <outcome id="sr:exact_goals:6+:72" odds="5.9" probabilities="0.153557" active="1"/>
+      <outcome id="sr:exact_goals:6+:73" odds="11.27" probabilities="0.0797148" active="1"/>
+      <outcome id="sr:exact_goals:6+:74" odds="15.16" probabilities="0.0591182" active="1"/>
+    </market>
+    <market status="1" id="83">
+      <outcome id="1" odds="2.53" probabilities="0.356567" active="1"/>
+      <outcome id="2" odds="2.49" probabilities="0.363873" active="1"/>
+      <outcome id="3" odds="3.19" probabilities="0.27956" active="1"/>
+    </market>
+    <market status="1" id="90" specifiers="total=1">
+      <outcome id="12" odds="1.39" probabilities="0.678567" active="1"/>
+      <outcome id="13" odds="2.76" probabilities="0.321433" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="90" specifiers="total=1.25">
+      <outcome id="12" odds="1.72" probabilities="0.542937" active="1"/>
+      <outcome id="13" odds="2.01" probabilities="0.457063" active="1"/>
+    </market>
+    <market status="1" id="90" specifiers="total=0.5">
+      <outcome id="12" odds="1.22" probabilities="0.785657" active="1"/>
+      <outcome id="13" odds="3.89" probabilities="0.214343" active="1"/>
+    </market>
+    <market status="1" id="90" specifiers="total=1.5">
+      <outcome id="12" odds="2.03" probabilities="0.452493" active="1"/>
+      <outcome id="13" odds="1.7" probabilities="0.547507" active="1"/>
+    </market>
+    <market status="1" id="90" specifiers="total=2.5">
+      <outcome id="12" odds="4.21" probabilities="0.194384" active="1"/>
+      <outcome id="13" odds="1.19" probabilities="0.805615" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="88" specifiers="hcp=0">
+      <outcome id="1714" odds="1.67" probabilities="0.560528" active="1"/>
+      <outcome id="1715" odds="2.08" probabilities="0.439472" active="1"/>
+    </market>
+    <market status="1" id="88" specifiers="hcp=-0.25">
+      <outcome id="1714" odds="2.1" probabilities="0.435867" active="1"/>
+      <outcome id="1715" odds="1.66" probabilities="0.564133" active="1"/>
+    </market>
+    <market status="1" id="88" specifiers="hcp=-0.5">
+      <outcome id="1714" odds="2.52" probabilities="0.356567" active="1"/>
+      <outcome id="1715" odds="1.47" probabilities="0.643433" active="1"/>
+    </market>
+    <market status="1" id="46">
+      <outcome id="326" odds="9.48" probabilities="0.0717405" active="1"/>
+      <outcome id="334" odds="12.08" probabilities="0.0558822" active="1"/>
+      <outcome id="328" odds="14.35" probabilities="0.0468123" active="1"/>
+      <outcome id="340" odds="28.36" probabilities="0.0234021" active="1"/>
+      <outcome id="336" odds="15.44" probabilities="0.0434216" active="1"/>
+      <outcome id="330" odds="40.37" probabilities="0.0163786" active="1"/>
+      <outcome id="344" odds="106.0" probabilities="0.00621805" active="1"/>
+      <outcome id="342" odds="43.91" probabilities="0.0150494" active="1"/>
+      <outcome id="338" odds="52.4" probabilities="0.0125887" active="1"/>
+      <outcome id="332" odds="181.0" probabilities="0.00363002" active="1"/>
+      <outcome id="346" odds="34.89" probabilities="0.0189805" active="1"/>
+      <outcome id="374" odds="17.75" probabilities="0.0376684" active="1"/>
+      <outcome id="380" odds="19.99" probabilities="0.0333757" active="1"/>
+      <outcome id="376" odds="20.85" probabilities="0.0319765" active="1"/>
+      <outcome id="384" odds="46.93" probabilities="0.0140722" active="1"/>
+      <outcome id="382" odds="27.84" probabilities="0.0238426" active="1"/>
+      <outcome id="378" odds="63.0" probabilities="0.0104713" active="1"/>
+      <outcome id="386" odds="17.0" probabilities="0.0393527" active="1"/>
+      <outcome id="348" odds="21.43" probabilities="0.0310913" active="1"/>
+      <outcome id="354" odds="21.09" probabilities="0.0316038" active="1"/>
+      <outcome id="350" odds="28.83" probabilities="0.0230158" active="1"/>
+      <outcome id="358" odds="53.5" probabilities="0.0123343" active="1"/>
+      <outcome id="356" odds="33.71" probabilities="0.0196511" active="1"/>
+      <outcome id="352" odds="81.3" probabilities="0.00809451" active="1"/>
+      <outcome id="360" odds="20.17" probabilities="0.0330628" active="1"/>
+      <outcome id="400" odds="50.9" probabilities="0.0129745" active="1"/>
+      <outcome id="404" odds="57.9" probabilities="0.0113931" active="1"/>
+      <outcome id="402" odds="70.4" probabilities="0.00935804" active="1"/>
+      <outcome id="406" odds="22.2" probabilities="0.0299948" active="1"/>
+      <outcome id="388" odds="25.71" probabilities="0.025847" active="1"/>
+      <outcome id="392" odds="35.58" probabilities="0.0186065" active="1"/>
+      <outcome id="390" odds="42.47" probabilities="0.0155641" active="1"/>
+      <outcome id="394" odds="14.56" probabilities="0.0461079" active="1"/>
+      <outcome id="362" odds="73.4" probabilities="0.00897608" active="1"/>
+      <outcome id="366" odds="85.1" probabilities="0.00773784" active="1"/>
+      <outcome id="364" odds="100.0" probabilities="0.00657465" active="1"/>
+      <outcome id="368" odds="31.71" probabilities="0.0208992" active="1"/>
+      <outcome id="412" odds="220.0" probabilities="0.00298855" active="1"/>
+      <outcome id="414" odds="58.9" probabilities="0.0112014" active="1"/>
+      <outcome id="408" odds="88.6" probabilities="0.00742759" active="1"/>
+      <outcome id="410" odds="23.74" probabilities="0.0280222" active="1"/>
+      <outcome id="396" odds="108.0" probabilities="0.00611781" active="1"/>
+      <outcome id="398" odds="28.36" probabilities="0.0234028" active="1"/>
+      <outcome id="370" odds="381.0" probabilities="0.00172299" active="1"/>
+      <outcome id="372" odds="102.0" probabilities="0.00647138" active="1"/>
+      <outcome id="416" odds="19.13" probabilities="0.0348945" active="1"/>
+    </market>
+    <market status="1" id="31">
+      <outcome id="74" odds="3.04" probabilities="0.287704" active="1"/>
+      <outcome id="76" odds="1.33" probabilities="0.712296" active="1"/>
+    </market>
+    <market status="1" id="32">
+      <outcome id="74" odds="3.72" probabilities="0.226183" active="1"/>
+      <outcome id="76" odds="1.23" probabilities="0.773817" active="1"/>
+    </market>
+    <market status="1" id="30">
+      <outcome id="784" odds="11.54" probabilities="0.0717405" active="1"/>
+      <outcome id="788" odds="3.96" probabilities="0.215963" active="1"/>
+      <outcome id="790" odds="5.46" probabilities="0.154442" active="1"/>
+      <outcome id="792" odds="1.65" probabilities="0.557854" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="71" specifiers="variant=sr:exact_goals:2+">
+      <outcome id="sr:exact_goals:2+:85" odds="2.94" probabilities="0.314104" active="1"/>
+      <outcome id="sr:exact_goals:2+:86" odds="2.65" probabilities="0.349613" active="1"/>
+      <outcome id="sr:exact_goals:2+:87" odds="2.75" probabilities="0.336283" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="93" specifiers="variant=sr:exact_goals:2+">
+      <outcome id="sr:exact_goals:2+:85" odds="4.24" probabilities="0.214343" active="1"/>
+      <outcome id="sr:exact_goals:2+:86" odds="2.77" probabilities="0.333164" active="1"/>
+      <outcome id="sr:exact_goals:2+:87" odds="2.07" probabilities="0.452493" active="1"/>
+    </market>
+    <market status="1" id="1">
+      <outcome id="1" odds="2.29" probabilities="0.414839" active="1"/>
+      <outcome id="2" odds="3.35" probabilities="0.280326" active="1"/>
+      <outcome id="3" odds="3.08" probabilities="0.304826" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="41" specifiers="score=0:0">
+      <outcome id="114" odds="6.65" probabilities="0.0935506" active="1"/>
+      <outcome id="116" odds="8.78" probabilities="0.0697522" active="1"/>
+      <outcome id="130" odds="7.15" probabilities="0.0866185" active="1"/>
+      <outcome id="118" odds="17.24" probabilities="0.034672" active="1"/>
+      <outcome id="132" odds="13.96" probabilities="0.0430557" active="1"/>
+      <outcome id="144" odds="22.23" probabilities="0.0267333" active="1"/>
+      <outcome id="120" odds="45.54" probabilities="0.0129259" active="1"/>
+      <outcome id="134" odds="36.75" probabilities="0.0160514" active="1"/>
+      <outcome id="146" odds="58.9" probabilities="0.00996631" active="1"/>
+      <outcome id="122" odds="152.0" probabilities="0.00385506" active="1"/>
+      <outcome id="136" odds="122.0" probabilities="0.00478722" active="1"/>
+      <outcome id="124" odds="501.0" probabilities="9.58123E-4" active="1"/>
+      <outcome id="110" odds="8.55" probabilities="0.0717405" active="1"/>
+      <outcome id="128" odds="4.81" probabilities="0.132849" active="1"/>
+      <outcome id="142" odds="9.9" probabilities="0.0615023" active="1"/>
+      <outcome id="154" odds="46.51" probabilities="0.0126544" active="1"/>
+      <outcome id="126" odds="7.9" probabilities="0.0779036" active="1"/>
+      <outcome id="138" odds="12.47" probabilities="0.0483704" active="1"/>
+      <outcome id="140" odds="8.5" probabilities="0.0721309" active="1"/>
+      <outcome id="148" odds="29.55" probabilities="0.0200222" active="1"/>
+      <outcome id="150" odds="19.95" probabilities="0.0298574" active="1"/>
+      <outcome id="152" odds="26.62" probabilities="0.022262" active="1"/>
+      <outcome id="156" odds="94.2" probabilities="0.00621589" active="1"/>
+      <outcome id="158" odds="63.3" probabilities="0.00926925" active="1"/>
+      <outcome id="160" odds="84.8" probabilities="0.00691124" active="1"/>
+      <outcome id="162" odds="378.0" probabilities="0.00154378" active="1"/>
+      <outcome id="164" odds="254.0" probabilities="0.00230211" active="1"/>
+      <outcome id="166" odds="501.0" probabilities="3.19512E-4" active="1"/>
+    </market>
+    <market status="1" id="35">
+      <outcome id="78" odds="4.21" probabilities="0.198889" active="1"/>
+      <outcome id="80" odds="3.89" probabilities="0.215963" active="1"/>
+      <outcome id="82" odds="4.02" probabilities="0.208585" active="1"/>
+      <outcome id="84" odds="11.31" probabilities="0.0717405" active="1"/>
+      <outcome id="86" odds="5.5" probabilities="0.15038" active="1"/>
+      <outcome id="88" odds="5.36" probabilities="0.154442" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="39" specifiers="type=prematch">
+      <outcome id="sr:player:816" odds="10.97" probabilities="0.07613278046113187" active="1" team="2"/>
+      <outcome id="sr:player:6946" odds="26.91" probabilities="0.02216090672612412" active="1" team="1"/>
+      <outcome id="sr:player:14139" odds="11.91" probabilities="0.06898421096833796" active="1" team="2"/>
+      <outcome id="sr:player:16589" odds="12.09" probabilities="0.06774720728175423" active="1" team="2"/>
+      <outcome id="sr:player:22290" odds="8.6" probabilities="0.10133317822242903" active="1" team="1"/>
+      <outcome id="sr:player:31812" odds="6.85" probabilities="0.1310706982179375" active="1" team="2"/>
+      <outcome id="sr:player:37254" odds="40.62" probabilities="0.009620232907403305" active="1" team="2"/>
+      <outcome id="sr:player:38075" odds="17.2" probabilities="0.04312601720530109" active="1" team="1"/>
+      <outcome id="sr:player:39053" odds="8.06" probabilities="0.10902331638348009" active="1" team="1"/>
+      <outcome id="sr:player:39612" odds="32.12" probabilities="0.016133250311332507" active="1" team="2"/>
+      <outcome id="sr:player:40677" odds="28.06" probabilities="0.02063918885206173" active="1" team="2"/>
+      <outcome id="sr:player:44235" odds="6.17" probabilities="0.14707455429497568" active="1" team="1"/>
+      <outcome id="sr:player:45911" odds="17.89" probabilities="0.040894024928735125" active="1" team="2"/>
+      <outcome id="sr:player:45989" odds="19.9" probabilities="0.035261359067149174" active="1" team="2"/>
+      <outcome id="sr:player:51377" odds="6.65" probabilities="0.1353985561738607" active="1" team="1"/>
+      <outcome id="sr:player:58994" odds="28.04" probabilities="0.02066333808844508" active="1" team="1"/>
+      <outcome id="sr:player:66471" odds="6.93" probabilities="0.1293418013856813" active="1" team="2"/>
+      <outcome id="sr:player:76343" odds="22.53" probabilities="0.02939314569830418" active="1" team="2"/>
+      <outcome id="sr:player:82566" odds="7.34" probabilities="0.1212769146906514" active="1" team="1"/>
+      <outcome id="sr:player:94099" odds="33.7" probabilities="0.014673590504451037" active="1" team="1"/>
+      <outcome id="sr:player:100637" odds="13.83" probabilities="0.05730657989877079" active="1" team="1"/>
+      <outcome id="sr:player:103117" odds="16.95" probabilities="0.043986610039521035" active="1" team="2"/>
+      <outcome id="sr:player:106920" odds="25.53" probabilities="0.02417574238031811" active="1" team="1"/>
+      <outcome id="sr:player:115432" odds="31.54" probabilities="0.016700744967506738" active="1" team="2"/>
+      <outcome id="sr:player:118179" odds="33.41" probabilities="0.014931158335827602" active="1" team="1"/>
+      <outcome id="sr:player:125558" odds="36.49" probabilities="0.012404768429706767" active="1" team="2"/>
+      <outcome id="sr:player:135641" odds="21.54" probabilities="0.03143387815750371" active="1" team="1"/>
+      <outcome id="sr:player:137786" odds="8.6" probabilities="0.10127906976744186" active="1" team="1"/>
+      <outcome id="sr:player:151512" odds="4.4" probabilities="0.21232439190725166" active="1" team="2"/>
+      <outcome id="sr:player:190137" odds="25.76" probabilities="0.023816862044872295" active="1" team="1"/>
+      <outcome id="sr:player:190855" odds="9.45" probabilities="0.09083130489998942" active="1" team="1"/>
+      <outcome id="sr:player:190859" odds="7.56" probabilities="0.11720518244315177" active="1" team="2"/>
+      <outcome id="sr:player:204336" odds="7.16" probabilities="0.12470382788488403" active="1" team="2"/>
+      <outcome id="sr:player:222188" odds="10.28" probabilities="0.082323600973236" active="1" team="2"/>
+      <outcome id="sr:player:267755" odds="21.12" probabilities="0.03234624307561195" active="1" team="1"/>
+      <outcome id="sr:player:284449" odds="10.05" probabilities="0.08455201592832255" active="1" team="1"/>
+      <outcome id="sr:player:286165" odds="10.95" probabilities="0.07633254178463787" active="1" team="2"/>
+      <outcome id="sr:player:353224" odds="7.18" probabilities="0.12431457230426303" active="1" team="2"/>
+      <outcome id="sr:player:548194" odds="33.43" probabilities="0.01491593621922398" active="1" team="2"/>
+      <outcome id="sr:player:603736" odds="6.17" probabilities="0.14720600162206" active="1" team="1"/>
+      <outcome id="sr:player:820352" odds="15.2" probabilities="0.05080679126085812" active="1" team="1"/>
+      <outcome id="sr:player:869092" odds="37.59" probabilities="0.011605651040280957" active="1" team="2"/>
+      <outcome id="sr:player:978193" odds="10.88" probabilities="0.07691176470588235" active="1" team="1"/>
+      <outcome id="sr:player:1118055" odds="18.21" probabilities="0.03992091388400704" active="1" team="1"/>
+      <outcome id="sr:player:1245272" odds="16.21" probabilities="0.04667509559639818" active="1" team="1"/>
+      <outcome id="1716" odds="0.0" active="0"/>
+    </market>
+    <market favourite="1" status="1" id="8" specifiers="goalnr=1">
+      <outcome id="7" odds="11.66" probabilities="0.0717405" active="1"/>
+      <outcome id="6" odds="1.81" probabilities="0.505309" active="1"/>
+      <outcome id="8" odds="2.12" probabilities="0.42295" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="62" specifiers="goalnr=1">
+      <outcome id="7" odds="2.86" probabilities="0.314104" active="1"/>
+      <outcome id="6" odds="2.42" probabilities="0.374248" active="1"/>
+      <outcome id="8" odds="2.88" probabilities="0.311648" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="38" specifiers="goalnr=1|type=prematch">
+      <outcome id="sr:player:816" odds="10.97" probabilities="0.07613278046113187" active="1" team="2"/>
+      <outcome id="sr:player:6946" odds="26.91" probabilities="0.02216090672612412" active="1" team="1"/>
+      <outcome id="sr:player:14139" odds="11.91" probabilities="0.06898421096833796" active="1" team="2"/>
+      <outcome id="sr:player:16589" odds="12.09" probabilities="0.06774720728175423" active="1" team="2"/>
+      <outcome id="sr:player:22290" odds="8.6" probabilities="0.10133317822242903" active="1" team="1"/>
+      <outcome id="sr:player:31812" odds="6.85" probabilities="0.1310706982179375" active="1" team="2"/>
+      <outcome id="sr:player:37254" odds="40.62" probabilities="0.009620232907403305" active="1" team="2"/>
+      <outcome id="sr:player:38075" odds="17.2" probabilities="0.04312601720530109" active="1" team="1"/>
+      <outcome id="sr:player:39053" odds="8.06" probabilities="0.10902331638348009" active="1" team="1"/>
+      <outcome id="sr:player:39612" odds="32.12" probabilities="0.016133250311332507" active="1" team="2"/>
+      <outcome id="sr:player:40677" odds="28.06" probabilities="0.02063918885206173" active="1" team="2"/>
+      <outcome id="sr:player:44235" odds="6.17" probabilities="0.14707455429497568" active="1" team="1"/>
+      <outcome id="sr:player:45911" odds="17.89" probabilities="0.040894024928735125" active="1" team="2"/>
+      <outcome id="sr:player:45989" odds="19.9" probabilities="0.035261359067149174" active="1" team="2"/>
+      <outcome id="sr:player:51377" odds="6.65" probabilities="0.1353985561738607" active="1" team="1"/>
+      <outcome id="sr:player:58994" odds="28.04" probabilities="0.02066333808844508" active="1" team="1"/>
+      <outcome id="sr:player:66471" odds="6.93" probabilities="0.1293418013856813" active="1" team="2"/>
+      <outcome id="sr:player:76343" odds="22.53" probabilities="0.02939314569830418" active="1" team="2"/>
+      <outcome id="sr:player:82566" odds="7.34" probabilities="0.1212769146906514" active="1" team="1"/>
+      <outcome id="sr:player:94099" odds="33.7" probabilities="0.014673590504451037" active="1" team="1"/>
+      <outcome id="sr:player:100637" odds="13.83" probabilities="0.05730657989877079" active="1" team="1"/>
+      <outcome id="sr:player:103117" odds="16.95" probabilities="0.043986610039521035" active="1" team="2"/>
+      <outcome id="sr:player:106920" odds="25.53" probabilities="0.02417574238031811" active="1" team="1"/>
+      <outcome id="sr:player:115432" odds="31.54" probabilities="0.016700744967506738" active="1" team="2"/>
+      <outcome id="sr:player:118179" odds="33.41" probabilities="0.014931158335827602" active="1" team="1"/>
+      <outcome id="sr:player:125558" odds="36.49" probabilities="0.012404768429706767" active="1" team="2"/>
+      <outcome id="sr:player:135641" odds="21.54" probabilities="0.03143387815750371" active="1" team="1"/>
+      <outcome id="sr:player:137786" odds="8.6" probabilities="0.10127906976744186" active="1" team="1"/>
+      <outcome id="sr:player:151512" odds="4.4" probabilities="0.21232439190725166" active="1" team="2"/>
+      <outcome id="sr:player:190137" odds="25.76" probabilities="0.023816862044872295" active="1" team="1"/>
+      <outcome id="sr:player:190855" odds="9.45" probabilities="0.09083130489998942" active="1" team="1"/>
+      <outcome id="sr:player:190859" odds="7.56" probabilities="0.11720518244315177" active="1" team="2"/>
+      <outcome id="sr:player:204336" odds="7.16" probabilities="0.12470382788488403" active="1" team="2"/>
+      <outcome id="sr:player:222188" odds="10.28" probabilities="0.082323600973236" active="1" team="2"/>
+      <outcome id="sr:player:267755" odds="21.12" probabilities="0.03234624307561195" active="1" team="1"/>
+      <outcome id="sr:player:284449" odds="10.05" probabilities="0.08455201592832255" active="1" team="1"/>
+      <outcome id="sr:player:286165" odds="10.95" probabilities="0.07633254178463787" active="1" team="2"/>
+      <outcome id="sr:player:353224" odds="7.18" probabilities="0.12431457230426303" active="1" team="2"/>
+      <outcome id="sr:player:548194" odds="33.43" probabilities="0.01491593621922398" active="1" team="2"/>
+      <outcome id="sr:player:603736" odds="6.17" probabilities="0.14720600162206" active="1" team="1"/>
+      <outcome id="sr:player:820352" odds="15.2" probabilities="0.05080679126085812" active="1" team="1"/>
+      <outcome id="sr:player:869092" odds="37.59" probabilities="0.011605651040280957" active="1" team="2"/>
+      <outcome id="sr:player:978193" odds="10.88" probabilities="0.07691176470588235" active="1" team="1"/>
+      <outcome id="sr:player:1118055" odds="18.21" probabilities="0.03992091388400704" active="1" team="1"/>
+      <outcome id="sr:player:1245272" odds="16.21" probabilities="0.04667509559639818" active="1" team="1"/>
+      <outcome id="1716" odds="0.0" active="0"/>
+    </market>
+    <market status="1" id="60">
+      <outcome id="1" odds="2.81" probabilities="0.318952" active="1"/>
+      <outcome id="2" odds="2.12" probabilities="0.430507" active="1"/>
+      <outcome id="3" odds="3.54" probabilities="0.250541" active="1"/>
+    </market>
+    <market status="1" id="29">
+      <outcome id="74" odds="1.67" probabilities="0.557854" active="1"/>
+      <outcome id="76" odds="2.07" probabilities="0.442146" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="69" specifiers="total=0.5">
+      <outcome id="12" odds="1.93" probabilities="0.473382" active="1"/>
+      <outcome id="13" odds="1.75" probabilities="0.526618" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="70" specifiers="total=0.5">
+      <outcome id="12" odds="2.17" probabilities="0.414501" active="1"/>
+      <outcome id="13" odds="1.59" probabilities="0.585499" active="1"/>
+    </market>
+    <market status="1" id="47">
+      <outcome id="418" odds="4.06" probabilities="0.229614" active="1"/>
+      <outcome id="424" odds="6.05" probabilities="0.153048" active="1"/>
+      <outcome id="430" odds="28.45" probabilities="0.0321911" active="1"/>
+      <outcome id="420" odds="14.88" probabilities="0.0616988" active="1"/>
+      <outcome id="426" odds="5.87" probabilities="0.157939" active="1"/>
+      <outcome id="432" odds="15.13" probabilities="0.0606869" active="1"/>
+      <outcome id="422" odds="33.12" probabilities="0.0276392" active="1"/>
+      <outcome id="428" odds="7.73" probabilities="0.11952" active="1"/>
+      <outcome id="434" odds="5.88" probabilities="0.157663" active="1"/>
+    </market>
+    <market status="1" id="26">
+      <outcome id="70" odds="1.96" probabilities="0.480365" active="1"/>
+      <outcome id="72" odds="1.82" probabilities="0.519635" active="1"/>
+    </market>
+    <market status="1" id="76">
+      <outcome id="74" odds="1.59" probabilities="0.585499" active="1"/>
+      <outcome id="76" odds="2.17" probabilities="0.414501" active="1"/>
+    </market>
+    <market status="1" id="10">
+      <outcome id="9" odds="1.32" probabilities="0.695178" active="1"/>
+      <outcome id="10" odds="1.28" probabilities="0.719675" active="1"/>
+      <outcome id="11" odds="1.51" probabilities="0.585147" active="1"/>
+    </market>
+    <market status="1" id="11">
+      <outcome id="4" odds="1.59" probabilities="0.576445" active="1"/>
+      <outcome id="5" odds="2.09" probabilities="0.423555" active="1"/>
+    </market>
+    <market status="1" id="77">
+      <outcome id="74" odds="1.75" probabilities="0.526618" active="1"/>
+      <outcome id="76" odds="1.93" probabilities="0.473382" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="23" specifiers="variant=sr:exact_goals:3+">
+      <outcome id="sr:exact_goals:3+:88" odds="3.65" probabilities="0.226183" active="1"/>
+      <outcome id="sr:exact_goals:3+:89" odds="2.5" probabilities="0.340535" active="1"/>
+      <outcome id="sr:exact_goals:3+:90" odds="3.33" probabilities="0.249192" active="1"/>
+      <outcome id="sr:exact_goals:3+:91" odds="4.43" probabilities="0.184089" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="24" specifiers="variant=sr:exact_goals:3+">
+      <outcome id="sr:exact_goals:3+:88" odds="2.9" probabilities="0.287704" active="1"/>
+      <outcome id="sr:exact_goals:3+:89" odds="2.35" probabilities="0.362765" active="1"/>
+      <outcome id="sr:exact_goals:3+:90" odds="3.69" probabilities="0.222607" active="1"/>
+      <outcome id="sr:exact_goals:3+:91" odds="6.29" probabilities="0.126924" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="65" specifiers="hcp=0:1">
+      <outcome id="1711" odds="9.01" probabilities="0.0904776" active="1"/>
+      <outcome id="1712" odds="3.69" probabilities="0.228474" active="1"/>
+      <outcome id="1713" odds="1.37" probabilities="0.681048" active="1"/>
+    </market>
+    <market status="1" id="16" specifiers="hcp=0">
+      <outcome id="1714" odds="1.49" probabilities="0.576445" active="1"/>
+      <outcome id="1715" odds="1.9" probabilities="0.423555" active="1"/>
+    </market>
+    <market status="1" id="16" specifiers="hcp=0.25">
+      <outcome id="1714" odds="1.35" probabilities="0.645489" active="1"/>
+      <outcome id="1715" odds="2.17" probabilities="0.354511" active="1"/>
+    </market>
+    <market status="1" id="16" specifiers="hcp=-0.75">
+      <outcome id="1714" odds="2.21" probabilities="0.34568" active="1"/>
+      <outcome id="1715" odds="1.34" probabilities="0.65432" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="16" specifiers="hcp=-0.25">
+      <outcome id="1714" odds="1.71" probabilities="0.482478" active="1"/>
+      <outcome id="1715" odds="1.62" probabilities="0.517522" active="1"/>
+    </market>
+    <market status="1" id="16" specifiers="hcp=-0.5">
+      <outcome id="1714" odds="1.93" probabilities="0.414853" active="1"/>
+      <outcome id="1715" odds="1.47" probabilities="0.585147" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="91" specifiers="total=0.5">
+      <outcome id="12" odds="1.64" probabilities="0.566325" active="1"/>
+      <outcome id="13" odds="2.09" probabilities="0.433675" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="66" specifiers="hcp=0">
+      <outcome id="1714" odds="1.67" probabilities="0.560063" active="1"/>
+      <outcome id="1715" odds="2.08" probabilities="0.439937" active="1"/>
+    </market>
+    <market status="1" id="66" specifiers="hcp=0.25">
+      <outcome id="1714" odds="1.39" probabilities="0.680736" active="1"/>
+      <outcome id="1715" odds="2.77" probabilities="0.319264" active="1"/>
+    </market>
+    <market status="1" id="66" specifiers="hcp=-0.25">
+      <outcome id="1714" odds="2.24" probabilities="0.406439" active="1"/>
+      <outcome id="1715" odds="1.58" probabilities="0.593561" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="68" specifiers="total=1">
+      <outcome id="12" odds="1.8" probabilities="0.517051" active="1"/>
+      <outcome id="13" odds="1.91" probabilities="0.482949" active="1"/>
+    </market>
+    <market status="1" id="68" specifiers="total=1.25">
+      <outcome id="12" odds="2.23" probabilities="0.40752" active="1"/>
+      <outcome id="13" odds="1.58" probabilities="0.59248" active="1"/>
+    </market>
+    <market status="1" id="68" specifiers="total=0.5">
+      <outcome id="12" odds="1.38" probabilities="0.685896" active="1"/>
+      <outcome id="13" odds="2.81" probabilities="0.314104" active="1"/>
+    </market>
+    <market status="1" id="68" specifiers="total=1.5">
+      <outcome id="12" odds="2.65" probabilities="0.336283" active="1"/>
+      <outcome id="13" odds="1.42" probabilities="0.663717" active="1"/>
+    </market>
+    <market status="1" id="68" specifiers="total=2.5">
+      <outcome id="12" odds="5.96" probabilities="0.122249" active="1"/>
+      <outcome id="13" odds="1.1" probabilities="0.877751" active="1"/>
+    </market>
+    <market status="1" id="68" specifiers="total=0.75">
+      <outcome id="12" odds="1.52" probabilities="0.619357" active="1"/>
+      <outcome id="13" odds="2.37" probabilities="0.380643" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="92" specifiers="total=0.5">
+      <outcome id="12" odds="1.82" probabilities="0.504196" active="1"/>
+      <outcome id="13" odds="1.85" probabilities="0.495804" active="1"/>
+    </market>
+    <market status="1" id="96">
+      <outcome id="74" odds="1.85" probabilities="0.495804" active="1"/>
+      <outcome id="76" odds="1.82" probabilities="0.504196" active="1"/>
+    </market>
+    <market status="1" id="97">
+      <outcome id="74" odds="2.09" probabilities="0.433675" active="1"/>
+      <outcome id="76" odds="1.64" probabilities="0.566325" active="1"/>
+    </market>
+    <market status="1" id="98">
+      <outcome id="552" odds="3.78" probabilities="0.180992" active="1"/>
+      <outcome id="558" odds="8.56" probabilities="0.0750835" active="1"/>
+      <outcome id="560" odds="12.23" probabilities="0.0518574" active="1"/>
+      <outcome id="546" odds="3.25" probabilities="0.214343" active="1"/>
+      <outcome id="554" odds="5.1" probabilities="0.130247" active="1"/>
+      <outcome id="562" odds="34.22" probabilities="0.0181484" active="1"/>
+      <outcome id="548" odds="4.42" probabilities="0.152172" active="1"/>
+      <outcome id="550" odds="12.02" probabilities="0.0527785" active="1"/>
+      <outcome id="556" odds="14.46" probabilities="0.0436377" active="1"/>
+      <outcome id="564" odds="7.99" probabilities="0.080741" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="84" specifiers="goalnr=1">
+      <outcome id="7" odds="4.1" probabilities="0.214343" active="1"/>
+      <outcome id="6" odds="2.14" probabilities="0.426901" active="1"/>
+      <outcome id="8" odds="2.51" probabilities="0.358756" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="87" specifiers="hcp=0:1">
+      <outcome id="1711" odds="7.02" probabilities="0.11874" active="1"/>
+      <outcome id="1712" odds="3.6" probabilities="0.237826" active="1"/>
+      <outcome id="1713" odds="1.45" probabilities="0.643433" active="1"/>
+    </market>
+    <market status="1" id="12">
+      <outcome id="776" odds="1.91" probabilities="0.479068" active="1"/>
+      <outcome id="778" odds="1.77" probabilities="0.520932" active="1"/>
+    </market>
+    <market status="1" id="13">
+      <outcome id="780" odds="1.56" probabilities="0.596758" active="1"/>
+      <outcome id="782" odds="2.23" probabilities="0.403242" active="1"/>
+    </market>
+    <market status="1" id="33">
+      <outcome id="74" odds="3.78" probabilities="0.215963" active="1"/>
+      <outcome id="76" odds="1.21" probabilities="0.784037" active="1"/>
+    </market>
+    <market status="1" id="34">
+      <outcome id="74" odds="4.88" probabilities="0.154442" active="1"/>
+      <outcome id="76" odds="1.13" probabilities="0.845558" active="1"/>
+    </market>
+    <market status="1" id="27">
+      <outcome id="70" odds="1.94" probabilities="0.476241" active="1"/>
+      <outcome id="72" odds="1.77" probabilities="0.523759" active="1"/>
+    </market>
+    <market status="1" id="28">
+      <outcome id="70" odds="2.0" probabilities="0.460431" active="1"/>
+      <outcome id="72" odds="1.73" probabilities="0.539569" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="79" specifiers="total=1.5">
+      <outcome id="794" odds="4.36" probabilities="0.190759" active="1"/>
+      <outcome id="798" odds="2.73" probabilities="0.314104" active="1"/>
+      <outcome id="802" odds="5.2" probabilities="0.158854" active="1"/>
+      <outcome id="796" odds="6.39" probabilities="0.128193" active="1"/>
+      <outcome id="800" odds="7.02" probabilities="0.116403" active="1"/>
+      <outcome id="804" odds="8.85" probabilities="0.0916873" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="20" specifiers="total=1.5">
+      <outcome id="12" odds="2.53" probabilities="0.349531" active="1"/>
+      <outcome id="13" odds="1.44" probabilities="0.650469" active="1"/>
+    </market>
+    <market status="1" id="78">
+      <outcome id="78" odds="16.68" probabilities="0.0475568" active="1"/>
+      <outcome id="80" odds="3.1" probabilities="0.271395" active="1"/>
+      <outcome id="82" odds="6.94" probabilities="0.116403" active="1"/>
+      <outcome id="84" odds="2.71" probabilities="0.314104" active="1"/>
+      <outcome id="86" odds="20.8" probabilities="0.0380269" active="1"/>
+      <outcome id="88" odds="3.9" probabilities="0.212514" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="19" specifiers="total=1.5">
+      <outcome id="12" odds="2.09" probabilities="0.433282" active="1"/>
+      <outcome id="13" odds="1.64" probabilities="0.566718" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="36" specifiers="total=2.5">
+      <outcome id="90" odds="2.02" probabilities="0.425005" active="1"/>
+      <outcome id="92" odds="5.9" probabilities="0.132849" active="1"/>
+      <outcome id="94" odds="9.54" probabilities="0.0808287" active="1"/>
+      <outcome id="96" odds="2.33" probabilities="0.361317" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="25" specifiers="variant=sr:point_range:6+">
+      <outcome id="sr:point_range:6+:1124" odds="13.82" probabilities="0.0591182" active="1"/>
+      <outcome id="sr:point_range:6+:1121" odds="3.51" probabilities="0.243195" active="1"/>
+      <outcome id="sr:point_range:6+:1122" odds="1.93" probabilities="0.464415" active="1"/>
+      <outcome id="sr:point_range:6+:1123" odds="3.65" probabilities="0.233272" active="1"/>
+    </market>
+    <market status="1" id="81">
+      <outcome id="480" odds="12.97" probabilities="0.0474179" active="1"/>
+      <outcome id="468" odds="3.53" probabilities="0.190759" active="1"/>
+      <outcome id="470" odds="9.75" probabilities="0.0637205" active="1"/>
+      <outcome id="472" odds="17.21" probabilities="0.0354498" active="1"/>
+      <outcome id="462" odds="2.3" probabilities="0.314104" active="1"/>
+      <outcome id="464" odds="6.02" probabilities="0.106126" active="1"/>
+      <outcome id="466" odds="60.8" probabilities="0.00986093" active="1"/>
+      <outcome id="474" odds="4.15" probabilities="0.158854" active="1"/>
+      <outcome id="476" odds="13.88" probabilities="0.0441878" active="1"/>
+      <outcome id="478" odds="20.58" probabilities="0.0295206" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="14" specifiers="hcp=0:1">
+      <outcome id="1711" odds="4.24" probabilities="0.203418" active="1"/>
+      <outcome id="1712" odds="4.09" probabilities="0.211434" active="1"/>
+      <outcome id="1713" odds="1.59" probabilities="0.585147" active="1"/>
+    </market>
+    <market status="1" id="14" specifiers="hcp=1:0">
+      <outcome id="1711" odds="1.35" probabilities="0.695178" active="1"/>
+      <outcome id="1712" odds="4.72" probabilities="0.176071" active="1"/>
+      <outcome id="1713" odds="6.38" probabilities="0.128752" active="1"/>
+    </market>
+    <market status="1" id="14" specifiers="hcp=0:2">
+      <outcome id="1711" odds="9.5" probabilities="0.0793137" active="1"/>
+      <outcome id="1712" odds="6.17" probabilities="0.124105" active="1"/>
+      <outcome id="1713" odds="1.19" probabilities="0.796582" active="1"/>
+    </market>
+    <market status="1" id="14" specifiers="hcp=2:0">
+      <outcome id="1711" odds="1.09" probabilities="0.871248" active="1"/>
+      <outcome id="1712" odds="7.72" probabilities="0.0860618" active="1"/>
+      <outcome id="1713" odds="15.18" probabilities="0.0426898" active="1"/>
+    </market>
+    <market status="1" id="18" specifiers="total=2">
+      <outcome id="12" odds="1.38" probabilities="0.67532" active="1"/>
+      <outcome id="13" odds="2.65" probabilities="0.32468" active="1"/>
+    </market>
+    <market status="1" id="18" specifiers="total=3">
+      <outcome id="12" odds="2.36" probabilities="0.371734" active="1"/>
+      <outcome id="13" odds="1.48" probabilities="0.628266" active="1"/>
+    </market>
+    <market status="1" id="18" specifiers="total=0.5">
+      <outcome id="12" odds="1.04" probabilities="0.928259" active="1"/>
+      <outcome id="13" odds="7.33" probabilities="0.0717405" active="1"/>
+    </market>
+    <market status="1" id="18" specifiers="total=1.5">
+      <outcome id="12" odds="1.24" probabilities="0.756805" active="1"/>
+      <outcome id="13" odds="3.37" probabilities="0.243195" active="1"/>
+    </market>
+    <market status="1" id="18" specifiers="total=2.25">
+      <outcome id="12" odds="1.59" probabilities="0.578417" active="1"/>
+      <outcome id="13" odds="2.12" probabilities="0.421583" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="18" specifiers="total=2.5">
+      <outcome id="12" odds="1.8" probabilities="0.505834" active="1"/>
+      <outcome id="13" odds="1.84" probabilities="0.494166" active="1"/>
+    </market>
+    <market status="1" id="18" specifiers="total=3.5">
+      <outcome id="12" odds="2.9" probabilities="0.29239" active="1"/>
+      <outcome id="13" odds="1.32" probabilities="0.70761" active="1"/>
+    </market>
+    <market status="1" id="18" specifiers="total=4.5">
+      <outcome id="12" odds="5.1" probabilities="0.138833" active="1"/>
+      <outcome id="13" odds="1.11" probabilities="0.861167" active="1"/>
+    </market>
+    <market status="1" id="18" specifiers="total=5.5">
+      <outcome id="12" odds="7.9" probabilities="0.0591182" active="1"/>
+      <outcome id="13" odds="1.03" probabilities="0.940882" active="1"/>
+    </market>
+    <market status="1" id="18" specifiers="total=2.75">
+      <outcome id="12" odds="2.01" probabilities="0.446795" active="1"/>
+      <outcome id="13" odds="1.66" probabilities="0.553205" active="1"/>
+    </market>
+    <market status="1" id="52">
+      <outcome id="436" odds="3.09" probabilities="0.288591" active="1"/>
+      <outcome id="438" odds="2.03" probabilities="0.450985" active="1"/>
+      <outcome id="440" odds="3.4" probabilities="0.260424" active="1"/>
+    </market>
+    <market status="1" id="48">
+      <outcome id="74" odds="6.32" probabilities="0.112067" active="1"/>
+      <outcome id="76" odds="1.08" probabilities="0.887933" active="1"/>
+    </market>
+    <market status="1" id="37" specifiers="total=1.5">
+      <outcome id="794" odds="8.63" probabilities="0.0935506" active="1"/>
+      <outcome id="798" odds="11.19" probabilities="0.0717405" active="1"/>
+      <outcome id="802" odds="10.32" probabilities="0.0779036" active="1"/>
+      <outcome id="796" odds="2.66" probabilities="0.321302" active="1"/>
+      <outcome id="800" odds="3.99" probabilities="0.208585" active="1"/>
+      <outcome id="804" odds="3.68" probabilities="0.226918" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="37" specifiers="total=2.5">
+      <outcome id="794" odds="5.08" probabilities="0.163303" active="1"/>
+      <outcome id="798" odds="4.09" probabilities="0.204589" active="1"/>
+      <outcome id="802" odds="6.5" probabilities="0.126274" active="1"/>
+      <outcome id="796" odds="3.37" probabilities="0.25155" active="1"/>
+      <outcome id="800" odds="10.71" probabilities="0.0757357" active="1"/>
+      <outcome id="804" odds="4.66" probabilities="0.178548" active="1"/>
+    </market>
+    <market status="1" id="37" specifiers="total=3.5">
+      <outcome id="794" odds="2.99" probabilities="0.284593" active="1"/>
+      <outcome id="798" odds="4.08" probabilities="0.204589" active="1"/>
+      <outcome id="802" odds="3.83" probabilities="0.218427" active="1"/>
+      <outcome id="796" odds="6.29" probabilities="0.13026" active="1"/>
+      <outcome id="800" odds="10.66" probabilities="0.0757357" active="1"/>
+      <outcome id="804" odds="9.37" probabilities="0.0863949" active="1"/>
+    </market>
+    <market status="1" id="37" specifiers="total=4.5">
+      <outcome id="794" odds="2.5" probabilities="0.340575" active="1"/>
+      <outcome id="798" odds="3.14" probabilities="0.266092" active="1"/>
+      <outcome id="802" odds="3.27" probabilities="0.2545" active="1"/>
+      <outcome id="796" odds="10.66" probabilities="0.074278" active="1"/>
+      <outcome id="800" odds="54.7" probabilities="0.0142333" active="1"/>
+      <outcome id="804" odds="15.64" probabilities="0.0503216" active="1"/>
+    </market>
+    <market status="1" id="50">
+      <outcome id="74" odds="1.66" probabilities="0.563451" active="1"/>
+      <outcome id="76" odds="2.1" probabilities="0.436549" active="1"/>
+    </market>
+    <market status="1" id="56">
+      <outcome id="74" odds="3.25" probabilities="0.265889" active="1"/>
+      <outcome id="76" odds="1.3" probabilities="0.734111" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="184" specifiers="goalnr=1">
+      <outcome id="814" odds="2.44" probabilities="0.353324" active="1"/>
+      <outcome id="816" odds="7.75" probabilities="0.104292" active="1"/>
+      <outcome id="818" odds="16.71" probabilities="0.0476756" active="1"/>
+      <outcome id="820" odds="12.99" probabilities="0.0615291" active="1"/>
+      <outcome id="822" odds="7.75" probabilities="0.104292" active="1"/>
+      <outcome id="824" odds="3.27" probabilities="0.257146" active="1"/>
+      <outcome id="826" odds="11.17" probabilities="0.0717405" active="1"/>
+    </market>
+    <market status="1" id="49">
+      <outcome id="74" odds="8.47" probabilities="0.0678082" active="1"/>
+      <outcome id="76" odds="1.04" probabilities="0.932192" active="1"/>
+    </market>
+    <market status="1" id="51">
+      <outcome id="74" odds="1.99" probabilities="0.462293" active="1"/>
+      <outcome id="76" odds="1.73" probabilities="0.537707" active="1"/>
+    </market>
+    <market status="1" id="57">
+      <outcome id="74" odds="4.01" probabilities="0.206401" active="1"/>
+      <outcome id="76" odds="1.2" probabilities="0.793599" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="58" specifiers="total=1.5">
+      <outcome id="74" odds="5.1" probabilities="0.151943" active="1"/>
+      <outcome id="76" odds="1.13" probabilities="0.848057" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="59" specifiers="total=1.5">
+      <outcome id="74" odds="2.47" probabilities="0.363167" active="1"/>
+      <outcome id="76" odds="1.48" probabilities="0.636833" active="1"/>
+    </market>
+    <market status="1" id="63">
+      <outcome id="9" odds="1.24" probabilities="0.749459" active="1"/>
+      <outcome id="10" odds="1.55" probabilities="0.569493" active="1"/>
+      <outcome id="11" odds="1.34" probabilities="0.681048" active="1"/>
+    </market>
+    <market status="1" id="64">
+      <outcome id="4" odds="1.67" probabilities="0.560063" active="1"/>
+      <outcome id="5" odds="2.08" probabilities="0.439937" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="101" specifiers="goalnr=1">
+      <outcome id="616" odds="9.69" probabilities="0.0717405" active="1"/>
+      <outcome id="598" odds="3.72" probabilities="0.198264" active="1"/>
+      <outcome id="600" odds="4.01" probabilities="0.182473" active="1"/>
+      <outcome id="602" odds="4.98" probabilities="0.144476" active="1"/>
+      <outcome id="604" odds="6.25" probabilities="0.11336" active="1"/>
+      <outcome id="606" odds="7.27" probabilities="0.0967169" active="1"/>
+      <outcome id="608" odds="10.08" probabilities="0.0688781" active="1"/>
+      <outcome id="610" odds="13.42" probabilities="0.051314" active="1"/>
+      <outcome id="612" odds="18.81" probabilities="0.0363575" active="1"/>
+      <outcome id="614" odds="18.77" probabilities="0.0364198" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="100" specifiers="goalnr=1">
+      <outcome id="596" odds="10.74" probabilities="0.0717405" active="1"/>
+      <outcome id="584" odds="2.81" probabilities="0.293533" active="1"/>
+      <outcome id="586" odds="3.5" probabilities="0.23168" active="1"/>
+      <outcome id="588" odds="4.57" probabilities="0.174069" active="1"/>
+      <outcome id="590" odds="7.42" probabilities="0.104887" active="1"/>
+      <outcome id="592" odds="10.87" probabilities="0.0708707" active="1"/>
+      <outcome id="594" odds="14.39" probabilities="0.0532206" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="105" specifiers="from=1|to=10">
+      <outcome id="1" odds="7.22" probabilities="0.103658" active="1"/>
+      <outcome id="2" odds="1.17" probabilities="0.810445" active="1"/>
+      <outcome id="3" odds="8.66" probabilities="0.0858971" active="1"/>
+    </market>
+    <market status="1" id="75">
+      <outcome id="74" odds="4.08" probabilities="0.201987" active="1"/>
+      <outcome id="76" odds="1.2" probabilities="0.798013" active="1"/>
+    </market>
+    <market status="1" id="95">
+      <outcome id="74" odds="3.06" probabilities="0.284864" active="1"/>
+      <outcome id="76" odds="1.33" probabilities="0.715136" active="1"/>
+    </market>
+    <market status="1" id="53">
+      <outcome id="436" odds="3.38" probabilities="0.263187" active="1"/>
+      <outcome id="438" odds="2.44" probabilities="0.37185" active="1"/>
+      <outcome id="440" odds="2.48" probabilities="0.364964" active="1"/>
+    </market>
+    <market status="1" id="54">
+      <outcome id="436" odds="3.59" probabilities="0.246698" active="1"/>
+      <outcome id="438" odds="2.6" probabilities="0.346984" active="1"/>
+      <outcome id="440" odds="2.24" probabilities="0.406318" active="1"/>
+    </market>
+    <market status="1" id="94">
+      <outcome id="70" odds="1.92" probabilities="0.476051" active="1"/>
+      <outcome id="72" odds="1.76" probabilities="0.523949" active="1"/>
+    </market>
+    <market status="1" id="86">
+      <outcome id="4" odds="1.65" probabilities="0.560528" active="1"/>
+      <outcome id="5" odds="2.06" probabilities="0.439472" active="1"/>
+    </market>
+    <market status="1" id="85">
+      <outcome id="9" odds="1.27" probabilities="0.72044" active="1"/>
+      <outcome id="10" odds="1.4" probabilities="0.636127" active="1"/>
+      <outcome id="11" odds="1.39" probabilities="0.643433" active="1"/>
+    </market>
+    <market status="1" id="74">
+      <outcome id="70" odds="2.07" probabilities="0.443752" active="1"/>
+      <outcome id="72" odds="1.68" probabilities="0.556248" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="15" specifiers="variant=sr:winning_margin:3+">
+      <outcome id="sr:winning_margin:3+:119" odds="3.04" probabilities="0.280325" active="1"/>
+      <outcome id="sr:winning_margin:3+:115" odds="10.24" probabilities="0.0793137" active="1"/>
+      <outcome id="sr:winning_margin:3+:114" odds="6.62" probabilities="0.124105" active="1"/>
+      <outcome id="sr:winning_margin:3+:113" odds="3.97" probabilities="0.211434" active="1"/>
+      <outcome id="sr:winning_margin:3+:116" odds="4.72" probabilities="0.176071" active="1"/>
+      <outcome id="sr:winning_margin:3+:117" odds="9.45" probabilities="0.0860618" active="1"/>
+      <outcome id="sr:winning_margin:3+:118" odds="18.85" probabilities="0.0426898" active="1"/>
+    </market>
+    <market status="1" id="9">
+      <outcome id="7" odds="11.66" probabilities="0.0717405" active="1"/>
+      <outcome id="6" odds="1.81" probabilities="0.505309" active="1"/>
+      <outcome id="8" odds="2.12" probabilities="0.42295" active="1"/>
+    </market>
+    <market status="1" id="55">
+      <outcome id="806" odds="1.64" probabilities="0.569438" active="1"/>
+      <outcome id="808" odds="5.98" probabilities="0.145699" active="1"/>
+      <outcome id="810" odds="15.25" probabilities="0.0562882" active="1"/>
+      <outcome id="812" odds="3.87" probabilities="0.228575" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="40" specifiers="type=prematch">
+      <outcome id="sr:player:816" odds="4.66" probabilities="0.19946360153256704" active="1" team="2"/>
+      <outcome id="sr:player:6946" odds="12.86" probabilities="0.06273268954181221" active="1" team="1"/>
+      <outcome id="sr:player:14139" odds="5.06" probabilities="0.18246941045606227" active="1" team="2"/>
+      <outcome id="sr:player:16589" odds="5.14" probabilities="0.1797319270490002" active="1" team="2"/>
+      <outcome id="sr:player:22290" odds="3.69" probabilities="0.2559455460195324" active="1" team="1"/>
+      <outcome id="sr:player:31812" odds="3.0" probabilities="0.3184229390681004" active="1" team="2"/>
+      <outcome id="sr:player:37254" odds="23.42" probabilities="0.027704807041299927" active="1" team="2"/>
+      <outcome id="sr:player:38075" odds="7.5" probabilities="0.11832805573147562" active="1" team="1"/>
+      <outcome id="sr:player:39053" odds="3.48" probabilities="0.2725" active="1" team="1"/>
+      <outcome id="sr:player:39612" odds="16.38" probabilities="0.04605851979345956" active="1" team="2"/>
+      <outcome id="sr:player:40677" odds="13.59" probabilities="0.058580441640378546" active="1" team="2"/>
+      <outcome id="sr:player:44235" odds="2.75" probabilities="0.3491050583657588" active="1" team="1"/>
+      <outcome id="sr:player:45911" odds="7.84" probabilities="0.11257857796765333" active="1" team="2"/>
+      <outcome id="sr:player:45989" odds="8.86" probabilities="0.09783597518952447" active="1" team="2"/>
+      <outcome id="sr:player:51377" odds="2.93" probabilities="0.32670333700036674" active="1" team="1"/>
+      <outcome id="sr:player:58994" odds="13.58" probabilities="0.05861932938856015" active="1" team="1"/>
+      <outcome id="sr:player:66471" odds="3.03" probabilities="0.3153660270078181" active="1" team="2"/>
+      <outcome id="sr:player:76343" odds="10.28" probabilities="0.0822792858889704" active="1" team="2"/>
+      <outcome id="sr:player:82566" odds="3.19" probabilities="0.29840947546531305" active="1" team="1"/>
+      <outcome id="sr:player:94099" odds="17.54" probabilities="0.04200082000820008" active="1" team="1"/>
+      <outcome id="sr:player:100637" odds="5.91" probabilities="0.15425019425019426" active="1" team="1"/>
+      <outcome id="sr:player:103117" odds="7.38" probabilities="0.12056518946692357" active="1" team="2"/>
+      <outcome id="sr:player:106920" odds="12.01" probabilities="0.06823682216690116" active="1" team="1"/>
+      <outcome id="sr:player:115432" odds="15.96" probabilities="0.04765778401122019" active="1" team="2"/>
+      <outcome id="sr:player:118179" odds="17.34" probabilities="0.0426856292376385" active="1" team="1"/>
+      <outcome id="sr:player:125558" odds="19.77" probabilities="0.03558578987150416" active="1" team="2"/>
+      <outcome id="sr:player:135641" odds="9.73" probabilities="0.08774655084312721" active="1" team="1"/>
+      <outcome id="sr:player:137786" odds="3.69" probabilities="0.2558579881656805" active="1" team="1"/>
+      <outcome id="sr:player:151512" odds="2.1" probabilities="0.4620080321285141" active="1" team="2"/>
+      <outcome id="sr:player:190137" odds="12.16" probabilities="0.06721561059290232" active="1" team="1"/>
+      <outcome id="sr:player:190855" odds="4.03" probabilities="0.2333734281027884" active="1" team="1"/>
+      <outcome id="sr:player:190859" odds="3.28" probabilities="0.2895978905735004" active="1" team="2"/>
+      <outcome id="sr:player:204336" odds="3.12" probabilities="0.30530386740331494" active="1" team="2"/>
+      <outcome id="sr:player:222188" odds="4.36" probabilities="0.21412960609911055" active="1" team="2"/>
+      <outcome id="sr:player:267755" odds="9.51" probabilities="0.0901405517959396" active="1" team="1"/>
+      <outcome id="sr:player:284449" odds="4.28" probabilities="0.2188661661920787" active="1" team="1"/>
+      <outcome id="sr:player:286165" odds="4.65" probabilities="0.19986567522187576" active="1" team="2"/>
+      <outcome id="sr:player:353224" odds="3.13" probabilities="0.30423407917383827" active="1" team="2"/>
+      <outcome id="sr:player:548194" odds="17.36" probabilities="0.042617316589557176" active="1" team="2"/>
+      <outcome id="sr:player:603736" odds="2.75" probabilities="0.3492565200467108" active="1" team="1"/>
+      <outcome id="sr:player:820352" odds="6.54" probabilities="0.13793594306049822" active="1" team="1"/>
+      <outcome id="sr:player:869092" odds="20.68" probabilities="0.033351426685249035" active="1" team="2"/>
+      <outcome id="sr:player:978193" odds="4.62" probabilities="0.20154589371980677" active="1" team="1"/>
+      <outcome id="sr:player:1118055" odds="8.0" probabilities="0.11006002400960385" active="1" team="1"/>
+      <outcome id="sr:player:1245272" odds="7.01" probabilities="0.12764459346186086" active="1" team="1"/>
+      <outcome id="1716" odds="0.0" active="0"/>
+    </market>
+    <market favourite="1" status="1" id="544" specifiers="total=1.5">
+      <outcome id="794" odds="5.03" probabilities="0.180992" active="1"/>
+      <outcome id="798" odds="4.26" probabilities="0.214343" active="1"/>
+      <outcome id="802" odds="5.96" probabilities="0.152172" active="1"/>
+      <outcome id="796" odds="5.18" probabilities="0.175575" active="1"/>
+      <outcome id="800" odds="6.06" probabilities="0.14953" active="1"/>
+      <outcome id="804" odds="7.1" probabilities="0.127388" active="1"/>
+    </market>
+    <market status="1" id="543">
+      <outcome id="78" odds="11.91" probabilities="0.0751056" active="1"/>
+      <outcome id="80" odds="3.26" probabilities="0.281461" active="1"/>
+      <outcome id="82" odds="6.04" probabilities="0.14953" active="1"/>
+      <outcome id="84" odds="4.25" probabilities="0.214343" active="1"/>
+      <outcome id="86" odds="14.82" probabilities="0.0602276" active="1"/>
+      <outcome id="88" odds="4.15" probabilities="0.219332" active="1"/>
+    </market>
+    <market status="1" id="547" specifiers="total=1.5">
+      <outcome id="1724" odds="5.63" probabilities="0.165291" active="1"/>
+      <outcome id="1725" odds="5.43" probabilities="0.171454" active="1"/>
+      <outcome id="1726" odds="6.21" probabilities="0.149644" active="1"/>
+      <outcome id="1727" odds="1.81" probabilities="0.529887" active="1"/>
+      <outcome id="1728" odds="1.76" probabilities="0.548221" active="1"/>
+      <outcome id="1729" odds="2.19" probabilities="0.435503" active="1"/>
+    </market>
+    <market favourite="1" status="1" id="547" specifiers="total=2.5">
+      <outcome id="1724" odds="2.59" probabilities="0.367892" active="1"/>
+      <outcome id="1725" odds="3.28" probabilities="0.289577" active="1"/>
+      <outcome id="1726" odds="2.88" probabilities="0.330863" active="1"/>
+      <outcome id="1727" odds="2.91" probabilities="0.327286" active="1"/>
+      <outcome id="1728" odds="2.23" probabilities="0.430098" active="1"/>
+      <outcome id="1729" odds="3.72" probabilities="0.254284" active="1"/>
+    </market>
+    <market status="1" id="547" specifiers="total=3.5">
+      <outcome id="1724" odds="1.96" probabilities="0.489183" active="1"/>
+      <outcome id="1725" odds="1.91" probabilities="0.50302" active="1"/>
+      <outcome id="1726" odds="2.26" probabilities="0.423017" active="1"/>
+      <outcome id="1727" odds="4.55" probabilities="0.205995" active="1"/>
+      <outcome id="1728" odds="4.33" probabilities="0.216655" active="1"/>
+      <outcome id="1729" odds="5.76" probabilities="0.162131" active="1"/>
+    </market>
+    <market status="1" id="547" specifiers="total=4.5">
+      <outcome id="1724" odds="1.59" probabilities="0.606667" active="1"/>
+      <outcome id="1725" odds="1.61" probabilities="0.595075" active="1"/>
+      <outcome id="1726" odds="1.83" probabilities="0.520592" active="1"/>
+      <outcome id="1727" odds="10.3" probabilities="0.0885113" active="1"/>
+      <outcome id="1728" odds="7.35" probabilities="0.1246" active="1"/>
+      <outcome id="1729" odds="14.09" probabilities="0.0645549" active="1"/>
+    </market>
+  </odds>
+</odds_change>

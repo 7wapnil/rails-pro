@@ -2,60 +2,59 @@ module OddsFeed
   module Radar
     module MarketGenerator
       class OddsGenerator < ::ApplicationService
-        def initialize(market_data)
+        def initialize(market, market_data)
+          @market = market
           @market_data = market_data
+          @odds = []
         end
 
         def call
-          return if @market_data.outcome.blank?
-
-          @market_data.outcome.each do |odd_data|
-            generate_odd!(odd_data)
-          rescue StandardError => e
-            Rails.logger.error e.message
-
-            next
-          end
-
-          WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_CREATED,
-                                          id: @market_data.event.id.to_s)
+          build
+          @odds
         end
 
         private
 
-        def generate_odd!(odd_data)
+        def build
+          return if @market_data.outcome.blank?
+
+          @market_data.outcome.each do |odd_data|
+            odd = build_odd(odd_data)
+            @odds << odd if odd && valid?(odd)
+          rescue StandardError => e
+            Rails.logger.error e.message
+            next
+          end
+        end
+
+        def valid?(odd)
+          return true if odd.valid?
+
+          msg = <<-MESSAGE
+            Odd '#{odd.external_id}' is invalid: \
+            #{odd.errors.full_messages.join("\n")}
+          MESSAGE
+          Rails.logger.warn msg.squish
+          false
+        end
+
+        def build_odd(odd_data)
           return odd_data_is_not_payload(odd_data) unless odd_data.is_a?(Hash)
 
-          odd_id = "#{@market_data.external_id}:#{odd_data['id']}"
-          Rails.logger.debug "Updating odd with external ID #{odd_id}"
+          external_id = "#{@market_data.external_id}:#{odd_data['id']}"
+          Rails.logger.debug "Building odd ID #{external_id}, #{odd_data}"
 
-          odd = prepare_odd(odd_id, odd_data)
-          Rails.logger.debug "Updating odd ID #{odd_id}, #{odd_data}"
-
-          begin
-            odd.save!
-          rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-            Rails.logger.warn ["Odd ID #{odd_id} creating failed", e]
-
-            odd = prepare_odd(odd_id, odd_data)
-            odd.save!
-          end
+          Odd.new(external_id: external_id,
+                  market: @market,
+                  name: @market_data.odd_name(odd_data['id']),
+                  status: odd_data['active'].to_i,
+                  value: odd_data['odds'])
         end
 
         def odd_data_is_not_payload(odd_data)
           Rails.logger.warn(
             "Odd data should be a payload, but received: `#{odd_data}`"
           )
-        end
-
-        def prepare_odd(external_id, payload)
-          odd = Odd.find_or_initialize_by(external_id: external_id,
-                                          market: @market_data.market_model)
-
-          odd.assign_attributes(name: @market_data.odd_name(payload['id']),
-                                status: payload['active'].to_i,
-                                value: payload['odds'])
-          odd
         end
       end
     end
