@@ -4,7 +4,7 @@ module Radar
 
     def perform(payload, enqueued_at)
       @enqueued_at = enqueued_at
-      @start_time = ::Process.clock_gettime(::Process::CLOCK_MONOTONIC)
+      @start_time = Time.now.to_f
       execute(payload)
       log_success
     rescue StandardError => e
@@ -33,7 +33,7 @@ module Radar
 
     # rubocop:disable Metrics/MethodLength
     def log_process(level, message)
-      current_time = ::Process.clock_gettime(::Process::CLOCK_MONOTONIC)
+      current_time = Time.now.to_f
       performing_time = @enqueued_at.zero? ? 0 : current_time - @enqueued_at
       execution_time = current_time - @start_time
       processing_time = performing_time + execution_time
