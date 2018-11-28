@@ -5,7 +5,7 @@
      class: 'nav-link',
      data: { 'target-controller': params[:tab].blank? ? 'documents' : nil }
   %li.nav-item
-    = link_to t('navigation.document.recently_auctioned'), documents_path(tab: :auctioned),
+    = link_to t('navigation.document.recently_actioned'), documents_path(tab: :auctioned),
      class: 'nav-link'
 
 %table.table.entities
