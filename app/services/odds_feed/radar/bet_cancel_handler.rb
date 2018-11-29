@@ -5,7 +5,6 @@ module OddsFeed
 
       def initialize(payload)
         super(payload)
-        @payload = payload
         @batch_size = 20
       end
 
