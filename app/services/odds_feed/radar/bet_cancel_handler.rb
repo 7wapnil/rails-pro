@@ -5,6 +5,7 @@ module OddsFeed
 
       def initialize(payload)
         super(payload)
+        @payload = payload
         @batch_size = 20
       end
 
@@ -24,17 +25,35 @@ module OddsFeed
         @payload['bet_cancel']
       end
 
+      def event_id
+        input_data['event_id']
+      end
+
+      def markets
+        Array.wrap(input_data['market'])
+      end
+
       def validate_message
-        no_range = input_data['start_time'].nil? && input_data['end_time'].nil?
-        raise OddsFeed::InvalidMessageError if no_range
+        invalid = event_id.nil? || markets.empty?
+        raise OddsFeed::InvalidMessageError, @payload if invalid
       end
 
       def build_query
         Bet
-          .joins(odd: [{ market: :event }])
-          .where(events: { external_id: input_data['event_id'] })
+          .joins(odd: :market)
+          .where(markets: { external_id: market_external_ids })
           .merge(bets_with_start_time)
           .merge(bets_with_end_time)
+      end
+
+      def market_external_ids
+        markets.map do |market|
+          OddsFeed::Radar::ExternalId
+            .new(event_id: event_id,
+                 market_id: market['id'],
+                 specs: market['specifiers'].to_s)
+            .generate
+        end
       end
 
       def bets_with_start_time
