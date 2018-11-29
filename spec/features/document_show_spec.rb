@@ -9,7 +9,7 @@ describe 'Documents#show' do
   end
 
   it 'shows document after click details' do
-    within 'table.table' do
+    within 'table.table.entities' do
       click_on(I18n.t('details'))
 
       expect(current_path).to eq(verification_document_path(document))
