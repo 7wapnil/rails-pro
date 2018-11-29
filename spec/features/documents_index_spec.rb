@@ -55,7 +55,7 @@ describe 'Documents#index' do
         it 'in asc direction' do
           sort_link.click if sort_in_desc_direction?(sort_link['href'])
           sort_link.click
-          within 'table.table.entities tbody'do
+          within 'table.table.entities tbody' do
             document_ids = page.all('tr').map do |row|
               row[:id].delete('document-').to_i
             end
@@ -67,7 +67,7 @@ describe 'Documents#index' do
         it 'in desc direction' do
           click_link(link_title) if sort_in_asc_direction?(sort_link['href'])
           click_link link_title
-          within 'table.table.entities tbody'do
+          within 'table.table.entities tbody' do
             document_ids = page.all('tr').map do |row|
               row[:id].delete('document-').to_i
             end
@@ -91,7 +91,7 @@ describe 'Documents#index' do
         it 'in asc direction' do
           click_link(link_title) if sort_in_desc_direction?(sort_link['href'])
           click_link(link_title)
-          within 'table.table.entities tbody'do
+          within 'table.table.entities tbody' do
             document_ids = page.all('tr').map do |row|
               row[:id].delete('document-').to_i
             end
