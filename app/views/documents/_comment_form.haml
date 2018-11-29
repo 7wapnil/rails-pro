@@ -1,0 +1,18 @@
+.row.mt-4
+  .col-6.offset-3
+    = card header: t('entities.comments'), class: 'comments' do
+      - if comments.present?
+        %table.table.table-striped
+          %th= t('initiators.user')
+          %th= t('attributes.text')
+          %th= t('attributes.created_at')
+          - comments.each do |comment|
+            %tr
+              %td= comment.user.full_name
+              %td= comment.text
+              %td= l(comment.created_at, format: :short)
+      = simple_form_for :comment, url: polymorphic_url([:create_comment, document]) do |f|
+        = f.label :text
+        = f.text_area :text, rows: 4, class: 'form-control', required: true
+        %br
+        = f.submit t(:save), class: 'btn btn-success'

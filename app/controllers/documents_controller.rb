@@ -1,6 +1,13 @@
 class DocumentsController < ApplicationController
+  include Commentable
+
   def index
     @documents = documents_base_query
+  end
+
+  def show
+    @document = VerificationDocument.find(document_id)
+    @comments = @document.comments.order(:created_at)
   end
 
   def status
@@ -25,5 +32,9 @@ class DocumentsController < ApplicationController
 
   def document_status_code
     params.require(:status)
+  end
+
+  def resource_name
+    VerificationDocument
   end
 end

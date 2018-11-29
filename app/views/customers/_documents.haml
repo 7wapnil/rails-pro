@@ -31,11 +31,11 @@
                             class: 'dropdown-item',
                             target: :blank
                   = link_to t(:confirm),
-                            document_status_path(status: :confirmed,
+                            status_verification_document_path(status: :confirmed,
                                                  id: attachment.id),
                                                  class: 'dropdown-item'
                   = link_to t(:reject),
-                            document_status_path(status: :rejected,
+                            status_verification_document_path(status: :rejected,
                                                  id: attachment.id),
                                                  class: 'dropdown-item'
                   = link_to t(:history),
