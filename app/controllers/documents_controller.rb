@@ -24,7 +24,7 @@ class DocumentsController < ApplicationController
   private
 
   def documents_base_query
-    return VerificationDocument.auctioned if params[:tab] == 'auctioned'
+    return VerificationDocument.recently_actioned if params[:tab] == 'actioned'
 
     VerificationDocument.pending
   end

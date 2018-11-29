@@ -197,7 +197,7 @@ describe 'Documents#index' do
               .reject(&:blank?)
         end
 
-        before { click_on I18n.t('navigation.document.recently_auctioned') }
+        before { click_on I18n.t('navigation.document.recently_actioned') }
 
         it 'found' do
           select confirmed_doc.status.humanize, from: 'Status'
