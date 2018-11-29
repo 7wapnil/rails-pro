@@ -141,7 +141,7 @@ class CustomersController < ApplicationController
   def update_lock
     @customer = find_customer
     @customer.update!(lock_params)
-    current_user.log_event lock_event,
+    current_user.log_event locking_event,
                            CustomerLocking.new(@customer).to_h,
                            @customer
     render json: {
@@ -201,7 +201,7 @@ class CustomersController < ApplicationController
     params.require(:verified)
   end
 
-  def lock_event
+  def locking_event
     @customer.locked ? :customer_locked : :customer_unlocked
   end
 end
