@@ -60,6 +60,7 @@ Rails.application.configure do
   config.assets.quiet = true
 
   config.logger = Logger.new('/proc/1/fd/1') if ENV['DOCKER_OUTPUT']
+  config.logger = Logger.new(STDOUT)         if ENV['STD_OUTPUT']
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true

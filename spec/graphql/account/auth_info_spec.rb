@@ -10,11 +10,12 @@ describe 'GraphQL#AuthInfo' do
                             variables: variables)
   end
 
+  let(:auth_info) { result['data']['authInfo'] }
+
   let(:query) do
     %(query($login: String!) {
           authInfo(login: $login) {
-            login_attempts
-            max_login_attempts
+            is_suspected
           }
         })
   end
@@ -22,30 +23,14 @@ describe 'GraphQL#AuthInfo' do
   context 'non-existing user' do
     let(:variables) { Hash[:login, Faker::Internet.email] }
 
-    it do
-      auth_info = result['data']['authInfo']
-
-      expect(auth_info['login_attempts'])
-        .to eq(Account::AuthInfoQuery::FIRST_LOGIN_ATTEMPT)
-
-      expect(auth_info['max_login_attempts'])
-        .to eq(LoginAttemptable::LOGIN_ATTEMPTS_CAP)
-    end
+    it { expect(auth_info['is_suspected']).to be_falsey }
   end
 
   context 'existing user' do
-    let(:failed_attempts) { rand(2..5) }
+    let(:failed_attempts) { LoginAttemptable::LOGIN_ATTEMPTS_CAP }
     let(:customer)  { create(:customer, failed_attempts: failed_attempts) }
     let(:variables) { Hash[:login, customer.email] }
 
-    it do
-      auth_info = result['data']['authInfo']
-
-      expect(auth_info['login_attempts'])
-        .to eq(failed_attempts)
-
-      expect(auth_info['max_login_attempts'])
-        .to eq(LoginAttemptable::LOGIN_ATTEMPTS_CAP)
-    end
+    it { expect(auth_info['is_suspected']).to be_truthy }
   end
 end
