@@ -37,6 +37,8 @@ en:
   search: "Search %{subject}"
   no_records: No records yet
 
+  actions:
+    impersonate: 'Impersonate'
   navigation:
     documents: Documents
     document:
