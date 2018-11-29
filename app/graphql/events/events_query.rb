@@ -16,9 +16,11 @@ module Events
       query = Event
               .visible
               .joins(markets: :odds)
+              .joins(:title)
               .group('events.id')
               .order(:priority)
               .order(:start_at)
+              .select('events.*')
 
       filter_query(query, args)
     end
@@ -30,6 +32,7 @@ module Events
 
       query = filter_by_id(query, filter[:id])
       query = filter_by_title(query, filter[:titleId])
+      query = filter_by_title_kind(query, filter[:titleKind])
       query = filter_by_tournament(query, filter[:tournamentId])
       query = query.limit(args[:limit]) if args[:limit]
       query = query.in_play if filter[:inPlay]
@@ -48,6 +51,12 @@ module Events
       return query if title_id.nil?
 
       query.where(title_id: title_id)
+    end
+
+    def filter_by_title_kind(query, title_kind)
+      return query if title_kind.nil?
+
+      query.where(titles: { kind: title_kind })
     end
 
     def filter_by_tournament(query, tournament_id)
