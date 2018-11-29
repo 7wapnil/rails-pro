@@ -22,7 +22,7 @@ module OddsFeed
             odd = build_odd(odd_data)
             @odds << odd if odd && valid?(odd)
           rescue StandardError => e
-            Rails.logger.error ({ exception: e, paylaod: odd_data }.to_json)
+            Rails.logger.error e.message
             next
           end
         end
