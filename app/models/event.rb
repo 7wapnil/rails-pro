@@ -123,14 +123,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
     payload&.merge!(addition)
     self.payload = addition unless payload
-
-    return unless addition[:event_status]
-
-    WebSocket::Client.instance.emit(
-      WebSocket::Signals::EVENT_UPDATED,
-      id: id.to_s,
-      changes: { event_status: addition[:event_status] }
-    )
   end
 
   def tournament
@@ -145,6 +137,16 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     Radar::Producer.find_by_id(
       payload&.dig('producer', 'id')
     )
+  end
+
+  def state
+    EventState.new(payload['state'])
+  end
+
+  def emit_state_updated
+    WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
+                                    id: id.to_s,
+                                    changes: state)
   end
 
   private

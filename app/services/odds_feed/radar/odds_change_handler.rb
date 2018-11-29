@@ -29,7 +29,7 @@ module OddsFeed
       def touch_event!
         event.add_to_payload(
           producer: { origin: :radar, id: event_data['product'] },
-          event_status:
+          state:
             OddsFeed::Radar::EventStatusService.new.call(
               event_id: event.id, data: event_data['sport_event_status']
             )
@@ -40,6 +40,7 @@ module OddsFeed
         log_updates!(updates)
         event.assign_attributes(updates)
         event.save!
+        event.emit_state_updated
       end
 
       def log_updates!(updates)
