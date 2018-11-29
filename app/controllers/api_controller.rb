@@ -8,7 +8,14 @@ class ApiController < ActionController::Base
     return nil if token.blank?
 
     result = JwtService.decode(token)
-    Customer.find_by(id: result[0]['id'])
+    user = User.find_by(id: result.first['impersonated_by'])
+    customer = Customer.find_by(id: result.first['id'])
+
+    if user.present?
+      ImpersonatedCustomerDecorator.new(customer, user)
+    else
+      customer
+    end
   rescue JWT::DecodeError
     nil
   end

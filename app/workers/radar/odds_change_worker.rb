@@ -1,6 +1,8 @@
 module Radar
   class OddsChangeWorker < BaseUofWorker
-    sidekiq_options queue: :uof_priority
+    include ::QueueName
+
+    sidekiq_options queue: queue_name
 
     def worker_class
       OddsFeed::Radar::OddsChangeHandler

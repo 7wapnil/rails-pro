@@ -1,0 +1,32 @@
+.row.mt-4
+  .col-6.offset-3
+    = card header: t('entities.document'), class: 'document-info' do
+      %table.table
+        %tr
+          %td= t('attributes.username')
+          %td= link_to @document.customer.username, documents_customer_path(id: @document.customer.id)
+        %tr
+          %td= t('attributes.kind')
+          %td= t("attributes.#{@document.kind}")
+        %tr
+          %td= t('attributes.created_at')
+          %td= l(@document.created_at, format: :long)
+        %tr
+          %td= t('attributes.status')
+          %td= status_badge(@document.status)
+        %tr
+          %td= t('view')
+          %td= link_to t(:view),
+                        rails_blob_path(@document.document),
+                        class: 'btn btn-outline-dark mr-2',
+                        target: :blank
+        - if @document.pending?
+          %tr
+            %td= t('actions')
+            %td
+              = render partial: 'documents/actions', locals: { document: @document }
+        %tr
+      %hr
+      = link_back
+= render partial: 'documents/comment_form', locals: { document: @document, comments: @comments }
+

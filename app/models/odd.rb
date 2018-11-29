@@ -1,6 +1,4 @@
 class Odd < ApplicationRecord
-  include HasUniqueExternalId
-
   enum status: {
     inactive: 0,
     active: 1

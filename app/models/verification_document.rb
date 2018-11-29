@@ -22,6 +22,7 @@ class VerificationDocument < ApplicationRecord
 
   belongs_to :customer
   has_one_attached :document
+  has_many :comments, as: :commentable
 
   validates :document, presence: true
   validates :document,

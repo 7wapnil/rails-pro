@@ -1,14 +1,36 @@
 = card header: t(:personal_information), class: 'personal-information' do
-  %table.table
-    %tr
-      %td= t(:first_name)
-      %td= @customer.first_name
-    %tr
-      %td= t(:last_name)
-      %td= @customer.last_name
-    %tr
-      %td= t(:gender)
-      %td= @customer.gender&.humanize
-    %tr
-      %td= t(:date_of_birth)
-      %td= l(@customer.date_of_birth)
+  = simple_form_for @customer, url: update_personal_information_customer_path do |f|
+    %table.table
+      %tr
+        %td= t(:first_name)
+        %td
+          = f.input :first_name,
+                    label: false,
+                    required: true
+      %tr
+        %td= t(:last_name)
+        %td
+          = f.input :last_name,
+                    label: false,
+                    required: true
+      %tr
+        %td= t(:gender)
+        %td
+          = f.input :gender,
+                    as: :select,
+                    collection: Customer.genders,
+                    include_blank: false,
+                    label_method: ->(k) { k.first.capitalize },
+                    value_method: ->(k) { k.first },
+                    label: false
+      %tr
+        %td= t(:date_of_birth)
+        %td
+          = f.input :date_of_birth,
+                    as: :date_picker,
+                    label: false,
+                    input_html: { value: l(@customer.date_of_birth) },
+                    required: true
+      %tr
+        %td.text-right(colspan="2")
+          = f.submit t(:save), class: 'btn btn-outline-dark'

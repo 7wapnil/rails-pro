@@ -1,10 +1,10 @@
-describe 'Documentss#index' do
+describe 'Documents#index' do
   context 'signed in' do
     let(:admin_user) { create(:user) }
 
     before do
       login_as create(:admin_user), scope: :user
-      visit documents_path
+      visit verification_documents_path
     end
 
     context 'navigation tabs' do
@@ -17,7 +17,7 @@ describe 'Documentss#index' do
       end
 
       it 'by default displays pending documents' do
-        visit documents_path
+        visit  verification_documents_path
 
         within 'table.table.entities tbody' do
           expect(page).to have_selector("tr#document-#{pending.id}")
@@ -35,7 +35,7 @@ describe 'Documentss#index' do
       end
 
       it 'displays recently auctioned' do
-        click_on(I18n.t('navigation.document.recently_auctioned'))
+        click_on(I18n.t('navigation.document.recently_actioned'))
 
         within 'table.table.entities tbody' do
           expect(page).to have_selector("tr#document-#{rejected.id}")

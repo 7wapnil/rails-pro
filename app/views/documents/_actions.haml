@@ -1,0 +1,8 @@
+.dropdown
+  %button#dropdownMenuButton.btn.btn-outline-dark.mr-2.dropdown-toggle{ aria: { expanded: false, haspopup: true },
+                                                                                     'data-toggle': 'dropdown',
+                                                                                     type: :button }
+    = t(:action)
+  .dropdown-menu{ 'aria-labelledby': 'dropdownMenuButton' }
+    = link_to t(:confirm), status_verification_document_path(status: :confirmed, id: document.id), class: 'dropdown-item'
+    = link_to t(:reject), status_verification_document_path(status: :rejected, id: document.id), class: 'dropdown-item'

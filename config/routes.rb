@@ -18,6 +18,10 @@ Rails.application.routes.draw do
     post :update_labels, on: :member
   end
 
+  concern :commentable do
+    post :create_comment, on: :member
+  end
+
   resources :markets, concerns: %i[visible labelable]
   resources :customers, only: %i[index show], concerns: :labelable do
     member do
@@ -25,11 +29,15 @@ Rails.application.routes.draw do
       get :activity
       get :notes
       get :betting_limits
+      get :deposit_limit
       get :bets
+      get :impersonate
       post :update_promotional_subscription
       post :update_customer_status
       post :reset_password_to_default
       post :update_labels
+      patch :update_personal_information
+      patch :update_contact_information
       post :update_lock
       post :upload_documents
       scope '/documents' do
@@ -41,6 +49,8 @@ Rails.application.routes.draw do
     end
   end
   resources :betting_limits, only: %i[create update]
+
+  resources :deposit_limits, only: %i[create update destroy]
 
   post '/customer_attachment_upload',
        to: 'api_upload#customer_attachment_upload'
@@ -55,9 +65,11 @@ Rails.application.routes.draw do
 
   resources :currencies, only: %i[index new edit create update]
 
-  scope 'documents' do
-    root to: 'documents#index', as: :documents
-    get '/:id', to: 'documents#status', as: :document_status
+  resources :verification_documents, concerns: :commentable,
+                                     only:        %i[index show],
+                                     path:       :documents,
+                                     controller: :documents do
+    get :status, on: :member
   end
 
   resource :dashboard, only: :show

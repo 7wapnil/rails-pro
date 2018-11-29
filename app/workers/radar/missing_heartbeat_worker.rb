@@ -1,6 +1,9 @@
 module Radar
   class MissingHeartbeatWorker < ApplicationWorker
-    sidekiq_options lock: :until_executed,
+    include ::QueueName
+
+    sidekiq_options queue: queue_name,
+                    lock: :until_executed,
                     on_conflict: :log
 
     def perform

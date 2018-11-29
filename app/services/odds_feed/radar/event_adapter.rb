@@ -2,7 +2,7 @@ module OddsFeed
   module Radar
     class EventAdapter < BaseAdapter
       def result
-        @event = Event.new event_attributes
+        @event = Event.new(event_attributes)
         attach_title!
         find_or_create_scopes!
         archive_event_and_scopes!
@@ -60,7 +60,7 @@ module OddsFeed
 
       def attach_title!
         Rails.logger.debug "Title data received: #{title_fixture}"
-        @event.title = Title.find_by!(external_id: title_fixture['id'])
+        @event.title = EventAdapter::TitleSelector.call(payload: title_fixture)
       end
 
       def find_or_create_scopes!
