@@ -28,6 +28,8 @@ module OddsFeed
         end
 
         def find_odd_template(id)
+          return outcomes.first if variant_id.blank? && outcomes.one?
+
           outcomes.find { |outcome| outcome['id'] == id }
         end
 
