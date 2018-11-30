@@ -16,4 +16,12 @@ module FeatureHelpers
   def resource_row_selector(resource)
     "tr##{resource.class.to_s.downcase}-#{resource.id}"
   end
+
+  def sort_in_asc_direction?(link_href)
+    link_href.downcase.ends_with? 'asc'
+  end
+
+  def sort_in_desc_direction?(link_href)
+    link_href.downcase.ends_with? 'desc'
+  end
 end

@@ -2,7 +2,8 @@ class DocumentsController < ApplicationController
   include Commentable
 
   def index
-    @documents = documents_base_query
+    @search = documents_base_query.search(query_params)
+    @documents = @search.result
   end
 
   def show

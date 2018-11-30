@@ -11,9 +11,9 @@
 %table.table.entities
   %thead
     %tr
-      %th= t('attributes.username')
+      %th= sort_link @search, :customer_username, t('attributes.username')
       %th= t('attributes.kind')
-      %th= t('attributes.created_at')
+      %th= sort_link @search, :created_at, t('attributes.created_at')
       %th= t('attributes.status')
       %th= t(:view)
       %th.text-center= t('actions')
