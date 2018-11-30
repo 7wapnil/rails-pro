@@ -19,7 +19,7 @@
       %th= sort_link @search, :created_at, t('attributes.created_at')
       %th= t('attributes.status')
       %th= t(:view)
-      %th.text-center= t(:action)
+      %th.text-center= t('attributes.actions')
       %th= t(:details)
   %tbody
     - @documents.each do |document|

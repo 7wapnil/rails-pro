@@ -157,6 +157,7 @@ describe 'Documents#index' do
               .map(&:text)
               .reject(&:blank?)
         end
+
         let(:input_name) { 'Type equals' }
         let!(:doc) { create(:verification_document, kind: :credit_card) }
 
@@ -187,9 +188,11 @@ describe 'Documents#index' do
         let!(:rejected_doc) do
           create(:verification_document, status: :rejected)
         end
+
         let!(:confirmed_doc) do
           create(:verification_document, status: :confirmed)
         end
+
         let!(:available_types) do
           page.find('#query_status_eq')
               .all('option')
@@ -225,9 +228,11 @@ describe 'Documents#index' do
         let!(:old_doc) do
           create(:verification_document, created_at: Time.zone.now - 1.day)
         end
+
         let!(:future_doc) do
           create(:verification_document, created_at: Time.zone.now + 1.day)
         end
+
         let!(:today_doc) do
           create(:verification_document, created_at: Time.zone.now)
         end

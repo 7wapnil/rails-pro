@@ -22,7 +22,7 @@
                         target: :blank
         - if @document.pending?
           %tr
-            %td= t(:action)
+            %td= t('attributes.actions')
             %td
               = render partial: 'documents/actions', locals: { document: @document }
         %tr
