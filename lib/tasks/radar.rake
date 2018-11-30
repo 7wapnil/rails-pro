@@ -13,4 +13,9 @@ namespace :radar do
   task update_market_templates: :environment do
     Radar::MarketsUpdateWorker.new.perform
   end
+
+  desc 'Create Sidekiq jobs for updating event scopes'
+  task update_event_scopes: :environment do
+    Radar::EventScopesLoadingWorker.new.perform
+  end
 end
