@@ -4,13 +4,15 @@
 
 %ul.nav.nav-tabs#documents_tabs
   %li.nav-item
-    = link_to t('navigation.document.pending'), verification_documents_path(tab: :pending),
-     class: 'nav-link',
-     data: { 'target-controller': params[:tab].blank? || params[:tab] == 'pending' ? 'documents' : nil }
+    = link_to t('navigation.document.pending'),
+              verification_documents_path(tab: :pending),
+              class: 'nav-link',
+              'data-target-controller': pending_tab
   %li.nav-item
-    = link_to t('navigation.document.recently_actioned'), verification_documents_path(tab: :actioned),
-     class: 'nav-link',
-     data: { 'target-controller': params[:tab] == 'actioned' ? 'documents' : nil }
+    = link_to t('navigation.document.recently_actioned'),
+              verification_documents_path(tab: :actioned),
+              class: 'nav-link',
+              'data-target-controller': actioned_tab
 %table.table.entities
   %thead
     %tr
