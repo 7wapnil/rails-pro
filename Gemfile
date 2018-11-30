@@ -62,6 +62,7 @@ gem 'aasm'
 gem 'sendgrid-rails', '~> 3.0'
 gem 'phonelib'
 gem 'cryptocompare'
+gem 'recaptcha'
 
 # To be moved back to development and test group
 gem 'faker', github: 'stympy/faker', branch: 'master'
@@ -81,6 +82,7 @@ group :development do
   gem 'rails-erd'
   gem 'web-console', '>= 3.3.0'
   gem 'graphiql-rails'
+  gem 'letter_opener'
   gem 'listen', '>= 3.0.5', '< 3.2'
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
