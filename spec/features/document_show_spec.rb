@@ -9,7 +9,7 @@ describe 'Documents#show' do
   end
 
   it 'shows document after click details' do
-    within 'table.table' do
+    within 'table.table.entities' do
       click_on(I18n.t('details'))
 
       expect(current_path).to eq(verification_document_path(document))
@@ -33,12 +33,11 @@ describe 'Documents#show' do
     expect(page).to have_content(I18n.t('entities.comments'))
   end
 
-  it 'not shows actions if staus isn`t pending' do
-    document.update_attributes!(status: 1)
+  it 'shows action' do
     visit verification_document_path(document)
 
     within 'table.table' do
-      expect(page).not_to have_button(I18n.t('actions'))
+      expect(page).to have_button(I18n.t(:action))
     end
   end
 

@@ -16,7 +16,6 @@ en:
   no_file: No File
   history: History
   action: Action
-  actions: Actions
   details: Details
   from: From
   to: To
@@ -200,14 +199,15 @@ en:
     lock_until: Lock until
     setted: Setted,
     text: Text
+    actions: Actions
 
   documents:
     history_title: "Files history: %{document_type}"
 
   time:
     formats:
-      default: "%-d %B %Y %k:%M"
-      long: "%-d %B %Y %k:%M:%S"
+      default: "%-d %B %Y %-k:%M"
+      long: "%-d %B %Y %-k:%M:%S"
 
   date:
     formats:

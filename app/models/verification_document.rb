@@ -32,7 +32,7 @@ class VerificationDocument < ApplicationRecord
                                            image/jpg
                                            application/pdf] }
 
-  scope :auctioned, -> { where(status: %i[confirmed rejected]) }
+  scope :recently_actioned, -> { where(status: %i[confirmed rejected]) }
   delegate :filename, to: :document
 
   def loggable_attributes

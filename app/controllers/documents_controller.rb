@@ -1,8 +1,10 @@
 class DocumentsController < ApplicationController
   include Commentable
+  include DateIntervalFilters
 
   def index
-    @search = documents_base_query.search(query_params)
+    @search = documents_base_query
+              .search(prepare_interval_filter(query_params, :created_at))
     @documents = @search.result
   end
 
@@ -22,7 +24,7 @@ class DocumentsController < ApplicationController
   private
 
   def documents_base_query
-    return VerificationDocument.auctioned if params[:tab] == 'auctioned'
+    return VerificationDocument.recently_actioned if params[:tab] == 'actioned'
 
     VerificationDocument.pending
   end
