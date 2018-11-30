@@ -33,16 +33,18 @@
                             rails_blob_path(attachment.document),
                             class: 'dropdown-item',
                             target: :blank
-                  = link_to t(:confirm),
-                            status_verification_document_path(status: :confirmed,
-                                                 id: attachment.id),
-                                                 class: 'dropdown-item',
-                                                 data: { turbolinks: false } if attachment.pending? || attachment.rejected?
-                  = link_to t(:reject),
-                            status_verification_document_path(status: :rejected,
-                                                 id: attachment.id),
-                                                 class: 'dropdown-item',
-                                                 data: { turbolinks: false } if attachment.pending? || attachment.confirmed?
+                  - if attachment.pending? || attachment.rejected?
+                    = link_to t(:confirm),
+                              status_verification_document_path(status: :confirmed,
+                                                   id: attachment.id),
+                                                   class: 'dropdown-item',
+                                                   data: { turbolinks: false }
+                  - if attachment.pending? || attachment.confirmed?
+                    = link_to t(:reject),
+                              status_verification_document_path(status: :rejected,
+                                                   id: attachment.id),
+                                                   class: 'dropdown-item',
+                                                   data: { turbolinks: false }
                   = link_to t(:history),
                             documents_history_customer_path(id: @customer.id,
                                                             document_type: kind),

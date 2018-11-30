@@ -4,7 +4,15 @@
                                                                                      type: :button }
     = t(:action)
   .dropdown-menu{ 'aria-labelledby': 'dropdownMenuButton' }
-    = link_to t(:confirm), status_verification_document_path(status: :confirmed, id: document.id),
-     class: 'dropdown-item', data: { turbolinks: false } if document.rejected? || document.pending?
-    = link_to t(:reject), status_verification_document_path(status: :rejected, id: document.id),
-     class: 'dropdown-item', data: { turbolinks: false } if document.confirmed? || document.pending?
+    - if document.rejected? || document.pending?
+      = link_to t(:confirm),
+                status_verification_document_path(status: :confirmed,
+                                      id: document.id),
+                                      class: 'dropdown-item',
+                                      data: { turbolinks: false }
+    - if document.confirmed? || document.pending?
+      = link_to t(:reject),
+                status_verification_document_path(status: :rejected,
+                                      id: document.id),
+                                      class: 'dropdown-item',
+                                      data: { turbolinks: false }
