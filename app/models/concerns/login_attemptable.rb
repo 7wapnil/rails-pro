@@ -30,14 +30,14 @@ module LoginAttemptable
       failed_attempts == LOGIN_ATTEMPTS_CAP + 1
     end
 
-    def suspected_login?
+    def suspicious_login?
       failed_attempts >= LOGIN_ATTEMPTS_CAP
     end
 
     private
 
     def notify_account_owner
-      ArcanebetMailer.suspected_login(email).deliver_now
+      ArcanebetMailer.suspicious_login(email).deliver_now
     end
   end
 end

@@ -40,7 +40,7 @@ shared_examples 'LoginAttemptable' do
     context 'notify account owner' do
       before do
         expect_any_instance_of(ArcanebetMailer)
-          .to receive(:suspected_login).with(auth_entity.email)
+          .to receive(:suspicious_login).with(auth_entity.email)
       end
 
       it { auth_entity.invalid_login_attempt! }
@@ -57,13 +57,13 @@ shared_examples 'LoginAttemptable' do
     end
   end
 
-  describe 'suspected_login?' do
-    it { expect(auth_entity.suspected_login?).to be_truthy }
+  describe 'suspicious_login?' do
+    it { expect(auth_entity.suspicious_login?).to be_truthy }
 
     context 'negative' do
       let(:attempts) { LoginAttemptable::LOGIN_ATTEMPTS_CAP - 1 }
 
-      it { expect(auth_entity.suspected_login?).to be_falsey }
+      it { expect(auth_entity.suspicious_login?).to be_falsey }
     end
   end
 end

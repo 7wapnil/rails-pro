@@ -86,12 +86,12 @@ describe 'GraphQL#SignIn' do
       it { expect { result }.to change { user.reload.failed_attempts }.by(1) }
     end
 
-    context 'notify about suspected login' do
+    context 'notify about suspicious login' do
       let(:attempts) { LoginAttemptable::LOGIN_ATTEMPTS_CAP }
 
       before do
         expect_any_instance_of(ArcanebetMailer)
-          .to receive(:suspected_login).with(user.email)
+          .to receive(:suspicious_login).with(user.email)
       end
 
       it 'returns captcha error' do

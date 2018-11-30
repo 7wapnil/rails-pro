@@ -241,5 +241,5 @@ en:
 
   mailers:
     arcanebet_mailer:
-      suspected_login:
-        subject: Suspected login attempts
+      suspicious_login:
+        subject: Suspicious login attempt

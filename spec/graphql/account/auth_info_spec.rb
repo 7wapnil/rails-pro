@@ -15,7 +15,7 @@ describe 'GraphQL#AuthInfo' do
   let(:query) do
     %(query($login: String!) {
           authInfo(login: $login) {
-            is_suspected
+            is_suspicious
           }
         })
   end
@@ -23,7 +23,7 @@ describe 'GraphQL#AuthInfo' do
   context 'non-existing user' do
     let(:variables) { Hash[:login, Faker::Internet.email] }
 
-    it { expect(auth_info['is_suspected']).to be_falsey }
+    it { expect(auth_info['is_suspicious']).to be_falsey }
   end
 
   context 'existing user' do
@@ -31,6 +31,6 @@ describe 'GraphQL#AuthInfo' do
     let(:customer)  { create(:customer, failed_attempts: failed_attempts) }
     let(:variables) { Hash[:login, customer.email] }
 
-    it { expect(auth_info['is_suspected']).to be_truthy }
+    it { expect(auth_info['is_suspicious']).to be_truthy }
   end
 end

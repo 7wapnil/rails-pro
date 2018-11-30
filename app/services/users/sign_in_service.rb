@@ -21,8 +21,8 @@ module Users
       @attempts = same_login? ? attempts + 1 : FIRST_ATTEMPT
     end
 
-    def suspected?
-      login_user&.suspected_login? ||
+    def suspicious?
+      login_user&.suspicious_login? ||
         attempts >= LoginAttemptable::LOGIN_ATTEMPTS_CAP
     end
 

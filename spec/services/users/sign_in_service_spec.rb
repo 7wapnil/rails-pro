@@ -59,25 +59,25 @@ describe Users::SignInService do
     end
   end
 
-  describe '#suspected?' do
+  describe '#suspicious?' do
     let(:attempts)        { Users::SignInService::FIRST_ATTEMPT }
     let(:failed_attempts) { LoginAttemptable::LOGIN_ATTEMPTS_CAP }
 
-    context 'when found user is suspected' do
+    context 'when found user is suspicious' do
       let!(:user) do
         create(:user, email: email, failed_attempts: failed_attempts)
       end
 
-      it { expect(subject.suspected?).to be_truthy }
+      it { expect(subject.suspicious?).to be_truthy }
     end
 
     context 'when user was not found' do
-      it { expect(subject.suspected?).to be_falsey }
+      it { expect(subject.suspicious?).to be_falsey }
 
       context 'with a lot of attempts in session' do
         let(:attempts) { failed_attempts }
 
-        it { expect(subject.suspected?).to be_truthy }
+        it { expect(subject.suspicious?).to be_truthy }
       end
     end
   end

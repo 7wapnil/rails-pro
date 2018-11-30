@@ -8,7 +8,6 @@ module Users
     layout 'minimal'
 
     # before_action :configure_sign_in_params, only: [:create]
-    # before_action :clear_session, only: :new
 
     before_action :clear_session, only: :new
 
@@ -62,7 +61,7 @@ module Users
     end
 
     def verify_captcha
-      return if !suspected? || verify_recaptcha
+      return if !suspicious? || verify_recaptcha
 
       auth_session.invalid_login_attempt!
 
@@ -72,8 +71,8 @@ module Users
       respond_with_navigational(resource) { render :new }
     end
 
-    def suspected?
-      params['g-recaptcha-response'] || auth_session.suspected?
+    def suspicious?
+      params['g-recaptcha-response'] || auth_session.suspicious?
     end
 
     def after_sign_out_path_for(_resource_or_scope)

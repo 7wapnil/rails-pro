@@ -3,7 +3,7 @@ module Account
     include Recaptcha::Verify
 
     delegate :invalid_login_attempt!, :valid_password?,
-             :suspected_login?,
+             :suspicious_login?,
              to: :customer, allow_nil: true
 
     def initialize(customer:, params:)
@@ -13,7 +13,7 @@ module Account
     end
 
     def captcha_invalid?
-      (captcha || suspected_login?) && !captcha_verified?
+      (captcha || suspicious_login?) && !captcha_verified?
     end
 
     def invalid_captcha!

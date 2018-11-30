@@ -32,7 +32,7 @@ describe 'User Sign In' do
       expect_authentication_failure
     end
 
-    context 'suspected' do
+    context 'suspicious' do
       let(:captcha_message) { I18n.t('recaptcha.errors.verification_failed') }
       let!(:user) do
         create(:admin_user,
@@ -46,9 +46,9 @@ describe 'User Sign In' do
         expect { user.reload }.to change { user.failed_attempts }.by(1)
       end
 
-      scenario 'notify about suspected login' do
+      scenario 'notify about suspicious login' do
         expect_any_instance_of(ArcanebetMailer)
-          .to receive(:suspected_login).with(user.email)
+          .to receive(:suspicious_login).with(user.email)
 
         fill_sign_in_form
       end
