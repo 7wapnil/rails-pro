@@ -1,6 +1,6 @@
 = card do
   .row.d-flex.align-items-center
-    .col=  t(:customer_verification_status)
+    .col=  t('entities.customers.verification_status')
     .col.text-right= @customer.verified ? t('statuses.verified') : t('statuses.not_verified')
     .col-4.d-flex.justify-content-end
       .dropdown
@@ -9,11 +9,11 @@
                                                                                      type: :button }
           = t(:action)
         .dropdown-menu{ 'aria-labelledby' => 'customerStatusDropdown' }
-          = link_to t(:verified),
+          = link_to t('statuses.verified'),
                                 update_customer_status_customer_path(customer: { verified: true }),
                                                                      method: :post,
                                                                      class: 'dropdown-item'
-          = link_to t(:not_verified),
+          = link_to t('statuses.not_verified'),
                                 update_customer_status_customer_path(customer: { verified: false }),
                                                                      method: :post,
                                                                      class: 'dropdown-item'

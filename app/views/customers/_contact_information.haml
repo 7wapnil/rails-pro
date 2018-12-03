@@ -1,14 +1,14 @@
-= card header: t(:contact_information), class: 'contact-information' do
+= card header: t('attributes.contact_information'), class: 'contact-information' do
   = simple_form_for @customer, url: update_contact_information_customer_path do |f|
     %table.table
       %tr
-        %td= t(:email)
+        %td= t('attributes.email')
         %td
           = f.input :email,
                     label: false,
                     required: true
       %tr
-        %td= t(:phone_number)
+        %td= t('attributes.phone')
         %td
           = f.input :phone,
                     as: :phone,

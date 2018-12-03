@@ -12,7 +12,7 @@ class Wallet < ApplicationRecord
             numericality: {
               greater_than_or_equal_to: 0,
               message: I18n.t('errors.messages.with_instance.not_negative',
-                              instance: I18n.t('entities.wallet'))
+                              instance: I18n.t('entities.wallets', count: 1))
             }
 
   def self.build_default

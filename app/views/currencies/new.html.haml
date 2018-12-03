@@ -1,2 +1,2 @@
 = simple_form_for @currency do |f|
-  = render 'currencies/form', { f: f, heading: t(:add_currency) }
+  = render 'currencies/form', { f: f, heading: t(:add_instance, instance: t('entities.currencies', count: 1)) }

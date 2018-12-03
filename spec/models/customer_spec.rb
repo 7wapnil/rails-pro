@@ -61,7 +61,9 @@ describe Customer do
   end
 
   describe 'account transition' do
-    let(:error_message) { "can't transit customer account kind" }
+    let(:error_message) do
+      I18n.t('errors.messages.customer_account_kind_transit')
+    end
 
     it 'from regular' do
       customer = create(:customer, account_kind: :regular)
@@ -70,7 +72,7 @@ describe Customer do
       expect { customer.save }.to_not raise_error(error_message)
     end
 
-    it "can't transit from other kinds" do
+    it 'can\'t transit customer account kind' do
       customer = create(:customer, account_kind: :staff)
       customer.account_kind = :test
       customer.password = 'password'

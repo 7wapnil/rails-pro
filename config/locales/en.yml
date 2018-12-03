@@ -1,249 +1,330 @@
 en:
-  sign_up: Sign Up
+  action: Action
+  add: Add
+  back: Back
+  confirm: Confirm
+  confirm_sure: Are you sure?
+  content: Content
+  create: Create
+  days: "%{days} days"
+  delete: Delete
+  details: Details
+  edit: Edit
+  from: From
+  history: History
+  infinite: Infinite
+  note: Note
+  no_file: No File
+  no_records: No records yet
+  reject: Reject
+  save: Save
+  says_at: "%{who} at %{when}"
+  search: "Search %{subject}"
   sign_in: Sign In
   sign_out: Sign Out
-  create: Create
-  save: Save
-  back: Back
-  add: Add
-  edit: Edit
-  delete: Delete
-  confirm: Confirm
-  reject: Reject
-  view: View
-  confirm_sure: Are you sure?
-  upload: Upload
-  no_file: No File
-  history: History
-  action: Action
-  details: Details
-  from: From
+  sign_up: Sign Up
   to: To
-  days: "%{days} days"
-  infinite: Infinite
+  upload: Upload
+  view: View
 
+  add_instance: "Add %{instance}"
   created: "%{instance} created"
-  updated: "%{instance} updated"
   deleted: "%{instance} deleted"
-  new_instance: "New %{instance}"
   edit_instance: "Edit %{instance}"
-  attribute_updated: "%{attribute} updated!"
+  new_instance: "New %{instance}"
+  updated: "%{instance} updated"
 
-  says_at: "%{who} at %{when}"
-
-  edit_profile: Edit Profile
-
-  note: Note
-
-  content: Content
-
-  search: "Search %{subject}"
-  no_records: No records yet
-
-  actions:
-    impersonate: 'Impersonate'
-  navigation:
-    documents: Documents
-    document:
-      pending: Pending documents
-      recently_actioned: Recently actioned
-    customer:
-      account: Account
-      activity: Activity
-      account_management: Account management
-      notes: Notes
-      bets: Bets
-      documents: Documents
-      betting_limits: Betting Limits
-      deposit_limit: Deposit Limit
-
-  statuses:
-    initial: Initial
-    pending: Pending
-    succeeded: Succeeded
-    failed: Failed
-    verified: Verified
-    not_verified: Not verified
-    settled: Settled
-    live: Live
-    offline: Offline
-
-  settles:
-    won: Won
-    lost: Lost
-
-  kinds:
-    deposit: "Deposit"
-    win: "Win"
-    internal_debit: "Internal debit"
-    withdraw: "Withdraw"
-    bet: "Bet"
-    internal_credit: "Internal credit"
-
-  origins:
-    cashier: Cashier
-
-  initiators:
-    user: User
-    customer: Customer
-
-  lock_reasons:
-    self_exclusion: Self-exclusion
-    cooling_off: Cooling off
-    locked: Lock
-    closed: Closed
-    password_recovery: Password recovery
-    fraud: Fraud
-
-  entities:
-    wallet: Wallet
-    balance: Balance
-    bonus: Bonus
-    bonuses:
-      one: Bonus
-      other: Bonuses
-    entry_request:
-      flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
-    activity: Activity
-    activities:
-      zero: No activities
-      one: 1 activity
-      other: "%{count} activities"
-    events:
-      one: Event
-      other: Events
-    bets:
-      one: Bet
-      other: Bets
-    markets:
-      one: Market
-      other: Markets
-    document: Document
-    documents: Documents
-    comments: Comments
-    comment: Comment
   attributes:
-    username: Username
-    email: Email
-    ip_address: IP Address
-    id: ID
+    account_information: Account information
+    account_lock: Account lock
+    action: Action
+    actions: Actions
+    actual_payout: Actual payout
+    amount: Amount
+    authorized_at: Authorized at
     balance: Balance
-    date: Date
-    status: Status
+    bank_statement: Bank statement
+    bank_statements: Bank statements
+    bet_id: Bet ID
+    bet_placement_time: Bet placement time
+    city: City
+    code: Code
+    comment: Comment
+    contact_information: Contact information
+    country: Country
+    created_at: Created at
+    credit_card: Credit card
+    credit_cards: Credit cards
+    currency: Currency
+    currency_code: Currency
     customer: Customer
     customer_name: Customer name
-    amount: Amount
-    result: Result
-    kind: Type
+    date: Date
+    date_of_birth: Date of birth
+    description: Description
+    email: Email
+    end_at: End at
     entry_kind: Entry type
-    currency_code: Currency
-    initiator: Initiator
-    comment: Comment
-    code: Code
-    rollover_multiplier: Bonus rollover
-    max_rollover_per_bet: Max rollover per bet
-    max_deposit_match: Max amount
-    min_odds_per_bet: Min odds per bet
-    min_deposit: Min deposit
-    valid_for_days: Valid for days
-    expires_at: Expires at
-    created_at: Created at
-    action: Action
-    origin_kind: Origin type
-    origin_id: Origin ID
-    origin_name: Origin name
-    info: Info
-    personal_ids: Personal Id's
-    utility_bills: Utility Bills
-    bank_statements: Bank Statements
-    credit_cards: Credit Cards
-    other_documents: Other Documents
-    currency: Currency
-    authorized_at: Authorized at
-    personal_id: Personal Id
-    utility_bill: Utility Bill
-    bank_statement: Bank Statement
-    credit_card: Credit Card
-    other_document: Other Document
-    bet_id: Bet ID
-    event_id: Event ID
     event: Event
-    market: Market
-    odd_value: Odd value
-    selection: Selection
-    stake: Stake
-    winnings: Winnings
-    bet_placement_time: Bet placement time
-    settlement: Settlement
-    possible_payout: Possible payout
-    actual_payout: Actual payout
-    label_name: Label name
-    label_kind: Label kind
+    event_id: Event ID
+    event_status: Event status
+    expires_at: Expires at
+    first_name: First name
+    gender: Gender
+    id: ID
+    info: Info
+    initiator: Initiator
+    ip_address: IP Address
+    kind: Type
     label_description: Label description
-    sport: Sport
-    wager: Wager
-    name: Name
-    start_at: Start at
+    label_kind: Label kind
+    label_name: Label name
+    last_name: Last name
+    last_sign_in_at: Last sign in at
+    last_sign_in_ip: Last sign in IP
+    live: Live
     live_coverage: Live coverage
-    visible: Visible
-    country: Country
-    tournament: Tournament
-    event_status: Event Status
-    promotional: Receive promotional content
-    street_address: Street address
-    zip_code: ZIP
-    city: City
-    state: State
-    account_lock: Account Lock
     lock: Lock
     lock_reason: Lock reason
     lock_until: Lock until
-    setted: Setted,
+    market: Market
+    max_amount: Max amount
+    max_deposit_match: Max amount
+    max_rollover_per_bet: Max rollover per bet
+    min_amount: Min amount
+    min_deposit: Min deposit
+    min_odds_per_bet: Min odds per bet
+    name: Name
+    odd_value: Odd value
+    origin_id: Origin ID
+    origin_kind: Origin type
+    origin_name: Origin name
+    other_document: Other document
+    other_documents: Other documents
+    personal_id: Personal Id
+    personal_ids: Personal Id's
+    personal_information: Personal information
+    phone: Phone number
+    possible_payout: Possible payout
+    priority: Priority
+    profit_loss: Profit/Loss
+    promotional: Receive promotional content
+    promotional_agreement: Promotional agreement
+    result: Result
+    rollover_multiplier: Bonus rollover
+    scope_kind: Scope type
+    scope_name: Scope name
+    selection: Selection
+    setted: Setted
+    settlement: Settlement
+    sign_in_count: Sign in count
+    sport: Sport
+    stake: Stake
+    start_at: Start at
+    state: State
+    status: Status
+    street_address: Street address
     text: Text
-    actions: Actions
+    tournament: Tournament
+    username: Username
+    utility_bill: Utility bill
+    utility_bills: Utility bills
+    valid_for_days: Valid for days
+    visibility: Visibility
+    visible: Visible
+    wager: Wager
+    winnings: Winnings
+    zip_code: ZIP
+
+  actions:
+    impersonate: Impersonate
+    reset_password: Reset password
+
+  date:
+    formats:
+      date_picker: "%-d %B %Y"
+      default: "%-d %B %Y"
 
   documents:
     history_title: "Files history: %{document_type}"
 
-  time:
-    formats:
-      default: "%-d %B %Y %-k:%M"
-      long: "%-d %B %Y %-k:%M:%S"
-      date_picker: "%-d %B %Y"
-
-  date:
-    formats:
-      default: "%-d %B %Y"
-      date_picker: "%-d %B %Y"
-
-  messages:
-    entry_request_created: Entry request successfully created
-    customer_lock_status_changed: Customer lock status was changed
+  entities:
+    activities:
+      multiple: Activities
+      one: 1 activity
+      other: "%{count} activities"
+      single: Activity
+      zero: No activities
+    balances:
+      one: Balance
+      other: Balances
+    bets:
+      one: Bet
+      other: Bets
+    betting_limits:
+      by_sport:
+        one: Betting limit by sport
+        other: Betting limits by sport
+      global:
+        one: Global betting limit
+        other: Global betting limits
+    bonuses:
+      one: Bonus
+      other: Bonuses
+    comments:
+      one: Comment
+      other: Comments
+    currencies:
+      one: Currency
+      other: Currencies
+    customers:
+      documents:
+        one: Customer document
+        other: Customer documents
+      notes:
+        one: Customer note
+        other: Customer notes
+      one: Customer
+      other: Customers
+      verification_status: Customer verification status
+    days:
+      one: Day
+      other: Days
     deposit_limits:
-      delete: "Are you sure you want to delete customer (%{customer_name}) deposit limit?"
-    reset_password_confirmation: "Are you sure you want to reset customer (%{customer_name}) password?"
+      one: Deposit limit
+      other: Deposit limits
+    documents:
+      one: Document
+      other: Documents
+    entry_requests:
+      one: Entry request
+      other: Entry requests
+      flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
+      information: Request information
+    entry_rules:
+      one: Entry Rule
+      other: Entry Rules
+    events:
+      one: Event
+      other: Events
+    labels:
+      one: Label
+      other: Labels
+    markets:
+      one: Market
+      other: Markets
+    months:
+      one: Month
+      other: Months
+    scopes:
+      one: Scope
+      other: Scopes
+    wallets:
+      one: Wallet
+      other: Wallets
+    weeks:
+      one: Week
+      other: Weeks
 
   errors:
     messages:
-      entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
-      with_instance:
-        not_negative: "of %{instance} cannot be negative"
-      wrong_login_credentials: "Wrong username, email or password"
       account_locked:
-        default: "Account is locked%{additional_info}"
         additional_info:
           until: " until %{until_date}"
+        default: "Account is locked%{additional_info}"
+      age_adult: Must be adult!
+      betting_limits: Betting limits validation failed
+      customer_account_kind_transit: Can't transit customer account kind
+      customer_activated: Customer already activated
+      deposit_limits: Deposit limit reached, please try again later
+      document_type_not_supported: Document type not supported
+      entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
+      provider_disconnected: Provider is disconnected
+      with_instance:
+        not_negative: "of %{instance} cannot be negative"
+      wrong_login_credentials: Wrong username, email or password
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
-      age_adult: "Must be adult!"
-      betting_limits: "Betting limits validation failed"
-      deposit_limits: "Deposit limit reached, please try again later"
-      provider_disconnected: "Provider is disconnected"
 
-  recaptcha:
-    errors:
-      verification_failed: 'Captcha verification has been failed.'
+  genders:
+    female: Female
+    male: Male
+
+  global:
+    minimalt_itle: ArcaneBet
+    title: ArcaneBet Backoffice
+
+  initiators:
+    customer: Customer
+    user: User
+
+  kinds:
+    bet: Bet
+    deposit: Deposit
+    internal_credit: Internal credit
+    internal_debit: Internal debit
+    win: Win
+    withdraw: Withdraw
+
+  lock_reasons:
+    closed: Closed
+    cooling_off: Cooling off
+    fraud: Fraud
+    locked: Lock
+    password_recovery: Password recovery
+    self_exclusion: Self-exclusion
 
   mailers:
     arcanebet_mailer:
       suspicious_login:
         subject: Suspicious login attempt
+
+  messages:
+    customer_lock_status_changed: Customer lock status was changed
+    deposit_limits:
+      delete: "Are you sure you want to delete customer (%{customer_name}) deposit limit?"
+    entry_request_created: Entry request successfully created
+    reset_password_confirmation: "Are you sure you want to reset customer (%{customer_name}) password?"
+
+  navigation:
+    customer:
+      account: Account
+      account_management: Account management
+      activity: Activity
+      bets: Bets
+      betting_limits: Betting Limits
+      deposit_limit: Deposit Limit
+      documents: Documents
+      notes: Notes
+    document:
+      pending: Pending documents
+      recently_actioned: Recently actioned
+    documents: Documents
+    sidekiq: Sidekiq
+
+  origins:
+    cashier: Cashier
+
+  recaptcha:
+    errors:
+      verification_failed: Captcha verification has been failed.
+
+  settles:
+    lost: Lost
+    won: Won
+
+  statuses:
+    failed: Failed
+    initial: Initial
+    live: Live
+    not_verified: Not verified
+    offline: Offline
+    pending: Pending
+    settled: Settled
+    succeeded: Succeeded
+    verified: Verified
+
+  time:
+    formats:
+      date_picker: "%-d %B %Y"
+      default: "%-d %B %Y %-k:%M"
+      long: "%-d %B %Y %-k:%M:%S"

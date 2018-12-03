@@ -11,6 +11,6 @@ describe Wallet do
     should validate_numericality_of(:amount)
       .is_greater_than_or_equal_to(0)
       .with_message(I18n.t('errors.messages.with_instance.not_negative',
-                           instance: I18n.t('entities.wallet')))
+                           instance: I18n.t('entities.wallets', count: 1)))
   end
 end

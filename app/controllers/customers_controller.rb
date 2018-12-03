@@ -93,7 +93,10 @@ class CustomersController < ApplicationController
   def update_promotional_subscription
     @customer = find_customer
     @customer.update!(promotional_subscription_params)
-    message = I18n.t('attribute_updated', attribute: 'Promotional agreement')
+    message = I18n.t(
+      'updated',
+      instance: I18n.t('attributes.promotional_agreement')
+    )
 
     render json: { message: message }
   end

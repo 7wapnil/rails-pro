@@ -133,7 +133,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   def check_account_transition_rule
     return unless account_kind_changed?
 
-    msg = "can't transit customer account kind"
+    msg = I18n.t('errors.messages.customer_account_kind_transit')
     raise msg if account_kind_was != 'regular'
   end
 end

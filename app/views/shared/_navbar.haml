@@ -1,5 +1,5 @@
 %nav.navbar.navbar-expand-lg.navbar-light.bg-light
-  = link_to 'ArcaneBet Backend', root_path, class: 'navbar-brand'
+  = link_to t('global.title'), root_path, class: 'navbar-brand'
   %button.navbar-toggler{ 'aria-controls': 'navbar-content',
                           'aria-expanded': 'false',
                           'aria-label': 'Toggle navigation',
@@ -10,53 +10,52 @@
   #navbar-content.collapse.navbar-collapse
     %ul.navbar-nav.mr-auto
       %li.nav-item
-        = link_to t('entities.events', count: 5),
+        = link_to t('entities.events.other'),
                   events_path,
                   class: 'nav-link',
                   'data-target-controller': 'events'
-
       %li.nav-item
-        = link_to t(:customers),
+        = link_to t('entities.customers.other'),
                   customers_path,
                   class: 'nav-link',
                   'data-target-controller': 'customers'
       %li.nav-item
-        = link_to t(:entry_requests),
+        = link_to t('entities.entry_requests.other'),
                   entry_requests_path,
                   class: 'nav-link',
                   'data-target-controller': 'entry_requests'
       %li.nav-item
-        = link_to t(:bets),
+        = link_to t('entities.bets.other'),
                   bets_path,
                   class: 'nav-link',
                   'data-target-controller': 'bets'
       %li.nav-item
-        = link_to t(:activities),
+        = link_to t('entities.activities.multiple'),
                   activities_path,
                   class: 'nav-link',
                   'data-target-controller': 'activities'
       %li.nav-item
-        = link_to t(:bonuses, count: 2),
+        = link_to t('entities.bonuses.other'),
                   bonuses_path,
                   class: 'nav-link',
                   'data-target-controller': 'bonuses'
       %li.nav-item
-        = link_to t(:currencies),
+        = link_to t('entities.currencies.other'),
                   currencies_path,
                   class: 'nav-link',
                   'data-target-controller': 'currencies'
       %li.nav-item
-        = link_to t(:labels),
+        = link_to t('entities.labels.other'),
                   labels_path,
                   class: 'nav-link',
                   'data-target-controller': 'labels'
       %li.nav-item
-        = link_to t('navigation.documents'),
+        = link_to t('entities.documents.other'),
                   verification_documents_path,
                   class: 'nav-link',
                   'data-target-controller': 'documents'
       %li.nav-item
-        = link_to t(:sidekiq),
+        = link_to t('navigation.sidekiq'),
                   sidekiq_web_path,
                   class: 'nav-link',
                   target: :blank

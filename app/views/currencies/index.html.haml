@@ -1,6 +1,6 @@
 %h1.display-4
   = t(:currencies)
-  = link_to t(:add_currency), new_currency_path, { class: 'btn btn-primary float-right btn-sm' }
+  = link_to t(:add_instance, instance: t('entities.currencies', count: 1)), new_currency_path, { class: 'btn btn-primary float-right btn-sm' }
 
 = search_form_for @search do |f|
   %table.table
@@ -10,13 +10,13 @@
           = f.label :code_cont, class: 'sr-only'
           = f.search_field :code_cont,
                            class: 'form-control',
-                           placeholder: t(:search, subject: :description),
+                           placeholder: t(:search, subject: t('attributes.description')),
                            autocomplete: :off
         %th
           = f.label :name_cont, class: 'sr-only'
           = f.search_field :name_cont,
                            class: 'form-control',
-                           placeholder: t(:search, subject: :name),
+                           placeholder: t(:search, subject: t('attributes.name')),
                            autocomplete: :off
         %th
           = f.submit class: 'btn btn-outline-dark btn-block'

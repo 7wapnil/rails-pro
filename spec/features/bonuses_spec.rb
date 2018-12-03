@@ -47,7 +47,10 @@ describe 'Bonuses' do
         click_submit
       end
 
-      success_message = I18n.t(:created, instance: I18n.t('entities.bonus'))
+      success_message = I18n.t(
+        :created,
+        instance: I18n.t('entities.bonuses', count: 1)
+      )
 
       expect(current_path).to eq bonus_path(Bonus.last)
       expect_to_have_notification success_message
@@ -83,7 +86,10 @@ describe 'Bonuses' do
     end
 
     it 'deletes an existing bonus' do
-      success_message = I18n.t(:deleted, instance: I18n.t('entities.bonus'))
+      success_message = I18n.t(
+        :deleted,
+        instance: I18n.t('entities.bonuses', count: 1)
+      )
 
       expect(current_path).to eq bonuses_path
       expect_to_have_notification success_message

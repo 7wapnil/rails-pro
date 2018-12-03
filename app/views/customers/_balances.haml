@@ -1,4 +1,4 @@
-= card header: t(:balances), class: 'mt-4 balances' do
+= card header: t('entities.balances', count: @customer.wallets.count), class: 'mt-4 balances' do
   - if @customer.wallets.any?
     %table.table
       - @customer.wallets.each do |wallet|

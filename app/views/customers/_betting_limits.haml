@@ -1,7 +1,7 @@
-= card class: 'mb-4', header: t(:global_customer_betting_limit) do
+= card class: 'mb-4', header: t('entities.betting_limits.global', count: 1) do
   = render 'customers/betting_limit_form', limit: @customer_limits.select { |el| el[:title].nil? }.first[:limit]
 
-= card class: 'mb-4', header: t(:customer_betting_limits_by_sport) do
+= card class: 'mb-4', header: t('entities.betting_limits.by_sport.other') do
   .accordion(id='limitsBySportAccordion')
     - @customer_limits.each do |data|
       - if data[:title]

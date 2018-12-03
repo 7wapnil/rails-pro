@@ -1,16 +1,16 @@
-= card header: t(:account_information), class: 'account-information' do
+= card header: t('attributes.account_information'), class: 'account-information' do
   %table.table
     %tr
-      %td= t(:username)
+      %td= t('attributes.username')
       %td= @customer.username
     %tr
-      %td= t(:last_sign_in_ip)
+      %td= t('attributes.last_sign_in_ip')
       %td= @customer.last_sign_in_ip
     %tr
-      %td= t(:last_sign_in_at)
+      %td= t('attributes.last_sign_in_at')
       %td= l(@customer.last_sign_in_at)
     %tr
-      %td= t(:sign_in_count)
+      %td= t('attributes.sign_in_count')
       %td= @customer.sign_in_count
     %tr
       %td= t('attributes.promotional')
@@ -20,7 +20,7 @@
                                   resource: 'customer',
                                   method: :post }
     %tr
-      %td= t(:labels)
+      %td= t('entities.labels.other')
       %td
         = labels_selector(@customer, @labels)
 
