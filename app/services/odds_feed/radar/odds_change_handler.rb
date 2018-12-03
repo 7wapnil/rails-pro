@@ -6,6 +6,7 @@ module OddsFeed
         create_or_update_event!
         touch_event!
         generate_markets
+        emit_websocket
         event
       end
 
@@ -130,12 +131,11 @@ module OddsFeed
       def create_or_find_event!
         @event = api_event
         begin
-          event.save!
+          Event.update_on_duplicate(@event)
           ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
-        rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
+        rescue StandardError => e
           Rails.logger.warn ["Event ID #{external_id} creating failed",
                              e.message]
-          @event = Event.find_by!(external_id: external_id)
         end
       end
 
@@ -147,6 +147,11 @@ module OddsFeed
 
         msg = "Message came at #{timestamp}, but last update was #{last_update}"
         Rails.logger.warn msg
+      end
+
+      def emit_websocket
+        WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
+                                        id: event.id.to_s)
       end
     end
     # rubocop:enable Metrics/ClassLength

@@ -24,12 +24,6 @@ describe OddsFeed::Radar::FixtureChangeHandler do
   end
 
   context 'new event' do
-    it 'calls #save! on retrieved event' do
-      expect(api_event)
-        .to receive(:save!)
-        .exactly(2).times
-    end
-
     it 'logs event create message' do
       expect(subject).to receive(:log_on_create)
     end
