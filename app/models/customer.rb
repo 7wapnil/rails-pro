@@ -44,6 +44,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   has_many :customer_notes
   has_many :wallets
+  has_many :currencies, through: :wallets
   has_many :entries, through: :wallets
   has_many :entry_requests
   has_many :initiated_entry_requests, as: :initiator, class_name: 'EntryRequest'
@@ -122,12 +123,10 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def used_currencies
-    Currency
-      .joins(:wallets)
-      .where(
-        'currencies.primary = true OR wallets.customer_id = ?',
-        id
-      )
+    primary_currency = Currency.primary_currency
+    return currencies.uniq if currencies.include?(primary_currency)
+
+    currencies.uniq.push(primary_currency)
   end
 
   def check_account_transition_rule
