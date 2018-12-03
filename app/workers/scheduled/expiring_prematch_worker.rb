@@ -1,6 +1,7 @@
 module Scheduled
   class ExpiringPrematchWorker < ApplicationWorker
-    sidekiq_options unique_across_queues: true, queue: 'expired_prematch'
+    sidekiq_options queue: 'expired_prematch',
+                    lock: :until_executed
 
     def perform
       Bet.transaction do
