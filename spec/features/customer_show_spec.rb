@@ -20,6 +20,10 @@ describe 'Customers#show' do
     it 'shows contact information' do
       expect_to_have_section 'contact-information'
     end
+
+    it "shows 'Impersonate' link" do
+      expect(page).to have_link('Impersonate')
+    end
   end
 
   context 'actions' do

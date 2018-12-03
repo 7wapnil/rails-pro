@@ -4,5 +4,6 @@ module Account
 
     argument :login, !types.String
     argument :password, !types.String
+    argument :captcha, types.String
   end
 end

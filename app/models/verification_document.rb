@@ -22,6 +22,7 @@ class VerificationDocument < ApplicationRecord
 
   belongs_to :customer
   has_one_attached :document
+  has_many :comments, as: :commentable
 
   validates :document, presence: true
   validates :document,
@@ -31,7 +32,7 @@ class VerificationDocument < ApplicationRecord
                                            image/jpg
                                            application/pdf] }
 
-  scope :auctioned, -> { where(status: %i[confirmed rejected]) }
+  scope :recently_actioned, -> { where(status: %i[confirmed rejected]) }
   delegate :filename, to: :document
 
   def loggable_attributes
