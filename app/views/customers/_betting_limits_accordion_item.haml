@@ -1,8 +1,8 @@
-.card-header{id: "heading_sport#{item[:title].id}"}
+.card-header{id: "heading_sport#{title.id}"}
   %h5.mb-0
-    %button.btn.btn-link{data: { toggle: 'collapse', target: "#collapse_sport#{item[:title].id}" }}= item[:title].name
-    - if item[:limit].id
+    %button.btn.btn-link{data: { toggle: 'collapse', target: "#collapse_sport#{title.id}" }}= title.name
+    - if limit.id
       %span.badge.badge-pill.badge-success= t('attributes.setted')
-.collapse{id: "collapse_sport#{item[:title].id}", data: { parent: '#limits_accordion' } }
+.collapse{id: "collapse_sport#{title.id}", data: { parent: '#limits_accordion' } }
   .card-body
-    = render 'customers/betting_limit_form', class_prefix: "betting-limit-by-title-#{item[:title].id}", limit: item[:limit]
+    = render 'customers/betting_limit_form', class_prefix: "betting-limit-by-title-#{title.id}", limit: limit

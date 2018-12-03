@@ -1,4 +1,4 @@
 .accordion#limits_accordion
-  - @customer_limits.each do |item|
+  - limits.each do |item|
     - if item[:title]
-      = render 'customers/betting_limits_accordion_item', item: item
+      = render 'customers/betting_limits_accordion_item', title: item[:title], limit: item[:limit]

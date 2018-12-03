@@ -40,9 +40,14 @@ class CustomersController < ApplicationController
 
   def betting_limits
     @customer = find_customer
-    @customer_limits = BettingLimitFacade
-                       .new(@customer)
-                       .for_customer
+    @global_limit = BettingLimit
+                    .find_or_initialize_by(
+                      customer: @customer,
+                      title: nil
+                    )
+    @limits_by_sports = BettingLimitFacade
+                        .new(@customer)
+                        .for_customer
   end
 
   def deposit_limit
