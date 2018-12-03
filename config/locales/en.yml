@@ -20,6 +20,7 @@ en:
   from: From
   to: To
   days: "%{days} days"
+  infinite: Infinite
 
   created: "%{instance} created"
   updated: "%{instance} updated"
@@ -208,6 +209,7 @@ en:
     formats:
       default: "%-d %B %Y %-k:%M"
       long: "%-d %B %Y %-k:%M:%S"
+      date_picker: "%-d %B %Y"
 
   date:
     formats:

@@ -222,6 +222,9 @@ FactoryBot.define do
     verified { false }
     activated { false }
     activation_token { Faker::Internet.password }
+    locked { false }
+    lock_reason { nil }
+    locked_until { nil }
 
     trait :ready_to_bet do
       after(:create) do |customer|
