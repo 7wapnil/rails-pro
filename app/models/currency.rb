@@ -17,7 +17,7 @@ class Currency < ApplicationRecord
     new(code: 'EUR', name: 'Euro', primary: true)
   end
 
-  def primary_currency
+  def self.primary_currency
     Currency.find_by(primary: true)
   end
 

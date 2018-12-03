@@ -122,7 +122,8 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     DepositLimit.find_or_initialize_by(customer: self)
   end
 
-  def used_currencies
+  # returns primary currency with customer wallet currencies
+  def available_currencies
     primary_currency = Currency.primary_currency
     return currencies.uniq if currencies.include?(primary_currency)
 

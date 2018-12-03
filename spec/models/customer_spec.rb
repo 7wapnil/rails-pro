@@ -94,6 +94,20 @@ describe Customer do
     end
   end
 
+  describe '#avaliable_currencies' do
+    it 'returns customer available currencies' do
+      customer = create(:customer)
+      primary_currency = create(:currency, primary: true)
+      not_included_currency = create(:currency, primary: true)
+      wallet = create(:wallet, customer: customer)
+
+      expect(customer.available_currencies)
+        .to include(primary_currency, wallet.currency)
+      expect(customer.available_currencies)
+        .not_to include(not_included_currency)
+    end
+  end
+
   it 'saves phone number without extra symbols' do
     customer = create(:customer, phone: '+37258383943')
 
