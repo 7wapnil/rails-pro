@@ -43,13 +43,13 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   delegate :name, to: :title, prefix: true
 
   def self.update_on_duplicate(event)
-    Event.import([event],
-                 validate: true,
-                 recursive: true,
-                 on_duplicate_key_update: {
-                   conflict_target: [:external_id],
-                   columns: %i[name status traded_live payload]
-                 })
+    import([event],
+           validate: true,
+           recursive: true,
+           on_duplicate_key_update: {
+             conflict_target: [:external_id],
+             columns: %i[name status traded_live payload]
+           })
   end
 
   def self.start_time_offset
