@@ -3,8 +3,9 @@ module BetPlacement
     ENTRY_REQUEST_KIND = EntryRequest.kinds[:bet]
     ENTRY_REQUEST_MODE = EntryRequest.modes[:sports_ticket]
 
-    def initialize(bet)
+    def initialize(bet, impersonated_by = nil)
       @bet = bet
+      @impersonated_by = impersonated_by
     end
 
     def call
@@ -63,9 +64,10 @@ module BetPlacement
         currency: @bet.currency,
         kind: ENTRY_REQUEST_KIND,
         mode: ENTRY_REQUEST_MODE,
-        initiator: @bet.customer,
+        initiator: @impersonated_by || @bet.customer,
         customer: @bet.customer,
-        origin: @bet
+        origin: @bet,
+        comment: @impersonated_by ? I18n.t('impersonation_comment') : nil
       )
     end
   end

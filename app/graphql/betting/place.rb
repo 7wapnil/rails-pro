@@ -6,7 +6,8 @@ module Betting
 
     def resolve(_obj, args)
       args[:bets].map do |bet_payload|
-        BetPlacement::SubmissionService.call(create_bet(bet_payload))
+        BetPlacement::SubmissionService.call(create_bet(bet_payload),
+                                             @impersonated_by)
       end
     end
 
