@@ -1,6 +1,7 @@
 module Scheduled
   class ExpiringLiveWorker < ApplicationWorker
-    sidekiq_options unique_across_queues: true, queue: 'expired_live'
+    sidekiq_options queue: 'expired_live',
+                    lock: :until_executed
 
     def perform
       Bet.transaction do
