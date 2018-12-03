@@ -1,9 +1,10 @@
 class User < ApplicationRecord
   include Person
+  include LoginAttemptable
 
-  devise :database_authenticatable, :recoverable, :rememberable,
-         :trackable, :validatable,
-         authentication_keys: [:email]
+  devise :database_authenticatable, :recoverable,
+         :rememberable, :trackable, :validatable,
+         authentication_keys: %i[email]
 
   has_many :entry_requests, as: :initiator
 

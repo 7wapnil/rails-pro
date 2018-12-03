@@ -13,6 +13,14 @@ class CustomersController < ApplicationController
     @labels = Label.where(kind: :customer)
   end
 
+  def impersonate
+    customer = find_customer
+    frontend_url = Customers::ImpersonationService.call(current_user, customer)
+    current_user.log_event(:impersonate_customer, {}, customer)
+
+    redirect_to frontend_url
+  end
+
   def account_management
     @customer = find_customer
     @entry_request = EntryRequest.new(customer: @customer)
@@ -140,8 +148,8 @@ class CustomersController < ApplicationController
   def update_lock
     @customer = find_customer
     @customer.update!(lock_params)
-    current_user.log_event :customer_lock_status_updated,
-                           nil,
+    current_user.log_event locking_event,
+                           CustomerLocking.new(@customer).to_h,
                            @customer
     render json: {
       message: I18n.t('messages.customer_lock_status_changed')
@@ -198,6 +206,10 @@ class CustomersController < ApplicationController
 
   def customer_verification_status
     params.require(:verified)
+  end
+
+  def locking_event
+    @customer.locked ? :customer_locked : :customer_unlocked
   end
 end
 # rubocop:enable Metrics/ClassLength
