@@ -16,6 +16,7 @@ en:
   no_file: No File
   history: History
   action: Action
+  details: Details
   from: From
   to: To
   days: "%{days} days"
@@ -39,6 +40,8 @@ en:
   search: "Search %{subject}"
   no_records: No records yet
 
+  actions:
+    impersonate: 'Impersonate'
   navigation:
     documents: Documents
     document:
@@ -115,7 +118,10 @@ en:
     markets:
       one: Market
       other: Markets
-
+    document: Document
+    documents: Documents
+    comments: Comments
+    comment: Comment
   attributes:
     username: Username
     email: Email
@@ -192,15 +198,17 @@ en:
     lock: Lock
     lock_reason: Lock reason
     lock_until: Lock until
-    setted: Setted
+    setted: Setted,
+    text: Text
+    actions: Actions
 
   documents:
     history_title: "Files history: %{document_type}"
 
   time:
     formats:
-      default: "%-d %B %Y %k:%M"
-      long: "%-d %B %Y %k:%M:%S"
+      default: "%-d %B %Y %-k:%M"
+      long: "%-d %B %Y %-k:%M:%S"
       date_picker: "%-d %B %Y"
 
   date:
@@ -230,3 +238,12 @@ en:
       betting_limits: "Betting limits validation failed"
       deposit_limits: "Deposit limit reached, please try again later"
       provider_disconnected: "Provider is disconnected"
+
+  recaptcha:
+    errors:
+      verification_failed: 'Captcha verification has been failed.'
+
+  mailers:
+    arcanebet_mailer:
+      suspicious_login:
+        subject: Suspicious login attempt

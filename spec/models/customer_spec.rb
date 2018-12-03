@@ -29,6 +29,8 @@ describe Customer do
 
   it { should act_as_paranoid }
 
+  it_behaves_like 'LoginAttemptable'
+
   describe 'adult age validation' do
     let(:adult_age) { AgeValidator::ADULT_AGE }
 

@@ -52,8 +52,7 @@ module Radar
 
     def work(msg)
       match_result(scan_payload(msg))
-        .perform_async(msg,
-                       ::Process.clock_gettime(::Process::CLOCK_MONOTONIC))
+        .perform_async(msg, Time.now.to_f)
     end
 
     private

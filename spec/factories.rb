@@ -1,4 +1,10 @@
 FactoryBot.define do
+  factory :comment do
+    text { 'MyText' }
+    commentable_id { 1 }
+    commentable_type { VerificationDocument }
+    belongs_to { user }
+  end
   factory :label_join do
     label { nil }
   end

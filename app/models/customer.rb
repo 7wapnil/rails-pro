@@ -1,5 +1,6 @@
 class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Person
+  include LoginAttemptable
 
   after_validation :check_account_transition_rule
   has_secure_token :activation_token
@@ -27,7 +28,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   devise :database_authenticatable, :registerable, :validatable,
          :recoverable, :rememberable, :trackable,
-         authentication_keys: [:login], password_length: 6..32
+         authentication_keys: %i[login], password_length: 6..32
 
   attr_accessor :login
 

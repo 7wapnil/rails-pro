@@ -39,6 +39,9 @@ Rails.application.configure do
 
   config.action_mailer.default_url_options = { host: ENV['APP_HOST'] }
 
+  config.action_mailer.delivery_method = :letter_opener
+  config.action_mailer.perform_deliveries = true
+
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
 
@@ -57,6 +60,7 @@ Rails.application.configure do
   config.assets.quiet = true
 
   config.logger = Logger.new('/proc/1/fd/1') if ENV['DOCKER_OUTPUT']
+  config.logger = Logger.new(STDOUT)         if ENV['STD_OUTPUT']
 
   # Raises error for missing translations
   # config.action_view.raise_on_missing_translations = true
