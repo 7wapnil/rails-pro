@@ -10,16 +10,11 @@ describe BettingLimitFacade do
 
     before do
       @title = Title.all.first
-      @global_limit = BettingLimit.find_by(title: nil)
       @limit_by_title = BettingLimit.find_by(title: @title)
     end
 
-    it 'returns array with global limit and limit by title' do
+    it 'returns array with limit by title' do
       expect(result).to match_array([
-                                      {
-                                        limit: @global_limit,
-                                        title: nil
-                                      },
                                       {
                                         limit: @limit_by_title,
                                         title: @title

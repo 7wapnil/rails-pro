@@ -48,9 +48,14 @@ class CustomersController < ApplicationController
 
   def betting_limits
     @customer = find_customer
-    @customer_limits = BettingLimitFacade
-                       .new(@customer)
-                       .for_customer
+    @global_limit = BettingLimit
+                    .find_or_initialize_by(
+                      customer: @customer,
+                      title: nil
+                    )
+    @limits_by_sports = BettingLimitFacade
+                        .new(@customer)
+                        .for_customer
   end
 
   def deposit_limit
@@ -123,6 +128,7 @@ class CustomersController < ApplicationController
   def update_personal_information
     @customer = find_customer
     @customer.update!(personal_information_params)
+    flash[:success] = t(:updated, instance: t('entities.personal_information'))
     current_user.log_event :customer_personal_information_updated,
                            nil,
                            @customer
@@ -132,6 +138,7 @@ class CustomersController < ApplicationController
   def update_contact_information
     @customer = find_customer
     @customer.update!(contact_information_params)
+    flash[:success] = t(:updated, instance: t('entities.contact_information'))
     current_user.log_event :customer_contact_information_updated,
                            nil,
                            @customer
