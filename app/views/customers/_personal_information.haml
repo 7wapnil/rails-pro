@@ -29,7 +29,8 @@
           = f.input :date_of_birth,
                     as: :date_picker,
                     label: false,
-                    input_html: { value: l(@customer.date_of_birth) },
+                    input_html: { value: l(@customer.date_of_birth, format: :date_picker),
+                                  data: { max_date: l(Date.current - 18.years, format: :date_picker) }},
                     required: true
       %tr
         %td.text-right(colspan="2")
