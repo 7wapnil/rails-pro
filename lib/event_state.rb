@@ -1,13 +1,10 @@
-class EventState
-  attr_reader :id,
-              :status,
-              :status_code,
-              :score,
-              :time,
+class EventState < PeriodScore
+  attr_reader :time,
               :period_scores,
               :finished
 
   def initialize(payload)
+    super(payload)
     @payload = payload
     build_state!
   end
@@ -15,12 +12,8 @@ class EventState
   private
 
   def build_state!
-    return [] if @payload.nil?
+    return unless @payload
 
-    @id = @payload['id'].to_i
-    @status = @payload['status']
-    @status_code = @payload['status_code'].to_i
-    @score = @payload['score']
     @time = @payload['time']
     @finished = @payload['finished'] || false
     process_period_scores!
