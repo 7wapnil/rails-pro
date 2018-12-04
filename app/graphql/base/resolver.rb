@@ -7,6 +7,7 @@ module Base
     def call(obj, args, ctx)
       @request = ctx[:request]
       @current_customer = ctx[:current_customer]
+      @impersonated_by = ctx[:impersonated_by]
       check_auth
       resolve(obj, args)
     end
