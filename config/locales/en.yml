@@ -127,6 +127,8 @@ en:
     documents: Documents
     comments: Comments
     comment: Comment
+    personal_information: Customer personal information
+    contact_information: Customer contact information
 
   attributes:
     username: Username
