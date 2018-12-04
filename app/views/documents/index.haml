@@ -32,6 +32,5 @@
         %td= status_badge(document.status)
         %td= link_to t(:view), rails_blob_path(document.document), class: 'btn btn-outline-dark mr-2', target: :blank
         %td.text-center
-          - if document.pending?
-            = render partial: 'documents/actions', locals: { document: document }
+          = render partial: 'documents/actions', locals: { document: document }
         %td= link_to t('details'), verification_document_path(document), class: 'btn btn-outline-dark mr-2'
