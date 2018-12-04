@@ -34,13 +34,17 @@ module OddsFeed
               event_id: event.id, data: event_data['sport_event_status']
             )
         )
+        process_updates!
+        event.save!
+        event.emit_state_updated
+      end
+
+      def process_updates!
         updates = { remote_updated_at: timestamp,
                     status: event_status,
                     end_at: event_end_time }
         log_updates!(updates)
         event.assign_attributes(updates)
-        event.save!
-        event.emit_state_updated
       end
 
       def log_updates!(updates)
