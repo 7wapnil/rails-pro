@@ -15,7 +15,7 @@ module Customers
       token = JwtService.encode(payload)
       customer_attrs = payload.slice(:email, :username, :id).to_json
 
-      "#{ENV['IMPERSONATE_CUSTOMER_URL']}#{token}?customer=#{customer_attrs}"
+      "#{ENV['FRONTEND_URL']}/impersonate/#{token}?customer=#{customer_attrs}"
     end
 
     private
