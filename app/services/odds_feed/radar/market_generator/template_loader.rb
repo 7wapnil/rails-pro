@@ -2,6 +2,8 @@ module OddsFeed
   module Radar
     module MarketGenerator
       class TemplateLoader
+        PLAYER_REGEX = /.*:player:.*/
+
         def initialize(market_id, variant_id = nil)
           @market_id  = market_id
           @variant_id = variant_id
@@ -11,12 +13,13 @@ module OddsFeed
           stored_template.name
         end
 
-        def odd_name(id)
-          template = find_odd_template(id)
+        def odd_name(external_id)
+          template = find_odd_template(external_id)
 
-          raise "Odd template ID #{id} not found" if template.nil?
+          return template['name'].to_s    if template
+          return player_name(external_id) if external_id.match?(PLAYER_REGEX)
 
-          template['name'].to_s
+          raise "Odd template ID #{external_id} not found"
         end
 
         private
@@ -27,8 +30,12 @@ module OddsFeed
           @stored_template ||= MarketTemplate.find_by!(external_id: market_id)
         end
 
-        def find_odd_template(id)
-          outcomes.find { |outcome| outcome['id'] == id }
+        def player_name(external_id)
+          Radar::Entities::PlayerLoader.call(external_id: external_id)
+        end
+
+        def find_odd_template(external_id)
+          outcomes.find { |outcome| outcome['id'] == external_id }
         end
 
         def outcomes

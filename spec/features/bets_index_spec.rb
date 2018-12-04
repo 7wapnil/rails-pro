@@ -90,7 +90,7 @@ describe 'Bets#index' do
           end
         end
 
-        it 'not fount' do
+        it 'not found' do
           fill_in('Bet ID', with: -1)
           click_on('Search')
 
