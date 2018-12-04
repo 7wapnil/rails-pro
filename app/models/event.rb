@@ -146,7 +146,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   def emit_state_updated
     WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
                                     id: id.to_s,
-                                    changes: state)
+                                    changes: { state: state })
   end
 
   private
