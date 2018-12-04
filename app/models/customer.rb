@@ -122,14 +122,6 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     DepositLimit.find_or_initialize_by(customer: self)
   end
 
-  # returns primary currency with customer wallet currencies
-  def available_currencies
-    primary_currency = Currency.primary_currency
-    return currencies.uniq if currencies.include?(primary_currency)
-
-    currencies.uniq.push(primary_currency)
-  end
-
   def check_account_transition_rule
     return unless account_kind_changed?
 

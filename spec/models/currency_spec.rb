@@ -4,20 +4,18 @@ describe Currency do
   it { should validate_presence_of(:name) }
   it { should validate_presence_of(:code) }
 
-  describe '.primary_currency' do
-    let(:subject) { described_class }
-
+  describe '.primary' do
     context 'with existing primary currency' do
       let!(:currency) { create(:currency, primary: true) }
 
       it 'returns primary currency' do
-        expect(subject.primary_currency).to eq(currency)
+        expect(described_class.primary).to eq(currency)
       end
     end
 
     context 'without primary currency' do
       it 'returns nil' do
-        expect(subject.primary_currency).to be_nil
+        expect(described_class.primary).to be_nil
       end
     end
   end
