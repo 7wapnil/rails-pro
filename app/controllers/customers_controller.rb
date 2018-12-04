@@ -3,18 +3,18 @@ class CustomersController < ApplicationController
   include Labelable
   include DateIntervalFilters
 
+  before_action :customer, only: %i[documents deposit_limit show]
+
   def index
     @search = Customer.search(query_params)
     @customers = @search.result.page(params[:page])
   end
 
   def show
-    @customer = find_customer
     @labels = Label.where(kind: :customer)
   end
 
   def impersonate
-    customer = find_customer
     frontend_url = Customers::ImpersonationService.call(current_user, customer)
     current_user.log_event(:impersonate_customer, {}, customer)
 
@@ -22,95 +22,83 @@ class CustomersController < ApplicationController
   end
 
   def account_management
-    @customer = find_customer
-    @entry_request = EntryRequest.new(customer: @customer)
-    @entry_requests = @customer.entry_requests.page(params[:page])
+    @entry_request = EntryRequest.new(customer: customer)
+    @entry_requests = customer.entry_requests.page(params[:page])
   end
 
   def activity
-    @customer = find_customer
-    @search = @customer.entries.search(query_params)
+    @search = customer.entries.search(query_params)
     @entries = @search.result.page(params[:page])
     @audit_logs = AuditLog
-                  .where(customer_id: @customer.id)
+                  .where(customer_id: customer.id)
                   .page(params[:page])
   end
 
   def notes
-    @customer = find_customer
-    @note = CustomerNote.new(customer: @customer)
-    @customer_notes = @customer.customer_notes.page(params[:page]).per(5)
+    @note = CustomerNote.new(customer: customer)
+    @customer_notes = customer.customer_notes.page(params[:page]).per(5)
   end
 
   def documents
-    @customer = find_customer
   end
 
   def betting_limits
-    @customer = find_customer
     @global_limit = BettingLimit
                     .find_or_initialize_by(
-                      customer: @customer,
+                      customer: customer,
                       title: nil
                     )
     @limits_by_sports = BettingLimitFacade
-                        .new(@customer)
+                        .new(customer)
                         .for_customer
   end
 
   def deposit_limit
-    @customer = find_customer
   end
 
   def bets
-    @customer = find_customer
     query = prepare_interval_filter(query_params, :created_at)
-    @filter = BetsFilter.new(bets_source: @customer.bets,
+    @filter = BetsFilter.new(bets_source: customer.bets,
                              query: query,
                              page: params[:page])
   end
 
   def documents_history
-    @customer = find_customer
     @document_type = document_type
     type_included = VerificationDocument::KINDS.include?(
       @document_type.to_sym
     )
     raise ArgumentError, 'Document type not supported' unless type_included
 
-    @files = @customer.verification_documents.with_deleted.send(@document_type)
+    @files = customer.verification_documents.with_deleted.send(@document_type)
   end
 
   def upload_documents
-    @customer = find_customer
     flash[:file_errors] = {}
     documents_from_params.each do |kind, file|
-      document = @customer.verification_documents.build(kind: kind,
-                                                        status: :pending)
+      document = customer.verification_documents.build(kind: kind,
+                                                       status: :pending)
       document.document.attach(file)
       unless document.save
         flash[:file_errors][kind] = document.errors.full_messages.first
       end
     end
-    redirect_to documents_customer_path(@customer)
+    redirect_to documents_customer_path(customer)
   end
 
   def update_promotional_subscription
-    @customer = find_customer
-    @customer.update!(promotional_subscription_params)
+    customer.update!(promotional_subscription_params)
     message = I18n.t('attribute_updated', attribute: 'Promotional agreement')
 
     render json: { message: message }
   end
 
-  def update_customer_status
-    @customer = find_customer
-    @customer.update!(status_params)
-    redirect_to documents_customer_path(@customer)
+  def update_status
+    customer.update!(status_params)
+    redirect_to documents_customer_path(customer)
   end
 
   def reset_password_to_default
-    @customer = find_customer
     o = [
       ('a'..'z'),
       ('A'..'Z'),
@@ -118,48 +106,53 @@ class CustomersController < ApplicationController
       %w[! @ # $ % ? : { }]
     ].flat_map(&:to_a)
     new_password = (0...16).map { o[rand(o.length)] }.join
-    @customer.update!(password: new_password)
+    customer.update!(password: new_password)
     current_user.log_event :password_reset_to_default,
                            nil,
-                           @customer
+                           customer
     render json: { password: new_password }
   end
 
   def update_personal_information
-    @customer = find_customer
-    @customer.update!(personal_information_params)
+    customer.update!(personal_information_params)
     flash[:success] = t(:updated, instance: t('entities.personal_information'))
     current_user.log_event :customer_personal_information_updated,
                            nil,
-                           @customer
-    redirect_to customer_path(@customer)
+                           customer
+    redirect_to customer_path(customer)
   rescue ActiveRecord::RecordInvalid => e
     flash[:error] = e.message
-    redirect_to customer_path(@customer)
+    redirect_to customer_path(customer)
   end
 
   def update_contact_information
-    @customer = find_customer
-    @customer.update!(contact_information_params)
+    customer.update!(contact_information_params)
     flash[:success] = t(:updated, instance: t('entities.contact_information'))
     current_user.log_event :customer_contact_information_updated,
                            nil,
-                           @customer
-    redirect_to customer_path(@customer)
+                           customer
+    redirect_to customer_path(customer)
   rescue ActiveRecord::RecordInvalid => e
     flash[:error] = e.message
-    redirect_to customer_path(@customer)
+    redirect_to customer_path(customer)
   end
 
   def update_lock
-    @customer = find_customer
-    @customer.update!(lock_params)
+    customer.update!(lock_params)
     current_user.log_event locking_event,
-                           CustomerLocking.new(@customer).to_h,
-                           @customer
-    render json: {
-      message: I18n.t('messages.customer_lock_status_changed')
-    }
+                           CustomerLocking.new(customer).to_h,
+                           customer
+
+    redirect_to customer_path(customer),
+                success: t('messages.customer_lock_status_changed')
+  end
+
+  def account_update
+    customer.update!(promotional_subscription_params)
+    set_labelable_resource
+    update_label_ids
+
+    redirect_to customer_path(customer)
   end
 
   private
@@ -197,8 +190,8 @@ class CustomersController < ApplicationController
     params.require(:customer).permit(:locked, :lock_reason, :locked_until)
   end
 
-  def find_customer
-    Customer.find(params[:id])
+  def customer
+    @customer ||= Customer.find(params[:id])
   end
 
   def documents_from_params

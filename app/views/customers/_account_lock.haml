@@ -6,28 +6,36 @@
   = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
   = javascript_pack_tag 'customers/account_lock', 'data-turbolinks-track': 'reload'
 
-= card header: t('attributes.account_lock'), class: 'account-lock' do
-  = simple_form_for @customer,
-    url: update_lock_customer_path,
-    html: { id: 'update_lock_customer_form' } do |f|
-    %table.table
-      %tr
-        %td= t('attributes.lock')
-        %td= locked_toggle(@customer, update_lock_customer_path(@customer))
-      %tr
-        %td= t('attributes.lock_reason')
-        %td
-          = f.input :lock_reason,
-                    label: false,
-                    collection: Customer.lock_reasons,
-                    include_blank: true,
-                    label_method: ->(k) { t("lock_reasons.#{k.first}") },
-                    value_method: ->(k) { k.first }
-      %tr
-        %td= t('attributes.lock_until')
-        %td
-          = f.input :locked_until,
-                    as: :date_picker,
-                    label: false,
-                    class: 'form-control form_date',
-                    input_html: { value: @customer.locked_until ? l(@customer.locked_until) : nil }
+= card_form_for html: { id: 'account_lock_form', method: :patch },
+                header: t('attributes.account_lock'),
+                class: 'account-lock',
+                url:  update_lock_customer_path,
+                resource: @customer do
+  %table.table
+    %tr
+      %td= t('attributes.lock')
+      %td= locked_toggle(@customer)
+    %tr
+      %td= t('attributes.lock_reason')
+      %td
+        = collection_select :customer,
+                            :lock_reason,
+                            Customer.lock_reasons,
+                            ->(k) { k.first },
+                            ->(k) { t("lock_reasons.#{k.first}") },
+                            { include_blank: true },
+                            label: false,
+                            class: 'form-control',
+                            id: 'customer_lock_reason'
+    %tr
+      %td= t('attributes.lock_until')
+      %td
+        - # Hack for disabled input to send parameter
+        = hidden_field_tag 'customer[locked_until]',
+                           nil,
+                           id: nil
+        = text_field_tag 'customer[locked_until]',
+                          l(@customer.locked_until, default: nil, format: :date_picker),
+                          label: false,
+                          class: 'form-control form_date',
+                          data: { min_date: l(Date.current, format: :date_picker) }
