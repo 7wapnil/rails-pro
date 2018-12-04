@@ -206,7 +206,7 @@ en:
     lock: Lock
     lock_reason: Lock reason
     lock_until: Lock until
-    setted: Setted,
+    set: Set
     text: Text
     actions: Actions
 
