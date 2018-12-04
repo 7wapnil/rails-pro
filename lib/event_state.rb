@@ -5,24 +5,23 @@ class EventState < PeriodScore
 
   def initialize(payload)
     super(payload)
-    @payload = payload
-    build_state!
+    build_state! payload
   end
 
   private
 
-  def build_state!
-    return unless @payload
+  def build_state!(payload)
+    return unless payload
 
-    @time = @payload['time']
-    @finished = @payload['finished'] || false
-    process_period_scores!
+    @time = payload['time']
+    @finished = payload['finished'] || false
+    process_period_scores! payload
   end
 
-  def process_period_scores!
-    return @period_scores = [] if @payload['period_scores'].nil?
+  def process_period_scores!(payload)
+    return @period_scores = [] if payload['period_scores'].nil?
 
-    @period_scores = @payload['period_scores'].map do |period_score|
+    @period_scores = payload['period_scores'].map do |period_score|
       PeriodScore.new(period_score)
     end
   end
