@@ -25,7 +25,7 @@ module OddsFeed
       end
 
       def subscription_report_expired?
-        Time.zone.at(last_subscribed_reported_timestamp) <= 1.minute.ago
+        Time.zone.at(last_subscribed_reported_timestamp) <= 20.seconds.ago
       end
 
       private

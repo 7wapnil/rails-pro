@@ -71,7 +71,7 @@ describe OddsFeed::Radar::ProducerSubscriptionState do
       Timecop.freeze(time)
       allow(subject)
         .to receive(:last_subscribed_reported_timestamp)
-        .and_return((time - 1.minute).to_i)
+        .and_return((time - 20.seconds).to_i)
       expect(subject.subscription_report_expired?).to be_truthy
       Timecop.return
     end
@@ -81,7 +81,7 @@ describe OddsFeed::Radar::ProducerSubscriptionState do
       Timecop.freeze(time)
       allow(subject)
         .to receive(:last_subscribed_reported_timestamp)
-        .and_return((time - 59.seconds).to_i)
+        .and_return((time - 19.seconds).to_i)
       expect(subject.subscription_report_expired?).to be_falsey
       Timecop.return
     end
