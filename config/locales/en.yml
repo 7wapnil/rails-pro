@@ -121,9 +121,8 @@ en:
       one: Market
       other: Markets
     betting_limit:
-      flash:
-        created: Betting limit successfully created
-        updated: Betting limit successfully updated
+      one: Betting limit
+      other: Betting limits
     document: Document
     documents: Documents
     comments: Comments
@@ -231,8 +230,6 @@ en:
     reset_password_confirmation: "Are you sure you want to reset customer (%{customer_name}) password?"
     reset_password_success: Password copied to clipboard
     reset_password_error: Could not copy password to clipboard
-    personal_information_updated: Customer personal information updated
-    contact_information_updated: Customer contact information updated
 
   errors:
     messages:
