@@ -86,9 +86,8 @@ module OddsFeed
 
       def validate_response(response)
         Rails.logger.debug "Radar API response: #{response}"
-
         error = response['error']
-        raise OddsFeed::InvalidResponseError, error['message'] unless error.nil?
+        raise OddsFeed::InvalidResponseError, error['message'] if error
       end
 
       def post(path)
