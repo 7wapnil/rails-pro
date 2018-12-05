@@ -1,4 +1,4 @@
-= card header: t('entities.activities', count: @audit_logs.count), class: 'audit-logs' do
+= card header: t('entities.activity_count', count: @audit_logs.count), class: 'audit-logs' do
   - if @audit_logs.any?
     %table.table.table-hover
       %tbody

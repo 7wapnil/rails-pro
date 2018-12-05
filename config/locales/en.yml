@@ -21,6 +21,8 @@ en:
   to: To
   days: "%{days} days"
   infinite: Infinite
+  system: System
+  sidekiq: Sidekiq
 
   created: "%{instance} created"
   updated: "%{instance} updated"
@@ -99,25 +101,24 @@ en:
     fraud: Fraud
 
   entities:
+    customer: Customer
+    customers: Customers
     wallet: Wallet
     balance: Balance
     bonus: Bonus
-    bonuses:
-      one: Bonus
-      other: Bonuses
-    entry_request:
-      flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
+    bonuses: Bonuses
+    entry_request: Entry request
+    entry_requests: Entry requests
     activity: Activity
-    activities:
+    activities: Activities
+    activity_count:
       zero: No activities
       one: 1 activity
       other: "%{count} activities"
-    events:
-      one: Event
-      other: Events
-    bets:
-      one: Bet
-      other: Bets
+    event: Event
+    events: Events
+    bet: Bet
+    bets: Bets
     markets:
       one: Market
       other: Markets
@@ -126,8 +127,12 @@ en:
       other: Betting limits
     document: Document
     documents: Documents
+    currency: Currency
+    currencies: Currencies
     comments: Comments
     comment: Comment
+    label: Label
+    labels: Labels
     personal_information: Customer personal information
     contact_information: Customer contact information
 
@@ -226,6 +231,8 @@ en:
       date_picker: "%-d %B %Y"
 
   messages:
+    entry_request:
+      flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
     entry_request_created: Entry request successfully created
     customer_lock_status_changed: Customer lock status was changed
     deposit_limits:
