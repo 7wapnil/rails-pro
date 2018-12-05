@@ -1,3 +1,5 @@
+return unless ENV['WORKERS']
+
 sneakers_logger = ::MaskedLogStashLoggerFactory.build(type: :stdout)
 
 sneakers_logger.level = ENV['RAILS_LOG_LEVEL'] || :debug

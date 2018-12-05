@@ -2,21 +2,23 @@ class ApiController < ActionController::Base
   skip_before_action :verify_authenticity_token
 
   def current_customer
-    return nil if request.headers['Authorization'].blank?
+    Customer.find_by(id: jwt_decoded_data['id'])
+  end
+
+  def impersonated_by
+    User.find_by(id: jwt_decoded_data['impersonated_by'])
+  end
+
+  private
+
+  def jwt_decoded_data
+    return {} if request.headers['Authorization'].blank?
 
     token = request.headers['Authorization'].split(' ').last
-    return nil if token.blank?
+    return {} if token.blank?
 
-    result = JwtService.decode(token)
-    user = User.find_by(id: result.first['impersonated_by'])
-    customer = Customer.find_by(id: result.first['id'])
-
-    if user.present?
-      ImpersonatedCustomerDecorator.new(customer, user)
-    else
-      customer
-    end
+    JwtService.decode(token).first
   rescue JWT::DecodeError
-    nil
+    {}
   end
 end

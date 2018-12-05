@@ -92,13 +92,7 @@ class CustomersController < ApplicationController
   end
 
   def reset_password_to_default
-    o = [
-      ('a'..'z'),
-      ('A'..'Z'),
-      ('0'..'9'),
-      %w[! @ # $ % ? : { }]
-    ].flat_map(&:to_a)
-    new_password = (0...16).map { o[rand(o.length)] }.join
+    new_password = SecureRandom.base64(16)
     customer.update!(password: new_password)
     current_user.log_event :password_reset_to_default,
                            nil,

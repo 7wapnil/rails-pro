@@ -18,6 +18,28 @@ describe OddsFeed::Radar::Client do
                     ))
     end
 
+    context 'error response' do
+      let(:route) { '/users/whoami.xml' }
+
+      before do
+        allow(subject.class)
+          .to receive(:get)
+          .with(route, options)
+          .and_return(OpenStruct.new(
+                        parsed_response: {
+                          'error' => {
+                            'message' => 'Unexpected error.'
+                          }
+                        }
+                      ))
+      end
+
+      it 'requests whoami endpoint' do
+        expect { subject.who_am_i }
+          .to raise_error(OddsFeed::InvalidResponseError, 'Unexpected error.')
+      end
+    end
+
     context 'who am i request' do
       let(:route) { '/users/whoami.xml' }
 

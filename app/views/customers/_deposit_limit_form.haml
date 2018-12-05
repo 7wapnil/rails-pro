@@ -1,7 +1,7 @@
 = simple_form_for limit do |f|
   = f.input :customer_id, as: :hidden
   .row
-    .col-4= f.association :currency, collection: currencies, value_method: :id, required: true
+    .col-4= f.association :currency, collection: currencies_with_primary_for(@customer), value_method: :id, required: true
     .col-4= f.input :value, input_html: { min: 0 }, required: true
     .col-4= f.input :range,
                     collection: content_for_days_range(limit),
