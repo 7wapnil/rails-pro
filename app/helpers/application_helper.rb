@@ -13,7 +13,7 @@ module ApplicationHelper
     header = opts[:header]
     css_class = ['card', opts[:class]].join(' ')
     html, resource, url = opts.extract!(:html, :resource, :url).values
-    return card(opts) if html.nil? || resource.nil? || url.nil?
+    return card(opts) unless html && resource && url
 
     content_tag(:div, class: css_class) do
       concat content_tag(:h5, class: 'card-header') { header } if header
