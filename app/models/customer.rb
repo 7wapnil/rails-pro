@@ -2,7 +2,6 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Person
   include LoginAttemptable
 
-  after_validation :check_account_transition_rule
   has_secure_token :activation_token
   acts_as_paranoid
 
@@ -71,6 +70,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   # Devise Validatable module creates all needed
   # validations for a user email and password.
 
+  validate :validate_account_transition
   validates :username,
             :email,
             :first_name,
@@ -130,10 +130,13 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
       )
   end
 
-  def check_account_transition_rule
+  def validate_account_transition
+    msg = I18n.t('errors.messages.account_transition',
+                 from: account_kind_was,
+                 to: account_kind)
+
     return unless account_kind_changed?
 
-    msg = "can't transit customer account kind"
-    raise msg if account_kind_was != 'regular'
+    errors.add(:account_kind, msg) if account_kind_was != 'regular'
   end
 end

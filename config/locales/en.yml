@@ -133,6 +133,7 @@ en:
   attributes:
     username: Username
     email: Email
+    account_kind: Account type
     ip_address: IP Address
     id: ID
     balance: Balance
@@ -248,6 +249,7 @@ en:
       betting_limits: "Betting limits validation failed"
       deposit_limits: "Deposit limit reached, please try again later"
       provider_disconnected: "Provider is disconnected"
+      account_transition: "can't bet changed from '%{from}' to '%{to}'"
 
   recaptcha:
     errors:
