@@ -34,10 +34,6 @@ describe Radar::UnifiedOdds do
   end
 
   describe 'work' do
-    before do
-      Sneakers.logger.level = Logger::ERROR
-    end
-
     it 'routes odds_change to Radar::OddsChangeWorker' do
       expect(Radar::OddsChangeWorker)
         .to receive(:perform_async)
