@@ -77,11 +77,18 @@ module OddsFeed
       def request(path, method: :get)
         Rails.logger.debug "Requesting Radar API endpoint: #{path}"
         response = self.class.send(method, path, @options).parsed_response
-        Rails.logger.debug "Radar API response: #{response}"
+        validate_response(response)
         response
       rescue RuntimeError, MultiXml::ParseError => e
         Rails.logger.error e.message
         raise HTTParty::InvalidResponseError, 'Failed to parse API response'
+      end
+
+      def validate_response(response)
+        Rails.logger.debug "Radar API response: #{response}"
+
+        error = response['error']
+        raise OddsFeed::InvalidResponseError, error['message'] unless error.nil?
       end
 
       def post(path)
