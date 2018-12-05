@@ -74,6 +74,8 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'rubocop', require: false
   gem 'brakeman', require: false
+  gem 'haml_lint', require: false
+  gem 'overcommit', require: false
   gem 'awesome_print'
   gem 'pry-rails'
 end

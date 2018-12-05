@@ -1,8 +1,8 @@
-= render 'customers/heading'
+= render 'customers/heading', customer: @customer
 
 .row
   .col-md-3
-    .mt-4= render 'customers/navigation'
+    .mt-4= render 'customers/navigation', customer: @customer
   .col-md-9
-    .mt-4.mb-4= render 'customers/verification'
-    .mt-4.mb-4= render 'customers/documents'
+    .mt-4.mb-4= render 'customers/verification', customer: @customer
+    .mt-4.mb-4= render 'customers/documents', customer: @customer

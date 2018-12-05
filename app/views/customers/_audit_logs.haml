@@ -1,8 +1,8 @@
-= card header: t('entities.activities', count: @audit_logs.count), class: 'audit-logs' do
-  - if @audit_logs.any?
+= card header: t('entities.activities', count: audit_logs.count), class: 'audit-logs' do
+  - if audit_logs.any?
     %table.table.table-hover
       %tbody
-        - @audit_logs.each do |log|
+        - audit_logs.each do |log|
           %tr
             %td= link_to l(log.created_at, format: :long), activity_path(log)
             %td= t "events.#{log.event}", log.interpolation
@@ -10,4 +10,4 @@
     .text-center
       %em= t(:no_records)
 
-  = paginate @audit_logs
+  = paginate audit_logs

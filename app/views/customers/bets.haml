@@ -1,14 +1,16 @@
-= render 'customers/heading'
+= render 'customers/heading', customer: @customer
 
 .row
   .col-md-3
-    .mt-4= render 'customers/navigation'
-  .col-md-9{ id:'customer-bets' }
-    = render partial: 'bets/search', locals: { excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:customers],
-     search_path: bets_customer_path,
-     filter: @filter }
-    = render partial: 'bets/table', locals: { excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:customers],
-     filter: @filter }
+    .mt-4= render 'customers/navigation', customer: @customer
+  .col-md-9{ id: 'customer-bets' }
+    = render 'bets/search',
+             excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:customers],
+             search_path: bets_customer_path,
+             filter: @filter
+    = render 'bets/table',
+             excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:customers],
+             filter: @filter
 
 = paginate @filter.bets
 

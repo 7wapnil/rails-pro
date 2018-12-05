@@ -7,13 +7,13 @@
   = javascript_pack_tag 'customers/account_lock', 'data-turbolinks-track': 'reload'
 
 = card header: t('attributes.account_lock'), class: 'account-lock' do
-  = simple_form_for @customer,
+  = simple_form_for customer,
     url: update_lock_customer_path,
     html: { id: 'update_lock_customer_form' } do |f|
     %table.table
       %tr
         %td= t('attributes.lock')
-        %td= locked_toggle(@customer, update_lock_customer_path(@customer))
+        %td= locked_toggle(customer, update_lock_customer_path(customer))
       %tr
         %td= t('attributes.lock_reason')
         %td
@@ -30,4 +30,4 @@
                     as: :date_picker,
                     label: false,
                     class: 'form-control form_date',
-                    input_html: { value: @customer.locked_until ? l(@customer.locked_until) : nil }
+                    input_html: { value: customer.locked_until ? l(customer.locked_until) : nil }

@@ -2,29 +2,30 @@
   %table.table
     %tr
       %td= t(:username)
-      %td= @customer.username
+      %td= customer.username
     %tr
       %td= t(:last_sign_in_ip)
-      %td= @customer.last_sign_in_ip
+      %td= customer.last_sign_in_ip
     %tr
       %td= t(:last_sign_in_at)
-      %td= l(@customer.last_sign_in_at)
+      %td= l(customer.last_sign_in_at)
     %tr
       %td= t(:sign_in_count)
-      %td= @customer.sign_in_count
+      %td= customer.sign_in_count
     %tr
       %td= t('attributes.promotional')
-      %td= check_box_tag :agreed_with_promotional, nil, @customer.agreed_with_promotional,
+      %td= check_box_tag :agreed_with_promotional, nil, customer.agreed_with_promotional,
                           class: 'remote_input',
-                          data: { endpoint: update_promotional_subscription_customer_path(@customer),
+                          data: { endpoint: update_promotional_subscription_customer_path(customer),
                                   resource: 'customer',
                                   method: :post }
     %tr
       %td= t(:labels)
       %td
-        = labels_selector(@customer, @labels)
+        = labels_selector(customer, labels)
 
   .row
-    %div.col.text-right
+    .col.text-right
       %button.btn.btn-success.save_labels{ disabled: true,
-       data: {label_selector: "customer_#{@customer.id}"} }= t(:save)
+                                           data: { label_selector: "customer_#{customer.id}" } }
+        = t(:save)

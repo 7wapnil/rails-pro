@@ -19,8 +19,8 @@
           %b= t("kinds.#{request.kind}")
         %td= request.customer.full_name
         %td
-          =number_with_precision request.amount, precision: 2
-          =request.currency.code
+          = number_with_precision request.amount, precision: 2
+          = request.currency.code
         %td= request.result_message
 
 

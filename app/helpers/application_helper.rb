@@ -63,4 +63,8 @@ module ApplicationHelper
       .sort
       .to_h
   end
+
+  def search_date_for(key)
+    query_params[key] || l(Time.zone.now.to_date, format: :date_picker)
+  end
 end

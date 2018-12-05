@@ -1,17 +1,17 @@
 = card header: t(:customer_notes) do
   = card class: 'customer-note-form' do
-    = simple_form_for @note do |f|
+    = simple_form_for note do |f|
       %legend= t(:add_note)
       = f.input :customer_id, as: :hidden
       = f.input :content
       = f.submit t(:add), class: 'btn btn-outline-dark'
 
   = card class: 'customer-notes mt-2' do
-    - if @customer_notes.any?
-      - @customer_notes.each do |note|
+    - if customer_notes.any?
+      - customer_notes.each do |note|
         = render 'customer_notes/show', note: note
     - else
       .text-center
         %em= t(:no_records)
 
-    = paginate @customer_notes
+    = paginate customer_notes

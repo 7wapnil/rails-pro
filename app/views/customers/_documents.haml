@@ -1,16 +1,18 @@
+- content_for :css do
+  = stylesheet_pack_tag 'css/documents'
+
 = card header: t(:customer_documents), class: 'customer-documents' do
-  - if flash[:file_errors]
-    - flash[:file_errors].keys.each do |kind|
-      %small.text-danger= "#{t("attributes.#{kind}")}: #{flash[:file_errors][kind]}"
-      %br
+  - flash[:file_errors]&.keys&.each do |kind|
+    %small.text-danger #{t("attributes.#{kind}")}: #{flash[:file_errors][kind]}
+    %br
   = form_tag upload_documents_customer_path, multipart: true, class: 'upload-form' do
     %table.table
       - VerificationDocument::KINDS.keys.each do |kind|
-        - attachment = attachment_for(@customer, kind)
+        - attachment = attachment_for(customer, kind)
         %tr.row
           %td.col.d-flex.align-items-center= t("attributes.#{kind}")
           %td.col.d-flex.align-items-center
-            %span.d-inline-block.text-truncate(data-target="#{kind}" style="max-width: 250px")
+            %span.d-inline-block.text-truncate.document-file-name{ 'data-target': kind.to_s }
               = attachment&.filename || t('no_file')
           %td.col.d-flex.align-items-center.justify-content-end= attachment&.status
           %td.col-md-12.col-lg-4.d-flex.align-items-center.justify-content-end
@@ -19,41 +21,15 @@
               = file_field_tag kind, accept: 'image/jpeg, image/png, image/gif, application/pdf',
                                      hidden: 'hidden',
                                      class: 'file-input'
-            - unless attachment.nil?
-              .dropdown
-                %button#dropdownMenuButton.btn.btn-outline-dark.mr-2.dropdown-toggle{ aria: { expanded: false, haspopup: true },
-                                                                                      'data-toggle' => 'dropdown',
-                                                                                      type: :button }
-                  = t(:action)
-                .dropdown-menu{ 'aria-labelledby' => 'dropdownMenuButton' }
-                  = link_to t(:details),
-                            verification_document_path(attachment),
-                            class: 'dropdown-item'
-                  = link_to t(:view),
-                            rails_blob_path(attachment.document),
-                            class: 'dropdown-item',
-                            target: :blank
-                  - if attachment.pending? || attachment.rejected?
-                    = link_to t(:confirm),
-                              status_verification_document_path(status: :confirmed,
-                              id: attachment.id),
-                              class: 'dropdown-item',
-                              data: { turbolinks: false }
-                  - if attachment.pending? || attachment.confirmed?
-                    = link_to t(:reject),
-                              status_verification_document_path(status: :rejected,
-                              id: attachment.id),
-                              class: 'dropdown-item',
-                              data: { turbolinks: false }
-                  = link_to t(:history),
-                            documents_history_customer_path(id: @customer.id,
-                            document_type: kind),
-                            class: 'dropdown-item'
-            - else @customer.documents_history(kind).any?
+            - if attachment.present?
+              = render 'customers/documents_actions',
+                       attachment: attachment,
+                       customer: customer,
+                       kind: kind
+            - elsif customer.documents_history(kind).present?
               = link_to t(:history),
-                          documents_history_customer_path(id: @customer.id,
-                          document_type: kind),
-                          class: 'btn btn-outline-dark mr-2'
+                        documents_history_customer_path(id: customer.id, document_type: kind),
+                        class: 'btn btn-outline-dark mr-2'
     .row
       .col.text-right
         = submit_tag t(:upload), class: 'btn btn-secondary mr-2'

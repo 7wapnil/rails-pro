@@ -15,15 +15,15 @@
           %td= t(:customer)
           %td
             %span= @request.customer.full_name
-            %span= "(#{@request.customer.username})"
+            %span (#{@request.customer.username})
         %tr
           %td= t(:kind)
           %td= t("kinds.#{@request.kind}")
         %tr
           %td= t(:amount)
           %td
-            =number_with_precision @request.amount, precision: 2
-            =@request.currency.code
+            = number_with_precision @request.amount, precision: 2
+            = @request.currency.code
         %tr
           %td= t('attributes.initiator')
           %td= @request.initiator

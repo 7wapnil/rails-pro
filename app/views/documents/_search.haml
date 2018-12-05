@@ -10,7 +10,7 @@
       %tr
         %th
           .filter_title
-            = "#{t('attributes.username')}:"
+            #{t('attributes.username')}:
           .filter_field
             = f.label :customer_username_cont, class: 'sr-only'
             = f.search_field :customer_username_cont,
@@ -20,7 +20,7 @@
 
         %th
           .filter_title
-            = "#{t('attributes.kind')}:"
+            #{t('attributes.kind')}:
           .filter_field
             = f.label :kind_eq, class: 'sr-only'
             = f.select :kind_eq,
@@ -30,7 +30,7 @@
 
         %th
           .filter_title
-            = "#{t('attributes.status')}:"
+            #{t('attributes.status')}:
           .filter_field
             = f.label :status_eq, class: 'sr-only'
             = f.select :status_eq,
@@ -39,22 +39,22 @@
                        class: 'form-control'
         %th
           .filter_title
-            = "#{t(:search, subject: t('from'))}:"
+            #{t(:search, subject: t('from'))}:
           .filter_field
             = f.label :created_at_gteq, class: 'sr-only'
             = f.search_field :created_at_gteq,
                               class: 'form-control form_date',
                               placeholder: t(:search, subject: t('from')),
-                              value: query_params[:created_at_gteq] || l(Time.zone.now.to_date, format: :date_picker)
+                              value: search_date_for(:created_at_gteq)
         %th
           .filter_title
-            = "#{t(:search, subject: t('to'))}:"
+            #{t(:search, subject: t('to'))}:
           .filter_field
             = f.label :created_at_lteq, class: 'sr-only'
             = f.search_field :created_at_lteq,
                               class: 'form-control form_date',
                               placeholder: t(:search, subject: t('to')),
-                              value: query_params[:created_at_lteq] || l(Time.zone.now.to_date, format: :date_picker)
+                              value: search_date_for(:created_at_lteq)
 
 
           = hidden_field_tag :tab, params[:tab]

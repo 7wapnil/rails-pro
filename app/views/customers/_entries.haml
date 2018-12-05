@@ -1,14 +1,14 @@
 = card header: t(:activity), class: 'activity' do
-  - if @entries.any?
+  - if entries.any?
     %table.table.table-hover
       %tbody
         %thead
-          %th= sort_link(@search, :created_at, t('attributes.created_at'), default_order: :asc)
-          %th= sort_link(@search, :kind, t('attributes.kind'), default_order: :asc)
+          %th= sort_link(search, :created_at, t('attributes.created_at'), default_order: :asc)
+          %th= sort_link(search, :kind, t('attributes.kind'), default_order: :asc)
           %th= t('attributes.amount')
           %th= t('attributes.currency')
           %th= t('attributes.authorized_at')
-        - @entries.each do |entry|
+        - entries.each do |entry|
           %tr
             %td= l entry.created_at, format: :long
             %td= entry.kind
@@ -19,4 +19,4 @@
     .text-center
       %em= t(:no_records)
 
-  = paginate @entries
+  = paginate entries
