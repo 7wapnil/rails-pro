@@ -15,9 +15,9 @@ module OddsFeed
 
         def odd_name(external_id)
           template = find_odd_template(external_id)
+          return template['name'].to_s if template
 
-          return template['name'].to_s    if template
-          return player_name(external_id) if external_id.match?(PLAYER_REGEX)
+          return player_name(external_id) if player?(external_id)
 
           raise "Odd template ID #{external_id} not found"
         end
@@ -30,8 +30,17 @@ module OddsFeed
           @stored_template ||= MarketTemplate.find_by!(external_id: market_id)
         end
 
+        def player?(external_id)
+          external_id.match?(PLAYER_REGEX)
+        end
+
         def player_name(external_id)
-          Radar::Entities::PlayerLoader.call(external_id: external_id)
+          player_name = Radar::Entities::PlayerLoader.call(
+            external_id: external_id
+          )
+          return player_name if player_name
+
+          raise "Player template ID #{external_id} not found"
         end
 
         def find_odd_template(external_id)
