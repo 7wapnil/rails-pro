@@ -8,6 +8,7 @@
     = stylesheet_pack_tag 'css/application', media: 'all', 'data-turbolinks-track': 'reload'
     = stylesheet_pack_tag 'css/minimal', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_pack_tag 'js/application', 'data-turbolinks-track': 'reload'
+    = yield :js
   %body
     .container
       = render 'shared/alerts'
