@@ -13,9 +13,9 @@ module Customers
         username: customer.username
       }
       token = JwtService.encode(payload)
-      query_params = payload.slice(:email, :username).merge(token: token)
+      customer_attrs = payload.slice(:email, :username, :id).to_json
 
-      "#{ENV['FRONTEND_URL']}?#{query_params.to_query(:customer)}"
+      "#{ENV['FRONTEND_URL']}/impersonate/#{token}?customer=#{customer_attrs}"
     end
 
     private

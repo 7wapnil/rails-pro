@@ -37,9 +37,12 @@ en:
 
   content: Content
 
+  reset_password_to_default: Reset password to default
+
   search: "Search %{subject}"
   no_records: No records yet
 
+  impersonation_comment: IMPERSONATED EVENT
   actions:
     impersonate: 'Impersonate'
   navigation:
@@ -118,10 +121,16 @@ en:
     markets:
       one: Market
       other: Markets
+    betting_limit:
+      one: Betting limit
+      other: Betting limits
     document: Document
     documents: Documents
     comments: Comments
     comment: Comment
+    personal_information: Customer personal information
+    contact_information: Customer contact information
+
   attributes:
     username: Username
     email: Email
@@ -198,7 +207,7 @@ en:
     lock: Lock
     lock_reason: Lock reason
     lock_until: Lock until
-    setted: Setted,
+    set: Set
     text: Text
     actions: Actions
 
@@ -222,6 +231,8 @@ en:
     deposit_limits:
       delete: "Are you sure you want to delete customer (%{customer_name}) deposit limit?"
     reset_password_confirmation: "Are you sure you want to reset customer (%{customer_name}) password?"
+    reset_password_success: Password copied to clipboard
+    reset_password_error: Could not copy password to clipboard
 
   errors:
     messages:

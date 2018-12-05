@@ -74,6 +74,24 @@ module OddsFeed
         request(route)
       end
 
+      def player_profile(player_id)
+        route = "/sports/#{@language}/players/#{player_id}/profile.xml"
+        Rails.logger.info("Loading player profile: #{route}")
+        request(route)
+      end
+
+      def competitor_profile(competitor_id)
+        route = "/sports/#{@language}/competitors/#{competitor_id}/profile.xml"
+        Rails.logger.info("Loading competitor profile: #{route}")
+        request(route)
+      end
+
+      def venue_summary(venue_id)
+        route = "/sports/#{@language}/venues/#{venue_id}/profile.xml"
+        Rails.logger.info("Loading venue summary: #{route}")
+        request(route)
+      end
+
       def request(path, method: :get)
         Rails.logger.debug "Requesting Radar API endpoint: #{path}"
         response = self.class.send(method, path, @options).parsed_response
@@ -84,14 +102,16 @@ module OddsFeed
         raise HTTParty::InvalidResponseError, 'Failed to parse API response'
       end
 
+      def post(path)
+        request(path, method: :post)
+      end
+
+      private
+
       def validate_response(response)
         Rails.logger.debug "Radar API response: #{response}"
         error = response['error']
         raise OddsFeed::InvalidResponseError, error['message'] if error
-      end
-
-      def post(path)
-        request(path, method: :post)
       end
     end
   end

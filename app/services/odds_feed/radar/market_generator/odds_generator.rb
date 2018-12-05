@@ -18,13 +18,17 @@ module OddsFeed
         def build
           return if @market_data.outcome.blank?
 
-          @market_data.outcome.each do |odd_data|
+          valuable_outcome.each do |odd_data|
             odd = build_odd(odd_data)
             @odds << odd if odd && valid?(odd)
           rescue StandardError => e
             Rails.logger.error e.message
             next
           end
+        end
+
+        def valuable_outcome
+          @market_data.outcome.reject { |odd_data| odd_data['odds'].to_f.zero? }
         end
 
         def valid?(odd)

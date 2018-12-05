@@ -3,6 +3,8 @@ class BettingLimitsController < ApplicationController
     @betting_limit = BettingLimit.create!(payload_params)
     customer = @betting_limit.customer
     current_user.log_event :betting_limit_created, @betting_limit, customer
+    flash[:success] =
+      t(:created, instance: t('entities.betting_limit', count: 1))
     redirect_to betting_limits_customer_path(customer)
   end
 
@@ -11,6 +13,8 @@ class BettingLimitsController < ApplicationController
     @betting_limit.update!(payload_params)
     customer = @betting_limit.customer
     current_user.log_event :betting_limit_updated, @betting_limit, customer
+    flash[:success] =
+      t(:updated, instance: t('entities.betting_limit', count: 1))
     redirect_to betting_limits_customer_path(customer)
   end
 

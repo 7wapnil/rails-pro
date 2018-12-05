@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<competitor_profile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" generated_at="2018-12-03T14:24:27+00:00" xmlns="http://schemas.sportradar.com/sportsapi/v1/unified" xsi:schemaLocation="http://schemas.sportradar.com/sportsapi/v1/unified http://schemas.sportradar.com/bsa/unified/v1/xml/endpoints/unified/competitor_profile.xsd">
+  <competitor id="sr:competitor:245739" name="Wunder, Markus" country="Germany" country_code="DEU" abbreviation="WUN">
+    <sport id="sr:sport:5" name="Tennis"/>
+    <category id="sr:category:785" name="ITF Men"/>
+  </competitor>
+</competitor_profile>
