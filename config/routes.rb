@@ -33,13 +33,14 @@ Rails.application.routes.draw do
       get :bets
       get :impersonate
       post :update_promotional_subscription
-      post :update_customer_status
+      patch :update_status
       post :reset_password_to_default
       post :update_labels
       patch :update_personal_information
       patch :update_contact_information
-      post :update_lock
+      patch :update_lock
       post :upload_documents
+      patch :account_update
       scope '/documents' do
         root to: 'customers#documents', as: :documents
         get '/:document_type',
