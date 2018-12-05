@@ -27,7 +27,7 @@ module Arcanebet
     config.eager_load_paths << Rails.root.join('app/workers/sneakers')
 
     # Exclude Sneakers workers
-    unless ENV['WORKERS']
+    unless Rails.env.test? || ENV['WORKERS']
       config
         .eager_load_paths
         .reject! { |path| path.to_s.match?(%r{app/workers}) }
