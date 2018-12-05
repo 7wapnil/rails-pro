@@ -21,3 +21,4 @@ en:
     customer_locked: "Customer (%{customer_name}) locked by %{user_name} with '%{reason}' reason  until %{date}"
     customer_unlocked: "Customer (%{customer_name}) unlocked by %{user_name}"
     impersonate_customer: "Customer (%{customer_name}) impersonated by (%{user_name})"
+    account_kind_transition: "Customer (%{customer_name}) account kind was changed"

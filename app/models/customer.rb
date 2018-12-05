@@ -2,6 +2,8 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Person
   include LoginAttemptable
 
+  after_update :log_account_transition
+
   has_secure_token :activation_token
   acts_as_paranoid
 
@@ -128,6 +130,17 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
         'currencies.primary = true OR wallets.customer_id = ?',
         id
       )
+  end
+
+  private
+
+  def log_account_transition
+    ctx = {
+      account_kind_was: account_kind_before_last_save,
+      account_kind_become: account_kind
+    }
+
+    log_event(:account_kind_transition, ctx) if saved_change_to_account_kind?
   end
 
   def validate_account_transition
