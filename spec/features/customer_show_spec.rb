@@ -45,7 +45,7 @@ describe 'Customers#show' do
       within '.container' do
         expect_to_have_notification I18n.t(
           :updated,
-          instance: I18n.t('entities.personal_information')
+          instance: I18n.t('attributes.personal_information')
         )
       end
     end
@@ -65,7 +65,7 @@ describe 'Customers#show' do
       within '.container' do
         expect_to_have_notification I18n.t(
           :updated,
-          instance: I18n.t('entities.contact_information')
+          instance: I18n.t('attributes.contact_information')
         )
       end
     end

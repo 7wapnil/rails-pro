@@ -90,6 +90,7 @@ en:
     live_coverage: Live coverage
     lock: Lock
     lock_reason: Lock reason
+    lock_status: Lock status
     lock_until: Lock until
     market: Market
     max_amount: Max amount
@@ -171,6 +172,8 @@ en:
       zero: No bets
       one: 1 bet
       other: "%{count} bets"
+    betting_limit: Betting limit
+    betting_limits: Betting limits
     betting_limit_by_sport: Betting limit by sport
     betting_limits_by_sport: Betting limits by sport
     bonus: Bonus
@@ -308,7 +311,6 @@ en:
         subject: Suspicious login attempt
 
   messages:
-    customer_lock_status_changed: Customer lock status was changed
     deposit_limits:
       delete: "Are you sure you want to delete customer (%{customer_name}) deposit limit?"
     entry_request:

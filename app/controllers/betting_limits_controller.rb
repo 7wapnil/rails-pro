@@ -4,7 +4,7 @@ class BettingLimitsController < ApplicationController
     customer = @betting_limit.customer
     current_user.log_event :betting_limit_created, @betting_limit, customer
     flash[:success] =
-      t(:created, instance: t('entities.betting_limit', count: 1))
+      t(:created, instance: t('entities.betting_limit'))
     redirect_to betting_limits_customer_path(customer)
   end
 
