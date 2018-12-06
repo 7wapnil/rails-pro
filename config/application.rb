@@ -28,13 +28,13 @@ module Arcanebet
 
     # Exclude Sneakers workers
     unless Rails.env.test? || ENV['WORKERS']
-      config
-        .eager_load_paths
-        .reject! { |path| path.to_s.match?(%r{app/workers}) }
+      config.autoload_paths << Rails.root.join('app/workers')
+      config.eager_load_paths
+            .delete_if { |path| path.to_s.match?(%r{app/workers}) }
 
-      config
-        .eager_load_paths += Dir.glob(Rails.root.join('app/workers/*'))
-                                .reject { |path| path.match?(%r{/sneakers}) }
+      config.eager_load_paths +=
+        Dir.glob(Rails.root.join('app/workers/*/'))
+           .reject { |path| path.match?(%r{app/workers/sneakers}) }
     end
 
     # Settings in config/environments/*
