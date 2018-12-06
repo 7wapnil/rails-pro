@@ -29,7 +29,7 @@
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
   missing_heartbeat_check:
-    every: <%= ENV.fetch('MISSING_HEARTBEAT_CHECK_INTERVAL', '1m') %>
+    every: <%= ENV.fetch('MISSING_HEARTBEAT_CHECK_INTERVAL', '20s') %>
     class: Radar::MissingHeartbeatWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 

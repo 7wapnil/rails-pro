@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<venue_summary xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" generated_at="2018-12-03T14:27:30+00:00" xmlns="http://schemas.sportradar.com/sportsapi/v1/unified" xsi:schemaLocation="http://schemas.sportradar.com/sportsapi/v1/unified http://schemas.sportradar.com/bsa/unified/v1/xml/endpoints/unified/venue_summary.xsd">
+  <venue id="sr:venue:3" name="Krohnsminde Idrettspark" city_name="Bergen" country_name="Norway" country_code="NOR"/>
+</venue_summary>

@@ -1,4 +1,9 @@
-= card header: t('attributes.account_information'), class: 'account-information' do
+= card_form_for id: 'account_update_form',
+                header: t('attributes.account_information'),
+                url:  account_update_customer_path,
+                html: { id: 'account_update_form', method: :patch },
+                resource: @customer,
+                class: 'account-information' do
   %table.table
     %tr
       %td= t('attributes.username')
@@ -14,17 +19,10 @@
       %td= @customer.sign_in_count
     %tr
       %td= t('attributes.promotional')
-      %td= check_box_tag :agreed_with_promotional, nil, @customer.agreed_with_promotional,
-                          class: 'remote_input',
-                          data: { endpoint: update_promotional_subscription_customer_path(@customer),
-                                  resource: 'customer',
-                                  method: :post }
+      = hidden_field_tag 'customer[agreed_with_promotional]', false
+      %td= check_box_tag 'customer[agreed_with_promotional]', nil,
+                          @customer.agreed_with_promotional
     %tr
       %td= t('entities.labels')
       %td
-        = labels_selector(@customer, @labels)
-
-  .row
-    %div.col.text-right
-      %button.btn.btn-success.save_labels{ disabled: true,
-       data: {label_selector: "customer_#{@customer.id}"} }= t(:save)
+        = simple_labels_selector(@customer, @labels)

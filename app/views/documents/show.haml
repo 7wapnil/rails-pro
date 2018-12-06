@@ -20,11 +20,10 @@
                         rails_blob_path(@document.document),
                         class: 'btn btn-outline-dark mr-2',
                         target: :blank
-        - if @document.pending?
-          %tr
-            %td= t('attributes.actions')
-            %td
-              = render partial: 'documents/actions', locals: { document: @document }
+        %tr
+          %td= t('attributes.actions')
+          %td
+            = render partial: 'documents/actions', locals: { document: @document }
         %tr
       %hr
       = link_back

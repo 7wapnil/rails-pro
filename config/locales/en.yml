@@ -12,6 +12,7 @@ en:
   edit: Edit
   from: From
   history: History
+  impersonation_comment: IMPERSONATED EVENT
   infinite: Infinite
   note: Note
   no_file: No File
@@ -116,7 +117,7 @@ en:
     scope_kind: Scope type
     scope_name: Scope name
     selection: Selection
-    setted: Setted
+    set: Set
     settlement: Settlement
     sign_in_count: Sign in count
     sport: Sport
@@ -309,6 +310,8 @@ en:
     deposit_limits:
       delete: "Are you sure you want to delete customer (%{customer_name}) deposit limit?"
     reset_password_confirmation: "Are you sure you want to reset customer (%{customer_name}) password?"
+    reset_password_success: Password copied to clipboard
+    reset_password_error: Could not copy password to clipboard
     entry_request_flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
 
   navigation:

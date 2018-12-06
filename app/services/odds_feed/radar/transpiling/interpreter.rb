@@ -14,6 +14,10 @@ module OddsFeed
             expression: VariableExpression
           },
           {
+            regex: /^\%/,
+            expression: NameExpression
+          },
+          {
             regex: /^\!/,
             expression: OrdinalExpression
           },

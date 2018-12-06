@@ -9,6 +9,7 @@ class GraphqlController < ApiController
     operation_name = params[:operationName]
     context = {
       current_customer: current_customer,
+      impersonated_by: impersonated_by,
       request: request
     }
     result = ArcanebetSchema.execute(

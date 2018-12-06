@@ -29,33 +29,6 @@ describe OddsFeed::Radar::OddsChangeHandler do
     expect(subject).not_to have_received(:create_or_find_event!)
   end
 
-  describe '#create_or_find_event!' do
-    it 'saves event retrieved from the API' do
-      expect(event).to receive(:save!).and_return(true)
-      subject.send(:create_or_find_event!)
-    end
-
-    context 'fails to save event because it already exists' do
-      let!(:existing_event) do
-        create(:event, title: build(:title), external_id: event_id)
-      end
-
-      it 'raises ActiveRecord::RecordInvalid on event save attempt' do
-        expect(event).to receive(:save!).and_raise(ActiveRecord::RecordInvalid)
-        subject.send(:create_or_find_event!)
-      end
-
-      it 'finds existing event' do
-        expect(Event)
-          .to receive(:find_by!)
-          .with(external_id: event_id)
-          .and_return(existing_event)
-
-        subject.send(:create_or_find_event!)
-      end
-    end
-  end
-
   it 'updates event status from message' do
     create(:event, external_id: event_id, status: :not_started)
     subject.handle
@@ -75,7 +48,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
   it 'adds producer id to event payload' do
     payload_addition = {
       producer: { origin: :radar, id: payload['odds_change']['product'] },
-      event_status:
+      state:
         OddsFeed::Radar::EventStatusService.new.call(
           event_id: event.id,
           data: payload['odds_change']['sport_event_status']
@@ -97,7 +70,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
     created_event = Event.find_by!(external_id: event_id)
     expect(WebSocket::Client.instance)
       .to have_received(:emit)
-      .with(WebSocket::Signals::EVENT_CREATED, id: created_event.id.to_s)
+      .with(WebSocket::Signals::EVENT_UPDATED, id: created_event.id.to_s)
   end
 
   it 'calls for live coverage booking' do
