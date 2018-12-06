@@ -30,7 +30,7 @@ describe 'Documents#show' do
       expect(page).to have_button(I18n.t('action'))
       expect(page).to have_link(I18n.t('view'))
     end
-    expect(page).to have_content(I18n.t('entities.comments.other'))
+    expect(page).to have_content(I18n.t('entities.comments'))
   end
 
   it 'shows action' do

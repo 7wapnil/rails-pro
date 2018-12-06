@@ -18,7 +18,7 @@ class EntryRequestsController < ApplicationController
                              entry_request,
                              entry_request.customer
 
-      flash[:success] = t('entities.entry_request.flash')
+      flash[:success] = t('messages.entry_request_flash')
       redirect_to account_management_customer_path(entry_request.customer) # rubocop:disable Metrics/LineLength
     else
       flash[:error] = entry_request.errors.full_messages

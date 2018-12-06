@@ -1,2 +1,2 @@
-= card class: 'mb-4', header: t('entities.deposit_limits', count: 1) do
+= card class: 'mb-4', header: t('entities.deposit_limit') do
   = render 'customers/deposit_limit_form', limit: @customer.deposit_limit, currencies: @customer.used_currencies

@@ -8,7 +8,7 @@ class Balance < ApplicationRecord
             numericality: {
               greater_than_or_equal_to: 0,
               message: I18n.t('errors.messages.with_instance.not_negative',
-                              instance: I18n.t('entities.balances', count: 1))
+                              instance: I18n.t('entities.balance'))
             }
 
   enum kind: {

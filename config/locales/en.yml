@@ -59,6 +59,7 @@ en:
     currency_code: Currency
     customer: Customer
     customer_name: Customer name
+    customer_verification_status: Customer verification status
     date: Date
     date_of_birth: Date of birth
     description: Description
@@ -149,82 +150,107 @@ en:
     history_title: "Files history: %{document_type}"
 
   entities:
-    activities:
-      multiple: Activities
+    activity: Activity
+    activities: Activities
+    activity_count:
+      zero: No activities
       one: 1 activity
       other: "%{count} activities"
-      single: Activity
-      zero: No activities
-    balances:
-      one: Balance
-      other: Balances
-    bets:
-      one: Bet
-      other: Bets
-    betting_limits:
-      by_sport:
-        one: Betting limit by sport
-        other: Betting limits by sport
-      global:
-        one: Global betting limit
-        other: Global betting limits
-    bonuses:
-      one: Bonus
-      other: Bonuses
-    comments:
-      one: Comment
-      other: Comments
-    currencies:
-      one: Currency
-      other: Currencies
-    customers:
-      documents:
-        one: Customer document
-        other: Customer documents
-      notes:
-        one: Customer note
-        other: Customer notes
-      one: Customer
-      other: Customers
-      verification_status: Customer verification status
-    days:
-      one: Day
-      other: Days
-    deposit_limits:
-      one: Deposit limit
-      other: Deposit limits
-    documents:
-      one: Document
-      other: Documents
-    entry_requests:
-      one: Entry request
-      other: Entry requests
-      flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
-      information: Request information
-    entry_rules:
-      one: Entry Rule
-      other: Entry Rules
-    events:
-      one: Event
-      other: Events
-    labels:
-      one: Label
-      other: Labels
-    markets:
-      one: Market
-      other: Markets
-    months:
-      one: Month
-      other: Months
-    scopes:
-      one: Scope
-      other: Scopes
-    wallets:
-      one: Wallet
-      other: Wallets
-    weeks:
-      one: Week
-      other: Weeks
+    balance: Balance
+    balances: Balances
+    balance_count:
+      zero: No balances
+      one: 1 balance
+      other: "%{count} balances"
+    bet: Bet
+    bets: Bets
+    bet_count:
+      zero: No bets
+      one: 1 bet
+      other: "%{count} bets"
+    betting_limit_by_sport: Betting limit by sport
+    betting_limits_by_sport: Betting limits by sport
+    bonus: Bonus
+    bonuses: Bonuses
+    bonus_count:
+      zero: No bonuses
+      one: 1 bonus
+      other: "%{count} bonuses"
+    comment: Comment
+    comments: Comments
+    comment_count:
+      zero: No comments
+      one: 1 comment
+      other: "%{count} comments"
+    currency: Currency
+    currencies: Currencies
+    currency_count:
+      zero: No currencies
+      one: 1 currency
+      other: "%{count} currencies"
+    customer: Customer
+    customers: Customers
+    customer_count:
+      zero: No customers
+      one: 1 customer
+      other: "%{count} customers"
+    customer_document: Customer document
+    customer_documents: Customer documents
+    customer_note: Customer note
+    customer_notes: Customer notes
+    customer_note_count:
+      zero: No customer notes
+      one: 1 customer note
+      other: "%{count} customer notes"
+    deposit_limit: Deposit limit
+    deposit_limits: Deposit limits
+    document: Document
+    documents: Documents
+    document_count:
+      zero: No documents
+      one: 1 document
+      other: "%{count} documents"
+    entry_request: Entry request
+    entry_requests: Entry requests
+    entry_request_count:
+      zero: No entry requests
+      one: 1 entry request
+      other: "%{count} entry requests"
+    entry_rule: Entry Rule
+    entry_rules: Entry Rules
+    event: Event
+    events: Events
+    event_count:
+      zero: No events
+      one: 1 event
+      other: "%{count} events"
+    global_betting_limit: Global betting limit
+    global_betting_limits: Global betting limits
+    label: Label
+    labels: Labels
+    label_count:
+      zero: No labels
+      one: 1 label
+      other: "%{count} labels"
+    market: Market
+    markets: Markets
+    market_count:
+      zero: No markets
+      one: 1 market
+      other: "%{count} markets"
+    request_information: Request information
+    scope: Scope
+    scopes: Scopes
+    scope_count:
+      zero: No scopes
+      one: 1 scope
+      other: "%{count} scopes"
+    wallet: Wallet
+    wallets: Wallets
+    wallet_count:
+      zero: No wallets
+      one: 1 wallet
+      other: "%{count} wallets"
 
   errors:
     messages:
@@ -282,8 +308,8 @@ en:
     customer_lock_status_changed: Customer lock status was changed
     deposit_limits:
       delete: "Are you sure you want to delete customer (%{customer_name}) deposit limit?"
-    entry_request_created: Entry request successfully created
     reset_password_confirmation: "Are you sure you want to reset customer (%{customer_name}) password?"
+    entry_request_flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
 
   navigation:
     customer:
@@ -303,6 +329,11 @@ en:
 
   origins:
     cashier: Cashier
+
+  ranges:
+    day: Day
+    week: Week
+    month: Month
 
   recaptcha:
     errors:

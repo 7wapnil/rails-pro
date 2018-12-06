@@ -22,7 +22,7 @@ class BonusesController < ApplicationController
     if @bonus.save
       redirect_to @bonus, notice: t(
         :created,
-        instance: t('entities.bonuses', count: 1)
+        instance: t('entities.bonus')
       )
     else
       render :new
@@ -47,7 +47,7 @@ class BonusesController < ApplicationController
     @bonus.destroy!
     redirect_to bonuses_path, notice: t(
       :deleted,
-      instance: t('entities.bonuses', count: 1)
+      instance: t('entities.bonus')
     )
   end
 

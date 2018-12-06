@@ -1,6 +1,6 @@
 %h1.display-4
   = t(:currencies)
-  = link_to t(:add_instance, instance: t('entities.currencies', count: 1)), new_currency_path, { class: 'btn btn-primary float-right btn-sm' }
+  = link_to t(:add_instance, instance: t('entities.currency')), new_currency_path, { class: 'btn btn-primary float-right btn-sm' }
 
 = search_form_for @search do |f|
   %table.table

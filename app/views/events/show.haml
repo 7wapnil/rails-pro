@@ -1,6 +1,6 @@
 .row.mt-4
   .col-8.offset-2
-    = card header: t('entities.events', count: 1), class: 'events-info mb-3' do
+    = card header: t('entities.event'), class: 'events-info mb-3' do
       %table.table
         %tr
           %td= t('attributes.event_id')
@@ -24,13 +24,13 @@
           %td= t('attributes.status')
           %td= @event.status
         %tr
-          %td= t('entities.labels.other')
+          %td= t('entities.labels')
           %td
             = labels_selector(@event, @labels)
             %button.btn.btn-success.mt-2.save_labels{ disabled: true,
              data: {label_selector: "event_#{@event.id}"} }= t(:save)
         %tr
-          %td= t('entities.bets.other')
+          %td= t('entities.bets')
           %td= @event.bets.count
         %tr
           %td= t('attributes.wager')
@@ -46,7 +46,7 @@
                                             resource: 'event',
                                             initial_value: @event.priority }
         %tr
-          %td= t('entities.scopes.other')
+          %td= t('entities.scopes')
           %td
             %ul.list-unstyled
               - @event.event_scopes.each do |scope|
@@ -62,14 +62,14 @@
       %hr
       = link_back
 
-    = card header: t('entities.markets', count: 5), class: 'markets-info mb-3' do
+    = card header: t('entities.markets'), class: 'markets-info mb-3' do
       %table.table
         %thead
           %tr
             %th= t('attributes.name')
             %th= t('attributes.status')
             %th= t('attributes.priority')
-            %th= t('entities.labels.other')
+            %th= t('entities.labels')
             %th= t('attributes.visibility')
         %tbody
           - @event.markets.each do |market|

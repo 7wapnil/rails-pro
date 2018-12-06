@@ -49,7 +49,7 @@ describe 'Bonuses' do
 
       success_message = I18n.t(
         :created,
-        instance: I18n.t('entities.bonuses', count: 1)
+        instance: I18n.t('entities.bonus')
       )
 
       expect(current_path).to eq bonus_path(Bonus.last)
@@ -88,7 +88,7 @@ describe 'Bonuses' do
     it 'deletes an existing bonus' do
       success_message = I18n.t(
         :deleted,
-        instance: I18n.t('entities.bonuses', count: 1)
+        instance: I18n.t('entities.bonus')
       )
 
       expect(current_path).to eq bonuses_path

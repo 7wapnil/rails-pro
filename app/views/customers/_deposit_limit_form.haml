@@ -5,7 +5,7 @@
     .col-4= f.input :value, input_html: { min: 0 }, required: true
     .col-4= f.input :range,
                     collection: dropdown_content_for_days_range(limit),
-                    label_method: :second,
+                    label_method: ->(k) { t("ranges.#{k.second}") },
                     value_method: :first,
                     required: true
   = f.submit t(:save), class: 'btn btn-outline-dark'

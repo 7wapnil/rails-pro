@@ -67,9 +67,7 @@ module Account
 
       I18n.t(
         'errors.messages.account_locked.additional_info.until',
-        until_date: customer.locked_until.strftime(
-          I18n.t('date.formats.default')
-        )
+        until_date: I18n.l(customer.locked_until, format: :default)
       )
     end
 
