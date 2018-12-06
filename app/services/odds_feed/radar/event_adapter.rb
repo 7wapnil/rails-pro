@@ -107,14 +107,8 @@ module OddsFeed
       end
 
       def find_or_create_scope!(attributes)
-        scope = EventScope.find_or_create_by!(attributes) do |obj|
-          log_msg = <<-MESSAGE
-            Create new scope kind '#{obj.kind}' \
-            with external ID '#{obj.external_id}' \
-            and name '#{obj.name}'
-          MESSAGE
-          Rails.logger.info log_msg.squish
-        end
+        scope = EventScope.new(attributes)
+        EventScope.create_or_update_on_duplicate(scope)
         @event.event_scopes << scope
       end
 

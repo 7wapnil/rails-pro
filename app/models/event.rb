@@ -1,5 +1,9 @@
 class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Visible
+  include Importable
+
+  conflict_target :external_id
+  conflict_updatable :name, :status, :traded_live, :payload
 
   after_create :emit_created
   after_update :emit_updated
@@ -41,16 +45,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   enum status: STATUSES
 
   delegate :name, to: :title, prefix: true
-
-  def self.update_on_duplicate(event)
-    import([event],
-           validate: true,
-           recursive: true,
-           on_duplicate_key_update: {
-             conflict_target: [:external_id],
-             columns: %i[name status traded_live payload]
-           })
-  end
 
   def self.start_time_offset
     4.hours.ago

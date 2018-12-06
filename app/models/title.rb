@@ -1,5 +1,8 @@
 class Title < ApplicationRecord
-  include HasUniqueExternalId
+  include Importable
+
+  conflict_target :external_id
+  conflict_updatable :name
 
   scope :with_active_events_amount, -> {
     select('titles.*')

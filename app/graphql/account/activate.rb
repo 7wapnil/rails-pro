@@ -11,7 +11,8 @@ module Account
     def resolve(_obj, args)
       customer = Customer.find_by!(activation_token: args[:token])
       if customer.activated
-        raise GraphQL::ExecutionError, 'Customer already activated'
+        raise GraphQL::ExecutionError,
+              I18n.t('errors.messages.customer_activated')
       end
 
       customer.update(activated: true)

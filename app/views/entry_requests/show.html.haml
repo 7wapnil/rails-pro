@@ -1,26 +1,26 @@
 .row.mt-4
   .col-6.offset-3
-    = card header: t(:request_information), class: 'request-info' do
+    = card header: t('entities.request_information'), class: 'request-info' do
       %table.table
         %tr
-          %td= t(:id)
+          %td= t('attributes.id')
           %td= @request.id
         %tr
-          %td= t(:status)
+          %td= t('attributes.status')
           %td= status_badge @request.status
         %tr
-          %td= t(:created_date)
+          %td= t('attributes.created_at')
           %td= l(@request.created_at, format: :long)
         %tr
-          %td= t(:customer)
+          %td= t('attributes.customer')
           %td
             %span= @request.customer.full_name
             %span= "(#{@request.customer.username})"
         %tr
-          %td= t(:kind)
+          %td= t('attributes.kind')
           %td= t("kinds.#{@request.kind}")
         %tr
-          %td= t(:amount)
+          %td= t('attributes.amount')
           %td
             =number_with_precision @request.amount, precision: 2
             =@request.currency.code
@@ -31,7 +31,7 @@
           %td= t('attributes.comment')
           %td= @request.comment
         %tr
-          %td= t(:result)
+          %td= t('attributes.result')
           %td= @request.result_message
 
       %hr

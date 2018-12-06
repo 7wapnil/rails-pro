@@ -55,20 +55,19 @@ module Account
     end
 
     def account_locked_message
-      account_lock_time = customer.locked_until
-
-      if account_lock_time.nil?
-        return I18n.t('errors.messages.account_locked.default')
-      end
-
       I18n.t(
         'errors.messages.account_locked.default',
-        additional_info: I18n.t(
-          'errors.messages.account_locked.additional_info.until',
-          until_date: customer.locked_until.strftime(
-            I18n.t('date.formats.default')
-          )
-        )
+        additional_info: additional_lock_info
+      )
+    end
+
+    def additional_lock_info
+      account_lock_time = customer.locked_until
+      return unless account_lock_time
+
+      I18n.t(
+        'errors.messages.account_locked.additional_info.until',
+        until_date: I18n.l(customer.locked_until, format: :default)
       )
     end
 
