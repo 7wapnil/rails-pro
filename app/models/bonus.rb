@@ -13,8 +13,10 @@ class Bonus < ApplicationRecord
             :min_deposit,
             :valid_for_days,
             :expires_at,
+            :percentage,
             presence: true
 
+  validates :percentage, numericality: { greater_than_or_equal_to: 0 }
   validates :code, uniqueness: { case_sensitive: false }
 
   validates :rollover_multiplier,

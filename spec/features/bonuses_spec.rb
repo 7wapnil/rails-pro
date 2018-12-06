@@ -43,6 +43,7 @@ describe 'Bonuses' do
         fill_in :bonus_min_odds_per_bet, with: 1.70
         fill_in :bonus_min_deposit, with: 25
         fill_in :bonus_valid_for_days, with: 90
+        fill_in :bonus_percentage, with: 20
 
         click_submit
       end
