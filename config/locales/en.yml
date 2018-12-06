@@ -40,6 +40,7 @@ en:
   attributes:
     account_information: Account information
     account_lock: Account lock
+    account_kind: Account type
     action: Action
     actions: Actions
     actual_payout: Actual payout
@@ -273,7 +274,7 @@ en:
         not_negative: "of %{instance} cannot be negative"
       wrong_login_credentials: Wrong username, email or password
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
-
+      account_transition: "can't bet changed from '%{from}' to '%{to}'"
   genders:
     female: Female
     male: Male

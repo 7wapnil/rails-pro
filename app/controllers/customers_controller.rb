@@ -86,15 +86,6 @@ class CustomersController < ApplicationController
     redirect_to documents_customer_path(customer)
   end
 
-  def update_promotional_subscription
-    customer.update!(promotional_subscription_params)
-    message = I18n.t(
-      :updated,
-      instance: I18n.t('attributes.promotional_agreement')
-    )
-    render json: { message: message }
-  end
-
   def update_status
     customer.update!(status_params)
     redirect_to documents_customer_path(customer)
@@ -144,7 +135,7 @@ class CustomersController < ApplicationController
   end
 
   def account_update
-    customer.update!(promotional_subscription_params)
+    customer.update!(account_params)
     set_labelable_resource
     update_label_ids
 
@@ -153,8 +144,8 @@ class CustomersController < ApplicationController
 
   private
 
-  def promotional_subscription_params
-    params.require(:customer).permit(:agreed_with_promotional)
+  def account_params
+    params.require(:customer).permit(:agreed_with_promotional, :account_kind)
   end
 
   def status_params
