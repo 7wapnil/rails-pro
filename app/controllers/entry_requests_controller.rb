@@ -17,7 +17,6 @@ class EntryRequestsController < ApplicationController
       current_user.log_event :entry_request_created,
                              entry_request,
                              entry_request.customer
-
       flash[:success] = t('messages.entry_request.flash')
       redirect_to account_management_customer_path(entry_request.customer) # rubocop:disable Metrics/LineLength
     else

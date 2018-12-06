@@ -1,5 +1,5 @@
 %nav.navbar.navbar-expand-lg.navbar-light.bg-light
-  = link_to 'ArcaneBet Backend', root_path, class: 'navbar-brand'
+  = link_to t('global.title'), root_path, class: 'navbar-brand'
   %button.navbar-toggler{ 'aria-controls': 'navbar-content',
                           'aria-expanded': 'false',
                           'aria-label': 'Toggle navigation',
@@ -69,7 +69,7 @@
 
           .dropdown-divider
 
-          = link_to t(:sidekiq),
+          = link_to t('sidekiq'),
                     sidekiq_web_path,
                     class: 'dropdown-item',
                     target: :blank

@@ -9,7 +9,7 @@
             = f.label :username_cont, class: 'sr-only'
             = f.search_field :username_cont,
                               class: 'form-control',
-                              placeholder: t(:search, subject: :username),
+                              placeholder: t(:search, subject: t('attributes.username')),
                               autocomplete: :off
         %th
           .filter_title
@@ -18,7 +18,7 @@
             = f.label :email_cont, class: 'sr-only'
             = f.search_field :email_cont,
                               class: 'form-control',
-                              placeholder: t(:search, subject: :email),
+                              placeholder: t(:search, subject: t('attributes.email')),
                               autocomplete: :off
         %th
           .filter_title
@@ -27,7 +27,7 @@
             = f.label :ip_address_eq, class: 'sr-only'
             = f.search_field :ip_address_eq,
                               class: 'form-control',
-                              placeholder: t(:search, subject: 'IP address'),
+                              placeholder: t(:search, subject: t('attributes.ip_address')),
                               autocomplete: :off
         %th
           .filter_field
@@ -36,7 +36,7 @@
             = f.label :id_eq, class: 'sr-only'
             = f.search_field :id_eq,
                               class: 'form-control',
-                              placeholder: t(:search, subject: 'ID'),
+                              placeholder: t(:search, subject: t('attributes.id')),
                               autocomplete: :off
         %th
           = f.submit class: 'btn btn-outline-dark btn-block'

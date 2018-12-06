@@ -6,47 +6,47 @@
           %td= t('attributes.event_id')
           %td= @event.id
         %tr
-          %td= 'Name'
+          %td= t('attributes.name')
           %td= @event.name
         %tr
-          %td= 'Title'
+          %td= t('attributes.sport')
           %td= @event.title.name
         %tr
-          %td= 'Description'
+          %td= t('attributes.description')
           %td= @event.description
         %tr
-          %td= 'Start at'
+          %td= t('attributes.start_at')
           %td= @event.start_at ? l(@event.start_at, format: :long) : '-'
         %tr
-          %td= 'End at'
+          %td= t('attributes.end_at')
           %td= @event.end_at ? l(@event.end_at, format: :long) : '-'
         %tr
-          %td= 'Status'
+          %td= t('attributes.status')
           %td= @event.status
         %tr
-          %td= 'Labels'
+          %td= t('entities.labels')
           %td
             = labels_selector(@event, @labels)
             %button.btn.btn-success.mt-2.save_labels{ disabled: true,
              data: {label_selector: "event_#{@event.id}"} }= t(:save)
         %tr
-          %td='Bets'
+          %td= t('entities.bets')
           %td= @event.bets.count
         %tr
-          %td= 'Wager'
+          %td= t('attributes.wager')
           %td= @event.bets.sum(:amount)
         %tr
-          %td= 'Live coverage'
+          %td= t('attributes.live_coverage')
           %td= status_badge(@event.traded_live ? 'live' : 'offline')
         %tr
-          %td= 'Priority'
+          %td= t('attributes.priority')
           %td= select_tag :priority, options_for_select(Event::PRIORITIES, @event.priority),
                                     class: 'priority_toggle form-control-sm',
                                     data: { endpoint: event_path(@event),
                                             resource: 'event',
                                             initial_value: @event.priority }
         %tr
-          %td= 'Scopes'
+          %td= t('entities.scopes')
           %td
             %ul.list-unstyled
               - @event.event_scopes.each do |scope|
@@ -57,20 +57,20 @@
           %td= t('attributes.event_status')
           %td= @event.payload['event_status']
         %tr
-          %td Visible
+          %td= t('attributes.visible')
           %td= visibility_toggle(@event, update_visibility_event_path(@event))
       %hr
       = link_back
 
-    = card header: t('entities.markets', count: 5), class: 'markets-info mb-3' do
+    = card header: t('entities.markets'), class: 'markets-info mb-3' do
       %table.table
         %thead
           %tr
-            %th= 'Name'
-            %th= 'Status'
-            %th= 'Priority'
-            %th= 'Labels'
-            %th= 'Visibility'
+            %th= t('attributes.name')
+            %th= t('attributes.status')
+            %th= t('attributes.priority')
+            %th= t('entities.labels')
+            %th= t('attributes.visibility')
         %tbody
           - @event.markets.each do |market|
             %tr

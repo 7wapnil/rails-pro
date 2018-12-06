@@ -1,7 +1,7 @@
-= card header: t(:customer_notes) do
+= card header: t('entities.customer_note_count', count: @customer_notes.count) do
   = card class: 'customer-note-form' do
     = simple_form_for @note do |f|
-      %legend= t(:add_note)
+      %legend= t(:add_instance, instance: t('entities.customer_note'))
       = f.input :customer_id, as: :hidden
       = f.input :content
       = f.submit t(:add), class: 'btn btn-outline-dark'

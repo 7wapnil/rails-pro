@@ -52,7 +52,7 @@ describe 'Documents#show' do
     end
 
     expect(page).to have_content('test comment')
-    expect_to_have_notification(I18n.t('created',
+    expect_to_have_notification(I18n.t(:created,
                                        instance: I18n.t('attributes.comment')))
   end
 end
