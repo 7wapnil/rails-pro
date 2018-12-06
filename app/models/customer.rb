@@ -54,6 +54,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_many :verification_documents
   has_many :betting_limits
   has_many :bets
+  has_one :activated_bonus, dependent: :destroy
 
   delegate :street_address,
            :zip_code,

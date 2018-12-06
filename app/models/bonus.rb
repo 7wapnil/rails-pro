@@ -28,4 +28,6 @@ class Bonus < ApplicationRecord
             numericality: { greater_than: 0 }
 
   acts_as_paranoid
+
+  has_many :activated_bonuses, foreign_key: :original_bonus_id
 end

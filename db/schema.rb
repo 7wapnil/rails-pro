@@ -10,10 +10,31 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_06_084455) do
+ActiveRecord::Schema.define(version: 2018_12_06_095652) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "activated_bonuses", force: :cascade do |t|
+    t.bigint "customer_id"
+    t.bigint "wallet_id"
+    t.string "code"
+    t.integer "kind"
+    t.decimal "rollover_multiplier"
+    t.decimal "max_rollover_per_bet"
+    t.decimal "max_deposit_match"
+    t.decimal "min_odds_per_bet"
+    t.decimal "min_deposit"
+    t.integer "valid_for_days"
+    t.integer "percentage"
+    t.datetime "expires_at"
+    t.integer "original_bonus_id"
+    t.datetime "activated_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_activated_bonuses_on_customer_id"
+    t.index ["wallet_id"], name: "index_activated_bonuses_on_wallet_id"
+  end
 
   create_table "active_storage_attachments", force: :cascade do |t|
     t.string "name", null: false
