@@ -53,7 +53,7 @@ describe 'Customers#account_management' do
       end
 
       within '.container' do
-        expect_to_have_notification(I18n.t('messages.entry_request_flash'))
+        expect_to_have_notification(I18n.t('messages.entry_request.flash'))
       end
     end
   end

@@ -21,9 +21,11 @@ en:
   save: Save
   says_at: "%{who} at %{when}"
   search: "Search %{subject}"
+  sidekiq: Sidekiq
   sign_in: Sign In
   sign_out: Sign Out
   sign_up: Sign Up
+  system: System
   to: To
   upload: Upload
   view: View
@@ -309,10 +311,11 @@ en:
     customer_lock_status_changed: Customer lock status was changed
     deposit_limits:
       delete: "Are you sure you want to delete customer (%{customer_name}) deposit limit?"
+    entry_request:
+      flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
     reset_password_confirmation: "Are you sure you want to reset customer (%{customer_name}) password?"
     reset_password_success: Password copied to clipboard
     reset_password_error: Could not copy password to clipboard
-    entry_request_flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
 
   navigation:
     customer:
@@ -328,7 +331,6 @@ en:
       pending: Pending documents
       recently_actioned: Recently actioned
     documents: Documents
-    sidekiq: Sidekiq
 
   origins:
     cashier: Cashier
