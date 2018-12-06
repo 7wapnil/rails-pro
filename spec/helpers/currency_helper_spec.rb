@@ -22,5 +22,12 @@ describe CurrencyHelper, type: :helper do
       expect(helper.currencies_with_primary_for(customer))
         .not_to include(not_included_currency)
     end
+
+    it 'doesn\'t create new customer wallet' do
+      customer = create(:customer)
+      create(:currency, primary: true)
+      helper.currencies_with_primary_for(customer)
+      expect(customer.wallets).to be_empty
+    end
   end
 end

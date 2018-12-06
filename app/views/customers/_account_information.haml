@@ -1,12 +1,12 @@
 = card_form_for id: 'account_update_form',
-                header: t(:account_information),
+                header: t('attributes.account_information'),
                 url:  account_update_customer_path,
                 html: { id: 'account_update_form', method: :patch },
                 resource: @customer,
                 class: 'account-information' do
   %table.table
     %tr
-      %td= t(:username)
+      %td= t('attributes.username')
       %td= @customer.username
     %tr
       %td= t('attributes.account_kind')
@@ -15,13 +15,13 @@
                             allowed_account_kind_options(@customer),
                             class: 'form-control'
     %tr
-      %td= t(:last_sign_in_ip)
+      %td= t('attributes.last_sign_in_ip')
       %td= @customer.last_sign_in_ip
     %tr
-      %td= t(:last_sign_in_at)
+      %td= t('attributes.last_sign_in_at')
       %td= l(@customer.last_sign_in_at)
     %tr
-      %td= t(:sign_in_count)
+      %td= t('attributes.sign_in_count')
       %td= @customer.sign_in_count
     %tr
       %td= t('attributes.promotional')
@@ -29,6 +29,6 @@
       %td= check_box_tag 'customer[agreed_with_promotional]', nil,
                           @customer.agreed_with_promotional
     %tr
-      %td= t(:labels)
+      %td= t('entities.labels')
       %td
         = simple_labels_selector(@customer, @labels)

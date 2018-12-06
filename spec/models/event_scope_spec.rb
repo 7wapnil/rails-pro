@@ -7,5 +7,5 @@ describe EventScope do
 
   it { should validate_presence_of(:name) }
 
-  it_behaves_like 'has unique :external_id'
+  it_behaves_like 'updatable on duplicate'
 end

@@ -50,7 +50,7 @@ class Market < ApplicationRecord
       .match(%r{\/.+$})
       &.to_s
       &.[](1..-1)
-      &.gsub! '|', ', '
+      &.gsub '|', ', '
   end
 
   private

@@ -11,14 +11,14 @@
 
         .row.mt-5
           .col
-            %h3= t(:entry_rules)
+            %h3= t('entities.entry_rules')
 
             %table.table
               %thead
                 %tr
-                  %th.w-50= t(:kind)
-                  %th= t(:min_amount)
-                  %th= t(:max_amount)
+                  %th.w-50= t('attributes.kind')
+                  %th= t('attributes.min_amount')
+                  %th= t('attributes.max_amount')
               %tbody
                 = f.simple_fields_for :entry_currency_rules, wrapper: :inline_form do |p|
                   %tr{ id: "entry-rule" }

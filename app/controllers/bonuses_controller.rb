@@ -20,7 +20,10 @@ class BonusesController < ApplicationController
     @bonus = Bonus.new(bonus_params)
 
     if @bonus.save
-      redirect_to @bonus, notice: t(:created, instance: t('entities.bonus'))
+      redirect_to @bonus, notice: t(
+        :created,
+        instance: t('entities.bonus')
+      )
     else
       render :new
     end
@@ -30,7 +33,10 @@ class BonusesController < ApplicationController
     @bonus = Bonus.find(params[:id])
 
     if @bonus.update(bonus_params)
-      redirect_to @bonus, notice: t(:updated, instance: @bonus.code)
+      redirect_to @bonus, notice: t(
+        :updated,
+        instance: @bonus.code
+      )
     else
       render :edit
     end
@@ -39,7 +45,10 @@ class BonusesController < ApplicationController
   def destroy
     @bonus = Bonus.find(params[:id])
     @bonus.destroy!
-    redirect_to bonuses_path, notice: t(:deleted, instance: t('entities.bonus'))
+    redirect_to bonuses_path, notice: t(
+      :deleted,
+      instance: t('entities.bonus')
+    )
   end
 
   private
