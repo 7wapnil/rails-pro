@@ -1,5 +1,8 @@
 class EventScope < ApplicationRecord
-  include HasUniqueExternalId
+  include Importable
+
+  conflict_target :external_id
+  conflict_updatable :name
 
   belongs_to :title
   belongs_to :event_scope, optional: true

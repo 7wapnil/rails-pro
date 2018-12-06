@@ -40,7 +40,7 @@ module OddsFeed
 
       def create_event!
         @event = api_event
-        Event.update_on_duplicate(@event)
+        Event.create_or_update_on_duplicate(@event)
         ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
       end
 

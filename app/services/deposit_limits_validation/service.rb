@@ -54,7 +54,7 @@ module DepositLimitsValidation
       @customer.log_event :deposit_limit_validation_failed
       @entry_request.errors.add(
         :kind,
-        I18n.t('errors.messages.deposit_limits')
+        ::I18n.t('errors.messages.deposit_limits')
       )
     end
   end
