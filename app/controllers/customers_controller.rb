@@ -94,7 +94,7 @@ class CustomersController < ApplicationController
     @customer = find_customer
     @customer.update!(promotional_subscription_params)
     message = I18n.t(
-      'updated',
+      :updated,
       instance: I18n.t('attributes.promotional_agreement')
     )
 
