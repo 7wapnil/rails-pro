@@ -1,232 +1,84 @@
 describe OddsFeed::Radar::EventScopesService do
-  subject(:service) { described_class.new(payload) }
-
   let(:payload) do
     XmlParser.parse(
       file_fixture('tournaments_response.xml').read
     )['tournaments']['tournament'][0]
   end
 
-  describe '#find_or_create_title!' do
-    context 'with simultaneously created records' do
-      let(:title_payload) do
-        {
-          name: payload['sport']['name'],
-          external_id: payload['sport']['id']
-        }
-      end
+  subject(:service) { described_class.new(payload) }
 
-      let!(:existing_title) { create(:title, title_payload) }
-      let(:initialized_title) { build(:title, title_payload) }
+  describe 'title' do
+    it 'creates new from payload' do
+      service.call
+      created = Title.find_by(external_id: payload['sport']['id'])
+      expect(created).not_to be_nil
+    end
 
-      before do
-        allow(Title)
-          .to receive(:find_or_initialize_by)
-          .and_return(initialized_title)
+    it 'updates from payload if exists' do
+      existing = create(:title,
+                        external_id: payload['sport']['id'],
+                        name: 'Old name')
+      service.call
 
-        allow(initialized_title)
-          .to receive(:save!)
-          .and_call_original
-
-        allow(Title)
-          .to receive(:find_by!)
-          .and_call_original
-
-        service.send(:find_or_create_title!, payload['sport'])
-      end
-
-      it 'calls save on initialized title' do
-        expect(initialized_title)
-          .to have_received(:save!).once
-      end
-
-      it 'fails to save the initialized title' do
-        expect { initialized_title.save! }
-          .to raise_error(ActiveRecord::RecordInvalid)
-      end
-
-      it 'queries for existing title' do
-        expect(Title)
-          .to have_received(:find_by!)
-          .with(external_id: title_payload[:external_id]).once
-      end
-
-      it 'returns existing title' do
-        expect(
-          Title.find_by!(external_id: title_payload[:external_id])
-        ).to eq(existing_title)
-      end
+      existing.reload
+      expect(existing.name).to eq(payload['sport']['name'])
     end
   end
 
-  describe '#find_or_create_country!' do
-    let(:country_payload) do
-      {
-        kind: :country,
-        name: payload['category']['name'],
-        external_id: payload['category']['id']
-      }
+  describe 'country' do
+    it 'creates new from payload' do
+      service.call
+      created = EventScope.find_by(external_id: payload['category']['id'])
+      expect(created).not_to be_nil
     end
 
-    let!(:existing_country) { create(:event_scope, country_payload) }
-    let(:initialized_country) { build(:event_scope, country_payload) }
+    it 'updates from payload if exists' do
+      existing = create(:event_scope,
+                        external_id: payload['category']['id'],
+                        kind: :country,
+                        name: 'Old name')
+      service.call
 
-    before do
-      allow(EventScope)
-        .to receive(:find_or_initialize_by)
-        .with(hash_including(kind: :country))
-        .and_return(initialized_country)
-
-      allow(initialized_country)
-        .to receive(:save!)
-        .and_call_original
-
-      allow(EventScope)
-        .to receive(:find_by!)
-        .and_call_original
-
-      service.send(:find_or_create_country!, payload['category'])
-    end
-
-    context 'with simultaneously created records' do
-      it 'receives save on initialized country' do
-        expect(initialized_country)
-          .to have_received(:save!).once
-      end
-
-      it 'fails to save the initialized country' do
-        expect { initialized_country.save! }
-          .to raise_error(ActiveRecord::RecordInvalid)
-      end
-
-      it 'queries event scope for existing country' do
-        expect(EventScope)
-          .to have_received(:find_by!)
-          .with(kind: :country, external_id: country_payload[:external_id])
-          .once
-      end
-
-      it 'returns existing country' do
-        expect(
-          EventScope.find_by!(
-            kind: :country, external_id: country_payload[:external_id]
-          )
-        ).to eq(existing_country)
-      end
+      existing.reload
+      expect(existing.name).to eq(payload['category']['name'])
     end
   end
 
-  describe '#find_or_create_tournament!' do
-    let(:tournament_payload) do
-      {
-        kind: :tournament,
-        name: payload['name'],
-        external_id: payload['id']
-      }
+  describe 'tournament' do
+    it 'creates new from payload' do
+      service.call
+      created = EventScope.find_by(external_id: payload['id'])
+      expect(created).not_to be_nil
     end
 
-    let!(:existing_tournament) { create(:event_scope, tournament_payload) }
-    let(:initialized_tournament) { build(:event_scope, tournament_payload) }
+    it 'updates from payload if exists' do
+      existing = create(:event_scope,
+                        external_id: payload['id'],
+                        kind: :tournament,
+                        name: 'Old name')
+      service.call
 
-    before do
-      allow(EventScope)
-        .to receive(:find_or_initialize_by)
-        .with(hash_including(kind: :tournament))
-        .and_return(initialized_tournament)
-
-      allow(initialized_tournament)
-        .to receive(:save!)
-        .and_call_original
-
-      allow(EventScope)
-        .to receive(:find_by!)
-        .and_call_original
-
-      service.send(:find_or_create_tournament!, payload)
-    end
-
-    context 'with simultaneously created records' do
-      it 'calls save on initialized tournament' do
-        expect(initialized_tournament)
-          .to have_received(:save!).once
-      end
-
-      it 'fails to save the initialized tournament' do
-        expect { initialized_tournament.save! }
-          .to raise_error(ActiveRecord::RecordInvalid)
-      end
-
-      it 'queiries event scope for existing tournamnet' do
-        expect(EventScope)
-          .to have_received(:find_by!)
-          .with(kind: :tournament,
-                external_id: tournament_payload[:external_id]).once
-      end
-
-      it 'returns existing tournament' do
-        expect(
-          EventScope.find_by!(
-            kind: :tournament, external_id: tournament_payload[:external_id]
-          )
-        ).to eq existing_tournament
-      end
+      existing.reload
+      expect(existing.name).to eq(payload['name'])
     end
   end
 
-  describe '#find_or_create_season!' do
-    let(:season_payload) do
-      {
-        kind: :season,
-        name: payload['current_season']['name'],
-        external_id: payload['current_season']['id']
-      }
+  describe 'season' do
+    it 'creates new from payload' do
+      service.call
+      created = EventScope.find_by(external_id: payload['current_season']['id'])
+      expect(created).not_to be_nil
     end
 
-    let!(:existing_season) { create(:event_scope, season_payload) }
-    let(:initialized_season) { build(:event_scope, season_payload) }
+    it 'updates from payload if exists' do
+      existing = create(:event_scope,
+                        external_id: payload['current_season']['id'],
+                        kind: :season,
+                        name: 'Old name')
+      service.call
 
-    before do
-      allow(EventScope)
-        .to receive(:find_or_initialize_by)
-        .with(hash_including(kind: :season))
-        .and_return(initialized_season)
-
-      allow(initialized_season)
-        .to receive(:save!)
-        .and_call_original
-
-      allow(EventScope)
-        .to receive(:find_by!)
-        .and_call_original
-
-      service.send(:find_or_create_season!, payload)
-    end
-
-    context 'with simultaneously created records' do
-      it 'calls initialized season save!' do
-        expect(initialized_season)
-          .to have_received(:save!).once
-      end
-
-      it 'fails to save the initialized season' do
-        expect { initialized_season.save! }
-          .to raise_error(ActiveRecord::RecordInvalid)
-      end
-
-      it 'queries event scope for existing season' do
-        expect(EventScope)
-          .to have_received(:find_by!)
-          .with(kind: :season, external_id: season_payload[:external_id])
-          .once
-      end
-
-      it 'returns existing season' do
-        expect(
-          EventScope.find_by!(
-            kind: :season, external_id: season_payload[:external_id]
-          )
-        ).to eq existing_season
-      end
+      existing.reload
+      expect(existing.name).to eq(payload['current_season']['name'])
     end
   end
 
