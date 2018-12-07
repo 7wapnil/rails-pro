@@ -15,6 +15,8 @@ module Arcanebet
 
     config.active_job.queue_adapter = :sidekiq
 
+    config.enable_dependency_loading = true
+
     config.generators do |g|
       g.orm :active_record
     end
