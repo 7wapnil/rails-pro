@@ -33,6 +33,10 @@ build:
       name: eslint
       code: yarn run eslint .
 
+    - script:
+      name: haml-lint
+      code: bundle exec haml-lint --fail-level=warning
+
   after-steps:
     - slack-notifier:
       url: $SLACK_URL

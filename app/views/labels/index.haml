@@ -1,6 +1,8 @@
 %h1.display-4
   = t('entities.labels')
-  = link_to t(:add_instance, instance: t('entities.label')), new_label_path, class: 'btn btn-primary float-right btn-sm'
+  = link_to t(:add_instance, instance: t('entities.label')),
+             new_label_path,
+             class: 'btn btn-primary float-right btn-sm'
 
 = search_form_for @search do |f|
   %table.table
