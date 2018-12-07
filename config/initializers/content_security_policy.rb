@@ -33,6 +33,7 @@ Rails.application.config.content_security_policy do |policy|
                        'http://localhost:3035',
                        'ws://localhost:3035'
   else
+    # TODO: Re-check
     policy.script_src :self,
                       :https,
                       :unsafe_inline,
