@@ -1,6 +1,6 @@
 %h1.display-4
-  = t(:labels)
-  = link_to t(:add_label), new_label_path, class: 'btn btn-primary float-right btn-sm'
+  = t('entities.labels')
+  = link_to t(:add_instance, instance: t('entities.label')), new_label_path, class: 'btn btn-primary float-right btn-sm'
 
 = search_form_for @search do |f|
   %table.table
@@ -13,7 +13,7 @@
           .filter_field
             = f.search_field :name_cont,
                               class: 'form-control',
-                              placeholder: t(:search, subject: :name),
+                              placeholder: t(:search, subject: t('attributes.name')),
                               autocomplete: :off
         %th
           .filter_title
@@ -32,7 +32,7 @@
           .filter_field
             = f.search_field :description_cont,
                               class: 'form-control',
-                              placeholder: t(:search, subject: :description),
+                              placeholder: t(:search, subject: t('attributes.description')),
                               autocomplete: :off
         %th
           = f.submit class: 'btn btn-outline-dark btn-block'
@@ -45,5 +45,5 @@
           %td= link_to t(:delete),
                         label,
                         method: :delete,
-                        data: { confirm: t(:confirmation) }
+                        data: { confirm: t(:confirm_sure) }
 = paginate @labels

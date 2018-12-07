@@ -5,11 +5,11 @@
       %table.table
         %thead
           %tr
-            %th= 'Name'
-            %th= 'Status'
-            %th= 'Priority'
-            %th= 'Labels'
-            %th= 'Visibility'
+            %th= t('attributes.name')
+            %th= t('attributes.status')
+            %th= t('attributes.priority')
+            %th= t('entities.labels')
+            %th= t('attributes.visibility')
         %tbody
           - @event.markets.each do |market|
             %tr

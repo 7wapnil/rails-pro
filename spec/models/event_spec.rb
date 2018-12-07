@@ -8,6 +8,8 @@ describe Event do
 
   it { should delegate_method(:name).to(:title).with_prefix }
 
+  it_behaves_like 'updatable on duplicate'
+
   it 'returns details adapter' do
     expect(subject.details).to be_a(EventDetails::Base)
   end
@@ -15,7 +17,7 @@ describe Event do
   it 'updates on duplicate key' do
     event = create(:event, external_id: :test_external_id)
     event.name = 'New event name'
-    Event.update_on_duplicate(event)
+    Event.create_or_update_on_duplicate(event)
     event = Event.find_by!(external_id: :test_external_id)
     expect(event.name).to eq('New event name')
   end

@@ -1,5 +1,5 @@
 %nav.navbar.navbar-expand-lg.navbar-light.bg-light
-  = link_to 'ArcaneBet Backend', root_path, class: 'navbar-brand'
+  = link_to t('global.title'), root_path, class: 'navbar-brand'
   %button.navbar-toggler{ 'aria-controls': 'navbar-content',
                           'aria-expanded': 'false',
                           'aria-label': 'Toggle navigation',
@@ -10,54 +10,67 @@
   .collapse.navbar-collapse#navbar-content
     %ul.navbar-nav.mr-auto
       %li.nav-item
-        = link_to t('entities.events', count: 5),
+        = link_to t('entities.events'),
                   events_path,
                   class: 'nav-link',
                   'data-target-controller': 'events'
 
-      %li.nav-item
-        = link_to t(:customers),
-                  customers_path,
-                  class: 'nav-link',
-                  'data-target-controller': 'customers'
-      %li.nav-item
-        = link_to t(:entry_requests),
-                  entry_requests_path,
-                  class: 'nav-link',
-                  'data-target-controller': 'entry_requests'
-      %li.nav-item
-        = link_to t(:bets),
-                  bets_path,
-                  class: 'nav-link',
-                  'data-target-controller': 'bets'
-      %li.nav-item
-        = link_to t(:activities),
-                  activities_path,
-                  class: 'nav-link',
-                  'data-target-controller': 'activities'
-      %li.nav-item
-        = link_to t(:bonuses, count: 2),
-                  bonuses_path,
-                  class: 'nav-link',
-                  'data-target-controller': 'bonuses'
-      %li.nav-item
-        = link_to t(:currencies),
-                  currencies_path,
-                  class: 'nav-link',
-                  'data-target-controller': 'currencies'
-      %li.nav-item
-        = link_to t(:labels),
-                  labels_path,
-                  class: 'nav-link',
-                  'data-target-controller': 'labels'
-      %li.nav-item
-        = link_to t('navigation.documents'),
-                  verification_documents_path,
-                  class: 'nav-link',
-                  'data-target-controller': 'documents'
-      %li.nav-item
-        = link_to t(:sidekiq),
-                  sidekiq_web_path,
-                  class: 'nav-link',
-                  target: :blank
+      %li.nav-item.dropdown
+        = link_to t('entities.customers'), '#',
+                  class: 'nav-link dropdown-toggle',
+                  'data-toggle': 'dropdown',
+                  aria: { haspopup: true, expanded: false }
+
+        .dropdown-menu
+          = link_to t('entities.customers'),
+                    customers_path,
+                    class: 'dropdown-item',
+                    'data-target-controller': 'customers'
+
+          = link_to t('entities.documents'),
+                    verification_documents_path,
+                    class: 'dropdown-item',
+                    'data-target-controller': 'documents'
+
+          = link_to t('entities.activities'),
+                    activities_path,
+                    class: 'dropdown-item',
+                    'data-target-controller': 'activities'
+
+          = link_to t('entities.entry_requests'),
+                    entry_requests_path,
+                    class: 'dropdown-item',
+                    'data-target-controller': 'entry_requests'
+
+          = link_to t('entities.bets'),
+                    bets_path,
+                    class: 'dropdown-item',
+                    'data-target-controller': 'bets'
+
+      %li.nav-item.dropdown
+        = link_to t(:system), '#',
+                  class: 'nav-link dropdown-toggle',
+                  'data-toggle': 'dropdown',
+                  aria: { haspopup: true, expanded: false }
+
+        .dropdown-menu
+          = link_to t('entities.currencies'),
+                    currencies_path,
+                    class: 'dropdown-item',
+                    'data-target-controller': 'currencies'
+          = link_to t('entities.bonuses'),
+                    bonuses_path,
+                    class: 'dropdown-item',
+                    'data-target-controller': 'bonuses'
+          = link_to t('entities.labels'),
+                    labels_path,
+                    class: 'dropdown-item',
+                    'data-target-controller': 'labels'
+
+          .dropdown-divider
+
+          = link_to t('sidekiq'),
+                    sidekiq_web_path,
+                    class: 'dropdown-item',
+                    target: :blank
     = render 'shared/authentication_links'

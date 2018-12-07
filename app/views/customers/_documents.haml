@@ -1,7 +1,7 @@
 - content_for :css do
   = stylesheet_pack_tag 'css/documents'
 
-= card header: t(:customer_documents), class: 'customer-documents' do
+= card header: t('entities.customer_documents'), class: 'customer-documents' do
   - flash[:file_errors]&.keys&.each do |kind|
     %small.text-danger #{t("attributes.#{kind}")}: #{flash[:file_errors][kind]}
     %br

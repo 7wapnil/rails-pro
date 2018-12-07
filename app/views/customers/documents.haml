@@ -6,3 +6,6 @@
   .col-md-9
     .mt-4.mb-4= render 'customers/verification', customer: @customer
     .mt-4.mb-4= render 'customers/documents', customer: @customer
+
+- content_for :js do
+  = javascript_pack_tag 'customers/navigation_links'

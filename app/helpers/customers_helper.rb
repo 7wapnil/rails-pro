@@ -7,6 +7,16 @@ module CustomersHelper
       .first
   end
 
+  def allowed_account_kind_options(customer)
+    allowed_kinds = if customer.regular?
+                      Customer.account_kinds.keys
+                    else
+                      [customer.account_kind]
+                    end
+
+    options_for_select(allowed_kinds, customer.account_kind)
+  end
+
   def restricted_dob
     l(Date.current - 18.years, format: :date_picker)
   end

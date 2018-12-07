@@ -1,31 +1,31 @@
-= card header: t(:personal_information), class: 'personal-information' do
+= card header: t('attributes.personal_information'), class: 'personal-information' do
   = simple_form_for customer, html: { class: 'personal-information-form' },
                     url: update_personal_information_customer_path do |f|
     %table.table
       %tr
-        %td= t(:first_name)
+        %td= t('attributes.first_name')
         %td
           = f.input :first_name,
                     label: false,
                     required: true
       %tr
-        %td= t(:last_name)
+        %td= t('attributes.last_name')
         %td
           = f.input :last_name,
                     label: false,
                     required: true
       %tr
-        %td= t(:gender)
+        %td= t('attributes.gender')
         %td
           = f.input :gender,
                     as: :select,
                     collection: Customer.genders,
                     include_blank: false,
-                    label_method: ->(k) { k.first.capitalize },
+                    label_method: ->(k) { t("genders.#{k.first}") },
                     value_method: ->(k) { k.first },
                     label: false
       %tr
-        %td= t(:date_of_birth)
+        %td= t('attributes.date_of_birth')
         %td
           = f.input :date_of_birth,
                     as: :date_picker,

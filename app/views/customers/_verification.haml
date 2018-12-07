@@ -1,21 +1,13 @@
-= card do
+= card_form_for html: { id: 'update_status_form', method: :patch },
+                url: update_status_customer_path,
+                resource: customer do
   .row.d-flex.align-items-center
-    .col=  t(:customer_verification_status)
-    .col.text-right
+    .col
+      = t('attributes.customer_verification_status')
+    .col.text-center
       = customer.verified ? t('statuses.verified') : t('statuses.not_verified')
     .col-4.d-flex.justify-content-end
-      .dropdown
-        %button.btn.btn-secondary.mr-1.dropdown-toggle#status-dropdown{ aria: { expanded: false,
-                                                                                haspopup: true },
-                                                                        'data-toggle': 'dropdown',
-                                                                        type: :button }
-          = t(:action)
-        .dropdown-menu{ aria: { labelledby: 'status-dropdown' } }
-          = link_to t(:verified),
-                                update_customer_status_customer_path(customer: { verified: true }),
-                                                                     method: :post,
-                                                                     class: 'dropdown-item'
-          = link_to t(:not_verified),
-                                update_customer_status_customer_path(customer: { verified: false }),
-                                                                     method: :post,
-                                                                     class: 'dropdown-item'
+      = select_tag 'customer[verified]',
+                   options_for_verification(customer.verified),
+                   class: 'form-control'
+  %br

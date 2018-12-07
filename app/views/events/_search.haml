@@ -17,7 +17,7 @@
                                  placeholder: t('attributes.id'),
                                  autocomplete: :off
         %th
-          .filter_title Name:
+          .filter_title #{t('attributes.name')}:
           .filter_field
             = f.label :name_cont, class: 'sr-only'
             = f.search_field :name_cont,
@@ -25,7 +25,7 @@
                                  placeholder: t(:search, subject: 'Name'),
                                  autocomplete: :off
         %th
-          .filter_title Sport:
+          .filter_title #{t('attributes.sport')}:
           .filter_field
             = f.label :title_name_eq, class: 'sr-only'
             = f.select :title_name_eq,
@@ -33,7 +33,7 @@
                   { include_blank: true },
                   class: 'form-control'
         %th
-          .filter_title Visibility:
+          .filter_title #{t('attributes.visibility')}:
           .filter_field
             = f.label :visible_eq, class: 'sr-only'
             = f.select :visible_eq,
@@ -43,7 +43,7 @@
                   { include_blank: true },
                   class: 'form-control'
         %th
-          .filter_title Live:
+          .filter_title #{t('attributes.live')}:
           .filter_field
           = f.select :traded_live_eq,
                  options_for_select({ 'Yes': true,
@@ -54,7 +54,7 @@
         %th
       %tr
         %th
-          .filter_title From date:
+          .filter_title #{t(:from)}:
           .filter_field
             = f.label :start_at_gteq, class: 'sr-only'
             = f.search_field :start_at_gteq,
@@ -63,7 +63,7 @@
                                    value: query_params[:start_at_gteq]
 
         %th
-          .filter_title To date:
+          .filter_title #{t(:to)}:
           .filter_field
             = f.label :start_at_lteq, class: 'sr-only'
             = f.search_field :start_at_lteq,
@@ -72,14 +72,14 @@
                                    value: query_params[:start_at_lteq]
 
         %th
-          .filter_title Scope kind:
+          .filter_title #{t('attributes.scope_kind')}:
           .filter_field
             = f.select :event_scopes_kind_eq,
                  options_for_select(EventScope.kinds, query_params[:event_scopes_kind_eq]),
                   { include_blank: true },
                   class: 'form-control'
         %th
-          .filter_title Scope name:
+          .filter_title #{t('attributes.scope_name')}:
           .filter_field
             = f.search_field :event_scopes_name_cont,
                               class: 'form-control',
