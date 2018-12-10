@@ -37,7 +37,7 @@ describe 'Customers#betting_limits' do
       within '.container' do
         expect_to_have_notification I18n.t(
           :created,
-          instance: I18n.t('entities.betting_limit', count: 1)
+          instance: I18n.t('entities.betting_limit')
         )
       end
     end
@@ -59,7 +59,7 @@ describe 'Customers#betting_limits' do
       within '.container' do
         expect_to_have_notification I18n.t(
           :updated,
-          instance: I18n.t('entities.betting_limit', count: 1)
+          instance: I18n.t('entities.betting_limit')
         )
       end
     end
@@ -88,7 +88,7 @@ describe 'Customers#betting_limits' do
       within '.container' do
         expect_to_have_notification I18n.t(
           :created,
-          instance: I18n.t('entities.betting_limit', count: 1)
+          instance: I18n.t('entities.betting_limit')
         )
       end
     end
@@ -110,7 +110,7 @@ describe 'Customers#betting_limits' do
       within '.container' do
         expect_to_have_notification I18n.t(
           :updated,
-          instance: I18n.t('entities.betting_limit', count: 1)
+          instance: I18n.t('entities.betting_limit')
         )
       end
     end

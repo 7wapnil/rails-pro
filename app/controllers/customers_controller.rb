@@ -102,7 +102,10 @@ class CustomersController < ApplicationController
 
   def update_personal_information
     customer.update!(personal_information_params)
-    flash[:success] = t(:updated, instance: t('entities.personal_information'))
+    flash[:success] = t(
+      :updated,
+      instance: t('attributes.personal_information')
+    )
     current_user.log_event :customer_personal_information_updated,
                            nil,
                            customer
@@ -114,7 +117,10 @@ class CustomersController < ApplicationController
 
   def update_contact_information
     customer.update!(contact_information_params)
-    flash[:success] = t(:updated, instance: t('entities.contact_information'))
+    flash[:success] = t(
+      :updated,
+      instance: t('attributes.contact_information')
+    )
     current_user.log_event :customer_contact_information_updated,
                            nil,
                            customer
@@ -131,7 +137,7 @@ class CustomersController < ApplicationController
                            customer
 
     redirect_to customer_path(customer),
-                success: t('messages.customer_lock_status_changed')
+                success: t(:updated, instance: t('attributes.lock_status'))
   end
 
   def account_update
