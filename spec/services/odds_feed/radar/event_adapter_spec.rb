@@ -62,7 +62,7 @@ describe OddsFeed::Radar::EventAdapter do
       end
     end
 
-    context 'when database does not have scopes for give event' do
+    context 'when database does not have scopes for given event' do
       it 'creates tournament scope from event payload' do
         result_tournament = result.event_scopes.detect(&:tournament?)
         expect(result_tournament).to have_attributes(tournament_attributes)

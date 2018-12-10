@@ -9,6 +9,7 @@ describe Bonus do
     it { should validate_presence_of(:min_deposit) }
     it { should validate_presence_of(:valid_for_days) }
     it { should validate_presence_of(:expires_at) }
+    it { should validate_presence_of(:percentage) }
 
     it { should validate_uniqueness_of(:code).case_insensitive }
 
@@ -19,6 +20,7 @@ describe Bonus do
     it { should validate_numericality_of(:min_odds_per_bet).is_greater_than(0) }
     it { should validate_numericality_of(:min_deposit).is_greater_than(0) }
     it { should validate_numericality_of(:valid_for_days).is_greater_than(0) }
+    it { should validate_numericality_of(:percentage).is_greater_than_or_equal_to(0) }
     # rubocop:enable Metrics/LineLength
   end
 end

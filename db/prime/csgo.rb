@@ -1,6 +1,6 @@
 require 'faker'
 
-class CsgoPrimer
+class CsgoPrimer # rubocop:disable Metrics/ClassLength
   CSGO_TEAMS = %w[
     SK
     Natus
@@ -55,6 +55,12 @@ class CsgoPrimer
 
       event = Event.new(default_attributes.merge(attributes))
       event.event_scopes << tournament
+      event.add_to_payload(
+        state:
+          OddsFeed::Radar::EventStatusService.new.call(
+            event_id: Faker::Number.number(3), data: nil
+          )
+      )
       event.save!
 
       market = create_market(event, market_external_id)

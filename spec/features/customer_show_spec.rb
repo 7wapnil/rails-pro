@@ -24,6 +24,26 @@ describe 'Customers#show' do
     it "shows 'Impersonate' link" do
       expect(page).to have_link('Impersonate')
     end
+
+    it 'shows customer account type' do
+      expect(page).to have_select('customer[account_kind]')
+    end
+
+    context 'account type transition' do
+      let(:input_name) { 'customer[account_kind]' }
+      it 'displays all possible types for regular customer' do
+        all_options = Customer.account_kinds.keys
+
+        expect(page).to have_select(input_name, options: all_options)
+      end
+
+      it 'displays allowed to transit account types' do
+        subject.update_column(:account_kind, Customer.account_kinds[:staff])
+        visit customer_path(subject)
+
+        expect(page).to have_select(input_name, options: ['staff'])
+      end
+    end
   end
 
   context 'actions' do

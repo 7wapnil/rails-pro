@@ -43,11 +43,15 @@ describe 'Bonuses' do
         fill_in :bonus_min_odds_per_bet, with: 1.70
         fill_in :bonus_min_deposit, with: 25
         fill_in :bonus_valid_for_days, with: 90
+        fill_in :bonus_percentage, with: 20
 
         click_submit
       end
 
-      success_message = I18n.t(:created, instance: I18n.t('entities.bonus'))
+      success_message = I18n.t(
+        :created,
+        instance: I18n.t('entities.bonus')
+      )
 
       expect(current_path).to eq bonus_path(Bonus.last)
       expect_to_have_notification success_message
@@ -83,7 +87,10 @@ describe 'Bonuses' do
     end
 
     it 'deletes an existing bonus' do
-      success_message = I18n.t(:deleted, instance: I18n.t('entities.bonus'))
+      success_message = I18n.t(
+        :deleted,
+        instance: I18n.t('entities.bonus')
+      )
 
       expect(current_path).to eq bonuses_path
       expect_to_have_notification success_message

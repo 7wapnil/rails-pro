@@ -26,102 +26,54 @@ module OddsFeed
       def find_or_create_title!(payload)
         return unless payload_valid_for?('Title', payload)
 
-        @title = Title.find_or_initialize_by(external_id: title_id) do |title|
-          title.name = payload['name']
-          title.kind = SportKind.from_title(payload['name'])
-        end
+        @title = Title.new(external_id: payload['id'],
+                           name: payload['name'],
+                           kind: SportKind.from_title(payload['name']))
 
-        save_title! unless @title.persisted?
+        Title.create_or_update_on_duplicate(@title)
       end
 
       def find_or_create_country!(payload)
         return unless payload_valid_for?('Country', payload)
 
-        @country = EventScope.find_or_initialize_by(
-          kind: :country,
-          external_id: payload['id']
-        ) do |country|
-          country.title = @title
-          country.name = payload['name']
-        end
-
-        save_scope!(:country) unless @country.persisted?
+        @country = EventScope.new(kind: :country,
+                                  external_id: payload['id'],
+                                  title: @title,
+                                  name: payload['name'])
+        EventScope.create_or_update_on_duplicate(@country)
       end
 
       def find_or_create_tournament!(payload)
         return unless payload_valid_for?('Tournament', payload)
 
-        @tournament = EventScope.find_or_initialize_by(
-          kind: :tournament,
-          external_id: payload['id']
-        ) do |tournament|
-          tournament.title = @title
-          tournament.event_scope = @country
-          tournament.name = payload['name']
-        end
-
-        save_scope!(:tournament) unless @tournament.persisted?
+        @tournament = EventScope.new(kind: :tournament,
+                                     external_id: payload['id'],
+                                     title: @title,
+                                     event_scope: @country,
+                                     name: payload['name'])
+        EventScope.create_or_update_on_duplicate(@tournament)
       end
 
       def find_or_create_season!(payload)
         return unless payload_valid_for?('Season', payload)
 
-        @season = EventScope.find_or_initialize_by(
-          kind: :season,
-          external_id: payload['id']
-        ) do |season|
-          season.title = @title
-          season.event_scope = @tournament
-          season.name = payload['name']
-        end
-
-        save_scope!(:season) unless @season.persisted?
+        @season = EventScope.new(kind: :season,
+                                 external_id: payload['id'],
+                                 title: @title,
+                                 event_scope: @tournament,
+                                 name: payload['name'])
+        EventScope.create_or_update_on_duplicate(@season)
       end
 
       def payload_valid_for?(scope, payload)
         Rails.logger.debug "#{scope} data received: #{payload}"
 
         unless payload.is_a?(Hash)
-          Rails.logger.warn ["#{scope} is missing, exiting", @payload]
+          Rails.logger.warn ["#{scope} is missing", @payload]
           return false
         end
 
         true
-      end
-
-      def save_scope!(kind)
-        send(kind).save!
-      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-        instance_variable_set("@#{kind}", nil)
-
-        scope_id = scope_id(kind)
-        Rails.logger.warn ["#{kind} ID #{scope_id} creating failed", e.message]
-
-        scope = EventScope.find_by!(external_id: scope_id, kind: kind)
-        instance_variable_set("@#{kind}", scope)
-      end
-
-      def save_title!
-        @title.save!
-      rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique => e
-        Rails.logger.warn ["Title ID #{title_id} creating failed", e.message]
-
-        @title = Title.find_by!(external_id: title_id)
-      end
-
-      def scope_id(kind)
-        case kind
-        when :country
-          @payload['category']['id']
-        when :tournament
-          @payload['id']
-        when :season
-          @payload['current_season']['id']
-        end
-      end
-
-      def title_id
-        @payload['sport']['id']
       end
     end
   end

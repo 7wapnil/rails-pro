@@ -15,6 +15,8 @@ module Arcanebet
 
     config.active_job.queue_adapter = :sidekiq
 
+    config.enable_dependency_loading = true
+
     config.generators do |g|
       g.orm :active_record
     end
@@ -24,6 +26,18 @@ module Arcanebet
     config.eager_load_paths << Rails.root.join('lib/xml_parser')
     config.eager_load_paths << Rails.root.join('lib/logger')
     config.eager_load_paths << Rails.root.join('lib/errors')
+    config.eager_load_paths << Rails.root.join('app/workers/sneakers')
+
+    # Exclude Sneakers workers
+    unless Rails.env.test? || ENV['WORKERS']
+      config.autoload_paths << Rails.root.join('app/workers')
+      config.eager_load_paths
+            .delete_if { |path| path.to_s.match?(%r{app/workers}) }
+
+      config.eager_load_paths +=
+        Dir.glob(Rails.root.join('app/workers/*/'))
+           .reject { |path| path.match?(%r{app/workers/sneakers}) }
+    end
 
     # Settings in config/environments/*
     # take precedence over those specified here.

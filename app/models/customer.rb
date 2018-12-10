@@ -2,7 +2,8 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Person
   include LoginAttemptable
 
-  after_validation :check_account_transition_rule
+  after_update :log_account_transition
+
   has_secure_token :activation_token
   acts_as_paranoid
 
@@ -44,6 +45,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   has_many :customer_notes
   has_many :wallets
+  has_many :currencies, through: :wallets
   has_many :entries, through: :wallets
   has_many :entry_requests
   has_many :initiated_entry_requests, as: :initiator, class_name: 'EntryRequest'
@@ -71,6 +73,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   # Devise Validatable module creates all needed
   # validations for a user email and password.
 
+  validate :validate_account_transition
   validates :username,
             :email,
             :first_name,
@@ -121,19 +124,23 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     DepositLimit.find_or_initialize_by(customer: self)
   end
 
-  def used_currencies
-    Currency
-      .joins(:wallets)
-      .where(
-        'currencies.primary = true OR wallets.customer_id = ?',
-        id
-      )
+  private
+
+  def log_account_transition
+    ctx = {
+      account_kind_was: account_kind_before_last_save,
+      account_kind_become: account_kind
+    }
+
+    log_event(:account_kind_transition, ctx) if saved_change_to_account_kind?
   end
 
-  def check_account_transition_rule
+  def validate_account_transition
     return unless account_kind_changed?
 
-    msg = "can't transit customer account kind"
-    raise msg if account_kind_was != 'regular'
+    msg = I18n.t('errors.messages.account_transition',
+                 from: account_kind_was,
+                 to: account_kind)
+    errors.add(:account_kind, msg) if account_kind_was != 'regular'
   end
 end

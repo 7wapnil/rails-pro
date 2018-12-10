@@ -175,6 +175,7 @@ FactoryBot.define do
     min_deposit { 10.00 }
     expires_at { Time.zone.now.end_of_month }
     valid_for_days { 60 }
+    percentage { 100 }
   end
 
   factory :user do
