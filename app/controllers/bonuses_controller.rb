@@ -64,6 +64,7 @@ class BonusesController < ApplicationController
               :max_deposit_match,
               :min_odds_per_bet,
               :min_deposit,
-              :valid_for_days)
+              :valid_for_days,
+              :percentage)
   end
 end
