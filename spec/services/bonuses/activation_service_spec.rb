@@ -4,7 +4,6 @@ describe Bonuses::ActivationService do
 
   context 'bonus activation' do
     it 'creates new activated bonus' do
-
       activated_bonus = described_class.call(wallet, bonus)
 
       expect(activated_bonus).to be_instance_of(ActivatedBonus)
