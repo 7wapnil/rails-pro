@@ -5,7 +5,12 @@ module OddsFeed
         @event = Event.new(event_attributes)
         attach_title!
         find_or_create_scopes!
-        archive_event_and_scopes!
+
+        # @todo Archivation is disabled temporary and must be
+        # re-build with other ticket
+        # @see https://trello.com/c/VbAQP0JZ/216-archive-events-recurrently-on-cleanup
+        # archive_event_and_scopes!
+
         @event
       end
 

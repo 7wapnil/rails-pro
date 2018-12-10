@@ -115,7 +115,7 @@ describe OddsFeed::Radar::EventAdapter do
         result
       end
 
-      it 'archives the event' do
+      xit 'archives the event' do
         expect(EventArchive::Service).to have_received(:call).once
       end
     end
@@ -126,15 +126,15 @@ describe OddsFeed::Radar::EventAdapter do
 
       before { result }
 
-      it 'creates one event_archive record at MongoDB' do
+      xit 'creates one event_archive record at MongoDB' do
         expect(ArchivedEvent.count).to eq(1)
       end
 
-      it 'arhives event with correct external id' do
+      xit 'arhives event with correct external id' do
         expect(archived_event.external_id).to eq(result.external_id)
       end
 
-      it 'arhives event with correct scope size' do
+      xit 'arhives event with correct scope size' do
         expect(archived_event.scopes.count).to eq(result.event_scopes.size)
       end
     end
