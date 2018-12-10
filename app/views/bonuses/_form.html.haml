@@ -10,17 +10,17 @@
     .col-6
       = f.input :code, required: true
       = f.input :kind, collection: Bonus.kinds.keys, include_blank: false
-      = f.input :rollover_multiplier, required: true
-      = f.input :max_rollover_per_bet, required: true
+      = f.input :rollover_multiplier, input_html: { min: 0 }, required: true
+      = f.input :max_rollover_per_bet, input_html: { min: 0 }, required: true
       = f.input :expires_at,
                 as: :date_picker,
                 required: true,
                 input_html: { 'data-default-date': l(@bonus.expires_at || Date.today) }
     .col-6
-      = f.input :max_deposit_match, required: true
-      = f.input :min_odds_per_bet, required: true
-      = f.input :min_deposit, required: true
-      = f.input :valid_for_days, required: true
+      = f.input :max_deposit_match, input_html: { min: 0 }, required: true
+      = f.input :min_odds_per_bet, input_html: { min: 0 }, required: true
+      = f.input :min_deposit, input_html: { min: 0 }, required: true
+      = f.input :valid_for_days, input_html: { min: 0 }, required: true
       = f.input :percentage, required: true
   .row
     .col
