@@ -140,6 +140,7 @@ en:
     wager: Wager
     winnings: Winnings
     zip_code: ZIP
+    percentage: Percentage
 
   actions:
     impersonate: Impersonate
