@@ -5,4 +5,8 @@ class ActivatedBonus < ApplicationRecord
   belongs_to :original_bonus, class_name: 'Bonus', optional: true
 
   acts_as_paranoid
+
+  def deactivate!
+    destroy!
+  end
 end

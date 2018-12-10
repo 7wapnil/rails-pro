@@ -7,8 +7,8 @@ module Bonuses
     end
 
     def call
-      customer.activated_bonus&.destroy
-      ActivatedBonus.create(bonus_activation_attributes)
+      customer.activated_bonus&.deactivate!
+      ActivatedBonus.create!(bonus_activation_attributes)
     end
 
     private

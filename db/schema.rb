@@ -30,9 +30,11 @@ ActiveRecord::Schema.define(version: 2018_12_06_095652) do
     t.datetime "expires_at"
     t.integer "original_bonus_id"
     t.datetime "activated_at"
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_activated_bonuses_on_customer_id"
+    t.index ["deleted_at"], name: "index_activated_bonuses_on_deleted_at"
     t.index ["wallet_id"], name: "index_activated_bonuses_on_wallet_id"
   end
 
