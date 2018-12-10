@@ -75,6 +75,16 @@ describe 'Bonuses' do
       expect(current_path).to eq bonus_path(subject)
       expect_to_have_notification success_message
     end
+
+    it 'doesn\'t accept negative bonus values' do
+      within 'form' do
+        fill_in :bonus_rollover_multiplier, with: -100
+
+        click_submit
+      end
+
+      expect(subject.rollover_multiplier).not_to eq(-100)
+    end
   end
 
   describe '#destroy' do
