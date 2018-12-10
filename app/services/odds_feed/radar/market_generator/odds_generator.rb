@@ -43,7 +43,10 @@ module OddsFeed
         end
 
         def build_odd(odd_data)
-          return odd_data_is_not_payload(odd_data) unless odd_data.is_a?(Hash)
+          unless odd_data.is_a?(Hash)
+            odd_data_is_not_payload(odd_data)
+            return
+          end
 
           external_id = "#{@market_data.external_id}:#{odd_data['id']}"
           Rails.logger.debug "Building odd ID #{external_id}, #{odd_data}"
