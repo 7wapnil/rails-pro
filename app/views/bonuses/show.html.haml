@@ -19,7 +19,7 @@
                 %td= @bonus.min_deposit
               %tr
                 %td= t('attributes.percentage')
-                %td= @bonus.percentage
+                %td= number_to_percentage(@bonus.percentage, precision: 0)
         .col-6
           = card do
             %table.table

@@ -28,6 +28,6 @@
           %td= bonus.min_odds_per_bet
           %td= bonus.valid_for_days
           %td= l(bonus.expires_at)
-          %td= bonus.percentage
+          %td= number_to_percentage(bonus.percentage, precision: 0)
 
 = paginate @bonuses
