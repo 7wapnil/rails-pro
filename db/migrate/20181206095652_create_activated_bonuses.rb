@@ -14,7 +14,6 @@ class CreateActivatedBonuses < ActiveRecord::Migration[5.2]
       t.integer :percentage
       t.datetime :expires_at
       t.integer :original_bonus_id
-      t.datetime :activated_at
       t.datetime :deleted_at, index: true
       t.timestamps
     end

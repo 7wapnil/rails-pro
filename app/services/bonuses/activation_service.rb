@@ -23,8 +23,7 @@ module Bonuses
       activation_attrs = {
         original_bonus_id: bonus.id,
         customer_id: customer.id,
-        wallet_id: wallet.id,
-        activated_at: Time.zone.now
+        wallet_id: wallet.id
       }
       transmitted_attrs = ActivatedBonus.column_names & Bonus.column_names
       transmitted_attrs.map!(&:to_sym)
