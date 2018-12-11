@@ -3,7 +3,7 @@ class CustomersController < ApplicationController
   include Labelable
   include DateIntervalFilters
 
-  before_action :customer, only: %i[documents deposit_limit show]
+  before_action :customer, only: %i[bonuses documents deposit_limit show]
 
   def index
     @search = Customer.search(query_params)
@@ -32,6 +32,19 @@ class CustomersController < ApplicationController
     @audit_logs = AuditLog
                   .where(customer_id: customer.id)
                   .page(params[:page])
+  end
+
+  def bonuses
+    @bonuses = Bonus.all
+    @history =
+      ActivatedBonus.customer_history(customer)
+    return if customer.activated_bonus && !customer.activated_bonus.expired?
+
+    @primary_wallet = customer.wallet_with_primary_currency
+    @new_bonus = ActivatedBonus.new(
+      customer: customer,
+      wallet: @primary_wallet
+    )
   end
 
   def notes

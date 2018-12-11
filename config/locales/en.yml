@@ -30,6 +30,8 @@ en:
   upload: Upload
   view: View
 
+  activate_instance: "Activate %{instance}"
+  activated: "%{instance} activated"
   add_instance: "Add %{instance}"
   created: "%{instance} created"
   deleted: "%{instance} deleted"
@@ -43,6 +45,7 @@ en:
     account_kind: Account type
     action: Action
     actions: Actions
+    activated_at: Activated at
     actual_payout: Actual payout
     amount: Amount
     authorized_at: Authorized at
@@ -265,6 +268,7 @@ en:
         default: "Account is locked%{additional_info}"
       age_adult: Must be adult!
       betting_limits: Betting limits validation failed
+      bonus_activation_failed: Bonus activation failed, please try later
       customer_account_kind_transit: Can't transit customer account kind
       customer_activated: Customer already activated
       deposit_limits: Deposit limit reached, please try again later
@@ -326,6 +330,7 @@ en:
       activity: Activity
       bets: Bets
       betting_limits: Betting Limits
+      bonuses: Bonuses
       deposit_limit: Deposit Limit
       documents: Documents
       notes: Notes
@@ -351,6 +356,8 @@ en:
     won: Won
 
   statuses:
+    active: Active
+    expired: Expired
     failed: Failed
     initial: Initial
     live: Live

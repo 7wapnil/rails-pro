@@ -149,4 +149,18 @@ describe Customer do
       expect(subject.documents_history(:personal_id).count).to eq(3)
     end
   end
+
+  describe '#wallet_with_primary_currency' do
+    let!(:customer) { create(:customer) }
+
+    it 'returns nil if customer doesn\'t have wallet with primary currency' do
+      expect(customer.wallet_with_primary_currency).to be_nil
+    end
+
+    it 'returns customer wallet with primary currency if exists' do
+      primary_currency = create(:currency, primary: true)
+      wallet = create(:wallet, customer: customer, currency: primary_currency)
+      expect(customer.wallet_with_primary_currency).to eq(wallet)
+    end
+  end
 end

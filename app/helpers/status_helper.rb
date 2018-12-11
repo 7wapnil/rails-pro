@@ -1,7 +1,9 @@
 module StatusHelper
   STATUS_MAPPING = {
     'accepted' => 'success',
+    'active' => 'success',
     'cancelled' => 'danger',
+    'expired' => 'danger',
     'failed' => 'danger',
     'initial' => 'secondary',
     'pending' => 'secondary',
