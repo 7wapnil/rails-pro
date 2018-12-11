@@ -1,6 +1,6 @@
 describe 'Customers#bonuses' do
   let(:customer) { create(:customer) }
-  let(:primary_currency) { create(:currency, primary: true) }
+  let(:primary_currency) { create(:currency, :primary) }
   let!(:wallet) do
     create(:wallet, customer: customer, currency: primary_currency)
   end
@@ -26,7 +26,7 @@ describe 'Customers#bonuses' do
       expect(page).to have_selector('form.new_activated_bonus')
     end
 
-    it 'selects customer wallet with primary cursrency' do
+    it 'selects customer wallet with primary currency' do
       visit page_path
 
       expect(page).to have_field(

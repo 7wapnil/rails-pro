@@ -24,6 +24,10 @@ class ActivatedBonus < ApplicationRecord
     expired? ? 'expired' : 'active'
   end
 
+  def add_funds(_amount)
+    # TODO: Implementation needed
+  end
+
   def loggable_attributes
     { code: code }
   end

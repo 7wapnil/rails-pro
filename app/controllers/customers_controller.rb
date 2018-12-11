@@ -35,15 +35,15 @@ class CustomersController < ApplicationController
   end
 
   def bonuses
-    @bonuses = Bonus.all
     @history =
       ActivatedBonus.customer_history(customer)
     return if customer.activated_bonus && !customer.activated_bonus.expired?
 
-    @primary_wallet = customer.wallet_with_primary_currency
+    @active_bonuses = Bonus.active
+    @default_wallet = customer.wallets.primary.take
     @new_bonus = ActivatedBonus.new(
       customer: customer,
-      wallet: @primary_wallet
+      wallet: @default_wallet
     )
   end
 

@@ -8,11 +8,10 @@
 
   = card header: t(:activate_instance, instance: t('entities.bonus')) do
     = simple_form_for @new_bonus do |f|
-      = f.input :customer_id, as: :hidden
       .row
         .col-4
           = f.input :original_bonus_id,
-                    collection: @bonuses,
+                    collection: @active_bonuses,
                     label_method: ->(b) { b.code },
                     value_method: ->(b) { b.id },
                     required: true

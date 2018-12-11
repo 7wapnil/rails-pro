@@ -125,14 +125,6 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     DepositLimit.find_or_initialize_by(customer: self)
   end
 
-  def wallet_with_primary_currency
-    Wallet
-      .joins(:currency)
-      .where(customer: self)
-      .where(currencies: { primary: true })
-      &.first
-  end
-
   private
 
   def log_account_transition
