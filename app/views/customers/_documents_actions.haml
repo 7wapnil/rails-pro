@@ -1,0 +1,30 @@
+.dropdown
+  %button.btn.btn-outline-dark.mr-2.dropdown-toggle#dropdown-menu-button{ aria: { expanded: false,
+                                                                                  haspopup: true },
+                                                                          'data-toggle': 'dropdown',
+                                                                          type: :button }
+    = t(:action)
+  .dropdown-menu{ 'aria-labelledby' => 'dropdown-menu-button' }
+    = link_to t(:details),
+              verification_document_path(attachment),
+              class: 'dropdown-item'
+    = link_to t(:view),
+              rails_blob_path(attachment.document),
+              class: 'dropdown-item',
+              target: :blank
+    - if attachment.pending? || attachment.rejected?
+      = link_to t(:confirm),
+                status_verification_document_path(status: :confirmed,
+                id: attachment.id),
+                class: 'dropdown-item',
+                data: { turbolinks: false }
+    - if attachment.pending? || attachment.confirmed?
+      = link_to t(:reject),
+                status_verification_document_path(status: :rejected,
+                id: attachment.id),
+                class: 'dropdown-item',
+                              data: { turbolinks: false }
+    = link_to t(:history),
+              documents_history_customer_path(id: customer.id, document_type: kind),
+              class: 'dropdown-item'
+

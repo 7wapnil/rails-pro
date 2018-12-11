@@ -1,7 +1,8 @@
 %table.table.entities
   %thead
     %tr
-      %th= sort_link filter.search, :id, t('attributes.bet_id'), default_order: :asc
+      %th= sort_link filter.search, :id, t('attributes.bet_id'),
+                                    default_order: :asc
       - unless excluded_columns.include?(:customer)
         %th= t('attributes.customer')
       %th= t('attributes.event')

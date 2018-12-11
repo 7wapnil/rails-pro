@@ -1,0 +1,11 @@
+exclude:
+  - 'lib/templates/haml/scaffold/_form.html.haml'
+  - 'log/**/*'
+  - 'node_modules/**/*'
+  - 'tmp/**/*'
+
+linters:
+  ALL:
+    severity: warning
+  LineLength:
+    max: 100

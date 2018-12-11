@@ -1,5 +1,6 @@
 = card header: t('attributes.contact_information'), class: 'contact-information' do
-  = simple_form_for @customer, html: { class: 'contact-information-form' }, url: update_contact_information_customer_path do |f|
+  = simple_form_for customer, html: { class: 'contact-information-form' },
+                    url: update_contact_information_customer_path do |f|
     %table.table
       %tr
         %td= t('attributes.email')
@@ -21,7 +22,7 @@
             = a.input :country,
                     as: :country_collection,
                     label: false,
-                    input_html: { data: { current: @customer.address_country } },
+                    input_html: { data: { current: customer.address_country } },
                     required: true
         %tr
           %td= t('attributes.street_address')
@@ -48,7 +49,7 @@
                       label: false,
                       required: true
       %tr
-        %td.text-right(colspan="2")
+        %td.text-right{ colspan: 2 }
           = f.submit t(:save), class: 'btn btn-outline-dark'
 
 - content_for :js do

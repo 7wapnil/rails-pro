@@ -21,7 +21,7 @@
                   %th= t('attributes.max_amount')
               %tbody
                 = f.simple_fields_for :entry_currency_rules, wrapper: :inline_form do |p|
-                  %tr{ id: "entry-rule" }
+                  %tr{ id: 'entry-rule' }
                     %td
                       = p.input :kind, as: :hidden
                       = p.input :id, as: :hidden

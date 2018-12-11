@@ -1,6 +1,8 @@
 %h1.display-4
   = t('entities.labels')
-  = link_to t(:add_instance, instance: t('entities.label')), new_label_path, { class: 'btn btn-primary float-right btn-sm' }
+  = link_to t(:add_instance, instance: t('entities.label')),
+             new_label_path,
+             class: 'btn btn-primary float-right btn-sm'
 
 = search_form_for @search do |f|
   %table.table
@@ -8,7 +10,7 @@
       %tr
         %th
           .filter_title
-            = "#{t('attributes.label_name')}:"
+            #{t('attributes.label_name')}:
             = f.label :name_cont, class: 'sr-only'
           .filter_field
             = f.search_field :name_cont,
@@ -17,17 +19,17 @@
                               autocomplete: :off
         %th
           .filter_title
-            = "#{t('attributes.label_kind')}:"
+            #{t('attributes.label_kind')}:
             = f.label :kind_eq, class: 'sr-only'
           .filter_field
             = f.select :kind_eq,
-                        options_for_select(Label.kinds, query_params ? query_params[:kind_eq] : nil),
+                        options_for_select(Label.kinds, query_params[:kind_eq]),
                         { include_blank: true },
                         class: 'form-control'
 
         %th
           .filter_title
-            = "#{t('attributes.label_description')}:"
+            #{t('attributes.label_description')}:
             = f.label :description_cont, class: 'sr-only'
           .filter_field
             = f.search_field :description_cont,
