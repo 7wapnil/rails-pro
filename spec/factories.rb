@@ -1,6 +1,7 @@
 FactoryBot.define do
   factory :activated_bonus do
     customer
+    wallet
     sequence(:code) { |n| "FOOBAR#{n}" }
     kind { 0 }
     rollover_multiplier { 10 }

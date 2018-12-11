@@ -9,4 +9,8 @@ class ActivatedBonus < ApplicationRecord
   def deactivate!
     destroy!
   end
+
+  def ended_at
+    created_at + valid_for_days.days
+  end
 end
