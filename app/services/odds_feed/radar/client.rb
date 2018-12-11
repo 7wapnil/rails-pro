@@ -72,45 +72,41 @@ module OddsFeed
         ].join('/')
 
         Rails.logger.info "Loading market template on: #{route}"
-        request(route)
+        request(route, cache: true)
       end
 
       def player_profile(player_id)
         route = "/sports/#{@language}/players/#{player_id}/profile.xml"
         Rails.logger.info("Loading player profile: #{route}")
-        request(route)
+        request(route, cache: true)
       end
 
       def competitor_profile(competitor_id)
         route = "/sports/#{@language}/competitors/#{competitor_id}/profile.xml"
         Rails.logger.info("Loading competitor profile: #{route}")
-        request(route)
+        request(route, cache: true)
       end
 
       def venue_summary(venue_id)
         route = "/sports/#{@language}/venues/#{venue_id}/profile.xml"
         Rails.logger.info("Loading venue summary: #{route}")
-        request(route)
+        request(route, cache: true)
       end
 
-      def request(path, method: :get)
-        Rails.logger.debug "Requesting Radar API endpoint: #{path}"
-        response = self.class.send(method, path)
-        Rails.logger.debug "Radar API response: #{response.body}"
-        parsed_response(response) || {}
+      def request(path, method: :get, cache: nil)
+        ResponseReader.call(
+          path:    path,
+          method:  method,
+          cache:   cache,
+          options: @options
+        )
+      rescue RuntimeError, MultiXml::ParseError => e
+        Rails.logger.error e.message
+        raise HTTParty::ResponseError, 'Malformed response body'
       end
 
       def post(path)
         request(path, method: :post)
-      end
-
-      private
-
-      def parsed_response(response)
-        response.parsed_response
-      rescue RuntimeError, MultiXml::ParseError => e
-        Rails.logger.error [e.message, response.body]
-        raise HTTParty::ResponseError, 'Malformed response body'
       end
     end
   end
