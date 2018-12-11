@@ -5,7 +5,7 @@
   = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
 
 
-= simple_form_for @bonus do |f|
+= simple_form_for bonus do |f|
   .row
     .col-6
       = f.input :code, required: true
@@ -15,7 +15,7 @@
       = f.input :expires_at,
                 as: :date_picker,
                 required: true,
-                input_html: { 'data-default-date': l(@bonus.expires_at || Date.today) }
+                input_html: { 'data-default-date': l(bonus.expires_at || Date.today) }
     .col-6
       = f.input :max_deposit_match, input_html: { min: 0 }, required: true
       = f.input :min_odds_per_bet, input_html: { min: 0 }, required: true

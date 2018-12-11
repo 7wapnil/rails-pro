@@ -13,7 +13,7 @@ describe 'Documents#index' do
       let!(:confirmed) { create(:verification_document, status: :confirmed) }
 
       it 'displays nav tabs' do
-        expect(page).to have_selector('.nav.nav-tabs#documents_tabs')
+        expect(page).to have_selector('.nav.nav-tabs#documents-tabs')
       end
 
       it 'by default displays pending documents' do

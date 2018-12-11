@@ -22,7 +22,7 @@
             %ul.list-unstyled
               - @activity.context.attributes.each do |attr, value|
                 %li
-                  %b= "#{attr}: "
+                  %b #{attr}:
                   %span= value
 
       %hr

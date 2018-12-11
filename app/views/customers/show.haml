@@ -1,14 +1,14 @@
-= render 'customers/heading'
+= render 'customers/heading', customer: @customer
 
 .row
   .col-md-3
-    .mt-4= render 'customers/navigation'
+    .mt-4= render 'customers/navigation', customer: @customer
   .col-md-9
-    .mt-4= render 'customers/account_information'
-    .mt-4= render 'customers/account_lock'
-    .mt-4= render 'customers/personal_information'
-    .mt-4= render 'customers/contact_information'
-    .mt-4.mb-4= render 'customers/reset_password'
+    .mt-4= render 'customers/account_information', customer: @customer, labels: @labels
+    .mt-4= render 'customers/account_lock', customer: @customer
+    .mt-4= render 'customers/personal_information', customer: @customer
+    .mt-4= render 'customers/contact_information', customer: @customer
+    .mt-4.mb-4= render 'customers/reset_password', customer: @customer
 
 - content_for :css do
   = stylesheet_pack_tag 'labels_selector'

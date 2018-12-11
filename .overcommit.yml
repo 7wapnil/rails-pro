@@ -1,0 +1,47 @@
+# Default configuration that all Overcommit configurations inherit from.
+#
+# This is an opinionated list of which hooks are valuable to run and what their
+# out-of-the-box settings should be.
+#-------------------------------------------------------------------------------
+# Whether to hide hook output by default. This results in completely silent hook
+# runs except in the case of warning or failure.
+quiet: false
+verify_signatures: true
+
+# Hooks that are run after `git commit` is executed, before the commit message
+# editor is displayed. These hooks are ideal for syntax checkers, linters, and
+# other checks that you want to run before you allow a commit object to be
+# created.
+PreCommit:
+  EsLint:
+    enabled: true
+    description: 'Analyze with ESLint'
+    required_executable: 'eslint'
+    flags: ['--format=compact', '--quiet=true']
+    install_command: 'yarn install'
+    include: '**/*.js'
+
+  HamlLint:
+    enabled: true
+    description: 'Analyze with haml-lint'
+    required_executable: 'haml-lint'
+    install_command: 'gem install haml-lint'
+    flags: ['--no-summary']
+    include: '**/*.haml'
+
+  RuboCop:
+    enabled: true
+    description: 'Analyze with RuboCop'
+    required_executable: 'rubocop'
+    flags: ['--format=emacs', '--force-exclusion', '--display-cop-names']
+    install_command: 'gem install rubocop'
+    exclude:
+      - 'config/initializers/simple_form.rb'
+      - 'config/initializers/simple_form_bootstrap.rb'
+      - 'db/schema.rb'
+      - 'db/migrate/20180515113514_devise_create_customers.rb'
+      - 'db/migrate/20180521120705_devise_create_users.rb'
+      - 'log/**/*'
+      - 'node_modules/**/*'
+      - 'tmp/**/*'
+

@@ -1,33 +1,33 @@
 %ul.list-group.navigation
   = link_to t('navigation.customer.account'),
-            @customer,
+            customer,
             class: 'list-group-item list-group-item-action',
             'data-target-action': :show
   = link_to t('navigation.customer.account_management'),
-            account_management_customer_path(@customer),
+            account_management_customer_path(customer),
             class: 'list-group-item list-group-item-action',
             'data-target-action': :account_management
   = link_to t('navigation.customer.activity'),
-            activity_customer_path(@customer),
+            activity_customer_path(customer),
             class: 'list-group-item list-group-item-action',
             'data-target-action': :activity
   = link_to t('navigation.customer.notes'),
-            notes_customer_path(@customer),
+            notes_customer_path(customer),
             class: 'list-group-item list-group-item-action',
             'data-target-action': :notes
   = link_to t('navigation.customer.documents'),
-            documents_customer_path(@customer),
+            documents_customer_path(customer),
             class: 'list-group-item list-group-item-action',
             'data-target-action': :documents
   = link_to t('navigation.customer.bets'),
-            bets_customer_path(@customer),
+            bets_customer_path(customer),
             class: 'list-group-item list-group-item-action',
             'data-target-action': :bets
   = link_to t('navigation.customer.betting_limits'),
-            betting_limits_customer_path(@customer),
+            betting_limits_customer_path(customer),
             class: 'list-group-item list-group-item-action',
             'data-target-action': :betting_limits
   = link_to t('navigation.customer.deposit_limit'),
-            deposit_limit_customer_path(@customer),
+            deposit_limit_customer_path(customer),
             class: 'list-group-item list-group-item-action',
             'data-target-action': :deposit_limit

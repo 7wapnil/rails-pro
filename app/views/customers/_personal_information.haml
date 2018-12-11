@@ -1,5 +1,6 @@
 = card header: t('attributes.personal_information'), class: 'personal-information' do
-  = simple_form_for @customer, html: { class: 'personal-information-form' }, url: update_personal_information_customer_path do |f|
+  = simple_form_for customer, html: { class: 'personal-information-form' },
+                    url: update_personal_information_customer_path do |f|
     %table.table
       %tr
         %td= t('attributes.first_name')
@@ -29,9 +30,9 @@
           = f.input :date_of_birth,
                     as: :date_picker,
                     label: false,
-                    input_html: { value: l(@customer.date_of_birth, format: :date_picker),
-                                  data: { max_date: l(Date.current - 18.years, format: :date_picker) }},
+                    input_html: { value: l(customer.date_of_birth, format: :date_picker),
+                                  data: { max_date: restricted_dob } },
                     required: true
       %tr
-        %td.text-right(colspan="2")
+        %td.text-right{ colspan: 2 }
           = f.submit t(:save), class: 'btn btn-outline-dark'

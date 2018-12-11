@@ -1,18 +1,19 @@
 .dropdown
-  %button#dropdownMenuButton.btn.btn-outline-dark.mr-2.dropdown-toggle{ aria: { expanded: false, haspopup: true },
-                                                                                     'data-toggle': 'dropdown',
-                                                                                     type: :button }
+  %button.btn.btn-outline-dark.mr-2.dropdown-toggle#dropdown-menu-button{ aria: { expanded: false,
+                                                                                  haspopup: true },
+                                                                          'data-toggle': 'dropdown',
+                                                                          type: :button }
     = t(:action)
-  .dropdown-menu{ 'aria-labelledby': 'dropdownMenuButton' }
+  .dropdown-menu{ 'aria-labelledby': 'dropdown-menu-button' }
     - if document.rejected? || document.pending?
       = link_to t(:confirm),
                 status_verification_document_path(status: :confirmed,
-                                      id: document.id),
-                                      class: 'dropdown-item',
-                                      data: { turbolinks: false }
+                                                  id: document.id),
+                                                  class: 'dropdown-item',
+                                                  data: { turbolinks: false }
     - if document.confirmed? || document.pending?
       = link_to t(:reject),
                 status_verification_document_path(status: :rejected,
-                                      id: document.id),
-                                      class: 'dropdown-item',
-                                      data: { turbolinks: false }
+                                                  id: document.id),
+                                                  class: 'dropdown-item',
+                                                  data: { turbolinks: false }
