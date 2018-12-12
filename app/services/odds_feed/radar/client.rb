@@ -98,9 +98,6 @@ module OddsFeed
 
       def request(path, method: :get, cache: nil)
         ResponseReader.call(path: path, method: method, cache: cache)
-      rescue RuntimeError, MultiXml::ParseError => e
-        Rails.logger.error e.message
-        raise HTTParty::ResponseError, 'Malformed response body'
       end
 
       def post(path)

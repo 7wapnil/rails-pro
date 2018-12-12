@@ -9,7 +9,7 @@ module OddsFeed
             .new
             .venue_summary(
               external_id,
-              cache: { expires_in: OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
+              cache: { expires_in: Client::DEFAULT_CACHE_TERM }
             )
             .dig('venue_summary', 'venue', 'name')
         end

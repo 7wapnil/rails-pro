@@ -41,10 +41,9 @@ module OddsFeed
         Rails.cache.write(cache_key, parsed_response, cache_settings) if cache
 
         parsed_response
-      end
-
-      def cache_settings
-        cache.is_a?(Hash) ? cache : {}
+      rescue RuntimeError, MultiXml::ParseError => e
+        Rails.logger.error [e.message, response.body]
+        raise HTTParty::ResponseError, 'Malformed response body'
       end
 
       def response
@@ -53,6 +52,10 @@ module OddsFeed
 
       def parsed_response
         @parsed_response ||= response.parsed_response || {}
+      end
+
+      def cache_settings
+        cache.is_a?(Hash) ? cache : {}
       end
     end
   end

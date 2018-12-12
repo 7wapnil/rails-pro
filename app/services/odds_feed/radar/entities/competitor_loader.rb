@@ -11,7 +11,7 @@ module OddsFeed
             .new
             .competitor_profile(
               external_id,
-              cache: { expires_in: OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
+              cache: { expires_in: Client::DEFAULT_CACHE_TERM }
             )
             .dig('competitor_profile', 'competitor', 'name')
             .split(NAME_SEPARATOR)

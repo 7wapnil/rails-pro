@@ -9,7 +9,7 @@ module OddsFeed
             .new
             .player_profile(
               external_id,
-              cache: { expires_in: OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
+              cache: { expires_in: Client::DEFAULT_CACHE_TERM }
             )
             .dig('player_profile', 'player', 'full_name')
         end

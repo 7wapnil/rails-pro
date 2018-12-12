@@ -81,7 +81,7 @@ module OddsFeed
             .market_variants(
               market_id,
               variant_id,
-              cache: { expires_in: OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
+              cache: { expires_in: Client::DEFAULT_CACHE_TERM }
             )
             .dig('market_descriptions', 'market')
         end
