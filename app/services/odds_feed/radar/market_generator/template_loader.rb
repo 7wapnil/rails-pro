@@ -75,10 +75,15 @@ module OddsFeed
         end
 
         def variant_odds
-          @variant_odds ||= OddsFeed::Radar::Client
-                            .new
-                            .market_variants(market_id, variant_id)
-                            .dig('market_descriptions', 'market')
+          @variant_odds ||=
+            OddsFeed::Radar::Client
+            .new
+            .market_variants(
+              market_id,
+              variant_id,
+              cache: { expires_in: Client::DEFAULT_CACHE_TERM }
+            )
+            .dig('market_descriptions', 'market')
         end
       end
     end

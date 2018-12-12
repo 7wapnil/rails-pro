@@ -6,6 +6,13 @@ describe OddsFeed::Radar::Entities::CompetitorLoader do
   end
   let(:competitor_payload) { payload.dig('competitor_profile', 'competitor') }
   let(:external_id)        { competitor_payload['id'] }
+
+  let(:cache_settings) do
+    {
+      cache: { expires_in: OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
+    }
+  end
+
   let(:name) do
     competitor_payload['name']
       .split(described_class::NAME_SEPARATOR)
@@ -15,7 +22,9 @@ describe OddsFeed::Radar::Entities::CompetitorLoader do
 
   before do
     allow_any_instance_of(OddsFeed::Radar::Client)
-      .to receive(:competitor_profile).with(external_id).and_return(payload)
+      .to receive(:competitor_profile)
+      .with(external_id, cache_settings)
+      .and_return(payload)
 
     allow(Rails.cache).to receive(:read)
   end

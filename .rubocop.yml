@@ -1,7 +1,7 @@
-Style/FrozenStringLiteralComment:
+Bundler/OrderedGems:
   Enabled: false
 
-Bundler/OrderedGems:
+Style/FrozenStringLiteralComment:
   Enabled: false
 
 Style/Documentation:

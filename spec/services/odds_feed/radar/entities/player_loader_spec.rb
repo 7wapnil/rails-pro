@@ -8,9 +8,17 @@ describe OddsFeed::Radar::Entities::PlayerLoader do
   let(:external_id)    { player_payload['id'] }
   let(:name)           { player_payload['full_name'] }
 
+  let(:cache_settings) do
+    {
+      cache: { expires_in: OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
+    }
+  end
+
   before do
     allow_any_instance_of(OddsFeed::Radar::Client)
-      .to receive(:player_profile).with(external_id).and_return(payload)
+      .to receive(:player_profile)
+      .with(external_id, cache_settings)
+      .and_return(payload)
 
     allow(Rails.cache).to receive(:read)
   end
