@@ -4,11 +4,12 @@ module OddsFeed
       include HTTParty
 
       base_uri ENV['RADAR_API_URL']
+      headers 'x-access-token': ENV['RADAR_API_TOKEN']
       format :xml
+      raise_on [403, 404, 409, 500, 503]
 
       def initialize
         @language = 'en'
-        @options = { headers: { "x-access-token": ENV['RADAR_API_TOKEN'] } }
       end
 
       def who_am_i
@@ -17,7 +18,7 @@ module OddsFeed
 
       def event(id)
         route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"
-        payload = request(route)['fixtures_fixture']['fixture']
+        payload = request(route).dig('fixtures_fixture', 'fixture')
         EventAdapter.new(payload)
       end
 
@@ -94,12 +95,9 @@ module OddsFeed
 
       def request(path, method: :get)
         Rails.logger.debug "Requesting Radar API endpoint: #{path}"
-        response = self.class.send(method, path, @options).parsed_response
-        validate_response(response)
-        response
-      rescue RuntimeError, MultiXml::ParseError => e
-        Rails.logger.error e.message
-        raise HTTParty::InvalidResponseError, 'Failed to parse API response'
+        response = self.class.send(method, path)
+        Rails.logger.debug "Radar API response: #{response.body}"
+        parsed_response(response) || {}
       end
 
       def post(path)
@@ -108,10 +106,11 @@ module OddsFeed
 
       private
 
-      def validate_response(response)
-        Rails.logger.debug "Radar API response: #{response}"
-        error = response['error']
-        raise OddsFeed::InvalidResponseError, error['message'] if error
+      def parsed_response(response)
+        response.parsed_response
+      rescue RuntimeError, MultiXml::ParseError => e
+        Rails.logger.error [e.message, response.body]
+        raise HTTParty::ResponseError, 'Malformed response body'
       end
     end
   end
