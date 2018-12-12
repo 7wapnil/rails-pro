@@ -8,7 +8,7 @@ class EventsController < ApplicationController
                    .with_markets_count
                    .with_wager
                    .with_bets_count
-                   .search(prepare_interval_filter(query_params, :start_at))
+                   .ransack(prepare_interval_filter(query_params, :start_at))
 
     @events = @search.result.order(start_at: :asc).page(params[:page])
     @sports = Title.pluck(:name)
