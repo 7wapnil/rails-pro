@@ -26,32 +26,34 @@ describe OddsFeed::Radar::ResponseReader do
   end
 
   context 'radar api call' do
-    context 'valid' do
-      context 'and cache value' do
-        let(:cache) { true }
+    context 'and cache data without settings' do
+      let(:cache) { true }
 
-        before { expect(Rails.cache).to receive(:write).with(cache_key, data) }
-
-        it { expect(subject).to eq(data) }
+      before do
+        expect(Rails.cache).to receive(:write).with(cache_key, data, {})
       end
 
-      context 'without caching' do
-        before { expect(Rails.cache).not_to receive(:write) }
-
-        it { expect(subject).to eq(data) }
-      end
+      it { expect(subject).to eq(data) }
     end
 
-    context 'invalid' do
-      let(:error) { Faker::Lorem.paragraph }
-      let(:data)  { { error: { message: error } }.with_indifferent_access }
+    context 'and cache data with with settings' do
+      let(:cache) do
+        {
+          cache: { expires_in: OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
+        }
+      end
 
+      before do
+        expect(Rails.cache).to receive(:write).with(cache_key, data, cache)
+      end
+
+      it { expect(subject).to eq(data) }
+    end
+
+    context 'without caching' do
       before { expect(Rails.cache).not_to receive(:write) }
 
-      it do
-        expect { subject }
-          .to raise_error(OddsFeed::InvalidResponseError, error)
-      end
+      it { expect(subject).to eq(data) }
     end
   end
 

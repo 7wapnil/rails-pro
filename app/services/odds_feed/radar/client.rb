@@ -3,6 +3,8 @@ module OddsFeed
     class Client
       include HTTParty
 
+      DEFAULT_CACHE_TERM = 12.hours
+
       base_uri ENV['RADAR_API_URL']
       headers 'x-access-token': ENV['RADAR_API_TOKEN']
       format :xml
@@ -16,16 +18,17 @@ module OddsFeed
         request('/users/whoami.xml')
       end
 
-      def event(id)
+      def event(id, cache: nil)
         route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"
-        payload = request(route).dig('fixtures_fixture', 'fixture')
+        payload = request(route, cache: cache)
+                  .dig('fixtures_fixture', 'fixture')
         EventAdapter.new(payload)
       end
 
-      def events_to_date(date)
+      def events_to_date(date, cache: nil)
         formatted_date = date.to_s
         route = "/sports/#{@language}/schedules/#{formatted_date}/schedule.xml"
-        response = request(route)
+        response = request(route, cache: cache)
         events_payload = response['schedule']['sport_event']
         events_payload.map do |event_payload|
           EventAdapter.new(event_payload)
@@ -34,7 +37,7 @@ module OddsFeed
 
       def book_live_coverage(id)
         route = "/liveodds/booking-calendar/events/#{id}/book"
-        request(route, method: :post)
+        post(route)
       end
 
       def product_recovery_initiate_request(product_code:, after: nil)
@@ -48,20 +51,20 @@ module OddsFeed
       # Market templates descriptions request
       # Returns a list of market templates with outcome name, specifiers
       # and attributes
-      def markets
+      def markets(cache: nil)
         route = "/descriptions/#{@language}/markets.xml?include_mappings=false"
-        request(route)
+        request(route, cache: cache)
       end
 
       # All available tournaments for all sports request
       # Returns a list of tournaments with sport, category, current season
       # and season coverage
-      def tournaments
+      def tournaments(cache: nil)
         route = "/sports/#{@language}/tournaments.xml"
-        request(route)
+        request(route, cache: cache)
       end
 
-      def market_variants(market_id, variant_urn)
+      def market_variants(market_id, variant_urn, cache: nil)
         route = [
           '/descriptions',
           @language,
@@ -72,34 +75,29 @@ module OddsFeed
         ].join('/')
 
         Rails.logger.info "Loading market template on: #{route}"
-        request(route, cache: true)
+        request(route, cache: cache)
       end
 
-      def player_profile(player_id)
+      def player_profile(player_id, cache: nil)
         route = "/sports/#{@language}/players/#{player_id}/profile.xml"
         Rails.logger.info("Loading player profile: #{route}")
-        request(route, cache: true)
+        request(route, cache: cache)
       end
 
-      def competitor_profile(competitor_id)
+      def competitor_profile(competitor_id, cache: nil)
         route = "/sports/#{@language}/competitors/#{competitor_id}/profile.xml"
         Rails.logger.info("Loading competitor profile: #{route}")
-        request(route, cache: true)
+        request(route, cache: cache)
       end
 
-      def venue_summary(venue_id)
+      def venue_summary(venue_id, cache: nil)
         route = "/sports/#{@language}/venues/#{venue_id}/profile.xml"
         Rails.logger.info("Loading venue summary: #{route}")
-        request(route, cache: true)
+        request(route, cache: cache)
       end
 
       def request(path, method: :get, cache: nil)
-        ResponseReader.call(
-          path:    path,
-          method:  method,
-          cache:   cache,
-          options: @options
-        )
+        ResponseReader.call(path: path, method: method, cache: cache)
       rescue RuntimeError, MultiXml::ParseError => e
         Rails.logger.error e.message
         raise HTTParty::ResponseError, 'Malformed response body'

@@ -36,24 +36,23 @@ module OddsFeed
 
       def api_call
         Rails.logger.debug "Requesting Radar API endpoint: #{path}"
-        validate_response
+        Rails.logger.debug "Radar API response: #{response.body}"
 
-        Rails.cache.write(cache_key, response) if cache
+        Rails.cache.write(cache_key, parsed_response, cache_settings) if cache
 
-        response
+        parsed_response
+      end
+
+      def cache_settings
+        cache.is_a?(Hash) ? cache : {}
       end
 
       def response
-        @response ||= Radar::Client.send(method, path, options).parsed_response
+        @response ||= Radar::Client.send(method, path, options)
       end
 
-      def validate_response
-        Rails.logger.debug "Radar API response: #{response}"
-        raise OddsFeed::InvalidResponseError, error['message'] if error
-      end
-
-      def error
-        @error ||= response['error']
+      def parsed_response
+        @parsed_response ||= response.parsed_response || {}
       end
     end
   end

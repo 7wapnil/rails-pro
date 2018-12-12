@@ -49,10 +49,16 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
     end
 
     context 'payload from Radar API' do
+      let(:cache_settings) do
+        {
+          cache: { expires_in: OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
+        }
+      end
+
       before do
         expect_any_instance_of(OddsFeed::Radar::Client)
           .to receive(:market_variants)
-          .with(template.external_id, variant_id)
+          .with(template.external_id, variant_id, cache_settings)
           .and_return(payload)
       end
 
