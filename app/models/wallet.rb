@@ -16,6 +16,8 @@ class Wallet < ApplicationRecord
                               instance: I18n.t('entities.wallet'))
             }
 
+  scope :primary, -> { joins(:currency).where(currencies: { primary: true }) }
+
   def self.build_default
     new(amount: 0, currency: Currency.build_default)
   end

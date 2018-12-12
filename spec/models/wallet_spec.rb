@@ -13,4 +13,16 @@ describe Wallet do
       .with_message(I18n.t('errors.messages.with_instance.not_negative',
                            instance: I18n.t('entities.wallet')))
   end
+
+  describe '.primary' do
+    let!(:currency) { create(:currency) }
+    let!(:wallet) { create(:wallet, currency: currency) }
+
+    let!(:primary_currency) { create(:currency, :primary) }
+    let!(:primary_wallet) { create(:wallet, currency: primary_currency) }
+
+    it 'returns wallets with primary currency' do
+      expect(described_class.primary).to match_array(primary_wallet)
+    end
+  end
 end

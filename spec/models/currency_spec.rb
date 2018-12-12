@@ -6,7 +6,7 @@ describe Currency do
 
   describe '.primary' do
     context 'with existing primary currency' do
-      let!(:currency) { create(:currency, primary: true) }
+      let!(:currency) { create(:currency, :primary) }
 
       it 'returns primary currency' do
         expect(described_class.primary).to eq(currency)
