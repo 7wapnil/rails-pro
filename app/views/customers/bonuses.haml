@@ -4,8 +4,10 @@
   .col-md-3
     .mt-4= render 'customers/navigation', customer: @customer
   .col-md-9
-    .mt-4.mb-4= render 'customers/bonus_form', customer: @customer
-    .mt-4.mb-4= render 'customers/bonuses', customer: @customer
+    .mt-4.mb-4= render 'customers/bonus_form', customer: @customer,
+      new_bonus: @new_bonus, active_bonuses: @active_bonuses
+    .mt-4.mb-4= render 'customers/bonuses', customer: @customer,
+      history: @history
 
 - content_for :js do
   = javascript_pack_tag 'customers/navigation_links'

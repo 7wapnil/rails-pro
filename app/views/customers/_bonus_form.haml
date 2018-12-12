@@ -1,4 +1,4 @@
-- if @new_bonus
+- if new_bonus
   - content_for :css do
     = stylesheet_pack_tag 'flatpickr', media: :all, 'data-turbolinks-track': 'reload'
 
@@ -7,11 +7,11 @@
     = javascript_pack_tag 'customers/bonuses', 'data-turbolinks-track': 'reload'
 
   = card header: t(:activate_instance, instance: t('entities.bonus')) do
-    = simple_form_for @new_bonus do |f|
+    = simple_form_for new_bonus do |f|
       .row
         .col-4
           = f.input :original_bonus_id,
-                    collection: @active_bonuses,
+                    collection: active_bonuses,
                     label_method: ->(b) { b.code },
                     value_method: ->(b) { b.id },
                     required: true
@@ -22,11 +22,11 @@
                     input_html: { min: 0 }
         .col-4
           = f.input :wallet_id,
-                    collection: @customer.wallets,
+                    collection: customer.wallets,
                     label_method: ->(w) { w.currency_name },
                     value_method: ->(w) { w.id },
                     required: true
-      #bonus_details{ style: 'display:none' }
+      .d-none#bonus-details
         .row
           .col-4
             = f.input :kind,
@@ -57,4 +57,4 @@
                       disabled: true
 
       = f.submit t(:confirm), class: 'btn btn-outline-dark'
-    #bonus_data{ data: { bonuses: @bonuses.to_json } }
+    #bonus-data{ data: { bonuses: active_bonuses.to_json } }

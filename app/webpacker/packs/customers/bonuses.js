@@ -2,8 +2,8 @@ import $ from 'jquery';
 
 document.addEventListener('turbolinks:load', () => {
   const bonusSelector = $('#activated_bonus_original_bonus_id');
-  const bonusDetailsWrapper = $('#bonus_details');
-  const bonuses = $('#bonus_data').data('bonuses');
+  const bonusDetailsWrapper = $('#bonus-details');
+  const bonuses = $('#bonus-data').data('bonuses');
 
   function showBonusDetails(id) {
     const bonus = bonuses.find(el => parseInt(el.id, 10) === parseInt(id, 10));
@@ -17,7 +17,7 @@ document.addEventListener('turbolinks:load', () => {
       'valid_for_days',
       'percentage'
     ].map(key => $(`#activated_bonus_${key}`).val(bonus[key]));
-    bonusDetailsWrapper.show();
+    bonusDetailsWrapper.removeClass('d-none').show();
   }
 
   function hideBonusDetails() {
