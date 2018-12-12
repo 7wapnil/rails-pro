@@ -11,7 +11,7 @@
                 class: 'account-lock',
                 url: update_lock_customer_path,
                 resource: customer do
-  %table.table
+  %table.table.vertical-with-labels
     %tr
       %td= t('attributes.lock')
       %td= locked_toggle(customer)

@@ -2,3 +2,18 @@
 @import "~noty/src/noty";
 @import "~noty/src/themes/mint";
 @import '~select2/dist/css/select2.min';
+
+.table {
+  &.vertical-with-labels {
+    tr {
+      td, th {
+        &:first-child {
+          width: 10em;
+          min-width: 10em;
+          max-width: 10em;
+          word-break: break-all;
+        }
+      }
+    }
+  }
+}
