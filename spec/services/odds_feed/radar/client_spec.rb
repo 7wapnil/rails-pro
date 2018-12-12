@@ -1,69 +1,64 @@
 describe OddsFeed::Radar::Client do
-  context 'client api' do
-    let(:options) do
-      { headers: { "x-access-token": ENV['RADAR_API_TOKEN'] } }
-    end
-    let(:route) { nil }
+  let(:headers) { { "x-access-token": 'test-api-token' } }
+  let!(:api_domain) { 'https://test-api-domain' }
 
-    before do
-      allow(subject.class)
-        .to receive(:get)
-        .with(route, options)
-        .and_return(OpenStruct.new(
-                      parsed_response: {
-                        'fixtures_fixture' => {
-                          'fixture' => ''
-                        }
-                      }
-                    ))
-    end
+  before do
+    OddsFeed::Radar::Client.base_uri(api_domain)
+    OddsFeed::Radar::Client.headers(headers)
+  end
 
-    context 'error response' do
-      let(:route) { '/users/whoami.xml' }
+  context 'routes' do
+    it 'requests whoami endpoint' do
+      body = file_fixture('api/who_am_i_response.xml').read
 
-      before do
-        allow(subject.class)
-          .to receive(:get)
-          .with(route, options)
-          .and_return(OpenStruct.new(
-                        parsed_response: {
-                          'error' => {
-                            'message' => 'Unexpected error.'
-                          }
-                        }
-                      ))
-      end
+      stub_request(:any, "#{api_domain}/users/whoami.xml")
+        .with(headers: headers)
+        .to_return(status: 200, body: body)
 
-      it 'requests whoami endpoint' do
-        expect { subject.who_am_i }
-          .to raise_error(OddsFeed::InvalidResponseError, 'Unexpected error.')
-      end
+      subject.who_am_i
     end
 
-    context 'who am i request' do
-      let(:route) { '/users/whoami.xml' }
+    it 'returns adapter on event request' do
+      event_id = 'sr:match:10001'
+      route = "#{api_domain}/sports/en/sport_events/#{event_id}/fixture.xml"
+      stub_request(:any, route)
+        .with(headers: headers)
+        .to_return(body: '')
 
-      it 'requests whoami endpoint' do
-        subject.who_am_i
-      end
+      expect(subject.event(event_id)).to be_a(OddsFeed::Radar::EventAdapter)
+    end
+  end
+
+  context 'unexpected responses' do
+    let(:forbidden_response) do
+      file_fixture('api/forbidden_response.xml').read
+    end
+    let(:invalid_xml) { '<doctype><html><body>Hello World</body></html>' }
+
+    it 'raise error on 403' do
+      stub_request(:any, "#{api_domain}/users/whoami.xml")
+        .with(headers: headers)
+        .to_return(status: 403, body: forbidden_response)
+
+      expect { subject.who_am_i }.to raise_error(HTTParty::ResponseError)
     end
 
-    context 'event request' do
-      let(:event_id) { 'sr:match:10001' }
-      let(:route) { "/sports/en/sport_events/#{event_id}/fixture.xml" }
+    it 'raises error on invalid xml' do
+      stub_request(:any, "#{api_domain}/users/whoami.xml")
+        .with(headers: headers)
+        .to_return(status: 200, body: invalid_xml)
 
-      it 'returns adapter on event request' do
-        expect(subject.event(event_id))
-          .to be_a(OddsFeed::Radar::EventAdapter)
-      end
+      expect { subject.who_am_i }
+        .to raise_error(HTTParty::ResponseError, 'Malformed response body')
     end
 
-    context 'markets request' do
-      let(:route) { '/descriptions/en/markets.xml?include_mappings=false' }
+    it 'raises error on plain text' do
+      stub_request(:any, "#{api_domain}/users/whoami.xml")
+        .with(headers: headers)
+        .to_return(status: 200, body: 'Plain text')
 
-      it 'returns markets request result' do
-        subject.markets
-      end
+      expect { subject.who_am_i }
+        .to raise_error(HTTParty::ResponseError, 'Malformed response body')
     end
   end
 end
