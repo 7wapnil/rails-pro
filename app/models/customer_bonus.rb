@@ -1,4 +1,4 @@
-class ActivatedBonus < ApplicationRecord
+class CustomerBonus < ApplicationRecord
   enum kind: Bonus.kinds
   belongs_to :customer
   belongs_to :wallet

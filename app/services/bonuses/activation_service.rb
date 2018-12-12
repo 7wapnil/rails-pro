@@ -7,8 +7,8 @@ module Bonuses
     end
 
     def call
-      customer.activated_bonus&.deactivate!
-      ActivatedBonus.create!(bonus_activation_attributes)
+      customer.customer_bonus&.deactivate!
+      CustomerBonus.create!(bonus_activation_attributes)
     end
 
     private
@@ -25,7 +25,7 @@ module Bonuses
         customer_id: customer.id,
         wallet_id: wallet.id
       }
-      transmitted_attrs = ActivatedBonus.column_names & Bonus.column_names
+      transmitted_attrs = CustomerBonus.column_names & Bonus.column_names
       transmitted_attrs.map!(&:to_sym)
       bonus_attrs = bonus.attributes
                          .symbolize_keys

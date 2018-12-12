@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :activated_bonus do
+  factory :customer_bonus do
     customer
     wallet
     sequence(:code) { |n| "FOOBAR#{n}" }
