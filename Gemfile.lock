@@ -551,7 +551,7 @@ DEPENDENCIES
   rack-cors
   rails (~> 5.2.2)
   rails-erd
-  ransack
+  ransack (~> 2.1.1)
   recaptcha
   redis (~> 4.0)
   redis-rack-cache

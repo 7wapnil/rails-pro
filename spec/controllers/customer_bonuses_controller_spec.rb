@@ -1,11 +1,11 @@
-describe ActivatedBonusesController, type: :controller do
+describe CustomerBonusesController, type: :controller do
   describe '#create' do
     let!(:wallet) { create(:wallet) }
     let!(:original_bonus) { create(:bonus) }
     let(:amount) { 100 }
     let!(:payload_params) do
       {
-        activated_bonus: {
+        customer_bonus: {
           amount: amount,
           wallet_id: wallet.id,
           original_bonus_id: original_bonus.id
@@ -14,14 +14,14 @@ describe ActivatedBonusesController, type: :controller do
     end
     let(:create_bonus) { post :create, params: payload_params }
     let(:current_user) { create(:admin_user) }
-    let(:activated_bonus) { create(:activated_bonus) }
+    let(:customer_bonus) { create(:customer_bonus) }
 
     context 'when admin user adds bonus to customer' do
       before do
         sign_in current_user
         allow(Bonuses::ActivationService)
-          .to receive(:call).and_return(activated_bonus)
-        allow(activated_bonus).to receive(:add_funds)
+          .to receive(:call).and_return(customer_bonus)
+        allow(customer_bonus).to receive(:add_funds)
         allow(AuditLog).to receive(:create!)
         create_bonus
       end
@@ -31,8 +31,8 @@ describe ActivatedBonusesController, type: :controller do
           .to have_received(:call).with(wallet, original_bonus)
       end
 
-      it 'calls ActivatedBonus::add_funds with amount' do
-        expect(activated_bonus)
+      it 'calls CustomerBonus::add_funds with amount' do
+        expect(customer_bonus)
           .to have_received(:add_funds).with(amount)
       end
 
@@ -42,7 +42,7 @@ describe ActivatedBonusesController, type: :controller do
             event: :bonus_activated,
             user_id: current_user.id,
             customer_id: wallet.customer_id,
-            context: { code: activated_bonus.code }
+            context: { code: customer_bonus.code }
           )
       end
     end

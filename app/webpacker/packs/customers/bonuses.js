@@ -1,7 +1,7 @@
 import $ from 'jquery';
 
 document.addEventListener('turbolinks:load', () => {
-  const bonusSelector = $('#activated_bonus_original_bonus_id');
+  const bonusSelector = $('#customer_bonus_original_bonus_id');
   const bonusDetailsWrapper = $('#bonus-details');
   const bonuses = $('#bonus-data').data('bonuses');
 
@@ -16,7 +16,7 @@ document.addEventListener('turbolinks:load', () => {
       'min_deposit',
       'valid_for_days',
       'percentage'
-    ].map(key => $(`#activated_bonus_${key}`).val(bonus[key]));
+    ].map(key => $(`#customer_bonus_${key}`).val(bonus[key]));
     bonusDetailsWrapper.removeClass('d-none').show();
   }
 

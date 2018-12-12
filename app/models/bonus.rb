@@ -29,7 +29,7 @@ class Bonus < ApplicationRecord
 
   acts_as_paranoid
 
-  has_many :activated_bonuses, foreign_key: :original_bonus_id
+  has_many :customer_bonuses, foreign_key: :original_bonus_id
 
   scope :active, -> { where('bonuses.expires_at > ?', Time.zone.now) }
 end

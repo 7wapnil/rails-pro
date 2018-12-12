@@ -3,7 +3,7 @@ class Wallet < ApplicationRecord
   belongs_to :currency
   has_many :balances
   has_many :entries
-  has_one :activated_bonus
+  has_one :customer_bonus
 
   delegate :name,
            :code,
