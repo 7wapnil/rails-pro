@@ -31,13 +31,18 @@ describe OddsFeed::Radar::ResponseReader do
         let(:cache) { true }
 
         before do
-          expect(Rails.cache).to receive(:write).with(cache_key, data, {})
+          allow(Rails.cache).to receive(:write).with(cache_key, data, {})
+        end
+
+        it 'write to Rails cache' do
+          expect(Rails.cache).to receive(:write)
+          subject
         end
 
         it { expect(subject).to eq(data) }
       end
 
-      context 'and cache data with with settings' do
+      context 'and cache data with settings' do
         let(:cache) do
           {
             cache: { expires_in: OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
@@ -45,14 +50,22 @@ describe OddsFeed::Radar::ResponseReader do
         end
 
         before do
-          expect(Rails.cache).to receive(:write).with(cache_key, data, cache)
+          allow(Rails.cache).to receive(:write).with(cache_key, data, cache)
+        end
+
+        it 'write to Rails cache' do
+          expect(Rails.cache).to receive(:write)
+          subject
         end
 
         it { expect(subject).to eq(data) }
       end
 
       context 'without caching' do
-        before { expect(Rails.cache).not_to receive(:write) }
+        it "doesn't write to Rails cache" do
+          expect(Rails.cache).not_to receive(:write)
+          subject
+        end
 
         it { expect(subject).to eq(data) }
       end
@@ -63,7 +76,7 @@ describe OddsFeed::Radar::ResponseReader do
       let(:error_class) { StandardError }
       let(:error)       { error_class.new(message) }
 
-      before { expect(response).to receive(:parsed_response).and_raise(error) }
+      before { allow(response).to receive(:parsed_response).and_raise(error) }
 
       it { expect { subject }.to raise_error(StandardError, message) }
 
@@ -87,7 +100,7 @@ describe OddsFeed::Radar::ResponseReader do
     end
   end
 
-  context 'cached value' do
+  context 'take cached data' do
     let(:cache) { true }
 
     before do
@@ -95,8 +108,11 @@ describe OddsFeed::Radar::ResponseReader do
         .to receive(:read)
         .with(cache_key)
         .and_return(data)
+    end
 
+    it "and doesn't call Radar client" do
       expect(OddsFeed::Radar::Client).not_to receive(:get)
+      subject
     end
 
     it { expect(subject).to eq(data) }
