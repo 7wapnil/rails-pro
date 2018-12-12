@@ -4,7 +4,7 @@ class DocumentsController < ApplicationController
 
   def index
     @search = documents_base_query
-              .search(prepare_interval_filter(query_params, :created_at))
+              .ransack(prepare_interval_filter(query_params, :created_at))
     @documents = @search.result
   end
 

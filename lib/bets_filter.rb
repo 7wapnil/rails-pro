@@ -30,7 +30,7 @@ class BetsFilter
                            .with_sport
                            .with_tournament
                            .with_country
-                           .search(@query_params)
+                           .ransack(@query_params)
   end
 
   def bets

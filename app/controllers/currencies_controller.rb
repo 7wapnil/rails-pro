@@ -1,6 +1,6 @@
 class CurrenciesController < ApplicationController
   def index
-    @search = Currency.search(query_params)
+    @search = Currency.ransack(query_params)
     @currencies = @search.result.page(params[:page])
   end
 

@@ -6,7 +6,7 @@ class CustomersController < ApplicationController
   before_action :customer, only: %i[bonuses documents deposit_limit show]
 
   def index
-    @search = Customer.search(query_params)
+    @search = Customer.ransack(query_params)
     @customers = @search.result.page(params[:page])
   end
 
@@ -27,7 +27,7 @@ class CustomersController < ApplicationController
   end
 
   def activity
-    @search = customer.entries.search(query_params)
+    @search = customer.entries.ransack(query_params)
     @entries = @search.result.page(params[:page])
     @audit_logs = AuditLog
                   .where(customer_id: customer.id)
