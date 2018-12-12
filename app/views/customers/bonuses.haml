@@ -1,11 +1,11 @@
-= render 'customers/heading'
+= render 'customers/heading', customer: @customer
 
 .row
   .col-md-3
-    .mt-4= render 'customers/navigation'
+    .mt-4= render 'customers/navigation', customer: @customer
   .col-md-9
-    .mt-4.mb-4= render 'customers/bonus_form'
-    .mt-4.mb-4= render 'customers/bonuses'
+    .mt-4.mb-4= render 'customers/bonus_form', customer: @customer
+    .mt-4.mb-4= render 'customers/bonuses', customer: @customer
 
 - content_for :js do
   = javascript_pack_tag 'customers/navigation_links'

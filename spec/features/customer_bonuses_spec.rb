@@ -21,14 +21,10 @@ describe 'Customers#bonuses' do
 
   context 'new bonus activation' do
     it 'shows bonus activation form' do
-      visit page_path
-
       expect(page).to have_selector('form.new_activated_bonus')
     end
 
     it 'selects customer wallet with primary currency' do
-      visit page_path
-
       expect(page).to have_field(
         :activated_bonus_wallet_id,
         with: wallet.id
@@ -36,8 +32,6 @@ describe 'Customers#bonuses' do
     end
 
     it 'activates bonus for customer' do
-      visit page_path
-
       within 'form.new_activated_bonus' do
         select bonus.code, from: :activated_bonus_original_bonus_id
         fill_in :activated_bonus_amount, with: 100
