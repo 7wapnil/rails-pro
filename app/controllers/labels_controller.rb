@@ -1,6 +1,6 @@
 class LabelsController < ApplicationController
   def index
-    @search = Label.search(query_params)
+    @search = Label.ransack(query_params)
     @labels = @search.result.page(params[:page])
   end
 

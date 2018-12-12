@@ -3,7 +3,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '2.5.1'
 
-gem 'rails', '~> 5.2.1.1'
+gem 'rails', '~> 5.2.2'
 gem 'pg', '>= 0.18', '< 2.0'
 gem 'puma', '~> 3.11'
 gem 'sass-rails', '~> 5.0'
@@ -37,7 +37,7 @@ gem 'rack-cors', require: 'rack/cors'
 gem 'activerecord-import'
 gem 'kaminari'
 gem 'kaminari-mongoid'
-gem 'ransack'
+gem 'ransack', '~> 2.1.1'
 gem 'airbrake', '~> 7.3'
 gem 'sidekiq'
 gem 'sidekiq-failures'
@@ -74,6 +74,8 @@ group :development, :test do
   gem 'factory_bot_rails'
   gem 'rubocop', require: false
   gem 'brakeman', require: false
+  gem 'haml_lint', require: false
+  gem 'overcommit', require: false
   gem 'awesome_print'
   gem 'pry-rails'
 end

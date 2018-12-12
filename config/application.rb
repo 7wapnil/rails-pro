@@ -54,7 +54,7 @@ module Arcanebet
 
     config.after_initialize do
       Rails.logger = Airbrake::AirbrakeLogger.new(Rails.logger)
-      Rails.logger.airbrake_level = Logger::ERROR
+      Rails.logger.airbrake_level = Logger::FATAL
     end
   end
 end

@@ -7,7 +7,10 @@ module OddsFeed
         def radar_entity_name
           OddsFeed::Radar::Client
             .new
-            .venue_summary(external_id)
+            .venue_summary(
+              external_id,
+              cache: { expires_in: Client::DEFAULT_CACHE_TERM }
+            )
             .dig('venue_summary', 'venue', 'name')
         end
       end

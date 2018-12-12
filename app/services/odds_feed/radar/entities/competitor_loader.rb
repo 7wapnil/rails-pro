@@ -9,7 +9,10 @@ module OddsFeed
         def radar_entity_name
           OddsFeed::Radar::Client
             .new
-            .competitor_profile(external_id)
+            .competitor_profile(
+              external_id,
+              cache: { expires_in: Client::DEFAULT_CACHE_TERM }
+            )
             .dig('competitor_profile', 'competitor', 'name')
             .split(NAME_SEPARATOR)
             .reverse.join(' ')

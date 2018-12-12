@@ -2,7 +2,7 @@ describe CurrencyHelper, type: :helper do
   describe '#currencies_with_primary_for' do
     it 'returns only primary currency for customer without wallets' do
       customer = create(:customer)
-      primary_currency = create(:currency, primary: true)
+      primary_currency = create(:currency, :primary)
       not_included_currency = create(:currency)
 
       expect(helper.currencies_with_primary_for(customer))
@@ -13,7 +13,7 @@ describe CurrencyHelper, type: :helper do
 
     it 'returns customer currencies with primary' do
       customer = create(:customer)
-      primary_currency = create(:currency, primary: true)
+      primary_currency = create(:currency, :primary)
       not_included_currency = create(:currency)
       wallet = create(:wallet, customer: customer)
 
@@ -25,7 +25,7 @@ describe CurrencyHelper, type: :helper do
 
     it 'doesn\'t create new customer wallet' do
       customer = create(:customer)
-      create(:currency, primary: true)
+      create(:currency, :primary)
       helper.currencies_with_primary_for(customer)
       expect(customer.wallets).to be_empty
     end

@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<response response_code="FORBIDDEN">
+  <action>Too many requests. Access forbidden. Limits are: 60000 requests per 60 minutes(s).</action>
+  <message>ERROR. Access forbidden.</message>
+</response>

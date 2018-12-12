@@ -9,12 +9,12 @@
 = card_form_for html: { id: 'account_lock_form', method: :patch },
                 header: t('attributes.account_lock'),
                 class: 'account-lock',
-                url:  update_lock_customer_path,
-                resource: @customer do
+                url: update_lock_customer_path,
+                resource: customer do
   %table.table
     %tr
       %td= t('attributes.lock')
-      %td= locked_toggle(@customer)
+      %td= locked_toggle(customer)
     %tr
       %td= t('attributes.lock_reason')
       %td
@@ -30,12 +30,12 @@
     %tr
       %td= t('attributes.lock_until')
       %td
-        - # Hack for disabled input to send parameter
+        -# Hack for disabled input to send parameter
         = hidden_field_tag 'customer[locked_until]',
                            nil,
                            id: nil
         = text_field_tag 'customer[locked_until]',
-                          l(@customer.locked_until, default: nil, format: :date_picker),
+                          l(customer.locked_until, default: nil, format: :date_picker),
                           label: false,
                           class: 'form-control form_date',
                           data: { min_date: l(Date.current, format: :date_picker) }

@@ -104,6 +104,7 @@ module OddsFeed
         def emit_odds_update
           data = @odds.map do |odd|
             { id: odd.id.to_s,
+              marketId: odd.market.id.to_s,
               status: odd.status,
               value: odd.value }
           end

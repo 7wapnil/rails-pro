@@ -4,7 +4,8 @@
       %table.table
         %tr
           %td= t('attributes.username')
-          %td= link_to @document.customer.username, documents_customer_path(id: @document.customer.id)
+          %td= link_to @document.customer.username,
+                        documents_customer_path(id: @document.customer.id)
         %tr
           %td= t('attributes.kind')
           %td= t("attributes.#{@document.kind}")
@@ -23,9 +24,9 @@
         %tr
           %td= t('attributes.actions')
           %td
-            = render partial: 'documents/actions', locals: { document: @document }
+            = render 'documents/actions', document: @document
         %tr
       %hr
       = link_back
-= render partial: 'documents/comment_form', locals: { document: @document, comments: @comments }
+= render 'documents/comment_form', document: @document, comments: @comments
 

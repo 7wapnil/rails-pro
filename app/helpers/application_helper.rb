@@ -100,6 +100,10 @@ module ApplicationHelper
       .to_h
   end
 
+  def search_date_for(key)
+    query_params[key] || l(Date.current, format: :date_picker)
+  end
+
   private
 
   def submit_button(html, resource, url)

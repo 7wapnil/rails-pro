@@ -1,5 +1,5 @@
 = card class: 'mb-4 global-limit', header: t('entities.global_betting_limit') do
-  = render 'customers/betting_limit_form', title_id: nil, limit: @global_limit
+  = render 'customers/betting_limit_form', title_id: nil, limit: global_limit
 
 = card class: 'mb-4 limits-by-sport', header: t('entities.betting_limits_by_sport') do
-  = render 'customers/betting_limits_accordion_wrapper', limits: @limits_by_sports
+  = render 'customers/betting_limits_accordion_wrapper', limits: limits_by_sports

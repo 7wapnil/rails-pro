@@ -27,6 +27,7 @@ Rails.application.routes.draw do
     member do
       get :account_management
       get :activity
+      get :bonuses
       get :notes
       get :betting_limits
       get :deposit_limit
@@ -49,6 +50,8 @@ Rails.application.routes.draw do
       end
     end
   end
+  resources :customer_bonuses, only: :create
+
   resources :betting_limits, only: %i[create update]
 
   resources :deposit_limits, only: %i[create update destroy]

@@ -1,8 +1,9 @@
-= card header: t('entities.entry_request_count', count: @entry_requests.count), class: 'customer-entry-requests' do
-  - if @entry_requests.any?
+= card header: t('entities.entry_request_count', count: entry_requests.count),
+       class: 'customer-entry-requests' do
+  - if entry_requests.any?
     %table.table
       %tbody
-        - @entry_requests.each do |entry_request|
+        - entry_requests.each do |entry_request|
           %tr
             %td= link_to l(entry_request.created_at, format: :long), entry_request
             %td= t "kinds.#{entry_request.kind}"
@@ -14,4 +15,4 @@
     .text-center
       %em= t(:no_records)
 
-  = paginate @entry_requests
+  = paginate entry_requests

@@ -4,7 +4,7 @@
       %tr
         %th
           .filter_title
-            = "#{t('attributes.customer_name')}:"
+            #{t('attributes.customer_name')}:
           .filter_field
             = f.label :username_cont, class: 'sr-only'
             = f.search_field :username_cont,
@@ -13,7 +13,7 @@
                               autocomplete: :off
         %th
           .filter_title
-            = "#{t('attributes.email')}:"
+            #{t('attributes.email')}:
           .filter_field
             = f.label :email_cont, class: 'sr-only'
             = f.search_field :email_cont,
@@ -22,7 +22,7 @@
                               autocomplete: :off
         %th
           .filter_title
-            = "#{t('attributes.ip_address')}:"
+            #{t('attributes.ip_address')}:
           .filter_field
             = f.label :ip_address_eq, class: 'sr-only'
             = f.search_field :ip_address_eq,
@@ -31,7 +31,7 @@
                               autocomplete: :off
         %th
           .filter_field
-            = "#{t('attributes.id')}:"
+            #{t('attributes.id')}:
           .filter_field
             = f.label :id_eq, class: 'sr-only'
             = f.search_field :id_eq,

@@ -61,6 +61,8 @@ RSpec.configure do |config|
   config.include Rails.application.routes.url_helpers, type: :feature
   config.include Warden::Test::Helpers, type: :feature
   config.include FeatureHelpers, type: :feature
+  config.include RequestSpecHelper, type: :controller
+  config.include Devise::Test::ControllerHelpers, type: :controller
 
   # Some work to do before any test
   config.before(:each) do

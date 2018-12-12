@@ -12,6 +12,8 @@ FactoryBot.define do
     expires_at { Time.zone.now.end_of_month }
     valid_for_days { 60 }
     association :original_bonus, factory: :bonus
+    created_at { Time.zone.now }
+    deleted_at { nil }
   end
 
   factory :comment do

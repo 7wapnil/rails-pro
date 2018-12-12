@@ -1,6 +1,6 @@
 class BonusesController < ApplicationController
   def index
-    @search = Bonus.search(query_params)
+    @search = Bonus.ransack(query_params)
     @bonuses = @search.result.page(params[:page])
   end
 

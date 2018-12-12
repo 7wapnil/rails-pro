@@ -23,4 +23,17 @@ describe Bonus do
     it { should validate_numericality_of(:percentage).is_greater_than_or_equal_to(0) }
     # rubocop:enable Metrics/LineLength
   end
+
+  describe '.active' do
+    let!(:active_bonus) do
+      create(:bonus, expires_at: Time.zone.now + 1.month)
+    end
+    let!(:expired_bonus) do
+      create(:bonus, expires_at: Time.zone.now - 1.month)
+    end
+
+    it 'returns not expired bonuses' do
+      expect(described_class.active).to match_array([active_bonus])
+    end
+  end
 end

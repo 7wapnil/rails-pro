@@ -1,0 +1,16 @@
+= card header: t('entities.bonuses'), class: 'bonuses' do
+  - if history.any?
+    %table.table
+      %thead
+        %th= t('attributes.code')
+        %th= t('attributes.activated_at')
+        %th= t('attributes.status')
+      %tbody
+        - history.each do |bonus|
+          %tr
+            %td= link_to bonus.code, bonus.original_bonus
+            %td= l(bonus.created_at)
+            %td= status_badge(bonus.status)
+  - else
+    .text-center
+      %em= t(:no_records)

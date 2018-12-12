@@ -2,7 +2,7 @@
 
 = render 'search', search: @search
 
-%ul.nav.nav-tabs#documents_tabs
+%ul.nav.nav-tabs#documents-tabs
   %li.nav-item
     = link_to t('navigation.document.pending'),
               verification_documents_path(tab: :pending),
@@ -25,12 +25,14 @@
       %th= t(:details)
   %tbody
     - @documents.each do |document|
-      %tr{id:"document-#{document.id}"}
+      %tr{ id: "document-#{document.id}" }
         %td= link_to document.customer.username, documents_customer_path(id: document.customer.id)
         %td= t("attributes.#{document.kind}")
         %td= l(document.created_at, format: :short)
         %td= status_badge(document.status)
-        %td= link_to t(:view), rails_blob_path(document.document), class: 'btn btn-outline-dark mr-2', target: :blank
+        %td= link_to t(:view), rails_blob_path(document.document),
+                      class: 'btn btn-outline-dark mr-2', target: :blank
         %td.text-center
-          = render partial: 'documents/actions', locals: { document: document }
-        %td= link_to t('details'), verification_document_path(document), class: 'btn btn-outline-dark mr-2'
+          = render 'documents/actions', document: document
+        %td= link_to t('details'), verification_document_path(document),
+                      class: 'btn btn-outline-dark mr-2'

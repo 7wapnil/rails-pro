@@ -17,4 +17,7 @@
 
 ActiveSupport::Inflector.inflections do |inflect|
   inflect.irregular 'bonus', 'bonuses'
+
+  # To enable autoloading of abbreviation based classes
+  inflect.acronym 'HTTParty'
 end

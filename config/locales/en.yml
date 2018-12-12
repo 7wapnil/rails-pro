@@ -30,6 +30,8 @@ en:
   upload: Upload
   view: View
 
+  activate_instance: "Activate %{instance}"
+  activated: "%{instance} activated"
   add_instance: "Add %{instance}"
   created: "%{instance} created"
   deleted: "%{instance} deleted"
@@ -43,6 +45,7 @@ en:
     account_kind: Account type
     action: Action
     actions: Actions
+    activated_at: Activated at
     actual_payout: Actual payout
     amount: Amount
     authorized_at: Authorized at
@@ -91,6 +94,7 @@ en:
     live_coverage: Live coverage
     lock: Lock
     lock_reason: Lock reason
+    lock_status: Lock status
     lock_until: Lock until
     market: Market
     max_amount: Max amount
@@ -173,6 +177,8 @@ en:
       zero: No bets
       one: 1 bet
       other: "%{count} bets"
+    betting_limit: Betting limit
+    betting_limits: Betting limits
     betting_limit_by_sport: Betting limit by sport
     betting_limits_by_sport: Betting limits by sport
     bonus: Bonus
@@ -265,6 +271,7 @@ en:
         default: "Account is locked%{additional_info}"
       age_adult: Must be adult!
       betting_limits: Betting limits validation failed
+      bonus_activation_failed: Bonus activation failed, please try later
       customer_account_kind_transit: Can't transit customer account kind
       customer_activated: Customer already activated
       deposit_limits: Deposit limit reached, please try again later
@@ -310,7 +317,6 @@ en:
         subject: Suspicious login attempt
 
   messages:
-    customer_lock_status_changed: Customer lock status was changed
     deposit_limits:
       delete: "Are you sure you want to delete customer (%{customer_name}) deposit limit?"
     entry_request:
@@ -326,6 +332,7 @@ en:
       activity: Activity
       bets: Bets
       betting_limits: Betting Limits
+      bonuses: Bonuses
       deposit_limit: Deposit Limit
       documents: Documents
       notes: Notes
@@ -351,6 +358,8 @@ en:
     won: Won
 
   statuses:
+    active: Active
+    expired: Expired
     failed: Failed
     initial: Initial
     live: Live
