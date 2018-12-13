@@ -5,7 +5,8 @@
 %table.table
   %thead
     %tr
-      %th= t('attributes.event_id')
+      %th= t('attributes.id')
+      %th= t('attributes.external_id')
       %th= sort_link(@search, :name, t('attributes.name'))
       %th= t('attributes.sport')
       %th= t('attributes.visible')
@@ -25,6 +26,7 @@
       - @events.each do |event|
         %tr{ id: "event-#{event.id}" }
           %td= event.id
+          %td= event.external_id
           %td
             = link_to event.name, event
             %br

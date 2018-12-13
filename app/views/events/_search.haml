@@ -9,13 +9,19 @@
     %thead
       %tr
         %th
-          .filter_title #{t('attributes.event_id')}:
+          .filter_title #{t('attributes.id')}:
           .filter_field
             = f.label :id_eq, class: 'sr-only'
             = f.search_field :id_eq,
                                  class: 'form-control',
                                  placeholder: t('attributes.id'),
                                  autocomplete: :off
+        %th
+          .filter_title #{t('attributes.external_id')}:
+          .filter_field
+            = f.search_field :external_id_cont,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: t('attributes.external_id'))
         %th
           .filter_title #{t('attributes.name')}:
           .filter_field
@@ -42,6 +48,7 @@
                                     query_params[:visible_eq]),
                   { include_blank: true },
                   class: 'form-control'
+      %tr
         %th
           .filter_title #{t('attributes.live')}:
           .filter_field
@@ -51,7 +58,6 @@
                                     query_params[:traded_live_eq]),
                   { include_blank: true },
                   class: 'form-control'
-      %tr
         %th
           .filter_title #{t(:from)}:
           .filter_field
@@ -83,12 +89,6 @@
             = f.search_field :event_scopes_name_cont,
                               class: 'form-control',
                               placeholder: t(:search, subject: t('attributes.scope_name'))
-        %th
-          .filter_title #{t('attributes.external_id')}:
-          .filter_field
-            = f.search_field :external_id_cont,
-                              class: 'form-control',
-                              placeholder: t(:search, subject: t('attributes.external_id'))
       %tr
         %th{ colspan: 4 }
         %th
