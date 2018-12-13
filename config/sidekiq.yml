@@ -1,5 +1,6 @@
 :queues:
   - default
+  - expired_bonuses
   - expired_live
   - expired_prematch
   - radar_odds_change
@@ -16,6 +17,12 @@
   - mq
 
 :schedule:
+  expiring_bonuses:
+    every: <%= ENV.fetch('EXPIRING_BONUSES_INTERVAL', '1d') %>
+    class: Scheduled::ExpiringBonusesWorker
+    queue: expired_bonuses
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+
   mts_live_validation:
     every: <%= "#{ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10)}s" %>
     class: Scheduled::ExpiringLiveWorker
