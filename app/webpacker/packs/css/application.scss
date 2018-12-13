@@ -2,3 +2,15 @@
 @import "~noty/src/noty";
 @import "~noty/src/themes/mint";
 @import '~select2/dist/css/select2.min';
+
+
+// documents#comment_form
+.card {
+  &.comments {
+    table {
+      .comment {
+        word-break: break-word;
+      }
+    }
+  }
+}

@@ -9,7 +9,7 @@
           - comments.each do |comment|
             %tr
               %td= comment.user.full_name
-              %td= comment.text
+              %td.comment= comment.text
               %td= l(comment.created_at, format: :short)
       = simple_form_for :comment, url: polymorphic_url([:create_comment, document]) do |f|
         = f.label :text
