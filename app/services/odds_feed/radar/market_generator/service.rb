@@ -63,8 +63,6 @@ module OddsFeed
           import_markets
           import_odds
           emit_events
-        rescue StandardError => e
-          Rails.logger.error e.message
         end
 
         def import_markets

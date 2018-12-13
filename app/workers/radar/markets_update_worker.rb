@@ -11,6 +11,7 @@ module Radar
         create_or_update_market!(market_data)
       rescue StandardError => error
         Rails.logger.error error.message
+        Airbrake.notify(error)
         next
       end
     end

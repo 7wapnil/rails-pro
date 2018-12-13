@@ -125,14 +125,16 @@ describe OddsFeed::Radar::Transpiling::Interpreter do
         let(:token)      { '%unallowed_name' }
         let(:raw_string) { "{#{token}} was correctly parsed" }
         let(:message)    { "Name transpiler can't read variable: `#{token}`" }
-
-        before { expect(Rails.logger).to receive(:warn).with(message) }
+        let(:interpreter) do
+          OddsFeed::Radar::Transpiling::Interpreter.new(event)
+        end
 
         it do
-          interpreter = OddsFeed::Radar::Transpiling::Interpreter.new(event)
-
-          expect(interpreter.parse(raw_string)).to eq(raw_string)
+          expect(Rails.logger).to receive(:warn).with(message)
+          interpreter.parse(raw_string)
         end
+
+        it { expect(interpreter.parse(raw_string)).to eq(raw_string) }
       end
     end
   end
