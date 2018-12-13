@@ -3,7 +3,7 @@ module OddsFeed
     module Transpiling
       class NameExpression < BaseExpression
         PLAYER_REGEX     = /%player/
-        COMPETITOR_REGEX = /%competitor/
+        COMPETITOR_REGEX = /%competitor|%server/
         VENUE_REGEX      = /%venue/
         NAME_SIGN        = '%'.freeze
 
