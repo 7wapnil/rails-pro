@@ -382,20 +382,6 @@ FactoryBot.define do
     end
   end
 
-  factory(:alive_message, class: Radar::AliveMessage) do
-    product_id { 1 }
-    reported_at { Time.now.to_i }
-    subscribed { true }
-
-    initialize_with do
-      new(
-        product_id: product_id,
-        reported_at: reported_at,
-        subscribed: subscribed
-      )
-    end
-  end
-
   factory :verification_document do
     customer
     kind { 0 }

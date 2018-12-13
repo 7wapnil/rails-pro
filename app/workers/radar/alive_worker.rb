@@ -5,7 +5,7 @@ module Radar
     sidekiq_options queue: queue_name
 
     def worker_class
-      OddsFeed::Radar::AliveHandler
+      OddsFeed::Radar::Alive::Handler
     end
   end
 end
