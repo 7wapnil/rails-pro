@@ -77,6 +77,7 @@ en:
     event_id: Event ID
     event_status: Event status
     expires_at: Expires at
+    external_id: External ID
     first_name: First name
     gender: Gender
     id: ID
