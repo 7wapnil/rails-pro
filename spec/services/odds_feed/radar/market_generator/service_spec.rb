@@ -73,14 +73,5 @@ describe OddsFeed::Radar::MarketGenerator::Service do
 
       subject
     end
-
-    context 'ignore errors' do
-      let(:error) { Faker::Lorem.paragraph }
-
-      it do
-        expect(Market).to receive(:import).and_raise(StandardError, error)
-        subject
-      end
-    end
   end
 end
