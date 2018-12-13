@@ -3,7 +3,20 @@ class CustomersController < ApplicationController
   include Labelable
   include DateIntervalFilters
 
+  NOTES_PER_PAGE = 5
+  WIDGET_NOTES_COUNT = 2
+
   before_action :customer, only: %i[bonuses documents deposit_limit show]
+  before_action :customer_notes, only: %i[
+    account_management
+    activity
+    bets
+    betting_limits
+    bonuses
+    documents
+    deposit_limit
+    show
+  ]
 
   def index
     @search = Customer.ransack(query_params)
@@ -48,8 +61,7 @@ class CustomersController < ApplicationController
   end
 
   def notes
-    @note = CustomerNote.new(customer: customer)
-    @customer_notes = customer.customer_notes.page(params[:page]).per(5)
+    customer_notes(params[:page], NOTES_PER_PAGE)
   end
 
   def documents
@@ -215,6 +227,11 @@ class CustomersController < ApplicationController
 
   def locking_event
     @customer.locked ? :customer_locked : :customer_unlocked
+  end
+
+  def customer_notes(page = 1, per = WIDGET_NOTES_COUNT)
+    @note = CustomerNote.new(customer: customer)
+    @customer_notes = customer.customer_notes.page(page).per(per)
   end
 end
 # rubocop:enable Metrics/ClassLength

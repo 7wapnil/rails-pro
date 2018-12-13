@@ -3,6 +3,9 @@
 .row
   .col-md-3
     .mt-4= render 'customers/navigation', customer: @customer
+    .mt-4.mb-4= render 'customers/notes', note: @note,
+                                          customer_notes: @customer_notes,
+                                          small: true
   .col-md-9
     .mt-4.mb-4= render 'customers/betting_limits',
                         global_limit: @global_limit,

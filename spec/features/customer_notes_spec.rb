@@ -8,7 +8,7 @@ describe 'Customers#notes' do
   end
 
   it 'shows customer notes section' do
-    expect_to_have_section 'customer-notes'
+    expect(page).to have_selector '.customer-notes'
   end
 
   it 'shows new note form' do
@@ -59,7 +59,7 @@ describe 'Customers#notes' do
       click_submit
     end
 
-    within '.card.customer-notes' do
+    within '.customer-notes' do
       expect(page).to have_content note_content
     end
   end
