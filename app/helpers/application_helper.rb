@@ -33,8 +33,8 @@ module ApplicationHelper
   end
 
   def link_back
-    link_to t(:back), '#',
-            class: 'btn btn-outline-dark', data: { button_back: true }
+    link_to t(:back), request.referer,
+            class: 'btn btn-outline-dark'
   end
 
   def visibility_toggle(visible_resource, toggle_endpoint)
