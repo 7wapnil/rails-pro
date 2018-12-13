@@ -2,15 +2,14 @@
   .col-6.offset-3
     = card header: t('entities.comments'), class: 'comments' do
       - if comments.present?
-        %table.table.table-striped
-          %th= t('initiators.user')
-          %th= t('attributes.text')
-          %th= t('attributes.created_at')
-          - comments.each do |comment|
-            %tr
-              %td= comment.user.full_name
-              %td.comment= comment.text
-              %td= l(comment.created_at, format: :short)
+        - comments.each do |comment|
+          = card class: 'mb-4' do
+            %p.card-text= comment.text
+            %p.card-text
+              %small.text-muted
+                = t('comment_details',
+                    author: comment.user.full_name,
+                    date: l(comment.created_at, format: :short))
       = simple_form_for :comment, url: polymorphic_url([:create_comment, document]) do |f|
         = f.label :text
         = f.text_area :text, rows: 4, class: 'form-control', required: true

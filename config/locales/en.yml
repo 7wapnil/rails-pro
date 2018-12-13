@@ -2,6 +2,7 @@ en:
   action: Action
   add: Add
   back: Back
+  comment_details: "%{author} on %{date}"
   confirm: Confirm
   confirm_sure: Are you sure?
   content: Content
