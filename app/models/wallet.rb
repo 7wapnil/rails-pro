@@ -21,4 +21,12 @@ class Wallet < ApplicationRecord
   def self.build_default
     new(amount: 0, currency: Currency.build_default)
   end
+
+  def bonus_balance
+    balances.bonus.last
+  end
+
+  def real_money_balance
+    balances.real_money.last
+  end
 end

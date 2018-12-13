@@ -1,8 +1,10 @@
 module WalletEntry
   class AuthorizationService < ApplicationService
-    def initialize(request)
+    def initialize(request, balance_kind = nil, in_transaction = true)
       @request = request
       @amount = @request.amount
+      @balance_kind = balance_kind || Balance.kinds[:real_money]
+      @in_transaction = in_transaction
     end
 
     def call
@@ -16,10 +18,18 @@ module WalletEntry
     private
 
     def update_database!
-      ActiveRecord::Base.transaction do
+      operations = -> do
         update_wallet!
         update_balance!
         create_entry!
+      end
+
+      if @in_transaction
+        ActiveRecord::Base.transaction do
+          operations.call
+        end
+      else
+        operations.call
       end
     end
 
@@ -51,7 +61,7 @@ module WalletEntry
     def update_balance!
       @balance = Balance.find_or_create_by!(
         wallet_id: @wallet.id,
-        kind: Balance.kinds[:real_money]
+        kind: @balance_kind
       )
 
       @balance.update_attributes!(amount: @balance.amount + @amount)

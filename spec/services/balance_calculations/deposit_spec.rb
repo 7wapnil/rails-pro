@@ -1,0 +1,33 @@
+describe BalanceCalculations::Deposit do
+  let(:amount) { 200 }
+  let(:max_deposit_bonus) { 20 }
+  let(:customer) { create(:customer) }
+
+  let!(:customer_bonus) do
+    create(:customer_bonus,
+           customer: customer,
+           percentage: 50,
+           max_deposit_match: 1000)
+  end
+
+  let(:wallet) { double('Wallet', customer: customer) }
+
+  it 'calculates real money amount' do
+    real = described_class.call(wallet, amount)[:real_money]
+
+    expect(real).to eq(amount)
+  end
+
+  it 'calculates bonus money amount' do
+    bonus = described_class.call(wallet, amount)[:bonus]
+
+    expect(bonus).to eq(100)
+  end
+
+  it "returns 'max_deposit_match' when bonus amount is greater than allowed" do
+    customer_bonus.update_attributes(max_deposit_match: max_deposit_bonus)
+    bonus = described_class.call(wallet, amount)[:bonus]
+
+    expect(bonus).to eq(max_deposit_bonus)
+  end
+end
