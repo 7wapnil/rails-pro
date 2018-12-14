@@ -15,7 +15,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   enum account_kind: {
     regular: 0,
     staff: 1,
-    test: 2
+    testing: 2
   }
 
   enum lock_reason: {
