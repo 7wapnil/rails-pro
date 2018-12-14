@@ -69,3 +69,8 @@
     every: <%= ENV.fetch('CUSTOMER_LOCK_TABLE_CLEAN_UP_INTERVAL', '1d') %>
     class: CustomerLockTableCleanupWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+
+  event_archivation:
+    every: <%= ENV.fetch('EVENT_ARCHIVATION_INTERVAL', '1d') %>
+    class: EventArchivationWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
