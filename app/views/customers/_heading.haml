@@ -4,5 +4,13 @@
             impersonate_customer_path(customer),
             target: :blank,
             class: 'btn btn-dark btn-sm'
+  - unless customer.verified?
+    = link_to t('actions.verify'),
+              update_status_customer_path(customer,
+                customer: { verified: !customer.verified }),
+              method: :patch,
+              class: 'btn btn-success btn-sm'
+- if customer.verified?
+  %span.badge.badge-success= t('statuses.verified')
 - customer.labels.each do |label|
   %span.badge.badge-dark= label.name

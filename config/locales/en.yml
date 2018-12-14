@@ -40,6 +40,11 @@ en:
   new_instance: "New %{instance}"
   updated: "%{instance} updated"
 
+  actions:
+    impersonate: Impersonate
+    reset_password: Reset password
+    verify: Verify
+
   attributes:
     account_information: Account information
     account_lock: Account lock
@@ -147,10 +152,6 @@ en:
     winnings: Winnings
     zip_code: ZIP
     percentage: Percentage
-
-  actions:
-    impersonate: Impersonate
-    reset_password: Reset password
 
   date:
     formats:

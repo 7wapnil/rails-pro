@@ -22,7 +22,11 @@ describe 'Customers#show' do
     end
 
     it "shows 'Impersonate' link" do
-      expect(page).to have_link('Impersonate')
+      expect(page).to have_link(I18n.t('actions.impersonate'))
+    end
+
+    it "shows 'Verify' link" do
+      expect(page).to have_link(I18n.t('actions.verify'))
     end
 
     it 'shows customer account type' do
@@ -53,7 +57,14 @@ describe 'Customers#show' do
       visit customer_path(subject)
     end
 
-    it 'updated personal information' do
+    it 'verifies customer' do
+      find('a.btn-success').click
+
+      expect(page).to have_selector '.badge.badge-success'
+      expect(page).to have_content I18n.t('statuses.verified')
+    end
+
+    it 'updates personal information' do
       within 'form.personal-information-form' do
         fill_in :customer_first_name, with: 'Test'
         fill_in :customer_last_name, with: 'User'
@@ -70,7 +81,7 @@ describe 'Customers#show' do
       end
     end
 
-    it 'updated contact information' do
+    it 'updates contact information' do
       within 'form.contact-information-form' do
         fill_in :customer_email, with: 'test@test.com'
         fill_in :customer_phone, with: '+74951234567'
