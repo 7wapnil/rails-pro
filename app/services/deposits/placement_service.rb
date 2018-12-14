@@ -24,8 +24,7 @@ module Deposits
     def authorize_real_money!
       real_money_entry_request.save!
       WalletEntry::AuthorizationService.call(real_money_entry_request,
-                                             :real_money,
-                                             false)
+                                             :real_money)
     end
 
     def authorize_bonus_money!
@@ -33,8 +32,7 @@ module Deposits
 
       bonus_entry_request.save!
       WalletEntry::AuthorizationService.call(bonus_entry_request,
-                                             :bonus,
-                                             false)
+                                             :bonus)
     end
 
     def bonus_entry_request
