@@ -7,8 +7,6 @@ module Radar
 
     attr_reader :radar_id, :code
 
-    delegate :recover_subscription!, to: :subscription_state
-
     class << self
       def radar_ids
         RADAR_AVAILABLE_PRODUCERS.map { |producer| producer[:radar_id] }
@@ -46,35 +44,6 @@ module Radar
 
       @radar_id = radar_id
       @code = code
-    end
-
-    def failure_flag_key
-      (code.to_s + '_odds_feed_offline').to_sym
-    end
-
-    def subscription_state
-      OddsFeed::Radar::ProducerSubscriptionState.new(radar_id)
-    end
-
-    def raise_failure_flag!
-      flag = live? ? :live_connected : :pre_live_connected
-      ApplicationState.instance.send("#{flag}=", false)
-    end
-
-    def clear_failure_flag!
-      flag = live? ? :live_connected : :pre_live_connected
-      ApplicationState.instance.send("#{flag}=", true)
-    end
-
-    def live?
-      code == :live
-    end
-
-    def check_subscription_expiration
-      return unless subscription_state.subscription_report_expired?
-
-      subscription_state.recover_subscription!
-      raise_failure_flag!
     end
   end
 end
