@@ -39,7 +39,7 @@ describe Deposits::PlacementService do
 
   context "don't affect bonus balance" do
     it 'when do not pass deposit limit' do
-      wallet.customer.customer_bonus.update_attributes(min_deposit: 999)
+      wallet.customer.customer_bonus.update_attributes(min_deposit: amount + 1)
       described_class.call(wallet, amount)
       wallet.reload
 

@@ -10,7 +10,7 @@ module Deposits
     end
 
     def call
-      validate_entry_requests!
+      validate_deposit_placement!
       ActiveRecord::Base.transaction do
         authorize_real_money!
         authorize_bonus_money!
@@ -22,15 +22,14 @@ module Deposits
     attr_reader :wallet, :amount, :initiator
 
     def authorize_real_money!
-      return unless real_money_entry_request.save!
-
+      real_money_entry_request.save!
       WalletEntry::AuthorizationService.call(real_money_entry_request,
                                              :real_money,
                                              false)
     end
 
     def authorize_bonus_money!
-      return if balances_amounts[:bonus].blank? || !pass_deposit_limit?
+      return if balances_amounts[:bonus].blank? || !eligible_for_the_bonus?
 
       bonus_entry_request.save!
       WalletEntry::AuthorizationService.call(bonus_entry_request,
@@ -65,11 +64,15 @@ module Deposits
       }
     end
 
-    def validate_entry_requests!
+    def validate_deposit_placement!
       # TODO : implement validation logic
+      deposit_limit = DepositLimit.find_by(customer: wallet.customer,
+                                           currency: wallet.currency)
+
+      raise 'Customer has a deposit limit.' if deposit_limit
     end
 
-    def pass_deposit_limit?
+    def eligible_for_the_bonus?
       min_deposit = wallet.customer&.customer_bonus&.min_deposit
       return true unless min_deposit
 
