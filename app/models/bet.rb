@@ -11,6 +11,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :customer
   belongs_to :odd
   belongs_to :currency
+  belongs_to :customer_bonus, optional: true
 
   has_one :entry, as: :origin
   has_one :entry_request, as: :origin
