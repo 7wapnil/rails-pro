@@ -7,7 +7,7 @@ class CustomersController < ApplicationController
   WIDGET_NOTES_COUNT = 2
 
   before_action :customer, only: %i[bonuses documents deposit_limit show]
-  before_action :customer_notes, only: %i[
+  before_action :new_note, only: %i[
     account_management
     activity
     bets
@@ -15,6 +15,18 @@ class CustomersController < ApplicationController
     bonuses
     documents
     deposit_limit
+    notes
+    show
+  ]
+  before_action :customer_notes_widget, only: %i[
+    account_management
+    activity
+    bets
+    betting_limits
+    bonuses
+    documents
+    deposit_limit
+    notes
     show
   ]
 
@@ -61,7 +73,8 @@ class CustomersController < ApplicationController
   end
 
   def notes
-    customer_notes(params[:page], NOTES_PER_PAGE)
+    @customer_notes =
+      customer.customer_notes.page(params[:page]).per(NOTES_PER_PAGE)
   end
 
   def documents
@@ -229,9 +242,12 @@ class CustomersController < ApplicationController
     @customer.locked ? :customer_locked : :customer_unlocked
   end
 
-  def customer_notes(page = 1, per = WIDGET_NOTES_COUNT)
+  def new_note
     @note = CustomerNote.new(customer: customer)
-    @customer_notes = customer.customer_notes.page(page).per(per)
+  end
+
+  def customer_notes_widget
+    @customer_notes_widget = customer.customer_notes.limit(WIDGET_NOTES_COUNT)
   end
 end
 # rubocop:enable Metrics/ClassLength

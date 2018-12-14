@@ -1,16 +1,16 @@
 = card header: t('entities.customer_notes') do
-  - if small
-    = render 'customers/note_form', note: note, small: small, margin_class: 'mb-4'
+  - if is_widget
+    = render 'customers/note_form', note: note, is_widget: is_widget, margin_class: 'mb-4'
 
-  .customer-notes
+  .customer-notes{ class: is_widget ? 'widget' : '' }
     - if customer_notes.any?
       - customer_notes.each do |note|
         = render 'customer_notes/show', note: note
     - else
       .text-center
         %em= t(:no_records)
-    - unless small
-      = paginate customer_notes
+    - unless is_widget
+      .mt-4= paginate customer_notes
 
-  - unless small
-    = render 'customers/note_form', note: note, small: small, margin_class: 'mt-4'
+  - unless is_widget
+    = render 'customers/note_form', note: note, is_widget: is_widget
