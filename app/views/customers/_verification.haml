@@ -10,4 +10,10 @@
       = select_tag 'customer[verified]',
                    options_for_verification(customer.verified),
                    class: 'form-control'
+      - unless customer.verified?
+        = link_to t('actions.verify'),
+                  update_status_customer_path(customer,
+                    customer: { verified: true }),
+                  method: :patch,
+                  class: 'btn btn-success ml-2'
   %br

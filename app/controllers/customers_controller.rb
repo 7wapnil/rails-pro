@@ -101,7 +101,7 @@ class CustomersController < ApplicationController
 
   def update_status
     customer.update!(status_params)
-    redirect_to request.referer
+    redirect_to documents_customer_path(customer)
   end
 
   def reset_password_to_default
