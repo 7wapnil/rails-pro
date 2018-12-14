@@ -67,7 +67,7 @@ describe Customer do
 
     it 'from regular' do
       customer = create(:customer, account_kind: :regular)
-      customer.account_kind = :test
+      customer.account_kind = :testing
       customer.password = 'password'
       customer.valid?
 
@@ -76,7 +76,7 @@ describe Customer do
 
     it 'can\'t transit customer account kind' do
       customer = create(:customer, account_kind: :staff)
-      customer.account_kind = :test
+      customer.account_kind = :testing
       customer.password = 'password'
       customer.valid?
 

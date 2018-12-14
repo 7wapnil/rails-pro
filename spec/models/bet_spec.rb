@@ -168,7 +168,7 @@ describe Bet do
 
   describe 'filter out non-regular customers bets' do
     let(:regular_customer) { create(:customer, account_kind: :regular) }
-    let(:test_customer) { create(:customer, account_kind: :test) }
+    let(:test_customer) { create(:customer, account_kind: :testing) }
     let(:event) { create(:event_with_odds) }
 
     before do
