@@ -35,7 +35,7 @@ describe OddsFeed::Radar::EventScopesService do
     it 'updates from payload if exists' do
       existing = create(:event_scope,
                         external_id: payload['category']['id'],
-                        kind: :country,
+                        kind: EventScope::COUNTRY,
                         name: 'Old name')
       service.call
 
@@ -54,7 +54,7 @@ describe OddsFeed::Radar::EventScopesService do
     it 'updates from payload if exists' do
       existing = create(:event_scope,
                         external_id: payload['id'],
-                        kind: :tournament,
+                        kind: EventScope::TOURNAMENT,
                         name: 'Old name')
       service.call
 
@@ -73,7 +73,7 @@ describe OddsFeed::Radar::EventScopesService do
     it 'updates from payload if exists' do
       existing = create(:event_scope,
                         external_id: payload['current_season']['id'],
-                        kind: :season,
+                        kind: EventScope::SEASON,
                         name: 'Old name')
       service.call
 
@@ -135,7 +135,7 @@ describe OddsFeed::Radar::EventScopesService do
           name: tournament_name,
           title: title,
           event_scope: country,
-          kind: 'tournament'
+          kind: EventScope::TOURNAMENT
         )
     end
 
@@ -147,7 +147,7 @@ describe OddsFeed::Radar::EventScopesService do
           name: season_name,
           title: title,
           event_scope: tournament,
-          kind: 'season'
+          kind: EventScope::SEASON
         )
     end
   end

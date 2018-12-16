@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CustomerBonus < ApplicationRecord
   enum kind: Bonus.kinds
   belongs_to :customer

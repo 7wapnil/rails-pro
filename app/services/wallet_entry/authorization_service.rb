@@ -3,7 +3,7 @@ module WalletEntry
     def initialize(request, balance_kind = nil)
       @request = request
       @amount = @request.amount
-      @balance_kind = balance_kind || Balance.kinds[:real_money]
+      @balance_kind = balance_kind || Balance::REAL_MONEY
     end
 
     def call
@@ -67,7 +67,7 @@ module WalletEntry
 
     def handle_failure(exception)
       @request.update_columns(
-        status: EntryRequest.statuses[:failed],
+        status: EntryRequest::FAILED,
         result: {
           message: exception,
           exception_class: exception.class.to_s

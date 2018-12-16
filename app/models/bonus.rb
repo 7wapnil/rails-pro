@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Bonus < ApplicationRecord
   enum kind: {
     deposit:  DEPOSIT  = 'deposit',

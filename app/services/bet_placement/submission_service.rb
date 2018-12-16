@@ -1,7 +1,7 @@
 module BetPlacement
   class SubmissionService < ApplicationService
-    ENTRY_REQUEST_KIND = EntryRequest.kinds[:bet]
-    ENTRY_REQUEST_MODE = EntryRequest.modes[:sports_ticket]
+    ENTRY_REQUEST_KIND = EntryRequest::BET
+    ENTRY_REQUEST_MODE = EntryRequest::SPORTS_TICKET
 
     def initialize(bet, impersonated_by = nil)
       @bet = bet

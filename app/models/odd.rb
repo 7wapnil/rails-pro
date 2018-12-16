@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Odd < ApplicationRecord
   enum status: {
     inactive: INACTIVE = 'inactive',

@@ -45,7 +45,7 @@ FactoryBot.define do
 
     trait :with_bet_rule do
       after(:create) do |currency|
-        bet_kind = EntryRequest.kinds[:bet]
+        bet_kind = EntryRequest::BET
         create(:entry_currency_rule, currency: currency, kind: bet_kind)
       end
     end
@@ -54,8 +54,8 @@ FactoryBot.define do
   factory :entry_request do
     customer
     currency
-    status { EntryRequest.statuses[:pending] }
-    mode { EntryRequest.modes[:cashier] }
+    status { EntryRequest::PENDING }
+    mode { EntryRequest::CASHIER }
     kind { EntryRequest.kinds.keys.first }
     amount { Random.new.rand(1.00..200.00).round(2) }
     comment { Faker::Lorem.paragraph }
@@ -120,21 +120,21 @@ FactoryBot.define do
     currency
     amount { Faker::Number.decimal(2, 2) }
     odd_value { odd.value }
-    status { Bet.statuses[:initial] }
+    status { StateMachines::BetStateMachine::INITIAL }
 
     trait :settled do
-      status { Bet.statuses[:settled] }
+      status { StateMachines::BetStateMachine::SETTLED }
     end
 
     trait :accepted do
-      status { Bet.statuses[:accepted] }
+      status { StateMachines::BetStateMachine::ACCEPTED }
     end
 
     trait :sent_to_external_validation do
-      status { Bet.statuses[:sent_to_external_validation] }
+      status { StateMachines::BetStateMachine::SENT_TO_EXTERNAL_VALIDATION }
 
       after(:create) do |bet|
-        bet_kind = EntryRequest.kinds[:bet]
+        bet_kind = EntryRequest::BET
         wallet = bet.customer.wallets.take
         create(:entry, kind: bet_kind, origin: bet, wallet: wallet)
       end
@@ -305,12 +305,12 @@ FactoryBot.define do
   factory :event_scope do
     title
     name { 'FPSThailand CS:GO Pro League Season#4' }
-    kind { :tournament }
+    kind { EventScope::TOURNAMENT }
     sequence :external_id do |n|
       "sr:tournament:#{n}"
     end
     factory :event_scope_country do
-      kind { :country }
+      kind { EventScope::COUNTRY }
       name { Faker::Address.country }
     end
   end

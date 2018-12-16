@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Market < ApplicationRecord
   include Visible
 
@@ -22,7 +24,7 @@ class Market < ApplicationRecord
     handed_over: HANDED_OVER = 'handed_over'
   }.freeze
 
-  DEFAULT_STATUS = STATUSES[:active]
+  DEFAULT_STATUS = ACTIVE
 
   enum status: STATUSES
 

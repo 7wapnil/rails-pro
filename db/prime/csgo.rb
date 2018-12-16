@@ -99,7 +99,7 @@ class CsgoPrimer # rubocop:disable Metrics/ClassLength
       teams.each_with_index do |name, index|
         market.odds.create!(
           name: name,
-          status: :active,
+          status: Odd::ACTIVE,
           value: Faker::Number.between(1.1, 9.9).round(2),
           external_id: [
             odd_external_id,
@@ -113,7 +113,7 @@ class CsgoPrimer # rubocop:disable Metrics/ClassLength
       event.markets.create!(
         name: 'Match Winner',
         priority: 1,
-        status: :active,
+        status: Market::ACTIVE,
         external_id: market_external_id
       )
     end
@@ -129,7 +129,7 @@ puts 'Checking Tournaments ...'
 CsgoPrimer::CSGO_TOURNAMENTS.each_with_index do |name, index|
   EventScope.find_or_create_by!(name: name) do |tournament|
     tournament.title = title
-    tournament.kind = :tournament
+    tournament.kind = EventScope::TOURNAMENT
     tournament.external_id =
       ['sr:tournament', index].join(':')
   end

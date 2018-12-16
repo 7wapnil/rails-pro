@@ -98,22 +98,22 @@ module OddsFeed
 
       def event_status
         status = event_data['sport_event_status']['status'] ||
-                 Event.statuses[:not_started]
+                 Event::NOT_STARTED
         event_statuses_map[status]
       end
 
       def event_end_time
-        return nil unless event_status == Event.statuses[:ended]
+        return nil unless event_status == Event::ENDED
 
         timestamp
       end
 
       def event_statuses_map
         {
-          '0': Event.statuses[:not_started],
-          '1': Event.statuses[:started],
-          '3': Event.statuses[:ended],
-          '4': Event.statuses[:closed]
+          '0': Event::NOT_STARTED,
+          '1': Event::STARTED,
+          '3': Event::ENDED,
+          '4': Event::CLOSED
         }.stringify_keys
       end
 

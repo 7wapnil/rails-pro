@@ -75,9 +75,9 @@ describe 'Bonuses#index' do
 
     context 'filter by kind' do
       before do
-        create :bonus, code: 'ARCANE100', kind: Bonus.kinds[:deposit]
-        create :bonus, code: 'WELCOME500', kind: Bonus.kinds[:deposit]
-        create :bonus, code: 'BETFORFREE', kind: Bonus.kinds[:free_bet]
+        create :bonus, code: 'ARCANE100', kind: Bonus::DEPOSIT
+        create :bonus, code: 'WELCOME500', kind: Bonus::DEPOSIT
+        create :bonus, code: 'BETFORFREE', kind: Bonus::FREE_BET
 
         visit bonuses_path
 

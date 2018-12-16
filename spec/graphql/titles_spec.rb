@@ -55,7 +55,7 @@ describe 'GraphQL#titles' do
       let(:title) { create(:title) }
 
       before do
-        create_list(:event_scope, 3, kind: :tournament, title: title)
+        create_list(:event_scope, 3, kind: EventScope::TOURNAMENT, title: title)
       end
 
       it 'returns titles with tournaments' do

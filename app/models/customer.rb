@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Person
   include LoginAttemptable

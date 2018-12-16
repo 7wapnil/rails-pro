@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Visible
   include Importable
@@ -129,7 +131,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def tournament
-    event_scopes.where(kind: :tournament).first
+    event_scopes.where(kind: EventScope::TOURNAMENT).first
   end
 
   def details

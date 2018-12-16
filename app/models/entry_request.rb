@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EntryRequest < ApplicationRecord
   include EntryKinds
   include Loggable

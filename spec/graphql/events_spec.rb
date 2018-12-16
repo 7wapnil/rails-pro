@@ -239,7 +239,7 @@ describe 'GraphQL#events' do
     end
 
     context 'tournament' do
-      let(:tournament) { create(:event_scope, kind: :tournament) }
+      let(:tournament) { create(:event_scope, kind: EventScope::TOURNAMENT) }
       let(:query) do
         %({ events (
               filter: { tournamentId: #{tournament.id} }

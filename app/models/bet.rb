@@ -19,12 +19,12 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_one :title, through: :event
 
   has_many :tournaments,
-           -> { where(kind: :tournament) },
+           -> { where(kind: EventScope::TOURNAMENT) },
            through: :event,
            source: :event_scopes,
            class_name: 'EventScope'
   has_many :countries,
-           -> { where(kind: :country) },
+           -> { where(kind: EventScope::COUNTRY) },
            through: :event,
            source: :event_scopes,
            class_name: 'EventScope'
@@ -49,7 +49,9 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   class << self
     def from_regular_customers
-      left_outer_joins(:customer).where(customers: { account_kind: :regular })
+      left_outer_joins(:customer).where(
+        customers: { account_kind: Customer::REGULAR }
+      )
     end
 
     def with_country
@@ -156,7 +158,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   def actual_payout
     BalanceEntry
       .joins(:entry)
-      .where(entries: { origin: self, kind: Entry.kinds[:win] })
+      .where(entries: { origin: self, kind: Entry::WIN })
       .sum(:amount)
   end
 end

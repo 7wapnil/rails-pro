@@ -1,11 +1,11 @@
 describe EventArchive::Service do
   let(:event) { create(:event) }
-  let(:tournament) { create(:event_scope, kind: :tournament) }
+  let(:tournament) { create(:event_scope, kind: EventScope::TOURNAMENT) }
 
   before do
     event.event_scopes << tournament
-    event.event_scopes << create(:event_scope, kind: :country)
-    event.event_scopes << create(:event_scope, kind: :season)
+    event.event_scopes << create(:event_scope, kind: EventScope::COUNTRY)
+    event.event_scopes << create(:event_scope, kind: EventScope::SEASON)
   end
 
   it 'archives event record' do
