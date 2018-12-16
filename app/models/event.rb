@@ -13,10 +13,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   PRIORITIES = [0, 1, 2].freeze
 
   STATUSES = {
-    not_started: 0,
-    started: 1,
-    ended: 2,
-    closed: 3
+    not_started: NOT_STARTED = 'not_started',
+    started:     STARTED     = 'started',
+    ended:       ENDED       = 'ended',
+    closed:      CLOSED      = 'closed'
   }.freeze
 
   ransacker :markets_count do

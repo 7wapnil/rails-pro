@@ -137,7 +137,7 @@ describe 'GraphQL#events' do
       end
 
       before do
-        Odd.update_all(status: Odd.statuses[:active])
+        Odd.update_all(status: Odd::ACTIVE)
       end
 
       it 'returns event market odds list' do

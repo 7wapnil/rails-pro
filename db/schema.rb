@@ -283,7 +283,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
     t.json "payload"
     t.datetime "remote_updated_at"
     t.boolean "traded_live", default: false
-    t.integer "status", default: 0
+    t.string "status", default: "not_started"
     t.integer "priority", limit: 2, default: 1
     t.boolean "visible", default: true
     t.index ["external_id"], name: "index_events_on_external_id", unique: true
@@ -339,7 +339,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
     t.datetime "updated_at", null: false
     t.string "external_id"
     t.decimal "value"
-    t.integer "status"
+    t.string "status"
     t.index ["external_id"], name: "index_odds_on_external_id", unique: true
     t.index ["market_id"], name: "index_odds_on_market_id"
   end

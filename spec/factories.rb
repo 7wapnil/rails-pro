@@ -331,7 +331,7 @@ FactoryBot.define do
     sequence :external_id do |n|
       "sr:match:#{n}"
     end
-    status { 0 }
+    status { Event::NOT_STARTED }
     payload { {} }
 
     trait :upcoming do
@@ -375,7 +375,7 @@ FactoryBot.define do
     name { 'MiTH' }
     won { true }
     value { Faker::Number.decimal(1, 2) }
-    status { 0 }
+    status { Odd::INACTIVE }
 
     sequence :external_id do |n|
       "sr:match:#{n}:280/hcp=0.5:#{n}"
