@@ -3,7 +3,7 @@ FactoryBot.define do
     customer
     wallet
     sequence(:code) { |n| "FOOBAR#{n}" }
-    kind { 0 }
+    kind { Bonus::DEPOSIT }
     rollover_multiplier { 10 }
     max_rollover_per_bet { 150.00 }
     max_deposit_match { 1000.00 }
@@ -184,7 +184,7 @@ FactoryBot.define do
 
   factory :bonus do
     sequence(:code) { |n| "FOOBAR#{n}" }
-    kind { 0 }
+    kind { Bonus::DEPOSIT }
     rollover_multiplier { 10 }
     max_rollover_per_bet { 150.00 }
     max_deposit_match { 1000.00 }

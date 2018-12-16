@@ -102,7 +102,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
 
   create_table "bonuses", force: :cascade do |t|
     t.string "code"
-    t.integer "kind"
+    t.string "kind"
     t.decimal "rollover_multiplier"
     t.decimal "max_rollover_per_bet"
     t.decimal "max_deposit_match"
@@ -140,7 +140,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
     t.bigint "customer_id"
     t.bigint "wallet_id"
     t.string "code"
-    t.integer "kind"
+    t.string "kind"
     t.decimal "rollover_multiplier"
     t.decimal "max_rollover_per_bet"
     t.decimal "max_deposit_match"

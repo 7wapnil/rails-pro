@@ -20,6 +20,9 @@ class ChangeEnumTypesForModels < ActiveRecord::Migration[5.2]
     change_column :customers, :account_kind, :string, default: Customer::REGULAR
 
     change_column :markets, :status, :string
+
+    change_column :bonuses,          :kind, :string
+    change_column :customer_bonuses, :kind, :string
   end
 
   def down
