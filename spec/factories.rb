@@ -384,8 +384,8 @@ FactoryBot.define do
 
   factory :verification_document do
     customer
-    kind { 0 }
-    status { 0 }
+    kind { VerificationDocument::PERSONAL_ID }
+    status { VerificationDocument::PENDING }
 
     after(:build) do |doc|
       file_path = Rails.root.join('spec',

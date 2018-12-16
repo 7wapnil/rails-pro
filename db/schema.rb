@@ -304,7 +304,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
-    t.integer "kind", default: 0
+    t.string "kind", default: "customer"
     t.index ["deleted_at"], name: "index_labels_on_deleted_at"
   end
 
@@ -384,8 +384,8 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
 
   create_table "verification_documents", force: :cascade do |t|
     t.bigint "customer_id"
-    t.integer "kind"
-    t.integer "status"
+    t.string "kind"
+    t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
