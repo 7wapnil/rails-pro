@@ -10,14 +10,14 @@ class EntryRequest < ApplicationRecord
   default_scope { order(created_at: :desc) }
 
   enum status: {
-    pending: 0,
-    succeeded: 1,
-    failed: 2
+    pending:   PENDING   = 'pending',
+    succeeded: SUCCEEDED = 'succeeded',
+    failed:    FAILED    = 'failed'
   }
 
   enum mode: {
-    cashier: 0,
-    sports_ticket: 1
+    cashier:       CASHIER       = 'cashier',
+    sports_ticket: SPORTS_TICKET = 'sports_ticket'
   }
 
   validates :amount,

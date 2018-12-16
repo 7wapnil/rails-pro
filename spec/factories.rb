@@ -100,7 +100,7 @@ FactoryBot.define do
 
   factory :balance do
     wallet
-    kind { Balance.kinds[:real_money] }
+    kind { Balance::REAL_MONEY }
     amount { Faker::Number.decimal(3, 2) }
   end
 

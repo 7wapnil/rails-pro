@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
 
   create_table "balances", force: :cascade do |t|
     t.bigint "wallet_id"
-    t.integer "kind"
+    t.string "kind"
     t.decimal "amount", precision: 8, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -240,7 +240,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
   end
 
   create_table "entry_requests", force: :cascade do |t|
-    t.integer "status", default: 0
+    t.string "status", default: "pending"
     t.json "result"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -251,7 +251,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
     t.decimal "amount", precision: 8, scale: 2
     t.string "initiator_type"
     t.bigint "initiator_id"
-    t.integer "mode"
+    t.string "mode"
     t.string "origin_type"
     t.bigint "origin_id"
     t.index ["initiator_type", "initiator_id"], name: "index_entry_requests_on_initiator_type_and_initiator_id"
