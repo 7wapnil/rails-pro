@@ -14,6 +14,12 @@ class ChangeEnumTypesForModels < ActiveRecord::Migration[5.2]
     change_column :entry_requests, :mode,   :string
 
     change_column :balances, :kind, :string
+
+    change_column :customers, :gender,       :string
+    change_column :customers, :lock_reason,  :string
+    change_column :customers, :account_kind, :string, default: Customer::REGULAR
+
+    change_column :markets, :status, :string
   end
 
   def down

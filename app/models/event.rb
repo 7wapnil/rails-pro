@@ -64,7 +64,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
         INNER JOIN customers ON customers.id = bets.customer_id
         INNER JOIN odds ON odds.id = bets.odd_id
         INNER JOIN markets ON markets.id = odds.market_id
-        WHERE markets.event_id = events.id AND customers.account_kind = #{Customer.account_kinds[:regular]} LIMIT 1)
+        WHERE markets.event_id = events.id AND customers.account_kind = '#{Customer::REGULAR}' LIMIT 1)
     SQL
     select("events.*, #{sub_query} as bets_count")
       .group(:id)
@@ -76,7 +76,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
         INNER JOIN customers ON customers.id = bets.customer_id
         INNER JOIN odds ON odds.id = bets.odd_id
         INNER JOIN markets ON markets.id = odds.market_id
-        WHERE markets.event_id = events.id AND customers.account_kind = #{Customer.account_kinds[:regular]} LIMIT 1)
+        WHERE markets.event_id = events.id AND customers.account_kind = '#{Customer::REGULAR}' LIMIT 1)
     SQL
     select("events.*, #{sub_query} as wager").group(:id)
   end

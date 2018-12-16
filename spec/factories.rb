@@ -357,7 +357,7 @@ FactoryBot.define do
     visible { true }
     name { 'Winner Map (Train)' }
     priority { 2 }
-    status { 0 }
+    status { Market::INACTIVE }
 
     sequence :external_id do |n|
       "sr:match:#{n}:209/setnr=2|gamenrX=#{n}|gamenrY=#{n}"

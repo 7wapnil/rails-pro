@@ -173,7 +173,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
   create_table "customers", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
-    t.integer "gender"
+    t.string "gender"
     t.date "date_of_birth"
     t.string "phone"
     t.string "email"
@@ -196,8 +196,8 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
     t.boolean "agreed_with_promotional", default: false
     t.boolean "locked", default: false
     t.datetime "locked_until"
-    t.integer "lock_reason"
-    t.integer "account_kind", default: 0
+    t.string "lock_reason"
+    t.string "account_kind", default: "regular"
     t.integer "failed_attempts", default: 0, null: false
     t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
@@ -325,7 +325,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
     t.datetime "updated_at", null: false
     t.integer "priority"
     t.string "external_id"
-    t.integer "status"
+    t.string "status"
     t.boolean "visible", default: true
     t.index ["event_id"], name: "index_markets_on_event_id"
     t.index ["external_id"], name: "index_markets_on_external_id", unique: true

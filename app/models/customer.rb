@@ -8,23 +8,23 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   acts_as_paranoid
 
   enum gender: {
-    male: 0,
-    female: 1
+    male:   MALE   = 'male',
+    female: FEMALE = 'female'
   }
 
   enum account_kind: {
-    regular: 0,
-    staff: 1,
-    testing: 2
+    regular: REGULAR = 'regular',
+    staff:   STAFF   = 'staff',
+    testing: TESTING = 'testing'
   }
 
   enum lock_reason: {
-    self_exclusion: 0,
-    cooling_off: 1,
-    locked: 2,
-    closed: 3,
-    password_recovery: 4,
-    fraud: 5
+    self_exclusion:    SELF_EXCLUSION    = 'self_exclusion',
+    cooling_off:       COOLING_OFF       = 'cooling_off',
+    locked:            LOCKED            = 'locked',
+    closed:            CLOSED            = 'closed',
+    password_recovery: PASSWORD_RECOVERY = 'password_recovery',
+    fraud:             FRAUD             = 'fraud'
   }
 
   devise :database_authenticatable, :registerable, :validatable,
