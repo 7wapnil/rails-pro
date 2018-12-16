@@ -27,8 +27,8 @@ class Title < ApplicationRecord
            class_name: 'EventScope'
 
   enum kind: {
-    esports: 0,
-    sports: 1
+    esports: ESPORTS = 'esports',
+    sports:  SPORTS  = 'sports'
   }
 
   validates :name, :kind, presence: true

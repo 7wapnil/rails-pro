@@ -45,7 +45,7 @@ class CsgoPrimer # rubocop:disable Metrics/ClassLength
   class << self
     def title
       @title ||= Title.find_or_create_by!(name: 'CS:GO') do |title|
-        title.kind = :esports
+        title.kind = Title::ESPORTS
       end
     end
 

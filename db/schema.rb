@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_12_071635) do
+ActiveRecord::Schema.define(version: 2018_12_14_135853) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,8 +79,8 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.integer "settlement_status"
     t.datetime "validation_ticket_sent_at"
+    t.integer "settlement_status"
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
     t.index ["odd_id"], name: "index_bets_on_odd_id"
@@ -262,7 +262,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
     t.bigint "title_id"
     t.bigint "event_scope_id"
     t.string "name"
-    t.integer "kind", default: 0
+    t.string "kind", default: "tournament"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "external_id"
@@ -357,7 +357,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "kind", default: 0
+    t.string "kind", default: "esports"
     t.string "external_id"
     t.index ["external_id"], name: "index_titles_on_external_id", unique: true
   end

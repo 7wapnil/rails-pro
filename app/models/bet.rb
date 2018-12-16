@@ -59,7 +59,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
          INNER JOIN events ON scoped_events.event_id = events.id
          INNER JOIN markets ON events.id = markets.event_id
          INNER JOIN odds ON markets.id = odds.market_id
-         WHERE odds.id = bets.odd_id AND event_scopes.kind = #{EventScope.kinds[:country]} LIMIT 1
+         WHERE odds.id = bets.odd_id AND event_scopes.kind = '#{EventScope::COUNTRY}' LIMIT 1
       SQL
       sql = "bets.*, (#{sub_query}) AS country"
       select(sql)
@@ -72,7 +72,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
          INNER JOIN events ON scoped_events.event_id = events.id
          INNER JOIN markets ON events.id = markets.event_id
          INNER JOIN odds ON markets.id = odds.market_id
-         WHERE odds.id = bets.odd_id AND event_scopes.kind = #{EventScope.kinds[:tournament]} LIMIT 1
+         WHERE odds.id = bets.odd_id AND event_scopes.kind = '#{EventScope::TOURNAMENT}' LIMIT 1
       SQL
       sql = "bets.*, (#{sub_query}) AS tournament"
       select(sql)
