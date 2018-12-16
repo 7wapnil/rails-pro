@@ -73,14 +73,14 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
     t.bigint "currency_id"
     t.decimal "amount"
     t.decimal "odd_value"
-    t.integer "status"
+    t.string "status"
     t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
     t.datetime "validation_ticket_sent_at"
-    t.integer "settlement_status"
+    t.string "settlement_status"
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
     t.index ["odd_id"], name: "index_bets_on_odd_id"
@@ -216,7 +216,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
 
   create_table "entries", force: :cascade do |t|
     t.bigint "wallet_id"
-    t.integer "kind"
+    t.string "kind"
     t.decimal "amount", precision: 8, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -230,7 +230,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
 
   create_table "entry_currency_rules", force: :cascade do |t|
     t.bigint "currency_id"
-    t.integer "kind"
+    t.string "kind"
     t.decimal "min_amount", precision: 8, scale: 2
     t.decimal "max_amount", precision: 8, scale: 2
     t.datetime "created_at", null: false
@@ -246,7 +246,7 @@ ActiveRecord::Schema.define(version: 2018_12_14_135853) do
     t.datetime "updated_at", null: false
     t.integer "customer_id"
     t.integer "currency_id"
-    t.integer "kind"
+    t.string "kind"
     t.text "comment"
     t.decimal "amount", precision: 8, scale: 2
     t.string "initiator_type"

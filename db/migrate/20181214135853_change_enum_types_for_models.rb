@@ -23,9 +23,15 @@ class ChangeEnumTypesForModels < ActiveRecord::Migration[5.2]
 
     change_column :bonuses,          :kind, :string
     change_column :customer_bonuses, :kind, :string
+
+    change_column :entry_currency_rules, :kind, :string
+    change_column :entries,              :kind, :string
+    change_column :entry_requests,       :kind, :string
+
+    change_column :bets, :status,            :string
+    change_column :bets, :settlement_status, :string
   end
 
   def down
-
   end
 end

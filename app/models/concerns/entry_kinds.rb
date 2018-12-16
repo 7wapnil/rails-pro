@@ -2,11 +2,11 @@ module EntryKinds
   extend ActiveSupport::Concern
 
   KINDS = {
-    deposit: 0,
-    win: 1,
-    withdraw: 3,
-    bet: 4,
-    refund: 5
+    deposit:  DEPOSIT  = 'deposit',
+    win:      WIN      = 'win',
+    withdraw: WITHDRAW = 'withdraw',
+    bet:      BET      = 'bet',
+    refund:   REFUND   = 'refund'
   }.freeze
 
   FUND_KINDS = KINDS.slice(:deposit, :withdraw)
