@@ -7,7 +7,7 @@ module BalanceCalculations
 
     def call
       {
-        real_money: calculate_real_amount,
+        real_money: amount,
         bonus: calculate_bonus_amount
       }
     end
@@ -23,10 +23,6 @@ module BalanceCalculations
       bonus_amount = amount * (bonus.percentage / 100.0)
       max_deposit_bonus = bonus.max_deposit_match
       bonus_amount > max_deposit_bonus ? max_deposit_bonus : bonus_amount
-    end
-
-    def calculate_real_amount
-      amount
     end
   end
 end
