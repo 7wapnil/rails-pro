@@ -343,7 +343,7 @@ describe 'GraphQL#events' do
                                                         id: '3' } })
 
         expect(result['errors']).to be_nil
-        expect(result['data']['events'][0]['state']['id']).to be_nil
+        expect(result['data']['events'][0]['state']).to be_nil
       end
     end
   end
