@@ -319,5 +319,32 @@ describe 'GraphQL#events' do
         expect(result['data']['events'][0]['live']).to be_falsy
       end
     end
+
+    context 'with state' do
+      let(:query) do
+        %({ events {
+              id
+              state {
+                id
+                status_code
+                status
+                score
+                time
+                finished
+                period_scores {
+                  id
+                }
+              }
+        } })
+      end
+
+      it 'returns events with live flag true' do
+        create(:event_with_odds, payload: { producer: { origin: 'radar',
+                                                        id: '3' } })
+
+        expect(result['errors']).to be_nil
+        expect(result['data']['events'][0]['state']).to be_nil
+      end
+    end
   end
 end

@@ -143,6 +143,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def state
+    return nil if payload['state'].nil?
+
     EventState.new(payload['state'])
   end
 
