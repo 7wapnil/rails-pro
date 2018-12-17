@@ -30,4 +30,12 @@ describe BalanceCalculations::Deposit do
 
     expect(bonus).to eq(max_deposit_bonus)
   end
+
+  it "returns nil when deposit amount is less than bonus 'min_deposit'" do
+    min_deposit = amount + 1
+    customer_bonus.update_attributes(min_deposit: min_deposit)
+    bonus = described_class.call(wallet, amount)[:bonus]
+
+    expect(bonus).to be_nil
+  end
 end
