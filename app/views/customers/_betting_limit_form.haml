@@ -1,4 +1,5 @@
-= simple_form_for limit, html: { data: { title_id: title_id } } do |f|
+= simple_form_for limit, html: { class: 'betting-limit-form',
+                                 data: { title_id: title_id } } do |f|
   = f.input :customer_id, as: :hidden
   = f.input :title_id, as: :hidden
   .row
