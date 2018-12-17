@@ -24,7 +24,7 @@ describe 'Customers#betting_limits' do
     it 'creates customer global betting limit' do
       visit page_path
 
-      within 'form:not([data-title-id])' do
+      within '.betting-limit-form:not([data-title-id])' do
         fill_in :betting_limit_live_bet_delay, with: 10
         fill_in :betting_limit_user_max_bet, with: 1000
         fill_in :betting_limit_max_loss, with: 1000
@@ -46,7 +46,7 @@ describe 'Customers#betting_limits' do
       create(:betting_limit, customer: customer, title: nil)
       visit page_path
 
-      within 'form:not([data-title-id])' do
+      within '.betting-limit-form:not([data-title-id])' do
         fill_in :betting_limit_live_bet_delay, with: 20
         fill_in :betting_limit_user_max_bet, with: 2000
         fill_in :betting_limit_max_loss, with: 2000
@@ -68,14 +68,14 @@ describe 'Customers#betting_limits' do
   context 'betting limit by sport form' do
     it 'shows betting limit by sport form' do
       expect(page).to have_selector(
-        "form[data-title-id='#{title.id}']"
+        ".betting-limit-form[data-title-id='#{title.id}']"
       )
     end
 
     it 'creates customer betting limit by sport' do
       visit page_path
 
-      within "form[data-title-id='#{title.id}']" do
+      within ".betting-limit-form[data-title-id='#{title.id}']" do
         fill_in :betting_limit_live_bet_delay, with: 30
         fill_in :betting_limit_user_max_bet, with: 3000
         fill_in :betting_limit_max_loss, with: 3000
@@ -97,7 +97,7 @@ describe 'Customers#betting_limits' do
       create(:betting_limit, customer: customer, title: title)
       visit page_path
 
-      within "form[data-title-id='#{title.id}']" do
+      within ".betting-limit-form[data-title-id='#{title.id}']" do
         fill_in :betting_limit_live_bet_delay, with: 40
         fill_in :betting_limit_user_max_bet, with: 4000
         fill_in :betting_limit_max_loss, with: 4000

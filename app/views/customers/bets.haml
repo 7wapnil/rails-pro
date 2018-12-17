@@ -2,7 +2,9 @@
 
 .row
   .col-md-3
-    .mt-4= render 'customers/navigation', customer: @customer
+    .mt-4= render 'customers/navigation', customer: @customer,
+                                          note: @note,
+                                          customer_notes: @customer_notes_widget
   .col-md-9{ id: 'customer-bets' }
     = render 'bets/search',
              excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:customers],
