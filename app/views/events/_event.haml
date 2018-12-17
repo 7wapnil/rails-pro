@@ -14,10 +14,10 @@
       %td= event.description
     %tr
       %td= t('attributes.start_at')
-      %td= event.start_at ? l(event.start_at, format: :long) : '-'
+      %td= safe_date_localize_helper(event.start_at, format: :long, default_result: '-')
     %tr
       %td= t('attributes.end_at')
-      %td= event.end_at ? l(event.end_at, format: :long) : '-'
+      %td= safe_date_localize_helper(event.end_at, format: :long, default_result: '-')
     %tr
       %td= t('attributes.status')
       %td= event.status

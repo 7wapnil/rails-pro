@@ -34,7 +34,7 @@
                 %span.badge.badge-info= label.name
           %td= event.title.name
           %td.toggle-holder= visibility_toggle(event, update_visibility_event_path(event))
-          %td= event.start_at ? l(event.start_at, format: :long) : '-'
+          %td= safe_date_localize_helper(event.start_at, format: :long, default_result: '-')
           %td= event.markets_count
 
           - EventScope.kinds.keys.each do |kind|
