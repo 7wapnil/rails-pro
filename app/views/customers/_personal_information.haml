@@ -1,7 +1,7 @@
 = card header: t('attributes.personal_information'), class: 'personal-information' do
   = simple_form_for customer, html: { class: 'personal-information-form' },
                     url: update_personal_information_customer_path do |f|
-    %table.table
+    %table.table.vertical-with-labels
       %tr
         %td= t('attributes.first_name')
         %td
