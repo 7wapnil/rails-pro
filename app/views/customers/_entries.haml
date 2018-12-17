@@ -14,7 +14,7 @@
             %td= entry.kind
             %td= entry.amount
             %td= entry.wallet.currency_code
-            %td= entry.authorized_at ? (l entry.authorized_at, format: :long) : ''
+            %td= safe_date_localize_helper(entry.authorized_at, format: :long)
   - else
     .text-center
       %em= t(:no_records)
