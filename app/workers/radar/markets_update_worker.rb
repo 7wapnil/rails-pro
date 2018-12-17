@@ -6,11 +6,13 @@ module Radar
                     unique_across_queues: true
 
     def perform
-      Rails.logger.debug 'Updating BetRadar market templates'
+      super()
+
+      log_job_message(:debug, 'Updating BetRadar market templates')
       templates.each do |market_data|
         create_or_update_market!(market_data)
       rescue StandardError => error
-        Rails.logger.error error.message
+        log_job_failure(error)
         Airbrake.notify(error)
         next
       end
@@ -29,7 +31,7 @@ module Radar
                            specifiers: market_data['specifiers'],
                            attributes: market_data['attributes'] }
       template.save!
-      Rails.logger.debug "Market template id '#{template.id}' updated"
+      log_job_message(:debug, "Market template id '#{template.id}' updated")
     end
 
     def client

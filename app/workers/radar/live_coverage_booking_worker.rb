@@ -5,9 +5,13 @@ module Radar
     sidekiq_options queue: queue_name
 
     def perform(event_external_id)
+      super()
+
       event = Event.find_by!(external_id: event_external_id)
 
-      Rails.logger.info "Booking event #{event_external_id} for live coverage"
+      log_job_message(
+        :info, "Booking event #{event_external_id} for live coverage"
+      )
 
       # booking_response =
       #   OddsFeed::Radar::Client.new.book_live_coverage(event_external_id)

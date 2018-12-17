@@ -1,5 +1,7 @@
 module Mts
   class MessagePublisher
+    include JobLogger
+
     MTS_SUBMISSION_EXCHANGE_NAME = 'arcanebet_arcanebet-Submit'.freeze
 
     def initialize(message)
@@ -11,17 +13,16 @@ module Mts
     end
 
     def publish!
-      Rails.logger
-           .info("MTS Validation requested for bets #{@message.bets.map(&:id)}")
+      log_job_message(
+        :info, "MTS Validation requested for bets #{@message.bets.map(&:id)}"
+      )
       ::Mts::SingleSession.instance.session.within_connection do |conn|
         create_exchange(conn)
           .publish(
             formatted_message,
             content_type: 'application/json',
             persistent: false,
-            headers: {
-              'replyRoutingKey': ENV['MTS_MQ_ROUTING_KEY']
-            }
+            headers: { 'replyRoutingKey': ENV['MTS_MQ_ROUTING_KEY'] }
           )
       end
     end

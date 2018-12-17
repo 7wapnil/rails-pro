@@ -1,6 +1,8 @@
 module OddsFeed
   module Radar
     class SubscriptionRecovery < ApplicationService
+      include JobLogger
+
       PRODUCTS_MAP = {
         1 => :liveodds,
         3 => :pre
@@ -14,7 +16,7 @@ module OddsFeed
       end
 
       def call
-        Rails.logger.info "Recovering #{@product_id} from #{@start_at}"
+        log_job_message(:info, "Recovering #{@product_id} from #{@start_at}")
         return unless product_available?
         return unless rates_available?
 

@@ -2,6 +2,8 @@ module OddsFeed
   module Radar
     module Transpiling
       class CombinedExpression < BaseExpression
+        include JobLogger
+
         def value(token)
           token = token.tr('(', '{').tr(')', '}')
           result = @interpreter.parse(token)
@@ -14,7 +16,7 @@ module OddsFeed
           internal = token.match(/\(([^\)]*)/)
           return internal[1] if internal.length == 2
 
-          Rails.logger.warn "Unable to parse token '#{token}'"
+          log_job_message(:warn, "Unable to parse token '#{token}'")
           raise 'Unknown token'
         end
       end

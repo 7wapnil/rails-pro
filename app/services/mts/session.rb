@@ -1,5 +1,7 @@
 module Mts
   class Session
+    include JobLogger
+
     MTS_MQ_CONNECTION_PORT = 5671
 
     BUNNY_CONNECTION_EXCEPTIONS = [
@@ -37,7 +39,7 @@ module Mts
         message: "Mts connection lost with exception: #{e.class}",
         config: @config
       }
-      Rails.logger.error exception_msg
+      log_job_failure(exception_msg)
       SessionRecovery.new.register_failure!
     end
 
