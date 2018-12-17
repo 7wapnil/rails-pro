@@ -26,7 +26,6 @@ class CustomersController < ApplicationController
     bonuses
     documents
     deposit_limit
-    notes
     show
   ]
 

@@ -1,20 +1,15 @@
-= render 'customers/heading', customer: @customer
-
-.row
-  .col-md-3
-    .mt-4= render 'customers/navigation', customer: @customer,
-                                          note: @note,
-                                          customer_notes: @customer_notes_widget
-  .col-md-9{ id: 'customer-bets' }
-    = render 'bets/search',
-             excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:customers],
-             search_path: bets_customer_path,
-             filter: @filter
-    = render 'bets/table',
-             excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:customers],
-             filter: @filter
-
-= paginate @filter.bets
+- content_for :page_content do
+  = render 'bets/search',
+           excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:customers],
+           search_path: bets_customer_path,
+           filter: @filter
+  = render 'bets/table',
+           excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:customers],
+           filter: @filter
+  = paginate @filter.bets
 
 - content_for :js do
   = javascript_pack_tag 'customers/navigation_links'
+
+= render 'customers/base_template', customer: @customer, note: @note,
+  customer_notes_widget: @customer_notes_widget

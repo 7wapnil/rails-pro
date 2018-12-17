@@ -1,0 +1,11 @@
+= render 'customers/heading', customer: customer
+
+.row
+  .col-md-3
+    .mt-4= render 'customers/navigation', customer: customer
+  %div{ class: note && customer_notes_widget ? 'col-md-6' : 'col-md-9' }
+    = yield :page_content
+  - if note && customer_notes_widget
+    .col-md-3
+      .mt-4= render 'customers/notes', note: note,
+        customer_notes: customer_notes_widget, is_widget: true
