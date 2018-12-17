@@ -16,14 +16,15 @@
           %tr
             %td= t('attributes.customer')
             %td= @activity.customer_name
-        %tr
-          %td= t('attributes.info')
-          %td
-            %ul.list-unstyled
-              - @activity.context.attributes.each do |attr, value|
-                %li
-                  %b #{attr}:
-                  %span= value
+        - if @activity.context
+          %tr
+            %td= t('attributes.info')
+            %td
+              %ul.list-unstyled
+                - @activity.context.attributes.each do |attr, value|
+                  %li
+                    %b #{attr}:
+                    %span= value
 
       %hr
       = link_back
