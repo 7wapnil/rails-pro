@@ -27,6 +27,10 @@ describe 'Customers#show' do
 
     it 'shows customer account type' do
       expect(page).to have_select('customer[account_kind]')
+      expect(page).to have_selector('.badge.account-type')
+      within '.badge.account-type' do
+        expect(page).to have_content(subject.account_kind.capitalize)
+      end
     end
 
     context 'account type transition' do
