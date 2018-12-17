@@ -25,7 +25,7 @@ module BetPlacement
 
       return false unless provider_connected?
 
-      return false unless entry_request_succeeded?
+      return false unless entry_requests_succeeded?
 
       true
     end
@@ -50,6 +50,9 @@ module BetPlacement
     end
 
     def entry_request_succeeded?
+      real_amount = amount_calculations[:real_money]
+      return true if real_amount.nil? || real_amount.zero?
+
       @entry = WalletEntry::AuthorizationService.call(entry_request)
       unless @entry_request.succeeded?
         @bet.register_failure!(@entry_request.result_message)
@@ -58,9 +61,55 @@ module BetPlacement
       true
     end
 
+    def bonus_entry_request_succeeded?
+      bonus_amount = amount_calculations[:bonus]
+      return true if bonus_amount.nil? || bonus_amount.zero?
+
+      @bonus_entry = WalletEntry::AuthorizationService.call(bonus_entry_request,
+                                                            :bonus)
+      unless @bonus_entry_request.succeeded?
+        @bet.register_failure!(@bonus_entry_request.result_message)
+        return false
+      end
+      true
+    end
+
+    def entry_requests_succeeded?
+      ActiveRecord::Base.transaction do
+        succeeded = entry_request_succeeded? && bonus_entry_request_succeeded?
+        return true if succeeded
+
+        return false
+      end
+    end
+
+    def amount_calculations
+      amount = @bet.amount
+      @amount_calculations ||= BalanceCalculations::BetWithBonus.call(wallet,
+                                                                      amount)
+    end
+
+    def wallet
+      @wallet ||= Wallet.find_by(customer_id: @bet.customer_id,
+                                 currency_id: @bet.currency_id)
+    end
+
     def entry_request
       @entry_request ||= EntryRequest.create!(
-        amount: @bet.amount,
+        amount: amount_calculations[:real_money],
+        currency: @bet.currency,
+        kind: ENTRY_REQUEST_KIND,
+        mode: ENTRY_REQUEST_MODE,
+        initiator: @impersonated_by || @bet.customer,
+        customer: @bet.customer,
+        origin: @bet,
+        comment: @impersonated_by ? I18n.t('impersonation_comment') : nil
+      )
+    end
+
+    def bonus_entry_request
+      @bonus_entry_request ||= EntryRequest.create(
+        amount: amount_calculations[:bonus],
         currency: @bet.currency,
         kind: ENTRY_REQUEST_KIND,
         mode: ENTRY_REQUEST_MODE,

@@ -63,6 +63,79 @@ describe 'GraphQL#placeBet' do
     end
   end
 
+  context 'bonus applying' do
+    let(:odd) { create(:odd, value: 8.87) }
+    let(:bonus_amount) { 250 }
+    let(:real_amount) { 750 }
+    let(:bet_amount) { 10 }
+    let!(:rule) do
+      create(:entry_currency_rule,
+             currency: currency,
+             min_amount: 10,
+             max_amount: 100)
+    end
+    let!(:active_bonus) do
+      create(:customer_bonus,
+             customer: auth_customer,
+             wallet: wallet,
+             percentage: 25)
+    end
+    let(:variables) do
+      {
+        bets: [
+          {
+            amount: bet_amount,
+            currencyCode: 'EUR',
+            oddId: odd.id.to_s,
+            oddValue: odd.value
+          }
+        ]
+      }
+    end
+    let!(:bonus_balance) do
+      create(:balance, kind: :bonus, wallet: wallet, amount: bonus_amount)
+    end
+    let!(:real_balance) do
+      create(:balance, wallet: wallet, amount: real_amount)
+    end
+    let!(:bet_rule) do
+      create(
+        :entry_currency_rule,
+        currency: currency,
+        kind: EntryRequest.kinds[:bet],
+        max_amount: 0,
+        min_amount: -100
+      )
+    end
+
+    it 'charges real and bonus balances for customer with bonus' do
+      ArcanebetSchema.execute(
+        query,
+        context: context,
+        variables: variables
+      )
+      expected_bonus_balance = 247.5
+      expected_real_balance = 742.5
+
+      expect(wallet.bonus_balance.amount).to eq(expected_bonus_balance)
+      expect(wallet.real_money_balance.amount).to eq(expected_real_balance)
+    end
+
+    it 'charge only real money balance' do
+      auth_customer.customer_bonus.destroy
+      auth_customer.reload
+      ArcanebetSchema.execute(
+        query,
+        context: context,
+        variables: variables
+      )
+      expected_real_balance = real_amount - bet_amount
+
+      expect(wallet.real_money_balance.amount).to eq(expected_real_balance)
+      expect(wallet.bonus_balance.amount).to eq(bonus_amount)
+    end
+  end
+
   context 'errors' do
     it 'doesn\'t find the odd' do
       variables = {

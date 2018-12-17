@@ -14,14 +14,35 @@ module Betting
     private
 
     def create_bet(bet_payload)
-      Bet.create!(
+      Bet.create!(bet_attrs(bet_payload))
+    end
+
+    def bet_attrs(bet_payload) # rubocop:disable Metrics/MethodLength
+      currency = Currency.find_by!(code: bet_payload[:currencyCode])
+      amount = bet_payload[:amount]
+      base_attrs = {
         customer: @current_customer,
         odd: Odd.find(bet_payload[:oddId]),
-        currency: Currency.find_by!(code: bet_payload[:currencyCode]),
-        amount: bet_payload[:amount],
+        currency: currency,
+        amount: amount,
         odd_value: bet_payload[:oddValue],
         status: Bet::INITIAL
-      )
+      }
+
+      return base_attrs unless applicable_bonus?
+
+      wallet = @current_customer.wallets.where(currency_id: currency.id).first
+      bonus = @current_customer.customer_bonus
+      ratio = BalanceCalculations::BetWithBonus.new(wallet, amount).ratio
+      base_attrs.merge(ratio: ratio, customer_bonus_id: bonus.id)
+    end
+
+    def applicable_bonus?
+      bonus = @current_customer.customer_bonus
+
+      return false unless bonus
+
+      !bonus.expired?
     end
   end
 end
