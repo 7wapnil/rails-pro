@@ -398,4 +398,13 @@ FactoryBot.define do
                           content_type: 'image/jpeg')
     end
   end
+
+  # Logs
+  factory :audit_log do
+    event { :customer_verified }
+    customer_id { Faker::Number.between(1, 100) }
+    user_id { Faker::Number.between(1, 100) }
+    created_at { Time.zone.now }
+    context { { content: Faker::Internet.email } }
+  end
 end
