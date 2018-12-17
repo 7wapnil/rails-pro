@@ -15,6 +15,7 @@ module Titles
       query = Title
               .with_active_events_amount
               .with_live_events_amount
+              .order(name: :asc)
       query = query.where(id: args[:id]) if args[:id]
       query = query.where(kind: args[:kind]) if args[:kind]
       query.all
