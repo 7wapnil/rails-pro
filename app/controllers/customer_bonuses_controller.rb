@@ -27,7 +27,7 @@ class CustomerBonusesController < ApplicationController
     customer = customer_bonus.customer
     CustomerBonuses::ExpirationService.call(
       customer_bonus,
-      :expired_in_backoffice
+      :manual_cancel
     )
     current_user.log_event :customer_bonus_deactivated,
                            customer_bonus,

@@ -9,14 +9,13 @@ class CustomerBonus < ApplicationRecord
   attr_reader :amount
 
   enum expiration_reason: {
-    expired_in_backoffice: 0
+    manual_cancel: MANUAL_CANCEL = 'manual_cancel',
+    expired_by_new_activation:
+      EXPIRED_BY_NEW_ACTIVATION = 'expired_by_new_activation',
+    expired_by_date: EXPIRED_BY_DATE = 'expired_by_date'
   }
 
   acts_as_paranoid
-
-  def deactivate!
-    destroy!
-  end
 
   def ended_at
     created_at + valid_for_days.days

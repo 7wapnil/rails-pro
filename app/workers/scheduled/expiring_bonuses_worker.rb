@@ -6,7 +6,14 @@ module Scheduled
     def perform
       super()
 
-      CustomerBonus.all.each { |bonus| bonus.deactivate! if bonus.expired? }
+      CustomerBonus.all.each do |bonus|
+        skip unless bonus.expired?
+
+        CustomerBonuses::ExpirationService.call(
+          bonus,
+          :expired_by_date
+        )
+      end
     end
   end
 end
