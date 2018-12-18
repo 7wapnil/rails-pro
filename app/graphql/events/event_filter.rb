@@ -8,5 +8,6 @@ module Events
     argument :tournamentId, ID, required: false
     argument :inPlay, Boolean, required: false
     argument :upcoming, Boolean, required: false
+    argument :past, Boolean, required: false
   end
 end

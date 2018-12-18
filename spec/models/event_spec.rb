@@ -91,6 +91,49 @@ describe Event do
     end
   end
 
+  describe '.past' do
+    it 'includes prematch events that started in past' do
+      event = create(
+        :event,
+        start_at: 5.minutes.ago,
+        end_at: nil,
+        traded_live: false
+      )
+      expect(Event.past).to include(event)
+    end
+
+    it 'includes ended live events' do
+      event = create(
+        :event,
+        start_at: 2.hours.ago,
+        end_at: 5.minutes.ago,
+        traded_live: true
+      )
+      expect(Event.past).to include(event)
+    end
+
+    it 'doesn\'t include not started prematch events' do
+      event = create(
+        :event,
+        start_at: 5.minutes.from_now,
+        end_at: nil,
+        traded_live: false
+      )
+      expect(Event.past).not_to include(event)
+    end
+
+    it 'doesn\'t include not ended live events' do
+      event = create(
+        :event,
+        start_at: 2.hours.ago,
+        end_at: nil,
+        traded_live: true
+      )
+
+      expect(Event.past).not_to include(event)
+    end
+  end
+
   describe '#in_play?' do
     it 'is true when started, not finished and is traded live' do
       event = create(:event,
