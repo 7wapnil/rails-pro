@@ -1,13 +1,9 @@
-= render 'customers/heading', customer: @customer
-
-.row
-  .col-md-3
-    .mt-4= render 'customers/navigation', customer: @customer,
-                                          note: @note,
-                                          customer_notes: @customer_notes_widget
-  .col-md-9
-    .mt-4= render 'customers/notes', note: @note,
-      customer_notes: @customer_notes, is_widget: false
+- content_for :page_content do
+  .mt-4= render 'customers/notes', note: @note,
+    customer_notes: @customer_notes, is_widget: false
 
 - content_for :js do
   = javascript_pack_tag 'customers/navigation_links'
+
+= render 'customers/base_template', customer: @customer, note: nil,
+  customer_notes_widget: nil

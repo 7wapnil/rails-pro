@@ -4,7 +4,7 @@ class CustomerNotesController < ApplicationController
 
     if note.save
       current_user.log_event :note_created, note, note.customer
-      redirect_to notes_customer_path(note.customer)
+      redirect_to request.referer
     else
       flash[:error] = note.errors.full_messages
       redirect_back fallback_location: root_path
