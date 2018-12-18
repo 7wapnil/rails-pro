@@ -1,5 +1,7 @@
 module Mts
   class SessionRecovery
+    include JobLogger
+
     MTS_SESSION_FAILURE_KEY = :mts_session_failed_at
 
     def recover_from_network_failure!
@@ -14,7 +16,7 @@ module Mts
 
       timestamp = Time.zone.now
       update_session_failed_at(timestamp)
-      Rails.logger.warn "Mts session failed at: #{timestamp}"
+      log_job_message(:warn, "Mts session failed at: #{timestamp}")
     end
 
     private

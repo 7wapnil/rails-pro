@@ -4,6 +4,8 @@ module Scheduled
                     lock: :until_executed
 
     def perform
+      super()
+
       CustomerBonus.all.each { |bonus| bonus.deactivate! if bonus.expired? }
     end
   end

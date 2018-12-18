@@ -40,7 +40,7 @@ module OddsFeed
           market.status = stop_status
           market.save!
         rescue ActiveRecord::RecordInvalid => e
-          Rails.logger.error e.message
+          log_job_failure(e)
         end
       end
     end

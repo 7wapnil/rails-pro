@@ -2,6 +2,8 @@ module OddsFeed
   module Radar
     class EventAdapter
       class TitleSelector < ApplicationService
+        include JobLogger
+
         def initialize(payload: {})
           @id   = payload['id']
           @name = payload['name']
@@ -10,13 +12,15 @@ module OddsFeed
         def call
           return found_title if found_title
 
-          Rails.logger.info 'Title was not found, creating new'
+          log_job_message(:info, 'Title was not found, creating new')
 
           create_title!
         rescue ActiveRecord::RecordInvalid
-          Rails.logger.info 'Title cannot be set, exiting'
+          log_job_message(:info, 'Title cannot be set, exiting')
         rescue ActiveRecord::RecordNotUnique
-          Rails.logger.info 'Title is not unique, try to reload AR relation'
+          log_job_message(
+            :info, 'Title is not unique, try to reload AR relation'
+          )
 
           reload_and_find_title!
         end

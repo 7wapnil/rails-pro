@@ -4,6 +4,8 @@ module Scheduled
                     lock: :until_executed
 
     def perform
+      super()
+
       Bet.transaction do
         Bet.expired_prematch.update_all(status: :cancelled)
         Bet.expired_prematch.in_batches do |bet|
