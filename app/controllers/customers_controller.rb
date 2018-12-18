@@ -10,7 +10,6 @@ class CustomersController < ApplicationController
   before_action :new_note, only: %i[
     account_management
     activity
-    bets
     betting_limits
     bonuses
     documents
@@ -21,7 +20,6 @@ class CustomersController < ApplicationController
   before_action :customer_notes_widget, only: %i[
     account_management
     activity
-    bets
     betting_limits
     bonuses
     documents
