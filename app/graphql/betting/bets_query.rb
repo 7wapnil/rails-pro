@@ -11,7 +11,7 @@ module Betting
               .where(customer: @current_customer)
       if args[:kind]
         query = query.joins(odd: { market: { event: :title } })
-                     .where('titles.kind = ?', Title.kinds[args[:kind]])
+                     .where('titles.kind = ?', args[:kind])
       end
       query.all
     end

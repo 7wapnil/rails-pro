@@ -1,7 +1,7 @@
 describe Balance do
   it { should belong_to(:wallet) }
   it { should have_many(:balance_entries) }
-  it { is_expected.to define_enum_for :kind }
+  # it { should define_enum_for :kind }
 
   it do
     should validate_numericality_of(:amount)

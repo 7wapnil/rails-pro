@@ -1,7 +1,13 @@
+# frozen_string_literal: true
+
 class Label < ApplicationRecord
   include Loggable
 
-  enum kind: { customer: 0, event: 1, market: 2 }
+  enum kind: {
+    customer: CUSTOMER = 'customer',
+    event:    EVENT    = 'event',
+    market:   MARKET   = 'market'
+  }
 
   default_scope { order(name: :asc) }
 

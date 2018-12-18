@@ -30,18 +30,18 @@ describe OddsFeed::Radar::OddsChangeHandler do
   end
 
   it 'updates event status from message' do
-    create(:event, external_id: event_id, status: :not_started)
+    create(:event, external_id: event_id, status: Event::NOT_STARTED)
     subject.handle
     event = Event.find_by(external_id: event_id)
-    expect(event.status).to eq('started')
+    expect(event.status).to eq(Event::STARTED)
   end
 
   it 'updates event end at time on "ended" status' do
-    create(:event, external_id: event_id, status: :not_started)
-    allow(subject).to receive(:event_status).and_return(Event.statuses[:ended])
+    create(:event, external_id: event_id, status: Event::NOT_STARTED)
+    allow(subject).to receive(:event_status).and_return(Event::ENDED)
     subject.handle
     event = Event.find_by(external_id: event_id)
-    expect(event.status).to eq('ended')
+    expect(event.status).to eq(Event::ENDED)
     expect(event.end_at).not_to be_nil
   end
 

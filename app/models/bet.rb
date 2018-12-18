@@ -19,12 +19,12 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_one :title, through: :event
 
   has_many :tournaments,
-           -> { where(kind: :tournament) },
+           -> { where(kind: EventScope::TOURNAMENT) },
            through: :event,
            source: :event_scopes,
            class_name: 'EventScope'
   has_many :countries,
-           -> { where(kind: :country) },
+           -> { where(kind: EventScope::COUNTRY) },
            through: :event,
            source: :event_scopes,
            class_name: 'EventScope'
@@ -49,7 +49,9 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   class << self
     def from_regular_customers
-      left_outer_joins(:customer).where(customers: { account_kind: :regular })
+      left_outer_joins(:customer).where(
+        customers: { account_kind: Customer::REGULAR }
+      )
     end
 
     def with_country
@@ -59,7 +61,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
          INNER JOIN events ON scoped_events.event_id = events.id
          INNER JOIN markets ON events.id = markets.event_id
          INNER JOIN odds ON markets.id = odds.market_id
-         WHERE odds.id = bets.odd_id AND event_scopes.kind = #{EventScope.kinds[:country]} LIMIT 1
+         WHERE odds.id = bets.odd_id AND event_scopes.kind = '#{EventScope::COUNTRY}' LIMIT 1
       SQL
       sql = "bets.*, (#{sub_query}) AS country"
       select(sql)
@@ -72,7 +74,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
          INNER JOIN events ON scoped_events.event_id = events.id
          INNER JOIN markets ON events.id = markets.event_id
          INNER JOIN odds ON markets.id = odds.market_id
-         WHERE odds.id = bets.odd_id AND event_scopes.kind = #{EventScope.kinds[:tournament]} LIMIT 1
+         WHERE odds.id = bets.odd_id AND event_scopes.kind = '#{EventScope::TOURNAMENT}' LIMIT 1
       SQL
       sql = "bets.*, (#{sub_query}) AS tournament"
       select(sql)
@@ -156,7 +158,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   def actual_payout
     BalanceEntry
       .joins(:entry)
-      .where(entries: { origin: self, kind: Entry.kinds[:win] })
+      .where(entries: { origin: self, kind: Entry::WIN })
       .sum(:amount)
   end
 end

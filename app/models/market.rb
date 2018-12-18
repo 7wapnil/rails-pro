@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Market < ApplicationRecord
   include Visible
 
@@ -14,15 +16,15 @@ class Market < ApplicationRecord
   DEFAULT_PRIORITY = 1
 
   STATUSES = {
-    inactive: 0,
-    active: 1,
-    suspended: 2,
-    cancelled: 3,
-    settled: 4,
-    handed_over: 5
+    inactive:    INACTIVE    = 'inactive',
+    active:      ACTIVE      = 'active',
+    suspended:   SUSPENDED   = 'suspended',
+    cancelled:   CANCELLED   = 'cancelled',
+    settled:     SETTLED     = 'settled',
+    handed_over: HANDED_OVER = 'handed_over'
   }.freeze
 
-  DEFAULT_STATUS = STATUSES[:active]
+  DEFAULT_STATUS = ACTIVE
 
   enum status: STATUSES
 

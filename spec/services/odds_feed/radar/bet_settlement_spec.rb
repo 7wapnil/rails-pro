@@ -46,7 +46,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
     let!(:rule_for_win) do
       create(:entry_currency_rule,
              currency: currency,
-             kind: EntryRequest.kinds[:win],
+             kind: EntryRequest::WIN,
              min_amount: 10,
              max_amount: 1000)
     end
@@ -54,7 +54,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
     let!(:rule_for_refund) do
       create(:entry_currency_rule,
              currency: currency,
-             kind: EntryRequest.kinds[:refund],
+             kind: EntryRequest::REFUND,
              min_amount: 10,
              max_amount: 1000)
     end
@@ -84,13 +84,16 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
   it 'settles odd bets with result and void factor' do
     allow(subject).to receive(:process_bets)
-    create_list(:bet, 5, odd: odd, status: Bet.statuses[:accepted])
-    create_list(:bet, 5, status: Bet.statuses[:accepted]) # other bets
+    create_list(:bet, 5,
+                odd: odd,
+                status: StateMachines::BetStateMachine::ACCEPTED)
+    # other bets
+    create_list(:bet, 5, status: StateMachines::BetStateMachine::ACCEPTED)
     subject.handle
 
     expected_result = Bet.where(
-      status: Bet.statuses[:settled],
-      settlement_status: Bet.settlement_statuses[:won],
+      status: StateMachines::BetStateMachine::SETTLED,
+      settlement_status: StateMachines::BetStateMachine::WON,
       void_factor: 0.5
     )
     expect(expected_result.count).to eq(5)
@@ -99,7 +102,8 @@ describe OddsFeed::Radar::BetSettlementHandler do
   it 'emits web socket event per bet' do
     allow(subject).to receive(:process_bets)
 
-    create_list(:bet, 10, odd: odd, status: Bet.statuses[:accepted])
+    create_list(:bet, 10,
+                odd: odd, status: StateMachines::BetStateMachine::ACCEPTED)
     subject.handle
 
     expect(WebSocket::Client.instance)

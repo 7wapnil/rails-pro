@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_12_071635) do
+ActiveRecord::Schema.define(version: 2018_12_14_135853) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
 
   create_table "balances", force: :cascade do |t|
     t.bigint "wallet_id"
-    t.integer "kind"
+    t.string "kind"
     t.decimal "amount", precision: 8, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -73,14 +73,14 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
     t.bigint "currency_id"
     t.decimal "amount"
     t.decimal "odd_value"
-    t.integer "status"
+    t.string "status"
     t.text "message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.integer "settlement_status"
     t.datetime "validation_ticket_sent_at"
+    t.string "settlement_status"
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
     t.index ["odd_id"], name: "index_bets_on_odd_id"
@@ -102,7 +102,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
 
   create_table "bonuses", force: :cascade do |t|
     t.string "code"
-    t.integer "kind"
+    t.string "kind"
     t.decimal "rollover_multiplier"
     t.decimal "max_rollover_per_bet"
     t.decimal "max_deposit_match"
@@ -140,7 +140,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
     t.bigint "customer_id"
     t.bigint "wallet_id"
     t.string "code"
-    t.integer "kind"
+    t.string "kind"
     t.decimal "rollover_multiplier"
     t.decimal "max_rollover_per_bet"
     t.decimal "max_deposit_match"
@@ -173,7 +173,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
   create_table "customers", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
-    t.integer "gender"
+    t.string "gender"
     t.date "date_of_birth"
     t.string "phone"
     t.string "email"
@@ -196,8 +196,8 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
     t.boolean "agreed_with_promotional", default: false
     t.boolean "locked", default: false
     t.datetime "locked_until"
-    t.integer "lock_reason"
-    t.integer "account_kind", default: 0
+    t.string "lock_reason"
+    t.string "account_kind", default: "regular"
     t.integer "failed_attempts", default: 0, null: false
     t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
@@ -216,7 +216,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
 
   create_table "entries", force: :cascade do |t|
     t.bigint "wallet_id"
-    t.integer "kind"
+    t.string "kind"
     t.decimal "amount", precision: 8, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -230,7 +230,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
 
   create_table "entry_currency_rules", force: :cascade do |t|
     t.bigint "currency_id"
-    t.integer "kind"
+    t.string "kind"
     t.decimal "min_amount", precision: 8, scale: 2
     t.decimal "max_amount", precision: 8, scale: 2
     t.datetime "created_at", null: false
@@ -240,18 +240,18 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
   end
 
   create_table "entry_requests", force: :cascade do |t|
-    t.integer "status", default: 0
+    t.string "status", default: "pending"
     t.json "result"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "customer_id"
     t.integer "currency_id"
-    t.integer "kind"
+    t.string "kind"
     t.text "comment"
     t.decimal "amount", precision: 8, scale: 2
     t.string "initiator_type"
     t.bigint "initiator_id"
-    t.integer "mode"
+    t.string "mode"
     t.string "origin_type"
     t.bigint "origin_id"
     t.index ["initiator_type", "initiator_id"], name: "index_entry_requests_on_initiator_type_and_initiator_id"
@@ -262,7 +262,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
     t.bigint "title_id"
     t.bigint "event_scope_id"
     t.string "name"
-    t.integer "kind", default: 0
+    t.string "kind", default: "tournament"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "external_id"
@@ -283,7 +283,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
     t.json "payload"
     t.datetime "remote_updated_at"
     t.boolean "traded_live", default: false
-    t.integer "status", default: 0
+    t.string "status", default: "not_started"
     t.integer "priority", limit: 2, default: 1
     t.boolean "visible", default: true
     t.index ["external_id"], name: "index_events_on_external_id", unique: true
@@ -304,7 +304,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
-    t.integer "kind", default: 0
+    t.string "kind", default: "customer"
     t.index ["deleted_at"], name: "index_labels_on_deleted_at"
   end
 
@@ -325,7 +325,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
     t.datetime "updated_at", null: false
     t.integer "priority"
     t.string "external_id"
-    t.integer "status"
+    t.string "status"
     t.boolean "visible", default: true
     t.index ["event_id"], name: "index_markets_on_event_id"
     t.index ["external_id"], name: "index_markets_on_external_id", unique: true
@@ -339,7 +339,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
     t.datetime "updated_at", null: false
     t.string "external_id"
     t.decimal "value"
-    t.integer "status"
+    t.string "status"
     t.index ["external_id"], name: "index_odds_on_external_id", unique: true
     t.index ["market_id"], name: "index_odds_on_market_id"
   end
@@ -357,7 +357,7 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "kind", default: 0
+    t.string "kind", default: "esports"
     t.string "external_id"
     t.index ["external_id"], name: "index_titles_on_external_id", unique: true
   end
@@ -384,8 +384,8 @@ ActiveRecord::Schema.define(version: 2018_12_12_071635) do
 
   create_table "verification_documents", force: :cascade do |t|
     t.bigint "customer_id"
-    t.integer "kind"
-    t.integer "status"
+    t.string "kind"
+    t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"

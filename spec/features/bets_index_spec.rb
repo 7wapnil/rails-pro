@@ -3,8 +3,8 @@ describe 'Bets#index' do
     let(:per_page_count) { 10 }
 
     before do
-      create(:event_scope, kind: :tournament, name: 'X-Bet')
-      create(:event_scope, kind: :tournament, name: 'Crazy PANDAS')
+      create(:event_scope, kind: EventScope::TOURNAMENT, name: 'X-Bet')
+      create(:event_scope, kind: EventScope::TOURNAMENT, name: 'Crazy PANDAS')
       create(:event_scope_country, name: 'Pakistan')
       create(:event_scope_country, name: 'France')
       create(:event_scope_country, name: 'Germany')

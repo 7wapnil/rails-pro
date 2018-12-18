@@ -11,7 +11,7 @@ module OddsFeed
       def handle
         validate_message
         query = build_query
-        query.update_all(status: Bet.statuses[:cancelled])
+        query.update_all(status: StateMachines::BetStateMachine::CANCELLED)
 
         query.find_in_batches(batch_size: @batch_size) do |batch|
           emit_websocket_signals(batch)
