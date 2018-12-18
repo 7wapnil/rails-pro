@@ -10,6 +10,15 @@ describe OddsFeed::Radar::LiveBookingService do
     allow(subject).to receive(:api_client).and_return(api_client)
   end
 
+  it 'skips operation if event already live' do
+    event.update_attributes!(traded_live: true)
+    allow(subject).to receive(:update_event)
+
+    subject.call
+
+    expect(subject).not_to have_received(:update_event)
+  end
+
   context 'replay server' do
     before do
       allow(subject).to receive(:replay?).and_return(true)

@@ -6,10 +6,13 @@ module OddsFeed
       end
 
       def call
-        Rails.logger.info "Booking event #{event.external_id} for live coverage"
-        return update_event if replay?
+        return if event.traded_live
 
-        book_live_coverage
+        if replay?
+          update_event
+        else
+          book_live_coverage
+        end
       end
 
       def update_event
