@@ -21,7 +21,7 @@ module OddsFeed
             not found, creating new
           MESSAGE
 
-          Rails.logger.info msg.squish
+          log_job_message(:info, msg.squish)
 
           create_or_find_event!
         end
@@ -53,7 +53,7 @@ module OddsFeed
             Updating event with ID #{external_id}, \
             product ID #{event_data['product']}, attributes #{updates}
         MESSAGE
-        Rails.logger.info msg
+        log_job_message(:info, msg)
       end
 
       def generate_markets
@@ -87,13 +87,15 @@ module OddsFeed
       end
 
       def log_missing_payload
-        Rails.logger.info("Odds payload is missing for Event #{external_id}")
+        log_job_message(
+          :info, "Odds payload is missing for Event #{external_id}"
+        )
       end
 
       def event_data
         @payload['odds_change']
       rescue StandardError => e
-        Rails.logger.debug({ error: e, payload: @payload }.to_json)
+        log_job_message(:debug, { error: e, payload: @payload }.to_json)
       end
 
       def event_status
@@ -139,8 +141,9 @@ module OddsFeed
           Event.create_or_update_on_duplicate(@event)
           ::Radar::LiveCoverageBookingWorker.perform_async(external_id)
         rescue StandardError => e
-          Rails.logger.warn ["Event ID #{external_id} creating failed",
-                             e.message]
+          log_job_message(
+            :warn, ["Event ID #{external_id} creating failed", e.message]
+          )
         end
       end
 
@@ -151,7 +154,7 @@ module OddsFeed
         return if event.remote_updated_at.utc <= timestamp
 
         msg = "Message came at #{timestamp}, but last update was #{last_update}"
-        Rails.logger.warn msg
+        log_job_message(:warn, msg)
       end
 
       def emit_websocket

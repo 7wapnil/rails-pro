@@ -52,7 +52,7 @@ store:
 
     - script:
       name: compile-assets
-      code: bundle exec rake assets:precompile
+      code: bundle exec rake webpacker:compile
 
     - internal/docker-push:
       username: $DOCKERHUB_USERNAME

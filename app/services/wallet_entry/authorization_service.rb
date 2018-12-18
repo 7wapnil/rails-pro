@@ -1,8 +1,9 @@
 module WalletEntry
   class AuthorizationService < ApplicationService
-    def initialize(request)
+    def initialize(request, balance_kind = nil)
       @request = request
       @amount = @request.amount
+      @balance_kind = balance_kind || Balance.kinds[:real_money]
     end
 
     def call
@@ -51,7 +52,7 @@ module WalletEntry
     def update_balance!
       @balance = Balance.find_or_create_by!(
         wallet_id: @wallet.id,
-        kind: Balance.kinds[:real_money]
+        kind: @balance_kind
       )
 
       @balance.update_attributes!(amount: @balance.amount + @amount)

@@ -218,6 +218,31 @@ describe 'GraphQL#events' do
       end
     end
 
+    context 'past' do
+      let(:query) do
+        %({ events (
+              filter: { past: true }
+          ) {
+              id
+        } })
+      end
+
+      before do
+        create_list(
+          :event_with_odds,
+          5,
+          title: title,
+          traded_live: false,
+          start_at: 5.minutes.ago,
+          end_at: nil
+        )
+      end
+
+      it 'returns past events' do
+        expect(result['data']['events'].count).to eq(5)
+      end
+    end
+
     context 'title' do
       let(:query) do
         %({ events (
@@ -317,6 +342,33 @@ describe 'GraphQL#events' do
       it 'returns events with live flag false' do
         create(:event_with_odds, traded_live: false)
         expect(result['data']['events'][0]['live']).to be_falsy
+      end
+    end
+
+    context 'with state' do
+      let(:query) do
+        %({ events {
+              id
+              state {
+                id
+                status_code
+                status
+                score
+                time
+                finished
+                period_scores {
+                  id
+                }
+              }
+        } })
+      end
+
+      it 'returns events with live flag true' do
+        create(:event_with_odds, payload: { producer: { origin: 'radar',
+                                                        id: '3' } })
+
+        expect(result['errors']).to be_nil
+        expect(result['data']['events'][0]['state']).to be_nil
       end
     end
   end

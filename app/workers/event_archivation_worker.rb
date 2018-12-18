@@ -2,12 +2,12 @@ require 'sidekiq-scheduler'
 
 class EventArchivationWorker < ApplicationWorker
   def perform
-    events = Event.where.not(external_id: archived).all
-    events.each do |event|
-      archive(event)
-    end
+    super()
 
-    Rails.logger.info "Archived #{events.count} events"
+    events = Event.where.not(external_id: archived).all
+    events.each { |event| archive(event) }
+
+    log_job_message(:info, "Archived #{events.count} events")
   end
 
   def archived

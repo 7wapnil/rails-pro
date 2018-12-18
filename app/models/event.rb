@@ -100,6 +100,19 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     )
   end
 
+  def self.past
+    where(
+      [
+        'start_at < ? AND ',
+        'traded_live IS FALSE OR ',
+        'end_at < ? AND ',
+        'traded_live IS TRUE'
+      ].join,
+      Time.zone.now,
+      Time.zone.now
+    )
+  end
+
   def self.today
     where(start_at: [Date.today.beginning_of_day..Date.today.end_of_day])
   end
@@ -143,6 +156,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def state
+    return nil if payload['state'].nil?
+
     EventState.new(payload['state'])
   end
 

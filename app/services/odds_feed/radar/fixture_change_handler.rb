@@ -45,7 +45,7 @@ module OddsFeed
       end
 
       def log_on_create
-        Rails.logger.info("Creating event with external ID #{external_id}")
+        log_job_message(:info, "Creating event with external ID #{external_id}")
       end
 
       def log_on_update
@@ -55,12 +55,11 @@ module OddsFeed
           on change type '#{change_type}'
         MESSAGE
 
-        Rails.logger.info(msg.squish)
+        log_job_message(:info, msg.squish)
       end
 
       def update_event_payload!
-        msg = "Updating payload for event ID #{external_id}"
-        Rails.logger.info msg
+        log_job_message(:info, "Updating payload for event ID #{external_id}")
 
         event.add_to_payload(
           producer: { origin: :radar, id: payload['product'] }
