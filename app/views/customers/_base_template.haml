@@ -1,11 +1,17 @@
+- content_for :css do
+  = stylesheet_pack_tag 'css/customers'
+
 = render 'customers/heading', customer: customer
 
 .row
-  .col-md-3
+  .col-md-3.customer-navigation-column
     .mt-4= render 'customers/navigation', customer: customer
-  %div{ class: note && customer_notes_widget ? 'col-md-6' : 'col-md-9' }
-    = yield :page_content
   - if note && customer_notes_widget
-    .col-md-3
+    .col-md-6.customer-content-column
+      = yield :page_content
+    .col-md-3.customer-widget-column
       .mt-4= render 'customers/notes', note: note,
         customer_notes: customer_notes_widget, is_widget: true
+  - else
+    .col-md-9.customer-content-wide-column
+      = yield :page_content
