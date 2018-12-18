@@ -7,7 +7,8 @@ module Bonuses
     end
 
     def call
-      customer.customer_bonus&.deactivate!
+      service = BonusDeactivation::RollOverReached
+      customer.customer_bonus&.close!(service) # TODO : pass correct service
       CustomerBonus.create!(bonus_activation_attributes)
     end
 

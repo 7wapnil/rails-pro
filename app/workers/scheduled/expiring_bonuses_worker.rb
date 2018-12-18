@@ -4,7 +4,9 @@ module Scheduled
                     lock: :until_executed
 
     def perform
-      CustomerBonus.all.each { |bonus| bonus.deactivate! if bonus.expired? }
+      # TODO: pass correct deactivation service
+      service = 'ExpiredBonus'
+      CustomerBonus.all.each { |bonus| bonus.close!(service) if bonus.expired? }
     end
   end
 end
