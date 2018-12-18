@@ -85,6 +85,8 @@ Rails.application.routes.draw do
     resources :markets, only: :update
   end
 
+  resources :market_templates, only: :index
+
   devise_for :users, controllers: {
     sessions: 'users/sessions'
   }
