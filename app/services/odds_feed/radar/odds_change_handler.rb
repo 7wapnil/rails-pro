@@ -137,7 +137,7 @@ module OddsFeed
         @event = api_event
         begin
           Event.create_or_update_on_duplicate(@event)
-          ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
+          ::Radar::LiveCoverageBookingWorker.perform_async(external_id)
         rescue StandardError => e
           Rails.logger.warn ["Event ID #{external_id} creating failed",
                              e.message]
