@@ -6,6 +6,10 @@ class CustomerBonus < ApplicationRecord
 
   attr_reader :amount
 
+  enum expiration_reason: {
+    expired_in_backoffice: 0
+  }
+
   acts_as_paranoid
 
   def deactivate!
