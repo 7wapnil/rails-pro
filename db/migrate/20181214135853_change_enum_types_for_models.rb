@@ -9,25 +9,18 @@ class ChangeEnumTypesForModels < ActiveRecord::Migration[5.2]
   private
 
   def part_1
-    change_column :odds, :status, :string
-
-    change_column :titles, :kind, :string,
-                  default: Title::ESPORTS
-    change_column :event_scopes, :kind, :string,
-                  default: EventScope::TOURNAMENT
-    change_column :events, :status, :string,
-                  default: Event::NOT_STARTED
+    change_column :odds,         :status, :string
+    change_column :titles,       :kind,   :string
+    change_column :event_scopes, :kind,   :string
+    change_column :events,       :status, :string
   end
 
   def part_2
     change_column :verification_documents, :status, :string
     change_column :verification_documents, :kind,   :string
     change_column :entry_requests,         :mode,   :string
-
-    change_column :labels, :kind, :string,
-                  default: Label::CUSTOMER
-    change_column :entry_requests, :status, :string,
-                  default: EntryRequest::PENDING
+    change_column :labels,                 :kind,   :string
+    change_column :entry_requests,         :status, :string
   end
 
   def part_3
@@ -35,9 +28,7 @@ class ChangeEnumTypesForModels < ActiveRecord::Migration[5.2]
     change_column :customers, :gender,       :string
     change_column :customers, :lock_reason,  :string
     change_column :markets,   :status,       :string
-
-    change_column :customers, :account_kind, :string,
-                  default: Customer::REGULAR
+    change_column :customers, :account_kind, :string
   end
 
   def part_4
