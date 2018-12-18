@@ -20,8 +20,8 @@ class EventsController < ApplicationController
            .order('markets.priority ASC, markets.name ASC')
            .find(params.require(:id))
 
-    @labels = Label.where(kind: :event)
-    @market_labels = Label.where(kind: :market)
+    @labels = Label.where(kind: Label::EVENT)
+    @market_labels = Label.where(kind: Label::MARKET)
   end
 
   def update

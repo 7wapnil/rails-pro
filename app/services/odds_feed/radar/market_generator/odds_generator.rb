@@ -58,7 +58,7 @@ module OddsFeed
           Odd.new(external_id: external_id,
                   market: @market,
                   name: @market_data.odd_name(odd_data['id']),
-                  status: odd_data['active'].to_i,
+                  status: Odd::ACTIVE,
                   value: odd_data['odds'])
         end
 

@@ -137,7 +137,7 @@ describe 'GraphQL#events' do
       end
 
       before do
-        Odd.update_all(status: Odd.statuses[:active])
+        Odd.update_all(status: Odd::ACTIVE)
       end
 
       it 'returns event market odds list' do
@@ -264,7 +264,7 @@ describe 'GraphQL#events' do
     end
 
     context 'tournament' do
-      let(:tournament) { create(:event_scope, kind: :tournament) }
+      let(:tournament) { create(:event_scope, kind: EventScope::TOURNAMENT) }
       let(:query) do
         %({ events (
               filter: { tournamentId: #{tournament.id} }

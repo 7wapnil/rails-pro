@@ -42,7 +42,7 @@ describe 'Customers#show' do
       end
 
       it 'displays allowed to transit account types' do
-        subject.update_column(:account_kind, Customer.account_kinds[:staff])
+        subject.update_column(:account_kind, Customer::STAFF)
         visit customer_path(subject)
 
         expect(page).to have_select(input_name, options: ['staff'])

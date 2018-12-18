@@ -14,7 +14,7 @@ module Account
     argument :street_address, !types.String
     argument :state, !types.String
     argument :zip_code, !types.String
-    argument :gender, !types.Int
+    argument :gender, !types.String
     argument :phone, !types.String
     argument :agreed_with_promotional, !types.Boolean
   end

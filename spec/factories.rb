@@ -3,7 +3,7 @@ FactoryBot.define do
     customer
     wallet
     sequence(:code) { |n| "FOOBAR#{n}" }
-    kind { 0 }
+    kind { Bonus::DEPOSIT }
     rollover_multiplier { 10 }
     max_rollover_per_bet { 150.00 }
     max_deposit_match { 1000.00 }
@@ -46,7 +46,7 @@ FactoryBot.define do
 
     trait :with_bet_rule do
       after(:create) do |currency|
-        bet_kind = EntryRequest.kinds[:bet]
+        bet_kind = EntryRequest::BET
         create(:entry_currency_rule, currency: currency, kind: bet_kind)
       end
     end
@@ -55,8 +55,8 @@ FactoryBot.define do
   factory :entry_request do
     customer
     currency
-    status { EntryRequest.statuses[:pending] }
-    mode { EntryRequest.modes[:cashier] }
+    status { EntryRequest::PENDING }
+    mode { EntryRequest::CASHIER }
     kind { EntryRequest.kinds.keys.first }
     amount { Random.new.rand(1.00..200.00).round(2) }
     comment { Faker::Lorem.paragraph }
@@ -101,7 +101,7 @@ FactoryBot.define do
 
   factory :balance do
     wallet
-    kind { Balance.kinds[:real_money] }
+    kind { Balance::REAL_MONEY }
     amount { Faker::Number.decimal(3, 2) }
   end
 
@@ -121,21 +121,21 @@ FactoryBot.define do
     currency
     amount { Faker::Number.decimal(2, 2) }
     odd_value { odd.value }
-    status { Bet.statuses[:initial] }
+    status { StateMachines::BetStateMachine::INITIAL }
 
     trait :settled do
-      status { Bet.statuses[:settled] }
+      status { StateMachines::BetStateMachine::SETTLED }
     end
 
     trait :accepted do
-      status { Bet.statuses[:accepted] }
+      status { StateMachines::BetStateMachine::ACCEPTED }
     end
 
     trait :sent_to_external_validation do
-      status { Bet.statuses[:sent_to_external_validation] }
+      status { StateMachines::BetStateMachine::SENT_TO_EXTERNAL_VALIDATION }
 
       after(:create) do |bet|
-        bet_kind = EntryRequest.kinds[:bet]
+        bet_kind = EntryRequest::BET
         wallet = bet.customer.wallets.take
         create(:entry, kind: bet_kind, origin: bet, wallet: wallet)
       end
@@ -185,7 +185,7 @@ FactoryBot.define do
 
   factory :bonus do
     sequence(:code) { |n| "FOOBAR#{n}" }
-    kind { 0 }
+    kind { Bonus::DEPOSIT }
     rollover_multiplier { 10 }
     max_rollover_per_bet { 150.00 }
     max_deposit_match { 1000.00 }
@@ -306,12 +306,12 @@ FactoryBot.define do
   factory :event_scope do
     title
     name { 'FPSThailand CS:GO Pro League Season#4' }
-    kind { :tournament }
+    kind { EventScope::TOURNAMENT }
     sequence :external_id do |n|
       "sr:tournament:#{n}"
     end
     factory :event_scope_country do
-      kind { :country }
+      kind { EventScope::COUNTRY }
       name { Faker::Address.country }
     end
   end
@@ -332,7 +332,7 @@ FactoryBot.define do
     sequence :external_id do |n|
       "sr:match:#{n}"
     end
-    status { 0 }
+    status { Event::NOT_STARTED }
     payload { {} }
 
     trait :upcoming do
@@ -358,7 +358,7 @@ FactoryBot.define do
     visible { true }
     name { 'Winner Map (Train)' }
     priority { 2 }
-    status { 0 }
+    status { Market::INACTIVE }
 
     sequence :external_id do |n|
       "sr:match:#{n}:209/setnr=2|gamenrX=#{n}|gamenrY=#{n}"
@@ -376,7 +376,7 @@ FactoryBot.define do
     name { 'MiTH' }
     won { true }
     value { Faker::Number.decimal(1, 2) }
-    status { 0 }
+    status { Odd::INACTIVE }
 
     sequence :external_id do |n|
       "sr:match:#{n}:280/hcp=0.5:#{n}"
@@ -385,8 +385,8 @@ FactoryBot.define do
 
   factory :verification_document do
     customer
-    kind { 0 }
-    status { 0 }
+    kind { VerificationDocument::PERSONAL_ID }
+    status { VerificationDocument::PENDING }
 
     after(:build) do |doc|
       file_path = Rails.root.join('spec',

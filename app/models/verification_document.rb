@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class VerificationDocument < ApplicationRecord
   include Loggable
 
@@ -5,19 +7,19 @@ class VerificationDocument < ApplicationRecord
 
   MAX_ATTACHMENT_SIZE = 2.megabytes.freeze
   KINDS = {
-    personal_id: 0,
-    utility_bill: 1,
-    bank_statement: 2,
-    credit_card: 3,
-    other_document: 4
+    personal_id:    PERSONAL_ID    = 'personal_id',
+    utility_bill:   UTILITY_BILL   = 'utility_bill',
+    bank_statement: BANK_STATEMENT = 'bank_statement',
+    credit_card:    CREDIT_CARD    = 'credit_card',
+    other_document: OTHER_DOCUMENT = 'other_document'
   }.freeze
 
   enum kind: KINDS
 
   enum status: {
-    pending: 0,
-    confirmed: 1,
-    rejected: 2
+    pending:   PENDING   = 'pending',
+    confirmed: CONFIRMED = 'confirmed',
+    rejected:  REJECTED  = 'rejected'
   }
 
   belongs_to :customer

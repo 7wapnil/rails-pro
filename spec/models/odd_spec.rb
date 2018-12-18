@@ -1,5 +1,5 @@
 describe Odd do
-  it { should define_enum_for(:status) }
+  # it { should define_enum_for(:status) }
 
   it { should belong_to(:market) }
 
@@ -8,12 +8,12 @@ describe Odd do
   it { should validate_numericality_of(:value).is_greater_than(0) }
 
   it 'validates value on create is status active' do
-    subject.status = 1
+    subject.status = Odd::ACTIVE
     should validate_presence_of(:value).on(:create)
   end
 
   it 'not validates value on create if status inactive' do
-    subject.status = 0
+    subject.status = Odd::INACTIVE
     should_not validate_presence_of(:value).on(:create)
   end
 

@@ -10,7 +10,7 @@ describe BetPlacement::SubmissionService do
     create(
       :entry_currency_rule,
       currency: currency,
-      kind: EntryRequest.kinds[:bet],
+      kind: EntryRequest::BET,
       max_amount: 0,
       min_amount: -100
     )

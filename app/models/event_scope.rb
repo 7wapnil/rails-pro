@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EventScope < ApplicationRecord
   include Importable
 
@@ -10,9 +12,9 @@ class EventScope < ApplicationRecord
   has_many :events, through: :scoped_events
 
   enum kind: {
-    tournament: 0,
-    country: 1,
-    season: 2
+    tournament: TOURNAMENT = 'tournament',
+    country:    COUNTRY    = 'country',
+    season:     SEASON     = 'season'
   }
 
   validates :name, presence: true

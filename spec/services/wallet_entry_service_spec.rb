@@ -144,7 +144,7 @@ describe WalletEntry::AuthorizationService do
 
     context 'increment' do
       before do
-        request.kind = EntryKinds::KINDS[:deposit]
+        request.kind = EntryKinds::DEPOSIT
         request.amount = 10
       end
 
@@ -170,7 +170,7 @@ describe WalletEntry::AuthorizationService do
 
       before do
         allow(EntryCurrencyRule).to receive(:find_by!) { rule }
-        request.kind = EntryKinds::KINDS[:withdraw]
+        request.kind = EntryKinds::WITHDRAW
       end
 
       it 'decrements wallet amount' do

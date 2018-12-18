@@ -10,7 +10,7 @@ describe Entry do
 
   subject { build(:entry, wallet: wallet, kind: rule.kind, amount: 50) }
 
-  it { is_expected.to define_enum_for :kind }
+  # it { should define_enum_for(:kind) }
 
   it { should belong_to(:wallet) }
   it { should belong_to(:origin) }

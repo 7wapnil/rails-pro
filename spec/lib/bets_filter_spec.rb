@@ -1,10 +1,14 @@
 describe BetsFilter do
   let!(:country) do
-    create(:event_scope, kind: :country, name: Faker::Address.country)
+    create(:event_scope,
+           kind: EventScope::COUNTRY,
+           name: Faker::Address.country)
   end
 
   let!(:tournament) do
-    create(:event_scope, kind: :tournament, name: Faker::Esport.league)
+    create(:event_scope,
+           kind: EventScope::TOURNAMENT,
+           name: Faker::Esport.league)
   end
 
   let!(:sport) { create(:title, name: Faker::Esport.game) }

@@ -1,8 +1,8 @@
 module BetSettelement
   class Service < ApplicationService
-    ENTRY_REQUEST_WIN_KIND = EntryRequest.kinds[:win]
-    ENTRY_REQUEST_REFUND_KIND = EntryRequest.kinds[:refund]
-    ENTRY_REQUEST_MODE = EntryRequest.modes[:sports_ticket]
+    ENTRY_REQUEST_WIN_KIND = EntryRequest::WIN
+    ENTRY_REQUEST_REFUND_KIND = EntryRequest::REFUND
+    ENTRY_REQUEST_MODE = EntryRequest::SPORTS_TICKET
 
     def initialize(bet)
       @bet = bet
