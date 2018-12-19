@@ -13,18 +13,16 @@ module BalanceCalculations
     end
 
     def ratio
-      bonus_balance_amount = wallet.bonus_balance&.amount
-      real_balance_amount = wallet.real_money_balance&.amount
-      customer_bonus = wallet.customer.customer_bonus
+      @ratio ||= begin
+        bonus_balance_amount = wallet.bonus_balance&.amount || 0
+        real_balance_amount = wallet.real_money_balance&.amount || 0
+        customer_bonus = wallet.customer.customer_bonus
 
-      return 1 if customer_bonus.nil? || customer_bonus.expired?
+        return 1 if customer_bonus.nil? || customer_bonus.expired?
 
-      return 0 unless bonus_balance_amount || real_balance_amount
-
-      bonus_balance_amount ||= 0
-      real_balance_amount ||= 0
-      total_balance = bonus_balance_amount + real_balance_amount
-      real_balance_amount / total_balance
+        total_balance = bonus_balance_amount + real_balance_amount
+        real_balance_amount / total_balance
+      end
     end
 
     private
@@ -32,7 +30,7 @@ module BalanceCalculations
     attr_reader :wallet, :amount
 
     def calculate_bonus_amount
-      amount * (1.0 - ratio)
+      amount - calculate_real_amount
     end
 
     def calculate_real_amount

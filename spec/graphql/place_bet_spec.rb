@@ -134,6 +134,17 @@ describe 'GraphQL#placeBet' do
       expect(wallet.real_money_balance.amount).to eq(expected_real_balance)
       expect(wallet.bonus_balance.amount).to eq(bonus_amount)
     end
+
+    it 'do not apply bonus when odd value is less than allowed' do
+      active_bonus.update_attributes(min_odds_per_bet: odd.value + 1.0)
+      ArcanebetSchema.execute(
+        query,
+        context: context,
+        variables: variables
+      )
+
+      expect(wallet.bonus_balance.amount).to eq(bonus_amount)
+    end
   end
 
   context 'errors' do

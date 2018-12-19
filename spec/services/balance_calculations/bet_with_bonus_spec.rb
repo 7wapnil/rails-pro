@@ -13,27 +13,22 @@ describe BalanceCalculations::BetWithBonus do
            real_money_balance: real_balance)
   end
 
+  subject(:service_call_response) { described_class.call(wallet, amount) }
   context 'with existent bonus balance and real money balance' do
+    let(:calculations) { { real_money: 7.5, bonus: 2.5 } }
     it 'calculates ratio' do
       ratio = described_class.new(wallet, amount).ratio
 
       expect(ratio).to eq(0.75)
     end
 
-    it 'calculates real money amount' do
-      real_money = described_class.call(wallet, amount)[:real_money]
-
-      expect(real_money).to eq(7.5)
-    end
-
-    it 'calculates bonus money amount' do
-      real_money = described_class.call(wallet, amount)[:bonus]
-
-      expect(real_money).to eq(2.5)
+    it 'calculates real and bonus amount' do
+      expect(service_call_response).to include(calculations)
     end
   end
 
   context 'without bonus balance' do
+    let(:calculations) { { real_money: amount, bonus: 0 } }
     before do
       allow(wallet).to receive(:bonus_balance) { nil }
     end
@@ -44,19 +39,13 @@ describe BalanceCalculations::BetWithBonus do
       expect(ratio).to eq(1.0)
     end
 
-    it 'calculates real money amount' do
-      real_money = described_class.call(wallet, amount)[:real_money]
-
-      expect(real_money).to eq(amount)
-    end
-    it 'calculates bonus money amount' do
-      bonus_money = described_class.call(wallet, amount)[:bonus]
-
-      expect(bonus_money).to eq(0)
+    it 'calculates real and bonus money amount' do
+      expect(service_call_response).to eq(calculations)
     end
   end
 
   context 'without active bonus' do
+    let(:calculations) { { real_money: amount, bonus: 0 } }
     let(:customer) { double('Customer', customer_bonus: nil) }
 
     it 'calculates ratio' do
@@ -65,16 +54,8 @@ describe BalanceCalculations::BetWithBonus do
       expect(ratio).to eq(1)
     end
 
-    it 'calculates bonus amount' do
-      bonus_money = described_class.call(wallet, amount)[:bonus]
-
-      expect(bonus_money).to eq(0)
-    end
-
-    it 'calculates real amount' do
-      real_money = described_class.call(wallet, amount)[:real_money]
-
-      expect(real_money).to eq(amount)
+    it 'calculates real and bonus amount' do
+      expect(service_call_response).to include(calculations)
     end
   end
 end

@@ -1,5 +1,5 @@
 module BetPlacement
-  class SubmissionService < ApplicationService
+  class SubmissionService < ApplicationService # rubocop:disable Metrics/ClassLength, Metrics/LineLength
     ENTRY_REQUEST_KIND = EntryRequest::BET
     ENTRY_REQUEST_MODE = EntryRequest::SPORTS_TICKET
 
@@ -51,7 +51,8 @@ module BetPlacement
 
     def entry_request_succeeded?
       real_amount = amount_calculations[:real_money]
-      return true if real_amount.nil? || real_amount.zero?
+      error_msg = 'Real money amount can not be blank!'
+      raise(ArgumentError, error_msg) if real_amount.nil? || real_amount.zero?
 
       @entry = WalletEntry::AuthorizationService.call(entry_request)
       unless @entry_request.succeeded?
@@ -63,7 +64,7 @@ module BetPlacement
 
     def bonus_entry_request_succeeded?
       bonus_amount = amount_calculations[:bonus]
-      return true if bonus_amount.nil? || bonus_amount.zero?
+      return true if bonus_amount.zero? || !applicable_bonus?
 
       @bonus_entry = WalletEntry::AuthorizationService.call(bonus_entry_request,
                                                             :bonus)
@@ -74,12 +75,18 @@ module BetPlacement
       true
     end
 
+    def applicable_bonus?
+      bet = bonus_entry_request.origin
+      bonus = bet&.customer_bonus
+
+      return unless bonus
+
+      bonus.min_odds_per_bet <= bet.odd_value
+    end
+
     def entry_requests_succeeded?
       ActiveRecord::Base.transaction do
-        succeeded = entry_request_succeeded? && bonus_entry_request_succeeded?
-        return true if succeeded
-
-        return false
+        entry_request_succeeded? && bonus_entry_request_succeeded?
       end
     end
 

@@ -128,5 +128,21 @@ describe BetPlacement::SubmissionService do
         expect(bet.message).to be_a String
       end
     end
+
+    context 'with empty real amount' do
+      it 'raise error when real amount is nil' do
+        calculations = { real_money: nil, bonus: 10 }
+        allow(subject).to receive(:amount_calculations).and_return(calculations)
+
+        expect { subject.call }.to raise_error(ArgumentError)
+      end
+
+      it 'raise error when real amount is 0' do
+        calculations = { real_money: 0, bonus: 10 }
+        allow(subject).to receive(:amount_calculations).and_return(calculations)
+
+        expect { subject.call }.to raise_error(ArgumentError)
+      end
+    end
   end
 end
