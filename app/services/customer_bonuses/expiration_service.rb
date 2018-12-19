@@ -16,8 +16,10 @@ module CustomerBonuses
     attr_accessor :customer_bonus, :expiration_reason
 
     def expire_bonus!
-      @customer_bonus.update!(expiration_reason: @expiration_reason)
-      @customer_bonus.destroy!
+      @customer_bonus.tap do |bonus|
+        bonus.update!(expiration_reason: @expiration_reason)
+        bonus.destroy!
+      end
     end
   end
 end
