@@ -5,6 +5,9 @@ describe OddsFeed::Radar::OddsChangeHandler do
   let(:payload_single_market) do
     XmlParser.parse(file_fixture('odds_change_with_single_market.xml').read)
   end
+  let(:payload_inactive_outcomes) do
+    XmlParser.parse(file_fixture('odds_change_with_inactive_outcomes.xml').read)
+  end
   let(:event_id) { payload['odds_change']['event_id'] }
   let(:event) { build(:event, title: build(:title), external_id: event_id) }
   let!(:timestamp) { Time.now + 60 }
@@ -34,6 +37,30 @@ describe OddsFeed::Radar::OddsChangeHandler do
     subject.handle
     event = Event.find_by(external_id: event_id)
     expect(event.status).to eq(Event::STARTED)
+  end
+
+  context 'event activity' do
+    it 'defines event as active' do
+      create(:event,
+             external_id: event_id,
+             status: Event::NOT_STARTED,
+             active: false)
+
+      OddsFeed::Radar::OddsChangeHandler.new(payload).handle
+      event = Event.find_by(external_id: event_id)
+      expect(event.active).to be_truthy
+    end
+
+    it 'defines event as inactive' do
+      create(:event,
+             external_id: event_id,
+             status: Event::NOT_STARTED,
+             active: true)
+
+      OddsFeed::Radar::OddsChangeHandler.new(payload_inactive_outcomes).handle
+      event = Event.find_by(external_id: event_id)
+      expect(event.active).to be_falsy
+    end
   end
 
   it 'updates event end at time on "ended" status' do

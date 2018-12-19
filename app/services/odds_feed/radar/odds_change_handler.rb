@@ -43,9 +43,25 @@ module OddsFeed
       def process_updates!
         updates = { remote_updated_at: timestamp,
                     status: event_status,
-                    end_at: event_end_time }
+                    end_at: event_end_time,
+                    active: event_active? }
         log_updates!(updates)
         event.assign_attributes(updates)
+      end
+
+      def event_active?
+        markets_data.select do |market|
+          fetch_outcomes_data(market['outcome'])
+            .select { |o| o['active'] == '1' }.count.positive?
+        end.count.positive?
+      end
+
+      def fetch_outcomes_data(data)
+        return data if data.is_a?(Array)
+
+        return [data] if data.is_a?(Hash)
+
+        []
       end
 
       def log_updates!(updates)
