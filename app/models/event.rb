@@ -43,6 +43,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }
+  validates :active, inclusion: { in: [true, false] }
 
   enum status: STATUSES
 
