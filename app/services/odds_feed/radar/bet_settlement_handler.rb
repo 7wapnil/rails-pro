@@ -41,20 +41,30 @@ module OddsFeed
 
         bets = bets_by_external_id(external_id)
 
-        bets.each do |bet|
+        revalidate_suspended_bets(bets)
+        settle_bets!(bets, outcome)
+
+        logger_level = bets.size.positive? ? :info : :debug
+        log_job_message(logger_level, "#{bets.size} bets settled")
+
+        bets.find_in_batches { |batch| emit_websocket_signals(batch) }
+      end
+
+      def revalidate_suspended_bets(bets)
+        bets.suspended.each(&:send_to_internal_validation!)
+      end
+
+      def settle_bets!(bets, outcome)
+        bets.unsuspended.each do |bet|
           bet.settle!(
             settlement_status: outcome['result'] == '1' ? :won : :lost,
             void_factor: outcome['void_factor']
           )
         end
-        logger_level = bets.count.positive? ? :info : :debug
-        log_job_message(logger_level, "#{bets.count} bets settled")
-
-        bets.find_in_batches { |batch| emit_websocket_signals(batch) }
       end
 
       def process_bets(external_id)
-        bets = bets_by_external_id(external_id)
+        bets = bets_by_external_id(external_id).unsuspended
         bets.each do |bet|
           BetSettelement::Service.call(bet)
         end

@@ -99,9 +99,8 @@ module OddsFeed
       end
 
       def event_status
-        status = event_data['sport_event_status']['status'] ||
-                 Event::NOT_STARTED
-        event_statuses_map[status]
+        status = event_data['sport_event_status']['status']
+        event_statuses_map[status] || Event::NOT_STARTED
       end
 
       def event_end_time
@@ -112,10 +111,16 @@ module OddsFeed
 
       def event_statuses_map
         {
-          '0': Event::NOT_STARTED,
-          '1': Event::STARTED,
-          '3': Event::ENDED,
-          '4': Event::CLOSED
+          0 => Event::NOT_STARTED,
+          1 => Event::STARTED,
+          2 => Event::SUSPENDED,
+          3 => Event::ENDED,
+          4 => Event::CLOSED,
+          5 => Event::CANCELLED,
+          6 => Event::DELAYED,
+          7 => Event::INTERRUPTED,
+          8 => Event::POSTPONED,
+          9 => Event::ABANDONED
         }.stringify_keys
       end
 

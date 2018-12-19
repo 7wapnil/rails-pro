@@ -369,6 +369,10 @@ FactoryBot.define do
         create_list(:odd, 2, market: market)
       end
     end
+
+    trait :suspended do
+      status { Market::SUSPENDED }
+    end
   end
 
   factory :odd do
@@ -380,6 +384,10 @@ FactoryBot.define do
 
     sequence :external_id do |n|
       "sr:match:#{n}:280/hcp=0.5:#{n}"
+    end
+
+    trait :suspended do
+      association :market, factory: %i[market suspended]
     end
   end
 

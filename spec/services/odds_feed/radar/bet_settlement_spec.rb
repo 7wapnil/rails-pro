@@ -1,4 +1,6 @@
 describe OddsFeed::Radar::BetSettlementHandler do
+  subject { described_class.new(payload) }
+
   let(:payload) do
     XmlParser.parse(
       '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
@@ -32,8 +34,8 @@ describe OddsFeed::Radar::BetSettlementHandler do
   let(:odd_not_from_payload) do
     create(:odd, external_id: 'sr:match:3432:13:sr:player:999')
   end
-
-  subject { described_class.new(payload) }
+  let(:total_bets_count)     { 25 }
+  let(:first_odd_bets_count) { 6 }
 
   it 'raises error on invalid message' do
     allow(subject).to receive(:input_data).and_return({})
@@ -77,8 +79,31 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
       expect(BetSettelement::Service)
         .to have_received(:call)
-        .exactly(25)
+        .exactly(total_bets_count)
         .times
+    end
+
+    context 'with suspended bets' do
+      let(:odd) do
+        create(:odd, :suspended, external_id: 'sr:match:3432:13:sr:player:222')
+      end
+
+      before do
+        allow(BetSettelement::Service).to receive(:call)
+        subject.handle
+      end
+
+      it 'and calls BetSettelement service to process unsuspended bets' do
+        expect(BetSettelement::Service)
+          .to have_received(:call)
+          .exactly(total_bets_count - first_odd_bets_count)
+          .times
+      end
+
+      it 'and re-validates all suspended bets' do
+        expect(Bet.sent_to_internal_validation.count)
+          .to eq(first_odd_bets_count)
+      end
     end
   end
 
