@@ -1,12 +1,14 @@
 %h1.display-4= t('entities.market_templates')
 
-%table.table
+= render 'search'
+
+%table.table.entities
   %thead
     %tr
-      %th= t('attributes.id')
-      %th= t('attributes.external_id')
-      %th= t('attributes.name')
-      %th= t('attributes.category')
+      %th= sort_link @search, :id, t('attributes.id')
+      %th= sort_link @search, :external_id, t('attributes.external_id')
+      %th= sort_link @search, :name, t('attributes.name')
+      %th= sort_link @search, :category, t('attributes.category')
 
   %tbody
     - @market_templates.each do |market_template|

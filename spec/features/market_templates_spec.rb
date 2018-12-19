@@ -9,7 +9,7 @@ describe 'MarketTemplates#index' do
   end
 
   it 'shows market templates list' do
-    within 'table.table' do
+    within 'table.table.entities' do
       MarketTemplate.limit(per_page_count).each do |template|
         expect(page).to have_content(template.id)
         expect(page).to have_content(template.external_id)
