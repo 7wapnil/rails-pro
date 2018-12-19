@@ -181,10 +181,18 @@ class CustomersController < ApplicationController
   end
 
   def account_update
+    agreed = account_params[:agreed_with_promotional] == 'on'
+    agreement_changed = customer.agreed_with_promotional != agreed
     customer.update!(account_params)
     set_labelable_resource
     update_label_ids
-
+    if agreement_changed
+      current_user.log_event(
+        agreed ? :promotional_accepted : :promotional_revoked,
+        nil,
+        customer
+      )
+    end
     redirect_to customer_path(customer)
   end
 
