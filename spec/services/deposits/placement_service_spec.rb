@@ -4,13 +4,16 @@ describe Deposits::PlacementService do
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
   let(:percentage) { 25 }
   let(:amount) { 100 }
-
+  let(:rollover_multiplier) { 5 }
   let(:wallet) do
     create(:wallet, customer: customer, currency: currency, amount: 0)
   end
 
   let!(:customer_bonus) do
-    create(:customer_bonus, customer: customer, percentage: percentage)
+    create(:customer_bonus,
+           customer: customer,
+           percentage: percentage,
+           rollover_multiplier: rollover_multiplier)
   end
 
   before do
