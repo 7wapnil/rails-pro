@@ -1,6 +1,8 @@
 module OddsFeed
   module Radar
     class LiveBookingService < ApplicationService
+      include JobLogger
+
       def initialize(event_external_id)
         @event_external_id = event_external_id
       end
@@ -16,7 +18,9 @@ module OddsFeed
       end
 
       def update_event
-        Rails.logger.debug "Updating traded live flag for #{event.external_id}"
+        msg = "Updating traded live flag for #{event.external_id}"
+        log_job_message(:debug, msg)
+
         event.update_attributes!(traded_live: true)
       end
 
