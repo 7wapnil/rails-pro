@@ -14,6 +14,7 @@ FactoryBot.define do
     association :original_bonus, factory: :bonus
     created_at { Time.zone.now }
     deleted_at { nil }
+    expiration_reason { nil }
   end
 
   factory :comment do

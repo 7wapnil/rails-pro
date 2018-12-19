@@ -5,6 +5,7 @@ en:
     customer_signed_up: "Customer with ID %{customer_id}, username '%{customer_name}' just signed up"
     customer_verified: "Customer (%{customer_name}) verified by %{user_name}"
     customer_verification_revoked: "Customer (%{customer_name}) verification revoked by %{user_name}"
+    customer_bonus_deactivated: "Bonus '%{code}' for %{customer_name} deactivated by %{user_name}"
     currency_created: "Currency '%{code}' added by %{user_name}"
     currency_updated: "Currency '%{code}' updated by %{user_name}"
     label_created: "Label '%{name}' created by %{user_name}"

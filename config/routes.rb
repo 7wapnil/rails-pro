@@ -50,7 +50,7 @@ Rails.application.routes.draw do
       end
     end
   end
-  resources :customer_bonuses, only: :create
+  resources :customer_bonuses, only: %i[create show destroy]
 
   resources :betting_limits, only: %i[create update]
 
