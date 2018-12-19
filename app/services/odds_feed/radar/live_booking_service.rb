@@ -34,14 +34,6 @@ module OddsFeed
 
       private
 
-      def validate_response
-        response = api_client.book_live_coverage(event.external_id)['response']
-        return if response['response_code'] == 'OK'
-
-        raise ::OddsFeed::InvalidResponseError, [response['message'],
-                                                 event.external_id]
-      end
-
       def event
         @event ||= Event.find_by!(external_id: @event_external_id)
       end
