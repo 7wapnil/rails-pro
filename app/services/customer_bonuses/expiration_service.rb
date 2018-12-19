@@ -8,7 +8,6 @@ module CustomerBonuses
 
     def call
       expire_bonus!
-      @customer_bonus
     end
 
     private
@@ -16,6 +15,8 @@ module CustomerBonuses
     attr_accessor :customer_bonus, :expiration_reason
 
     def expire_bonus!
+      return @customer_bonus if @customer_bonus.deleted_at
+
       @customer_bonus.tap do |bonus|
         bonus.update!(expiration_reason: @expiration_reason)
         bonus.destroy!
