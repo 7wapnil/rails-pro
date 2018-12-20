@@ -25,4 +25,35 @@ describe Wallet do
       expect(described_class.primary).to match_array(primary_wallet)
     end
   end
+
+  describe '#current_ratio' do
+    let(:wallet) { create(:wallet) }
+    let(:bonus_amount) { rand(1000.0) }
+    let(:real_amount) { rand(1000.0) }
+    let(:bonus_balance) { double('Balance', amount: bonus_amount) }
+    let(:real_balance) { double('Balance', amount: real_amount) }
+
+    before do
+      allow(wallet).to receive(:bonus_balance).and_return(bonus_balance)
+      allow(wallet).to receive(:real_money_balance).and_return(real_balance)
+    end
+
+    it 'returns current ratio' do
+      expected_ratio = real_amount / (real_amount + bonus_amount)
+
+      expect(wallet.current_ratio).to eq(expected_ratio)
+    end
+
+    it 'returns current ratio without bonus' do
+      allow(wallet).to receive(:bonus_balance).and_return(nil)
+
+      expect(wallet.current_ratio).to eq(1)
+    end
+
+    it 'returns nil when real balance is nil' do
+      allow(wallet).to receive(:real_money_balance).and_return(nil)
+
+      expect(wallet.current_ratio).to be_nil
+    end
+  end
 end

@@ -33,7 +33,7 @@ module Betting
 
       wallet = @current_customer.wallets.where(currency_id: currency.id).first
       bonus = @current_customer.customer_bonus
-      ratio = BalanceCalculations::BetWithBonus.new(wallet, amount).ratio
+      ratio = wallet.current_ratio
       base_attrs.merge(ratio: ratio, customer_bonus_id: bonus.id)
     end
 

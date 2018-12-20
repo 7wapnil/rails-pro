@@ -91,9 +91,7 @@ module BetPlacement
     end
 
     def amount_calculations
-      amount = @bet.amount
-      @amount_calculations ||= BalanceCalculations::BetWithBonus.call(wallet,
-                                                                      amount)
+      @amount_calculations ||= BalanceCalculations::BetWithBonus.call(@bet)
     end
 
     def wallet

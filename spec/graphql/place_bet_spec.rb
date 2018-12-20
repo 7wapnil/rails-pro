@@ -24,7 +24,21 @@ describe 'GraphQL#placeBet' do
 
   context 'success' do
     let(:odds) { create_list(:odd, 2, value: 8.87) }
-
+    let!(:bonus_balance) do
+      create(:balance, kind: :bonus, wallet: wallet, amount: 100)
+    end
+    let!(:real_balance) do
+      create(:balance, wallet: wallet, amount: 200)
+    end
+    let!(:bet_rule) do
+      create(
+        :entry_currency_rule,
+        currency: currency,
+        kind: EntryRequest.kinds[:bet],
+        max_amount: 0,
+        min_amount: -100
+      )
+    end
     let(:variables) do
       {
         bets: odds.map do |odd|
