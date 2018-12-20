@@ -84,6 +84,10 @@ FactoryBot.define do
         )
       end
     end
+
+    trait :succeeded do
+      status { EntryRequest::SUCCEEDED }
+    end
   end
 
   factory :balance_entry do
@@ -129,6 +133,10 @@ FactoryBot.define do
 
     trait :accepted do
       status { StateMachines::BetStateMachine::ACCEPTED }
+    end
+
+    trait :sent_to_internal_validation do
+      status { StateMachines::BetStateMachine::SENT_TO_INTERNAL_VALIDATION }
     end
 
     trait :sent_to_external_validation do

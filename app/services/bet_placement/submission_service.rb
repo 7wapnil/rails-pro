@@ -25,9 +25,9 @@ module BetPlacement
 
       return false unless provider_connected?
 
-      return false unless entry_request_succeeded?
-
       return false if market_suspended?
+
+      return false unless entry_request_succeeded?
 
       true
     end
@@ -74,7 +74,7 @@ module BetPlacement
     end
 
     def market_suspended?
-      @bet.odd.market.suspended?
+      @bet.market.suspended?
     end
   end
 end

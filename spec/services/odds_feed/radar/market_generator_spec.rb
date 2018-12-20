@@ -64,7 +64,9 @@ describe OddsFeed::Radar::MarketGenerator::Service do
       market = create(:market,
                       external_id: external_id,
                       event: event,
-                      status: :active)
+                      status: :active,
+                      updated_at: 5.minutes.ago)
+
       subject.call
       updated_market = Market.find_by(external_id: external_id)
       expect(updated_market.updated_at).not_to eq(market.updated_at)

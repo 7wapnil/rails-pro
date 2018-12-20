@@ -20,6 +20,10 @@ module OddsFeed
 
       private
 
+      def invalid_bet_ids
+        @invalid_bet_ids ||= []
+      end
+
       def validate_message
         is_invalid = input_data['outcomes'].nil? ||
                      input_data['outcomes']['market'].nil?
@@ -40,34 +44,48 @@ module OddsFeed
         )
 
         bets = bets_by_external_id(external_id)
-
         revalidate_suspended_bets(bets)
-        settle_bets!(bets, outcome)
+        settle_bets(bets, outcome)
 
+        bets = get_settled_bets(external_id)
         logger_level = bets.size.positive? ? :info : :debug
         log_job_message(logger_level, "#{bets.size} bets settled")
 
-        bets.find_in_batches { |batch| emit_websocket_signals(batch) }
+        bets
+          .find_in_batches { |batch| emit_websocket_settlement_signals(batch) }
       end
 
       def revalidate_suspended_bets(bets)
-        bets.suspended.each(&:send_to_internal_validation!)
+        bets.suspended.each { |bet| revalidate_suspended_bet(bet) }
       end
 
-      def settle_bets!(bets, outcome)
-        bets.unsuspended.each do |bet|
-          bet.settle!(
-            settlement_status: outcome['result'] == '1' ? :won : :lost,
-            void_factor: outcome['void_factor']
-          )
-        end
+      def revalidate_suspended_bet(bet)
+        bet.send_to_internal_validation!
+      rescue AASM::InvalidTransition, ActiveRecord::Error => error
+        log_job_failure(error)
+      rescue ActiveRecord::Error
+        log_job_failure("Bet ##{bet.id} can't be set as `suspended`")
+      end
+
+      def settle_bets(bets, outcome)
+        bets.unsuspended.each { |bet| settle_bet(bet, outcome) }
+      end
+
+      def settle_bet(bet, outcome)
+        bet.settle!(
+          settlement_status: outcome['result'] == '1' ? :won : :lost,
+          void_factor: outcome['void_factor']
+        )
+      rescue StandardError => error
+        invalid_bet_ids.push(bet.id)
+
+        log_job_failure("Bet ##{bet.id} can't be settled")
+        log_job_failure(error)
       end
 
       def process_bets(external_id)
-        bets = bets_by_external_id(external_id).unsuspended
-        bets.each do |bet|
-          BetSettelement::Service.call(bet)
-        end
+        get_settled_bets(external_id)
+          .each { |bet| BetSettelement::Service.call(bet) }
       end
 
       def bets_by_external_id(external_id)
@@ -76,7 +94,13 @@ module OddsFeed
           .where(odds: { external_id: external_id })
       end
 
-      def emit_websocket_signals(batch)
+      def get_settled_bets(external_id)
+        bets_by_external_id(external_id)
+          .unsuspended
+          .where.not(id: invalid_bet_ids)
+      end
+
+      def emit_websocket_settlement_signals(batch)
         batch.each do |bet|
           WebSocket::Client.instance.emit(WebSocket::Signals::BET_SETTLED,
                                           id: bet.id,
