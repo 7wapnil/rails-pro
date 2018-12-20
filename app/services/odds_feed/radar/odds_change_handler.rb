@@ -50,10 +50,18 @@ module OddsFeed
       end
 
       def event_active?
+        active_outcomes? && status_positive?
+      end
+
+      def active_outcomes?
         markets_data.select do |market|
           fetch_outcomes_data(market['outcome'])
             .select { |o| o['active'] == '1' }.count.positive?
         end.count.positive?
+      end
+
+      def status_positive?
+        [Event::ENDED, Event::CLOSED].exclude?(event_status)
       end
 
       def fetch_outcomes_data(data)

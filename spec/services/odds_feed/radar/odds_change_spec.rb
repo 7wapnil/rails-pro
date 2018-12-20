@@ -51,7 +51,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
       expect(event.active).to be_truthy
     end
 
-    it 'defines event as inactive' do
+    it 'defines event as inactive when no active outcomes' do
       create(:event,
              external_id: event_id,
              status: Event::NOT_STARTED,
@@ -60,6 +60,21 @@ describe OddsFeed::Radar::OddsChangeHandler do
       OddsFeed::Radar::OddsChangeHandler.new(payload_inactive_outcomes).handle
       event = Event.find_by(external_id: event_id)
       expect(event.active).to be_falsy
+    end
+
+    %w[3 4].each do |radar_status|
+      it "defines event as inactive when receive status '#{radar_status}'" do
+        payload['odds_change']['sport_event_status']['status'] = radar_status
+
+        create(:event,
+               external_id: event_id,
+               status: Event::NOT_STARTED,
+               active: true)
+
+        OddsFeed::Radar::OddsChangeHandler.new(payload).handle
+        event = Event.find_by(external_id: event_id)
+        expect(event.active).to be_falsy
+      end
     end
   end
 
