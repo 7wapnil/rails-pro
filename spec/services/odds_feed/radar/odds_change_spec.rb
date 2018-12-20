@@ -15,6 +15,27 @@ describe OddsFeed::Radar::OddsChangeHandler do
   subject { OddsFeed::Radar::OddsChangeHandler.new(payload) }
 
   before do
+    payload = {
+      outcomes: {
+        outcome: [
+          { 'id': '1', name: 'Odd 1 name' },
+          { 'id': '2', name: 'Odd 2 name' }
+        ]
+      }
+    }.deep_stringify_keys
+
+    create(:market_template, external_id: '47',
+                             name: 'Template name',
+                             payload: payload)
+    create(:market_template, external_id: '48',
+                             name: 'Template name',
+                             payload: payload)
+    create(:market_template, external_id: '49',
+                             name: 'Template name',
+                             payload: payload)
+    create(:market_template, external_id: '188',
+                             name: 'Template name')
+
     allow(subject).to receive(:call_markets_generator).and_return(timestamp)
     allow(subject).to receive(:timestamp).and_return(timestamp)
     allow(subject).to receive(:api_event).and_return(event)
@@ -62,7 +83,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
       expect(event.active).to be_falsy
     end
 
-    %w[3 4].each do |radar_status|
+    %w[3 4 5 9].each do |radar_status|
       it "defines event as inactive when receive status '#{radar_status}'" do
         payload['odds_change']['sport_event_status']['status'] = radar_status
 

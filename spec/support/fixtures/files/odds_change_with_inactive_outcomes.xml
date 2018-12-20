@@ -6,7 +6,7 @@
   <odds>
     <market id="47" specifiers="score=41.5" favourite="1" status="1">
       <outcome id="1" odds="1.12" active="0"/>
-      <outcome id="1" odds="1.12" active="0"/>
+      <outcome id="2" odds="1.12" active="0"/>
     </market>
     <market id="48" specifiers="score=42.5">
       <outcome id="1" odds="1.12" active="0"/>

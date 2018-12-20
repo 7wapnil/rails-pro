@@ -6,6 +6,7 @@ module OddsFeed
         create_or_update_event!
         touch_event!
         generate_markets
+        update_event_activity
         emit_websocket
         event
       end
@@ -43,25 +44,31 @@ module OddsFeed
       def process_updates!
         updates = { remote_updated_at: timestamp,
                     status: event_status,
-                    end_at: event_end_time,
-                    active: event_active? }
+                    end_at: event_end_time }
         log_updates!(updates)
         event.assign_attributes(updates)
       end
 
       def event_active?
-        active_outcomes? && status_positive?
+        status_positive? && active_odds?
       end
 
-      def active_outcomes?
-        markets_data.select do |market|
-          fetch_outcomes_data(market['outcome'])
-            .select { |o| o['active'] == '1' }.count.positive?
-        end.count.positive?
+      def active_odds?
+        Odd
+          .joins(:market)
+          .where('odds.status': Odd::ACTIVE,
+                 'markets.event_id': event.id,
+                 'markets.status': [Market::ACTIVE,
+                                    Market::SUSPENDED])
+          .count
+          .positive?
       end
 
       def status_positive?
-        [Event::ENDED, Event::CLOSED].exclude?(event_status)
+        [Event::ENDED,
+         Event::CLOSED,
+         Event::CANCELLED,
+         Event::ABANDONED].exclude?(event_status)
       end
 
       def fetch_outcomes_data(data)
@@ -84,6 +91,10 @@ module OddsFeed
         return if markets_data.empty?
 
         call_markets_generator
+      end
+
+      def update_event_activity
+        event.update_attributes!(active: event_active?)
       end
 
       def call_markets_generator
@@ -123,9 +134,8 @@ module OddsFeed
       end
 
       def event_status
-        status = event_data['sport_event_status']['status'] ||
-                 Event::NOT_STARTED
-        event_statuses_map[status]
+        status = event_data['sport_event_status']['status']
+        event_statuses_map[status] || Event::NOT_STARTED
       end
 
       def event_end_time
@@ -136,10 +146,16 @@ module OddsFeed
 
       def event_statuses_map
         {
-          '0': Event::NOT_STARTED,
-          '1': Event::STARTED,
-          '3': Event::ENDED,
-          '4': Event::CLOSED
+          0 => Event::NOT_STARTED,
+          1 => Event::STARTED,
+          2 => Event::SUSPENDED,
+          3 => Event::ENDED,
+          4 => Event::CLOSED,
+          5 => Event::CANCELLED,
+          6 => Event::DELAYED,
+          7 => Event::INTERRUPTED,
+          8 => Event::POSTPONED,
+          9 => Event::ABANDONED
         }.stringify_keys
       end
 

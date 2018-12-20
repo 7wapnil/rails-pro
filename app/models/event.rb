@@ -17,8 +17,14 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   STATUSES = {
     not_started: NOT_STARTED = 'not_started',
     started:     STARTED     = 'started',
+    suspended:   SUSPENDED   = 'suspended',
     ended:       ENDED       = 'ended',
-    closed:      CLOSED      = 'closed'
+    closed:      CLOSED      = 'closed',
+    cancelled:   CANCELLED   = 'cancelled',
+    delayed:     DELAYED     = 'delayed',
+    interrupted: INTERRUPTED = 'interrupted',
+    postponed:   POSTPONED   = 'postponed',
+    abandoned:   ABANDONED   = 'abandoned'
   }.freeze
 
   ransacker :markets_count do
