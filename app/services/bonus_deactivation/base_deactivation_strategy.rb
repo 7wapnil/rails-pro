@@ -1,7 +1,8 @@
 module BonusDeactivation
   class BaseDeactivationStrategy < ApplicationService
-    def initialize(customer_bonus)
+    def initialize(customer_bonus, options = {})
       @customer_bonus = customer_bonus
+      @options = options
     end
 
     def call
@@ -11,7 +12,7 @@ module BonusDeactivation
 
     protected
 
-    attr_accessor :customer_bonus
+    attr_accessor :customer_bonus, :options
 
     def deactivate
       msg = "#{self.class.name} needs to implement `#{__method__}` method!"

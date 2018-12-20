@@ -18,8 +18,8 @@ class CustomerBonus < ApplicationRecord
 
   acts_as_paranoid
 
-  def close!(deactivation_service)
-    deactivation_service.call(self)
+  def close!(deactivation_service, options = {})
+    deactivation_service.call(self, options)
   end
 
   def ended_at
