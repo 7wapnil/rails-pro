@@ -35,7 +35,9 @@ module OddsFeed
       end
 
       def update_bets(external_id, outcome)
-        Rails.logger.debug "Settling bets for odd with EID #{external_id}"
+        log_job_message(
+          :debug, "Settling bets for odd with EID #{external_id}"
+        )
 
         bets = bets_by_external_id(external_id)
 
@@ -46,7 +48,7 @@ module OddsFeed
           )
         end
         logger_level = bets.count.positive? ? :info : :debug
-        Rails.logger.send(logger_level, "#{bets.count} bets settled")
+        log_job_message(logger_level, "#{bets.count} bets settled")
 
         bets.find_in_batches { |batch| emit_websocket_signals(batch) }
       end

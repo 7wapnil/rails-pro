@@ -137,7 +137,7 @@ describe 'GraphQL#events' do
       end
 
       before do
-        Odd.update_all(status: Odd.statuses[:active])
+        Odd.update_all(status: Odd::ACTIVE)
       end
 
       it 'returns event market odds list' do
@@ -218,6 +218,31 @@ describe 'GraphQL#events' do
       end
     end
 
+    context 'past' do
+      let(:query) do
+        %({ events (
+              filter: { past: true }
+          ) {
+              id
+        } })
+      end
+
+      before do
+        create_list(
+          :event_with_odds,
+          5,
+          title: title,
+          traded_live: false,
+          start_at: 5.minutes.ago,
+          end_at: nil
+        )
+      end
+
+      it 'returns past events' do
+        expect(result['data']['events'].count).to eq(5)
+      end
+    end
+
     context 'title' do
       let(:query) do
         %({ events (
@@ -239,7 +264,7 @@ describe 'GraphQL#events' do
     end
 
     context 'tournament' do
-      let(:tournament) { create(:event_scope, kind: :tournament) }
+      let(:tournament) { create(:event_scope, kind: EventScope::TOURNAMENT) }
       let(:query) do
         %({ events (
               filter: { tournamentId: #{tournament.id} }

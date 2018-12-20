@@ -7,9 +7,15 @@ module Bonuses
     end
 
     def call
-      service = BonusDeactivation::RollOverReached
-      customer.customer_bonus&.close!(service) # TODO : pass correct service
-      CustomerBonus.create!(bonus_activation_attributes)
+      if customer.customer_bonus
+        CustomerBonuses::ExpirationService.call(
+          customer.customer_bonus,
+          :expired_by_new_activation
+        )
+      end
+      # service = BonusDeactivation::RollOverReached
+      # customer.customer_bonus&.close!(service) # TODO : pass correct service
+      # CustomerBonus.create!(bonus_activation_attributes)
     end
 
     private

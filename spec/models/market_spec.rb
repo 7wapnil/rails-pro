@@ -1,5 +1,5 @@
 describe Market do
-  it { should define_enum_for(:status) }
+  # it { should define_enum_for(:status) }
 
   it { should belong_to(:event) }
   it { should have_many(:odds) }
@@ -51,8 +51,8 @@ describe Market do
     %i[cancelled settled]
   ].each do |initial_state, new_state|
     it "raises error on switching from '#{initial_state}' to '#{new_state}'" do
-      market = create(:market, status: Market.statuses[initial_state])
-      market.status = Market.statuses[new_state]
+      market = create(:market, status: initial_state)
+      market.status = new_state
       expect(market.valid?).to be_falsey
       error_msg = I18n.t('errors.messages.wrong_market_state',
                          initial_state: initial_state,
@@ -79,8 +79,8 @@ describe Market do
     %i[inactive suspended]
   ].each do |initial_state, new_state|
     it "allows switching from '#{initial_state}' to '#{new_state}'" do
-      market = create(:market, status: Market.statuses[initial_state])
-      market.status = Market.statuses[new_state]
+      market = create(:market, status: initial_state)
+      market.status = new_state
       market.valid?
       expect(market.errors[:status]).to be_blank
     end
@@ -99,7 +99,7 @@ describe Market do
     allow_any_instance_of(Market).to receive(:emit_created)
     market = create(:market)
     market.assign_attributes(name: 'New name',
-                             status: Market.statuses[:active])
+                             status: Market::ACTIVE)
     market.save!
     expect(WebSocket::Client.instance)
       .to have_received(:emit)
@@ -108,7 +108,7 @@ describe Market do
             eventId: market.event_id.to_s,
             changes: {
               name: 'New name',
-              status: 'active'
+              status: Market::ACTIVE
             })
   end
 end

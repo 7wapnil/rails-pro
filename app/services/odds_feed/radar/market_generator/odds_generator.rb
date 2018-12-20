@@ -2,6 +2,8 @@ module OddsFeed
   module Radar
     module MarketGenerator
       class OddsGenerator < ::ApplicationService
+        include JobLogger
+
         def initialize(market, market_data)
           @market = market
           @market_data = market_data
@@ -22,7 +24,7 @@ module OddsFeed
             odd = build_odd(odd_data)
             @odds << odd if odd && valid?(odd)
           rescue StandardError => e
-            Rails.logger.error e.message
+            log_job_failure(e)
             next
           end
         end
@@ -38,7 +40,7 @@ module OddsFeed
             Odd '#{odd.external_id}' is invalid: \
             #{odd.errors.full_messages.join("\n")}
           MESSAGE
-          Rails.logger.warn msg.squish
+          log_job_message(:warn, msg.squish)
           false
         end
 
@@ -49,18 +51,20 @@ module OddsFeed
           end
 
           external_id = "#{@market_data.external_id}:#{odd_data['id']}"
-          Rails.logger.debug "Building odd ID #{external_id}, #{odd_data}"
+          log_job_message(
+            :debug, "Building odd ID #{external_id}, #{odd_data}"
+          )
 
           Odd.new(external_id: external_id,
                   market: @market,
                   name: @market_data.odd_name(odd_data['id']),
-                  status: odd_data['active'].to_i,
+                  status: Odd::ACTIVE,
                   value: odd_data['odds'])
         end
 
         def odd_data_is_not_payload(odd_data)
-          Rails.logger.warn(
-            "Odd data should be a payload, but received: `#{odd_data}`"
+          log_job_message(
+            :warn, "Odd data should be a payload, but received: `#{odd_data}`"
           )
         end
       end

@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class Bonus < ApplicationRecord
   enum kind: {
-    deposit: 0,
-    free_bet: 1
+    deposit:  DEPOSIT  = 'deposit',
+    free_bet: FREE_BET = 'free_bet'
   }
 
   validates :code,

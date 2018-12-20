@@ -1,6 +1,8 @@
 module OddsFeed
   module Radar
     class EventAdapter < BaseAdapter
+      include JobLogger
+
       def result
         @event = Event.new(event_attributes)
         attach_title!
@@ -58,7 +60,7 @@ module OddsFeed
       end
 
       def attach_title!
-        Rails.logger.debug "Title data received: #{title_fixture}"
+        log_job_message(:debug, "Title data received: #{title_fixture}")
         @event.title = EventAdapter::TitleSelector.call(payload: title_fixture)
       end
 
@@ -70,7 +72,7 @@ module OddsFeed
 
       def find_or_create_tournament!
         data = tournament_fixture
-        Rails.logger.debug "Tournament data received: #{data}"
+        log_job_message(:debug, "Tournament data received: #{data}")
         find_or_create_scope!(external_id: data['id'],
                               kind: :tournament,
                               name: tournament_fixture['name'],
@@ -78,10 +80,12 @@ module OddsFeed
       end
 
       def find_or_create_season!
-        Rails.logger.debug "Season data received: #{season_fixture}"
+        log_job_message(:debug, "Season data received: #{season_fixture}")
 
         unless season_fixture
-          Rails.logger.info 'Season fixture is missing in payload, exiting'
+          log_job_message(
+            :info, 'Season fixture is missing in payload, exiting'
+          )
           return
         end
 
@@ -92,10 +96,12 @@ module OddsFeed
       end
 
       def find_or_create_country!
-        Rails.logger.debug "Country data received: #{country_fixture}"
+        log_job_message(:debug, "Country data received: #{country_fixture}")
 
         unless country_fixture
-          Rails.logger.info 'Country fixture is missing in payload, exiting'
+          log_job_message(
+            :info, 'Country fixture is missing in payload, exiting'
+          )
           return
         end
 

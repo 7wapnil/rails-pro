@@ -1,13 +1,17 @@
 describe 'Customers#notes' do
   let(:customer) { create(:customer) }
-  let(:page_path) { notes_customer_path(customer) }
 
   before do
     login_as create(:admin_user), scope: :user
-    visit page_path
   end
 
   context 'with page' do
+    let(:page_path) { notes_customer_path(customer) }
+
+    before do
+      visit page_path
+    end
+
     it 'shows customer notes section' do
       expect(page).to have_selector '.customer-notes:not(.widget)'
     end
@@ -79,6 +83,12 @@ describe 'Customers#notes' do
   end
 
   context 'with widget' do
+    let(:page_path) { customer_path(customer) }
+
+    before do
+      visit page_path
+    end
+
     it 'shows customer notes section' do
       expect(page).to have_selector '.customer-notes.widget'
     end

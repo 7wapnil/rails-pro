@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class CustomerBonus < ApplicationRecord
   enum kind: Bonus.kinds
   belongs_to :customer
@@ -5,6 +7,14 @@ class CustomerBonus < ApplicationRecord
   belongs_to :original_bonus, class_name: 'Bonus', optional: true
 
   attr_reader :amount
+
+  enum expiration_reason: {
+    manual_cancel: MANUAL_CANCEL = 'manual_cancel',
+    expired_by_new_activation:
+      EXPIRED_BY_NEW_ACTIVATION = 'expired_by_new_activation',
+    expired_by_date: EXPIRED_BY_DATE = 'expired_by_date',
+    converted: CONVERTED = 'converted'
+  }
 
   acts_as_paranoid
 

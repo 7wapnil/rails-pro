@@ -1,6 +1,6 @@
 describe OddsFeed::Radar::BetCancelHandler do
-  let(:pending_status) { Bet.statuses[:pending] }
-  let(:cancelled_status) { Bet.statuses[:cancelled] }
+  let(:pending_status) { StateMachines::BetStateMachine::VALIDATED_INTERNALLY }
+  let(:cancelled_status) { StateMachines::BetStateMachine::CANCELLED }
 
   let(:payload) do
     XmlParser.parse(

@@ -2,6 +2,8 @@ module OddsFeed
   module Radar
     module Transpiling
       class Interpreter
+        include JobLogger
+
         attr_reader :event, :specifiers_map
 
         MATCHERS = [
@@ -42,7 +44,7 @@ module OddsFeed
             token = matches.first
             result = result.gsub("{#{token}}", token_value(token))
           rescue StandardError => e
-            Rails.logger.warn e.message
+            log_job_message(:warn, e.message)
           end
           result
         end

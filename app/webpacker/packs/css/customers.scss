@@ -1,0 +1,23 @@
+@import 'mixins/flexbox';
+
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1440px;
+    .customer-navigation-column {
+      @include flex(0 0 20%);
+      max-width: 20%;
+    }
+    .customer-content-column {
+      @include flex(0 0 60%);
+      max-width: 60%;
+    }
+    .customer-content-wide-column {
+      @include flex(0 0 80%);
+      max-width: 80%;
+    }
+    .customer-widget-column {
+      @include flex(0 0 20%);
+      max-width: 20%;
+    }
+  }
+}

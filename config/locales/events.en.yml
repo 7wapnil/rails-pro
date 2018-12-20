@@ -5,6 +5,7 @@ en:
     customer_signed_up: "Customer with ID %{customer_id}, username '%{customer_name}' just signed up"
     customer_verified: "Customer (%{customer_name}) verified by %{user_name}"
     customer_verification_revoked: "Customer (%{customer_name}) verification revoked by %{user_name}"
+    customer_bonus_deactivated: "Bonus '%{code}' for %{customer_name} deactivated by %{user_name}"
     currency_created: "Currency '%{code}' added by %{user_name}"
     currency_updated: "Currency '%{code}' updated by %{user_name}"
     label_created: "Label '%{name}' created by %{user_name}"
@@ -28,3 +29,5 @@ en:
     deposit_limit_created: "Deposit limit (%{value} %{currency_code} per %{range}) for %{customer_name} created by %{user_name}"
     deposit_limit_updated: "Deposit limit (%{value} %{currency_code} per %{range}) for %{customer_name} updated by %{user_name}"
     deposit_limit_deleted: "Deposit limit for %{customer_name} deleted by %{user_name}"
+    promotional_accepted: "Customer (%{customer_name}) promotional agreement accepted by %{user_name}"
+    promotional_revoked: "Customer (%{customer_name}) promotional agreement revoked by %{user_name}"

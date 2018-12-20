@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Balance < ApplicationRecord
   belongs_to :wallet
   has_many :balance_entries
@@ -12,7 +14,7 @@ class Balance < ApplicationRecord
             }
 
   enum kind: {
-    real_money: 0,
-    bonus: 1
+    real_money: REAL_MONEY = 'real_money',
+    bonus:      BONUS      = 'bonus'
   }
 end

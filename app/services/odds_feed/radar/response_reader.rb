@@ -1,6 +1,8 @@
 module OddsFeed
   module Radar
     class ResponseReader < ApplicationService
+      include JobLogger
+
       CLIENT_KEY = 'radar-client'.freeze
 
       def initialize(path:, method:, **params)
@@ -13,8 +15,8 @@ module OddsFeed
       def call
         return api_call unless cached_data?
 
-        Rails.logger.info "Cached data loaded for `#{path}`"
-        Rails.logger.debug "Loaded data: #{cached_response}"
+        log_job_message(:info, "Cached data loaded for `#{path}`")
+        log_job_message(:debug, "Loaded data: #{cached_response}")
         cached_response
       end
 
@@ -35,14 +37,14 @@ module OddsFeed
       end
 
       def api_call
-        Rails.logger.debug "Requesting Radar API endpoint: #{path}"
-        Rails.logger.debug "Radar API response: #{response.body}"
+        log_job_message(:debug, "Requesting Radar API endpoint: #{path}")
+        log_job_message(:debug, "Radar API response: #{response.body}")
 
         Rails.cache.write(cache_key, parsed_response, cache_settings) if cache
 
         parsed_response
       rescue RuntimeError, MultiXml::ParseError => e
-        Rails.logger.error [e.message, response.body]
+        log_job_failure([e.message, response.body])
         raise HTTParty::ResponseError, 'Malformed response body'
       end
 

@@ -17,6 +17,14 @@ describe 'GraphQL#titles' do
       it 'returns list of titles' do
         expect(result['data']['titles'].count).to eq(5)
       end
+
+      it 'returns ordered by name list of titles' do
+        previous_name = nil
+        result['data']['titles'].each do |title|
+          expect(previous_name < title['name']).to be_truthy if previous_name
+          previous_name = title['name']
+        end
+      end
     end
 
     context 'with kind' do
@@ -55,7 +63,7 @@ describe 'GraphQL#titles' do
       let(:title) { create(:title) }
 
       before do
-        create_list(:event_scope, 3, kind: :tournament, title: title)
+        create_list(:event_scope, 3, kind: EventScope::TOURNAMENT, title: title)
       end
 
       it 'returns titles with tournaments' do

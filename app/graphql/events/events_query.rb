@@ -37,6 +37,7 @@ module Events
       query = query.limit(args[:limit]) if args[:limit]
       query = query.in_play if filter[:inPlay]
       query = query.upcoming if filter[:upcoming]
+      query = query.past if filter[:past]
 
       query
     end

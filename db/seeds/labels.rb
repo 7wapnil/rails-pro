@@ -42,19 +42,20 @@ market_labels = [
 ]
 
 customer_labels.each do |payload|
-  Label.find_or_create_by!(name: payload[:name], kind: :customer) do |label|
+  Label.find_or_create_by!(name: payload[:name],
+                           kind: Label::CUSTOMER) do |label|
     label.name = payload[:name]
   end
 end
 
 event_labels.each do |payload|
-  Label.find_or_create_by!(name: payload[:name], kind: :event) do |label|
+  Label.find_or_create_by!(name: payload[:name], kind: Label::EVENT) do |label|
     label.name = payload[:name]
   end
 end
 
 market_labels.each do |payload|
-  Label.find_or_create_by!(name: payload[:name], kind: :market) do |label|
+  Label.find_or_create_by!(name: payload[:name], kind: Label::MARKET) do |label|
     label.name = payload[:name]
   end
 end

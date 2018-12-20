@@ -2,6 +2,7 @@ module OddsFeed
   module Radar
     class Client
       include HTTParty
+      include JobLogger
 
       DEFAULT_CACHE_TERM = 12.hours
 
@@ -44,7 +45,7 @@ module OddsFeed
         route = "/#{product_code}/recovery/initiate_request"
         route += "?after=#{after}" if after
 
-        Rails.logger.info("Calling subscription recovery on #{route}")
+        log_job_message(:info, "Calling subscription recovery on #{route}")
         post(route)
       end
 
@@ -74,25 +75,25 @@ module OddsFeed
           variant_urn
         ].join('/')
 
-        Rails.logger.info "Loading market template on: #{route}"
+        log_job_message(:info, "Loading market template on: #{route}")
         request(route, cache: cache)
       end
 
       def player_profile(player_id, cache: nil)
         route = "/sports/#{@language}/players/#{player_id}/profile.xml"
-        Rails.logger.info("Loading player profile: #{route}")
+        log_job_message(:info, "Loading player profile: #{route}")
         request(route, cache: cache)
       end
 
       def competitor_profile(competitor_id, cache: nil)
         route = "/sports/#{@language}/competitors/#{competitor_id}/profile.xml"
-        Rails.logger.info("Loading competitor profile: #{route}")
+        log_job_message(:info, "Loading competitor profile: #{route}")
         request(route, cache: cache)
       end
 
       def venue_summary(venue_id, cache: nil)
         route = "/sports/#{@language}/venues/#{venue_id}/profile.xml"
-        Rails.logger.info("Loading venue summary: #{route}")
+        log_job_message(:info, "Loading venue summary: #{route}")
         request(route, cache: cache)
       end
 
