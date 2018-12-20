@@ -323,7 +323,7 @@ FactoryBot.define do
   factory :event do
     title
     visible { true }
-    active { false }
+    active { true }
     name { 'MiTH vs. Beyond eSports' }
     description { 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' } # rubocop:disable Metrics/LineLength
     start_at { 2.hours.ago }

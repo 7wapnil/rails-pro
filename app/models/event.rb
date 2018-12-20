@@ -33,6 +33,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     Arel.sql('wager')
   end
 
+  scope :active, -> { where(active: true) }
+
   belongs_to :title
   has_many :markets, dependent: :delete_all
   has_many :bets, through: :markets
