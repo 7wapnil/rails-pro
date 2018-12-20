@@ -18,7 +18,7 @@ module BalanceCalculations
 
     def calculate_bonus_amount
       min_deposit = bonus&.min_deposit
-      return 0 if min_deposit.nil? || min_deposit > amount
+      return 0 if bonus.nil? || min_deposit > amount
 
       bonus_amount = amount * (bonus.percentage / 100.0)
       max_deposit_bonus = bonus.max_deposit_match
