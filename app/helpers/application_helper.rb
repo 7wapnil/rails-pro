@@ -32,8 +32,8 @@ module ApplicationHelper
                        verified)
   end
 
-  def link_back
-    link_to t(:back), request.referer,
+  def link_back(link = nil)
+    link_to t(:back), link || request.referer,
             class: 'btn btn-outline-dark'
   end
 
