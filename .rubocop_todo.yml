@@ -8,7 +8,25 @@
 
 # Offense count: 29
 RSpec/AnyInstance:
-  Enabled: false
+  Exclude:
+    - 'spec/models/market_spec.rb'
+    - 'spec/models/odd_spec.rb'
+    - 'spec/services/bet_placement/submission_service_spec.rb'
+    - 'spec/services/mts/messages/validation_response_spec.rb'
+    - 'spec/services/odds_feed/radar/market_generator/service_generator_spec.rb'
+    - 'spec/support/shared_examples/callable_service.rb'
+    - 'spec/features/user_sign_in_spec.rb'
+    - 'spec/models/event_spec.rb'
+    - 'spec/services/deposits/placement_service_spec.rb'
+    - 'spec/services/wallet_entry/authorization_service_spec.rb'
+    - 'spec/services/mts/session_spec.rb'
+    - 'spec/services/odds_feed/radar/market_generator/market_data_spec.rb'
+    - 'spec/services/odds_feed/radar/entities/venue_loader_spec.rb'
+    - 'spec/graph_ql/account/sign_in_spec.rb'
+    - 'spec/services/odds_feed/radar/market_generator/template_loader_spec.rb'
+    - 'spec/services/odds_feed/radar/entities/player_loader_spec.rb'
+    - 'spec/services/odds_feed/radar/entities/competitor_loader_spec.rb'
+    - 'spec/services/odds_feed/radar/market_generator/service_spec.rb'
 
 # Offense count: 204
 # Configuration parameters: Prefixes.
@@ -40,7 +58,70 @@ RSpec/MessageSpies:
 # Offense count: 137
 # Configuration parameters: AggregateFailuresByDefault.
 RSpec/MultipleExpectations:
-  Max: 9
+  Exclude:
+    - 'spec/adapters/event_details/radar_spec.rb'
+    - 'spec/controllers/deposit_limits_controller_spec.rb'
+    - 'spec/features/audit_log_index_spec.rb'
+    - 'spec/features/bets_show_spec.rb'
+    - 'spec/features/currency_index_spec.rb'
+    - 'spec/features/customer_activity_spec.rb'
+    - 'spec/features/customer_show_spec.rb'
+    - 'spec/features/entry_request_show_spec.rb'
+    - 'spec/features/entry_requests_index_spec.rb'
+    - 'spec/features/user_sign_in_spec.rb'
+    - 'spec/graph_ql/account/user_sign_up_spec.rb'
+    - 'spec/graph_ql/app_spec.rb'
+    - 'spec/graph_ql/place_bet_spec.rb'
+    - 'spec/lib/application_state_spec.rb'
+    - 'spec/lib/customer_locking_spec.rb'
+    - 'spec/models/customer_spec.rb'
+    - 'spec/models/market_spec.rb'
+    - 'spec/services/mts/messages/validation_response_spec.rb'
+    - 'spec/services/mts/session_spec.rb'
+    - 'spec/services/odds_feed/radar/event_adapter_spec.rb'
+    - 'spec/services/odds_feed/radar/fixture_change_handler_spec.rb'
+    - 'spec/services/odds_feed/radar/live_booking_service_spec.rb'
+    - 'spec/services/odds_feed/radar/odds_change_handler_spec.rb'
+    - 'spec/support/shared_examples/callable_service.rb'
+    - 'spec/workers/mts/validation_message_publisher_worker_spec.rb'
+    - 'spec/workers/radar/event_scopes_loading_worker_spec.rb'
+    - 'spec/workers/radar/markets_update_worker_spec.rb'
+    - 'spec/workers/radar/missing_heartbeat_worker_spec.rb'
+    - 'spec/features/audit_log_show_spec.rb'
+    - 'spec/features/bonuses_spec.rb'
+    - 'spec/features/customer_account_management_spec.rb'
+    - 'spec/features/customer_notes_spec.rb'
+    - 'spec/features/labels_index_spec.rb'
+    - 'spec/features/verification_document_show_spec.rb'
+    - 'spec/graph_ql/markets_spec.rb'
+    - 'spec/graph_ql/wallets_spec.rb'
+    - 'spec/helpers/currency_helper_spec.rb'
+    - 'spec/helpers/settle_helper_spec.rb'
+    - 'spec/models/bet_spec.rb'
+    - 'spec/services/bonuses/activation_service_spec.rb'
+    - 'spec/services/deposits/placement_service_spec.rb'
+    - 'spec/services/event_archive/service_spec.rb'
+    - 'spec/services/odds_feed/radar/alive/handler_spec.rb'
+    - 'spec/services/odds_feed/radar/bet_cancel_handler_spec.rb'
+    - 'spec/services/odds_feed/radar/bet_stop_handler_spec.rb'
+    - 'spec/services/odds_feed/radar/market_generator/service_generator_spec.rb'
+    - 'spec/services/odds_feed/radar/market_generator/service_spec.rb'
+    - 'spec/features/customers_index_spec.rb'
+    - 'spec/graph_ql/account/sign_in_spec.rb'
+    - 'spec/graph_ql/account/sign_up_spec.rb'
+    - 'spec/graph_ql/titles_spec.rb'
+    - 'spec/features/label_form_spec.rb'
+    - 'spec/features/bonuses_index_spec.rb'
+    - 'spec/graph_ql/events_spec.rb'
+    - 'spec/services/bet_placement/submission_service_spec.rb'
+    - 'spec/services/odds_feed/radar/event_status_service_spec.rb'
+    - 'spec/features/bets_index_spec.rb'
+    - 'spec/features/currency_form_spec.rb'
+    - 'spec/features/verification_document_index_spec.rb'
+    - 'spec/services/bet_settelement/service_spec.rb'
+    - 'spec/services/wallet_entry/authorization_service_spec.rb'
+    - 'spec/features/market_templates_spec.rb'
+    - 'spec/features/market_templates_index_spec.rb'
 
 # Offense count: 275
 RSpec/NamedSubject:
@@ -48,4 +129,17 @@ RSpec/NamedSubject:
 
 # Offense count: 38
 RSpec/NestedGroups:
-  Max: 5
+  Exclude:
+    - 'spec/graph_ql/account/sign_in_spec.rb'
+    - 'spec/services/bet_external_validation/service_spec.rb'
+    - 'spec/services/odds_feed/radar/event_adapter_spec.rb'
+    - 'spec/services/odds_feed/radar/transpiling/interpreter_spec.rb'
+    - 'spec/services/users/sign_in_service_spec.rb'
+    - 'spec/features/audit_log_index_spec.rb'
+    - 'spec/services/mts/session_spec.rb'
+    - 'spec/workers/mts/validation_message_publisher_worker_spec.rb'
+    - 'spec/services/odds_feed/radar/response_reader_spec.rb'
+    - 'spec/features/bets_index_spec.rb'
+    - 'spec/features/verification_document_index_spec.rb'
+    - 'spec/services/bet_settelement/service_spec.rb'
+    - 'spec/services/odds_feed/radar/market_generator/service_spec.rb'

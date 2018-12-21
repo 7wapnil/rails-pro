@@ -1,4 +1,4 @@
-describe 'MarketTemplates#index' do
+describe MarketTemplate, '#index' do
   let(:per_page_count) { 10 }
 
   before do
@@ -10,7 +10,7 @@ describe 'MarketTemplates#index' do
 
   it 'shows market templates list' do
     within 'table.table.entities' do
-      MarketTemplate.limit(per_page_count).each do |template|
+      described_class.limit(per_page_count).each do |template|
         expect(page).to have_content(template.id)
         expect(page).to have_content(template.external_id)
         expect(page).to have_content(template.name)

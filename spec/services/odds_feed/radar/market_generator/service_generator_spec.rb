@@ -1,77 +1,157 @@
 describe OddsFeed::Radar::MarketGenerator::Service do
-  subject { described_class.call(event.id, markets_data) }
-
-  let(:markets_data) do
-    XmlParser
-      .parse(file_fixture('odds_change_message.xml').read)
-      .dig('odds_change', 'odds', 'market')
+  subject do
+    described_class.new(event.id, markets_payload)
   end
 
-  let(:event)      { create(:event) }
-  let(:web_socket) { double }
-  let(:odds)       { build_stubbed_list(:odd, 5) }
-  let(:markets)    { build_stubbed_list(:market, markets_data.count) }
+  let(:markets_payload) do
+    data = XmlParser.parse(file_fixture('odds_change_message.xml').read)
+    data['odds_change']['odds']['market']
+  end
+  let(:event) { create(:event, external_id: 'sr:match:1234') }
 
   before do
-    allow(WebSocket::Client).to receive(:instance).and_return(web_socket)
-    allow(web_socket).to        receive(:emit)
+    payload = {
+      outcomes: {
+        outcome: [
+          { 'id': '1', name: 'Odd 1 name' },
+          { 'id': '2', name: 'Odd 2 name' }
+        ]
+      }
+    }.deep_stringify_keys
 
-    allow(OddsFeed::Radar::MarketGenerator::OddsGenerator)
-      .to receive(:call)
-      .and_return(odds)
-
-    allow_any_instance_of(OddsFeed::Radar::MarketGenerator::MarketData)
-      .to receive(:name)
-    allow(Market).to receive(:new).and_return(*markets)
-
-    allow(Market).to receive(:import)
-    allow(Odd).to    receive(:import)
+    create(:market_template, external_id: '47',
+                             name: 'Template name',
+                             payload: payload)
+    create(:market_template, external_id: '48',
+                             name: 'Template name',
+                             payload: payload)
+    create(:market_template, external_id: '49',
+                             name: 'Template name',
+                             payload: payload)
+    create(:market_template, external_id: '123',
+                             name: 'Template name',
+                             payload: payload)
+    create(:market_template, external_id: '188',
+                             name: 'Template name')
   end
 
-  context 'build markets' do
-    context 'proceed only valid markets' do
-      let(:valid_markets_count) { rand(markets_data.count) }
-      let(:valid_markets) { build_stubbed_list(:market, valid_markets_count) }
-      let(:invalid_markets) do
-        build_stubbed_list(
-          :market,
-          markets_data.count - valid_markets_count,
-          name: nil
+  context 'market with outcomes' do
+    let(:external_id) { 'sr:match:1234:123/set=2|game=3|point=1' }
+
+    it 'generates new market if not exists in db' do
+      subject.call
+      market = Market.find_by(external_id: external_id)
+      expect(market).not_to be_nil
+    end
+
+    it 'generates new market with default priority' do
+      subject.call
+      market = Market.find_by!(external_id: external_id)
+      expect(market.priority).to eq(1)
+    end
+
+    it 'sends websocket message on new market creation' do
+      subject.call
+
+      expect(WebSocket::Client.instance)
+        .to have_received(:emit)
+        .with(WebSocket::Signals::MARKETS_UPDATED,
+              id: event.id.to_s,
+              data: anything)
+    end
+
+    it 'updates market if exists in db' do
+      market = create(:market,
+                      external_id: external_id,
+                      event: event,
+                      status: :active)
+      subject.call
+      updated_market = Market.find_by(external_id: external_id)
+      expect(updated_market.updated_at).not_to eq(market.updated_at)
+    end
+
+    it 'does not send websocket message if market not change' do
+      create(:market,
+             external_id: external_id,
+             event: event,
+             name: 'transpiler value',
+             priority: 0,
+             status: :suspended)
+
+      subject.call
+      expect(WebSocket::Client.instance)
+        .not_to have_received(:emit)
+        .with(WebSocket::Signals::MARKET_UPDATED)
+    end
+
+    it 'sets appropriate status for market' do
+      [
+        { status: '-1', result: 'suspended' },
+        { status: '0', result: 'inactive' },
+        { status: '1', result: 'active' }
+      ].each do |expectation|
+        markets_payload[3]['status'] = expectation[:status]
+        described_class.call(event.id,
+                             markets_payload)
+        market = Market.find_by!(external_id: external_id)
+        expect(market.status).to eq(expectation[:result])
+      end
+    end
+
+    context 'odds' do
+      it 'creates odds if not exist in db' do
+        subject.call
+        expect(Odd.find_by(external_id: "#{external_id}:1")).not_to be_nil
+        expect(Odd.find_by(external_id: "#{external_id}:2")).not_to be_nil
+      end
+
+      it 'updates odds if exist in db' do
+        market = create(:market,
+                        external_id: external_id,
+                        event: event,
+                        status: :active)
+
+        create(
+          :odd,
+          external_id: "#{external_id}:1",
+          market: market,
+          value: 1.0
         )
-      end
-      let(:markets) { [*valid_markets, *invalid_markets] }
 
-      it do
-        expect(OddsFeed::Radar::MarketGenerator::OddsGenerator)
-          .to receive(:call)
-          .exactly(valid_markets_count)
-          .times
-        subject
+        create(
+          :odd,
+          external_id: "#{external_id}:2",
+          market: market,
+          value: 1.0
+        )
+
+        subject.call
+        expect(Odd.find_by(external_id: "#{external_id}:1").value).to eq(1.3)
+        expect(Odd.find_by(external_id: "#{external_id}:2").value).to eq(1.7)
       end
 
-      it { expect { subject }.not_to raise_error }
+      it 'sends websocket message on odds update' do
+        subject.call
+
+        expect(WebSocket::Client.instance)
+          .to have_received(:emit)
+          .with(WebSocket::Signals::ODDS_UPDATED,
+                id: event.id.to_s,
+                data: anything)
+      end
     end
   end
 
-  context 'import' do
-    it 'performed' do
-      expect(Market).to receive(:import).with(markets, hash_including)
-      expect(Odd)
-        .to receive(:import)
-        .with(array_including(odds), hash_including)
+  context 'market without specifiers' do
+    let(:external_id) { 'sr:match:1234:188' }
 
-      subject
-    end
+    it 'generates market external ID without specs' do
+      create(:market_template, external_id: '188',
+                               name: 'Template name')
 
-    it 'emit web-socket events' do
-      expect(web_socket)
-        .to receive(:emit)
-        .with(WebSocket::Signals::MARKETS_UPDATED, hash_including(:id, :data))
-      expect(web_socket)
-        .to receive(:emit)
-        .with(WebSocket::Signals::ODDS_UPDATED, hash_including(:id, :data))
-
-      subject
+      subject.call
+      market = Market.find_by(external_id: external_id)
+      expect(market).not_to be_nil
     end
   end
 end
