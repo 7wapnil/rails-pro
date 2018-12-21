@@ -15,6 +15,10 @@ module OddsFeed
           stored_template.name
         end
 
+        def market_category
+          stored_template.category
+        end
+
         def odd_name(external_id)
           template = find_odd_template(external_id)
           return template['name'].to_s if template

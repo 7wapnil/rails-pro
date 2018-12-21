@@ -293,6 +293,7 @@ FactoryBot.define do
     name { Faker::Name.unique.name }
     groups { 'all' }
     payload { { test: 1 } }
+    category { MarketTemplate::POPULAR }
   end
 
   factory :title do

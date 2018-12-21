@@ -26,6 +26,7 @@ en:
   sign_out: Sign Out
   sign_up: Sign Up
   system: System
+  odds_feed: Odds Feed
   to: To
   upload: Upload
   view: View
@@ -267,6 +268,8 @@ en:
       zero: No wallets
       one: 1 wallet
       other: "%{count} wallets"
+    market_template: Market template
+    market_templates: Market templates
 
   errors:
     messages:
