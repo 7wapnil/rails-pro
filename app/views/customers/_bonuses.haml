@@ -6,11 +6,11 @@
         %th= t('attributes.activated_at')
         %th= t('attributes.status')
       %tbody
-        - history.each do |bonus|
+        - history.each do |customer_bonus|
           %tr
-            %td= link_to bonus.code, bonus.original_bonus
-            %td= l(bonus.created_at)
-            %td= status_badge(bonus.status)
+            %td= link_to customer_bonus.code, customer_bonus
+            %td= l(customer_bonus.created_at)
+            %td= status_badge(customer_bonus.status)
   - else
     .text-center
       %em= t(:no_records)

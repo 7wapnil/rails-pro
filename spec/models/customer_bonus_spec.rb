@@ -16,13 +16,6 @@ describe CustomerBonus do
       expect(customer_bonus.ended_at).to eq(time_of_end)
     end
 
-    it '#deactivate!' do
-      customer_bonus = create(:customer_bonus)
-      customer_bonus.deactivate!
-
-      expect(CustomerBonus.exists?(customer_bonus.id)).to be_falsey
-    end
-
     describe '#expired?' do
       it 'returns false for active bonus' do
         customer_bonus = create(:customer_bonus)
