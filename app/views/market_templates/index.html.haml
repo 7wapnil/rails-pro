@@ -18,7 +18,10 @@
         %td= market_template.name
         %td
           = form_with(model: market_template, class: 'form-inline') do |form|
-            = form.select :category, MarketTemplate.categories, { include_blank: true }, class: 'form-control'
+            = form.select :category,
+                          MarketTemplate.categories,
+                          { include_blank: true },
+                          class: 'form-control'
             = form.submit t(:save), class: 'btn btn-success ml-2'
 
 = paginate @market_templates
