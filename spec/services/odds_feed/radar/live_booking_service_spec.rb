@@ -29,7 +29,7 @@ describe OddsFeed::Radar::LiveBookingService do
     it 'updates event traded live flag' do
       expect(event.traded_live).to be_falsy
 
-      subject.call
+      subject_api.call
       event.reload
 
       expect(event.traded_live).to be_truthy
