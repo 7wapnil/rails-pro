@@ -36,7 +36,7 @@ module Deposits
     end
 
     def bonus_entry_request
-      EntryRequest.new(
+      @bonus_entry_request ||= EntryRequest.new(
         base_attrs.merge(amount: balances_amounts[:bonus])
       )
     end
@@ -47,7 +47,7 @@ module Deposits
     end
 
     def real_money_entry_request
-      EntryRequest.new(
+      @real_money_entry_request ||= EntryRequest.new(
         base_attrs.merge(amount: balances_amounts[:real_money])
       )
     end
