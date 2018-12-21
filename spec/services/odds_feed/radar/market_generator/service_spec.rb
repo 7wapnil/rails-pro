@@ -19,7 +19,9 @@ describe OddsFeed::Radar::MarketGenerator::Service do
 
       subject.send(:build)
 
-      subject.instance_variable_get(:@markets).each_with_index do |market, index|
+      markets = subject.instance_variable_get(:@markets)
+
+      markets.each_with_index do |market, index|
         market_template = market_templates[index]
         expect(market.category).to eq(market_template.category)
       end
