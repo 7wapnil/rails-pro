@@ -10,7 +10,7 @@ describe 'GraphQL#events' do
   describe 'query' do
     context 'basic query' do
       before do
-        create_list(:event_with_odds, 5, :upcoming, title: title)
+        create_list(:event, 5, :upcoming, title: title)
       end
 
       let(:query) { %({ events { id name } }) }
@@ -23,13 +23,13 @@ describe 'GraphQL#events' do
     context 'event visibility' do
       before do
         create_list(
-          :event_with_odds, 2, :upcoming,
+          :event, 2, :upcoming,
           visible: true,
           title: title
         )
 
         create_list(
-          :event_with_odds, 3, :upcoming,
+          :event, 3, :upcoming,
           visible: false,
           title: title
         )
@@ -80,9 +80,9 @@ describe 'GraphQL#events' do
       end
 
       before do
-        create(:event_with_odds, :upcoming, title: title, priority: 1)
-        create(:event_with_odds, :upcoming, title: title, priority: 0)
-        create(:event_with_odds, :upcoming, title: title, priority: 2)
+        create(:event, :upcoming, title: title, priority: 1)
+        create(:event, :upcoming, title: title, priority: 0)
+        create(:event, :upcoming, title: title, priority: 2)
       end
 
       it 'returns events ordered by priority' do
@@ -104,7 +104,7 @@ describe 'GraphQL#events' do
       end
 
       before do
-        event = create(:event_with_odds, :upcoming, title: title)
+        event = create(:event, :upcoming, title: title)
         event.markets.update_all(status: Market::DEFAULT_STATUS,
                                  priority: 0)
 
@@ -150,7 +150,7 @@ describe 'GraphQL#events' do
       let(:query) { %({ events { id name } }) }
 
       before do
-        create_list(:event_with_market, 5, title: title)
+        create_list(:event, 5, title: title, active: false)
       end
 
       it 'returns empty list when no odds' do
@@ -169,7 +169,7 @@ describe 'GraphQL#events' do
       end
 
       before do
-        create_list(:event_with_odds, 5, :upcoming, title: title)
+        create_list(:event, 5, :upcoming, title: title)
       end
 
       it 'returns limited events' do
@@ -178,7 +178,7 @@ describe 'GraphQL#events' do
     end
 
     context 'single event' do
-      let(:event) { create(:event_with_odds, :upcoming) }
+      let(:event) { create(:event, :upcoming) }
       let(:query) do
         %({ events (
               filter: { id: #{event.id} }
@@ -204,7 +204,7 @@ describe 'GraphQL#events' do
 
       before do
         create_list(
-          :event_with_odds,
+          :event,
           5,
           title: title,
           traded_live: true,
@@ -229,7 +229,7 @@ describe 'GraphQL#events' do
 
       before do
         create_list(
-          :event_with_odds,
+          :event,
           5,
           title: title,
           traded_live: false,
@@ -254,8 +254,8 @@ describe 'GraphQL#events' do
 
       before do
         other_title = create(:title)
-        create_list(:event_with_odds, 5, :upcoming, title: title)
-        create_list(:event_with_odds, 5, :upcoming, title: other_title)
+        create_list(:event, 5, :upcoming, title: title)
+        create_list(:event, 5, :upcoming, title: other_title)
       end
 
       it 'returns events by title ID' do
@@ -275,10 +275,10 @@ describe 'GraphQL#events' do
 
       before do
         other_title = create(:title)
-        create_list(:event_with_odds, 5, :upcoming, title: other_title)
+        create_list(:event, 5, :upcoming, title: other_title)
 
         events = create_list(
-          :event_with_odds, 5, :upcoming,
+          :event, 5, :upcoming,
           title: tournament.title
         )
 
@@ -315,7 +315,7 @@ describe 'GraphQL#events' do
       end
 
       before do
-        create(:event_with_odds, :upcoming, payload: payload)
+        create(:event, :upcoming, payload: payload)
       end
 
       it 'returns events with details' do
@@ -335,12 +335,12 @@ describe 'GraphQL#events' do
       end
 
       it 'returns events with live flag true' do
-        create(:event_with_odds, traded_live: true)
+        create(:event, traded_live: true)
         expect(result['data']['events'][0]['live']).to be_truthy
       end
 
       it 'returns events with live flag false' do
-        create(:event_with_odds, traded_live: false)
+        create(:event, traded_live: false)
         expect(result['data']['events'][0]['live']).to be_falsy
       end
     end
@@ -364,8 +364,7 @@ describe 'GraphQL#events' do
       end
 
       it 'returns events with live flag true' do
-        create(:event_with_odds, payload: { producer: { origin: 'radar',
-                                                        id: '3' } })
+        create(:event, payload: { producer: { origin: 'radar', id: '3' } })
 
         expect(result['errors']).to be_nil
         expect(result['data']['events'][0]['state']).to be_nil

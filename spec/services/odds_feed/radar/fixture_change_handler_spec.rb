@@ -41,7 +41,9 @@ describe OddsFeed::Radar::FixtureChangeHandler do
 
   context 'existing event' do
     let(:event) do
-      create(:event, external_id: payload['fixture_change']['event_id'])
+      create(:event,
+             external_id: payload['fixture_change']['event_id'],
+             active: true)
     end
 
     before do
@@ -61,6 +63,23 @@ describe OddsFeed::Radar::FixtureChangeHandler do
       # this test checks arguments for second call
       expect(event).to receive(:add_to_payload)
       expect(event).to receive(:add_to_payload).with(payload_update)
+    end
+
+    context 'cancelled event' do
+      let(:payload) do
+        {
+          'fixture_change' => {
+            'event_id' => 'sr:match:1234',
+            'change_type' => '3',
+            'product' => '1'
+          }
+        }
+      end
+
+      it 'sets event activity status to inactive' do
+        subject.handle
+        expect(Event.find_by!(external_id: 'sr:match:1234').active).to be_falsy
+      end
     end
   end
 end
