@@ -11,5 +11,5 @@
 - content_for :js do
   = javascript_pack_tag 'customers/navigation_links'
 
-= render 'customers/base_template', customer: @customer, note: @note,
-  customer_notes_widget: @customer_notes_widget
+= render 'customers/base_template', customer: @customer, note: nil,
+  customer_notes_widget: nil

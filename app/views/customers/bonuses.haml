@@ -1,6 +1,7 @@
 - content_for :page_content do
   .mt-4.mb-4= render 'customers/bonus_form', customer: @customer,
-    new_bonus: @new_bonus, active_bonuses: @active_bonuses
+    new_bonus: @new_bonus, active_bonuses: @active_bonuses,
+    current_bonus: @current_bonus
   .mt-4.mb-4= render 'customers/bonuses', customer: @customer,
     history: @history
 

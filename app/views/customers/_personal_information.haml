@@ -7,13 +7,15 @@
         %td
           = f.input :first_name,
                     label: false,
-                    required: true
+                    required: true,
+                    input_html: { data: { only_letters: true } }
       %tr
         %td= t('attributes.last_name')
         %td
           = f.input :last_name,
                     label: false,
-                    required: true
+                    required: true,
+                    input_html: { data: { only_letters: true } }
       %tr
         %td= t('attributes.gender')
         %td
@@ -36,3 +38,6 @@
       %tr
         %td.text-right{ colspan: 2 }
           = f.submit t(:save), class: 'btn btn-outline-dark'
+
+- content_for :js do
+  = javascript_pack_tag 'input_validation', 'data-turbolinks-track': 'reload'

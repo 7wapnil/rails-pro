@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_133922) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "expiration_reason"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["deleted_at"], name: "index_customer_bonuses_on_deleted_at"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -286,6 +287,8 @@ ActiveRecord::Schema.define(version: 2018_12_20_133922) do
     t.string "status", default: "not_started"
     t.integer "priority", limit: 2, default: 1
     t.boolean "visible", default: true
+    t.boolean "active", default: false
+    t.index ["active"], name: "index_events_on_active"
     t.index ["external_id"], name: "index_events_on_external_id", unique: true
     t.index ["title_id"], name: "index_events_on_title_id"
   end

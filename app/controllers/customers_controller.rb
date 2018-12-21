@@ -10,7 +10,6 @@ class CustomersController < ApplicationController
   before_action :new_note, only: %i[
     account_management
     activity
-    bets
     betting_limits
     bonuses
     documents
@@ -21,7 +20,6 @@ class CustomersController < ApplicationController
   before_action :customer_notes_widget, only: %i[
     account_management
     activity
-    bets
     betting_limits
     bonuses
     documents
@@ -61,13 +59,11 @@ class CustomersController < ApplicationController
   def bonuses
     @history =
       CustomerBonus.customer_history(customer)
-    return if customer.customer_bonus && !customer.customer_bonus.expired?
-
+    @current_bonus = customer.customer_bonus
     @active_bonuses = Bonus.active
-    @default_wallet = customer.wallets.primary.take
     @new_bonus = CustomerBonus.new(
       customer: customer,
-      wallet: @default_wallet
+      wallet: customer.wallets.primary.take
     )
   end
 
@@ -183,10 +179,18 @@ class CustomersController < ApplicationController
   end
 
   def account_update
+    agreed = account_params[:agreed_with_promotional] == 'on'
+    agreement_changed = customer.agreed_with_promotional != agreed
     customer.update!(account_params)
     set_labelable_resource
     update_label_ids
-
+    if agreement_changed
+      current_user.log_event(
+        agreed ? :promotional_accepted : :promotional_revoked,
+        nil,
+        customer
+      )
+    end
     redirect_to customer_path(customer)
   end
 
