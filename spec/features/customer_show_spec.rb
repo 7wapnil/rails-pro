@@ -1,4 +1,4 @@
-describe 'Customers#show' do
+describe Customer, '#show' do
   subject { create(:customer) }
 
   context 'page content' do
@@ -35,6 +35,7 @@ describe 'Customers#show' do
 
     context 'account type transition' do
       let(:input_name) { 'customer[account_kind]' }
+
       it 'displays all possible types for regular customer' do
         all_options = Customer.account_kinds.keys
 

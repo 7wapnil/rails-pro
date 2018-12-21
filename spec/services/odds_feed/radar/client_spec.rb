@@ -3,8 +3,8 @@ describe OddsFeed::Radar::Client do
   let!(:api_domain) { 'https://test-api-domain' }
 
   before do
-    OddsFeed::Radar::Client.base_uri(api_domain)
-    OddsFeed::Radar::Client.headers(headers)
+    described_class.base_uri(api_domain)
+    described_class.headers(headers)
   end
 
   context 'routes' do

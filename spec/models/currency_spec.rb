@@ -1,8 +1,8 @@
 describe Currency do
-  it { should have_many(:entry_currency_rules) }
+  it { is_expected.to have_many(:entry_currency_rules) }
 
-  it { should validate_presence_of(:name) }
-  it { should validate_presence_of(:code) }
+  it { is_expected.to validate_presence_of(:name) }
+  it { is_expected.to validate_presence_of(:code) }
 
   describe '.primary' do
     context 'with existing primary currency' do

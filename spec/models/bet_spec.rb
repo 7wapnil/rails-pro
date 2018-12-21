@@ -3,21 +3,21 @@ describe Bet do
 
   # it { should define_enum_for(:status) }
 
-  it { should belong_to(:customer) }
-  it { should belong_to(:odd) }
-  it { should belong_to(:currency) }
+  it { is_expected.to belong_to(:customer) }
+  it { is_expected.to belong_to(:odd) }
+  it { is_expected.to belong_to(:currency) }
 
-  it { should have_one(:entry) }
-  it { should have_one(:entry_request) }
+  it { is_expected.to have_one(:entry) }
+  it { is_expected.to have_one(:entry_request) }
 
   it do
-    should validate_numericality_of(:odd_value)
+    expect(subject).to validate_numericality_of(:odd_value)
       .is_equal_to(subject.odd.value)
       .on(:create)
   end
 
   it do
-    should validate_numericality_of(:void_factor)
+    expect(subject).to validate_numericality_of(:void_factor)
       .is_greater_than_or_equal_to(0)
       .is_less_than_or_equal_to(1)
       .allow_nil
@@ -59,7 +59,7 @@ describe Bet do
       create_list(:bet, 3,
                   validation_ticket_sent_at: 1.seconds.ago,
                   status: :sent_to_external_validation)
-      expected_bets = Bet.expired_prematch
+      expected_bets = described_class.expired_prematch
 
       expect(expected_bets).to match_array(expired_bets)
     end
@@ -79,7 +79,7 @@ describe Bet do
       create_list(:bet, 3,
                   validation_ticket_sent_at: 1.seconds.ago,
                   status: :sent_to_external_validation)
-      expected_bets = Bet.expired_live
+      expected_bets = described_class.expired_live
 
       expect(expected_bets).to match_array(expired_bets)
     end
@@ -119,7 +119,7 @@ describe Bet do
   describe 'with_winnings' do
     it 'finds bets with calculated winnings' do
       FactoryBot.create(:bet)
-      result = Bet.with_winnings.first
+      result = described_class.with_winnings.first
       expect(result.winning).to eq(result.amount * result.odd_value)
     end
   end
@@ -127,7 +127,7 @@ describe Bet do
   describe 'sort_by_winning_asc' do
     it 'finds bets with calculated winnings sorted asc' do
       create_list(:bet, 2)
-      result = Bet.sort_by_winning_asc
+      result = described_class.sort_by_winning_asc
       first = result.first
       last = result.last
       expect(first.winning <= last.winning).to be_truthy
@@ -137,7 +137,7 @@ describe Bet do
   describe 'sort_by_winning_desc' do
     it 'finds bets with calculated winnings sorted desc' do
       create_list(:bet, 2)
-      result = Bet.sort_by_winning_desc
+      result = described_class.sort_by_winning_desc
       first = result.first
       last = result.last
       expect(first.winning >= last.winning).to be_truthy
@@ -147,21 +147,22 @@ describe Bet do
   describe '.settle!' do
     context 'with accepted bet' do
       let(:bet) { FactoryBot.create(:bet, :accepted) }
+
       it 'set settlement status to won' do
         expect(bet.settle!(settlement_status: :won, void_factor: 0.5))
           .to be_truthy
-        expect(bet.settled?).to be_truthy
+        expect(bet).to be_settled
         expect(bet.void_factor).to eq(0.5)
-        expect(bet.won?).to be_truthy
-        expect(bet.lost?).to be_falsey
+        expect(bet).to be_won
+        expect(bet).not_to be_lost
       end
       it 'set settlement status to lost' do
         expect(bet.settle!(settlement_status: :lost, void_factor: 0.7))
           .to be_truthy
-        expect(bet.settled?).to be_truthy
+        expect(bet).to be_settled
         expect(bet.void_factor).to eq(0.7)
-        expect(bet.won?).to be_falsey
-        expect(bet.lost?).to be_truthy
+        expect(bet).not_to be_won
+        expect(bet).to be_lost
       end
     end
   end
@@ -179,10 +180,14 @@ describe Bet do
     end
 
     it 'returns bets from regular customer' do
-      expect(Bet.from_regular_customers).to eq(regular_customer.bets)
+      expect(described_class.from_regular_customers).to eq(
+        regular_customer.bets
+      )
     end
     it 'does not return bets from test customer' do
-      expect(Bet.from_regular_customers).to_not include(test_customer.bets)
+      expect(described_class.from_regular_customers).not_to include(
+        test_customer.bets
+      )
     end
 
     it 'count of bets calculations' do

@@ -1,4 +1,4 @@
-describe 'Bonuses' do
+describe Bonus do
   before do
     login_as create(:admin_user), scope: :user
   end
@@ -53,7 +53,7 @@ describe 'Bonuses' do
         instance: I18n.t('entities.bonus')
       )
 
-      expect(current_path).to eq bonus_path(Bonus.last)
+      expect(page).to have_current_path(bonus_path(described_class.last))
       expect_to_have_notification success_message
     end
   end
@@ -73,7 +73,7 @@ describe 'Bonuses' do
 
       success_message = I18n.t(:updated, instance: subject.code)
 
-      expect(current_path).to eq bonus_path(subject)
+      expect(page).to have_current_path(bonus_path(subject))
       expect_to_have_notification success_message
     end
 
@@ -102,13 +102,13 @@ describe 'Bonuses' do
         instance: I18n.t('entities.bonus')
       )
 
-      expect(current_path).to eq bonuses_path
+      expect(page).to have_current_path(bonuses_path)
       expect_to_have_notification success_message
-      expect(Bonus.find_by(id: subject.id)).to be nil
+      expect(described_class.find_by(id: subject.id)).to be nil
     end
 
     it 'is still possible to recover' do
-      expect(Bonus.with_deleted.find_by(id: subject.id)).to be_present
+      expect(described_class.with_deleted.find_by(id: subject.id)).to be_present
     end
   end
 end

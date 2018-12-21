@@ -1,4 +1,4 @@
-describe 'EntryRequests#index' do
+describe EntryRequest, '#index' do
   context 'signed in' do
     let(:per_page_count) { 10 }
 
@@ -23,7 +23,7 @@ describe 'EntryRequests#index' do
 
     it 'shows entry requests list' do
       within 'table.table' do
-        EntryRequest.limit(per_page_count).each do |request|
+        described_class.limit(per_page_count).each do |request|
           # #squish is a temporary hack to fix a bug in `I18n.l` where
           # the value is returned with an extra space
           # between the date and the time
@@ -41,7 +41,7 @@ describe 'EntryRequests#index' do
     end
 
     it 'allows sorting by date' do
-      oldest = EntryRequest.unscoped.order(created_at: :asc).first
+      oldest = described_class.unscoped.order(created_at: :asc).first
       click_link('Date')
       first_row = page.first('table > tbody tr')
       element_id = "entry-request-#{oldest.id}"
@@ -50,7 +50,7 @@ describe 'EntryRequests#index' do
     end
 
     it 'allows sorting by kind' do
-      first_in_table = EntryRequest.unscoped.order(kind: :desc).first
+      first_in_table = described_class.unscoped.order(kind: :desc).first
       click_link('Entry type')
       first_row = page.first('table > tbody tr')
       element_id = "entry-request-#{first_in_table.id}"

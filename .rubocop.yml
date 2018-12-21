@@ -1,3 +1,52 @@
+# FIXME: rubocop-rspec rules, will be clarified with team
+# Offense count: 29
+RSpec/AnyInstance:
+  Enabled: false
+
+# Offense count: 201
+# Configuration parameters: Prefixes.
+# Prefixes: when, with, without
+RSpec/ContextWording:
+  Enabled: false
+
+# Offense count: 173
+# Configuration parameters: Max.
+RSpec/ExampleLength:
+  Max: 20
+
+# Offense count: 13
+RSpec/ExpectInHook:
+  Exclude:
+    - 'spec/graph_ql/account/sign_in_spec.rb'
+    - 'spec/services/bet_external_validation/service_spec.rb'
+    - 'spec/services/odds_feed/radar/entities/competitor_loader_spec.rb'
+    - 'spec/services/odds_feed/radar/entities/player_loader_spec.rb'
+    - 'spec/services/odds_feed/radar/entities/venue_loader_spec.rb'
+    - 'spec/services/odds_feed/radar/market_generator/template_loader_spec.rb'
+
+# Offense count: 69
+# Configuration parameters: EnforcedStyle.
+# SupportedStyles: have_received, receive
+RSpec/MessageSpies:
+  Enabled: false
+
+# Offense count: 137
+# Configuration parameters: AggregateFailuresByDefault.
+RSpec/MultipleExpectations:
+  Max: 9
+
+# Offense count: 345
+RSpec/NamedSubject:
+  Enabled: false
+
+# Offense count: 38
+RSpec/NestedGroups:
+  Max: 5
+
+# end rubocop-rspec rules
+
+require: rubocop-rspec
+
 Bundler/OrderedGems:
   Enabled: false
 
