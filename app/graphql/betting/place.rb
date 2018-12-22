@@ -28,21 +28,22 @@ module Betting
         odd_value: bet_payload[:oddValue],
         status: Bet::INITIAL
       }
+      bonus = applicable_bonus(bet_payload)
 
-      return base_attrs unless applicable_bonus?
+      return base_attrs unless bonus
 
-      wallet = @current_customer.wallets.where(currency_id: currency.id).first
-      bonus = @current_customer.customer_bonus
+      wallet = @current_customer.wallets.where(currency: currency).first
       ratio = wallet.current_ratio
-      base_attrs.merge(ratio: ratio, customer_bonus_id: bonus.id)
+      base_attrs.merge(ratio: ratio, customer_bonus: bonus)
     end
 
-    def applicable_bonus?
+    def applicable_bonus(bet_payload)
+      odd_value = bet_payload[:oddValue]
       bonus = @current_customer.customer_bonus
 
-      return false unless bonus
+      return unless bonus
 
-      !bonus.expired?
+      bonus unless bonus.expired? || odd_value < bonus.min_odds_per_bet
     end
   end
 end

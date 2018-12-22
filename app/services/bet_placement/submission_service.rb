@@ -1,5 +1,5 @@
 module BetPlacement
-  class SubmissionService < ApplicationService # rubocop:disable Metrics/ClassLength, Metrics/LineLength
+  class SubmissionService < ApplicationService
     ENTRY_REQUEST_KIND = EntryRequest::BET
     ENTRY_REQUEST_MODE = EntryRequest::SPORTS_TICKET
 
@@ -21,13 +21,9 @@ module BetPlacement
     private
 
     def valid?
-      return false unless limits_validation_succeeded?
-
-      return false unless provider_connected?
-
-      return false unless entry_requests_succeeded?
-
-      true
+      limits_validation_succeeded? &&
+        provider_connected? &&
+        entry_requests_succeeded?
     end
 
     def limits_validation_succeeded?
@@ -64,7 +60,8 @@ module BetPlacement
 
     def bonus_entry_request_succeeded?
       bonus_amount = amount_calculations[:bonus]
-      return true if bonus_amount.zero? || !applicable_bonus?
+
+      return true if bonus_amount.zero?
 
       @bonus_entry = WalletEntry::AuthorizationService.call(bonus_entry_request,
                                                             :bonus)
@@ -73,15 +70,6 @@ module BetPlacement
         return false
       end
       true
-    end
-
-    def applicable_bonus?
-      bet = bonus_entry_request.origin
-      bonus = bet&.customer_bonus
-
-      return unless bonus
-
-      bonus.min_odds_per_bet <= bet.odd_value
     end
 
     def entry_requests_succeeded?
