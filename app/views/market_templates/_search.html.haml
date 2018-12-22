@@ -1,0 +1,43 @@
+= search_form_for @search do |f|
+  %table.table
+    %thead
+      %tr
+        %th
+          .filter_title= t('attributes.id')
+          .filter_field
+            = f.label :id_eq, class: 'sr-only'
+            = f.search_field :id_eq,
+                             class: 'form-control',
+                             autocomplete: :off
+          %th
+            .filter_title= t('attributes.external_id')
+            .filter_field
+              = f.label :external_id_eq, class: 'sr-only'
+              = f.search_field :external_id_eq,
+                               class: 'form-control',
+                               autocomplete: :off
+          %th
+            .filter_title= t('attributes.name')
+            .filter_field
+              = f.label :name_cont, class: 'sr-only'
+              = f.search_field :name_cont,
+                               class: 'form-control',
+                               autocomplete: :off
+          %th
+            .filter_title= t('attributes.category')
+            .filter_field
+              = f.label :category_eq, class: 'sr-only'
+              = f.select :category_eq,
+                         options_for_select(MarketTemplate.categories.keys,
+                                            query_params[:category_eq]),
+                         { include_blank: true },
+                         class: 'form-control'
+          %th
+            .filter_title= t('attributes.id')
+            .filter_field
+              = f.label :id_eq, class: 'sr-only'
+              = f.search_field :id_eq,
+                               class: 'form-control',
+                               autocomplete: :off
+          %th
+          %th= f.submit class: 'btn btn-outline-dark btn-block'

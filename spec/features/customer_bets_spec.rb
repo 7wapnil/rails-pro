@@ -9,6 +9,6 @@ describe 'Customers#bets' do
   end
 
   it 'shows customer bets section' do
-    expect(page).to have_selector('#customer-bets')
+    expect(page).to have_selector('.table.entities')
   end
 end

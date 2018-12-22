@@ -50,7 +50,7 @@ Rails.application.routes.draw do
       end
     end
   end
-  resources :customer_bonuses, only: :create
+  resources :customer_bonuses, only: %i[create show destroy]
 
   resources :betting_limits, only: %i[create update]
 
@@ -84,6 +84,8 @@ Rails.application.routes.draw do
                      concerns: %i[visible labelable] do
     resources :markets, only: :update
   end
+
+  resources :market_templates, only: %i[index update]
 
   devise_for :users, controllers: {
     sessions: 'users/sessions'

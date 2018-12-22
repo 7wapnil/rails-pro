@@ -5,6 +5,9 @@ describe OddsFeed::Radar::OddsChangeHandler do
   let(:payload_single_market) do
     XmlParser.parse(file_fixture('odds_change_with_single_market.xml').read)
   end
+  let(:payload_inactive_outcomes) do
+    XmlParser.parse(file_fixture('odds_change_with_inactive_outcomes.xml').read)
+  end
   let(:event_id) { payload['odds_change']['event_id'] }
   let(:event) { build(:event, title: build(:title), external_id: event_id) }
   let!(:timestamp) { Time.now + 60 }
@@ -12,6 +15,27 @@ describe OddsFeed::Radar::OddsChangeHandler do
   subject { OddsFeed::Radar::OddsChangeHandler.new(payload) }
 
   before do
+    payload = {
+      outcomes: {
+        outcome: [
+          { 'id': '1', name: 'Odd 1 name' },
+          { 'id': '2', name: 'Odd 2 name' }
+        ]
+      }
+    }.deep_stringify_keys
+
+    create(:market_template, external_id: '47',
+                             name: 'Template name',
+                             payload: payload)
+    create(:market_template, external_id: '48',
+                             name: 'Template name',
+                             payload: payload)
+    create(:market_template, external_id: '49',
+                             name: 'Template name',
+                             payload: payload)
+    create(:market_template, external_id: '188',
+                             name: 'Template name')
+
     allow(subject).to receive(:call_markets_generator).and_return(timestamp)
     allow(subject).to receive(:timestamp).and_return(timestamp)
     allow(subject).to receive(:api_event).and_return(event)
@@ -30,18 +54,57 @@ describe OddsFeed::Radar::OddsChangeHandler do
   end
 
   it 'updates event status from message' do
-    create(:event, external_id: event_id, status: :not_started)
+    create(:event, external_id: event_id, status: Event::NOT_STARTED)
     subject.handle
     event = Event.find_by(external_id: event_id)
-    expect(event.status).to eq('started')
+    expect(event.status).to eq(Event::STARTED)
+  end
+
+  context 'event activity' do
+    it 'defines event as active' do
+      create(:event,
+             external_id: event_id,
+             status: Event::NOT_STARTED,
+             active: false)
+
+      OddsFeed::Radar::OddsChangeHandler.new(payload).handle
+      event = Event.find_by(external_id: event_id)
+      expect(event.active).to be_truthy
+    end
+
+    it 'defines event as inactive when no active outcomes' do
+      create(:event,
+             external_id: event_id,
+             status: Event::NOT_STARTED,
+             active: true)
+
+      OddsFeed::Radar::OddsChangeHandler.new(payload_inactive_outcomes).handle
+      event = Event.find_by(external_id: event_id)
+      expect(event.active).to be_falsy
+    end
+
+    %w[3 4 5 9].each do |radar_status|
+      it "defines event as inactive when receive status '#{radar_status}'" do
+        payload['odds_change']['sport_event_status']['status'] = radar_status
+
+        create(:event,
+               external_id: event_id,
+               status: Event::NOT_STARTED,
+               active: true)
+
+        OddsFeed::Radar::OddsChangeHandler.new(payload).handle
+        event = Event.find_by(external_id: event_id)
+        expect(event.active).to be_falsy
+      end
+    end
   end
 
   it 'updates event end at time on "ended" status' do
-    create(:event, external_id: event_id, status: :not_started)
-    allow(subject).to receive(:event_status).and_return(Event.statuses[:ended])
+    create(:event, external_id: event_id, status: Event::NOT_STARTED)
+    allow(subject).to receive(:event_status).and_return(Event::ENDED)
     subject.handle
     event = Event.find_by(external_id: event_id)
-    expect(event.status).to eq('ended')
+    expect(event.status).to eq(Event::ENDED)
     expect(event.end_at).not_to be_nil
   end
 

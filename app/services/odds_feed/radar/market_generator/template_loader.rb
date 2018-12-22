@@ -2,6 +2,8 @@ module OddsFeed
   module Radar
     module MarketGenerator
       class TemplateLoader
+        include JobLogger
+
         PLAYER_REGEX = /.*:player:.*/
 
         def initialize(market_id, variant_id = nil)
@@ -11,6 +13,10 @@ module OddsFeed
 
         def market_name
           stored_template.name
+        end
+
+        def market_category
+          stored_template.category
         end
 
         def odd_name(external_id)
@@ -70,8 +76,8 @@ module OddsFeed
         end
 
         def notify_outcome_is_empty
-          Rails.logger.warn("Outcome data is empty for MarketTemplate
-                             with external_id '#{market_id}'")
+          log_job_message(:warn, "Outcome data is empty for MarketTemplate
+                                  with external_id '#{market_id}'")
         end
 
         def variant_odds

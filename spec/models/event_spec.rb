@@ -5,6 +5,7 @@ describe Event do
   it { should have_many(:event_scopes).through(:scoped_events) }
 
   it { should validate_presence_of(:name) }
+  it { should allow_value(true, false).for(:active) }
 
   it { should delegate_method(:name).to(:title).with_prefix }
 
@@ -88,6 +89,49 @@ describe Event do
     it 'doesn\'t include events with :end_at in future' do
       event = create(:event, start_at: 1.hour.ago, end_at: 5.minutes.from_now)
       expect(Event.upcoming).not_to include(event)
+    end
+  end
+
+  describe '.past' do
+    it 'includes prematch events that started in past' do
+      event = create(
+        :event,
+        start_at: 5.minutes.ago,
+        end_at: nil,
+        traded_live: false
+      )
+      expect(Event.past).to include(event)
+    end
+
+    it 'includes ended live events' do
+      event = create(
+        :event,
+        start_at: 2.hours.ago,
+        end_at: 5.minutes.ago,
+        traded_live: true
+      )
+      expect(Event.past).to include(event)
+    end
+
+    it 'doesn\'t include not started prematch events' do
+      event = create(
+        :event,
+        start_at: 5.minutes.from_now,
+        end_at: nil,
+        traded_live: false
+      )
+      expect(Event.past).not_to include(event)
+    end
+
+    it 'doesn\'t include not ended live events' do
+      event = create(
+        :event,
+        start_at: 2.hours.ago,
+        end_at: nil,
+        traded_live: true
+      )
+
+      expect(Event.past).not_to include(event)
     end
   end
 

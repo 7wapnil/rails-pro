@@ -1,7 +1,7 @@
 describe Bet do
   subject { build(:bet) }
 
-  it { should define_enum_for(:status) }
+  # it { should define_enum_for(:status) }
 
   it { should belong_to(:customer) }
   it { should belong_to(:odd) }

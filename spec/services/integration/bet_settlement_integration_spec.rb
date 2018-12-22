@@ -40,7 +40,7 @@ describe 'BetSettlementHandler integration' do
   let!(:rule_for_wins) do
     create(:entry_currency_rule,
            currency: currency,
-           kind: EntryRequest.kinds[:win],
+           kind: EntryRequest::WIN,
            min_amount: 10,
            max_amount: 1000)
   end
@@ -48,7 +48,7 @@ describe 'BetSettlementHandler integration' do
   let!(:rule_for_refunds) do
     create(:entry_currency_rule,
            currency: currency,
-           kind: EntryRequest.kinds[:refund],
+           kind: EntryRequest::REFUND,
            min_amount: 1,
            max_amount: 1000)
   end

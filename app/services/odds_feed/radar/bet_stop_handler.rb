@@ -30,9 +30,9 @@ module OddsFeed
         is_suspended = input_data['market_status'].nil? ||
                        input_data['market_status'] == 'suspended'
 
-        return Market.statuses[:suspended] if is_suspended
+        return Market::SUSPENDED if is_suspended
 
-        Market.statuses[:inactive]
+        Market::INACTIVE
       end
 
       def update_markets(batch)
@@ -40,7 +40,7 @@ module OddsFeed
           market.status = stop_status
           market.save!
         rescue ActiveRecord::RecordInvalid => e
-          Rails.logger.error e.message
+          log_job_failure(e)
         end
       end
     end

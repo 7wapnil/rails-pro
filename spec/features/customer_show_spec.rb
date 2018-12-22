@@ -42,7 +42,7 @@ describe 'Customers#show' do
       end
 
       it 'displays allowed to transit account types' do
-        subject.update_column(:account_kind, Customer.account_kinds[:staff])
+        subject.update_column(:account_kind, Customer::STAFF)
         visit customer_path(subject)
 
         expect(page).to have_select(input_name, options: ['staff'])
@@ -61,7 +61,7 @@ describe 'Customers#show' do
       within 'form.personal-information-form' do
         fill_in :customer_first_name, with: 'Test'
         fill_in :customer_last_name, with: 'User'
-        select 'Male', from: :customer_gender
+        choose :customer_gender_male
         fill_in :customer_date_of_birth, with: '1 January 1990'
         click_submit
       end

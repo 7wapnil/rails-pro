@@ -26,6 +26,7 @@ en:
   sign_out: Sign Out
   sign_up: Sign Up
   system: System
+  odds_feed: Odds Feed
   to: To
   upload: Upload
   view: View
@@ -40,6 +41,7 @@ en:
   updated: "%{instance} updated"
 
   actions:
+    expire: Expire
     impersonate: Impersonate
     reset_password: Reset password
     verify: Verify
@@ -81,6 +83,8 @@ en:
     event: Event
     event_id: Event ID
     event_status: Event status
+    expiration_reason: Expiration reason
+    expired_at: Expired at
     expires_at: Expires at
     external_id: External ID
     first_name: First name
@@ -264,6 +268,8 @@ en:
       zero: No wallets
       one: 1 wallet
       other: "%{count} wallets"
+    market_template: Market template
+    market_templates: Market templates
 
   errors:
     messages:
@@ -285,6 +291,13 @@ en:
       wrong_login_credentials: Wrong username, email or password
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
       account_transition: "can't bet changed from '%{from}' to '%{to}'"
+
+  expiration_reasons:
+    converted: Converted
+    expired_by_date: Expired by date
+    expired_by_new_activation: Expired by new activation
+    manual_cancel: Expired in Backoffice
+
   genders:
     female: Female
     male: Male

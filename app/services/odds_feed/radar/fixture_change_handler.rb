@@ -45,26 +45,29 @@ module OddsFeed
       end
 
       def log_on_create
-        Rails.logger.info("Creating event with external ID #{external_id}")
+        log_job_message(:info, "Creating event with external ID #{external_id}")
+      end
+
+      def change_type
+        CHANGE_TYPES[payload['change_type']]
       end
 
       def log_on_update
-        change_type = CHANGE_TYPES[payload['change_type']]
         msg = <<-MESSAGE
           Updating event with external ID #{external_id} \
           on change type '#{change_type}'
         MESSAGE
 
-        Rails.logger.info(msg.squish)
+        log_job_message(:info, msg.squish)
       end
 
       def update_event_payload!
-        msg = "Updating payload for event ID #{external_id}"
-        Rails.logger.info msg
+        log_job_message(:info, "Updating payload for event ID #{external_id}")
 
         event.add_to_payload(
           producer: { origin: :radar, id: payload['product'] }
         )
+        event.active = false if change_type == :cancelled
 
         event.save!
       end

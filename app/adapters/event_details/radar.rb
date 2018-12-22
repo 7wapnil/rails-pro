@@ -1,5 +1,7 @@
 module EventDetails
   class Radar < EventDetails::Base
+    include JobLogger
+
     def competitors
       @competitors ||= build_competitors
     end
@@ -9,7 +11,7 @@ module EventDetails
     def build_competitors
       event_competitors = competitors_payload
       if event_competitors.nil?
-        Rails.logger.debug "No competitors found in event ID #{@event.id}"
+        log_job_message(:debug, "No competitors found in event ID #{@event.id}")
         return []
       end
 

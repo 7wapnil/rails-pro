@@ -8,7 +8,12 @@ module Bonuses
     end
 
     def call
-      customer.customer_bonus&.deactivate!
+      if customer.customer_bonus
+        CustomerBonuses::ExpirationService.call(
+          customer.customer_bonus,
+          :expired_by_new_activation
+        )
+      end
       CustomerBonus.create!(bonus_activation_attributes)
     end
 

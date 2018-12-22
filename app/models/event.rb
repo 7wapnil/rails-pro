@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Visible
   include Importable
@@ -13,10 +15,16 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   PRIORITIES = [0, 1, 2].freeze
 
   STATUSES = {
-    not_started: 0,
-    started: 1,
-    ended: 2,
-    closed: 3
+    not_started: NOT_STARTED = 'not_started',
+    started:     STARTED     = 'started',
+    suspended:   SUSPENDED   = 'suspended',
+    ended:       ENDED       = 'ended',
+    closed:      CLOSED      = 'closed',
+    cancelled:   CANCELLED   = 'cancelled',
+    delayed:     DELAYED     = 'delayed',
+    interrupted: INTERRUPTED = 'interrupted',
+    postponed:   POSTPONED   = 'postponed',
+    abandoned:   ABANDONED   = 'abandoned'
   }.freeze
 
   ransacker :markets_count do
@@ -31,6 +39,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     Arel.sql('wager')
   end
 
+  scope :active, -> { where(active: true) }
+
   belongs_to :title
   has_many :markets, dependent: :delete_all
   has_many :bets, through: :markets
@@ -41,6 +51,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }
+  validates :active, inclusion: { in: [true, false] }
 
   enum status: STATUSES
 
@@ -64,7 +75,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
         INNER JOIN customers ON customers.id = bets.customer_id
         INNER JOIN odds ON odds.id = bets.odd_id
         INNER JOIN markets ON markets.id = odds.market_id
-        WHERE markets.event_id = events.id AND customers.account_kind = #{Customer.account_kinds[:regular]} LIMIT 1)
+        WHERE markets.event_id = events.id AND customers.account_kind = '#{Customer::REGULAR}' LIMIT 1)
     SQL
     select("events.*, #{sub_query} as bets_count")
       .group(:id)
@@ -76,7 +87,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
         INNER JOIN customers ON customers.id = bets.customer_id
         INNER JOIN odds ON odds.id = bets.odd_id
         INNER JOIN markets ON markets.id = odds.market_id
-        WHERE markets.event_id = events.id AND customers.account_kind = #{Customer.account_kinds[:regular]} LIMIT 1)
+        WHERE markets.event_id = events.id AND customers.account_kind = '#{Customer::REGULAR}' LIMIT 1)
     SQL
     select("events.*, #{sub_query} as wager").group(:id)
   end
@@ -97,6 +108,19 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
       ].join,
       Time.zone.now,
       start_time_offset
+    )
+  end
+
+  def self.past
+    where(
+      [
+        'start_at < ? AND ',
+        'traded_live IS FALSE OR ',
+        'end_at < ? AND ',
+        'traded_live IS TRUE'
+      ].join,
+      Time.zone.now,
+      Time.zone.now
     )
   end
 
@@ -129,7 +153,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def tournament
-    event_scopes.where(kind: :tournament).first
+    event_scopes.where(kind: EventScope::TOURNAMENT).first
   end
 
   def details

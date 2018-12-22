@@ -1,12 +1,15 @@
 module Mts
   class UofId
+    include JobLogger
+
     def self.id(odd)
       new(odd).uof_id
     end
 
     def initialize(odd)
       @odd = odd
-      raise ArgumentError 'Not radar Event' unless radar_event?
+
+      not_radar_event! unless radar_event?
     end
 
     # "uof:<product_id>/<sport id>/<market id>/<outcome
@@ -27,6 +30,13 @@ module Mts
 
     private
 
+    def not_radar_event!
+      error = ArgumentError.new('Not radar Event')
+
+      log_job_failure(error)
+      raise error
+    end
+
     def specifiers_part
       specifiers.empty? ? nil : "?#{specifiers}"
     end
@@ -40,10 +50,16 @@ module Mts
     end
 
     def producer
-      raise 'Missing payload' unless @odd.market.event.payload
+      unless @odd.market.event.payload
+        log_job_failure('Missing payload')
+        raise 'Missing payload'
+      end
 
       producer_value = @odd.market.event.payload['producer']
-      raise 'Missing producer' unless producer_value
+      unless producer_value
+        log_job_failure('Missing producer')
+        raise 'Missing producer'
+      end
 
       producer_value
     end

@@ -15,12 +15,10 @@ module Events
     def resolve(_obj, args)
       query = Event
               .visible
-              .joins(markets: :odds)
+              .active
               .joins(:title)
-              .group('events.id')
               .order(:priority)
               .order(:start_at)
-              .select('events.*')
 
       filter_query(query, args)
     end
@@ -37,6 +35,7 @@ module Events
       query = query.limit(args[:limit]) if args[:limit]
       query = query.in_play if filter[:inPlay]
       query = query.upcoming if filter[:upcoming]
+      query = query.past if filter[:past]
 
       query
     end

@@ -20,19 +20,6 @@ document.addEventListener('turbolinks:load', () => {
       .values(countries)
       .map(country => createCountryOption(country)))
     .val(countrySelect.data('current'));
-  countrySelect.change(() => {
-    if (phoneInput) {
-      phoneInput.val('');
-      Object
-        .values(countries)
-        .forEach((country) => {
-          if (country.name === countrySelect.val()) {
-            phoneInput.val(`+${country.phone}`)
-              .trigger('keyup');
-          }
-        });
-    }
-  });
 
   if (phoneInput) {
     phoneInput.keyup(() => {

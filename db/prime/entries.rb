@@ -9,7 +9,7 @@ class EntriesPrimer
       currency: currency,
       customer: customer,
       amount: random.rand(rule.min_amount..rule.max_amount).round(2),
-      mode: EntryRequest.modes[:cashier],
+      mode: EntryRequest::CASHIER,
       initiator: customer,
       comment: 'Prime data'
     )
@@ -30,7 +30,7 @@ Customer
 
     next if customer.wallets.where(currency: currency).exists?
 
-    rule = EntryCurrencyRule.find_by!(currency: currency, kind: :deposit)
+    rule = EntryCurrencyRule.find_by!(currency: currency, kind: Entry::DEPOSIT)
 
     EntriesPrimer.create_entry!(
       rule: rule,
@@ -43,8 +43,12 @@ end
 puts 'Simulating Customer activity ...'
 
 Wallet.find_each batch_size: 50 do |wallet|
-  bet_rule = EntryCurrencyRule.find_by!(currency: wallet.currency, kind: :bet)
-  win_rule = EntryCurrencyRule.find_by!(currency: wallet.currency, kind: :win)
+  bet_rule = EntryCurrencyRule.find_by!(
+    currency: wallet.currency, kind: Entry::BET
+  )
+  win_rule = EntryCurrencyRule.find_by!(
+    currency: wallet.currency, kind: Entry::DEPOSIT
+  )
 
   EntriesPrimer.random.rand(2..5).times do
     kind = %i[bet win].sample

@@ -15,6 +15,26 @@ class CustomerBonusesController < ApplicationController
     redirect_to bonuses_customer_path(customer)
   end
 
+  def show
+    @customer_bonus = CustomerBonus
+                      .includes(:customer)
+                      .with_deleted
+                      .find(params[:id])
+  end
+
+  def destroy
+    customer_bonus = CustomerBonus.find(params[:id])
+    customer = customer_bonus.customer
+    CustomerBonuses::ExpirationService.call(
+      customer_bonus,
+      :manual_cancel
+    )
+    current_user.log_event :customer_bonus_deactivated,
+                           customer_bonus,
+                           customer
+    redirect_to bonuses_customer_path(customer)
+  end
+
   private
 
   def payload_params

@@ -1,15 +1,12 @@
-= render 'customers/heading', customer: @customer
-
-.row
-  .col-md-3
-    .mt-4= render 'customers/navigation', customer: @customer,
-                                          note: @note,
-                                          customer_notes: @customer_notes_widget
-  .col-md-9
-    .mt-4.mb-4= render 'customers/bonus_form', customer: @customer,
-      new_bonus: @new_bonus, active_bonuses: @active_bonuses
-    .mt-4.mb-4= render 'customers/bonuses', customer: @customer,
-      history: @history
+- content_for :page_content do
+  .mt-4.mb-4= render 'customers/bonus_form', customer: @customer,
+    new_bonus: @new_bonus, active_bonuses: @active_bonuses,
+    current_bonus: @current_bonus
+  .mt-4.mb-4= render 'customers/bonuses', customer: @customer,
+    history: @history
 
 - content_for :js do
   = javascript_pack_tag 'customers/navigation_links'
+
+= render 'customers/base_template', customer: @customer, note: @note,
+  customer_notes_widget: @customer_notes_widget

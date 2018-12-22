@@ -1,6 +1,8 @@
 module OddsFeed
   module Radar
     class EventScopesService < ApplicationService
+      include JobLogger
+
       attr_reader :title,
                   :country,
                   :tournament,
@@ -66,10 +68,10 @@ module OddsFeed
       end
 
       def payload_valid_for?(scope, payload)
-        Rails.logger.debug "#{scope} data received: #{payload}"
+        log_job_message(:debug, "#{scope} data received: #{payload}")
 
         unless payload.is_a?(Hash)
-          Rails.logger.warn ["#{scope} is missing", @payload]
+          log_job_message(:warn, ["#{scope} is missing", @payload])
           return false
         end
 

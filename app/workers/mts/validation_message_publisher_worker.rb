@@ -3,8 +3,14 @@ module Mts
     sidekiq_options retry: 3
 
     def perform(ids)
+      super()
+
       @ids = ids
-      raise NotImplementedError unless ids.length == 1
+
+      unless ids.length == 1
+        log_job_failure NotImplementedError
+        raise NotImplementedError
+      end
 
       publish_single_bet_validation(ids.first)
     end

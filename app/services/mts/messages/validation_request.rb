@@ -2,6 +2,8 @@ module Mts
   module Messages
     # TODO: Extract parts to different classes
     class ValidationRequest # rubocop:disable Metrics/ClassLength
+      include JobLogger
+
       SUPPORTED_BETS_PER_REQUEST = 1
       MESSAGE_VERSION = '2.1'.freeze
       DEFAULT_STAKE_TYPE = 'total'.freeze
@@ -12,7 +14,10 @@ module Mts
       attr_reader :bets
 
       def initialize(bets)
-        raise NotImplementedError if bets.length > SUPPORTED_BETS_PER_REQUEST
+        if bets.length > SUPPORTED_BETS_PER_REQUEST
+          log_job_failure(NotImplementedError)
+          raise NotImplementedError
+        end
 
         @bets = bets
       end
@@ -50,6 +55,7 @@ module Mts
 
       def sender
         unless distribution_channel.channel == 'internet'
+          log_job_failure(NotImplementedError)
           raise NotImplementedError
         end
 

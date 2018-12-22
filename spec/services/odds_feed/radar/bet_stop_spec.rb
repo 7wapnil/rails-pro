@@ -12,12 +12,12 @@ describe OddsFeed::Radar::BetStopHandler do
   subject { described_class.new(payload) }
 
   it 'suspends event markets' do
-    create_list(:market, 5, event: event, status: Market.statuses[:active])
-    create_list(:market, 2, status: Market.statuses[:active]) # other event
+    create_list(:market, 5, event: event, status: Market::ACTIVE)
+    create_list(:market, 2, status: Market::ACTIVE) # other event
 
     subject.handle
-    expect(Market.where(status: Market.statuses[:suspended]).count).to eq(5)
-    expect(Market.where(status: Market.statuses[:active]).count).to eq(2)
+    expect(Market.where(status: Market::SUSPENDED).count).to eq(5)
+    expect(Market.where(status: Market::ACTIVE).count).to eq(2)
   end
 
   it 'deactivates event markets' do
@@ -25,12 +25,12 @@ describe OddsFeed::Radar::BetStopHandler do
     input_data['market_status'] = 'deactivated'
     allow(subject).to receive(:input_data).and_return(input_data)
 
-    create_list(:market, 5, event: event, status: Market.statuses[:active])
-    create_list(:market, 2, status: Market.statuses[:active]) # other event
+    create_list(:market, 5, event: event, status: Market::ACTIVE)
+    create_list(:market, 2, status: Market::ACTIVE) # other event
 
     subject.handle
-    expect(Market.where(status: Market.statuses[:inactive]).count).to eq(5)
-    expect(Market.where(status: Market.statuses[:active]).count).to eq(2)
+    expect(Market.where(status: Market::INACTIVE).count).to eq(5)
+    expect(Market.where(status: Market::ACTIVE).count).to eq(2)
   end
 
   it 'emits one web socket event per market' do
@@ -38,7 +38,7 @@ describe OddsFeed::Radar::BetStopHandler do
     create_list(:market,
                 markets_amount,
                 event: event,
-                status: Market.statuses[:active])
+                status: Market::ACTIVE)
 
     subject.handle
     expect(WebSocket::Client.instance)
@@ -54,7 +54,7 @@ describe OddsFeed::Radar::BetStopHandler do
     create_list(:market,
                 markets_amount,
                 event: event,
-                status: Market.statuses[:active])
+                status: Market::ACTIVE)
 
     subject.batch_size = 5
     subject.handle

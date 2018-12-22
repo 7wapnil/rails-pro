@@ -6,6 +6,7 @@ module OddsFeed
         create_or_update_event!
         touch_event!
         generate_markets
+        update_event_activity
         emit_websocket
         event
       end
@@ -21,7 +22,7 @@ module OddsFeed
             not found, creating new
           MESSAGE
 
-          Rails.logger.info msg.squish
+          log_job_message(:info, msg.squish)
 
           create_or_find_event!
         end
@@ -48,18 +49,52 @@ module OddsFeed
         event.assign_attributes(updates)
       end
 
+      def event_active?
+        status_positive? && active_odds?
+      end
+
+      def active_odds?
+        Odd
+          .joins(:market)
+          .where('odds.status': Odd::ACTIVE,
+                 'markets.event_id': event.id,
+                 'markets.status': [Market::ACTIVE,
+                                    Market::SUSPENDED])
+          .count
+          .positive?
+      end
+
+      def status_positive?
+        [Event::ENDED,
+         Event::CLOSED,
+         Event::CANCELLED,
+         Event::ABANDONED].exclude?(event_status)
+      end
+
+      def fetch_outcomes_data(data)
+        return data if data.is_a?(Array)
+
+        return [data] if data.is_a?(Hash)
+
+        []
+      end
+
       def log_updates!(updates)
         msg = <<-MESSAGE
             Updating event with ID #{external_id}, \
             product ID #{event_data['product']}, attributes #{updates}
         MESSAGE
-        Rails.logger.info msg
+        log_job_message(:info, msg)
       end
 
       def generate_markets
         return if markets_data.empty?
 
         call_markets_generator
+      end
+
+      def update_event_activity
+        event.update_attributes!(active: event_active?)
       end
 
       def call_markets_generator
@@ -87,33 +122,40 @@ module OddsFeed
       end
 
       def log_missing_payload
-        Rails.logger.info("Odds payload is missing for Event #{external_id}")
+        log_job_message(
+          :info, "Odds payload is missing for Event #{external_id}"
+        )
       end
 
       def event_data
         @payload['odds_change']
       rescue StandardError => e
-        Rails.logger.debug({ error: e, payload: @payload }.to_json)
+        log_job_message(:debug, { error: e, payload: @payload }.to_json)
       end
 
       def event_status
-        status = event_data['sport_event_status']['status'] ||
-                 Event.statuses[:not_started]
-        event_statuses_map[status]
+        status = event_data['sport_event_status']['status']
+        event_statuses_map[status] || Event::NOT_STARTED
       end
 
       def event_end_time
-        return nil unless event_status == Event.statuses[:ended]
+        return nil unless event_status == Event::ENDED
 
         timestamp
       end
 
       def event_statuses_map
         {
-          '0': Event.statuses[:not_started],
-          '1': Event.statuses[:started],
-          '3': Event.statuses[:ended],
-          '4': Event.statuses[:closed]
+          0 => Event::NOT_STARTED,
+          1 => Event::STARTED,
+          2 => Event::SUSPENDED,
+          3 => Event::ENDED,
+          4 => Event::CLOSED,
+          5 => Event::CANCELLED,
+          6 => Event::DELAYED,
+          7 => Event::INTERRUPTED,
+          8 => Event::POSTPONED,
+          9 => Event::ABANDONED
         }.stringify_keys
       end
 
@@ -137,10 +179,11 @@ module OddsFeed
         @event = api_event
         begin
           Event.create_or_update_on_duplicate(@event)
-          ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
+          ::Radar::LiveCoverageBookingWorker.perform_async(external_id)
         rescue StandardError => e
-          Rails.logger.warn ["Event ID #{external_id} creating failed",
-                             e.message]
+          log_job_message(
+            :warn, ["Event ID #{external_id} creating failed", e.message]
+          )
         end
       end
 
@@ -151,7 +194,7 @@ module OddsFeed
         return if event.remote_updated_at.utc <= timestamp
 
         msg = "Message came at #{timestamp}, but last update was #{last_update}"
-        Rails.logger.warn msg
+        log_job_message(:warn, msg)
       end
 
       def emit_websocket

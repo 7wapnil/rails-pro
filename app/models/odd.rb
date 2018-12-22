@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 class Odd < ApplicationRecord
   enum status: {
-    inactive: 0,
-    active: 1
+    inactive: INACTIVE = 'inactive',
+    active:   ACTIVE   = 'active'
   }
 
   belongs_to :market

@@ -2,6 +2,8 @@ module OddsFeed
   module Radar
     module MarketGenerator
       class Service < ::ApplicationService
+        include JobLogger
+
         def initialize(event_id, markets_data)
           @event = Event.find(event_id)
           @markets_data = markets_data
@@ -20,8 +22,8 @@ module OddsFeed
           @markets_data.each do |market_data|
             build_market(market_data)
           rescue StandardError => e
-            Rails.logger.debug({ message: e.message,
-                                 market_data: market_data }.to_json)
+            log_job_message(:debug, { message: e.message,
+                                      market_data: market_data }.to_json)
             next
           end
         end
@@ -39,7 +41,8 @@ module OddsFeed
           Market.new(external_id: data_object.external_id,
                      event_id: @event.id,
                      name: data_object.name,
-                     status: data_object.status)
+                     status: data_object.status,
+                     category: data_object.category)
         end
 
         def valid?(market)
@@ -49,7 +52,7 @@ module OddsFeed
             Market '#{market.external_id}' is invalid: \
             #{market.errors.full_messages.join("\n")}
           MESSAGE
-          Rails.logger.warn msg.squish
+          log_job_message(:warn, msg.squish)
           false
         end
 

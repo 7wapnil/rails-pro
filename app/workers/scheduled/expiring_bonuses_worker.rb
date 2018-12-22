@@ -4,7 +4,17 @@ module Scheduled
                     lock: :until_executed
 
     def perform
-      CustomerBonus.all.each { |bonus| bonus.deactivate! if bonus.expired? }
+      super()
+
+      CustomerBonus
+        .where(expiration_reason: nil)
+        .select(&:expired?)
+        .each do |bonus|
+          CustomerBonuses::ExpirationService.call(
+            bonus,
+            :expired_by_date
+          )
+        end
     end
   end
 end
