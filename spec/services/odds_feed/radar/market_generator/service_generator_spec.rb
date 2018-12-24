@@ -7,7 +7,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
     data = XmlParser.parse(file_fixture('odds_change_message.xml').read)
     data['odds_change']['odds']['market']
   end
-  let(:event) { create(:event, external_id: 'sr:match:1234') }
+  let(:event) { create(:event, :bookable, external_id: 'sr:match:1234') }
 
   before do
     payload = {

@@ -4,7 +4,10 @@ describe OddsFeed::Radar::LiveBookingService do
   let(:subject_api) { described_class.new(event.external_id) }
 
   let(:event) do
-    create(:event, external_id: 'sr:match:11868180', traded_live: false)
+    create(:event,
+           :bookable,
+           external_id: 'sr:match:11868180',
+           traded_live: false)
   end
   let(:api_client) { OddsFeed::Radar::Client.new }
 
@@ -19,6 +22,14 @@ describe OddsFeed::Radar::LiveBookingService do
     subject_api.call
 
     expect(subject_api).not_to have_received(:update_event)
+  end
+
+  it 'skips operation if event liveodds is not bookable' do
+    event.update_attributes!(payload: {})
+
+    subject.call
+
+    expect(event.traded_live).to be_falsey
   end
 
   context 'replay server' do

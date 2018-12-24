@@ -47,7 +47,8 @@ module OddsFeed
           start_at: start_at_field.to_time,
           name: event_name,
           description: event_name,
-          payload: { competitors: fixture['competitors'] } }
+          payload: { competitors: fixture['competitors'],
+                     liveodds:    fixture['liveodds'] } }
       end
 
       def event_name
