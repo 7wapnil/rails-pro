@@ -9,6 +9,7 @@ module Events
     argument :id, types.ID
     argument :eventId, types.ID
     argument :priority, types.Int
+    argument :category, types.String
 
     def auth_protected?
       false
@@ -24,10 +25,31 @@ module Events
               .where(event_id: event_id)
               .group('markets.id')
               .order(priority: :asc)
-      query = query.where(id: args[:id]) if args[:id]
-      query = query.where(priority: args[:priority]) if args[:priority]
+      query = filter_by_category(query, args[:category])
+      query = filter_by_id(query, args[:id])
+      query = filter_by_priority(query, args[:priority])
       query = query.limit(args[:limit]) if args[:limit]
       query.all
+    end
+
+    private
+
+    def filter_by_category(query, category)
+      return query unless category
+
+      query.where(category: category)
+    end
+
+    def filter_by_id(query, id)
+      return query unless id
+
+      query.where(id: id)
+    end
+
+    def filter_by_priority(query, priority)
+      return query unless priority
+
+      query.where(priority: priority)
     end
   end
 end

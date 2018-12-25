@@ -7,4 +7,5 @@ Types::MarketType = GraphQL::ObjectType.define do
   field :status, types.String
   field :odds, types[Types::OddType]
   field :visible, types.Boolean
+  field :category, types.String
 end
