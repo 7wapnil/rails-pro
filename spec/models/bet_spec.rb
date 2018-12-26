@@ -52,7 +52,7 @@ describe Bet do
 
     before { create_list(:bet, 3) }
 
-    it { expect(Bet.suspended).to match_array(bets) }
+    it { expect(described_class.suspended).to match_array(bets) }
   end
 
   describe '.unsuspended' do
@@ -61,7 +61,7 @@ describe Bet do
 
     before { create_list(:bet, 4, odd: odd) }
 
-    it { expect(Bet.unsuspended).to match_array(bets) }
+    it { expect(described_class.unsuspended).to match_array(bets) }
   end
 
   describe 'Bet.expired_prematch' do

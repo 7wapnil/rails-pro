@@ -116,7 +116,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
     before do
       payload['odds_change']['sport_event_status']['status'] = status
-      subject.handle
+      subject_api.handle
     end
 
     context 'abandoned' do

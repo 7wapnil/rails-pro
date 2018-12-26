@@ -143,3 +143,4 @@ RSpec/NestedGroups:
     - 'spec/features/verification_document_index_spec.rb'
     - 'spec/services/bet_settelement/service_spec.rb'
     - 'spec/services/odds_feed/radar/market_generator/service_spec.rb'
+    - 'spec/services/odds_feed/radar/bet_placement/submission_service_spec.rb'
