@@ -6,6 +6,8 @@ class EventScope < ApplicationRecord
   conflict_target :external_id
   conflict_updatable :name
 
+  scope :active, -> { joins(:events).where(events: { active: true }) }
+
   belongs_to :title
   belongs_to :event_scope, optional: true
   has_many :scoped_events
