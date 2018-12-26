@@ -27,8 +27,9 @@ class CustomersController < ApplicationController
   ]
 
   def index
-    @search = Customer.ransack(params[:customers])
-    @customers = @search.result.page(params[:page])
+    @filter = CustomersFilter.new(customers_source: Customer,
+                                  query_params: query_params(:customers),
+                                  page: params[:page])
   end
 
   def show
@@ -90,7 +91,7 @@ class CustomersController < ApplicationController
 
   def bets
     @filter = BetsFilter.new(bets_source: customer.bets,
-                             query_params: params[:bets] || {},
+                             query_params: query_params(:bets),
                              page: params[:page])
   end
 

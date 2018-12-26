@@ -6,3 +6,6 @@
     = render 'search_bets',
              filter: @bets_filter,
              limit: DashboardsController::BETS_LIMIT
+  .col-md-6
+    = render 'search_customers',
+             filter: @customers_filter

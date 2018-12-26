@@ -15,27 +15,27 @@ class BetsFilter
   end
 
   def sports
-    @sports ||= Title.order(:name).pluck(:name)
+    Title.order(:name).pluck(:name)
   end
 
   def tournaments
-    @tournaments ||= EventScope.order(:name).tournament.pluck(:name)
+    EventScope.order(:name).tournament.pluck(:name)
   end
 
   def countries
-    @countries ||= EventScope.country.order(:name).pluck(:name)
+    EventScope.country.order(:name).pluck(:name)
   end
 
   def search
-    @search ||= bets_source.includes(:market)
-                           .with_winnings
-                           .with_sport
-                           .with_tournament
-                           .with_country
-                           .ransack(@query_params, search_key: :bets)
+    @bets_source.includes(:market)
+                .with_winnings
+                .with_sport
+                .with_tournament
+                .with_country
+                .ransack(@query_params, search_key: :bets)
   end
 
   def bets
-    @bets ||= search.result.order(id: :desc).page(@page)
+    search.result.order(id: :desc).page(@page)
   end
 end

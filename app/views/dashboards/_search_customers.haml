@@ -1,0 +1,7 @@
+= card header: t(:search, subject: t('entities.customers')), class: 'customers' do
+  = render 'customers/search',
+          filter: filter,
+          search_path: dashboard_path
+  = render 'customers/table',
+            filter: filter
+  = paginate filter.customers
