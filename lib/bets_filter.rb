@@ -1,4 +1,6 @@
 class BetsFilter
+  include DateIntervalFilters
+
   EXCLUDED_COLUMNS = {
     customers: %i[customer],
     bets: []
@@ -6,9 +8,9 @@ class BetsFilter
 
   attr_reader :bets_source
 
-  def initialize(bets_source:, query: {}, page: nil)
+  def initialize(bets_source:, query_params: {}, page: nil)
     @bets_source = bets_source
-    @query_params = query
+    @query_params = prepare_interval_filter(query_params, :created_at)
     @page = page
   end
 
@@ -30,7 +32,7 @@ class BetsFilter
                            .with_sport
                            .with_tournament
                            .with_country
-                           .ransack(@query_params)
+                           .ransack(@query_params, search_key: :bets)
   end
 
   def bets

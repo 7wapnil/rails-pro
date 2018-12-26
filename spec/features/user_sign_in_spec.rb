@@ -10,7 +10,7 @@ describe 'User Sign In' do
     it 'Successfully signs in' do
       fill_sign_in_form
 
-      expect(current_path).to eq root_path
+      expect(current_path).to eq dashboard_path
       expect_to_have_notification I18n.t('devise.sessions.signed_in')
     end
 
@@ -68,7 +68,7 @@ describe 'User Sign In' do
       it 'Sees own full name in navbar right corner' do
         login_as user, scope: :user
 
-        visit root_path
+        visit dashboard_path
 
         within 'nav.navbar' do
           expect(page).to have_content user.full_name

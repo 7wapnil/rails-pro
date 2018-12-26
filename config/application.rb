@@ -52,6 +52,11 @@ module Arcanebet
       end
     end
 
+    config.middleware.insert_before 0, Rack::Rewrite do
+      rewrite '', '/'
+      r301 '/', '/dashboard'
+    end
+
     config.after_initialize do
       Rails.logger = Airbrake::AirbrakeLogger.new(Rails.logger)
       Rails.logger.airbrake_level = Logger::FATAL

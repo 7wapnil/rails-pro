@@ -76,7 +76,9 @@ Rails.application.routes.draw do
     get :status, on: :member
   end
 
-  resource :dashboard, only: :show
+  resource :dashboard, only: :index
+
+  get '/dashboard', to: 'dashboards#index'
 
   resources :activities, only: %i[index show]
 
@@ -97,5 +99,5 @@ Rails.application.routes.draw do
 
   post '/graphql', to: 'graphql#execute'
 
-  root 'dashboards#show'
+  root 'dashboards#index'
 end

@@ -1,7 +1,6 @@
 # rubocop:disable Metrics/ClassLength
 class CustomersController < ApplicationController
   include Labelable
-  include DateIntervalFilters
 
   NOTES_PER_PAGE = 5
   WIDGET_NOTES_COUNT = 2
@@ -28,7 +27,7 @@ class CustomersController < ApplicationController
   ]
 
   def index
-    @search = Customer.ransack(query_params)
+    @search = Customer.ransack(params[:customers])
     @customers = @search.result.page(params[:page])
   end
 
@@ -90,9 +89,8 @@ class CustomersController < ApplicationController
   end
 
   def bets
-    query = prepare_interval_filter(query_params, :created_at)
     @filter = BetsFilter.new(bets_source: customer.bets,
-                             query: query,
+                             query_params: params[:bets] || {},
                              page: params[:page])
   end
 

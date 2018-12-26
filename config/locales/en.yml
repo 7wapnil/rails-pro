@@ -21,6 +21,7 @@ en:
   save: Save
   says_at: "%{who} at %{when}"
   search: "Search %{subject}"
+  show_more: Show more
   sidekiq: Sidekiq
   sign_in: Sign In
   sign_out: Sign Out
@@ -39,6 +40,7 @@ en:
   edit_instance: "Edit %{instance}"
   new_instance: "New %{instance}"
   updated: "%{instance} updated"
+  not_found: "No %{instance} found"
 
   actions:
     expire: Expire
@@ -351,6 +353,7 @@ en:
       deposit_limit: Deposit Limit
       documents: Documents
       notes: Notes
+    dashboard: Dashboard
     document:
       pending: Pending documents
       recently_actioned: Recently actioned

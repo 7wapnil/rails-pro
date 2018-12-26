@@ -1,0 +1,9 @@
+= card header: t(:search, subject: t('entities.bets')) do
+  = render 'bets/search',
+          filter: filter,
+          search_path: dashboard_path,
+          excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:bets]
+  = render 'bets/table',
+            filter: filter,
+            excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:bets]
+  = paginate filter.bets
