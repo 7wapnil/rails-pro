@@ -22,8 +22,10 @@ module FormHelper
   end
 
   def render_radio_tag(opts = {})
+    resource_name = opts[:resource].class.name.underscore.downcase
+    input_name = "#{resource_name}[#{opts[:attribute_name]}]"
     radio_button_tag(
-      opts[:attribute_name],
+      input_name,
       opts[:item].first,
       opts[:resource].send(opts[:attribute_name]) == opts[:item].first,
       id: opts[:item_id],
