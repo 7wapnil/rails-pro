@@ -46,6 +46,24 @@ describe Bet do
       win_amount: 0, refund_amount: 0.5 }
   ].freeze
 
+  describe '.suspended' do
+    let(:odd)   { create(:odd, :suspended) }
+    let!(:bets) { create_list(:bet, 4, odd: odd) }
+
+    before { create_list(:bet, 3) }
+
+    it { expect(Bet.suspended).to match_array(bets) }
+  end
+
+  describe '.unsuspended' do
+    let(:odd)   { create(:odd, :suspended) }
+    let!(:bets) { create_list(:bet, 3) }
+
+    before { create_list(:bet, 4, odd: odd) }
+
+    it { expect(Bet.unsuspended).to match_array(bets) }
+  end
+
   describe 'Bet.expired_prematch' do
     include_context 'frozen_time'
 

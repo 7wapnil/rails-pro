@@ -110,6 +110,28 @@ describe OddsFeed::Radar::OddsChangeHandler do
     expect(event.end_at).not_to be_nil
   end
 
+  context 'updates to status that is not mentioned in docs' do
+    let(:found_event) { Event.find_by(external_id: event_id).reload }
+    let(:status)      {}
+
+    before do
+      payload['odds_change']['sport_event_status']['status'] = status
+      subject.handle
+    end
+
+    context 'abandoned' do
+      let(:status) { '9' }
+
+      it { expect(found_event.status).to eq(Event::ABANDONED) }
+    end
+
+    context 'suspended' do
+      let(:status) { '2' }
+
+      it { expect(found_event.status).to eq(Event::SUSPENDED) }
+    end
+  end
+
   it 'adds producer id to event payload' do
     payload_addition = {
       producer: { origin: :radar, id: payload['odds_change']['product'] },
