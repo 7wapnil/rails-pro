@@ -26,7 +26,7 @@ module Events
 
     private
 
-    def filter_query(query, args)
+    def filter_query(query, args) # rubocop:disable Metrics/CyclomaticComplexity
       filter = args[:filter] || {}
 
       query = filter_by_id(query, filter[:id])
