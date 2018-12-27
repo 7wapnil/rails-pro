@@ -1,0 +1,26 @@
+%table.table
+  %thead
+    %tr
+      %th= sort_link(filter.search, :created_at, t('attributes.date'), default_order: :asc)
+      %th= t('attributes.status')
+      %th= sort_link(filter.search, :kind, t('attributes.entry_kind'), default_order: :desc)
+      %th= t('attributes.customer_name')
+      %th= t('attributes.amount')
+      %th= t('attributes.result')
+  %tbody
+    - if filter.requests.any?
+      - filter.requests.each do |request|
+        %tr{ id: "entry-request-#{request.id}" }
+          %td
+            = link_to l(request.created_at, format: :long), request
+          %td= status_badge(request.status)
+          %td
+            %b= t("kinds.#{request.kind}")
+          %td= request.customer.full_name
+          %td
+            = number_with_precision request.amount, precision: 2
+            = request.currency.code
+          %td= request.result_message
+    - else
+      %tr
+        %td{ colspan: 6 }= t(:not_found, instance: t('entities.entry_requests'))
