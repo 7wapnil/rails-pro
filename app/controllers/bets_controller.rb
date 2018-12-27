@@ -1,6 +1,6 @@
 class BetsController < ApplicationController
   def index
-    @filter = BetsFilter.new(bets_source: Bet,
+    @filter = BetsFilter.new(source: Bet,
                              query_params: query_params(:bets),
                              page: params[:page])
   end

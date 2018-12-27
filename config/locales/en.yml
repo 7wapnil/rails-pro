@@ -40,6 +40,7 @@ en:
   edit_instance: "Edit %{instance}"
   new_instance: "New %{instance}"
   updated: "%{instance} updated"
+  instance_overview: "%{instance} overview"
   not_found: "No %{instance} found"
 
   actions:

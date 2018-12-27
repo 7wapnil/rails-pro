@@ -1,4 +1,4 @@
-class CustomersFilter
+class EntryRequestsFilter
   attr_reader :source
 
   def initialize(source:, query_params: {}, page: nil)
@@ -8,10 +8,10 @@ class CustomersFilter
   end
 
   def search
-    @source.ransack(@query_params, search_key: :customers)
+    @source.ransack(@query_params, search_key: :entry_requests)
   end
 
-  def customers
-    search.result.order(id: :desc).page(@page)
+  def requests
+    search.result.page(@page)
   end
 end

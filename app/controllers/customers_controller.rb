@@ -27,7 +27,7 @@ class CustomersController < ApplicationController
   ]
 
   def index
-    @filter = CustomersFilter.new(customers_source: Customer,
+    @filter = CustomersFilter.new(source: Customer,
                                   query_params: query_params(:customers),
                                   page: params[:page])
   end
@@ -90,7 +90,7 @@ class CustomersController < ApplicationController
   end
 
   def bets
-    @filter = BetsFilter.new(bets_source: customer.bets,
+    @filter = BetsFilter.new(source: customer.bets,
                              query_params: query_params(:bets),
                              page: params[:page])
   end
