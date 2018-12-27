@@ -1,7 +1,7 @@
 describe Radar::LiveCoverageBookingWorker do
-  let(:match_id) { 'sr:match:14738223' }
+  subject { described_class.new }
 
-  subject { Radar::LiveCoverageBookingWorker.new }
+  let(:match_id) { 'sr:match:14738223' }
 
   it 'calls coverage service' do
     expect(OddsFeed::Radar::LiveBookingService).to receive(:call)

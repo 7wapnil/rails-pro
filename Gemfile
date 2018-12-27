@@ -77,6 +77,7 @@ group :development, :test do
   gem 'brakeman', require: false
   gem 'haml_lint', require: false
   gem 'overcommit', require: false
+  gem 'rubocop-rspec', require: false
   gem 'awesome_print'
   gem 'pry-rails'
 end

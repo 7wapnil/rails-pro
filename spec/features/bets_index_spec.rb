@@ -1,4 +1,4 @@
-describe 'Bets#index' do
+describe Bet, '#index' do
   context 'signed in' do
     let(:per_page_count) { 10 }
 
@@ -117,7 +117,7 @@ describe 'Bets#index' do
             expect(page).to have_selector(resource_row_selector(bet))
             expect(page).to have_content(bet.title.name)
             (available_sports - [picked_sport]).each do |sport|
-              expect(page).to_not have_content(sport)
+              expect(page).not_to have_content(sport)
             end
           end
         end
@@ -139,6 +139,7 @@ describe 'Bets#index' do
 
       context 'by Tournament' do
         let(:tournament) { EventScope.tournament.first }
+
         it 'found' do
           bet = create(:bet)
           bet.event.event_scopes << tournament
@@ -154,7 +155,7 @@ describe 'Bets#index' do
             expect(page).to have_selector(resource_row_selector(bet))
             expect(page).to have_content(bet.title.name)
             (available_tournaments - [picked_tournament]).each do |tournament|
-              expect(page).to_not have_content(tournament)
+              expect(page).not_to have_content(tournament)
             end
           end
         end
@@ -193,7 +194,7 @@ describe 'Bets#index' do
 
           within 'table.table.entities tbody' do
             expect(page).to have_selector(resource_row_selector(bet_pakistan))
-            expect(page).to_not have_selector(resource_row_selector(bet_france))
+            expect(page).not_to have_selector(resource_row_selector(bet_france))
           end
         end
 
@@ -208,7 +209,7 @@ describe 'Bets#index' do
             bet_france_selector = resource_row_selector(bet_france)
             bet_germany_selector = resource_row_selector(bet_germany)
 
-            expect(page).to_not have_selector(bet_germany_selector)
+            expect(page).not_to have_selector(bet_germany_selector)
             expect(page).to have_selector(bet_france_selector)
             expect(page).to have_selector(bet_pakistan_selector)
           end

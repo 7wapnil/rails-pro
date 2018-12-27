@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 describe Comment, type: :model do
-  it { should belong_to(:user) }
-  it { should belong_to(:commentable) }
-  it { should validate_presence_of(:text) }
+  it { is_expected.to belong_to(:user) }
+  it { is_expected.to belong_to(:commentable) }
+  it { is_expected.to validate_presence_of(:text) }
 end

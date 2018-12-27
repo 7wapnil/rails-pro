@@ -1,9 +1,13 @@
-describe WebSocket::Client.instance do
+describe WebSocket::Client do
+  subject { described_class.instance }
+
+  let(:subject_connection) { described_class.instance }
+
   let(:connection) { Redis.new }
 
   before do
     allow(connection).to receive(:publish)
-    allow(subject).to receive(:connection).and_return(connection)
+    allow(subject_connection).to receive(:connection).and_return(connection)
   end
 
   it 'publish a message to channel on emit' do

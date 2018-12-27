@@ -5,10 +5,10 @@ shared_examples 'LoginAttemptable' do
   end
 
   describe '#valid_for_authentication?' do
-    it { expect(auth_entity.valid_for_authentication?).to be_truthy }
+    it { expect(auth_entity).to be_valid_for_authentication }
 
     context 'with persisted authentication entity' do
-      it { expect(auth_entity.valid_for_authentication?).to be_truthy }
+      it { expect(auth_entity).to be_valid_for_authentication }
 
       it do
         expect { auth_entity.valid_for_authentication? }
@@ -38,9 +38,10 @@ shared_examples 'LoginAttemptable' do
     end
 
     context 'notify account owner' do
+      let(:mailer) { instance_double(ArcanebetMailer) }
+
       before do
-        expect_any_instance_of(ArcanebetMailer)
-          .to receive(:suspicious_login).with(auth_entity.email)
+        allow(mailer).to receive(:suspicious_login)
       end
 
       it { auth_entity.invalid_login_attempt! }
@@ -48,22 +49,22 @@ shared_examples 'LoginAttemptable' do
   end
 
   describe 'attempts_just_exceeded?' do
-    it { expect(auth_entity.attempts_just_exceeded?).to be_falsey }
+    it { expect(auth_entity).not_to be_attempts_just_exceeded }
 
     context 'positive' do
       let(:attempts) { LoginAttemptable::LOGIN_ATTEMPTS_CAP + 1 }
 
-      it { expect(auth_entity.attempts_just_exceeded?).to be_truthy }
+      it { expect(auth_entity).to be_attempts_just_exceeded }
     end
   end
 
   describe 'suspicious_login?' do
-    it { expect(auth_entity.suspicious_login?).to be_truthy }
+    it { expect(auth_entity).to be_suspicious_login }
 
     context 'negative' do
       let(:attempts) { LoginAttemptable::LOGIN_ATTEMPTS_CAP - 1 }
 
-      it { expect(auth_entity.suspicious_login?).to be_falsey }
+      it { expect(auth_entity).not_to be_suspicious_login }
     end
   end
 end

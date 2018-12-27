@@ -5,6 +5,8 @@ describe Radar::BaseUofWorker do
   describe '.perform' do
     subject(:worker) { described_class.new }
 
+    let(:subject_worker) { described_class.new }
+
     let(:handler_instance) { instance_double('SomeFeedHandler', handle: true) }
     let(:handler) do
       instance_double('SomeFeedHandler', new: handler_instance)
@@ -20,9 +22,9 @@ describe Radar::BaseUofWorker do
 
     context 'with correct worker_class defined' do
       before do
-        allow(worker).to receive(:worker_class).and_return(handler)
+        allow(subject_worker).to receive(:worker_class).and_return(handler)
         allow(XmlParser).to receive(:parse).and_return(parsed_xml)
-        worker.perform(xml, 0)
+        subject_worker.perform(xml, 0)
       end
 
       it 'parses payload with correct parser' do
@@ -47,15 +49,17 @@ describe Radar::BaseUofWorker do
       end
 
       before do
-        allow(worker).to receive(:worker_class).and_return(broken_handler)
+        allow(
+          subject_worker
+        ).to receive(:worker_class).and_return(broken_handler)
         allow(Rails.logger).to receive(:error)
-        worker.perform(xml, 0)
+        subject_worker.perform(xml, 0)
       rescue StandardError
         StandardError
       end
 
       it 'raises an error back so that the worker fails' do
-        expect { worker.perform(xml, 0) }
+        expect { subject_worker.perform(xml, 0) }
           .to raise_error(StandardError, error_message)
       end
     end
