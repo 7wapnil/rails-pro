@@ -95,7 +95,8 @@ describe OddsFeed::Radar::EventAdapter do
     describe 'return value' do
       let(:expected_payload) do
         {
-          'competitors': payload['competitors']
+          'competitors': payload['competitors'],
+          'liveodds':    payload['liveodds']
         }.stringify_keys
       end
 
