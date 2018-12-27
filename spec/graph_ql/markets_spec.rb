@@ -45,6 +45,30 @@ describe GraphQL, '#markets' do
       end
     end
 
+    context 'market category' do
+      let(:category) { 'popular' }
+      let(:query) do
+        %({ markets (eventId: #{event.id}, category: #{category}) {
+              id
+              name
+              priority
+        } })
+      end
+
+      before do
+        allow_any_instance_of(Market).to receive(:define_priority)
+      end
+
+      it 'returns markets with specific category' do
+        create_list(:market, 2, :with_odds, event: event)
+        create_list(:market, 2, :with_odds,
+                    event:    event,
+                    category: category)
+
+        expect(result['data']['markets'].count).to eq(2)
+      end
+    end
+
     context 'ordering' do
       let(:query) do
         %({ markets (eventId: #{event.id}, limit: null) {
