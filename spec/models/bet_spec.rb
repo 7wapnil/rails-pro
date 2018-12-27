@@ -6,6 +6,7 @@ describe Bet do
   it { is_expected.to belong_to(:customer) }
   it { is_expected.to belong_to(:odd) }
   it { is_expected.to belong_to(:currency) }
+  it { is_expected.to belong_to(:customer_bonus) }
 
   it { is_expected.to have_one(:entry) }
   it { is_expected.to have_one(:entry_request) }

@@ -45,13 +45,13 @@ describe Deposits::PlacementService do
   end
 
   context 'work in transaction' do
+    let(:call) { described_class.call(wallet, amount) }
+
     it "don't create real money entry request if bonus entry fails" do
       allow_any_instance_of(described_class).to receive(:bonus_entry_request)
         .and_return(EntryRequest.new(amount: nil))
 
-      expect { described_class.call(wallet, amount) }.to raise_error(
-        ActiveRecord::RecordInvalid
-      )
+      expect { call }.to raise_error ActiveRecord::RecordInvalid
       expect(EntryRequest.count).to eq(0)
     end
 
@@ -60,9 +60,7 @@ describe Deposits::PlacementService do
       allow_any_instance_of(described_class).to receive(method_name)
         .and_return(EntryRequest.new(amount: nil))
 
-      expect { described_class.call(wallet, amount) }.to raise_error(
-        ActiveRecord::RecordInvalid
-      )
+      expect { call }.to raise_error ActiveRecord::RecordInvalid
       expect(EntryRequest.count).to eq(0)
     end
   end
