@@ -157,6 +157,8 @@ ActiveRecord::Schema.define(version: 2018_12_20_133922) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "expiration_reason"
+    t.decimal "rollover_balance", precision: 8, scale: 2
+    t.decimal "rollover_initial_value", precision: 8, scale: 2
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["deleted_at"], name: "index_customer_bonuses_on_deleted_at"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
