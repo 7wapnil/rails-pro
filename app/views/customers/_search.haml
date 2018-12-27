@@ -1,4 +1,4 @@
-= search_form_for @search do |f|
+= search_form_for filter.search, url: search_path, as: :customers do |f|
   %table.table.search
     %thead
       %tr

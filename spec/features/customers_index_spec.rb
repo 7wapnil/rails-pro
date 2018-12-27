@@ -50,7 +50,7 @@ describe Customer, '#index' do
 
       it 'searches by username contains' do
         within 'table.search' do
-          fill_in :query_username_cont, with: 'john'
+          fill_in :customers_username_cont, with: 'john'
           click_submit
         end
 
@@ -61,7 +61,7 @@ describe Customer, '#index' do
 
       it 'searches by email contains' do
         within 'table.search' do
-          fill_in :query_email_cont, with: 'doe@email'
+          fill_in :customers_email_cont, with: 'doe@email'
           click_submit
         end
 
@@ -72,7 +72,7 @@ describe Customer, '#index' do
 
       it 'searches by last sign in ip address' do
         within 'table.search' do
-          fill_in :query_ip_address_eq, with: john.last_sign_in_ip
+          fill_in :customers_ip_address_eq, with: john.last_sign_in_ip
           click_submit
         end
 
@@ -83,7 +83,7 @@ describe Customer, '#index' do
 
       it 'searches by current sign in ip address' do
         within 'table.search' do
-          fill_in :query_ip_address_eq, with: john.current_sign_in_ip
+          fill_in :customers_ip_address_eq, with: john.current_sign_in_ip
           click_submit
         end
 
@@ -94,7 +94,7 @@ describe Customer, '#index' do
 
       it 'searches by id' do
         within 'table.search' do
-          fill_in :query_id_eq, with: john.id
+          fill_in :customers_id_eq, with: john.id
           click_submit
         end
 
@@ -106,7 +106,7 @@ describe Customer, '#index' do
 
       it 'trims whitespaces from the query' do
         within 'table.search' do
-          fill_in :query_username_cont, with: '  john '
+          fill_in :customers_username_cont, with: '  john '
           click_submit
         end
 

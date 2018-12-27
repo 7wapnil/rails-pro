@@ -1,0 +1,10 @@
+.dashboard-content {
+  table {
+    &, * {
+      font-size: 12px;
+    }
+    td, th {
+      padding: .5rem .25rem;
+    }
+  }
+}

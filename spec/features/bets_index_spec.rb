@@ -70,7 +70,7 @@ describe Bet, '#index' do
 
       context 'by dates interval' do
         it 'by default starts from today' do
-          start_date = find('#query_created_at_gteq').value.to_date
+          start_date = find('#bets_created_at_gteq').value.to_date
 
           expect(start_date).to eq(Time.zone.now.to_date)
         end
@@ -95,7 +95,9 @@ describe Bet, '#index' do
           click_on('Search')
 
           within 'table.table.entities tbody' do
-            expect(page).not_to have_css('tr')
+            expect(page).to have_content(
+              I18n.t(:not_found, instance: I18n.t('entities.bets'))
+            )
           end
         end
       end
@@ -104,7 +106,7 @@ describe Bet, '#index' do
         it 'found' do
           bet = Bet.first
           picked_sport = bet.title.name
-          available_sports = page.find('#query_title_name_eq')
+          available_sports = page.find('#bets_title_name_eq')
                                  .all('option')
                                  .map(&:text)
                                  .reject(&:blank?)
@@ -128,7 +130,9 @@ describe Bet, '#index' do
           click_on('Search')
 
           within 'table.table.entities tbody' do
-            expect(page).not_to have_css('tr')
+            expect(page).to have_content(
+              I18n.t(:not_found, instance: I18n.t('entities.bets'))
+            )
           end
         end
       end
@@ -140,7 +144,7 @@ describe Bet, '#index' do
           bet = create(:bet)
           bet.event.event_scopes << tournament
           picked_tournament = tournament.name
-          available_tournaments = page.find('#query_tournaments_name_eq')
+          available_tournaments = page.find('#bets_tournaments_name_eq')
                                       .all('option')
                                       .map(&:text)
                                       .reject(&:blank?)
@@ -162,7 +166,9 @@ describe Bet, '#index' do
           click_on('Search')
 
           within 'table.table.entities tbody' do
-            expect(page).not_to have_css('tr')
+            expect(page).to have_content(
+              I18n.t(:not_found, instance: I18n.t('entities.bets'))
+            )
           end
         end
       end
@@ -193,7 +199,7 @@ describe Bet, '#index' do
         end
 
         it 'found by multiple countries' do
-          dropdown = page.find('select#query_countries_name_in')
+          dropdown = page.find('select#bets_countries_name_in')
           dropdown.select(pakistan.name)
           dropdown.select(france.name)
           click_on 'Search'
@@ -215,7 +221,9 @@ describe Bet, '#index' do
           click_on 'Search'
 
           within 'table.table.entities tbody' do
-            expect(page).not_to have_css('tr')
+            expect(page).to have_content(
+              I18n.t(:not_found, instance: I18n.t('entities.bets'))
+            )
           end
         end
       end

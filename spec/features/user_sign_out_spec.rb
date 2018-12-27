@@ -3,7 +3,7 @@ describe User, '#sign_out' do
     user = create(:admin_user)
     login_as user, scope: :user
 
-    visit root_path
+    visit dashboard_path
 
     within 'nav.navbar' do
       click_link I18n.t(:sign_out)

@@ -100,8 +100,10 @@ module ApplicationHelper
       .to_h
   end
 
-  def search_date_for(key)
-    query_params[key] || l(Date.current, format: :date_picker)
+  def search_date_for(key, parent_key = nil)
+    return query_params[key] if query_params[key]
+
+    params&.[](parent_key)&.[](key) || l(Date.current, format: :date_picker)
   end
 
   private

@@ -1,10 +1,7 @@
 class BetsController < ApplicationController
-  include DateIntervalFilters
-
   def index
-    query = prepare_interval_filter(query_params, :created_at)
     @filter = BetsFilter.new(bets_source: Bet,
-                             query: query,
+                             query_params: query_params(:bets),
                              page: params[:page])
   end
 

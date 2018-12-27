@@ -3,6 +3,14 @@
 @import "~noty/src/themes/mint";
 @import '~select2/dist/css/select2.min';
 
+body {
+  &[data-controller="dashboards"] {
+    .container {
+      max-width: 100%;
+    }
+  }
+}
+
 .table {
   &.vertical-with-labels {
     tr {

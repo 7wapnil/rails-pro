@@ -300,6 +300,7 @@ GEM
       rack
     rack-proxy (0.6.5)
       rack
+    rack-rewrite (1.5.1)
     rack-test (1.1.0)
       rack (>= 1.0, < 3)
     rails (5.2.2)
@@ -551,6 +552,7 @@ DEPENDENCIES
   pry-rails
   puma (~> 3.11)
   rack-cors
+  rack-rewrite (~> 1.5.0)
   rails (~> 5.2.2)
   rails-erd
   ransack (~> 2.1.1)
