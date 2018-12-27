@@ -6,4 +6,4 @@
   = render 'bets/table',
             filter: filter,
             excluded_columns: BetsFilter::EXCLUDED_COLUMNS[:bets]
-  = paginate filter.bets
+  = paginate filter.bets, param_name: :bets_page

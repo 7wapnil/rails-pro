@@ -4,4 +4,4 @@
           search_path: dashboard_path
   = render 'customers/table',
             filter: filter
-  = paginate filter.customers
+  = paginate filter.customers, param_name: :customers_page
