@@ -154,6 +154,10 @@ describe GraphQL, '#place_bet' do
   end
 
   context 'errors' do
+    before do
+      wallet.update_attributes(currency: currency)
+    end
+
     it 'doesn\'t find the odd' do
       variables = {
         bets: [

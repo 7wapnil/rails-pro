@@ -46,20 +46,24 @@ describe Wallet do
       expected_ratio = (real_amount / (real_amount + bonus_amount)).to_f
 
       expect(
-        wallet_with_balance.current_ratio(bonus_balance)
+        wallet_with_balance.ratio_with_bonus
       ).to eq(expected_ratio)
     end
 
-    it 'returns current ratio without bonus' do
+    it 'returns exception without bonus' do
       allow(wallet_with_balance).to receive(:bonus_balance).and_return(nil)
 
-      expect(wallet_with_balance.current_ratio).to eq(1)
+      expect do
+        wallet_with_balance.ratio_with_bonus
+      end.to raise_error(NoMethodError)
     end
 
     it 'returns exception when real balance is nil' do
       allow(wallet_with_balance).to receive(:real_money_balance).and_return(nil)
 
-      expect { wallet_with_balance.current_ratio }.to raise_error(NoMethodError)
+      expect do
+        wallet_with_balance.ratio_with_bonus
+      end.to raise_error(NoMethodError)
     end
   end
 end

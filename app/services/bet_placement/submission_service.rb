@@ -23,8 +23,8 @@ module BetPlacement
     def valid?
       limits_validation_succeeded? &&
         provider_connected? &&
-        entry_requests_succeeded? &&
-        !market_suspended?
+        !market_suspended? &&
+        entry_requests_succeeded?
     end
 
     def limits_validation_succeeded?
