@@ -170,6 +170,7 @@ en:
   entities:
     activity: Activity
     activities: Activities
+    deposit: Deposit
     activity_count:
       zero: No activities
       one: 1 activity
