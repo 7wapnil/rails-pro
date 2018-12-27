@@ -1,5 +1,6 @@
 require Rails.root.join('lib/sidekiq/silence_job_logger')
 require Rails.root.join('lib/sidekiq_scheduler/scheduler')
+require 'sidekiq/processor'
 
 Sidekiq::Logging.logger = ::MaskedLogStashLoggerFactory.build(type: :stdout)
 
@@ -9,3 +10,4 @@ Sidekiq.configure_server do |config|
 end
 
 Sidekiq::Scheduler.include SidekiqScheduler
+Sidekiq::Processor.prepend Sidekiq::PatchedProcessor
