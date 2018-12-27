@@ -7,6 +7,7 @@ module Deposits
       @wallet = wallet
       @amount = amount
       @initiator = initiator || wallet.customer
+      @customer_bonus = wallet.customer.customer_bonus
     end
 
     def call
@@ -19,7 +20,7 @@ module Deposits
 
     private
 
-    attr_reader :wallet, :amount, :initiator
+    attr_reader :wallet, :amount, :initiator, :customer_bonus
 
     def authorize_real_money!
       real_money_entry_request.save!
@@ -28,7 +29,7 @@ module Deposits
     end
 
     def authorize_bonus_money!
-      return if balances_amounts[:bonus].blank? || !eligible_for_the_bonus?
+      return unless eligible_for_the_bonus?
 
       bonus_entry_request.save!
       WalletEntry::AuthorizationService.call(bonus_entry_request,
@@ -36,18 +37,18 @@ module Deposits
     end
 
     def bonus_entry_request
-      EntryRequest.new(
+      @bonus_entry_request ||= EntryRequest.new(
         base_attrs.merge(amount: balances_amounts[:bonus])
       )
     end
 
     def balances_amounts
-      @balances_amounts ||= BalanceCalculations::Deposit.call(wallet,
+      @balances_amounts ||= BalanceCalculations::Deposit.call(customer_bonus,
                                                               amount)
     end
 
     def real_money_entry_request
-      EntryRequest.new(
+      @real_money_entry_request ||= EntryRequest.new(
         base_attrs.merge(amount: balances_amounts[:real_money])
       )
     end
@@ -71,10 +72,12 @@ module Deposits
     end
 
     def eligible_for_the_bonus?
-      min_deposit = wallet.customer&.customer_bonus&.min_deposit
-      return true unless min_deposit
+      customer_bonus = wallet.customer&.customer_bonus
+      return false unless customer_bonus&.min_deposit
 
-      amount >= min_deposit
+      raise StandardError, 'expired bonus expected' if customer_bonus.expired?
+
+      amount >= customer_bonus.min_deposit
     end
   end
 end

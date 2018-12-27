@@ -33,6 +33,7 @@ Rails.application.routes.draw do
       get :deposit_limit
       get :bets
       get :impersonate
+      post :create_fake_deposit
       post :update_promotional_subscription
       patch :update_status
       post :reset_password_to_default
@@ -76,7 +77,9 @@ Rails.application.routes.draw do
     get :status, on: :member
   end
 
-  resource :dashboard, only: :show
+  resource :dashboard, only: :index
+
+  get '/dashboard', to: 'dashboards#index'
 
   resources :activities, only: %i[index show]
 
@@ -84,6 +87,8 @@ Rails.application.routes.draw do
                      concerns: %i[visible labelable] do
     resources :markets, only: :update
   end
+
+  resources :market_templates, only: %i[index update]
 
   devise_for :users, controllers: {
     sessions: 'users/sessions'
@@ -95,5 +100,5 @@ Rails.application.routes.draw do
 
   post '/graphql', to: 'graphql#execute'
 
-  root 'dashboards#show'
+  root 'dashboards#index'
 end

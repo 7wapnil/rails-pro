@@ -9,11 +9,20 @@
     %span.navbar-toggler-icon
   .collapse.navbar-collapse#navbar-content
     %ul.navbar-nav.mr-auto
-      %li.nav-item
-        = link_to t('entities.events'),
-                  events_path,
-                  class: 'nav-link',
-                  'data-target-controller': 'events'
+      %li.nav-item.dropdown
+        = link_to t(:odds_feed), '#',
+                  class: 'nav-link dropdown-toggle',
+                  'data-toggle': 'dropdown',
+                  aria: { haspopup: true, expanded: false }
+
+        .dropdown-menu
+          = link_to t('entities.events'),
+                    events_path,
+                    class: 'nav-link'
+
+          = link_to t('entities.market_templates'),
+                    market_templates_path,
+                    class: 'nav-link'
 
       %li.nav-item.dropdown
         = link_to t('entities.customers'), '#',
@@ -24,28 +33,23 @@
         .dropdown-menu
           = link_to t('entities.customers'),
                     customers_path,
-                    class: 'dropdown-item',
-                    'data-target-controller': 'customers'
+                    class: 'dropdown-item'
 
           = link_to t('entities.documents'),
                     verification_documents_path,
-                    class: 'dropdown-item',
-                    'data-target-controller': 'documents'
+                    class: 'dropdown-item'
 
           = link_to t('entities.activities'),
                     activities_path,
-                    class: 'dropdown-item',
-                    'data-target-controller': 'activities'
+                    class: 'dropdown-item'
 
           = link_to t('entities.entry_requests'),
                     entry_requests_path,
-                    class: 'dropdown-item',
-                    'data-target-controller': 'entry_requests'
+                    class: 'dropdown-item'
 
           = link_to t('entities.bets'),
                     bets_path,
-                    class: 'dropdown-item',
-                    'data-target-controller': 'bets'
+                    class: 'dropdown-item'
 
       %li.nav-item.dropdown
         = link_to t(:system), '#',
@@ -56,16 +60,13 @@
         .dropdown-menu
           = link_to t('entities.currencies'),
                     currencies_path,
-                    class: 'dropdown-item',
-                    'data-target-controller': 'currencies'
+                    class: 'dropdown-item'
           = link_to t('entities.bonuses'),
                     bonuses_path,
-                    class: 'dropdown-item',
-                    'data-target-controller': 'bonuses'
+                    class: 'dropdown-item'
           = link_to t('entities.labels'),
                     labels_path,
-                    class: 'dropdown-item',
-                    'data-target-controller': 'labels'
+                    class: 'dropdown-item'
 
           .dropdown-divider
 

@@ -1,0 +1,18 @@
+body {
+  &[data-controller="dashboards"] {
+    .container {
+      max-width: 100%;
+    }
+  }
+}
+
+.dashboard-content {
+  table {
+    &, * {
+      font-size: 12px;
+    }
+    td, th {
+      padding: .5rem .25rem;
+    }
+  }
+}

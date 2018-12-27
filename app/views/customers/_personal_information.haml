@@ -19,13 +19,10 @@
       %tr
         %td= t('attributes.gender')
         %td
-          = f.input :gender,
-                    as: :select,
-                    collection: Customer.genders,
-                    include_blank: false,
-                    label_method: ->(k) { t("genders.#{k.first}") },
-                    value_method: ->(k) { k.first },
-                    label: false
+          = build_enum_radio_group(resource: customer,
+                                   attribute_name: :gender,
+                                   collection: Customer.genders,
+                                   translation_key: :genders)
       %tr
         %td= t('attributes.date_of_birth')
         %td

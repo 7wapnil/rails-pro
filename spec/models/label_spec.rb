@@ -1,7 +1,7 @@
 describe Label do
-  it { should have_many(:customers) }
+  it { is_expected.to have_many(:customers) }
 
-  it { should validate_presence_of(:name) }
+  it { is_expected.to validate_presence_of(:name) }
 
-  it { should act_as_paranoid }
+  it { is_expected.to act_as_paranoid }
 end

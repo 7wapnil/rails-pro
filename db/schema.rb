@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_18_142204) do
+ActiveRecord::Schema.define(version: 2018_12_20_133922) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -81,7 +81,10 @@ ActiveRecord::Schema.define(version: 2018_12_18_142204) do
     t.string "validation_ticket_id"
     t.datetime "validation_ticket_sent_at"
     t.string "settlement_status"
+    t.bigint "customer_bonus_id"
+    t.decimal "ratio", precision: 8, scale: 2
     t.index ["currency_id"], name: "index_bets_on_currency_id"
+    t.index ["customer_bonus_id"], name: "index_bets_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
     t.index ["odd_id"], name: "index_bets_on_odd_id"
   end
@@ -154,6 +157,8 @@ ActiveRecord::Schema.define(version: 2018_12_18_142204) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "expiration_reason"
+    t.decimal "rollover_balance", precision: 8, scale: 2
+    t.decimal "rollover_initial_value", precision: 8, scale: 2
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["deleted_at"], name: "index_customer_bonuses_on_deleted_at"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -287,6 +292,8 @@ ActiveRecord::Schema.define(version: 2018_12_18_142204) do
     t.string "status", default: "not_started"
     t.integer "priority", limit: 2, default: 1
     t.boolean "visible", default: true
+    t.boolean "active", default: false
+    t.index ["active"], name: "index_events_on_active"
     t.index ["external_id"], name: "index_events_on_external_id", unique: true
     t.index ["title_id"], name: "index_events_on_title_id"
   end
@@ -316,6 +323,7 @@ ActiveRecord::Schema.define(version: 2018_12_18_142204) do
     t.json "payload"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "category"
     t.index ["external_id"], name: "index_market_templates_on_external_id"
   end
 
@@ -328,6 +336,7 @@ ActiveRecord::Schema.define(version: 2018_12_18_142204) do
     t.string "external_id"
     t.string "status"
     t.boolean "visible", default: true
+    t.string "category"
     t.index ["event_id"], name: "index_markets_on_event_id"
     t.index ["external_id"], name: "index_markets_on_external_id", unique: true
   end

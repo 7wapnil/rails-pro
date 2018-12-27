@@ -1,6 +1,6 @@
 require 'action_view'
 
-describe 'Bets#show' do
+describe Bet, '#show' do
   include ActionView::Helpers::NumberHelper
   subject { create(:bet) }
 

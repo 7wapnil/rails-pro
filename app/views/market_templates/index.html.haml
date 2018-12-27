@@ -1,0 +1,27 @@
+%h1.display-4= t('entities.market_templates')
+
+= render 'search'
+
+%table.table.entities
+  %thead
+    %tr
+      %th= sort_link @search, :id, t('attributes.id')
+      %th= sort_link @search, :external_id, t('attributes.external_id')
+      %th= sort_link @search, :name, t('attributes.name')
+      %th= sort_link @search, :category, t('attributes.category')
+
+  %tbody
+    - @market_templates.each do |market_template|
+      %tr
+        %td= market_template.id
+        %td= market_template.external_id
+        %td= market_template.name
+        %td
+          = form_with(model: market_template, class: 'form-inline') do |form|
+            = form.select :category,
+                          MarketTemplate.categories,
+                          { include_blank: true },
+                          class: 'form-control'
+            = form.submit t(:save), class: 'btn btn-success ml-2'
+
+= paginate @market_templates

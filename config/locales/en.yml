@@ -21,11 +21,13 @@ en:
   save: Save
   says_at: "%{who} at %{when}"
   search: "Search %{subject}"
+  show_more: Show more
   sidekiq: Sidekiq
   sign_in: Sign In
   sign_out: Sign Out
   sign_up: Sign Up
   system: System
+  odds_feed: Odds Feed
   to: To
   upload: Upload
   view: View
@@ -38,6 +40,8 @@ en:
   edit_instance: "Edit %{instance}"
   new_instance: "New %{instance}"
   updated: "%{instance} updated"
+  instance_overview: "%{instance} overview"
+  not_found: "No %{instance} found"
 
   actions:
     expire: Expire
@@ -166,6 +170,7 @@ en:
   entities:
     activity: Activity
     activities: Activities
+    deposit: Deposit
     activity_count:
       zero: No activities
       one: 1 activity
@@ -267,6 +272,8 @@ en:
       zero: No wallets
       one: 1 wallet
       other: "%{count} wallets"
+    market_template: Market template
+    market_templates: Market templates
 
   errors:
     messages:
@@ -348,6 +355,7 @@ en:
       deposit_limit: Deposit Limit
       documents: Documents
       notes: Notes
+    dashboard: Dashboard
     document:
       pending: Pending documents
       recently_actioned: Recently actioned

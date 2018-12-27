@@ -33,6 +33,7 @@ gem 'devise'
 gem 'jwt'
 gem 'simple_form'
 gem 'rack-cors', require: 'rack/cors'
+gem 'rack-rewrite', '~> 1.5.0'
 gem 'activerecord-import'
 gem 'kaminari'
 gem 'kaminari-mongoid'
@@ -76,6 +77,7 @@ group :development, :test do
   gem 'brakeman', require: false
   gem 'haml_lint', require: false
   gem 'overcommit', require: false
+  gem 'rubocop-rspec', require: false
   gem 'awesome_print'
   gem 'pry-rails'
 end

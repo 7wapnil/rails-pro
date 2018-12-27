@@ -49,7 +49,7 @@
 
 
       %hr
-      = link_back
+      = link_back bonuses_customer_path(@customer_bonus.customer)
       - unless @customer_bonus.expired?
         = link_to t('actions.expire'),
                   @customer_bonus,

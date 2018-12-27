@@ -1,12 +1,17 @@
 # rubocop:disable Metrics/ClassLength
 class CustomersController < ApplicationController
   include Labelable
-  include DateIntervalFilters
 
   NOTES_PER_PAGE = 5
   WIDGET_NOTES_COUNT = 2
 
-  before_action :customer, only: %i[bonuses documents deposit_limit show]
+  before_action :customer, only: %i[
+    bonuses
+    documents
+    deposit_limit
+    show
+    create_fake_deposit
+  ]
   before_action :new_note, only: %i[
     account_management
     activity
@@ -28,8 +33,9 @@ class CustomersController < ApplicationController
   ]
 
   def index
-    @search = Customer.ransack(query_params)
-    @customers = @search.result.page(params[:page])
+    @filter = CustomersFilter.new(source: Customer,
+                                  query_params: query_params(:customers),
+                                  page: params[:page])
   end
 
   def show
@@ -56,16 +62,29 @@ class CustomersController < ApplicationController
                   .page(params[:page])
   end
 
+  def create_fake_deposit
+    deposit = deposit_params
+    payment_provider = PaymentProvider::FakeDeposit.new
+    fake_credit = {}
+    amount = deposit[:amount].to_f
+    if payment_provider.pay!(amount, fake_credit)
+      wallet = customer.wallets.where(currency_id: deposit[:currency_id]).first
+      Deposits::PlacementService.call(wallet, amount)
+      flash[:notice] = I18n.t('events.deposit_created')
+    else
+      flash[:alert] = I18n.t('events.deposit_failed')
+    end
+    redirect_back fallback_location: account_management_customer_path(customer)
+  end
+
   def bonuses
     @history =
       CustomerBonus.customer_history(customer)
-    return if customer.customer_bonus && !customer.customer_bonus.expired?
-
+    @current_bonus = customer.customer_bonus
     @active_bonuses = Bonus.active
-    @default_wallet = customer.wallets.primary.take
     @new_bonus = CustomerBonus.new(
       customer: customer,
-      wallet: @default_wallet
+      wallet: customer.wallets.primary.take
     )
   end
 
@@ -92,9 +111,8 @@ class CustomersController < ApplicationController
   end
 
   def bets
-    query = prepare_interval_filter(query_params, :created_at)
-    @filter = BetsFilter.new(bets_source: customer.bets,
-                             query: query,
+    @filter = BetsFilter.new(source: customer.bets,
+                             query_params: query_params(:bets),
                              page: params[:page])
   end
 
@@ -197,6 +215,10 @@ class CustomersController < ApplicationController
   end
 
   private
+
+  def deposit_params
+    params.require(:deposit).permit(:currency_id, :amount)
+  end
 
   def account_params
     params.require(:customer).permit(:agreed_with_promotional, :account_kind)

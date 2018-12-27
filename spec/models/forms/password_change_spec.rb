@@ -1,13 +1,15 @@
 describe Forms::PasswordChange do
-  it { should validate_presence_of(:subject) }
-  it { should validate_presence_of(:existing_password) }
-  it { should validate_presence_of(:new_password) }
-  it { should validate_presence_of(:new_password_confirmation) }
+  subject(:password_change) { described_class.new }
 
-  it { should validate_confirmation_of(:new_password) }
+  it { is_expected.to validate_presence_of(:subject) }
+  it { is_expected.to validate_presence_of(:existing_password) }
+  it { is_expected.to validate_presence_of(:new_password) }
+  it { is_expected.to validate_presence_of(:new_password_confirmation) }
+
+  it { is_expected.to validate_confirmation_of(:new_password) }
 
   it do
-    should validate_length_of(:new_password)
+    expect(password_change).to validate_length_of(:new_password)
       .is_at_least(6)
       .is_at_most(32)
   end

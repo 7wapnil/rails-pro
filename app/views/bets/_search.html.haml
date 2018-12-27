@@ -5,7 +5,7 @@
 - content_for :js do
   = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
 
-= search_form_for filter.search, url: search_path do |f|
+= search_form_for filter.search, url: search_path, as: :bets do |f|
   %table.table
     %thead
       %tr
@@ -36,7 +36,7 @@
             = f.search_field :created_at_gteq,
                               class: 'form-control form_date',
                               placeholder: t(:search, subject: t('from')),
-                              value: search_date_for(:created_at_gteq)
+                              value: search_date_for(:created_at_gteq, :bets)
         %th
           .filter_title
             #{t(:search, subject: t('to'))}:
@@ -45,7 +45,7 @@
             = f.search_field :created_at_lteq,
                               class: 'form-control form_date',
                               placeholder: t(:search, subject: t('to')),
-                              value: search_date_for(:created_at_lteq)
+                              value: search_date_for(:created_at_lteq, :bets)
       %tr
         %th
           .filter_title

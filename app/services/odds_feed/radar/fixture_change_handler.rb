@@ -48,8 +48,11 @@ module OddsFeed
         log_job_message(:info, "Creating event with external ID #{external_id}")
       end
 
+      def change_type
+        CHANGE_TYPES[payload['change_type']]
+      end
+
       def log_on_update
-        change_type = CHANGE_TYPES[payload['change_type']]
         msg = <<-MESSAGE
           Updating event with external ID #{external_id} \
           on change type '#{change_type}'
@@ -64,6 +67,7 @@ module OddsFeed
         event.add_to_payload(
           producer: { origin: :radar, id: payload['product'] }
         )
+        event.active = false if change_type == :cancelled
 
         event.save!
       end

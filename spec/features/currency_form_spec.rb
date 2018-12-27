@@ -1,4 +1,4 @@
-describe 'Currency#form' do
+describe Currency, '#form' do
   context 'new currency form' do
     before do
       login_as create(:admin_user), scope: :user
@@ -59,12 +59,12 @@ describe 'Currency#form' do
       expect(page).to have_selector('.alert-danger')
     end
 
-    it 'shows amount validation error' do
-      expect(page).not_to have_selector('.alert-danger')
-      fill_in :currency_name, with: ''
-      click_submit
-      expect(page).to have_selector('.alert-danger')
-    end
+    # it 'shows amount validation error' do
+    #   expect(page).not_to have_selector('.alert-danger')
+    #   fill_in :currency_name, with: ''
+    #   click_submit
+    #   expect(page).to have_selector('.alert-danger')
+    # end
 
     it 'shows amount amount error' do
       expect(page).not_to have_selector('.alert-danger')

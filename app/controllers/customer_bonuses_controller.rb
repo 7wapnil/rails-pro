@@ -2,15 +2,14 @@ class CustomerBonusesController < ApplicationController
   def create
     wallet = Wallet.find(payload_params[:wallet_id])
     bonus = Bonus.find(payload_params[:original_bonus_id])
-    customer_bonus = Bonuses::ActivationService.call(wallet, bonus)
+    amount = payload_params[:amount].to_f
+    customer_bonus = Bonuses::ActivationService.call(wallet, bonus, amount)
     customer = wallet.customer
     if customer_bonus.nil?
       flash[:error] = t('errors.messages.bonus_activation_failed')
     else
       flash[:success] = t(:activated, instance: t('entities.bonus'))
-      current_user.log_event :bonus_activated, customer_bonus, customer
-
-      customer_bonus.add_funds(payload_params[:amount].to_i)
+      bonus_activated(customer_bonus, customer)
     end
     redirect_to bonuses_customer_path(customer)
   end
@@ -45,5 +44,10 @@ class CustomerBonusesController < ApplicationController
         :wallet_id,
         :amount
       )
+  end
+
+  def bonus_activated(customer_bonus, customer)
+    current_user.log_event :bonus_activated, customer_bonus, customer
+    customer_bonus.add_funds(payload_params[:amount].to_i)
   end
 end

@@ -24,14 +24,16 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
     let(:outcome)   { outcomes['outcome'].first }
 
     context 'player odd payload' do
+      let(:subject_with_template) { described_class.new(*args) }
+
       before do
         expect(OddsFeed::Radar::Entities::PlayerLoader)
           .to receive(:call).with(external_id: player_id).and_return(name)
 
-        allow(subject).to receive(:find_odd_template)
+        allow(subject_with_template).to receive(:find_odd_template)
       end
 
-      it { expect(subject.odd_name(player_id)).to eq(name) }
+      it { expect(subject_with_template.odd_name(player_id)).to eq(name) }
     end
 
     context 'payload from loaded template' do
@@ -68,11 +70,12 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
     context 'template not found' do
       let(:external_id) { Faker::Bank.account_number }
       let(:message)     { "Odd template ID #{external_id} not found" }
+      let(:subject_with_template) { described_class.new(*args) }
 
-      before { expect(subject).to receive(:find_odd_template) }
+      before { expect(subject_with_template).to receive(:find_odd_template) }
 
       it do
-        expect { subject.odd_name(external_id) }
+        expect { subject_with_template.odd_name(external_id) }
           .to raise_error(StandardError, message)
       end
     end

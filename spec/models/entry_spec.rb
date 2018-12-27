@@ -1,4 +1,6 @@
 describe Entry do
+  subject { build(:entry, wallet: wallet, kind: rule.kind, amount: 50) }
+
   let(:currency) { create(:currency) }
   let(:rule) do
     create(:entry_currency_rule,
@@ -8,14 +10,12 @@ describe Entry do
   end
   let(:wallet) { create(:wallet, currency: currency) }
 
-  subject { build(:entry, wallet: wallet, kind: rule.kind, amount: 50) }
-
   # it { should define_enum_for(:kind) }
 
-  it { should belong_to(:wallet) }
-  it { should belong_to(:origin) }
-  it { should have_one(:currency) }
-  it { should have_many(:balance_entries) }
+  it { is_expected.to belong_to(:wallet) }
+  it { is_expected.to belong_to(:origin) }
+  it { is_expected.to have_one(:currency) }
+  it { is_expected.to have_many(:balance_entries) }
 
-  it { should validate_presence_of(:amount) }
+  it { is_expected.to validate_presence_of(:amount) }
 end
