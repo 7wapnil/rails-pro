@@ -8,7 +8,7 @@ describe Mts::SessionRecovery do
     end
 
     it 'does nothing if network failure is not registered' do
-      allow(subject).to receive(:session_failed_at) { nil }
+      allow(subject).to receive(:session_failed_at).and_return(nil)
 
       expect(subject).not_to have_received(:recover_producer_subscriptions!)
     end
@@ -44,7 +44,7 @@ describe Mts::SessionRecovery do
 
     context 'network failure not registered' do
       it 'writes network failure flag' do
-        allow(subject).to receive(:session_failed_at) { nil }
+        allow(subject).to receive(:session_failed_at).and_return(nil)
 
         Timecop.freeze do
           subject.register_failure!
@@ -60,7 +60,7 @@ describe Mts::SessionRecovery do
 
   describe '#recover_producer_subscriptions' do
     it 'calls #recover_subscription! on every producer' do
-      producer_double = double('producer')
+      producer_double = instance_double('producer')
       allow(Radar::Producer).to receive(:find_by_id) { producer_double }
       expect(producer_double)
         .to receive(:recover_subscription!)

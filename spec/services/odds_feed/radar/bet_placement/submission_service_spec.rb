@@ -10,7 +10,7 @@ describe BetPlacement::SubmissionService do
   before do
     allow(ApplicationState)
       .to receive(:instance)
-      .and_return(double(live_connected: true))
+      .and_return(instance_double(ApplicationState, live_connected: true))
     allow(EntryRequest).to receive(:create!).and_return(entry_request)
     allow(WalletEntry::AuthorizationService)
       .to receive(:call)
@@ -21,7 +21,7 @@ describe BetPlacement::SubmissionService do
   end
 
   it 'valid' do
-    expect(subject.sent_to_external_validation?).to be_truthy
+    expect(subject).to be_sent_to_external_validation
   end
 
   context 'set impersonated person to related entry request' do
@@ -49,7 +49,7 @@ describe BetPlacement::SubmissionService do
           .with(bet)
       end
 
-      it { expect(subject.sent_to_internal_validation?).to be_truthy }
+      it { expect(subject).to be_sent_to_internal_validation }
     end
 
     context 'on provider disconnected' do
@@ -57,10 +57,11 @@ describe BetPlacement::SubmissionService do
         before do
           allow(ApplicationState)
             .to receive(:instance)
-            .and_return(double(live_connected: false))
+            .and_return(instance_double(ApplicationState,
+                                        live_connected: false))
         end
 
-        it { expect(subject.sent_to_internal_validation?).to be_truthy }
+        it { expect(subject).to be_sent_to_internal_validation }
       end
 
       context 'pre-live' do
@@ -71,10 +72,12 @@ describe BetPlacement::SubmissionService do
         before do
           allow(ApplicationState)
             .to receive(:instance)
-            .and_return(double(live_connected: true, pre_live_connected: false))
+            .and_return(instance_double(ApplicationState,
+                                        live_connected: true,
+                                        pre_live_connected: false))
         end
 
-        it { expect(subject.sent_to_internal_validation?).to be_truthy }
+        it { expect(subject).to be_sent_to_internal_validation }
       end
     end
 
@@ -82,13 +85,13 @@ describe BetPlacement::SubmissionService do
       let(:market) { build(:market, :suspended) }
       let(:bet)    { build(:bet, market: market) }
 
-      it { expect(subject.sent_to_internal_validation?).to be_truthy }
+      it { expect(subject).to be_sent_to_internal_validation }
     end
 
     context 'on unsuccessful entry request' do
       let(:entry_request) { build_stubbed(:entry_request) }
 
-      it { expect(subject.sent_to_internal_validation?).to be_truthy }
+      it { expect(subject).to be_sent_to_internal_validation }
     end
   end
 end

@@ -2,7 +2,8 @@ describe Mts::Session do
   let(:example_config) { { Faker::Lorem.word => Faker::Lorem.word } }
 
   describe 'class methods' do
-    subject { Mts::Session }
+    subject { described_class }
+
     describe '#initialize' do
       context 'config passed' do
         it 'sets config based on argument' do
@@ -11,13 +12,16 @@ describe Mts::Session do
             .to eq example_config
         end
       end
+
       context 'config not passed' do
         let(:connection) { subject.new }
+
         before do
           allow_any_instance_of(subject)
             .to receive(:default_config)
             .and_return(example_config)
         end
+
         it 'calls default_config' do
           expect(connection)
             .to have_received(:default_config)
@@ -34,12 +38,12 @@ describe Mts::Session do
   describe '.connection' do
     it 'calls Bunny service with specific config' do
       expect(Bunny).to receive(:new).with(example_config)
-      Mts::Session.new(example_config).connection
+      described_class.new(example_config).connection
     end
     it 'calls Bunny service only once' do
       expect(Bunny).to receive(:new).and_return({})
         .once.with(example_config)
-      conn = Mts::Session.new(example_config)
+      conn = described_class.new(example_config)
       2.times do
         conn.connection
       end
@@ -54,7 +58,7 @@ describe Mts::Session do
 
         allow(connection_double).to receive(:open?).and_return(true)
 
-        expect(subject.connection).to_not receive(:start_connection)
+        expect(subject.connection).not_to receive(:start_connection)
         expect(subject.opened_connection).to eq(connection_double)
       end
     end

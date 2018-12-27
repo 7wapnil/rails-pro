@@ -1,8 +1,8 @@
 describe CustomerNote do
-  it { should belong_to(:user) }
-  it { should belong_to(:customer) }
+  it { is_expected.to belong_to(:user) }
+  it { is_expected.to belong_to(:customer) }
 
-  it { should validate_presence_of(:content) }
+  it { is_expected.to validate_presence_of(:content) }
 
-  it { should act_as_paranoid }
+  it { is_expected.to act_as_paranoid }
 end

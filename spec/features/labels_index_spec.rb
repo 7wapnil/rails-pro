@@ -1,4 +1,4 @@
-describe 'Labels#index' do
+describe Label, '#index' do
   context 'signed in' do
     let(:per_page_count) { 10 }
 
@@ -11,7 +11,7 @@ describe 'Labels#index' do
 
     it 'shows labels list' do
       within 'table.table' do
-        Label.limit(per_page_count).each do |label|
+        described_class.limit(per_page_count).each do |label|
           expect(page).to have_content(label.name)
           expect(page).to have_content(label.description)
         end

@@ -1,20 +1,21 @@
 describe Odd do
   # it { should define_enum_for(:status) }
+  subject(:odd) { described_class.new }
 
-  it { should belong_to(:market) }
+  it { is_expected.to belong_to(:market) }
 
-  it { should validate_presence_of(:name) }
-  it { should validate_presence_of(:status) }
-  it { should validate_numericality_of(:value).is_greater_than(0) }
+  it { is_expected.to validate_presence_of(:name) }
+  it { is_expected.to validate_presence_of(:status) }
+  it { is_expected.to validate_numericality_of(:value).is_greater_than(0) }
 
   it 'validates value on create is status active' do
-    subject.status = Odd::ACTIVE
-    should validate_presence_of(:value).on(:create)
+    odd.status = Odd::ACTIVE
+    expect(odd).to validate_presence_of(:value).on(:create)
   end
 
   it 'not validates value on create if status inactive' do
-    subject.status = Odd::INACTIVE
-    should_not validate_presence_of(:value).on(:create)
+    odd.status = Odd::INACTIVE
+    expect(odd).not_to validate_presence_of(:value).on(:create)
   end
 
   context 'callbacks' do
@@ -29,7 +30,7 @@ describe Odd do
     end
 
     it 'emits web socket event on update' do
-      allow_any_instance_of(Odd).to receive(:emit_created)
+      allow_any_instance_of(described_class).to receive(:emit_created)
       odd = create(:odd)
       odd.assign_attributes(value: 1.99)
       odd.save!

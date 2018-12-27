@@ -28,7 +28,9 @@ describe CustomerBonusesController, type: :controller do
 
       it 'calls Bonuses::ActivationService with wallet and bonus' do
         expect(Bonuses::ActivationService)
-          .to have_received(:call).with(wallet, original_bonus)
+          .to have_received(:call).with(wallet,
+                                        original_bonus,
+                                        amount)
       end
 
       it 'calls CustomerBonus::add_funds with amount' do

@@ -30,6 +30,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
 
   describe '#call' do
     subject { described_class.call(event.id, markets_data) }
+
     let(:web_socket) { double }
     let(:odds)       { build_stubbed_list(:odd, 5) }
     let(:markets)    { build_stubbed_list(:market, markets_data.count) }

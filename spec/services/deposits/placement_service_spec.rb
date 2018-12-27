@@ -4,16 +4,16 @@ describe Deposits::PlacementService do
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
   let(:percentage) { 25 }
   let(:amount) { 100 }
-
+  let(:rollover_multiplier) { 5 }
   let(:wallet) do
     create(:wallet, customer: customer, currency: currency, amount: 0)
   end
 
-  let!(:customer_bonus) do
-    create(:customer_bonus, customer: customer, percentage: percentage)
-  end
-
   before do
+    create(:customer_bonus,
+           customer: customer,
+           percentage: percentage,
+           rollover_multiplier: rollover_multiplier)
     allow(EntryCurrencyRule).to receive(:find_by!) { rule }
     allow(Currency).to receive(:find_by!) { currency }
   end
@@ -48,11 +48,13 @@ describe Deposits::PlacementService do
   end
 
   context 'work in transaction' do
+    let(:call) { described_class.call(wallet, amount) }
+
     it "don't create real money entry request if bonus entry fails" do
       allow_any_instance_of(described_class).to receive(:bonus_entry_request)
         .and_return(EntryRequest.new(amount: nil))
 
-      expect { described_class.call(wallet, amount) }.to raise_error
+      expect { call }.to raise_error ActiveRecord::RecordInvalid
       expect(EntryRequest.count).to eq(0)
     end
 
@@ -61,7 +63,7 @@ describe Deposits::PlacementService do
       allow_any_instance_of(described_class).to receive(method_name)
         .and_return(EntryRequest.new(amount: nil))
 
-      expect { described_class.call(wallet, amount) }.to raise_error
+      expect { call }.to raise_error ActiveRecord::RecordInvalid
       expect(EntryRequest.count).to eq(0)
     end
   end

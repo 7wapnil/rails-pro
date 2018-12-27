@@ -19,6 +19,8 @@ describe Mts::UofId do
       }
     ].each do |example|
       context example[:title] do
+        subject { described_class.new(odd) }
+
         let(:title) { create(:title, external_id: 'sr:sport:110') }
         let(:producer_id) { example[:producer_id] || '1' }
         let(:event) do
@@ -33,8 +35,6 @@ describe Mts::UofId do
                  market: market,
                  external_id: example[:external_id])
         end
-
-        subject { described_class.new(odd) }
 
         it "generates correct uof id for #{example[:title]}" do
           expect(subject.uof_id).to eq example[:uof_id]

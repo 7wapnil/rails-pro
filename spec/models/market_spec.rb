@@ -1,12 +1,13 @@
 describe Market do
   # it { should define_enum_for(:status) }
+  subject(:market) { described_class.new }
 
-  it { should belong_to(:event) }
-  it { should have_many(:odds) }
+  it { is_expected.to belong_to(:event) }
+  it { is_expected.to have_many(:odds) }
 
-  it { should validate_presence_of(:name) }
-  it { should validate_presence_of(:priority) }
-  it { should validate_presence_of(:status) }
+  it { is_expected.to validate_presence_of(:name) }
+  it { is_expected.to validate_presence_of(:priority) }
+  it { is_expected.to validate_presence_of(:status) }
 
   context 'callbacks' do
     it 'calls priority definition before validation' do
@@ -53,7 +54,7 @@ describe Market do
     it "raises error on switching from '#{initial_state}' to '#{new_state}'" do
       market = create(:market, status: initial_state)
       market.status = new_state
-      expect(market.valid?).to be_falsey
+      expect(market).not_to be_valid
       error_msg = I18n.t('errors.messages.wrong_market_state',
                          initial_state: initial_state,
                          new_state: new_state)
@@ -96,7 +97,7 @@ describe Market do
   end
 
   it 'emits web socket event on update' do
-    allow_any_instance_of(Market).to receive(:emit_created)
+    allow_any_instance_of(described_class).to receive(:emit_created)
     market = create(:market)
     market.assign_attributes(name: 'New name',
                              status: Market::ACTIVE)

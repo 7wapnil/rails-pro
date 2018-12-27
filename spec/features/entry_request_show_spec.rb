@@ -1,4 +1,4 @@
-describe 'EntryRequests#show' do
+describe EntryRequest, '#show' do
   context 'signed in' do
     let(:currency) { create(:currency) }
     let(:rule) do

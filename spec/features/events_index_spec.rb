@@ -1,4 +1,4 @@
-describe 'Events#index' do
+describe Event, '#index' do
   context 'signed in' do
     include_context 'frozen_time'
 
