@@ -1,5 +1,6 @@
 = card header: t(:instance_overview, instance: t('entities.entry_requests')),
        class: 'transactions mb-4' do
-  = render 'entry_requests/table',
-          filter: filter
+  .table-responsive
+    = render 'entry_requests/table',
+            filter: filter
   = paginate filter.requests, param_name: :entry_requests_page
