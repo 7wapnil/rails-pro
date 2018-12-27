@@ -1,5 +1,5 @@
-module BonusDeactivation
-  class Expired < BaseDeactivationStrategy
+module BonusExpiration
+  class Expired < BaseExpirationStrategy
     def deactivate
       return customer_bonus if customer_bonus.deleted_at
 

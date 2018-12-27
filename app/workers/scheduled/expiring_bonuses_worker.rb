@@ -10,7 +10,7 @@ module Scheduled
         .where(expiration_reason: nil)
         .select(&:expired?)
         .each do |bonus|
-          service = BonusDeactivation::Expired
+          service = BonusExpiration::Expired
           reason = :expired_by_date
           bonus.close!(service, reason: reason)
         end

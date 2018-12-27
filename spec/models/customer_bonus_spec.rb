@@ -18,7 +18,7 @@ describe CustomerBonus do
 
     it '#close!' do
       customer_bonus = create(:customer_bonus)
-      deactivation_strategy = double('DeactivationStrategy')
+      deactivation_strategy = instance_double('DeactivationStrategy')
       allow(deactivation_strategy).to receive(:call)
       expect(deactivation_strategy).to receive(:call).with(customer_bonus, {})
 

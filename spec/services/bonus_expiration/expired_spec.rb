@@ -1,11 +1,12 @@
-describe BonusDeactivation::Expired do
+describe BonusExpiration::Expired do
   let(:expiration_reason) { CustomerBonus.expiration_reasons.keys.first }
   let(:another_expiration_reason) { CustomerBonus.expiration_reasons.keys.last }
 
   describe '.call' do
     context 'raise errors' do
-      let(:customer_bonus) { create(:customer_bonus) }
       subject(:service_call) { described_class.call(customer_bonus) }
+
+      let(:customer_bonus) { create(:customer_bonus) }
 
       it 'raise argument error when pass without reason' do
         expect { service_call }.to raise_error(ArgumentError)
@@ -37,7 +38,7 @@ describe BonusDeactivation::Expired do
       end
 
       before do
-        described_class.call(customer_bonus, another_expiration_reason)
+        described_class.call(customer_bonus, reason: another_expiration_reason)
         Timecop.freeze(expiration_time + 1.minute)
       end
 
