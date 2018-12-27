@@ -34,7 +34,7 @@ describe Customer, '#betting_limits' do
         click_submit
       end
 
-      within '.container' do
+      within '.container-fluid' do
         expect_to_have_notification I18n.t(
           :created,
           instance: I18n.t('entities.betting_limit')
@@ -56,7 +56,7 @@ describe Customer, '#betting_limits' do
         click_submit
       end
 
-      within '.container' do
+      within '.container-fluid' do
         expect_to_have_notification I18n.t(
           :updated,
           instance: I18n.t('entities.betting_limit')
@@ -85,7 +85,7 @@ describe Customer, '#betting_limits' do
         click_submit
       end
 
-      within '.container' do
+      within '.container-fluid' do
         expect_to_have_notification I18n.t(
           :created,
           instance: I18n.t('entities.betting_limit')
@@ -107,7 +107,7 @@ describe Customer, '#betting_limits' do
         click_submit
       end
 
-      within '.container' do
+      within '.container-fluid' do
         expect_to_have_notification I18n.t(
           :updated,
           instance: I18n.t('entities.betting_limit')

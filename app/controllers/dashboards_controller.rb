@@ -1,6 +1,4 @@
 class DashboardsController < ApplicationController
-  layout 'dashboard'
-
   ENTRY_REQUESTS_LIMIT = 100
 
   def index

@@ -39,7 +39,7 @@ describe Customer, '#bonuses' do
         click_submit
       end
 
-      within '.container' do
+      within '.container-fluid' do
         expect_to_have_notification I18n.t(
           :activated,
           instance: I18n.t('entities.bonus')

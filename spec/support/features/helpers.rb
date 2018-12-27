@@ -4,7 +4,7 @@ module FeatureHelpers
   end
 
   def expect_to_have_section(section_class)
-    within '.container, .container-fluid' do
+    within '.container-fluid' do
       expect(page).to have_selector ".card.#{section_class}"
     end
   end
