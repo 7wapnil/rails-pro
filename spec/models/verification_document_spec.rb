@@ -1,5 +1,5 @@
 describe VerificationDocument do
-  it { should belong_to(:customer) }
+  it { is_expected.to belong_to(:customer) }
 
-  it { should act_as_paranoid }
+  it { is_expected.to act_as_paranoid }
 end

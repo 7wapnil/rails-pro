@@ -1,8 +1,9 @@
 describe Users::SignInService do
   subject { described_class.new(params) }
 
-  before(:all) { Recaptcha.configuration.skip_verify_env.delete('test') }
-  after(:all)  { Recaptcha.configuration.skip_verify_env.push('test') }
+  before { Recaptcha.configuration.skip_verify_env.delete('test') }
+
+  after { Recaptcha.configuration.skip_verify_env.push('test') }
 
   let(:model)    { User }
   let(:email)    { Faker::Internet.email }
@@ -64,20 +65,20 @@ describe Users::SignInService do
     let(:failed_attempts) { LoginAttemptable::LOGIN_ATTEMPTS_CAP }
 
     context 'when found user is suspicious' do
-      let!(:user) do
+      before do
         create(:user, email: email, failed_attempts: failed_attempts)
       end
 
-      it { expect(subject.suspicious?).to be_truthy }
+      it { expect(subject).to be_suspicious }
     end
 
     context 'when user was not found' do
-      it { expect(subject.suspicious?).to be_falsey }
+      it { expect(subject).not_to be_suspicious }
 
       context 'with a lot of attempts in session' do
         let(:attempts) { failed_attempts }
 
-        it { expect(subject.suspicious?).to be_truthy }
+        it { expect(subject).to be_suspicious }
       end
     end
   end

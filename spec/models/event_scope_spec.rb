@@ -1,11 +1,11 @@
 describe EventScope do
-  it { should belong_to(:title) }
-  it { should have_many(:scoped_events) }
-  it { should have_many(:events).through(:scoped_events) }
+  it { is_expected.to belong_to(:title) }
+  it { is_expected.to have_many(:scoped_events) }
+  it { is_expected.to have_many(:events).through(:scoped_events) }
 
   # it { should define_enum_for(:kind) }
 
-  it { should validate_presence_of(:name) }
+  it { is_expected.to validate_presence_of(:name) }
 
   it_behaves_like 'updatable on duplicate'
 end

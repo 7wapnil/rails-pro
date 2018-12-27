@@ -1,11 +1,11 @@
 describe OddsFeed::Radar::EventScopesService do
+  subject(:service) { described_class.new(payload) }
+
   let(:payload) do
     XmlParser.parse(
       file_fixture('tournaments_response.xml').read
     )['tournaments']['tournament'][0]
   end
-
-  subject(:service) { described_class.new(payload) }
 
   describe 'title' do
     it 'creates new from payload' do

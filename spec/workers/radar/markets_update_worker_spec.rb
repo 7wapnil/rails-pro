@@ -3,6 +3,23 @@ describe Radar::MarketsUpdateWorker do
     XmlParser.parse(file_fixture('radar_markets_descriptions.xml').read)
   end
   let(:client) { OddsFeed::Radar::Client.new }
+  let(:expected_payload) do
+    {
+      outcomes: {
+        outcome: [
+          { 'id': '74', 'name': 'yes' },
+          { 'id': '76', 'name': 'no' }
+        ]
+      },
+      specifiers: {
+        specifier: [
+          { 'name': 'milestone', 'type': 'integer' },
+          { 'name': 'maxovers', 'type': 'integer' }
+        ]
+      },
+      attributes: nil
+    }.deep_stringify_keys!
+  end
 
   before do
     allow(client).to receive(:request)
@@ -25,22 +42,6 @@ describe Radar::MarketsUpdateWorker do
     create(:market_template, external_id: template_id,
                              name: 'Old template name',
                              groups: '')
-
-    expected_payload = {
-      outcomes: {
-        outcome: [
-          { 'id': '74', 'name': 'yes' },
-          { 'id': '76', 'name': 'no' }
-        ]
-      },
-      specifiers: {
-        specifier: [
-          { 'name': 'milestone', 'type': 'integer' },
-          { 'name': 'maxovers', 'type': 'integer' }
-        ]
-      },
-      attributes: nil
-    }.deep_stringify_keys!
 
     subject.perform
     updated_template = MarketTemplate.find_by(external_id: template_id)
