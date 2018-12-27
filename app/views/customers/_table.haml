@@ -1,0 +1,21 @@
+%table.table.entities
+  %thead
+    %tr
+      %th= t('attributes.username')
+      %th= t('attributes.email')
+      %th= t('attributes.ip_address')
+      %th= t('attributes.id')
+      %th= t('attributes.balance')
+
+  %tbody
+    - filter.customers.each do |customer|
+      %tr{ id: "customer-#{customer.id}" }
+        %td
+          = link_to customer.username, customer
+          %br
+          - customer.labels.each do |label|
+            %span.badge.badge-info= label.name
+        %td= customer.email
+        %td= customer.last_sign_in_ip
+        %td= customer.id
+        %td= wallet_balances_for(customer)

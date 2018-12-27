@@ -1,7 +1,10 @@
 class EntryRequestsController < ApplicationController
   def index
-    @search = EntryRequest.ransack(query_params)
-    @requests = @search.result.page(params[:page])
+    @filter = EntryRequestsFilter.new(
+      source: EntryRequest,
+      query_params: query_params(:entry_requests),
+      page: params[:page]
+    )
   end
 
   def show
@@ -13,12 +16,12 @@ class EntryRequestsController < ApplicationController
 
     if entry_request.save
       EntryRequestProcessingWorker.perform_async(entry_request.id)
-
+      customer = entry_request.customer
       current_user.log_event :entry_request_created,
                              entry_request,
-                             entry_request.customer
+                             customer
       flash[:success] = t('messages.entry_request.flash')
-      redirect_to account_management_customer_path(entry_request.customer) # rubocop:disable Metrics/LineLength
+      redirect_to account_management_customer_path(customer)
     else
       flash[:error] = entry_request.errors.full_messages
       redirect_back fallback_location: root_path

@@ -1,8 +1,8 @@
 module BalanceCalculations
   class Deposit < ApplicationService
-    def initialize(wallet, deposit_amount)
+    def initialize(bonus, deposit_amount)
       @amount = deposit_amount
-      @customer = wallet.customer
+      @bonus = bonus
     end
 
     def call
@@ -14,11 +14,11 @@ module BalanceCalculations
 
     private
 
-    attr_reader :customer, :amount
+    attr_reader :bonus, :amount
 
     def calculate_bonus_amount
-      bonus = customer.customer_bonus
-      return if bonus.nil? || bonus.expired? || bonus.min_deposit > amount
+      min_deposit = bonus&.min_deposit
+      return 0 if bonus.nil? || min_deposit > amount
 
       bonus_amount = amount * (bonus.percentage / 100.0)
       max_deposit_bonus = bonus.max_deposit_match

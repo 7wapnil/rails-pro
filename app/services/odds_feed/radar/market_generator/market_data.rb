@@ -19,6 +19,10 @@ module OddsFeed
           @interpreter.parse(template.market_name)
         end
 
+        def category
+          template.market_category
+        end
+
         def odd_name(odd_id)
           @interpreter.parse(template.odd_name(odd_id))
         end

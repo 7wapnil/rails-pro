@@ -11,6 +11,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :customer
   belongs_to :odd
   belongs_to :currency
+  belongs_to :customer_bonus, optional: true
 
   has_one :entry, as: :origin
   has_one :entry_request, as: :origin
@@ -48,6 +49,14 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   scope :sort_by_winning_desc, -> { with_winnings.order('winning DESC') }
 
   class << self
+    def suspended
+      joins(:market).where(markets: { status: Market::SUSPENDED })
+    end
+
+    def unsuspended
+      joins(:market).where.not(markets: { status: Market::SUSPENDED })
+    end
+
     def from_regular_customers
       left_outer_joins(:customer).where(
         customers: { account_kind: Customer::REGULAR }

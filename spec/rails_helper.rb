@@ -65,7 +65,7 @@ RSpec.configure do |config|
   config.include Devise::Test::ControllerHelpers, type: :controller
 
   # Some work to do before any test
-  config.before(:each) do
+  config.before do
     # Drop all mongo record before each test
     AuditLog.delete_all
     ArchivedEvent.delete_all

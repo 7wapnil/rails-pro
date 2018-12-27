@@ -1,4 +1,4 @@
-describe 'Customers#bonuses' do
+describe Customer, '#bonuses' do
   let(:customer) { create(:customer) }
   let(:primary_currency) { create(:currency, :primary) }
   let!(:wallet) do

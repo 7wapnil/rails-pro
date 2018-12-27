@@ -58,8 +58,14 @@ module OddsFeed
           Odd.new(external_id: external_id,
                   market: @market,
                   name: @market_data.odd_name(odd_data['id']),
-                  status: Odd::ACTIVE,
+                  status: odd_status(odd_data['active']),
                   value: odd_data['odds'])
+        end
+
+        def odd_status(radar_status)
+          return Odd::ACTIVE if radar_status == '1'
+
+          Odd::INACTIVE
         end
 
         def odd_data_is_not_payload(odd_data)

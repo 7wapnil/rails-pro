@@ -11,7 +11,7 @@ describe ArcanebetMailer do
     let(:customer) { create(:customer, email: 'igor@arcanebet.com') }
 
     it 'sends account activation email' do
-      email = ArcanebetMailer.with(customer: customer).account_activation_mail
+      email = described_class.with(customer: customer).account_activation_mail
       expect(email.to.first).to eq(customer.email)
     end
   end

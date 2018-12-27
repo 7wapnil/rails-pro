@@ -10,33 +10,31 @@ describe EntryAmountValidator do
     let(:wallet) { create(:wallet, currency: rule.currency) }
 
     it 'raises an exception when rule not found' do
-      record = build(:entry,
-                     wallet: wallet,
-                     kind: EntryKinds::KINDS.keys.last,
-                     amount: 50)
+      record = build_record(EntryKinds::KINDS.keys.last, 50)
 
       expect { described_class.new.validate(record) }
         .to raise_error ActiveRecord::RecordNotFound
     end
 
     it 'doesn\'t add error when amount is in range' do
-      record = build(:entry,
-                     wallet: wallet,
-                     kind: rule.kind,
-                     amount: 100)
+      record = build_record(rule.kind, 100)
 
       described_class.new.validate(record)
       expect(record.errors[:amount]).to be_empty
     end
 
     it 'adds error when amount is out of range' do
-      record = build(:entry,
-                     wallet: wallet,
-                     kind: rule.kind,
-                     amount: 100.01)
+      record = build_record(rule.kind, 100.01)
 
       described_class.new.validate(record)
       expect(record.errors[:amount]).not_to be_empty
+    end
+
+    def build_record(kind, amount)
+      build(:entry,
+            wallet: wallet,
+            kind: kind,
+            amount: amount)
     end
   end
 end

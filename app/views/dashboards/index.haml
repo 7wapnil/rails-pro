@@ -1,0 +1,10 @@
+- content_for :css do
+  = stylesheet_pack_tag 'css/dashboard'
+.dashboard-content
+  .row
+    .col-md-6
+      = render 'search_customers', filter: @customers_filter
+      = render 'transactions_overview', filter: @entry_requests_filter
+    .col-md-6
+      = render 'search_bets', filter: @bets_filter
+

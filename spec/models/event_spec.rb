@@ -1,12 +1,17 @@
 describe Event do
-  it { should belong_to(:title) }
-  it { should have_many(:markets) }
-  it { should have_many(:scoped_events) }
-  it { should have_many(:event_scopes).through(:scoped_events) }
+  subject(:event) { described_class.new }
 
-  it { should validate_presence_of(:name) }
+  let(:stubbed_subject) { described_class.new }
 
-  it { should delegate_method(:name).to(:title).with_prefix }
+  it { is_expected.to belong_to(:title) }
+  it { is_expected.to have_many(:markets) }
+  it { is_expected.to have_many(:scoped_events) }
+  it { is_expected.to have_many(:event_scopes).through(:scoped_events) }
+
+  it { is_expected.to validate_presence_of(:name) }
+  it { is_expected.to allow_value(true, false).for(:active) }
+
+  it { is_expected.to delegate_method(:name).to(:title).with_prefix }
 
   it_behaves_like 'updatable on duplicate'
 
@@ -17,8 +22,8 @@ describe Event do
   it 'updates on duplicate key' do
     event = create(:event, external_id: :test_external_id)
     event.name = 'New event name'
-    Event.create_or_update_on_duplicate(event)
-    event = Event.find_by!(external_id: :test_external_id)
+    described_class.create_or_update_on_duplicate(event)
+    event = described_class.find_by!(external_id: :test_external_id)
     expect(event.name).to eq('New event name')
   end
 
@@ -29,7 +34,7 @@ describe Event do
                      end_at: nil,
                      traded_live: true)
 
-      expect(Event.in_play).to include(event)
+      expect(described_class.in_play).to include(event)
     end
 
     it 'doesn\'t include not started events' do
@@ -38,7 +43,7 @@ describe Event do
                      end_at: nil,
                      traded_live: true)
 
-      expect(Event.in_play).not_to include(event)
+      expect(described_class.in_play).not_to include(event)
     end
 
     it 'doesn\'t include finished events' do
@@ -47,7 +52,7 @@ describe Event do
                      end_at: 5.minutes.ago,
                      traded_live: true)
 
-      expect(Event.in_play).not_to include(event)
+      expect(described_class.in_play).not_to include(event)
     end
 
     it 'doesn\'t include events that are not traded live' do
@@ -56,7 +61,7 @@ describe Event do
                      end_at: nil,
                      traded_live: false)
 
-      expect(Event.in_play).not_to include(event)
+      expect(described_class.in_play).not_to include(event)
     end
 
     it 'doesn\'t include events that started longer than 4 hours ago' do
@@ -65,29 +70,29 @@ describe Event do
                      end_at: nil,
                      traded_live: true)
 
-      expect(Event.in_play).not_to include(event)
+      expect(described_class.in_play).not_to include(event)
     end
   end
 
   describe '.upcoming' do
     it 'includes not started events' do
       event = create(:event, start_at: 5.minutes.from_now, end_at: nil)
-      expect(Event.upcoming).to include(event)
+      expect(described_class.upcoming).to include(event)
     end
 
     it 'doesn\'t include started events' do
       event = create(:event, start_at: 5.minutes.ago)
-      expect(Event.upcoming).not_to include(event)
+      expect(described_class.upcoming).not_to include(event)
     end
 
     it 'doesn\'t include ended events' do
       event = create(:event, start_at: 1.hour.ago, end_at: 5.minutes.ago)
-      expect(Event.upcoming).not_to include(event)
+      expect(described_class.upcoming).not_to include(event)
     end
 
     it 'doesn\'t include events with :end_at in future' do
       event = create(:event, start_at: 1.hour.ago, end_at: 5.minutes.from_now)
-      expect(Event.upcoming).not_to include(event)
+      expect(described_class.upcoming).not_to include(event)
     end
   end
 
@@ -99,7 +104,7 @@ describe Event do
         end_at: nil,
         traded_live: false
       )
-      expect(Event.past).to include(event)
+      expect(described_class.past).to include(event)
     end
 
     it 'includes ended live events' do
@@ -109,7 +114,7 @@ describe Event do
         end_at: 5.minutes.ago,
         traded_live: true
       )
-      expect(Event.past).to include(event)
+      expect(described_class.past).to include(event)
     end
 
     it 'doesn\'t include not started prematch events' do
@@ -119,7 +124,7 @@ describe Event do
         end_at: nil,
         traded_live: false
       )
-      expect(Event.past).not_to include(event)
+      expect(described_class.past).not_to include(event)
     end
 
     it 'doesn\'t include not ended live events' do
@@ -130,7 +135,7 @@ describe Event do
         traded_live: true
       )
 
-      expect(Event.past).not_to include(event)
+      expect(described_class.past).not_to include(event)
     end
   end
 
@@ -183,23 +188,24 @@ describe Event do
 
     let(:event) { create(:event) }
     let(:other) { build(:event, updatable_attributes) }
+    let(:subject_event) { create(:event) }
 
     it 'fails with TypeError when not an Event argument is passed' do
-      expect { event.update_from!(:foo) }
+      expect { subject_event.update_from!(:foo) }
         .to raise_error(TypeError, 'Passed \'other\' argument is not an Event')
     end
 
     it 'changes transient attributes' do
-      event.update_from!(other)
+      subject_event.update_from!(other)
 
       updatable_attributes.each do |name, value|
-        expect(event.send(name)).to eq value
+        expect(subject_event.send(name)).to eq value
       end
     end
 
     it 'calls #add_to_payload' do
-      expect(event).to receive(:add_to_payload)
-      event.update_from!(other)
+      expect(subject_event).to receive(:add_to_payload)
+      subject_event.update_from!(other)
     end
   end
 
@@ -240,7 +246,7 @@ describe Event do
     end
 
     it 'emits web socket event on update' do
-      allow_any_instance_of(Event).to receive(:emit_created)
+      allow_any_instance_of(described_class).to receive(:emit_created)
       event = create(:event)
       event.assign_attributes(name: 'New name')
       event.save!
@@ -252,7 +258,7 @@ describe Event do
     end
 
     it 'does not emit web socket event if no changes' do
-      allow_any_instance_of(Event).to receive(:emit_created)
+      allow_any_instance_of(described_class).to receive(:emit_created)
       event = create(:event)
       event.assign_attributes(updated_at: Time.now)
       event.save!

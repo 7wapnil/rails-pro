@@ -1,4 +1,4 @@
-describe 'Customers#bets' do
+describe Customer, '#bets' do
   let(:customer) { create(:customer) }
   let(:page_path) { bets_customer_path(customer) }
   let(:admin) { create(:admin_user) }

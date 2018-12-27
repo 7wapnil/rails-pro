@@ -4,20 +4,26 @@ module StateMachines
   module BetStateMachine
     extend ActiveSupport::Concern
 
+    INITIAL                     = 'initial'
     SENT_TO_INTERNAL_VALIDATION = 'sent_to_internal_validation'
-    SENT_TO_EXTERNAL_VALIDATION = 'sent_to_external_validation'
     VALIDATED_INTERNALLY        = 'validated_internally'
+    SENT_TO_EXTERNAL_VALIDATION = 'sent_to_external_validation'
+    ACCEPTED                    = 'accepted'
+    CANCELLED                   = 'cancelled'
+    SETTLED                     = 'settled'
+    REJECTED                    = 'rejected'
+    FAILED                      = 'failed'
 
     BET_STATUSES = {
-      initial:                     INITIAL = 'initial',
+      initial:                     INITIAL,
       sent_to_internal_validation: SENT_TO_INTERNAL_VALIDATION,
       validated_internally:        VALIDATED_INTERNALLY,
       sent_to_external_validation: SENT_TO_EXTERNAL_VALIDATION,
-      accepted:                    ACCEPTED  = 'accepted',
-      cancelled:                   CANCELLED = 'cancelled',
-      settled:                     SETTLED   = 'settled',
-      rejected:                    REJECTED  = 'rejected',
-      failed:                      FAILED    = 'failed'
+      accepted:                    ACCEPTED,
+      cancelled:                   CANCELLED,
+      settled:                     SETTLED,
+      rejected:                    REJECTED,
+      failed:                      FAILED
     }.freeze
 
     BET_SETTLEMENT_STATUSES = {
@@ -43,7 +49,7 @@ module StateMachines
         state :settled
 
         event :send_to_internal_validation do
-          transitions from: :initial,
+          transitions from: %i[initial accepted],
                       to: :sent_to_internal_validation
         end
 

@@ -1,5 +1,5 @@
 describe EntryCurrencyRule do
-  it { should belong_to(:currency) }
+  it { is_expected.to belong_to(:currency) }
 
-  it { should validate_presence_of(:kind) }
+  it { is_expected.to validate_presence_of(:kind) }
 end

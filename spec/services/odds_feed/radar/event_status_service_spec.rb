@@ -66,10 +66,10 @@ describe OddsFeed::Radar::EventStatusService do
       end
 
       it 'returns correct score' do
+        payload = payload_in_progress
+
         expect(result_in_progress[:score]).to eq(
-          # rubocop:disable Metrics/LineLength
-          "#{payload_in_progress['home_score']}:#{payload_in_progress['away_score']}"
-          # rubocop:enable Metrics/LineLength
+          "#{payload['home_score']}:#{payload['away_score']}"
         )
       end
 
@@ -80,7 +80,7 @@ describe OddsFeed::Radar::EventStatusService do
       end
 
       it 'returns period scores' do
-        expect(result_in_progress[:period_scores]).to_not be_empty
+        expect(result_in_progress[:period_scores]).not_to be_empty
         expect(result_in_progress[:period_scores].count).to eq(1)
       end
 
@@ -119,7 +119,7 @@ describe OddsFeed::Radar::EventStatusService do
       end
 
       it 'returns period scores' do
-        expect(result_ended[:period_scores]).to_not be_empty
+        expect(result_ended[:period_scores]).not_to be_empty
         expect(result_ended[:period_scores].count).to eq(
           payload_ended['period_scores']['period_score'].size
         )
