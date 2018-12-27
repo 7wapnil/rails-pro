@@ -2,4 +2,4 @@
        class: 'transactions mb-4' do
   = render 'entry_requests/table',
           filter: filter
-  = paginate filter.requests
+  = paginate filter.requests, param_name: :entry_requests_page
