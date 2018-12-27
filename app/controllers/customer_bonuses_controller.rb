@@ -9,9 +9,7 @@ class CustomerBonusesController < ApplicationController
       flash[:error] = t('errors.messages.bonus_activation_failed')
     else
       flash[:success] = t(:activated, instance: t('entities.bonus'))
-      current_user.log_event :bonus_activated, customer_bonus, customer
-
-      customer_bonus.add_funds(payload_params[:amount].to_i)
+      bonus_activated(customer_bonus, customer)
     end
     redirect_to bonuses_customer_path(customer)
   end
@@ -46,5 +44,10 @@ class CustomerBonusesController < ApplicationController
         :wallet_id,
         :amount
       )
+  end
+
+  def bonus_activated(customer_bonus, customer)
+    current_user.log_event :bonus_activated, customer_bonus, customer
+    customer_bonus.add_funds(payload_params[:amount].to_i)
   end
 end
