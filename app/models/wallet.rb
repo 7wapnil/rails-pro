@@ -30,13 +30,10 @@ class Wallet < ApplicationRecord
     balances.real_money.last
   end
 
-  def current_ratio
+  def current_ratio(bonus = nil)
     @current_ratio ||= begin
-      bonus_balance_amount = bonus_balance&.amount || 0
-      real_balance_amount = real_money_balance&.amount || 0
-
-      return if real_balance_amount.zero?
-
+      bonus_balance_amount = bonus ? bonus_balance.amount : 0
+      real_balance_amount = real_money_balance.amount
       total_balance = bonus_balance_amount + real_balance_amount
       real_balance_amount / total_balance
     end

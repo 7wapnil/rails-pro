@@ -61,11 +61,9 @@ module BetPlacement
 
     def bonus_entry_request_succeeded?
       bonus_amount = amount_calculations[:bonus]
-
       return true if bonus_amount.zero?
 
-      @bonus_entry = WalletEntry::AuthorizationService.call(bonus_entry_request,
-                                                            :bonus)
+      WalletEntry::AuthorizationService.call(bonus_entry_request, :bonus)
       unless @bonus_entry_request.succeeded?
         @bet.register_failure!(@bonus_entry_request.result_message)
         return false

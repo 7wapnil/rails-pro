@@ -24,21 +24,6 @@ describe GraphQL, '#place_bet' do
 
   context 'success' do
     let(:odds) { create_list(:odd, 2, value: 8.87) }
-    let!(:bonus_balance) do
-      create(:balance, kind: :bonus, wallet: wallet, amount: 100)
-    end
-    let!(:real_balance) do
-      create(:balance, wallet: wallet, amount: 200)
-    end
-    let!(:bet_rule) do
-      create(
-        :entry_currency_rule,
-        currency: currency,
-        kind: EntryRequest.kinds[:bet],
-        max_amount: 0,
-        min_amount: -100
-      )
-    end
     let(:variables) do
       {
         bets: odds.map do |odd|
@@ -57,6 +42,18 @@ describe GraphQL, '#place_bet' do
     end
 
     let(:bets) { response['data']['placeBets'] }
+
+    before do
+      create(:balance, kind: :bonus, wallet: wallet, amount: 100)
+      create(:balance, wallet: wallet, amount: 200)
+      create(
+        :entry_currency_rule,
+        currency: currency,
+        kind: EntryRequest.kinds[:bet],
+        max_amount: 0,
+        min_amount: -100
+      )
+    end
 
     it 'returns an array' do
       expect(bets).to be_an Array
@@ -82,12 +79,6 @@ describe GraphQL, '#place_bet' do
     let(:bonus_amount) { 250 }
     let(:real_amount) { 750 }
     let(:bet_amount) { 10 }
-    let!(:rule) do
-      create(:entry_currency_rule,
-             currency: currency,
-             min_amount: 10,
-             max_amount: 100)
-    end
     let!(:active_bonus) do
       create(:customer_bonus,
              customer: auth_customer,
@@ -106,13 +97,14 @@ describe GraphQL, '#place_bet' do
         ]
       }
     end
-    let!(:bonus_balance) do
+
+    before do
+      create(:entry_currency_rule,
+             currency: currency,
+             min_amount: 10,
+             max_amount: 100)
       create(:balance, kind: :bonus, wallet: wallet, amount: bonus_amount)
-    end
-    let!(:real_balance) do
       create(:balance, wallet: wallet, amount: real_amount)
-    end
-    let!(:bet_rule) do
       create(
         :entry_currency_rule,
         currency: currency,

@@ -20,8 +20,6 @@ module BalanceCalculations
     end
 
     def calculate_real_amount
-      return bet.amount unless bet.ratio
-
       bet.amount * bet.ratio
     end
   end

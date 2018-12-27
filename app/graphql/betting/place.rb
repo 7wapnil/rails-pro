@@ -29,11 +29,8 @@ module Betting
         status: Bet::INITIAL
       }
       bonus = applicable_bonus(bet_payload)
-
-      return base_attrs unless bonus
-
       wallet = @current_customer.wallets.where(currency: currency).first
-      ratio = wallet.current_ratio
+      ratio = wallet.current_ratio(bonus)
       base_attrs.merge(ratio: ratio, customer_bonus: bonus)
     end
 

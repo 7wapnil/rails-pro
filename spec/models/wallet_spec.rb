@@ -29,33 +29,37 @@ describe Wallet do
   end
 
   describe '#current_ratio' do
-    let(:wallet) { create(:wallet) }
     let(:bonus_amount) { rand(1000.0) }
     let(:real_amount) { rand(1000.0) }
-    let(:bonus_balance) { double('Balance', amount: bonus_amount) }
-    let(:real_balance) { double('Balance', amount: real_amount) }
+    let(:bonus_balance) { instance_double('Balance', amount: bonus_amount) }
+    let(:real_balance) { instance_double('Balance', amount: real_amount) }
+    let(:wallet_with_balance) { create(:wallet) }
 
     before do
-      allow(wallet).to receive(:bonus_balance).and_return(bonus_balance)
-      allow(wallet).to receive(:real_money_balance).and_return(real_balance)
+      allow(wallet_with_balance).to receive(:bonus_balance)
+        .and_return(bonus_balance)
+      allow(wallet_with_balance).to receive(:real_money_balance)
+        .and_return(real_balance)
     end
 
     it 'returns current ratio' do
-      expected_ratio = real_amount / (real_amount + bonus_amount)
+      expected_ratio = (real_amount / (real_amount + bonus_amount)).to_f
 
-      expect(wallet.current_ratio).to eq(expected_ratio)
+      expect(
+        wallet_with_balance.current_ratio(bonus_balance)
+      ).to eq(expected_ratio)
     end
 
     it 'returns current ratio without bonus' do
-      allow(wallet).to receive(:bonus_balance).and_return(nil)
+      allow(wallet_with_balance).to receive(:bonus_balance).and_return(nil)
 
-      expect(wallet.current_ratio).to eq(1)
+      expect(wallet_with_balance.current_ratio).to eq(1)
     end
 
-    it 'returns nil when real balance is nil' do
-      allow(wallet).to receive(:real_money_balance).and_return(nil)
+    it 'returns exception when real balance is nil' do
+      allow(wallet_with_balance).to receive(:real_money_balance).and_return(nil)
 
-      expect(wallet.current_ratio).to be_nil
+      expect { wallet_with_balance.current_ratio }.to raise_error(NoMethodError)
     end
   end
 end
