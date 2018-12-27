@@ -11,7 +11,7 @@ describe User do
     it 'Successfully signs in' do
       fill_sign_in_form
 
-      expect(current_path).to eq dashboard_path
+      expect(page).to have_current_path(dashboard_path)
       expect_to_have_notification I18n.t('devise.sessions.signed_in')
     end
 

@@ -1,4 +1,4 @@
-describe 'Dashboards#index' do
+describe DashboardsController, '#index' do
   context 'signed in' do
     before do
       login_as create(:admin_user), scope: :user
