@@ -1,60 +1,61 @@
-- if new_bonus
-  - content_for :css do
-    = stylesheet_pack_tag 'flatpickr', media: :all, 'data-turbolinks-track': 'reload'
+- content_for :css do
+  = stylesheet_pack_tag 'flatpickr', media: :all, 'data-turbolinks-track': 'reload'
 
-  - content_for :js do
-    = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
-    = javascript_pack_tag 'customers/bonuses', 'data-turbolinks-track': 'reload'
+- content_for :js do
+  = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
+  = javascript_pack_tag 'customers/bonuses', 'data-turbolinks-track': 'reload'
 
-  = card header: t(:activate_instance, instance: t('entities.bonus')) do
-    = simple_form_for new_bonus do |f|
+= card header: t(:activate_instance, instance: t('entities.bonus')) do
+  = simple_form_for new_bonus do |f|
+    .row
+      .col-4
+        = f.input :original_bonus_id,
+                  collection: active_bonuses,
+                  label_method: ->(b) { b.code },
+                  value_method: ->(b) { b.id },
+                  required: true
+      .col-4
+        = f.input :amount,
+                  as: :decimal,
+                  required: true,
+                  input_html: { min: 0 }
+      .col-4
+        = f.input :wallet_id,
+                  collection: customer.wallets,
+                  label_method: ->(w) { w.currency_name },
+                  value_method: ->(w) { w.id },
+                  required: true
+    .d-none#bonus-details
       .row
         .col-4
-          = f.input :original_bonus_id,
-                    collection: active_bonuses,
-                    label_method: ->(b) { b.code },
-                    value_method: ->(b) { b.id },
-                    required: true
+          = f.input :kind,
+                    as: :string,
+                    disabled: true
         .col-4
-          = f.input :amount,
-                    as: :decimal,
-                    required: true,
-                    input_html: { min: 0 }
+          = f.input :rollover_multiplier,
+                    disabled: true
         .col-4
-          = f.input :wallet_id,
-                    collection: customer.wallets,
-                    label_method: ->(w) { w.currency_name },
-                    value_method: ->(w) { w.id },
-                    required: true
-      .d-none#bonus-details
-        .row
-          .col-4
-            = f.input :kind,
-                      as: :string,
-                      disabled: true
-          .col-4
-            = f.input :rollover_multiplier,
-                      disabled: true
-          .col-4
-            = f.input :max_rollover_per_bet,
-                      disabled: true
-        .row
-          .col-4
-            = f.input :max_deposit_match,
-                      disabled: true
-          .col-4
-            = f.input :min_odds_per_bet,
-                      disabled: true
-          .col-4
-            = f.input :min_deposit,
-                      disabled: true
-        .row
-          .col-4
-            = f.input :valid_for_days,
-                      disabled: true
-          .col-4
-            = f.input :percentage,
-                      disabled: true
+          = f.input :max_rollover_per_bet,
+                    disabled: true
+      .row
+        .col-4
+          = f.input :max_deposit_match,
+                    disabled: true
+        .col-4
+          = f.input :min_odds_per_bet,
+                    disabled: true
+        .col-4
+          = f.input :min_deposit,
+                    disabled: true
+      .row
+        .col-4
+          = f.input :valid_for_days,
+                    disabled: true
+        .col-4
+          = f.input :percentage,
+                    disabled: true
 
-      = f.submit t(:confirm), class: 'btn btn-outline-dark'
-    #bonus-data{ data: { bonuses: active_bonuses.to_json } }
+    = f.submit t(:confirm),
+               class: 'btn btn-outline-dark',
+               disabled: current_bonus && !current_bonus.expired?
+  #bonus-data{ data: { bonuses: active_bonuses.to_json } }

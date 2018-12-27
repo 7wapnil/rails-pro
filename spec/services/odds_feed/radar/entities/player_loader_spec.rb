@@ -39,11 +39,15 @@ describe OddsFeed::Radar::Entities::PlayerLoader do
   context 'load new player from Radar API' do
     before { expect(Rails.cache).to receive(:write) }
 
-    it { expect(subject.call).to eq(name) }
+    let(:subject_with_name) { described_class.new(external_id: external_id) }
+
+    it { expect(subject_with_name.call).to eq(name) }
 
     it do
-      expect(subject).to receive(:radar_entity_name).once.and_call_original
-      subject.call
+      expect(
+        subject_with_name
+      ).to receive(:radar_entity_name).once.and_call_original
+      subject_with_name.call
     end
   end
 end

@@ -59,13 +59,11 @@ class CustomersController < ApplicationController
   def bonuses
     @history =
       CustomerBonus.customer_history(customer)
-    return if customer.customer_bonus && !customer.customer_bonus.expired?
-
+    @current_bonus = customer.customer_bonus
     @active_bonuses = Bonus.active
-    @default_wallet = customer.wallets.primary.take
     @new_bonus = CustomerBonus.new(
       customer: customer,
-      wallet: @default_wallet
+      wallet: customer.wallets.primary.take
     )
   end
 

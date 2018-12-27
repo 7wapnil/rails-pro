@@ -87,6 +87,7 @@ describe Radar::UnifiedOdds do
 
     context 'without environment setup' do
       let(:time_pattern) { '1%H%M%S%L' }
+
       it 'returns array of keys to listen all and generates node id' do
         allow(ENV).to receive(:[])
           .with('RADAR_MQ_NODE_ID').and_return(nil)
@@ -131,10 +132,12 @@ describe Radar::UnifiedOdds do
         )
       end
     end
+
     context 'explicit argument overrides all' do
       subject(:key) do
         described_class.routing_key(node_id: 666, listen_all: false)
       end
+
       it 'returns array based on params passed' do
         allow(ENV).to receive(:[])
           .with('RADAR_MQ_NODE_ID').and_return('777')

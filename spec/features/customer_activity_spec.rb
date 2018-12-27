@@ -1,4 +1,4 @@
-describe 'Customers#activity' do
+describe Customer, '#activity' do
   let(:customer) { create(:customer) }
   let(:page_path) { activity_customer_path(customer) }
 
@@ -8,18 +8,18 @@ describe 'Customers#activity' do
   end
 
   context 'activity' do
-    it 'shows activity section' do
-      expect_to_have_section 'activity'
-    end
-
-    let(:authorization_time) { Time.zone.local(2018, 9, 11, 16, 29, 16) }
-    let(:authorization_time_formatted) { '11 September 2018 16:29:16' }
-    let(:wallet) { create(:wallet, customer: customer) }
     let(:rule) do
       create(:entry_currency_rule,
              currency: wallet.currency,
              min_amount: 10,
              max_amount: 500)
+    end
+    let(:wallet) { create(:wallet, customer: customer) }
+    let(:authorization_time_formatted) { '11 September 2018 16:29:16' }
+    let(:authorization_time) { Time.zone.local(2018, 9, 11, 16, 29, 16) }
+
+    it 'shows activity section' do
+      expect_to_have_section 'activity'
     end
 
     it 'shows available entries' do

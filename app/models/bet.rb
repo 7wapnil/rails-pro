@@ -49,6 +49,14 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   scope :sort_by_winning_desc, -> { with_winnings.order('winning DESC') }
 
   class << self
+    def suspended
+      joins(:market).where(markets: { status: Market::SUSPENDED })
+    end
+
+    def unsuspended
+      joins(:market).where.not(markets: { status: Market::SUSPENDED })
+    end
+
     def from_regular_customers
       left_outer_joins(:customer).where(
         customers: { account_kind: Customer::REGULAR }

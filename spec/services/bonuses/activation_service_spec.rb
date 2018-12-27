@@ -27,7 +27,7 @@ describe Bonuses::ActivationService do
       wallet.reload
 
       expect(wallet.customer.customer_bonus).to eq(current)
-      expect(CustomerBonus.exists?(previous.id)).to be_falsey
+      expect(CustomerBonus).not_to be_exists(previous.id)
     end
   end
 end

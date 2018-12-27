@@ -1,4 +1,8 @@
 describe OddsFeed::Radar::FixtureChangeHandler do
+  subject { described_class.new(payload) }
+
+  let(:subject_api) { described_class.new(payload) }
+
   let(:payload) do
     {
       'fixture_change' => {
@@ -13,19 +17,17 @@ describe OddsFeed::Radar::FixtureChangeHandler do
 
   let(:payload_update) { { producer: { origin: :radar, id: '1' } } }
 
-  subject { described_class.new(payload) }
-
   before do
-    allow(subject).to receive(:api_event) { api_event }
+    allow(subject_api).to receive(:api_event) { api_event }
   end
 
   after do
-    subject.handle
+    subject_api.handle
   end
 
   context 'new event' do
     it 'logs event create message' do
-      expect(subject).to receive(:log_on_create)
+      expect(subject_api).to receive(:log_on_create)
     end
 
     it 'adds producer info to payload' do
@@ -41,11 +43,13 @@ describe OddsFeed::Radar::FixtureChangeHandler do
 
   context 'existing event' do
     let(:event) do
-      create(:event, external_id: payload['fixture_change']['event_id'])
+      create(:event,
+             external_id: payload['fixture_change']['event_id'],
+             active: true)
     end
 
     before do
-      allow(subject).to receive(:event) { event }
+      allow(subject_api).to receive(:event) { event }
     end
 
     it 'calls #update_from! on found event' do
@@ -53,7 +57,7 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     end
 
     it 'logs event update message' do
-      expect(subject).to receive(:log_on_update)
+      expect(subject_api).to receive(:log_on_update)
     end
 
     it 'adds producer info to payload' do
@@ -61,6 +65,40 @@ describe OddsFeed::Radar::FixtureChangeHandler do
       # this test checks arguments for second call
       expect(event).to receive(:add_to_payload)
       expect(event).to receive(:add_to_payload).with(payload_update)
+    end
+
+    context 'cancelled event' do
+      let(:payload) do
+        {
+          'fixture_change' => {
+            'event_id' => 'sr:match:1234',
+            'change_type' => '3',
+            'product' => '1'
+          }
+        }
+      end
+
+      it 'sets event activity status to inactive' do
+        subject_api.handle
+        expect(Event.find_by!(external_id: 'sr:match:1234').active).to be_falsy
+      end
+    end
+
+    context 'cancelled event' do
+      let(:payload) do
+        {
+          'fixture_change' => {
+            'event_id' => 'sr:match:1234',
+            'change_type' => '3',
+            'product' => '1'
+          }
+        }
+      end
+
+      it 'sets event activity status to inactive' do
+        subject_api.handle
+        expect(Event.find_by!(external_id: 'sr:match:1234').active).to be_falsy
+      end
     end
   end
 end

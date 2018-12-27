@@ -1,4 +1,4 @@
-describe 'Customers#show' do
+describe Customer, '#show' do
   subject { create(:customer) }
 
   context 'page content' do
@@ -35,6 +35,7 @@ describe 'Customers#show' do
 
     context 'account type transition' do
       let(:input_name) { 'customer[account_kind]' }
+
       it 'displays all possible types for regular customer' do
         all_options = Customer.account_kinds.keys
 
@@ -61,7 +62,7 @@ describe 'Customers#show' do
       within 'form.personal-information-form' do
         fill_in :customer_first_name, with: 'Test'
         fill_in :customer_last_name, with: 'User'
-        select 'Male', from: :customer_gender
+        choose :customer_gender_male
         fill_in :customer_date_of_birth, with: '1 January 1990'
         click_submit
       end

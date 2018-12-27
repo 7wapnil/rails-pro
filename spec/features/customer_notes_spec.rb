@@ -1,4 +1,4 @@
-describe 'Customers#notes' do
+describe Customer, '#notes' do
   let(:customer) { create(:customer) }
 
   before do

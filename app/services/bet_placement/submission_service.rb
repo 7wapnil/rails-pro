@@ -23,7 +23,8 @@ module BetPlacement
     def valid?
       limits_validation_succeeded? &&
         provider_connected? &&
-        entry_requests_succeeded?
+        entry_requests_succeeded? &&
+        !market_suspended?
     end
 
     def limits_validation_succeeded?
@@ -111,6 +112,10 @@ module BetPlacement
         origin: @bet,
         comment: @impersonated_by ? I18n.t('impersonation_comment') : nil
       )
+    end
+
+    def market_suspended?
+      @bet.market.suspended?
     end
   end
 end

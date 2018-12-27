@@ -4,6 +4,14 @@ import Rails from 'rails-ujs'
 import Turbolinks from 'turbolinks'
 import 'select2/dist/js/select2.full.min'
 
+Noty.overrideDefaults({
+  layout: 'topRight',
+  theme: 'mint',
+  timeout: 2000
+})
+
+window.Noty = Noty
+
 Rails.start()
 Turbolinks.start()
 
@@ -14,12 +22,6 @@ document.addEventListener('turbolinks:load', () => {
   $(`.nav-link[data-target-controller='${controllerName}']`).addClass('active')
 
   $(`.nav-tabs a.nav-link[href='${currentPath}']`).addClass('active')
-
-  Noty.overrideDefaults({
-    layout: 'topRight',
-    theme: 'mint',
-    timeout: 2000
-  })
 
   $('.flash-message').each((index, el) => {
     const options = el.dataset

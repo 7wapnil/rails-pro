@@ -17,8 +17,14 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   STATUSES = {
     not_started: NOT_STARTED = 'not_started',
     started:     STARTED     = 'started',
+    suspended:   SUSPENDED   = 'suspended',
     ended:       ENDED       = 'ended',
-    closed:      CLOSED      = 'closed'
+    closed:      CLOSED      = 'closed',
+    cancelled:   CANCELLED   = 'cancelled',
+    delayed:     DELAYED     = 'delayed',
+    interrupted: INTERRUPTED = 'interrupted',
+    postponed:   POSTPONED   = 'postponed',
+    abandoned:   ABANDONED   = 'abandoned'
   }.freeze
 
   ransacker :markets_count do
@@ -33,6 +39,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     Arel.sql('wager')
   end
 
+  scope :active, -> { where(active: true) }
+
   belongs_to :title
   has_many :markets, dependent: :delete_all
   has_many :bets, through: :markets
@@ -43,6 +51,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }
+  validates :active, inclusion: { in: [true, false] }
 
   enum status: STATUSES
 

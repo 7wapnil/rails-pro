@@ -10,7 +10,7 @@ describe BalanceCalculations::Deposit do
            max_deposit_match: 1000)
   end
 
-  let(:wallet) { double('Wallet', customer: customer) }
+  let(:wallet) { instance_double('Wallet', customer: customer) }
 
   it 'calculates real money amount' do
     real = described_class.call(wallet, amount)[:real_money]

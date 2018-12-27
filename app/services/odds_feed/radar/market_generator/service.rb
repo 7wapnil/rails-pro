@@ -41,7 +41,8 @@ module OddsFeed
           Market.new(external_id: data_object.external_id,
                      event_id: @event.id,
                      name: data_object.name,
-                     status: data_object.status)
+                     status: data_object.status,
+                     category: data_object.category)
         end
 
         def valid?(market)

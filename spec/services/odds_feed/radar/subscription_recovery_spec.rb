@@ -19,7 +19,7 @@ describe OddsFeed::Radar::SubscriptionRecovery do
 
     it 'calls recovery intiate request API endpoint' do
       cache.write(cache_key, Time.zone.now - 1.minute)
-      expect(a_request(:post, %r{/recovery/initiate_request}))
+      assert(a_request(:post, %r{/recovery/initiate_request}))
       described_class.call(product_id: 1, start_at: Time.now.to_i)
     end
 

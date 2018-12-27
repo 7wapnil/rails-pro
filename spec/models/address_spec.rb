@@ -1,3 +1,3 @@
 describe Address do
-  it { should belong_to(:customer) }
+  it { is_expected.to belong_to(:customer) }
 end
