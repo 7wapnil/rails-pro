@@ -84,6 +84,10 @@ FactoryBot.define do
         )
       end
     end
+
+    trait :succeeded do
+      status { EntryRequest::SUCCEEDED }
+    end
   end
 
   factory :balance_entry do
@@ -129,6 +133,10 @@ FactoryBot.define do
 
     trait :accepted do
       status { StateMachines::BetStateMachine::ACCEPTED }
+    end
+
+    trait :sent_to_internal_validation do
+      status { StateMachines::BetStateMachine::SENT_TO_INTERNAL_VALIDATION }
     end
 
     trait :sent_to_external_validation do
@@ -371,6 +379,10 @@ FactoryBot.define do
         create_list(:odd, 2, market: market)
       end
     end
+
+    trait :suspended do
+      status { Market::SUSPENDED }
+    end
   end
 
   factory :odd do
@@ -382,6 +394,10 @@ FactoryBot.define do
 
     sequence :external_id do |n|
       "sr:match:#{n}:280/hcp=0.5:#{n}"
+    end
+
+    trait :suspended do
+      association :market, factory: %i[market suspended]
     end
   end
 
@@ -408,6 +424,8 @@ FactoryBot.define do
     customer_id { Faker::Number.between(1, 100) }
     user_id { Faker::Number.between(1, 100) }
     created_at { Time.zone.now }
+    # rubocop:disable RSpec/EmptyExampleGroup,RSpec/MissingExampleGroupArgument
     context { { content: Faker::Internet.email } }
+    # rubocop:enable RSpec/EmptyExampleGroup,RSpec/MissingExampleGroupArgument
   end
 end

@@ -1,11 +1,11 @@
 describe OddsFeed::Radar::Alive::Handler do
+  subject { described_class.new(payload) }
+
   let(:payload) { {} }
   let(:cache_key) do
     OddsFeed::Radar::Alive::Handler::SUBSCRIPTION_REPORT_KEY_PREFIX
   end
   let(:message_timestamp) { 153_235_393_409_8 }
-
-  subject { OddsFeed::Radar::Alive::Handler.new(payload) }
 
   before do
     allow(OddsFeed::Radar::SubscriptionRecovery).to receive(:call)

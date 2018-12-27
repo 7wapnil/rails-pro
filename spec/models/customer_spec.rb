@@ -1,33 +1,35 @@
 describe Customer do
-  it { should have_one(:address) }
-  it { should have_many(:wallets) }
-  it { should have_many(:entry_requests) }
-  it { should have_many(:labels) }
-  it { should allow_value(true, false).for(:verified) }
-  it { should allow_value(true, false).for(:activated) }
+  subject(:customer) { described_class.new }
 
-  it { should validate_presence_of(:username) }
-  it { should validate_presence_of(:email) }
-  it { should validate_presence_of(:first_name) }
-  it { should validate_presence_of(:last_name) }
-  it { should validate_presence_of(:date_of_birth) }
-  it { should validate_presence_of(:password) }
+  it { is_expected.to have_one(:address) }
+  it { is_expected.to have_many(:wallets) }
+  it { is_expected.to have_many(:entry_requests) }
+  it { is_expected.to have_many(:labels) }
+  it { is_expected.to allow_value(true, false).for(:verified) }
+  it { is_expected.to allow_value(true, false).for(:activated) }
 
-  it { should validate_confirmation_of(:password) }
+  it { is_expected.to validate_presence_of(:username) }
+  it { is_expected.to validate_presence_of(:email) }
+  it { is_expected.to validate_presence_of(:first_name) }
+  it { is_expected.to validate_presence_of(:last_name) }
+  it { is_expected.to validate_presence_of(:date_of_birth) }
+  it { is_expected.to validate_presence_of(:password) }
+
+  it { is_expected.to validate_confirmation_of(:password) }
 
   it do
-    should validate_length_of(:password)
+    expect(customer).to validate_length_of(:password)
       .is_at_least(6)
       .is_at_most(32)
   end
 
-  it { should allow_value('foo@bar.com').for(:email) }
-  it { should_not allow_value('hello').for(:email) }
+  it { is_expected.to allow_value('foo@bar.com').for(:email) }
+  it { is_expected.not_to allow_value('hello').for(:email) }
 
-  it { should validate_uniqueness_of(:username).case_insensitive }
-  it { should validate_uniqueness_of(:email).case_insensitive }
+  it { is_expected.to validate_uniqueness_of(:username).case_insensitive }
+  it { is_expected.to validate_uniqueness_of(:email).case_insensitive }
 
-  it { should act_as_paranoid }
+  it { is_expected.to act_as_paranoid }
 
   it_behaves_like 'LoginAttemptable'
 
@@ -56,7 +58,7 @@ describe Customer do
       customer.valid?
       message = I18n.t('errors.messages.age_adult')
 
-      expect(customer.errors.messages[:date_of_birth]).to_not include(message)
+      expect(customer.errors.messages[:date_of_birth]).not_to include(message)
     end
   end
 
@@ -80,7 +82,7 @@ describe Customer do
       customer.password = 'password'
       customer.valid?
 
-      expect(customer.errors.messages[:account_kind]).to_not be_empty
+      expect(customer.errors.messages[:account_kind]).not_to be_empty
     end
   end
 
@@ -96,7 +98,7 @@ describe Customer do
       customer = build(:customer, phone: '999999999999')
       customer.valid?
 
-      expect(customer.errors.messages[:phone]).to_not be_empty
+      expect(customer.errors.messages[:phone]).not_to be_empty
     end
   end
 
@@ -122,7 +124,7 @@ describe Customer do
 
   it 'generates activation token on create' do
     customer = create(:customer)
-    expect(customer.activation_token).to_not be_nil
+    expect(customer.activation_token).not_to be_nil
   end
 
   context 'documents' do

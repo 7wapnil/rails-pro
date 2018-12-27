@@ -1,4 +1,4 @@
-describe 'Customers#betting_limits' do
+describe Customer, '#betting_limits' do
   let(:customer) { create(:customer) }
   let!(:title) { create(:title) }
   let(:page_path) { betting_limits_customer_path(customer) }

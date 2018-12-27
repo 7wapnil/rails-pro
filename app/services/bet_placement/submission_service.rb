@@ -25,6 +25,8 @@ module BetPlacement
 
       return false unless provider_connected?
 
+      return false if market_suspended?
+
       return false unless entry_request_succeeded?
 
       true
@@ -69,6 +71,10 @@ module BetPlacement
         origin: @bet,
         comment: @impersonated_by ? I18n.t('impersonation_comment') : nil
       )
+    end
+
+    def market_suspended?
+      @bet.market.suspended?
     end
   end
 end

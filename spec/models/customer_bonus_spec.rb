@@ -1,7 +1,7 @@
 describe CustomerBonus do
-  it { should belong_to(:customer) }
-  it { should belong_to(:wallet) }
-  it { should belong_to(:original_bonus) }
+  it { is_expected.to belong_to(:customer) }
+  it { is_expected.to belong_to(:wallet) }
+  it { is_expected.to belong_to(:original_bonus) }
 
   context 'instance methods' do
     let(:wallet) { create(:wallet) }
@@ -19,12 +19,12 @@ describe CustomerBonus do
     describe '#expired?' do
       it 'returns false for active bonus' do
         customer_bonus = create(:customer_bonus)
-        expect(customer_bonus.expired?).to be_falsey
+        expect(customer_bonus).not_to be_expired
       end
 
       it 'returns true for deleted bonus' do
         customer_bonus = create(:customer_bonus, deleted_at: Time.zone.now)
-        expect(customer_bonus.expired?).to be_truthy
+        expect(customer_bonus).to be_expired
       end
 
       it 'returns true for expired bonus' do
@@ -33,7 +33,7 @@ describe CustomerBonus do
           valid_for_days: 1,
           created_at: Time.zone.now - 2.days
         )
-        expect(customer_bonus.expired?).to be_truthy
+        expect(customer_bonus).to be_expired
       end
     end
 

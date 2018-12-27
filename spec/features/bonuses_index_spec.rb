@@ -1,4 +1,4 @@
-describe 'Bonuses#index' do
+describe Bonus, '#index' do
   context 'signed in' do
     let(:per_page_count) { 10 }
 
