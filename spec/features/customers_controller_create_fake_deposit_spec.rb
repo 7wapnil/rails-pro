@@ -29,21 +29,17 @@ describe CustomersController, '#create_fake_deposit' do
         click_on 'Confirm'
         bonus_amount = (percentage / 100.0) * amount
 
-        expect(entries_count).to eq(2)
         expect(entries_amounts).to match_array([amount, bonus_amount])
       end
     end
 
-    it 'do not create bonus entry when customer bonus is expired' do
+    it 'raise error when customer bonus is expired' do
       customer_bonus.update_attributes(created_at: 1.month.ago,
                                        valid_for_days: 2)
       within deposit_form do
         fill_in 'Amount', with: amount
         select 'Euro', from: 'Currency'
-        click_on 'Confirm'
-
-        expect(entries_count).to eq(1)
-        expect(entries_amounts).to match_array([amount])
+        expect { click_on 'Confirm' }.to raise_error StandardError
       end
     end
   end
@@ -55,7 +51,6 @@ describe CustomersController, '#create_fake_deposit' do
         select 'Euro', from: 'Currency'
         click_on 'Confirm'
 
-        expect(entries_count).to eq(1)
         expect(entries_amounts).to match_array([amount])
       end
     end
