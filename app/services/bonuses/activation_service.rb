@@ -27,7 +27,7 @@ module Bonuses
 
     def rollover_value
       @rollover_value ||= begin
-        return nil unless amount
+        raise NotImplementedError unless amount
 
         bonus_amount = BalanceCalculations::Deposit.call(bonus, amount)[:bonus]
         bonus_amount * bonus.rollover_multiplier

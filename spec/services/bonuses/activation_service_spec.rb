@@ -12,7 +12,7 @@ describe Bonuses::ActivationService do
       transmitted_attrs = CustomerBonus.column_names & Bonus.column_names
 
       original_bonus_attrs = transmitted_attrs.map(&:to_sym) - excluded
-      customer_bonus = described_class.call(wallet, bonus)
+      customer_bonus = described_class.call(wallet, bonus, amount)
 
       expect(customer_bonus).to be_instance_of(CustomerBonus)
       expect(customer_bonus.customer_id).to eq(wallet.customer_id)
@@ -27,7 +27,7 @@ describe Bonuses::ActivationService do
       previous = CustomerBonus.create(original_bonus: bonus,
                                       customer: customer,
                                       wallet: wallet)
-      current = described_class.call(wallet, bonus)
+      current = described_class.call(wallet, bonus, amount)
       wallet.reload
 
       expect(wallet.customer.customer_bonus).to eq(current)
