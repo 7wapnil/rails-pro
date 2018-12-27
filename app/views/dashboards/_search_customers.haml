@@ -2,6 +2,7 @@
   = render 'customers/search',
           filter: filter,
           search_path: dashboard_path
-  = render 'customers/table',
-            filter: filter
+  .table-responsive
+    = render 'customers/table',
+              filter: filter
   = paginate filter.customers, param_name: :customers_page

@@ -74,7 +74,7 @@ describe Customer, '#notes' do
         click_submit
       end
 
-      within '.container' do
+      within '.container-fluid' do
         expect_to_have_notification(
           "#{I18n.t(:content)} #{I18n.t('errors.messages.blank')}"
         )
@@ -151,7 +151,7 @@ describe Customer, '#notes' do
         click_submit
       end
 
-      within '.container' do
+      within '.container-fluid' do
         expect_to_have_notification(
           "#{I18n.t(:content)} #{I18n.t('errors.messages.blank')}"
         )

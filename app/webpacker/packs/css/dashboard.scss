@@ -1,18 +1,8 @@
-body {
-  &[data-controller="dashboards"] {
-    .container {
-      max-width: 100%;
-    }
+table {
+  * {
+    font-size: .75rem !important;
   }
-}
-
-.dashboard-content {
-  table {
-    &, * {
-      font-size: 12px;
-    }
-    td, th {
-      padding: .5rem .25rem;
-    }
+  td, th {
+    padding: .5rem .25rem;
   }
 }

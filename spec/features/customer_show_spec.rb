@@ -67,7 +67,7 @@ describe Customer, '#show' do
         click_submit
       end
 
-      within '.container' do
+      within '.container-fluid' do
         expect_to_have_notification I18n.t(
           :updated,
           instance: I18n.t('attributes.personal_information')
@@ -87,7 +87,7 @@ describe Customer, '#show' do
         click_submit
       end
 
-      within '.container' do
+      within '.container-fluid' do
         expect_to_have_notification I18n.t(
           :updated,
           instance: I18n.t('attributes.contact_information')
