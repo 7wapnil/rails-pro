@@ -38,7 +38,8 @@ module Deposits
 
     def bonus_entry_request
       @bonus_entry_request ||= EntryRequest.new(
-        base_attrs.merge(amount: balances_amounts[:bonus])
+        base_attrs.merge(amount: balances_amounts[:bonus],
+                         mode: EntryRequest.modes[:system])
       )
     end
 
