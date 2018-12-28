@@ -50,7 +50,7 @@ class CustomersController < ApplicationController
   end
 
   def account_management
-    @currencies = Currency.where(code: 'EUR')
+     @currencies = [Currency.primary]
     @entry_request = EntryRequest.new(customer: customer)
     @entry_requests = customer.entry_requests.page(params[:page])
   end
