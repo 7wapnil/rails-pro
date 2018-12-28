@@ -3,8 +3,6 @@ module Mts
     sidekiq_options retry: 3
 
     def perform(ids)
-      super()
-
       @ids = ids
 
       unless ids.length == 1

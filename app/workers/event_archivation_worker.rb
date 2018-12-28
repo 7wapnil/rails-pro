@@ -2,8 +2,6 @@ require 'sidekiq-scheduler'
 
 class EventArchivationWorker < ApplicationWorker
   def perform
-    super()
-
     events = Event.where.not(external_id: archived).all
     events.each { |event| archive(event) }
 
