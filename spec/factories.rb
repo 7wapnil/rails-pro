@@ -311,6 +311,18 @@ FactoryBot.define do
     sequence :external_id do |n|
       "sr:sport:#{n}"
     end
+
+    trait :with_event do
+      after(:create) do |title|
+        create(:event, start_at: 3.hours.ago, end_at: nil, title: title)
+      end
+    end
+
+    trait :with_tournament do
+      after(:create) do |title|
+        create(:event_scope, title: title)
+      end
+    end
   end
 
   factory :event_scope do
@@ -323,6 +335,12 @@ FactoryBot.define do
     factory :event_scope_country do
       kind { EventScope::COUNTRY }
       name { Faker::Address.country }
+    end
+
+    trait :with_event do
+      after(:create) do |event_scope|
+        create(:event, event_scopes: [event_scope])
+      end
     end
   end
 
@@ -353,6 +371,10 @@ FactoryBot.define do
 
     trait :bookable do
       payload { { 'liveodds': 'bookable' } }
+    end
+
+    trait :inactive do
+      active { false }
     end
 
     factory :event_with_market do
