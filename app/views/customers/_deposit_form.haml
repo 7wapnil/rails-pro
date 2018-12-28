@@ -3,7 +3,11 @@
   .customer-entry-request-form
     = simple_form_for :deposit, url: create_fake_deposit_customer_path(params[:id]) do |f|
       .row
-        .col-6= f.input :amount, as: :decimal, required: true
-        .col-6= f.input :currency_id, collection: Currency.where(code: 'EUR'), include_blank: false
+        .col-6= f.input :amount, as: :decimal,
+                        input_html: { min: 10.0,
+                                      max: 1000.0,
+                                      value: 10.0,
+                                      required: true }
+        .col-6= f.input :currency_id, collection: currencies, include_blank: false
       .row
       = f.submit t(:confirm), class: 'btn btn-outline-dark'

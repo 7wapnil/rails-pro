@@ -4,7 +4,7 @@ describe CustomersController, '#create_fake_deposit' do
   let(:amount) { 200 }
   let(:entries_count) { EntryRequest.count }
   let(:entries_amounts) { EntryRequest.all.map(&:amount) }
-  let!(:currency) { create(:currency, code: 'EUR', name: 'Euro') }
+  let!(:currency) { create(:currency, :primary, code: 'EUR', name: 'Euro') }
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
   let(:deposit_form) { '.customer-deposit-form form' }
 

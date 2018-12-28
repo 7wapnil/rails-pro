@@ -1,7 +1,7 @@
 - content_for :page_content do
   .mt-4= render 'customers/balances'
   .mt-4= render 'customers/entry_request_form'
-  .mt-4= render 'customers/deposit_form'
+  .mt-4= render 'customers/deposit_form', currencies: @currencies
   .mt-4.mb-4= render 'customers/entry_requests', entry_requests: @entry_requests
 
 - content_for :js do
