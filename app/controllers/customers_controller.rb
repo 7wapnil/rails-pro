@@ -50,6 +50,7 @@ class CustomersController < ApplicationController
   end
 
   def account_management
+    @currencies = Currency.where(code: 'EUR')
     @entry_request = EntryRequest.new(customer: customer)
     @entry_requests = customer.entry_requests.page(params[:page])
   end
@@ -68,7 +69,8 @@ class CustomersController < ApplicationController
     fake_credit = {}
     amount = deposit[:amount].to_f
     if payment_provider.pay!(amount, fake_credit)
-      wallet = customer.wallets.where(currency_id: deposit[:currency_id]).first
+      wallet = Wallet.find_or_create_by!(customer: customer,
+                                         currency_id: deposit[:currency_id])
       Deposits::PlacementService.call(wallet, amount)
       flash[:notice] = I18n.t('events.deposit_created')
     else
