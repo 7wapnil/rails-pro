@@ -6,8 +6,12 @@ module Titles
     field :name, !types.String
     field :kind, !types.String
 
-    field :tournaments, types[Types::ScopeType] do
-      resolve ->(obj, _args, _ctx) { obj.tournaments.active }
+    field :eventsAmount, !types.Int do
+      resolve ->(obj, _args, _ctx) { obj.active_events_amount }
     end
+    field :hasLive, !types.Boolean do
+      resolve ->(obj, _args, _ctx) { obj.live_events_amount.positive? }
+    end
+    field :tournaments, types[Types::ScopeType]
   end
 end
