@@ -4,8 +4,6 @@ module Scheduled
                     lock: :until_executed
 
     def perform
-      super()
-
       CustomerBonus
         .where(expiration_reason: nil)
         .select(&:expired?)

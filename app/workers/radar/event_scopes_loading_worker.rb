@@ -7,8 +7,6 @@ module Radar
                     on_conflict: :log
 
     def perform
-      super()
-
       tournaments_response.each do |tournament|
         EventScopesCreatingWorker.perform_async(tournament)
       end
