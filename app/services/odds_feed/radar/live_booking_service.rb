@@ -3,8 +3,6 @@ module OddsFeed
     class LiveBookingService < ApplicationService
       include JobLogger
 
-      BOOKABLE = 'bookable'.freeze
-
       def initialize(event_external_id)
         @event_external_id = event_external_id
       end
@@ -12,7 +10,7 @@ module OddsFeed
       def call
         return                    if event.traded_live
         return update_event       if replay?
-        return book_live_coverage if bookable?
+        return book_live_coverage if event.reload.bookable?
 
         log_job_message(:info, unbookable_message)
       end
@@ -42,12 +40,8 @@ module OddsFeed
         @api_client ||= OddsFeed::Radar::Client.new
       end
 
-      def bookable?
-        event.payload['liveodds'] == BOOKABLE
-      end
-
       def unbookable_message
-        "'liveodd' for event #{event.external_id} is not '#{BOOKABLE}'"
+        "'liveodd' for event #{event.external_id} is not '#{Event::BOOKABLE}'"
       end
 
       def replay?
