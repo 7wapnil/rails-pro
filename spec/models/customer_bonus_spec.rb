@@ -16,6 +16,15 @@ describe CustomerBonus do
       expect(customer_bonus.ended_at).to eq(time_of_end)
     end
 
+    it '#close!' do
+      customer_bonus = create(:customer_bonus)
+      deactivation_strategy = instance_double('DeactivationStrategy')
+      allow(deactivation_strategy).to receive(:call)
+      expect(deactivation_strategy).to receive(:call).with(customer_bonus, {})
+
+      customer_bonus.close!(deactivation_strategy)
+    end
+
     describe '#expired?' do
       it 'returns false for active bonus' do
         customer_bonus = create(:customer_bonus)
