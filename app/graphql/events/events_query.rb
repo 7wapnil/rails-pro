@@ -64,7 +64,7 @@ module Events
       return query if tournament_id.nil?
 
       query
-        .joins(:scoped_events)
+        .eager_load(:scoped_events)
         .where(scoped_events: { event_scope_id: tournament_id })
     end
   end
