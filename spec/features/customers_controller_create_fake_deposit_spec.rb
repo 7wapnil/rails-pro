@@ -33,13 +33,16 @@ describe CustomersController, '#create_fake_deposit' do
       end
     end
 
-    it 'raise error when customer bonus is expired' do
+    it 'closes customer bonus when customer bonus is expired' do
       customer_bonus.update_attributes(created_at: 1.month.ago,
                                        valid_for_days: 2)
       within deposit_form do
         fill_in 'Amount', with: amount
         select 'Euro', from: 'Currency'
-        expect { click_on 'Confirm' }.to raise_error StandardError
+        click_on 'Confirm'
+        customer_bonus.reload
+
+        expect(customer_bonus).to be_expired_by_date
       end
     end
   end

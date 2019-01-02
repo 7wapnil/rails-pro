@@ -76,8 +76,11 @@ module Deposits
       customer_bonus = wallet.customer&.customer_bonus
       return false unless customer_bonus&.min_deposit
 
-      raise StandardError, 'expired bonus expected' if customer_bonus.expired?
-
+      if customer_bonus.expired?
+        customer_bonus.close!(BonusExpiration::Expired,
+                              reason: :expired_by_date)
+        return false
+      end
       amount >= customer_bonus.min_deposit
     end
   end
