@@ -13,7 +13,7 @@ module OddsFeed
       private
 
       def fixture
-        @payload
+        @fixture ||= @payload || {}
       end
 
       def title_fixture
