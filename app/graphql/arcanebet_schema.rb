@@ -1,10 +1,9 @@
 ArcanebetSchema = GraphQL::Schema.define do
-  # Comment this out when you have a mutation type
-  # There's a bug that breaks GraphiQL if
-  # blank mutation is present in the schema
+  use GraphQL::Subscriptions::ActionCableSubscriptions
 
   mutation(MutationType)
   query(QueryType)
+  subscription(SubscriptionType)
 end
 
 GraphQL::Errors.configure(ArcanebetSchema) do
