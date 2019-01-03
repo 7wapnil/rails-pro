@@ -41,9 +41,19 @@ module OddsFeed
         post(route)
       end
 
-      def product_recovery_initiate_request(product_code:, after: nil)
-        route = "/#{product_code}/recovery/initiate_request"
-        route += "?after=#{after}" if after
+      def product_recovery_initiate_request(product_code:, after:,
+                                            request_id: nil, node_id: nil)
+        after_timestamp = after.to_i
+        query_hash = {
+          after: after_timestamp,
+          request_id: request_id,
+          node_id: node_id
+        }.compact
+        uri =
+          URI::HTTP.build(path: "/#{product_code}/recovery/initiate_request",
+                          query: query_hash.to_query)
+
+        route = uri.request_uri
 
         log_job_message(:info, "Calling subscription recovery on #{route}")
         post(route)
