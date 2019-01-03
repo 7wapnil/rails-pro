@@ -25,6 +25,10 @@ FactoryBot.define do
       payload { { 'liveodds': 'bookable' } }
     end
 
+    trait :inactive do
+      active { false }
+    end
+
     factory :event_with_market do
       after(:create) do |event|
         create(:market, event: event)

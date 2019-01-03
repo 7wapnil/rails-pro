@@ -9,6 +9,12 @@ FactoryBot.define do
 
     title
 
+    trait :with_event do
+      after(:create) do |event_scope|
+        create(:event, event_scopes: [event_scope])
+      end
+    end
+
     factory :event_scope_country do
       kind { EventScope::COUNTRY }
       name { Faker::Address.country }
