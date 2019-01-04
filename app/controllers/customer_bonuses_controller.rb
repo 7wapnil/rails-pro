@@ -22,10 +22,11 @@ class CustomerBonusesController < ApplicationController
   end
 
   def destroy
-    CustomerBonus.find(params[:id]).close!(BonusExpiration::Expired,
-                                           reason: :manual_cancel,
-                                           user: current_user)
-    redirect_to bonuses_customer_path(customer)
+    bonus = CustomerBonus.find(params[:id])
+    bonus.close!(BonusExpiration::Expired,
+                 reason: :manual_cancel,
+                 user: current_user)
+    redirect_to bonuses_customer_path(bonus.customer)
   end
 
   private
