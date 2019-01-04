@@ -9,7 +9,7 @@ FactoryBot.define do
 
     trait :with_event do
       after(:create) do |title|
-        create(:event, start_at: 3.hours.ago, end_at: nil, title: title)
+        create(:event, :upcoming, title: title)
       end
     end
 
