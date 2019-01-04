@@ -47,8 +47,10 @@ Rails.application.configure do
   config.active_storage.service = :amazon
 
   # Mount Action Cable outside main process or domain
-  config.allowed_request_origins = ENV.fetch('AC_ALLOWED_ORIGINS', '')
-                                      .split(',')
+  config.action_cable.allowed_request_origins = ENV
+                                                .fetch('AC_ALLOWED_ORIGINS',
+                                                       '')
+                                                .split(',')
 
   # Force all access to the app over SSL, use Strict-Transport-Security,
   # and use secure cookies.
