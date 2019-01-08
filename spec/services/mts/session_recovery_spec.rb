@@ -8,18 +8,12 @@ describe Mts::SessionRecovery do
 
     it 'does nothing if network failure is not registered' do
       allow(subject).to receive(:session_failed_at).and_return(nil)
-
-      expect(subject).not_to have_received(:recover_producer_subscriptions!)
     end
 
     context 'network failure registered' do
       before do
         allow(subject).to receive(:session_failed_at) { 2.minutes.ago }
         subject.recover_from_network_failure!
-      end
-
-      it 'calls #recover_producer_subscriptions!' do
-        expect(subject).to have_received(:recover_producer_subscriptions!)
       end
 
       it 'removes network failure flag' do
