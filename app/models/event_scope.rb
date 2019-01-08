@@ -19,5 +19,10 @@ class EventScope < ApplicationRecord
 
   validates :name, presence: true
 
-  scope :active, -> { eager_load(:events).where(events: { active: true }) }
+  def self.with_dashboard_events
+    joins(:events)
+      .merge(Event.active.visible.upcoming)
+      .or(joins(:events).merge(Event.active.visible.in_play))
+      .distinct
+  end
 end

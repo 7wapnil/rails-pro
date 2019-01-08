@@ -7,7 +7,7 @@ module Titles
     field :kind, !types.String
 
     field :tournaments, types[Types::ScopeType] do
-      resolve ->(obj, _args, _ctx) { obj.tournaments.active }
+      resolve ->(obj, _args, _ctx) { obj.tournaments.with_dashboard_events }
     end
   end
 end

@@ -20,6 +20,9 @@ class Title < ApplicationRecord
   validates :name, uniqueness: true
 
   scope :with_active_events, -> {
-    eager_load(:events).where(events: { active: true })
+    joins(:events)
+      .merge(Event.active.visible.upcoming)
+      .or(joins(:events).merge(Event.active.visible.in_play))
+      .distinct
   }
 end

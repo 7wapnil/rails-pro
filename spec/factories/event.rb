@@ -14,12 +14,17 @@ FactoryBot.define do
 
     sequence(:external_id) { |n| "sr:match:#{n}" }
 
-    title
+    association :title, strategy: :build
     producer
 
     trait :upcoming do
       start_at { 1.hour.from_now }
       end_at   { nil }
+    end
+
+    trait :live do
+      end_at      {}
+      traded_live { true }
     end
 
     trait :bookable do
@@ -28,6 +33,10 @@ FactoryBot.define do
 
     trait :inactive do
       active { false }
+    end
+
+    trait :invisible do
+      visible { false }
     end
 
     factory :event_with_market do
