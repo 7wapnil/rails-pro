@@ -236,6 +236,28 @@ describe Event do
     end
   end
 
+  describe '#alive?' do
+    context 'without TRADED_LIVE' do
+      let(:event) { build(:event, status: Event::SUSPENDED) }
+
+      it { expect(event).not_to be_alive }
+    end
+
+    context 'with SUSPENDED status' do
+      let(:event) do
+        build(:event, traded_live: true, status: Event::SUSPENDED)
+      end
+
+      it { expect(event).to be_alive }
+    end
+
+    context 'in play' do
+      let(:event) { build(:event, :live) }
+
+      it { expect(event).to be_alive }
+    end
+  end
+
   context 'callbacks' do
     it 'emits web socket event on create' do
       event = create(:event)
