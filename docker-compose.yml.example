@@ -69,3 +69,19 @@ services:
       - bundle:/usr/local/bundle
     depends_on:
       - db
+
+  cable:
+    image: arcanebet/arcanebet:dev
+    command: bundle exec puma -p 28080 cable.ru
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    volumes:
+      - .:/arcanebet
+      - bundle:/usr/local/bundle
+    ports:
+      - "28080:28080"
+    depends_on:
+      - db
+      - redis

@@ -52,7 +52,7 @@ describe Customer, '#account_management' do
         click_submit
       end
 
-      within '.container' do
+      within '.container-fluid' do
         expect_to_have_notification(I18n.t('messages.entry_request.flash'))
       end
     end

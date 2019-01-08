@@ -4,7 +4,7 @@
   <!--
     id => event.external_id
   -->
-  <fixture id="sr:match:8696826" scheduled="2016-10-31T18:00:00+00:00" start_time_tbd="false" next_live_time="2016-10-31T18:00:00+00:00" start_time="2016-10-31T18:00:00+00:00" start_time_confirmed="true">
+  <fixture id="sr:match:8696826" liveodds="bookable" scheduled="2016-10-31T18:00:00+00:00" start_time_tbd="false" next_live_time="2016-10-31T18:00:00+00:00" start_time="2016-10-31T18:00:00+00:00" start_time_confirmed="true">
 
     <!--
       New event scope

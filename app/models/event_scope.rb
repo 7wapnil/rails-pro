@@ -18,4 +18,6 @@ class EventScope < ApplicationRecord
   }
 
   validates :name, presence: true
+
+  scope :active, -> { eager_load(:events).where(events: { active: true }) }
 end

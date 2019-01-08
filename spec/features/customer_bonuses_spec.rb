@@ -39,12 +39,35 @@ describe Customer, '#bonuses' do
         click_submit
       end
 
-      within '.container' do
+      within '.container-fluid' do
         expect_to_have_notification I18n.t(
           :activated,
           instance: I18n.t('entities.bonus')
         )
       end
+    end
+  end
+
+  context 'bonus deactivation' do
+    let(:bonus) { create(:customer_bonus, customer: customer, wallet: wallet) }
+
+    before do
+      visit customer_bonus_path(bonus)
+      click_link 'Expire'
+    end
+
+    it 'redirects to customer bonuses page' do
+      expect(page).to have_current_path(page_path)
+    end
+
+    it 'expire customer bonus' do
+      expect(page).to have_content('Expired')
+    end
+
+    it 'status customer bonus changed' do
+      bonus.reload
+
+      expect(bonus).to be_expired
     end
   end
 end

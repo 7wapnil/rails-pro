@@ -7,8 +7,6 @@ module Radar
                     on_conflict: :log
 
     def perform
-      super()
-
       Radar::Producer.all.each(&:unsubscribe_expired!)
     end
   end

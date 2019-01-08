@@ -19,7 +19,8 @@ class EntryRequest < ApplicationRecord
 
   enum mode: {
     cashier:       CASHIER       = 'cashier',
-    sports_ticket: SPORTS_TICKET = 'sports_ticket'
+    sports_ticket: SPORTS_TICKET = 'sports_ticket',
+    system:        SYSTEM = 'system'
   }
 
   validates :amount,

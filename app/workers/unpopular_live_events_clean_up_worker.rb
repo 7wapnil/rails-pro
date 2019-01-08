@@ -2,8 +2,6 @@ require 'sidekiq-scheduler'
 
 class UnpopularLiveEventsCleanUpWorker < ApplicationWorker
   def perform
-    super()
-
     Event
       .left_outer_joins(markets: { odds: :bets })
       .where(traded_live: true)

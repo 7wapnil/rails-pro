@@ -11,6 +11,6 @@
     = yield :js
   %body{ data: { controller: controller_name, action: action_name } }
     = render 'shared/navbar'
-    .container
+    .container-fluid
       = render 'shared/alerts'
       = yield

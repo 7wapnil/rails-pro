@@ -27,6 +27,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     abandoned:   ABANDONED   = 'abandoned'
   }.freeze
 
+  BOOKABLE = 'bookable'
+
   ransacker :markets_count do
     Arel.sql('markets_count')
   end
@@ -171,6 +173,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
                                     id: id.to_s,
                                     changes: { state: state })
+  end
+
+  def bookable?
+    payload['liveodds'] == BOOKABLE
   end
 
   private

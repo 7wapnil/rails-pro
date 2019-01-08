@@ -1,6 +1,7 @@
 module Events
   class EventsQuery < ::Base::Resolver
     include Base::Limitable
+    include Base::Offsetable
 
     type !types[EventType]
 
@@ -25,13 +26,14 @@ module Events
 
     private
 
-    def filter_query(query, args)
+    def filter_query(query, args) # rubocop:disable Metrics/CyclomaticComplexity
       filter = args[:filter] || {}
 
       query = filter_by_id(query, filter[:id])
       query = filter_by_title(query, filter[:titleId])
       query = filter_by_title_kind(query, filter[:titleKind])
       query = filter_by_tournament(query, filter[:tournamentId])
+      query = query.offset(args[:offset]) if args[:offset]
       query = query.limit(args[:limit]) if args[:limit]
       query = query.in_play if filter[:inPlay]
       query = query.upcoming if filter[:upcoming]
@@ -62,7 +64,7 @@ module Events
       return query if tournament_id.nil?
 
       query
-        .joins(:scoped_events)
+        .eager_load(:scoped_events)
         .where(scoped_events: { event_scope_id: tournament_id })
     end
   end

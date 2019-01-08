@@ -29,7 +29,7 @@ module Deposits
     end
 
     def authorize_bonus_money!
-      return if balances_amounts[:bonus].zero? || !eligible_for_the_bonus?
+      return unless eligible_for_the_bonus?
 
       bonus_entry_request.save!
       WalletEntry::AuthorizationService.call(bonus_entry_request,
@@ -37,8 +37,9 @@ module Deposits
     end
 
     def bonus_entry_request
-      EntryRequest.new(
-        base_attrs.merge(amount: balances_amounts[:bonus])
+      @bonus_entry_request ||= EntryRequest.new(
+        base_attrs.merge(amount: balances_amounts[:bonus],
+                         mode: EntryRequest.modes[:system])
       )
     end
 
@@ -48,7 +49,7 @@ module Deposits
     end
 
     def real_money_entry_request
-      EntryRequest.new(
+      @real_money_entry_request ||= EntryRequest.new(
         base_attrs.merge(amount: balances_amounts[:real_money])
       )
     end
@@ -72,10 +73,15 @@ module Deposits
     end
 
     def eligible_for_the_bonus?
-      min_deposit = wallet.customer&.customer_bonus&.min_deposit
-      return true unless min_deposit
+      customer_bonus = wallet.customer&.customer_bonus
+      return false unless customer_bonus&.min_deposit
 
-      amount >= min_deposit
+      if customer_bonus.expired?
+        customer_bonus.close!(BonusExpiration::Expired,
+                              reason: :expired_by_date)
+        return false
+      end
+      amount >= customer_bonus.min_deposit
     end
   end
 end

@@ -6,8 +6,6 @@ module Radar
                     unique_across_queues: true
 
     def perform
-      super()
-
       log_job_message(:debug, 'Updating BetRadar market templates')
       templates.each do |market_data|
         create_or_update_market!(market_data)
