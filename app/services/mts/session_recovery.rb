@@ -20,7 +20,6 @@ module Mts
 
     private
 
-
     def session_failed_at
       Rails.cache.fetch(MTS_SESSION_FAILURE_KEY)
     end
