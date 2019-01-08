@@ -7,7 +7,6 @@ module Mts
     def recover_from_network_failure!
       return if session_failed_at.blank?
 
-      recover_producer_subscriptions!
       clear_session_failed_at
     end
 
@@ -21,12 +20,6 @@ module Mts
 
     private
 
-    def recover_producer_subscriptions!
-      OddsFeed::Radar::Product.available_product_ids.each do |product_id|
-        producer = Radar::Producer.find_by_id(product_id)
-        producer.recover_subscription!
-      end
-    end
 
     def session_failed_at
       Rails.cache.fetch(MTS_SESSION_FAILURE_KEY)

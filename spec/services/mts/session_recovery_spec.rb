@@ -1,7 +1,6 @@
 describe Mts::SessionRecovery do
   describe '#recover_from_network_failure!' do
     before do
-      allow(subject).to receive(:recover_producer_subscriptions!)
       allow(subject).to receive(:clear_session_failed_at)
 
       subject.recover_from_network_failure!
@@ -55,19 +54,6 @@ describe Mts::SessionRecovery do
             .once
         end
       end
-    end
-  end
-
-  describe '#recover_producer_subscriptions' do
-    it 'calls #recover_subscription! on every producer' do
-      producer_double = instance_double('producer')
-      allow(Radar::Producer).to receive(:find_by_id) { producer_double }
-      expect(producer_double)
-        .to receive(:recover_subscription!)
-        .exactly(Radar::Producer::RADAR_AVAILABLE_PRODUCERS.count)
-        .times
-
-      subject.send(:recover_producer_subscriptions!)
     end
   end
 end
