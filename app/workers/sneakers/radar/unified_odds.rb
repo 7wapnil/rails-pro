@@ -47,6 +47,10 @@ module Radar
       fixture_change: {
         matchers: %w[<fixture_change].freeze,
         klass: FixtureChangeWorker
+      },
+      snapshot_complete: {
+        matchers: %w[<snapshot_complete].freeze,
+        klass: SnapshotCompleteWorker
       }
     }.freeze
 

@@ -5,6 +5,7 @@ FactoryBot.define do
     sequence(:id, 10) { |n| n }
     recover_requested_at { nil }
     code { Faker::Lorem.word.to_sym }
+    recovery_snapshot_id { Faker::Number.number(8) }
 
     factory :liveodds_producer do
       id { 1 }
