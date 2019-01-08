@@ -45,7 +45,7 @@ describe Radar::Producer do
       expect(producer).not_to be_live
     end
 
-    [Radar::Producer::HEALTHY, Radar::Producer::RECOVERING].each do |status|
+    Radar::Producer::SUBSCRIBED_STATES.values.each do |status|
       it "returns true for subscribed state #{status}" do
         allow(producer).to receive(:state) { status }
         expect(producer).to be_subscribed

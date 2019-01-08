@@ -4,11 +4,16 @@ module Radar
 
     has_many :events
 
-    STATES = {
-      healthy: HEALTHY = 'healthy'.freeze,
-      unsubscribed: UNSUBSCRIBED = 'unsubscribed'.freeze,
-      recovering: RECOVERING = 'healthy'.freeze
+    UNSUBSCRIBED_STATES = {
+      unsubscribed: UNSUBSCRIBED = 'unsubscribed'.freeze
     }.freeze
+
+    SUBSCRIBED_STATES = {
+      recovering: RECOVERING = 'recovering'.freeze,
+      healthy: HEALTHY = 'healthy'.freeze
+    }.freeze
+
+    STATES = UNSUBSCRIBED_STATES.merge(SUBSCRIBED_STATES)
 
     enum state: STATES
 
@@ -21,7 +26,7 @@ module Radar
     end
 
     def subscribed?
-      [HEALTHY, RECOVERING].include? state
+      SUBSCRIBED_STATES.value?(state)
     end
 
     def unsubscribe_expired!
