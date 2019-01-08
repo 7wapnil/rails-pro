@@ -9,7 +9,7 @@ module Radar
     def perform
       super()
 
-      Radar::Producer.available_producers.each(&:check_subscription_expiration)
+      Radar::Producer.all.each(&:unsubscribe_expired!)
     end
   end
 end

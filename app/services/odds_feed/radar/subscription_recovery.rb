@@ -3,63 +3,65 @@ module OddsFeed
     class SubscriptionRecovery < ApplicationService
       include JobLogger
 
-      PRODUCTS_MAP = {
-        1 => :liveodds,
-        3 => :pre
-      }.freeze
+      attr_accessor :product
 
-      attr_accessor :product_id, :start_at
-
-      def initialize(product_id:, start_at: nil)
-        @product_id = product_id
-        @start_at = start_at
+      def initialize(product:)
+        @product = product
       end
 
       def call
-        log_job_message(:info, "Recovering #{@product_id} from #{@start_at}")
-        return unless product_available?
-        return unless rates_available?
+        log_job_message(:info, "Recovering #{@product.code} from #{@start_at}")
+        raise 'Recovery rates reached' unless rates_available?
 
-        response = api_client.product_recovery_initiate_request(
-          product_code: code,
-          after: start_at
-        )
-        return unless response['response']['response_code'] == 'ACCEPTED'
+        node_id = ENV['RADAR_MQ_NODE_ID']
+        requested_at = Time.zone.now
+        request_id = requested_at.to_i
 
-        write_previous_recovery_timestamp(Time.zone.now.to_i)
+        request_recovery(node_id, request_id)
+        update_product(node_id, request_id, requested_at)
       end
 
       def rates_available?
-        last_call = previous_recovery_timestamp
+        last_call = ::Radar::Producer.last_recovery_call_at
         return true unless last_call
 
-        Time.at(last_call) < Time.zone.now - 30.seconds
+        minimal_delay_between_calls = 30.seconds
+
+        last_call < Time.zone.now - minimal_delay_between_calls
       end
 
       private
 
+      def request_recovery(node_id, request_id)
+        response = api_client.product_recovery_initiate_request(
+          product_code: product.code,
+          after: recover_after,
+          node_id: node_id,
+          request_id: request_id
+        )
+        request_success = response['response']['response_code'] == 'ACCEPTED'
+        raise 'Unsuccessful recovery' unless request_success
+      end
+
+      def update_product(node_id, request_id, requested_at)
+        product.update(
+          recover_requested_at: requested_at,
+          recovery_snapshot_id: request_id,
+          recovery_node_id: node_id
+        )
+      end
+
+      def recover_after
+        last_recorded_at = product.last_successful_subscribed_at
+        oldest_recovery_at = 72.hours.ago
+        return oldest_recovery_at unless last_recorded_at
+        return oldest_recovery_at if last_recorded_at < oldest_recovery_at
+
+        last_recorded_at
+      end
+
       def api_client
         @api_client ||= Client.new
-      end
-
-      def product_available?
-        PRODUCTS_MAP.include? product_id
-      end
-
-      def code
-        PRODUCTS_MAP[product_id]
-      end
-
-      def write_previous_recovery_timestamp(timestamp)
-        Rails.cache.write(previous_recovery_call_key, timestamp)
-      end
-
-      def previous_recovery_timestamp
-        Rails.cache.read(previous_recovery_call_key)
-      end
-
-      def previous_recovery_call_key
-        'radar:last_recovery_call'
       end
     end
   end

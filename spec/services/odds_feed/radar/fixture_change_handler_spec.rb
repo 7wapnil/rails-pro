@@ -3,6 +3,9 @@ describe OddsFeed::Radar::FixtureChangeHandler do
 
   let(:subject_api) { described_class.new(payload) }
 
+  let(:producer_from_payload) { create(:liveodds_producer, id: 1) }
+  let(:another_producer) { create(:prematch_producer, id: 3) }
+
   let(:payload) do
     {
       'fixture_change' => {
@@ -13,9 +16,7 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     }
   end
 
-  let(:api_event) { build(:event) }
-
-  let(:payload_update) { { producer: { origin: :radar, id: '1' } } }
+  let(:api_event) { build(:event, producer: create(:prematch_producer)) }
 
   before do
     allow(subject_api).to receive(:api_event) { api_event }
@@ -30,8 +31,9 @@ describe OddsFeed::Radar::FixtureChangeHandler do
       expect(subject_api).to receive(:log_on_create)
     end
 
-    it 'adds producer info to payload' do
-      expect(api_event).to receive(:add_to_payload).with(payload_update)
+    it 'sets producer' do
+      expect(subject_api)
+        .to receive(:update_event_producer!).with(producer_from_payload)
     end
 
     it 'calls for live coverage booking' do
@@ -60,11 +62,9 @@ describe OddsFeed::Radar::FixtureChangeHandler do
       expect(subject_api).to receive(:log_on_update)
     end
 
-    it 'adds producer info to payload' do
-      # Event receives :add_to_payload twice,
-      # this test checks arguments for second call
-      expect(event).to receive(:add_to_payload)
-      expect(event).to receive(:add_to_payload).with(payload_update)
+    it 'updates producer info' do
+      expect(subject_api)
+        .to receive(:update_event_producer!).with(producer_from_payload)
     end
 
     context 'cancelled event' do
@@ -81,6 +81,23 @@ describe OddsFeed::Radar::FixtureChangeHandler do
       it 'sets event activity status to inactive' do
         subject_api.handle
         expect(Event.find_by!(external_id: 'sr:match:1234').active).to be_falsy
+      end
+    end
+
+    context 'producer change' do
+      let(:payload) do
+        {
+          'fixture_change' => {
+            'event_id' => 'sr:match:1234',
+            'change_type' => '3',
+            'product' => '3'
+          }
+        }
+      end
+
+      it 'updates producer info' do
+        expect(subject_api)
+          .to receive(:update_event_producer!).with(another_producer)
       end
     end
 

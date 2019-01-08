@@ -3,6 +3,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
   let(:subject_api) { described_class.new(payload) }
 
+  let!(:producer_from_xml) { create(:producer, id: 2) }
   let(:payload) do
     XmlParser.parse(file_fixture('odds_change_message.xml').read)
   end
@@ -132,9 +133,8 @@ describe OddsFeed::Radar::OddsChangeHandler do
     end
   end
 
-  it 'adds producer id to event payload' do
+  it 'does not add producer id to event payload' do
     payload_addition = {
-      producer: { origin: :radar, id: payload['odds_change']['product'] },
       state:
         OddsFeed::Radar::EventStatusService.new.call(
           event_id: event.id,
@@ -143,12 +143,20 @@ describe OddsFeed::Radar::OddsChangeHandler do
     }
 
     allow(Event).to receive(:find_by) { event }
-
-    expect(event)
-      .to receive(:add_to_payload)
-      .with(payload_addition)
+    allow(event)
+      .to receive(:add_to_payload).and_call_original
 
     subject_api.handle
+
+    expect(event)
+      .to have_received(:add_to_payload)
+      .with(payload_addition).once
+  end
+
+  it 'changes event producer' do
+    subject_api.handle
+
+    expect(event.producer).to eq(producer_from_xml)
   end
 
   it 'sends websocket message when new event created' do

@@ -1,49 +1,60 @@
 module Radar
-  class Producer
-    RADAR_AVAILABLE_PRODUCERS = [
-      { radar_id: 1, code: :live },
-      { radar_id: 3, code: :prematch }
-    ].freeze
+  class Producer < ApplicationRecord
+    self.table_name = 'radar_providers'
 
-    attr_reader :radar_id, :code
+    has_many :events
 
-    class << self
-      def radar_ids
-        RADAR_AVAILABLE_PRODUCERS.map { |producer| producer[:radar_id] }
-      end
+    STATES = {
+      healthy: HEALTHY = 'healthy'.freeze,
+      unsubscribed: UNSUBSCRIBED = 'unsubscribed'.freeze,
+      recovering: RECOVERING = 'healthy'.freeze
+    }.freeze
 
-      def codes
-        RADAR_AVAILABLE_PRODUCERS.map { |producer| producer[:code] }
-      end
+    enum state: STATES
 
-      def find_by_id(id)
-        producer = RADAR_AVAILABLE_PRODUCERS
-                   .detect { |el| el[:radar_id] == id.to_i }
-        new(producer) unless producer.nil?
-      end
-
-      def find_by_code(code)
-        new(
-          RADAR_AVAILABLE_PRODUCERS
-            .detect { |producer| producer[:code] == code }
-        )
-      end
-
-      def available_producers
-        RADAR_AVAILABLE_PRODUCERS.map { |args| new(args) }
-      end
-
-      def failure_flag_keys
-        available_producers.map(&:failure_flag_key)
-      end
+    def self.last_recovery_call_at
+      Radar::Producer.all.pluck(:recover_requested_at)&.compact&.sort&.first
     end
 
-    def initialize(radar_id:, code:)
-      raise ArgumentError unless self.class.radar_ids.include? radar_id
-      raise ArgumentError unless self.class.codes.include? code
+    def live?
+      code == :liveodds
+    end
 
-      @radar_id = radar_id
-      @code = code
+    def subscribed?
+      [HEALTHY, RECOVERING].include? state
+    end
+
+    def unsubscribe_expired!
+      return false if last_successful_subscribed_at < 60.seconds.ago
+
+      unsubscribe!
+    end
+
+    def unsubscribe!
+      return false unless subscribed?
+
+      unsubscribed!
+    end
+
+    def subscribed!(subscribed_at: Time.zone.now)
+      recover! unless subscribed?
+      avoid_timestamp_override =
+        last_successful_subscribed_at &&
+        last_successful_subscribed_at >= subscribed_at
+      return false if avoid_timestamp_override
+
+      update(last_successful_subscribed_at: subscribed_at)
+    end
+
+    def recover!
+      return unless unsubscribed?
+
+      OddsFeed::Radar::SubscriptionRecovery.call(product_id: id)
+      update(state: RECOVERING)
+    end
+
+    def recovery_completed!
+      healthy!
     end
   end
 end

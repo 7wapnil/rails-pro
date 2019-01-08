@@ -331,6 +331,26 @@ FactoryBot.define do
     event
   end
 
+  factory :producer, class: 'Radar::Producer' do
+    id { Faker::Number.number(3) }
+    recover_requested_at { nil }
+    code { Faker::Lorem.word.to_sym }
+
+    factory :liveodds_producer do
+      id { 1 }
+      code { :liveodds }
+    end
+
+    factory :prematch_producer do
+      id { 3 }
+      code { :pre }
+    end
+
+    initialize_with do
+      Radar::Producer.find_or_initialize_by(id: id, code: code)
+    end
+  end
+
   factory :event do
     title
     visible { true }
@@ -344,7 +364,7 @@ FactoryBot.define do
       "sr:match:#{n}"
     end
     status { Event::NOT_STARTED }
-    payload { {} }
+    association :producer, factory: :prematch_producer
 
     trait :upcoming do
       start_at { 1.hour.from_now }

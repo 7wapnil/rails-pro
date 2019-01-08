@@ -17,6 +17,7 @@ module OddsFeed
           log_on_create
           create_event!
         end
+        update_event_producer!(::Radar::Producer.find(payload['product']))
         update_event_payload!
       end
 
@@ -61,12 +62,16 @@ module OddsFeed
         log_job_message(:info, msg.squish)
       end
 
+      def update_event_producer!(new_producer)
+        return if new_producer == event.producer
+
+        log_job_message(:info, "Updating producer for event ID #{external_id}")
+        event.update(producer: new_producer)
+      end
+
       def update_event_payload!
         log_job_message(:info, "Updating payload for event ID #{external_id}")
 
-        event.add_to_payload(
-          producer: { origin: :radar, id: payload['product'] }
-        )
         event.active = false if change_type == :cancelled
 
         event.save!

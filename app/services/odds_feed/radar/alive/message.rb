@@ -2,7 +2,7 @@ module OddsFeed
   module Radar
     module Alive
       class Message
-        attr_reader :timestamp, :product_id
+        attr_reader :timestamp
 
         def initialize(payload)
           @timestamp = payload['timestamp'].to_i
@@ -11,15 +11,21 @@ module OddsFeed
         end
 
         def product
-          @product ||= OddsFeed::Radar::Product.new(product_id)
+          @product ||= ::Radar::Producer.find(@product_id)
         end
 
-        def datetime
-          Time.zone.at(timestamp).to_datetime
+        def expired?
+          received_at < product.last_successful_subscribed_at
         end
 
         def subscribed?
           @subscribed == '1'
+        end
+
+        private
+
+        def received_at
+          Time.zone.at(timestamp)
         end
       end
     end
