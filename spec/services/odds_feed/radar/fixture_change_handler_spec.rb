@@ -82,7 +82,8 @@ describe OddsFeed::Radar::FixtureChangeHandler do
 
       it 'sets event activity status to inactive' do
         subject_api.handle
-        expect(Event.find_by!(external_id: external_event_id).active).to be_falsy
+        expect(Event.find_by!(external_id: external_event_id).active)
+          .to be_falsy
       end
     end
 
@@ -116,7 +117,8 @@ describe OddsFeed::Radar::FixtureChangeHandler do
 
       it 'sets event activity status to inactive' do
         subject_api.handle
-        expect(Event.find_by!(external_id: external_event_id).active).to be_falsy
+        expect(Event.find_by!(external_id: external_event_id).active)
+          .to be_falsy
       end
     end
   end
