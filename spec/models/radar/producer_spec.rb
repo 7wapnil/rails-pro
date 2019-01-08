@@ -8,10 +8,6 @@ describe Radar::Producer do
            recover_requested_at: Faker::Date.backward(14))
   end
 
-  before do
-    described_class.delete_all
-  end
-
   it { is_expected.to have_many(:events) }
 
   describe '#last_recovery_call_at' do

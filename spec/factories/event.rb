@@ -12,11 +12,10 @@ FactoryBot.define do
     status                 { Event::NOT_STARTED }
     payload                { {} }
 
-    association :producer, factory: :prematch_producer
-
     sequence(:external_id) { |n| "sr:match:#{n}" }
 
     title
+    producer
 
     trait :upcoming do
       start_at { 1.hour.from_now }

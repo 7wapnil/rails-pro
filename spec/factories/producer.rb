@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :producer, class: 'Radar::Producer' do
-    id { Faker::Number.number(3) }
+    sequence(:id, 10) { |n| n }
     recover_requested_at { nil }
     code { Faker::Lorem.word.to_sym }
 
@@ -14,10 +14,6 @@ FactoryBot.define do
     factory :prematch_producer do
       id { 3 }
       code { :pre }
-    end
-
-    initialize_with do
-      Radar::Producer.find_or_initialize_by(id: id, code: code)
     end
   end
 end

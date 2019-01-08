@@ -2,7 +2,8 @@ describe OddsFeed::Radar::SubscriptionRecovery do
   describe '.call' do
     let(:node_id) { '88' }
     let(:client_double) { instance_double('OddsFeed::Radar::Client') }
-    let(:product) { Radar::Producer.find(1) }
+    let(:product) { create(:producer) }
+    let(:another_product) { create(:producer) }
     let(:recovery_time_timestamp) { 1_546_588_682 }
     let(:recovery_time) { Time.zone.at(recovery_time_timestamp) }
     let(:after_recovery_time) { recovery_time + 1.hour }
@@ -46,7 +47,7 @@ describe OddsFeed::Radar::SubscriptionRecovery do
           client_double
         ).to have_received(:product_recovery_initiate_request)
           .with(
-            product_code: 'liveodds',
+            product_code: product.code,
             after: oldest_recovery_since,
             node_id: node_id,
             request_id: recovery_time_timestamp
@@ -102,7 +103,7 @@ describe OddsFeed::Radar::SubscriptionRecovery do
 
     context 'with rates limit reached' do
       before do
-        ::Radar::Producer.update_all(recover_requested_at: 1.second.ago)
+        another_product.update(recover_requested_at: 1.second.ago)
       end
 
       it 'raises when rates reached' do
