@@ -129,6 +129,15 @@ describe OddsFeed::Radar::EventAdapter do
         payload['tournament'] = {}
         expect { result }.to raise_error(OddsFeed::InvalidMessageError)
       end
+
+      context 'on empty payload' do
+        let(:payload) {}
+
+        it 'return empty event' do
+          expect(result).to      be_an Event
+          expect(result.name).to be_nil
+        end
+      end
     end
   end
 end

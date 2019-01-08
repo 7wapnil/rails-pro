@@ -181,7 +181,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def bookable?
-    payload['liveodds'] == BOOKABLE
+    payload && payload['liveodds'] == BOOKABLE
   end
 
   private

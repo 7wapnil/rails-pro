@@ -252,5 +252,16 @@ describe OddsFeed::Radar::OddsChangeHandler do
         expect(subject_api).not_to have_received(:call_markets_generator)
       end
     end
+
+    context 'empty event returns from Radar API' do
+      subject { described_class.new(payload) }
+
+      let(:event) { Event.new }
+
+      it 'and raise an error' do
+        expect { subject_api.handle }
+          .to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
   end
 end
