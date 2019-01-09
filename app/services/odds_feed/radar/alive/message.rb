@@ -22,8 +22,6 @@ module OddsFeed
           @subscribed == '1'
         end
 
-        private
-
         def received_at
           Time.zone.at(timestamp)
         end

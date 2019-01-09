@@ -1,5 +1,5 @@
 describe OddsFeed::Radar::SnapshotCompleteHandler do
-  let(:producer) { create(:producer) }
+  let(:producer) { create(:producer, state: Radar::Producer::RECOVERING) }
 
   before do
     allow(producer).to receive(:recovery_completed!)
@@ -7,7 +7,7 @@ describe OddsFeed::Radar::SnapshotCompleteHandler do
   end
 
   describe '.handle' do
-    context 'with snapshot complete for given producer' do
+    context 'when snapshot complete for given producer' do
       let(:payload) do
         XmlParser.parse(
           '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
@@ -25,7 +25,7 @@ describe OddsFeed::Radar::SnapshotCompleteHandler do
       end
     end
 
-    context 'with snapshot complete, but faulty id' do
+    context 'when snapshot id does not match' do
       let(:payload) do
         XmlParser.parse(
           '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
@@ -37,6 +37,24 @@ describe OddsFeed::Radar::SnapshotCompleteHandler do
       it 'raises corresponding exception' do
         expect { described_class.new(payload).handle }
           .to raise_error(StandardError, 'Unknown snapshot completed')
+      end
+    end
+
+    context 'when producer is not recoverable' do
+      let(:payload) do
+        XmlParser.parse(
+          '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
+      "<snapshot_complete request_id=\"#{producer.recovery_snapshot_id + 1}\" "\
+      " timestamp=\"1234578\" product=\"#{producer.id}\"/>"
+        )
+      end
+
+      [Radar::Producer::HEALTHY, Radar::Producer::UNSUBSCRIBED].each do |state|
+        it "does not recover #{state} producer" do
+          producer.update(state: state)
+
+          expect(described_class.new(payload).handle).to be_falsey
+        end
       end
     end
   end

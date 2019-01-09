@@ -3,9 +3,10 @@ describe OddsFeed::Radar::Alive::Handler do
   let(:timestamp) { 1_532_353_934_098 }
   let(:message_received_at) { Time.zone.at(timestamp) }
   let(:message) do
-    instance_double('OddsFeed::Radar::Alive::Message',
+    instance_double(OddsFeed::Radar::Alive::Message.name,
                     product: product,
-                    timestamp: message_received_at,
+                    timestamp: timestamp,
+                    received_at: message_received_at,
                     'expired?' => false)
   end
 
@@ -33,8 +34,10 @@ describe OddsFeed::Radar::Alive::Handler do
         described_class.new(payload).handle
       end
 
-      it 'changes product state to subscribed' do
-        expect(product).to have_received(:subscribed!).once
+      it 'changes product state to subscribed at message received time' do
+        expect(product).to have_received(:subscribed!)
+          .with(subscribed_at: message_received_at)
+          .once
       end
     end
 

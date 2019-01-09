@@ -60,14 +60,15 @@ describe Radar::Producer do
 
     let(:limit) { 60.seconds.ago }
 
-    it 'returns false not expired producer' do
-      allow(producer).to receive(:last_successful_subscribed_at) { limit }
+    it 'returns false for not expired producer' do
+      allow(producer)
+        .to receive(:last_successful_subscribed_at) { limit + 1.second }
       expect(producer.unsubscribe_expired!).to be_falsey
     end
 
     it 'calls unsubscribe! when subscription expires' do
       allow(producer)
-        .to receive(:last_successful_subscribed_at) { limit + 1.second }
+        .to receive(:last_successful_subscribed_at) { limit - 1.second }
       allow(producer).to receive(:unsubscribe!)
       producer.unsubscribe_expired!
       expect(producer).to have_received(:unsubscribe!).once
@@ -77,8 +78,8 @@ describe Radar::Producer do
   describe '.unsubscribe!' do
     it 'ignored for unsubscribed producers' do
       allow(producer).to receive_messages(
-        'unsubscribed!' => true,
-        'subscribed?' => false
+        'unsubscribed!' => nil,
+        'unsubscribed?' => true
       )
       producer.unsubscribe!
       expect(producer).not_to have_received('unsubscribed!')
@@ -86,12 +87,12 @@ describe Radar::Producer do
 
     it 'unsubscribes subscribed producer' do
       allow(producer).to receive_messages(
-        'unsubscribed!' => nil,
+        'unsubscribe!' => nil,
         'subscribed?' => true
       )
       producer.unsubscribe!
       expect(producer)
-        .to have_received('unsubscribed!').once
+        .to have_received('unsubscribe!').once
     end
   end
 
@@ -159,7 +160,7 @@ describe Radar::Producer do
 
       it 'calls recovery service' do
         expect(OddsFeed::Radar::SubscriptionRecovery)
-          .to have_received(:call).with(product_id: producer.id).once
+          .to have_received(:call).with(product: producer).once
       end
 
       it 'updates state to recovering' do

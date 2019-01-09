@@ -30,13 +30,13 @@ module Radar
     end
 
     def unsubscribe_expired!
-      return false if last_successful_subscribed_at < 60.seconds.ago
+      return false if last_successful_subscribed_at > 60.seconds.ago
 
       unsubscribe!
     end
 
     def unsubscribe!
-      return false unless subscribed?
+      return false if unsubscribed?
 
       unsubscribed!
     end
@@ -54,7 +54,7 @@ module Radar
     def recover!
       return unless unsubscribed?
 
-      OddsFeed::Radar::SubscriptionRecovery.call(product_id: id)
+      OddsFeed::Radar::SubscriptionRecovery.call(product: self)
       update(state: RECOVERING)
     end
 
