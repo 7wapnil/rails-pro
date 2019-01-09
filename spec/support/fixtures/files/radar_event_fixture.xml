@@ -13,7 +13,7 @@
       group_log_name => event_scope.name
 
       kind = :tournament
-      event_scope_id => country.id
+      event_scope_id => category.id
     -->
     <tournament_round betradar_id="4301" type="group" number="25" group_long_name="Division 1, Södra"/>
 
@@ -41,7 +41,7 @@
         id => event_scope.external_id
         name => event_scope.name
 
-        kind => :country
+        kind => :category
         event_scope_id => null
       -->
       <category id="sr:category:9" name="Sweden" country_code="SWE"/>

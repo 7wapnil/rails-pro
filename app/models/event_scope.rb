@@ -13,7 +13,7 @@ class EventScope < ApplicationRecord
 
   enum kind: {
     tournament: TOURNAMENT = 'tournament',
-    country:    COUNTRY    = 'country',
+    category:   CATEGORY   = 'category',
     season:     SEASON     = 'season'
   }
 

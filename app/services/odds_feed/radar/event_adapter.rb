@@ -38,7 +38,7 @@ module OddsFeed
         fixture['season']
       end
 
-      def country_fixture
+      def category_fixture
         tournament_fixture['category']
       end
 
@@ -70,7 +70,7 @@ module OddsFeed
       def find_or_create_scopes!
         find_or_create_tournament!
         find_or_create_season!
-        find_or_create_country!
+        find_or_create_category!
       end
 
       def find_or_create_tournament!
@@ -98,20 +98,20 @@ module OddsFeed
                               title: @event.title)
       end
 
-      def find_or_create_country!
-        log_job_message(:debug, "Country data received: #{country_fixture}")
+      def find_or_create_category!
+        log_job_message(:debug, "Category data received: #{category_fixture}")
 
-        unless country_fixture
+        unless category_fixture
           log_job_message(
-            :info, 'Country fixture is missing in payload, exiting'
+            :info, 'Category fixture is missing in payload, exiting'
           )
           return
         end
 
-        find_or_create_scope!(external_id: country_fixture['id'],
-                              name: country_fixture['name'],
-                              kind: :country,
-                              title: @event.title)
+        find_or_create_scope!(external_id: category_fixture['id'],
+                              name:        category_fixture['name'],
+                              kind:        EventScope::CATEGORY,
+                              title:       @event.title)
       end
 
       def find_or_create_scope!(attributes)

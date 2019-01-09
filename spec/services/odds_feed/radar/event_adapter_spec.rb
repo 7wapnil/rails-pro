@@ -22,11 +22,11 @@ describe OddsFeed::Radar::EventAdapter do
       title: title
     }
   end
-  let(:country_attributes) do
+  let(:category_attributes) do
     {
       name: 'Sweden',
       external_id: 'sr:category:9',
-      kind: 'country',
+      kind: EventScope::CATEGORY,
       title: title
     }
   end
@@ -37,7 +37,7 @@ describe OddsFeed::Radar::EventAdapter do
 
     let(:tournament) { build(:event_scope, tournament_attributes) }
     let(:season) { build(:event_scope, season_attributes) }
-    let(:country) { build(:event_scope, country_attributes) }
+    let(:category) { build(:event_scope, category_attributes) }
 
     let(:event_scopes) { result.scoped_events.map(&:event_scope) }
 
@@ -45,7 +45,7 @@ describe OddsFeed::Radar::EventAdapter do
       before do
         tournament.save!
         season.save!
-        country.save!
+        category.save!
       end
 
       it 'loads existing tournament from db' do
@@ -58,9 +58,9 @@ describe OddsFeed::Radar::EventAdapter do
         expect(result_season).to eq season
       end
 
-      it 'loads existing country from db' do
-        result_country = event_scopes.find(&:country?)
-        expect(result_country).to eq country
+      it 'loads existing category from db' do
+        result_category = event_scopes.find(&:category?)
+        expect(result_category).to eq category
       end
     end
 
@@ -75,9 +75,9 @@ describe OddsFeed::Radar::EventAdapter do
         expect(result_season).to have_attributes(season_attributes)
       end
 
-      it 'creates country scope from event payload' do
-        result_country = event_scopes.find(&:country?)
-        expect(result_country).to have_attributes(country_attributes)
+      it 'creates category scope from event payload' do
+        result_category = event_scopes.find(&:category?)
+        expect(result_category).to have_attributes(category_attributes)
       end
 
       context 'creates title for event' do

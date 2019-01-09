@@ -24,8 +24,8 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
            through: :event,
            source: :event_scopes,
            class_name: 'EventScope'
-  has_many :countries,
-           -> { where(kind: EventScope::COUNTRY) },
+  has_many :categories,
+           -> { where(kind: EventScope::CATEGORY) },
            through: :event,
            source: :event_scopes,
            class_name: 'EventScope'
@@ -63,16 +63,16 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
       )
     end
 
-    def with_country
+    def with_category
       sub_query = <<~SQL
         SELECT  event_scopes.name FROM event_scopes
          INNER JOIN scoped_events ON event_scopes.id = scoped_events.event_scope_id
          INNER JOIN events ON scoped_events.event_id = events.id
          INNER JOIN markets ON events.id = markets.event_id
          INNER JOIN odds ON markets.id = odds.market_id
-         WHERE odds.id = bets.odd_id AND event_scopes.kind = '#{EventScope::COUNTRY}' LIMIT 1
+         WHERE odds.id = bets.odd_id AND event_scopes.kind = '#{EventScope::CATEGORY}' LIMIT 1
       SQL
-      sql = "bets.*, (#{sub_query}) AS country"
+      sql = "bets.*, (#{sub_query}) AS category"
       select(sql)
     end
 

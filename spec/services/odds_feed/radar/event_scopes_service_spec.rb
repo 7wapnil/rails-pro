@@ -25,7 +25,7 @@ describe OddsFeed::Radar::EventScopesService do
     end
   end
 
-  describe 'country' do
+  describe 'category' do
     it 'creates new from payload' do
       service.call
       created = EventScope.find_by(external_id: payload['category']['id'])
@@ -35,7 +35,7 @@ describe OddsFeed::Radar::EventScopesService do
     it 'updates from payload if exists' do
       existing = create(:event_scope,
                         external_id: payload['category']['id'],
-                        kind: EventScope::COUNTRY,
+                        kind: EventScope::CATEGORY,
                         name: 'Old name')
       service.call
 
@@ -89,14 +89,14 @@ describe OddsFeed::Radar::EventScopesService do
     let(:tournament_external_id) { payload['id'] }
     let(:tournament_name) { payload['name'] }
 
-    let(:country_external_id) { payload['category']['id'] }
-    let(:country_name) { payload['category']['name'] }
+    let(:category_external_id) { payload['category']['id'] }
+    let(:category_name) { payload['category']['name'] }
 
     let(:season_external_id) { payload['current_season']['id'] }
     let(:season_name) { payload['current_season']['name'] }
 
     let(:title) { Title.find_by(external_id: title_external_id) }
-    let(:country) { EventScope.find_by(external_id: country_external_id) }
+    let(:category) { EventScope.find_by(external_id: category_external_id) }
     let(:tournament) { EventScope.find_by(external_id: tournament_external_id) }
     let(:season) { EventScope.find_by(external_id: season_external_id) }
 
@@ -110,18 +110,20 @@ describe OddsFeed::Radar::EventScopesService do
       expect(title)
         .to have_attributes(
           name: title_name,
-          kind: 'sports'
+          kind: Title::SPORTS
         )
     end
 
-    it('creates country as EventScope') { expect(country).is_a? EventScope }
+    it('creates category as EventScope') do
+      expect(category).to be_an EventScope
+    end
 
-    it 'fills country attributes' do
-      expect(country)
+    it 'fills category attributes' do
+      expect(category)
         .to have_attributes(
-          name: country_name,
+          name: category_name,
           title: title,
-          kind: 'country'
+          kind: EventScope::CATEGORY
         )
     end
 
@@ -134,7 +136,7 @@ describe OddsFeed::Radar::EventScopesService do
         .to have_attributes(
           name: tournament_name,
           title: title,
-          event_scope: country,
+          event_scope: category,
           kind: EventScope::TOURNAMENT
         )
     end
