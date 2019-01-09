@@ -13,7 +13,7 @@ module Deposits
     def call
       calculations = { real_money: balances_amounts[:real_money],
                        bonus: balances_amounts[:bonus] }
-      # FIXME clarify with team, pass 0 to avoid balance request creation
+      # TODO: clarify with team, pass 0 to avoid balance request creation
       calculations[:bonus] = 0 unless eligible_for_the_bonus?
       validate_deposit_placement!
       request = build_entry_request

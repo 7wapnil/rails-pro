@@ -24,7 +24,7 @@ module BetPlacement
       limits_validation_succeeded? &&
         provider_connected? &&
         !market_suspended? &&
-        entry_requests_succeeded?
+        entry_request_succeeded?
     end
 
     def limits_validation_succeeded?
@@ -51,30 +51,16 @@ module BetPlacement
       error_msg = 'Real money amount can not be blank!'
       raise(ArgumentError, error_msg) if real_amount.nil? || real_amount.zero?
 
+      # TODO: refactor find another solution with signs
+      calculations = { real_money: -amount_calculations[:real_money],
+                       bonus: -amount_calculations[:bonus] }
+      BalanceRequestBuilders::Bet.call(entry_request, calculations)
       @entry = WalletEntry::AuthorizationService.call(entry_request)
       unless @entry_request.succeeded?
         @bet.register_failure!(@entry_request.result_message)
         return false
       end
       true
-    end
-
-    def bonus_entry_request_succeeded?
-      bonus_amount = amount_calculations[:bonus]
-      return true if bonus_amount.zero?
-
-      WalletEntry::AuthorizationService.call(bonus_entry_request, :bonus)
-      unless @bonus_entry_request.succeeded?
-        @bet.register_failure!(@bonus_entry_request.result_message)
-        return false
-      end
-      true
-    end
-
-    def entry_requests_succeeded?
-      ActiveRecord::Base.transaction do
-        entry_request_succeeded? && bonus_entry_request_succeeded?
-      end
     end
 
     def amount_calculations
@@ -89,19 +75,6 @@ module BetPlacement
     def entry_request
       @entry_request ||= EntryRequest.create!(
         amount: amount_calculations[:real_money],
-        currency: @bet.currency,
-        kind: ENTRY_REQUEST_KIND,
-        mode: ENTRY_REQUEST_MODE,
-        initiator: @impersonated_by || @bet.customer,
-        customer: @bet.customer,
-        origin: @bet,
-        comment: @impersonated_by ? I18n.t('impersonation_comment') : nil
-      )
-    end
-
-    def bonus_entry_request
-      @bonus_entry_request ||= EntryRequest.create(
-        amount: amount_calculations[:bonus],
         currency: @bet.currency,
         kind: ENTRY_REQUEST_KIND,
         mode: ENTRY_REQUEST_MODE,
