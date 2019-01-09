@@ -1,9 +1,8 @@
 module WalletEntry
   class AuthorizationService < ApplicationService
-    def initialize(request, balance_kind = nil)
+    def initialize(request)
       @request = request
       @amount = @request.amount
-      @balance_kind = balance_kind || Balance::REAL_MONEY
     end
 
     def call
@@ -18,9 +17,13 @@ module WalletEntry
 
     def update_database!
       ActiveRecord::Base.transaction do
+        # FIXME, clarify with team
+        create_default_balance_entry_request! if @request.balance_entry_requests
+                                                         .empty?
         update_wallet!
-        update_balance!
         create_entry!
+        update_balances!
+        @entry
       end
     end
 
@@ -32,12 +35,6 @@ module WalletEntry
         amount: @amount,
         authorized_at: Time.zone.now
       )
-
-      BalanceEntry.create!(
-        balance_id: @balance.id,
-        entry_id: @entry.id,
-        amount: @amount
-      )
     end
 
     def update_wallet!
@@ -45,17 +42,36 @@ module WalletEntry
         customer: @request.customer,
         currency: @request.currency
       )
-
-      @wallet.update_attributes!(amount: @wallet.amount + @amount)
+      total_amount = @request.balance_entry_requests.sum(:amount)
+      @wallet.update_attributes!(amount: @wallet.amount + total_amount)
     end
 
-    def update_balance!
-      @balance = Balance.find_or_create_by!(
+    def update_balance!(balance_request)
+      balance = Balance.find_or_create_by!(
         wallet_id: @wallet.id,
-        kind: @balance_kind
+        kind: balance_request.kind
       )
+      result_amount = balance.amount + balance_request.amount
+      balance.update_attributes!(amount: result_amount)
 
-      @balance.update_attributes!(amount: @balance.amount + @amount)
+      balance_entry = BalanceEntry.create!(
+        balance_id: balance.id,
+        entry_id: @entry.id,
+        amount: result_amount
+      )
+      balance_request.update_attributes!(balance_entry_id: balance_entry.id)
+    end
+
+    def update_balances!
+      @request.balance_entry_requests.each do |balance_request|
+        update_balance!(balance_request)
+      end
+    end
+
+    def create_default_balance_entry_request!
+      BalanceEntryRequest.create(entry_request: @request,
+                                 amount: @amount,
+                                 kind: Balance::REAL_MONEY)
     end
 
     def handle_success

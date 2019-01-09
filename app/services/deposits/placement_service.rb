@@ -11,30 +11,20 @@ module Deposits
     end
 
     def call
+      calculations = { real_money: balances_amounts[:real_money],
+                       bonus: balances_amounts[:bonus] }
+      # FIXME clarify with team, pass 0 to avoid balance request creation
+      calculations[:bonus] = 0 unless eligible_for_the_bonus?
       validate_deposit_placement!
-      ActiveRecord::Base.transaction do
-        authorize_real_money!
-        authorize_bonus_money!
-      end
+      request = build_entry_request
+      request.save!
+      BalanceRequestBuilders::Deposit.call(request, calculations)
+      WalletEntry::AuthorizationService.call(request)
     end
 
     private
 
     attr_reader :wallet, :amount, :initiator, :customer_bonus
-
-    def authorize_real_money!
-      real_money_entry_request.save!
-      WalletEntry::AuthorizationService.call(real_money_entry_request,
-                                             :real_money)
-    end
-
-    def authorize_bonus_money!
-      return unless eligible_for_the_bonus?
-
-      bonus_entry_request.save!
-      WalletEntry::AuthorizationService.call(bonus_entry_request,
-                                             :bonus)
-    end
 
     def bonus_entry_request
       @bonus_entry_request ||= EntryRequest.new(
@@ -48,20 +38,15 @@ module Deposits
                                                               amount)
     end
 
-    def real_money_entry_request
-      @real_money_entry_request ||= EntryRequest.new(
-        base_attrs.merge(amount: balances_amounts[:real_money])
-      )
-    end
-
-    def base_attrs
-      {
+    def build_entry_request
+      EntryRequest.new(
         customer_id: wallet.customer_id,
         currency_id: wallet.currency_id,
         kind: ENTRY_REQUEST_KIND,
         mode: ENTRY_REQUEST_MODE,
+        amount: amount,
         initiator: initiator
-      }
+      )
     end
 
     def validate_deposit_placement!
