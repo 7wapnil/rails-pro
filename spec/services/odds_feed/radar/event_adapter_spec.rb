@@ -39,6 +39,8 @@ describe OddsFeed::Radar::EventAdapter do
     let(:season) { build(:event_scope, season_attributes) }
     let(:country) { build(:event_scope, country_attributes) }
 
+    let(:event_scopes) { result.scoped_events.map(&:event_scope) }
+
     context 'when database have all scopes' do
       before do
         tournament.save!
@@ -47,34 +49,34 @@ describe OddsFeed::Radar::EventAdapter do
       end
 
       it 'loads existing tournament from db' do
-        result_tournament = result.event_scopes.detect(&:tournament?)
+        result_tournament = event_scopes.find(&:tournament?)
         expect(result_tournament).to eq tournament
       end
 
       it 'loads existing season from db' do
-        result_season = result.event_scopes.detect(&:season?)
+        result_season = event_scopes.find(&:season?)
         expect(result_season).to eq season
       end
 
       it 'loads existing country from db' do
-        result_country = result.event_scopes.detect(&:country?)
+        result_country = event_scopes.find(&:country?)
         expect(result_country).to eq country
       end
     end
 
     context 'when database does not have scopes for given event' do
       it 'creates tournament scope from event payload' do
-        result_tournament = result.event_scopes.detect(&:tournament?)
+        result_tournament = event_scopes.find(&:tournament?)
         expect(result_tournament).to have_attributes(tournament_attributes)
       end
 
       it 'creates season scope from event payload' do
-        result_season = result.event_scopes.detect(&:season?)
+        result_season = event_scopes.find(&:season?)
         expect(result_season).to have_attributes(season_attributes)
       end
 
       it 'creates country scope from event payload' do
-        result_country = result.event_scopes.detect(&:country?)
+        result_country = event_scopes.find(&:country?)
         expect(result_country).to have_attributes(country_attributes)
       end
 

@@ -117,7 +117,7 @@ module OddsFeed
       def find_or_create_scope!(attributes)
         scope = EventScope.new(attributes)
         EventScope.create_or_update_on_duplicate(scope)
-        @event.event_scopes << scope
+        @event.scoped_events.build(event_scope: scope)
       end
     end
   end

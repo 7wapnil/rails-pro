@@ -13,4 +13,23 @@ namespace :migrations do
       puts 'Finished.'
     end
   end
+
+  namespace :scoped_events do
+    desc 'Remove duplicates'
+    task clean_duplicates: :environment do
+      ScopedEvent.where(
+        <<~SQL
+          id <> (
+            SELECT id
+            FROM scoped_events duplicatable
+            WHERE
+              duplicatable.event_scope_id = scoped_events.event_scope_id AND
+              duplicatable.event_id = scoped_events.event_id
+            ORDER BY created_at DESC
+            LIMIT 1
+          )
+        SQL
+      ).delete_all
+    end
+  end
 end

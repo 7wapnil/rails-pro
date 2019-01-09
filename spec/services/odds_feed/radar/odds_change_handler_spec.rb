@@ -51,9 +51,9 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
   it 'does not request API if event exists in db' do
     create(:event, external_id: event_id)
-    allow(subject_api).to receive(:create_or_find_event!)
+    allow(subject_api).to receive(:create_event)
     subject_api.handle
-    expect(subject_api).not_to have_received(:create_or_find_event!)
+    expect(subject_api).not_to have_received(:create_event)
   end
 
   it 'updates event status from message' do
@@ -61,6 +61,44 @@ describe OddsFeed::Radar::OddsChangeHandler do
     subject_api.handle
     event = Event.find_by(external_id: event_id)
     expect(event.status).to eq(Event::STARTED)
+  end
+
+  context 'events are updating simultaneously' do
+    context 'and have same event scopes' do
+      let(:control_count) { rand(2..4) }
+      let(:event_scopes)  { create_list(:event_scope, control_count) }
+      let(:scoped_events) do
+        event_scopes.map { |scope| ScopedEvent.new(event_scope: scope) }
+      end
+
+      let(:event) do
+        build(:event, title:         build(:title),
+                      external_id:   event_id,
+                      scoped_events: scoped_events)
+      end
+
+      before do
+        create(:event, title:        build(:title),
+                       external_id:  event_id,
+                       event_scopes: event_scopes)
+
+        allow(Event).to receive(:find_by).with(external_id: event_id)
+      end
+
+      it "don't cause ActiveRecord::RecordNotUnique error" do
+        expect(scoped_events)
+          .to all(
+            receive(:update!).and_raise(ActiveRecord::RecordNotUnique)
+          )
+
+        subject_api.handle
+      end
+
+      it "don't produce duplicates" do
+        subject_api.handle
+        expect(event.scoped_events.count).to eq(control_count)
+      end
+    end
   end
 
   context 'event activity' do
