@@ -168,6 +168,35 @@ describe OddsFeed::Radar::OddsChangeHandler do
     subject_api.handle
   end
 
+  context 'empty payload' do
+    context 'is nil' do
+      let(:payload)  {}
+      let(:event_id) {}
+
+      it 'logs failure' do
+        expect(subject_api).to receive(:log_job_failure)
+        subject_api.handle
+      end
+
+      it 'is not processed' do
+        expect(subject_api.handle).to be_nil
+      end
+    end
+
+    context 'with odds_change missing' do
+      before { payload.delete('odds_change') }
+
+      it 'logs failure' do
+        expect(subject_api).to receive(:log_job_failure)
+        subject_api.handle
+      end
+
+      it 'is not processed' do
+        expect(subject_api.handle).to be_nil
+      end
+    end
+  end
+
   describe '#market data' do
     subject { described_class.new(payload_single_market) }
 
