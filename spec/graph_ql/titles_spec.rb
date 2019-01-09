@@ -115,6 +115,37 @@ describe GraphQL, '#titles' do
     end
   end
 
+  context 'with event scopes' do
+    let(:query) do
+      %({
+          titles {
+            event_scopes {
+              id
+              name
+              kind
+            }
+          }
+      })
+    end
+
+    let(:title)         { create(:title, :with_event) }
+    let(:control_count) { rand(1..3) }
+    let(:event)         { title.events.first }
+
+    before do
+      create_list(:event_scope, control_count,
+                  events: [event],
+                  kind:   EventScope::TOURNAMENT,
+                  title:  title)
+    end
+
+    it 'returns event scopes attributes' do
+      expect(result['data']).not_to be_nil
+      expect(result['data']['titles'].first['event_scopes'].count)
+        .to eq(control_count)
+    end
+  end
+
   context 'single title' do
     let(:title) { create(:title, :with_event) }
     let(:query) do
