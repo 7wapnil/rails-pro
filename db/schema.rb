@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_20_133922) do
+ActiveRecord::Schema.define(version: 2019_01_09_101025) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -56,6 +56,18 @@ ActiveRecord::Schema.define(version: 2018_12_20_133922) do
     t.datetime "updated_at", null: false
     t.index ["balance_id"], name: "index_balance_entries_on_balance_id"
     t.index ["entry_id"], name: "index_balance_entries_on_entry_id"
+  end
+
+  create_table "balance_entry_requests", force: :cascade do |t|
+    t.bigint "entry_request_id"
+    t.bigint "balance_entry_id"
+    t.string "kind"
+    t.string "status", default: "pending"
+    t.decimal "amount", precision: 8, scale: 2
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["balance_entry_id"], name: "index_balance_entry_requests_on_balance_entry_id"
+    t.index ["entry_request_id"], name: "index_balance_entry_requests_on_entry_request_id"
   end
 
   create_table "balances", force: :cascade do |t|
