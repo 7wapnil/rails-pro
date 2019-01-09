@@ -177,17 +177,11 @@ module OddsFeed
 
       def create_or_find_event!
         @event = api_event
-        begin
-          Event.create_or_update_on_duplicate(event)
+        Event.create_or_update_on_duplicate(event)
 
-          return if event.bookable?
+        return if event.bookable?
 
-          ::Radar::LiveCoverageBookingWorker.perform_async(external_id)
-        rescue StandardError => e
-          log_job_message(
-            :warn, ["Event ID #{external_id} creating failed", e.message]
-          )
-        end
+        ::Radar::LiveCoverageBookingWorker.perform_async(external_id)
       end
 
       def check_message_time

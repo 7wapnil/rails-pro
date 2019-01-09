@@ -23,6 +23,11 @@ module OddsFeed
         route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"
         payload = request(route, cache: cache)
                   .dig('fixtures_fixture', 'fixture')
+
+        unless payload
+          log_job_message(:warn, "Payload for event #{id} is missing")
+        end
+
         EventAdapter.new(payload)
       end
 
@@ -31,7 +36,7 @@ module OddsFeed
         route = "/sports/#{@language}/schedules/#{formatted_date}/schedule.xml"
         response = request(route, cache: cache)
         events_payload = response['schedule']['sport_event']
-        events_payload.map do |event_payload|
+        events_payload.compact.map do |event_payload|
           EventAdapter.new(event_payload)
         end
       end

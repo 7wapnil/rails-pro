@@ -4,6 +4,8 @@ module OddsFeed
       include JobLogger
 
       def result
+        return Event.new unless fixture
+
         @event = Event.new(event_attributes)
         attach_title!
         find_or_create_scopes!
