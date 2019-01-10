@@ -1,6 +1,7 @@
 module OddsFeed
   module Radar
     class SubscriptionRecovery < ApplicationService
+      MINIMAL_DELAY_BETWEEN_CALLS_IN_SECONDS = 30
       OLDEST_RECOVERY_AVAILABLE_IN_HOURS = 72
 
       include JobLogger
@@ -29,9 +30,7 @@ module OddsFeed
         last_call = ::Radar::Producer.last_recovery_call_at
         return true unless last_call
 
-        minimal_delay_between_calls = 30.seconds
-
-        last_call < Time.zone.now - minimal_delay_between_calls
+        last_call < MINIMAL_DELAY_BETWEEN_CALLS_IN_SECONDS.seconds.ago
       end
 
       private

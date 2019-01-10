@@ -12,9 +12,10 @@ describe 'Producer state change feature. ' do
         state: Radar::Producer::HEALTHY,
         last_successful_subscribed_at: time - 1.second
       )
+      max_wait_time = Radar::Producer::HEARTBEAT_EXPIRATION_TIME_IN_SECONDS
       another_producer.update(
         state: Radar::Producer::HEALTHY,
-        last_successful_subscribed_at: time - 61.second
+        last_successful_subscribed_at: time - max_wait_time.seconds - 1.second
       )
 
       ::Radar::MissingHeartbeatWorker.new.perform
