@@ -33,8 +33,6 @@ module Radar
       SUBSCRIBED_STATES.value?(state)
     end
 
-
-
     def unsubscribe_expired!
       expired? ? unsubscribe! : false
     end
