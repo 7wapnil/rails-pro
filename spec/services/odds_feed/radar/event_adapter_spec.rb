@@ -68,16 +68,19 @@ describe OddsFeed::Radar::EventAdapter do
       it 'creates tournament scope from event payload' do
         result_tournament = event_scopes.find(&:tournament?)
         expect(result_tournament).to have_attributes(tournament_attributes)
+        expect(result_tournament.event_scope).to be_an EventScope
       end
 
       it 'creates season scope from event payload' do
         result_season = event_scopes.find(&:season?)
         expect(result_season).to have_attributes(season_attributes)
+        expect(result_season.event_scope).to be_an EventScope
       end
 
       it 'creates category scope from event payload' do
         result_category = event_scopes.find(&:category?)
         expect(result_category).to have_attributes(category_attributes)
+        expect(result_category.event_scope).to be_nil
       end
 
       context 'creates title for event' do

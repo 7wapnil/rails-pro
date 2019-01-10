@@ -23,12 +23,12 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
            -> { where(kind: EventScope::TOURNAMENT) },
            through: :event,
            source: :event_scopes,
-           class_name: 'EventScope'
+           class_name: EventScope.name
   has_many :categories,
            -> { where(kind: EventScope::CATEGORY) },
            through: :event,
            source: :event_scopes,
-           class_name: 'EventScope'
+           class_name: EventScope.name
 
   validates :odd_value,
             numericality: {

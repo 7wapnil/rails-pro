@@ -20,9 +20,9 @@ module OddsFeed
 
       def title_fixture
         unless tournament_fixture.present?
-          raise OddsFeed::InvalidMessageError, 'Tournament fixture not found'
+          raise OddsFeed::InvalidMessageError,
+                'Tournament fixture not found'
         end
-
         tournament_fixture['sport']
       end
 
@@ -68,49 +68,53 @@ module OddsFeed
       end
 
       def find_or_create_scopes!
+        find_or_create_category!
         find_or_create_tournament!
         find_or_create_season!
-        find_or_create_category!
-      end
-
-      def find_or_create_tournament!
-        data = tournament_fixture
-        log_job_message(:debug, "Tournament data received: #{data}")
-        find_or_create_scope!(external_id: data['id'],
-                              kind: :tournament,
-                              name: tournament_fixture['name'],
-                              title: @event.title)
-      end
-
-      def find_or_create_season!
-        log_job_message(:debug, "Season data received: #{season_fixture}")
-
-        unless season_fixture
-          log_job_message(
-            :info, 'Season fixture is missing in payload, exiting'
-          )
-          return
-        end
-
-        find_or_create_scope!(external_id: season_fixture['id'],
-                              name: season_fixture['name'],
-                              kind: :season,
-                              title: @event.title)
       end
 
       def find_or_create_category!
         log_job_message(:debug, "Category data received: #{category_fixture}")
 
         unless category_fixture
-          log_job_message(
-            :info, 'Category fixture is missing in payload, exiting'
-          )
+          log_job_message(:info,
+                          'Category fixture is missing in payload, exiting')
           return
         end
 
-        find_or_create_scope!(external_id: category_fixture['id'],
-                              name:        category_fixture['name'],
-                              kind:        EventScope::CATEGORY,
+        @category = find_or_create_scope!(
+          external_id: category_fixture['id'],
+          name:        category_fixture['name'],
+          kind:        EventScope::CATEGORY,
+          title:       @event.title
+        )
+      end
+
+      def find_or_create_tournament!
+        data = tournament_fixture
+        log_job_message(:debug, "Tournament data received: #{data}")
+        @tournament = find_or_create_scope!(
+          external_id: data['id'],
+          name:        tournament_fixture['name'],
+          event_scope: @category,
+          kind:        EventScope::TOURNAMENT,
+          title:       @event.title
+        )
+      end
+
+      def find_or_create_season!
+        log_job_message(:debug, "Season data received: #{season_fixture}")
+
+        unless season_fixture
+          log_job_message(:info,
+                          'Season fixture is missing in payload, exiting')
+          return
+        end
+
+        find_or_create_scope!(external_id: season_fixture['id'],
+                              name:        season_fixture['name'],
+                              kind:        EventScope::SEASON,
+                              event_scope: @tournament,
                               title:       @event.title)
       end
 
@@ -118,6 +122,8 @@ module OddsFeed
         scope = EventScope.new(attributes)
         EventScope.create_or_update_on_duplicate(scope)
         @event.scoped_events.build(event_scope: scope)
+
+        scope
       end
     end
   end

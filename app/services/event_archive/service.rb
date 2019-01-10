@@ -25,10 +25,11 @@ module EventArchive
     def archive_scopes!
       @event.event_scopes.each do |scope|
         ArchivedEventScope.create!(
-          external_id: scope.external_id,
-          name: scope.name,
-          kind: scope.kind,
-          archived_event: @archived_event
+          external_id:             scope.external_id,
+          name:                    scope.name,
+          kind:                    scope.kind,
+          archived_event:          @archived_event,
+          event_scope_external_id: scope.event_scope&.external_id
         )
       end
     end
