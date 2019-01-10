@@ -32,6 +32,17 @@ describe OddsFeed::Radar::LiveBookingService do
     expect(event.traded_live).to be_falsey
   end
 
+  context 'without event' do
+    let(:event) do
+      instance_double(Event.name, external_id: Faker::Number.number)
+    end
+
+    it 'raises an error and is not processed' do
+      expect(api_client).not_to receive(:book_live_coverage)
+      expect { subject_api.call }.to raise_error(ActiveRecord::RecordNotFound)
+    end
+  end
+
   context 'replay server' do
     before do
       allow(subject_api).to receive(:replay?).and_return(true)
