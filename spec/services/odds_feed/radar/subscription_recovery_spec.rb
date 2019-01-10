@@ -1,13 +1,16 @@
 describe OddsFeed::Radar::SubscriptionRecovery do
   describe '.call' do
-    let(:node_id) { '88' }
-    let(:client_double) { instance_double('OddsFeed::Radar::Client') }
+    let(:node_id) { Faker::Number.number(4).to_s }
+    let(:client_double) { instance_double(OddsFeed::Radar::Client.name) }
     let(:product) { create(:producer) }
     let(:another_product) { create(:producer) }
-    let(:recovery_time_timestamp) { 1_546_588_682 }
+    let(:recovery_time_timestamp) { Faker::Time.backward(100).to_i }
     let(:recovery_time) { Time.zone.at(recovery_time_timestamp) }
     let(:after_recovery_time) { recovery_time + 1.hour }
-    let(:oldest_recovery_since) { recovery_time - 72.hours }
+    let(:oldest_recovery_since) do
+      recovery_time -
+        described_class::OLDEST_RECOVERY_AVAILABLE_IN_HOURS.hours
+    end
 
     before do
       allow(ENV).to receive(:[]).and_call_original
