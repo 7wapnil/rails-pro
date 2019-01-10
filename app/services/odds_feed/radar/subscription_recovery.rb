@@ -1,9 +1,14 @@
 module OddsFeed
   module Radar
     class SubscriptionRecovery < ApplicationService
+      OLDEST_RECOVERY_AVAILABLE_IN_HOURS = 72
+
       include JobLogger
 
       attr_reader :product
+
+      delegate :last_successful_subscribed_at, to: :product
+      alias latest_subscribed_at last_successful_subscribed_at
 
       def initialize(product:)
         @product = product
@@ -55,12 +60,17 @@ module OddsFeed
       end
 
       def recover_after
-        last_recorded_at = product.last_successful_subscribed_at
-        oldest_recovery_at = 72.hours.ago
-        return oldest_recovery_at unless last_recorded_at
-        return oldest_recovery_at if last_recorded_at < oldest_recovery_at
+        return oldest_recovery_at if use_max_available_recovery?
 
-        last_recorded_at
+        latest_subscribed_at
+      end
+
+      def use_max_available_recovery?
+        !latest_subscribed_at || latest_subscribed_at < oldest_recovery_at
+      end
+
+      def oldest_recovery_at
+        OLDEST_RECOVERY_AVAILABLE_IN_HOURS.hours.ago
       end
 
       def api_client
