@@ -44,7 +44,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   scope :active, -> { where(active: true) }
 
   belongs_to :title
-  belongs_to :producer, class_name: 'Radar::Producer'
+  belongs_to :producer, class_name: Radar::Producer.name
   has_many :markets, dependent: :delete_all
   has_many :bets, through: :markets
   has_many :scoped_events, dependent: :delete_all

@@ -4,7 +4,7 @@ describe Event do
   let(:stubbed_subject) { described_class.new }
 
   it { is_expected.to belong_to(:title) }
-  it { is_expected.to belong_to(:producer).class_name('Radar::Producer') }
+  it { is_expected.to belong_to(:producer).class_name(Radar::Producer.name) }
   it { is_expected.to have_many(:markets) }
   it { is_expected.to have_many(:scoped_events) }
   it { is_expected.to have_many(:event_scopes).through(:scoped_events) }

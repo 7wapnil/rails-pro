@@ -10,7 +10,7 @@ module Radar
 
     SUBSCRIBED_STATES = {
       recovering: RECOVERING = 'recovering'.freeze,
-      healthy: HEALTHY = 'healthy'.freeze
+      healthy:    HEALTHY    = 'healthy'.freeze
     }.freeze
 
     STATES = UNSUBSCRIBED_STATES.merge(SUBSCRIBED_STATES)

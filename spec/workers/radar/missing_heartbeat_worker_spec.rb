@@ -3,8 +3,8 @@ describe Radar::MissingHeartbeatWorker do
 
   describe '.perform' do
     context 'when performed' do
-      let(:producer) { instance_double('Radar::Producer') }
-      let(:producer_two) { instance_double('Radar::Producer') }
+      let(:producer) { instance_double(Radar::Producer.name) }
+      let(:producer_two) { instance_double(Radar::Producer.name) }
 
       before do
         allow(producer).to receive(:unsubscribe_expired!)
