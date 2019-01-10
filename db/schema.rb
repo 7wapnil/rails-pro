@@ -293,9 +293,10 @@ ActiveRecord::Schema.define(version: 2019_01_03_094316) do
     t.integer "priority", limit: 2, default: 1
     t.boolean "visible", default: true
     t.boolean "active", default: false
-    t.integer "producer_id"
+    t.bigint "producer_id"
     t.index ["active"], name: "index_events_on_active"
     t.index ["external_id"], name: "index_events_on_external_id", unique: true
+    t.index ["producer_id"], name: "index_events_on_producer_id"
     t.index ["title_id"], name: "index_events_on_title_id"
   end
 
@@ -444,6 +445,7 @@ ActiveRecord::Schema.define(version: 2019_01_03_094316) do
   add_foreign_key "entry_requests", "customers"
   add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "event_scopes", "titles"
+  add_foreign_key "events", "radar_providers", column: "producer_id"
   add_foreign_key "events", "titles"
   add_foreign_key "label_joins", "labels"
   add_foreign_key "markets", "events", on_delete: :cascade

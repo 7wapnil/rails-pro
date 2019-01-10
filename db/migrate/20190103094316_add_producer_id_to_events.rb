@@ -1,11 +1,17 @@
 class AddProducerIdToEvents < ActiveRecord::Migration[5.2]
   def up
-    add_column :events, :producer_id, :integer, index: true
+    add_reference :events,
+                  :producer,
+                  index: true,
+                  foreign_key: { to_table: Radar::Producer.table_name }
     migrate_data
   end
 
   def down
-    remove_column :events, :producer_id
+    remove_reference :events,
+                     :producer,
+                     index: true,
+                     foreign_key: true
   end
 
   private
