@@ -2,15 +2,9 @@ describe 'Producer state change feature. ' do
   let(:producer) { create(:producer) }
   let(:another_producer) { create(:producer) }
   let(:producers) { [producer, another_producer] }
-  let(:time) { Time.local(2018, 9, 1, 10, 5, 0) }
+  let(:time) { Time.zone.now }
 
-  before do
-    Timecop.freeze(time)
-  end
-
-  after do
-    Timecop.return
-  end
+  include_context 'frozen_time'
 
   describe 'worker can set provider as unsubscribed actively' do
     before do

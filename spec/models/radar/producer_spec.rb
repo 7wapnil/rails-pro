@@ -50,13 +50,7 @@ describe Radar::Producer do
   end
 
   describe '.unsubscribe_expired!' do
-    before do
-      Timecop.freeze(Time.now)
-    end
-
-    after do
-      Timecop.return
-    end
+    include_context 'frozen_time'
 
     let(:limit) { 60.seconds.ago }
 
@@ -97,13 +91,7 @@ describe Radar::Producer do
   end
 
   describe '.subscribed!' do
-    before do
-      Timecop.freeze Time.zone.now
-    end
-
-    after do
-      Timecop.return
-    end
+    include_context 'frozen_time'
 
     let(:time) { Time.zone.now }
 

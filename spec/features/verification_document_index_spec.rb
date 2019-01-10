@@ -224,7 +224,7 @@ describe VerificationDocument, '#index' do
 
       context 'by created_at dates range' do
         include_context 'frozen_time' do
-          let(:frozen_time) { Time.zone.now  }
+          let(:frozen_time) { Time.zone.now }
         end
 
         let!(:old_doc) do
