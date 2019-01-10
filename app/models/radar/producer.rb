@@ -45,10 +45,7 @@ module Radar
 
     def subscribed!(subscribed_at: Time.zone.now)
       recover! unless subscribed?
-      avoid_timestamp_override =
-        last_successful_subscribed_at &&
-        last_successful_subscribed_at >= subscribed_at
-      return false if avoid_timestamp_override
+      return false unless timestamp_update_required(subscribed_at)
 
       update(last_successful_subscribed_at: subscribed_at)
     end
@@ -62,6 +59,13 @@ module Radar
 
     def recovery_completed!
       healthy!
+    end
+
+    private
+
+    def timestamp_update_required(subscribed_at)
+      !last_successful_subscribed_at ||
+        last_successful_subscribed_at < subscribed_at
     end
   end
 end
