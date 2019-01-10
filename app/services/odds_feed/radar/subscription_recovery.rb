@@ -13,7 +13,6 @@ module OddsFeed
         log_job_message(:info, "Recovering #{@product.code} from #{@start_at}")
         raise 'Recovery rates reached' unless rates_available?
 
-        node_id = ENV['RADAR_MQ_NODE_ID']
         requested_at = Time.zone.now
         request_id = requested_at.to_i
 
@@ -31,6 +30,10 @@ module OddsFeed
       end
 
       private
+
+      def node_id
+        ENV['RADAR_MQ_NODE_ID']
+      end
 
       def request_recovery(node_id, request_id)
         response = api_client.product_recovery_initiate_request(
