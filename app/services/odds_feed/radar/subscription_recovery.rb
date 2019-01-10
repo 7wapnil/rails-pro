@@ -3,7 +3,7 @@ module OddsFeed
     class SubscriptionRecovery < ApplicationService
       include JobLogger
 
-      attr_accessor :product
+      attr_reader :product
 
       def initialize(product:)
         @product = product
