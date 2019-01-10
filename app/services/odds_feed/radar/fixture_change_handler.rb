@@ -17,11 +17,15 @@ module OddsFeed
           log_on_create
           create_event!
         end
-        update_event_producer!(::Radar::Producer.find(payload['product']))
+        update_event_producer!(producer)
         update_event_payload!
       end
 
       private
+
+      def producer
+        ::Radar::Producer.find(payload['product'])
+      end
 
       def event
         @event ||= Event.find_by(external_id: external_id)
