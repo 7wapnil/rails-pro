@@ -184,6 +184,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     payload && payload['liveodds'] == BOOKABLE
   end
 
+  def alive?
+    traded_live? && (in_play? || suspended?)
+  end
+
   private
 
   def emit_created
