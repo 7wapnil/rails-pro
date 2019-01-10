@@ -16,7 +16,7 @@ describe GraphQL, '#titles' do
     end
 
     it 'returns list of titles with active events' do
-      expect(result['data']['titles'].count).to eq(5)
+      expect(result['data']['titles'].length).to eq(5)
     end
 
     it 'returns ordered by name list of titles' do
@@ -45,7 +45,7 @@ describe GraphQL, '#titles' do
     end
 
     it 'returns esports titles list' do
-      expect(result['data']['titles'].count).to eq(5)
+      expect(result['data']['titles'].length).to eq(5)
     end
   end
 
@@ -84,9 +84,8 @@ describe GraphQL, '#titles' do
     end
 
     it 'returns titles with tournaments' do
-      expect(result['data']).not_to be_nil
-      expect(result['data']['titles'].count).to eq(1)
-      expect(result['data']['titles'].first['tournaments'].count)
+      expect(result['data']['titles'].length).to eq(1)
+      expect(result['data']['titles'].first['tournaments'].length)
         .to eq(control_count)
     end
 
@@ -107,9 +106,8 @@ describe GraphQL, '#titles' do
       end
 
       it 'returns titles with tournaments' do
-        expect(result['data']).not_to be_nil
-        expect(result['data']['titles'].count).to eq(1)
-        expect(result['data']['titles'].first['tournaments'].count)
+        expect(result['data']['titles'].length).to eq(1)
+        expect(result['data']['titles'].first['tournaments'].length)
           .to eq(valid_scopes_count)
       end
     end
@@ -140,8 +138,7 @@ describe GraphQL, '#titles' do
     end
 
     it 'returns event scopes attributes' do
-      expect(result['data']).not_to be_nil
-      expect(result['data']['titles'].first['event_scopes'].count)
+      expect(result['data']['titles'].first['event_scopes'].length)
         .to eq(control_count)
     end
   end
@@ -157,8 +154,8 @@ describe GraphQL, '#titles' do
     end
 
     it 'returns single title' do
-      expect(result['data']['titles'].count).to eq(1)
-      expect(result['data']['titles'][0]['id']).to eq(title.id.to_s)
+      expect(result['data']['titles'].length).to      eq(1)
+      expect(result['data']['titles'].first['id']).to eq(title.id.to_s)
     end
   end
 end
