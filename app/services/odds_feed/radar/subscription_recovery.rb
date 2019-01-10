@@ -47,8 +47,13 @@ module OddsFeed
           node_id: node_id,
           request_id: request_id
         )
-        request_success = response['response']['response_code'] == 'ACCEPTED'
-        raise 'Unsuccessful recovery' unless request_success
+        raise 'Unsuccessful recovery' unless response_success(response)
+      end
+
+      def response_success(response)
+        response['response']['response_code'] == 'ACCEPTED'
+      rescue StandardError
+        false
       end
 
       def update_product(node_id, request_id, requested_at)
