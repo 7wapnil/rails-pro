@@ -139,8 +139,19 @@ module OddsFeed
       end
 
       def event_status
-        status = event_data['sport_event_status']['status']
+        raise KeyError unless event_status_payload
+
+        status = event_status_payload.fetch('status')
         event_statuses_map[status] || Event::NOT_STARTED
+      rescue KeyError
+        log_job_message(
+          :warn, "Event status missing in payload for Event #{external_id}"
+        )
+        Event::NOT_STARTED
+      end
+
+      def event_status_payload
+        event_data['sport_event_status']
       end
 
       def event_end_time
