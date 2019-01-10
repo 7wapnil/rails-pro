@@ -51,7 +51,7 @@ module BetPlacement
       error_msg = 'Real money amount can not be blank!'
       raise(ArgumentError, error_msg) if real_amount.nil? || real_amount.zero?
 
-      # TODO: refactor find another solution with signs
+      # TODO: clarify with team, solution with signs
       calculations = { real_money: -amount_calculations[:real_money],
                        bonus: -amount_calculations[:bonus] }
       BalanceRequestBuilders::Bet.call(entry_request, calculations)
