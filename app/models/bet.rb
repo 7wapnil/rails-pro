@@ -170,4 +170,22 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
       .where(entries: { origin: self, kind: Entry::WIN })
       .sum(:amount)
   end
+
+  def real_money_total
+    return 0.0 unless entry_request&.succeeded?
+
+    @real_money_total ||= entry_request
+                          .balance_entry_requests
+                          .succeeded
+                          .real_money.sum(:amount)
+  end
+
+  def bonus_money_total
+    return 0.0 unless entry_request&.succeeded?
+
+    @bonus_money_total ||= entry_request
+                           .balance_entry_requests
+                           .succeeded
+                           .bonus.sum(:amount)
+  end
 end

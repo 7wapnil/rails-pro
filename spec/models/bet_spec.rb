@@ -186,6 +186,95 @@ describe Bet do
     end
   end
 
+  context 'bonus and real money totals' do
+    let(:bet) { create(:bet) }
+    let(:entry_request) do
+      create(:entry_request,
+             origin: bet,
+             status: EntryRequest::SUCCEEDED,
+             kind: EntryRequest::BET)
+    end
+    let(:currency) { create(:currency) }
+    let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
+    let(:real_request_amount) { 100 }
+    let(:bonus_request_amount) { 150 }
+    let(:entry) { create(:entry, amount: 10) }
+
+    before do
+      allow(EntryCurrencyRule).to receive(:find_by!) { rule }
+      create(:balance_entry_request,
+             kind: Balance::REAL_MONEY,
+             balance_entry: create(:balance_entry, amount: 10, entry: entry),
+             entry_request: entry_request,
+             amount: real_request_amount,
+             status: EntryRequest::SUCCEEDED)
+
+      create(:balance_entry_request,
+             kind: Balance::BONUS,
+             balance_entry: create(:balance_entry, amount: 100, entry: entry),
+             entry_request: entry_request,
+             amount: bonus_request_amount,
+             status: EntryRequest::SUCCEEDED)
+    end
+
+    describe '#real_money_total' do
+      it 'returns sum of real money balance entry requests' do
+        expect(bet.real_money_total).to eq(real_request_amount)
+      end
+
+      it 'calculates only succeeded balance entry requests' do
+        balance_entry = create(:balance_entry, amount: 50, entry: entry)
+        supported_statuses = EntryRequest.statuses.reject do |status|
+          status == EntryRequest::SUCCEEDED
+        end
+        supported_statuses.each do |status|
+          create(:balance_entry_request,
+                 amount: 20,
+                 kind: Balance::REAL_MONEY,
+                 entry_request: entry_request,
+                 balance_entry: balance_entry,
+                 status: status.first)
+        end
+
+        expect(bet.real_money_total).to eq(real_request_amount)
+      end
+
+      it 'returns 0 when entry request is not succeeded' do
+        entry_request.failed!
+
+        expect(bet.real_money_total).to be_zero
+      end
+    end
+
+    describe '#bonus_money_total' do
+      it 'returns sum of bonus money balance entry requests' do
+        expect(bet.bonus_money_total).to eq(bonus_request_amount)
+      end
+
+      it 'calculates only succeeded balance entry requests' do
+        balance_entry = create(:balance_entry, amount: 50, entry: entry)
+        supported_statuses = EntryRequest.statuses.reject do |status|
+          status == EntryRequest::SUCCEEDED
+        end
+        supported_statuses.each do |status|
+          create(:balance_entry_request,
+                 amount: 20,
+                 kind: Balance::BONUS,
+                 entry_request: entry_request,
+                 balance_entry: balance_entry,
+                 status: status.first)
+        end
+
+        expect(bet.bonus_money_total).to eq(bonus_request_amount)
+      end
+      it 'returns 0 when entry request is not succeeded' do
+        entry_request.failed!
+
+        expect(bet.bonus_money_total).to be_zero
+      end
+    end
+  end
+
   describe 'filter out non-regular customers bets' do
     let(:regular_customer) { create(:customer, account_kind: :regular) }
     let(:test_customer) { create(:customer, account_kind: :testing) }
