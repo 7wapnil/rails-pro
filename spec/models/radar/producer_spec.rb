@@ -52,7 +52,9 @@ describe Radar::Producer do
   describe '.unsubscribe_expired!' do
     include_context 'frozen_time'
 
-    let(:limit) { 60.seconds.ago }
+    let(:limit) do
+      described_class::HEARTBEAT_EXPIRATION_TIME_IN_SECONDS.seconds.ago
+    end
 
     it 'returns false for not expired producer' do
       allow(producer)

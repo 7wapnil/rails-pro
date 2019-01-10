@@ -4,6 +4,8 @@ module Radar
 
     has_many :events
 
+    HEARTBEAT_EXPIRATION_TIME_IN_SECONDS = 60
+
     UNSUBSCRIBED_STATES = {
       unsubscribed: UNSUBSCRIBED = 'unsubscribed'.freeze
     }.freeze
@@ -31,10 +33,10 @@ module Radar
       SUBSCRIBED_STATES.value?(state)
     end
 
-    def unsubscribe_expired!
-      return false if last_successful_subscribed_at > 60.seconds.ago
 
-      unsubscribe!
+
+    def unsubscribe_expired!
+      expired? ? unsubscribe! : false
     end
 
     def unsubscribe!
@@ -62,6 +64,11 @@ module Radar
     end
 
     private
+
+    def expired?
+      last_successful_subscribed_at <=
+        HEARTBEAT_EXPIRATION_TIME_IN_SECONDS.seconds.ago
+    end
 
     def timestamp_update_required(subscribed_at)
       !last_successful_subscribed_at ||
