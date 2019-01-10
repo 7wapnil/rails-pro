@@ -18,7 +18,7 @@ describe Radar::Producer do
 
     it 'returns newest recover_requested_at' do
       expect(described_class.last_recovery_call_at)
-        .to eq another_producer.recover_requested_at
+        .to eq producer.recover_requested_at
     end
   end
 

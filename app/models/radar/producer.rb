@@ -18,7 +18,9 @@ module Radar
     enum state: STATES
 
     def self.last_recovery_call_at
-      Radar::Producer.all.pluck(:recover_requested_at)&.compact&.sort&.first
+      Radar::Producer
+        .order('recover_requested_at DESC NULLS LAST')
+        .first&.recover_requested_at
     end
 
     def live?
