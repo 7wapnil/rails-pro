@@ -8,6 +8,9 @@ describe Deposits::PlacementService do
   let(:wallet) do
     create(:wallet, customer: customer, currency: currency, amount: 0)
   end
+  let(:real_balance_request) { BalanceEntryRequest.real_money.first }
+  let(:bonus_balance_request) { BalanceEntryRequest.bonus.first }
+  let(:service_call) { described_class.call(wallet, amount) }
 
   before do
     create(:customer_bonus,
@@ -20,7 +23,7 @@ describe Deposits::PlacementService do
 
   context 'increase amount' do
     before do
-      described_class.call(wallet, amount)
+      service_call
       wallet.reload
     end
 
@@ -40,10 +43,50 @@ describe Deposits::PlacementService do
   context "don't affect bonus balance" do
     it 'when do not pass deposit limit' do
       wallet.customer.customer_bonus.update_attributes(min_deposit: amount + 1)
-      described_class.call(wallet, amount)
+      service_call
       wallet.reload
 
       expect(wallet.bonus_balance).to be_nil
+    end
+  end
+
+  context 'with customer bonus' do
+    let(:calculated_percentage) { amount * percentage / 100.0 }
+
+    before do
+      service_call
+    end
+
+    it 'creates balance entry requests for real and bonus balances' do
+      kinds = BalanceEntryRequest.pluck(:kind)
+
+      expect(kinds).to match_array([Balance::REAL_MONEY, Balance::BONUS])
+    end
+
+    it 'assigns correct balance entry request real money amount' do
+      expect(real_balance_request.amount).to eq(amount)
+    end
+
+    it 'assigns correct balance entry request bonus money amount' do
+      expect(bonus_balance_request.amount).to eq(calculated_percentage)
+    end
+  end
+
+  context 'without customer bonus' do
+    before do
+      CustomerBonus.destroy_all
+      wallet.reload
+      service_call
+    end
+
+    it 'creates balance entry request only for real money' do
+      kinds = BalanceEntryRequest.pluck(:kind)
+
+      expect(kinds).to match_array([Balance::REAL_MONEY])
+    end
+
+    it 'assigns correct balance entry request real money amount' do
+      expect(real_balance_request.amount).to eq(amount)
     end
   end
 end
