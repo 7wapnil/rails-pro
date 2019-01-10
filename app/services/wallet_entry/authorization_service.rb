@@ -89,6 +89,7 @@ module WalletEntry
           exception_class: exception.class.to_s
         }
       )
+      @request.balance_entry_requests.update_all(status: EntryRequest::FAILED)
       log_failure
 
       nil
