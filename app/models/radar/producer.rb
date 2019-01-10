@@ -54,7 +54,7 @@ module Radar
       return unless unsubscribed?
 
       OddsFeed::Radar::SubscriptionRecovery.call(product: self)
-      update(state: RECOVERING)
+      recovering!
     end
 
     def recovery_completed!
