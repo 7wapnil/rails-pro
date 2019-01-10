@@ -195,6 +195,24 @@ describe OddsFeed::Radar::OddsChangeHandler do
         expect(subject_api.handle).to be_nil
       end
     end
+
+    context 'with sport_event_status missing totally' do
+      before { payload['odds_change'].delete('sport_event_status') }
+
+      it 'event status is set as NOT_STARTED' do
+        expect(subject_api.handle.status).to eq(Event::NOT_STARTED)
+      end
+    end
+
+    context 'with sport_event_status missing status key' do
+      before do
+        payload['odds_change']['sport_event_status'].delete('status')
+      end
+
+      it 'event status is set as NOT_STARTED' do
+        expect(subject_api.handle.status).to eq(Event::NOT_STARTED)
+      end
+    end
   end
 
   describe '#market data' do
