@@ -98,6 +98,14 @@ describe GraphQL, '#place_bet' do
       }
     end
 
+    let(:execute_query) do
+      ArcanebetSchema.execute(
+        query,
+        context: context,
+        variables: variables
+      )
+    end
+
     before do
       create(:entry_currency_rule,
              currency: currency,
@@ -115,11 +123,7 @@ describe GraphQL, '#place_bet' do
     end
 
     it 'charges real and bonus balances for customer with bonus' do
-      ArcanebetSchema.execute(
-        query,
-        context: context,
-        variables: variables
-      )
+      execute_query
       expected_bonus_balance = 247.5
       expected_real_balance = 742.5
 
@@ -130,11 +134,7 @@ describe GraphQL, '#place_bet' do
     it 'charge only real money balance' do
       auth_customer.customer_bonus.destroy
       auth_customer.reload
-      ArcanebetSchema.execute(
-        query,
-        context: context,
-        variables: variables
-      )
+      execute_query
       expected_real_balance = real_amount - bet_amount
 
       expect(wallet.real_money_balance.amount).to eq(expected_real_balance)
@@ -143,13 +143,33 @@ describe GraphQL, '#place_bet' do
 
     it 'do not apply bonus when odd value is less than allowed' do
       active_bonus.update_attributes(min_odds_per_bet: odd.value + 1.0)
-      ArcanebetSchema.execute(
-        query,
-        context: context,
-        variables: variables
-      )
+      execute_query
 
       expect(wallet.bonus_balance.amount).to eq(bonus_amount)
+    end
+    it 'creates balance entry requests for real and bonus balances' do
+      execute_query
+      kinds = BalanceEntryRequest.pluck(:kind)
+
+      expect(kinds).to match_array([Balance::REAL_MONEY, Balance::BONUS])
+    end
+
+    it 'creates only real money balance entry request' do
+      auth_customer.customer_bonus.destroy
+      auth_customer.reload
+      execute_query
+      kinds = BalanceEntryRequest.pluck(:kind)
+
+      expect(kinds).to match_array([Balance::REAL_MONEY])
+    end
+
+    it 'assigns correct real money amount' do
+      auth_customer.customer_bonus.destroy
+      auth_customer.reload
+      execute_query
+      real_balance_request = BalanceEntryRequest.real_money.first
+
+      expect(real_balance_request.amount).to eq(-bet_amount)
     end
   end
 

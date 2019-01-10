@@ -20,7 +20,7 @@ module BalanceCalculations
     end
 
     def calculate_real_amount
-      bet.amount * bet.ratio
+      @calculate_real_amount ||= bet.amount * bet.ratio
     end
   end
 end

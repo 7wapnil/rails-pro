@@ -8,6 +8,7 @@ class EntryRequest < ApplicationRecord
   belongs_to :currency
   belongs_to :initiator, polymorphic: true
   belongs_to :origin, polymorphic: true, optional: true
+  has_many :balance_entry_requests
 
   default_scope { order(created_at: :desc) }
 
