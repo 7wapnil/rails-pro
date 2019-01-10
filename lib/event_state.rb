@@ -19,7 +19,7 @@ class EventState < PeriodScore
   end
 
   def process_period_scores!(payload)
-    return @period_scores = [] if payload['period_scores'].nil?
+    return @period_scores = [] unless payload['period_scores']
 
     @period_scores = payload['period_scores'].map do |period_score|
       PeriodScore.new(period_score)

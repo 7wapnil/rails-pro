@@ -1,6 +1,4 @@
 describe OddsFeed::Radar::FixtureChangeHandler do
-  subject { described_class.new(payload) }
-
   let(:subject_api) { described_class.new(payload) }
 
   let(:liveodds_producer) { create(:liveodds_producer) }
@@ -24,11 +22,9 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     allow(subject_api).to receive(:api_event) { api_event }
   end
 
-  after do
-    subject_api.handle
-  end
-
   context 'new event' do
+    after { subject_api.handle }
+
     it 'logs event create message' do
       expect(subject_api).to receive(:log_on_create)
     end
@@ -45,7 +41,18 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     end
   end
 
+  context 'returns empty event from Radar API' do
+    let(:api_event) { Event.new }
+
+    it 'and raises an error' do
+      expect { subject_api.handle }
+        .to raise_error(ActiveRecord::RecordInvalid)
+    end
+  end
+
   context 'existing event' do
+    after { subject_api.handle }
+
     let(:event) do
       create(:event,
              external_id: payload['fixture_change']['event_id'],

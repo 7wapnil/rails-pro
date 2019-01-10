@@ -176,6 +176,53 @@ describe OddsFeed::Radar::OddsChangeHandler do
     subject_api.handle
   end
 
+  context 'empty payload' do
+    context 'is nil' do
+      let(:payload)  {}
+      let(:event_id) {}
+
+      it 'logs failure' do
+        expect(subject_api).to receive(:log_job_failure)
+        subject_api.handle
+      end
+
+      it 'is not processed' do
+        expect(subject_api.handle).to be_nil
+      end
+    end
+
+    context 'with odds_change missing' do
+      before { payload.delete('odds_change') }
+
+      it 'logs failure' do
+        expect(subject_api).to receive(:log_job_failure)
+        subject_api.handle
+      end
+
+      it 'is not processed' do
+        expect(subject_api.handle).to be_nil
+      end
+    end
+
+    context 'with sport_event_status missing totally' do
+      before { payload['odds_change'].delete('sport_event_status') }
+
+      it 'event status is set as NOT_STARTED' do
+        expect(subject_api.handle.status).to eq(Event::NOT_STARTED)
+      end
+    end
+
+    context 'with sport_event_status missing status key' do
+      before do
+        payload['odds_change']['sport_event_status'].delete('status')
+      end
+
+      it 'event status is set as NOT_STARTED' do
+        expect(subject_api.handle.status).to eq(Event::NOT_STARTED)
+      end
+    end
+  end
+
   describe '#market data' do
     subject { described_class.new(payload_single_market) }
 
@@ -258,6 +305,17 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
       it 'does not generate markets' do
         expect(subject_api).not_to have_received(:call_markets_generator)
+      end
+    end
+
+    context 'empty event returns from Radar API' do
+      subject { described_class.new(payload) }
+
+      let(:event) { Event.new }
+
+      it 'and raise an error' do
+        expect { subject_api.handle }
+          .to raise_error(ActiveRecord::RecordInvalid)
       end
     end
   end

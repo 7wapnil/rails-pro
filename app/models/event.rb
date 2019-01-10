@@ -164,7 +164,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def state
-    return nil if payload['state'].nil?
+    return unless payload['state']
 
     EventState.new(payload['state'])
   end
@@ -176,7 +176,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def bookable?
-    payload['liveodds'] == BOOKABLE
+    payload && payload['liveodds'] == BOOKABLE
   end
 
   private
