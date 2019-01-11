@@ -8,12 +8,9 @@ module Events
     field :details, Events::EventDetailsType
     field :priority, !types.Int
     field :visible, !types.Boolean
+    field :title, Titles::TitleType
 
     field :live, types.Boolean, property: :alive?
-
-    field :title_name, types.String do
-      resolve ->(obj, _args, _ctx) { obj.title_name }
-    end
 
     field :start_at, types.String do
       resolve ->(obj, _args, _ctx) { obj.start_at&.iso8601 }
