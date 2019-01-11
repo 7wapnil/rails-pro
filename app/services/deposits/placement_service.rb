@@ -12,56 +12,34 @@ module Deposits
 
     def call
       validate_deposit_placement!
-      ActiveRecord::Base.transaction do
-        authorize_real_money!
-        authorize_bonus_money!
-      end
+      WalletEntry::AuthorizationService.call(entry_request)
     end
 
     private
 
     attr_reader :wallet, :amount, :initiator, :customer_bonus
 
-    def authorize_real_money!
-      real_money_entry_request.save!
-      WalletEntry::AuthorizationService.call(real_money_entry_request,
-                                             :real_money)
-    end
-
-    def authorize_bonus_money!
-      return unless eligible_for_the_bonus?
-
-      bonus_entry_request.save!
-      WalletEntry::AuthorizationService.call(bonus_entry_request,
-                                             :bonus)
-    end
-
-    def bonus_entry_request
-      @bonus_entry_request ||= EntryRequest.new(
-        base_attrs.merge(amount: balances_amounts[:bonus],
-                         mode: EntryRequest.modes[:system])
-      )
-    end
-
     def balances_amounts
-      @balances_amounts ||= BalanceCalculations::Deposit.call(customer_bonus,
-                                                              amount)
+      @balances_amounts ||= begin
+        amounts = BalanceCalculations::Deposit.call(customer_bonus, amount)
+        amounts[:bonus] = 0 unless eligible_for_the_bonus?
+        amounts
+      end
     end
 
-    def real_money_entry_request
-      @real_money_entry_request ||= EntryRequest.new(
-        base_attrs.merge(amount: balances_amounts[:real_money])
-      )
-    end
-
-    def base_attrs
-      {
-        customer_id: wallet.customer_id,
-        currency_id: wallet.currency_id,
-        kind: ENTRY_REQUEST_KIND,
-        mode: ENTRY_REQUEST_MODE,
-        initiator: initiator
-      }
+    def entry_request
+      @entry_request ||= begin
+        request = EntryRequest.create!(
+          customer_id: wallet.customer_id,
+          currency_id: wallet.currency_id,
+          kind: ENTRY_REQUEST_KIND,
+          mode: ENTRY_REQUEST_MODE,
+          amount: amount,
+          initiator: initiator
+        )
+        BalanceRequestBuilders::Deposit.call(request, balances_amounts)
+        request
+      end
     end
 
     def validate_deposit_placement!

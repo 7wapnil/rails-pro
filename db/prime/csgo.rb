@@ -49,7 +49,7 @@ class CsgoPrimer # rubocop:disable Metrics/ClassLength
       end
     end
 
-    def create_event(attributes)
+    def create_event(attributes) # rubocop:disable Metrics/MethodLength
       default_attributes, market_external_id, odd_external_id,
         teams, tournament = prepare_event_related_data
 
@@ -61,6 +61,7 @@ class CsgoPrimer # rubocop:disable Metrics/ClassLength
             event_id: Faker::Number.number(3), data: nil
           )
       )
+      event.producer = producers.sample
       event.save!
 
       market = create_market(event, market_external_id)
@@ -68,6 +69,24 @@ class CsgoPrimer # rubocop:disable Metrics/ClassLength
     end
 
     private
+
+    def producers
+      @producers ||= begin
+        return Radar::Producer.all if Radar::Producer.exists?
+
+        subscription_time = Faker::Time.between(Time.zone.now - 30.second,
+                                                Time.zone.now - 1.second)
+        base_attrs = {
+          recovery_snapshot_id: Faker::Number.number(8),
+          state: Radar::Producer::HEALTHY,
+          last_successful_subscribed_at: subscription_time
+        }
+        prematch = base_attrs.merge(code: :pre)
+        live = base_attrs.merge(code: :liveodds)
+
+        [Radar::Producer.create!(prematch), Radar::Producer.create!(live)]
+      end
+    end
 
     def prepare_event_related_data # rubocop:disable Metrics/MethodLength:
       tournament = EventScope.tournament.order(Arel.sql('RANDOM()')).first

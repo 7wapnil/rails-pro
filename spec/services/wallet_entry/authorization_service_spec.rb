@@ -117,6 +117,14 @@ describe WalletEntry::AuthorizationService do
           .to eq 'ActiveRecord::RecordInvalid'
       end
 
+      it 'updates balance entry request status' do
+        balance_request = create(:balance_entry_request, entry_request: request)
+        described_class.call(request)
+        balance_request.reload
+
+        expect(balance_request).to be_failed
+      end
+
       it 'calls Audit::Service' do
         expect(Audit::Service)
           .to receive(:call)

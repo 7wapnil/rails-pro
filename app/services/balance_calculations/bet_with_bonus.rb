@@ -6,8 +6,8 @@ module BalanceCalculations
 
     def call
       {
-        real_money: calculate_real_amount,
-        bonus: calculate_bonus_amount
+        real_money: -calculate_real_amount,
+        bonus: -calculate_bonus_amount
       }
     end
 
@@ -20,7 +20,7 @@ module BalanceCalculations
     end
 
     def calculate_real_amount
-      bet.amount * bet.ratio
+      @calculate_real_amount ||= bet.amount * bet.ratio
     end
   end
 end
