@@ -22,8 +22,8 @@ class BetsFilter
     EventScope.order(:name).tournament.pluck(:name)
   end
 
-  def countries
-    EventScope.country.order(:name).pluck(:name)
+  def categories
+    EventScope.category.order(:name).pluck(:name)
   end
 
   def search
@@ -31,7 +31,7 @@ class BetsFilter
            .with_winnings
            .with_sport
            .with_tournament
-           .with_country
+           .with_category
            .ransack(@query_params, search_key: :bets)
   end
 

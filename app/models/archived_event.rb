@@ -5,7 +5,7 @@ class ArchivedEvent
   default_scope { order(created_at: :desc) }
 
   embeds_many :scopes,
-              class_name: 'ArchivedEventScope',
+              class_name: ArchivedEventScope.name,
               inverse_of: :archived_event
 
   field :external_id, type: String

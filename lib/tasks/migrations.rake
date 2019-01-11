@@ -32,4 +32,13 @@ namespace :migrations do
       ).delete_all
     end
   end
+
+  namespace :event_scopes do
+    desc 'Change COUNTRY kind to CATEGORY'
+    task country_to_category: :environment do
+      EventScope
+        .where(kind: 'country')
+        .update_all(kind: EventScope::CATEGORY)
+    end
+  end
 end

@@ -64,6 +64,7 @@ en:
     bank_statements: Bank statements
     bet_id: Bet ID
     bet_placement_time: Bet placement time
+    category: Category
     city: City
     code: Code
     comment: Comment

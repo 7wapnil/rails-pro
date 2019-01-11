@@ -1,7 +1,7 @@
 describe BetsFilter do
-  let!(:country) do
+  let!(:category) do
     create(:event_scope,
-           kind: EventScope::COUNTRY,
+           kind: EventScope::CATEGORY,
            name: Faker::Address.country)
   end
 
@@ -19,8 +19,8 @@ describe BetsFilter do
     expect(filter.sports).to include(sport.name)
   end
 
-  it 'returns countries' do
-    expect(filter.countries).to match_array([country.name])
+  it 'returns categories' do
+    expect(filter.categories).to match_array([category.name])
   end
 
   it 'returns tournaments' do

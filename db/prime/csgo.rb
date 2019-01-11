@@ -128,8 +128,7 @@ CsgoPrimer::CSGO_TOURNAMENTS.each_with_index do |name, index|
   EventScope.find_or_create_by!(name: name) do |tournament|
     tournament.title = title
     tournament.kind = EventScope::TOURNAMENT
-    tournament.external_id =
-      ['sr:tournament', index].join(':')
+    tournament.external_id = ['sr:tournament', index].join(':')
   end
 end
 

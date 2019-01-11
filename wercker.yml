@@ -18,10 +18,6 @@ build:
       code: rake db:test:prepare
 
     - script:
-      name: rspec
-      code: bundle exec rspec
-
-    - script:
       name: rubocop
       code: bundle exec rubocop
 
@@ -36,6 +32,10 @@ build:
     - script:
       name: haml-lint
       code: bundle exec haml-lint --fail-level=warning
+
+    - script:
+      name: rspec
+      code: bundle exec rspec
 
   after-steps:
     - slack-notifier:
