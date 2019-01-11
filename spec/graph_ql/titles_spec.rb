@@ -7,24 +7,20 @@ describe GraphQL, '#titles' do
                             variables: variables)
   end
 
+  let(:result_titles) { result['data']['titles'] }
+  let(:result_title_ids) { result_titles.map { |title| title['id'].to_i } }
+
+  let(:control_count) { rand(1..4) }
+
   context 'basic query' do
     let(:query) { %({ titles { id name } }) }
 
-    before do
-      create_list(:title, 5, :with_event)
-      create_list(:title, 5)
-    end
+    let!(:control_titles) { create_list(:title, control_count, :with_event) }
 
-    it 'returns list of titles with active events' do
-      expect(result['data']['titles'].length).to eq(5)
-    end
+    before { create_list(:title, 5) }
 
-    it 'returns ordered by name list of titles' do
-      previous_name = nil
-      result['data']['titles'].each do |title|
-        expect(previous_name <= title['name']).to be_truthy if previous_name
-        previous_name = title['name']
-      end
+    it 'returns ordered by name list of titles with active events' do
+      expect(result_title_ids).to match_array(control_titles.map(&:id))
     end
   end
 
@@ -39,13 +35,16 @@ describe GraphQL, '#titles' do
       })
     end
 
-    before do
-      create_list(:title, 5, :with_event, kind: :sports)
-      create_list(:title, 5, :with_event, kind: :esports)
+    let!(:control_titles) do
+      create_list(:title, control_count, :with_event, kind: Title::ESPORTS)
     end
 
+    let(:control_title_ids) { control_titles.sort_by(&:name).map(&:id) }
+
+    before { create_list(:title, 5, :with_event, kind: Title::SPORTS) }
+
     it 'returns esports titles list' do
-      expect(result['data']['titles'].length).to eq(5)
+      expect(result_title_ids).to eq(control_title_ids)
     end
   end
 
@@ -61,54 +60,76 @@ describe GraphQL, '#titles' do
           }
       })
     end
-    let(:title)           { create(:title, :with_event) }
-    let(:control_count)   { rand(1..3) }
-    let(:event)           { title.events.first }
-    let(:inactive_event)  { create(:event, :inactive) }
+
+    let(:title) { create(:title, :with_event) }
+    let(:event) { title.events.first }
+    let(:inactive_event) { create(:event, :inactive) }
     let(:invisible_event) { create(:event, :invisible) }
 
-    before do
+    let(:result_tournament_ids) do
+      result_titles.first['tournaments'].map { |title| title['id'].to_i }
+    end
+
+    let!(:control_tournaments) do
       create_list(:event_scope, control_count,
                   events: [event],
-                  kind:   EventScope::TOURNAMENT,
-                  title:  title)
+                  kind: EventScope::TOURNAMENT,
+                  title: title)
+    end
 
+    before do
       create_list(:event_scope, 3,
                   events: [inactive_event],
-                  kind:   EventScope::TOURNAMENT,
-                  title:  title)
+                  kind: EventScope::TOURNAMENT,
+                  title: title)
 
       create(:event_scope, events: [invisible_event],
-                           kind:   EventScope::TOURNAMENT,
-                           title:  title)
+                           kind: EventScope::TOURNAMENT,
+                           title: title)
+    end
+
+    it 'returns single title' do
+      expect(result_titles.length).to eq(1)
+      expect(result_titles.first['id']).to eq(title.id.to_s)
     end
 
     it 'returns titles with tournaments' do
-      expect(result['data']['titles'].length).to eq(1)
-      expect(result['data']['titles'].first['tournaments'].length)
-        .to eq(control_count)
+      expect(result_tournament_ids)
+        .to match_array(control_tournaments.map(&:id))
     end
 
     context 'and multiple events' do
-      let(:live_event)     { create(:event, :live,     title: title) }
+      let(:live_event) { create(:event, :live, title: title) }
       let(:upcoming_event) { create(:event, :upcoming, title: title) }
 
-      let(:valid_scopes_count) { control_count + 2 }
+      let!(:tournament_with_live_event) do
+        create(:event_scope,
+               events: [live_event],
+               kind: EventScope::TOURNAMENT,
+               title: title)
+      end
 
-      before do
-        create(:event_scope, events: [live_event],
-                             kind:   EventScope::TOURNAMENT,
-                             title:  title)
+      let!(:tournament_with_upcoming_event) do
+        create(:event_scope,
+               events: [upcoming_event],
+               kind: EventScope::TOURNAMENT,
+               title: title)
+      end
 
-        create(:event_scope, events: [upcoming_event],
-                             kind:   EventScope::TOURNAMENT,
-                             title:  title)
+      let(:valid_tournaments) do
+        [*control_tournaments,
+         tournament_with_live_event,
+         tournament_with_upcoming_event]
+      end
+
+      it 'returns single title' do
+        expect(result_titles.length).to eq(1)
+        expect(result_titles.first['id']).to eq(title.id.to_s)
       end
 
       it 'returns titles with tournaments' do
-        expect(result['data']['titles'].length).to eq(1)
-        expect(result['data']['titles'].first['tournaments'].length)
-          .to eq(valid_scopes_count)
+        expect(result_tournament_ids)
+          .to match_array(valid_tournaments.map(&:id))
       end
     end
   end
@@ -126,20 +147,24 @@ describe GraphQL, '#titles' do
       })
     end
 
-    let(:title)         { create(:title, :with_event) }
+    let(:title) { create(:title, :with_event) }
     let(:control_count) { rand(1..3) }
-    let(:event)         { title.events.first }
+    let(:event) { title.events.first }
 
-    before do
+    let(:result_event_scope_ids) do
+      result_titles.first['event_scopes'].map { |scope| scope['id'].to_i }
+    end
+
+    let!(:control_event_scopes) do
       create_list(:event_scope, control_count,
                   events: [event],
-                  kind:   EventScope::TOURNAMENT,
-                  title:  title)
+                  kind: EventScope::TOURNAMENT,
+                  title: title)
     end
 
     it 'returns event scopes attributes' do
-      expect(result['data']['titles'].first['event_scopes'].length)
-        .to eq(control_count)
+      expect(result_event_scope_ids)
+        .to match_array(control_event_scopes.map(&:id))
     end
   end
 
@@ -154,8 +179,8 @@ describe GraphQL, '#titles' do
     end
 
     it 'returns single title' do
-      expect(result['data']['titles'].length).to      eq(1)
-      expect(result['data']['titles'].first['id']).to eq(title.id.to_s)
+      expect(result_titles.length).to eq(1)
+      expect(result_titles.first['id']).to eq(title.id.to_s)
     end
   end
 end
