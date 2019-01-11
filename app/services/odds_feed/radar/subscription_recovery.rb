@@ -1,65 +1,84 @@
 module OddsFeed
   module Radar
     class SubscriptionRecovery < ApplicationService
+      MINIMAL_DELAY_BETWEEN_CALLS_IN_SECONDS = 30
+      OLDEST_RECOVERY_AVAILABLE_IN_HOURS = 72
+
       include JobLogger
 
-      PRODUCTS_MAP = {
-        1 => :liveodds,
-        3 => :pre
-      }.freeze
+      attr_reader :product
 
-      attr_accessor :product_id, :start_at
+      delegate :last_successful_subscribed_at, to: :product
+      alias latest_subscribed_at last_successful_subscribed_at
 
-      def initialize(product_id:, start_at: nil)
-        @product_id = product_id
-        @start_at = start_at
+      def initialize(product:)
+        @product = product
       end
 
       def call
-        log_job_message(:info, "Recovering #{@product_id} from #{@start_at}")
-        return unless product_available?
-        return unless rates_available?
+        log_job_message(:info, "Recovering #{@product.code} from #{@start_at}")
+        raise 'Recovery rates reached' unless rates_available?
 
-        response = api_client.product_recovery_initiate_request(
-          product_code: code,
-          after: start_at
-        )
-        return unless response['response']['response_code'] == 'ACCEPTED'
+        requested_at = Time.zone.now
+        request_id = requested_at.to_i
 
-        write_previous_recovery_timestamp(Time.zone.now.to_i)
+        request_recovery(node_id, request_id)
+        update_product(node_id, request_id, requested_at)
       end
 
       def rates_available?
-        last_call = previous_recovery_timestamp
+        last_call = ::Radar::Producer.last_recovery_call_at
         return true unless last_call
 
-        Time.at(last_call) < Time.zone.now - 30.seconds
+        last_call < MINIMAL_DELAY_BETWEEN_CALLS_IN_SECONDS.seconds.ago
       end
 
       private
 
+      def node_id
+        ENV['RADAR_MQ_NODE_ID']
+      end
+
+      def request_recovery(node_id, request_id)
+        response = api_client.product_recovery_initiate_request(
+          product_code: product.code,
+          after: recover_after,
+          node_id: node_id,
+          request_id: request_id
+        )
+        raise 'Unsuccessful recovery' unless response_success(response)
+      end
+
+      def response_success(response)
+        response['response']['response_code'] == 'ACCEPTED'
+      rescue StandardError
+        false
+      end
+
+      def update_product(node_id, request_id, requested_at)
+        product.update(
+          recover_requested_at: requested_at,
+          recovery_snapshot_id: request_id,
+          recovery_node_id: node_id
+        )
+      end
+
+      def recover_after
+        return oldest_recovery_at if use_max_available_recovery?
+
+        latest_subscribed_at
+      end
+
+      def use_max_available_recovery?
+        !latest_subscribed_at || latest_subscribed_at < oldest_recovery_at
+      end
+
+      def oldest_recovery_at
+        OLDEST_RECOVERY_AVAILABLE_IN_HOURS.hours.ago
+      end
+
       def api_client
         @api_client ||= Client.new
-      end
-
-      def product_available?
-        PRODUCTS_MAP.include? product_id
-      end
-
-      def code
-        PRODUCTS_MAP[product_id]
-      end
-
-      def write_previous_recovery_timestamp(timestamp)
-        Rails.cache.write(previous_recovery_call_key, timestamp)
-      end
-
-      def previous_recovery_timestamp
-        Rails.cache.read(previous_recovery_call_key)
-      end
-
-      def previous_recovery_call_key
-        'radar:last_recovery_call'
       end
     end
   end

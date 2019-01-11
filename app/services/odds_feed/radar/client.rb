@@ -46,9 +46,17 @@ module OddsFeed
         post(route)
       end
 
-      def product_recovery_initiate_request(product_code:, after: nil)
-        route = "/#{product_code}/recovery/initiate_request"
-        route += "?after=#{after}" if after
+      def product_recovery_initiate_request(product_code:, after:, **query)
+        raise ArgumentError unless recovery_request_query_is_valid?(query)
+
+        query_params = query.merge(after: after.to_i).to_query
+
+        route = URI::HTTP
+                .build(
+                  path: "/#{product_code}/recovery/initiate_request",
+                  query: query_params
+                )
+                .request_uri
 
         log_job_message(:info, "Calling subscription recovery on #{route}")
         post(route)
@@ -108,6 +116,13 @@ module OddsFeed
 
       def post(path)
         request(path, method: :post)
+      end
+
+      private
+
+      def recovery_request_query_is_valid?(query)
+        allowed_params = %i[request_id node_id]
+        query.keys.all? { |param| allowed_params.include?(param) }
       end
     end
   end
