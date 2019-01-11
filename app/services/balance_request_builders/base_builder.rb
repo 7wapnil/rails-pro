@@ -1,6 +1,6 @@
 module BalanceRequestBuilders
   class BaseBuilder < ApplicationService
-    def initialize(entry_request, real_money:, bonus: 0)
+    def initialize(entry_request, real_money: 0, bonus: 0)
       @entry_request = entry_request
       @real_money = real_money
       @bonus = bonus
