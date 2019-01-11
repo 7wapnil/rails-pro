@@ -79,8 +79,6 @@ class CsgoPrimer # rubocop:disable Metrics/ClassLength
         [event_external_id, Faker::Number.number(2)].join(':')
       odd_external_id =
         [market_external_id, Faker::Number.number(2)].join(':')
-      live_event_producer_payload =
-        { "producer": { "origin": 'radar', "id": '1' } }
 
       default_attributes = {
         title: title,
@@ -88,7 +86,7 @@ class CsgoPrimer # rubocop:disable Metrics/ClassLength
         description: "#{tournament.name}: #{event_name}",
         start_at: Time.zone.now.beginning_of_hour,
         traded_live: [true, false].sample,
-        payload: live_event_producer_payload,
+        payload: {},
         external_id: event_external_id
       }
       [default_attributes, market_external_id,
@@ -130,8 +128,7 @@ CsgoPrimer::CSGO_TOURNAMENTS.each_with_index do |name, index|
   EventScope.find_or_create_by!(name: name) do |tournament|
     tournament.title = title
     tournament.kind = EventScope::TOURNAMENT
-    tournament.external_id =
-      ['sr:tournament', index].join(':')
+    tournament.external_id = ['sr:tournament', index].join(':')
   end
 end
 

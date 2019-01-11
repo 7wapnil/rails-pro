@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :scoped_event do
-    event_scope
-    event
+    association :event,       strategy: :build
+    association :event_scope, strategy: :build
   end
 end

@@ -5,9 +5,9 @@ describe Bet, '#index' do
     before do
       create(:event_scope, kind: EventScope::TOURNAMENT, name: 'X-Bet')
       create(:event_scope, kind: EventScope::TOURNAMENT, name: 'Crazy PANDAS')
-      create(:event_scope_country, name: 'Pakistan')
-      create(:event_scope_country, name: 'France')
-      create(:event_scope_country, name: 'Germany')
+      create(:event_scope_category, name: 'Pakistan')
+      create(:event_scope_category, name: 'France')
+      create(:event_scope_category, name: 'Germany')
       create_list(:bet, per_page_count / 2)
 
       login_as create(:admin_user), scope: :user
@@ -173,10 +173,10 @@ describe Bet, '#index' do
         end
       end
 
-      context 'by Country' do
-        let(:france) { EventScope.find_by_name('France') }
-        let(:pakistan) { EventScope.find_by_name('Pakistan') }
-        let(:germany) { EventScope.find_by_name('Germany') }
+      context 'by Category' do
+        let(:france) { EventScope.find_by(name: 'France') }
+        let(:pakistan) { EventScope.find_by(name: 'Pakistan') }
+        let(:germany) { EventScope.find_by(name: 'Germany') }
 
         let(:bet_pakistan) { create(:bet) }
         let(:bet_france) { create(:bet) }
@@ -188,7 +188,7 @@ describe Bet, '#index' do
           bet_germany.event.event_scopes << germany
         end
 
-        it 'found by one country' do
+        it 'found by one category' do
           select pakistan.name, from: 'Event scope Name in'
           click_on 'Search'
 
@@ -198,8 +198,8 @@ describe Bet, '#index' do
           end
         end
 
-        it 'found by multiple countries' do
-          dropdown = page.find('select#bets_countries_name_in')
+        it 'found by multiple categories' do
+          dropdown = page.find('select#bets_categories_name_in')
           dropdown.select(pakistan.name)
           dropdown.select(france.name)
           click_on 'Search'

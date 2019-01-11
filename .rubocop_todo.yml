@@ -130,6 +130,9 @@ RSpec/NamedSubject:
 RSpec/AnyInstance:
   Enabled: false
 
+RSpec/LetSetup:
+  Enabled: false
+
 # Offense count: 38
 RSpec/NestedGroups:
   Exclude:

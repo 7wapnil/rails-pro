@@ -3,6 +3,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
   let(:subject_api) { described_class.new(payload) }
 
+  let!(:producer_from_xml) { create(:producer, id: 2) }
   let(:payload) do
     XmlParser.parse(file_fixture('odds_change_message.xml').read)
   end
@@ -50,9 +51,9 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
   it 'does not request API if event exists in db' do
     create(:event, external_id: event_id)
-    allow(subject_api).to receive(:create_or_find_event!)
+    allow(subject_api).to receive(:create_event)
     subject_api.handle
-    expect(subject_api).not_to have_received(:create_or_find_event!)
+    expect(subject_api).not_to have_received(:create_event)
   end
 
   it 'updates event status from message' do
@@ -60,6 +61,44 @@ describe OddsFeed::Radar::OddsChangeHandler do
     subject_api.handle
     event = Event.find_by(external_id: event_id)
     expect(event.status).to eq(Event::STARTED)
+  end
+
+  context 'events are updating simultaneously' do
+    context 'and have same event scopes' do
+      let(:control_count) { rand(2..4) }
+      let(:event_scopes)  { create_list(:event_scope, control_count) }
+      let(:scoped_events) do
+        event_scopes.map { |scope| ScopedEvent.new(event_scope: scope) }
+      end
+
+      let(:event) do
+        build(:event, title:         build(:title),
+                      external_id:   event_id,
+                      scoped_events: scoped_events)
+      end
+
+      before do
+        create(:event, title:        build(:title),
+                       external_id:  event_id,
+                       event_scopes: event_scopes)
+
+        allow(Event).to receive(:find_by).with(external_id: event_id)
+      end
+
+      it "don't cause ActiveRecord::RecordNotUnique error" do
+        expect(scoped_events)
+          .to all(
+            receive(:update!).and_raise(ActiveRecord::RecordNotUnique)
+          )
+
+        subject_api.handle
+      end
+
+      it "don't produce duplicates" do
+        subject_api.handle
+        expect(event.scoped_events.count).to eq(control_count)
+      end
+    end
   end
 
   context 'event activity' do
@@ -132,9 +171,8 @@ describe OddsFeed::Radar::OddsChangeHandler do
     end
   end
 
-  it 'adds producer id to event payload' do
+  it 'does not add producer id to event payload' do
     payload_addition = {
-      producer: { origin: :radar, id: payload['odds_change']['product'] },
       state:
         OddsFeed::Radar::EventStatusService.new.call(
           event_id: event.id,
@@ -143,12 +181,20 @@ describe OddsFeed::Radar::OddsChangeHandler do
     }
 
     allow(Event).to receive(:find_by) { event }
-
-    expect(event)
-      .to receive(:add_to_payload)
-      .with(payload_addition)
+    allow(event)
+      .to receive(:add_to_payload).and_call_original
 
     subject_api.handle
+
+    expect(event)
+      .to have_received(:add_to_payload)
+      .with(payload_addition).once
+  end
+
+  it 'changes event producer' do
+    subject_api.handle
+
+    expect(event.producer).to eq(producer_from_xml)
   end
 
   it 'sends websocket message when new event created' do

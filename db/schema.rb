@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_12_20_133922) do
+ActiveRecord::Schema.define(version: 2019_01_09_113252) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -293,8 +293,10 @@ ActiveRecord::Schema.define(version: 2018_12_20_133922) do
     t.integer "priority", limit: 2, default: 1
     t.boolean "visible", default: true
     t.boolean "active", default: false
+    t.bigint "producer_id"
     t.index ["active"], name: "index_events_on_active"
     t.index ["external_id"], name: "index_events_on_external_id", unique: true
+    t.index ["producer_id"], name: "index_events_on_producer_id"
     t.index ["title_id"], name: "index_events_on_title_id"
   end
 
@@ -354,11 +356,23 @@ ActiveRecord::Schema.define(version: 2018_12_20_133922) do
     t.index ["market_id"], name: "index_odds_on_market_id"
   end
 
+  create_table "radar_providers", force: :cascade do |t|
+    t.string "code"
+    t.string "state"
+    t.datetime "last_successful_subscribed_at"
+    t.datetime "recover_requested_at"
+    t.integer "recovery_snapshot_id"
+    t.integer "recovery_node_id"
+    t.index ["code"], name: "index_radar_providers_on_code"
+    t.index ["recovery_snapshot_id"], name: "index_radar_providers_on_recovery_snapshot_id"
+  end
+
   create_table "scoped_events", force: :cascade do |t|
     t.bigint "event_scope_id"
     t.bigint "event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["event_id", "event_scope_id"], name: "index_scoped_events_on_event_id_and_event_scope_id", unique: true
     t.index ["event_id"], name: "index_scoped_events_on_event_id"
     t.index ["event_scope_id"], name: "index_scoped_events_on_event_scope_id"
   end
@@ -432,6 +446,7 @@ ActiveRecord::Schema.define(version: 2018_12_20_133922) do
   add_foreign_key "entry_requests", "customers"
   add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "event_scopes", "titles"
+  add_foreign_key "events", "radar_providers", column: "producer_id"
   add_foreign_key "events", "titles"
   add_foreign_key "label_joins", "labels"
   add_foreign_key "markets", "events", on_delete: :cascade

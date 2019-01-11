@@ -28,7 +28,8 @@ module EventArchive
           external_id: scope.external_id,
           name: scope.name,
           kind: scope.kind,
-          archived_event: @archived_event
+          archived_event: @archived_event,
+          event_scope_external_id: scope.event_scope&.external_id
         )
       end
     end

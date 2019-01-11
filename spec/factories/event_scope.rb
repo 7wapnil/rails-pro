@@ -15,8 +15,8 @@ FactoryBot.define do
       end
     end
 
-    factory :event_scope_country do
-      kind { EventScope::COUNTRY }
+    factory :event_scope_category do
+      kind { EventScope::CATEGORY }
       name { Faker::Address.country }
     end
   end

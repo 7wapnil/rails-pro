@@ -22,7 +22,7 @@ describe GraphQL, '#titles' do
     it 'returns ordered by name list of titles' do
       previous_name = nil
       result['data']['titles'].each do |title|
-        expect(previous_name < title['name']).to be_truthy if previous_name
+        expect(previous_name <= title['name']).to be_truthy if previous_name
         previous_name = title['name']
       end
     end
