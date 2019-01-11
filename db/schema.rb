@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_03_094316) do
+ActiveRecord::Schema.define(version: 2019_01_09_113252) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -79,8 +79,8 @@ ActiveRecord::Schema.define(version: 2019_01_03_094316) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.string "settlement_status"
     t.datetime "validation_ticket_sent_at"
+    t.string "settlement_status"
     t.bigint "customer_bonus_id"
     t.decimal "ratio", precision: 8, scale: 2
     t.index ["currency_id"], name: "index_bets_on_currency_id"
@@ -156,9 +156,9 @@ ActiveRecord::Schema.define(version: 2019_01_03_094316) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "expiration_reason"
     t.decimal "rollover_balance", precision: 8, scale: 2
     t.decimal "rollover_initial_value", precision: 8, scale: 2
-    t.string "expiration_reason"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["deleted_at"], name: "index_customer_bonuses_on_deleted_at"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -372,6 +372,7 @@ ActiveRecord::Schema.define(version: 2019_01_03_094316) do
     t.bigint "event_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["event_id", "event_scope_id"], name: "index_scoped_events_on_event_id_and_event_scope_id", unique: true
     t.index ["event_id"], name: "index_scoped_events_on_event_id"
     t.index ["event_scope_id"], name: "index_scoped_events_on_event_scope_id"
   end

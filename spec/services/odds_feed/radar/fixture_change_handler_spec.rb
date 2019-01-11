@@ -16,7 +16,10 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     }
   end
 
+  let(:event_id)  { payload['fixture_change']['event_id'] }
   let(:api_event) { build(:event, producer: prematch_producer) }
+
+  let(:payload_update) { { producer: { origin: :radar, id: '1' } } }
 
   before do
     allow(subject_api).to receive(:api_event) { api_event }
@@ -50,14 +53,48 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     end
   end
 
+  context 'events are updating simultaneously' do
+    context 'and have same event scopes' do
+      let(:control_count) { rand(2..4) }
+      let(:event_scopes)  { create_list(:event_scope, control_count) }
+      let(:scoped_events) do
+        event_scopes.map { |scope| ScopedEvent.new(event_scope: scope) }
+      end
+
+      let(:api_event) do
+        build(:event, title:         build(:title),
+                      external_id:   event_id,
+                      scoped_events: scoped_events)
+      end
+
+      before do
+        create(:event, title:        build(:title),
+                       external_id:  event_id,
+                       event_scopes: event_scopes)
+
+        allow(Event).to receive(:find_by).with(external_id: event_id)
+      end
+
+      it "don't cause ActiveRecord::RecordNotUnique error" do
+        expect(scoped_events)
+          .to all(
+            receive(:update!).and_raise(ActiveRecord::RecordNotUnique)
+          )
+
+        subject_api.handle
+      end
+
+      it "don't produce duplicates" do
+        subject_api.handle
+        expect(api_event.scoped_events.count).to eq(control_count)
+      end
+    end
+  end
+
   context 'existing event' do
     after { subject_api.handle }
 
-    let(:event) do
-      create(:event,
-             external_id: payload['fixture_change']['event_id'],
-             active: true)
-    end
+    let(:event) { create(:event, external_id: event_id, active: true) }
 
     before do
       allow(subject_api).to receive(:event) { event }
