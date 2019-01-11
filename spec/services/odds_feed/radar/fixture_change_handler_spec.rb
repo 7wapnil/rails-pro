@@ -1,19 +1,23 @@
 describe OddsFeed::Radar::FixtureChangeHandler do
-  subject { described_class.new(payload) }
-
   let(:subject_api) { described_class.new(payload) }
+
+  let(:liveodds_producer) { create(:liveodds_producer) }
+  let(:prematch_producer) { create(:prematch_producer) }
+
+  let(:external_event_id) { 'sr:match:1234' }
 
   let(:payload) do
     {
       'fixture_change' => {
-        'event_id' => 'sr:match:1234',
+        'event_id' => external_event_id,
         'change_type' => '4',
-        'product' => '1'
+        'product' => liveodds_producer.id.to_s
       }
     }
   end
 
-  let(:api_event) { build(:event) }
+  let(:event_id)  { payload['fixture_change']['event_id'] }
+  let(:api_event) { build(:event, producer: prematch_producer) }
 
   let(:payload_update) { { producer: { origin: :radar, id: '1' } } }
 
@@ -21,17 +25,16 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     allow(subject_api).to receive(:api_event) { api_event }
   end
 
-  after do
-    subject_api.handle
-  end
-
   context 'new event' do
+    after { subject_api.handle }
+
     it 'logs event create message' do
       expect(subject_api).to receive(:log_on_create)
     end
 
-    it 'adds producer info to payload' do
-      expect(api_event).to receive(:add_to_payload).with(payload_update)
+    it 'sets producer' do
+      expect(subject_api)
+        .to receive(:update_event_producer!).with(liveodds_producer)
     end
 
     it 'calls for live coverage booking' do
@@ -41,12 +44,57 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     end
   end
 
-  context 'existing event' do
-    let(:event) do
-      create(:event,
-             external_id: payload['fixture_change']['event_id'],
-             active: true)
+  context 'returns empty event from Radar API' do
+    let(:api_event) { Event.new }
+
+    it 'and raises an error' do
+      expect { subject_api.handle }
+        .to raise_error(ActiveRecord::RecordInvalid)
     end
+  end
+
+  context 'events are updating simultaneously' do
+    context 'and have same event scopes' do
+      let(:control_count) { rand(2..4) }
+      let(:event_scopes)  { create_list(:event_scope, control_count) }
+      let(:scoped_events) do
+        event_scopes.map { |scope| ScopedEvent.new(event_scope: scope) }
+      end
+
+      let(:api_event) do
+        build(:event, title:         build(:title),
+                      external_id:   event_id,
+                      scoped_events: scoped_events)
+      end
+
+      before do
+        create(:event, title:        build(:title),
+                       external_id:  event_id,
+                       event_scopes: event_scopes)
+
+        allow(Event).to receive(:find_by).with(external_id: event_id)
+      end
+
+      it "don't cause ActiveRecord::RecordNotUnique error" do
+        expect(scoped_events)
+          .to all(
+            receive(:update!).and_raise(ActiveRecord::RecordNotUnique)
+          )
+
+        subject_api.handle
+      end
+
+      it "don't produce duplicates" do
+        subject_api.handle
+        expect(api_event.scoped_events.count).to eq(control_count)
+      end
+    end
+  end
+
+  context 'existing event' do
+    after { subject_api.handle }
+
+    let(:event) { create(:event, external_id: event_id, active: true) }
 
     before do
       allow(subject_api).to receive(:event) { event }
@@ -60,27 +108,43 @@ describe OddsFeed::Radar::FixtureChangeHandler do
       expect(subject_api).to receive(:log_on_update)
     end
 
-    it 'adds producer info to payload' do
-      # Event receives :add_to_payload twice,
-      # this test checks arguments for second call
-      expect(event).to receive(:add_to_payload)
-      expect(event).to receive(:add_to_payload).with(payload_update)
+    it 'updates producer info' do
+      expect(subject_api)
+        .to receive(:update_event_producer!).with(liveodds_producer)
     end
 
     context 'cancelled event' do
       let(:payload) do
         {
           'fixture_change' => {
-            'event_id' => 'sr:match:1234',
+            'event_id' => external_event_id,
             'change_type' => '3',
-            'product' => '1'
+            'product' => liveodds_producer.id.to_s
           }
         }
       end
 
       it 'sets event activity status to inactive' do
         subject_api.handle
-        expect(Event.find_by!(external_id: 'sr:match:1234').active).to be_falsy
+        expect(Event.find_by!(external_id: external_event_id).active)
+          .to be_falsy
+      end
+    end
+
+    context 'producer change' do
+      let(:payload) do
+        {
+          'fixture_change' => {
+            'event_id' => external_event_id,
+            'change_type' => '3',
+            'product' => prematch_producer.id.to_s
+          }
+        }
+      end
+
+      it 'updates producer info' do
+        expect(subject_api)
+          .to receive(:update_event_producer!).with(prematch_producer)
       end
     end
 
@@ -88,16 +152,17 @@ describe OddsFeed::Radar::FixtureChangeHandler do
       let(:payload) do
         {
           'fixture_change' => {
-            'event_id' => 'sr:match:1234',
+            'event_id' => external_event_id,
             'change_type' => '3',
-            'product' => '1'
+            'product' => liveodds_producer.id.to_s
           }
         }
       end
 
       it 'sets event activity status to inactive' do
         subject_api.handle
-        expect(Event.find_by!(external_id: 'sr:match:1234').active).to be_falsy
+        expect(Event.find_by!(external_id: external_event_id).active)
+          .to be_falsy
       end
     end
   end

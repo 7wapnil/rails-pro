@@ -2,7 +2,11 @@ module OddsFeed
   module Radar
     # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
+      include EventCreatable
+
       def handle
+        return unless event_data
+
         create_or_update_event!
         touch_event!
         generate_markets
@@ -14,28 +18,21 @@ module OddsFeed
       private
 
       def create_or_update_event!
-        if event
-          check_message_time
-        else
-          msg = <<-MESSAGE
-            Event with external ID #{external_id} \
-            not found, creating new
-          MESSAGE
+        return check_message_time if event
 
-          log_job_message(:info, msg.squish)
-
-          create_or_find_event!
-        end
+        log_job_message(
+          :info,
+          "Event with external ID #{external_id} not found, creating new"
+        )
+        create_event
       end
 
       def touch_event!
-        event.add_to_payload(
-          producer: { origin: :radar, id: event_data['product'] },
-          state:
-            OddsFeed::Radar::EventStatusService.new.call(
-              event_id: event.id, data: event_data['sport_event_status']
-            )
+        event.producer = ::Radar::Producer.find(event_data['product'])
+        new_state = OddsFeed::Radar::EventStatusService.new.call(
+          event_id: event.id, data: event_data['sport_event_status']
         )
+        event.add_to_payload(state: new_state)
         process_updates!
         event.save!
         event.emit_state_updated
@@ -128,14 +125,28 @@ module OddsFeed
       end
 
       def event_data
-        @payload['odds_change']
-      rescue StandardError => e
-        log_job_message(:debug, { error: e, payload: @payload }.to_json)
+        @payload.fetch('odds_change')
+      rescue KeyError, NoMethodError
+        log_job_failure(
+          "Not enough payload data to process Event. Payload: #{@payload}."
+        )
+        nil
       end
 
       def event_status
-        status = event_data['sport_event_status']['status']
+        raise KeyError unless event_status_payload
+
+        status = event_status_payload.fetch('status')
         event_statuses_map[status] || Event::NOT_STARTED
+      rescue KeyError
+        log_job_message(
+          :warn, "Event status missing in payload for Event #{external_id}"
+        )
+        Event::NOT_STARTED
+      end
+
+      def event_status_payload
+        event_data['sport_event_status']
       end
 
       def event_end_time
@@ -163,31 +174,12 @@ module OddsFeed
         @event ||= Event.find_by(external_id: external_id)
       end
 
-      def api_event
-        @api_event ||= api_client.event(external_id).result
-      end
-
       def timestamp
         Time.at(event_data['timestamp'].to_i / 1000).utc
       end
 
       def external_id
         event_data['event_id']
-      end
-
-      def create_or_find_event!
-        @event = api_event
-        begin
-          Event.create_or_update_on_duplicate(event)
-
-          return if event.bookable?
-
-          ::Radar::LiveCoverageBookingWorker.perform_async(external_id)
-        rescue StandardError => e
-          log_job_message(
-            :warn, ["Event ID #{external_id} creating failed", e.message]
-          )
-        end
       end
 
       def check_message_time

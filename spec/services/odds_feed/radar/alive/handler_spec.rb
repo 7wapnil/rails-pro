@@ -1,101 +1,91 @@
 describe OddsFeed::Radar::Alive::Handler do
-  subject { described_class.new(payload) }
-
-  let(:payload) { {} }
-  let(:cache_key) do
-    OddsFeed::Radar::Alive::Handler::SUBSCRIPTION_REPORT_KEY_PREFIX
+  let(:product) { create(:producer) }
+  let(:timestamp) { 1_532_353_934_098 }
+  let(:message_received_at) { Time.zone.at(timestamp) }
+  let(:message) do
+    instance_double(OddsFeed::Radar::Alive::Message.name,
+                    product: product,
+                    timestamp: timestamp,
+                    received_at: message_received_at,
+                    'expired?' => false)
   end
-  let(:message_timestamp) { 153_235_393_409_8 }
+
+  let(:payload) do
+    XmlParser.parse(
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
+       "<alive product=\"#{product.id}\" "\
+       "timestamp=\"#{timestamp}\" subscribed=\"1\"/>"
+    )
+  end
 
   before do
-    allow(OddsFeed::Radar::SubscriptionRecovery).to receive(:call)
+    allow(OddsFeed::Radar::Alive::Message)
+      .to receive(:new).with(payload['alive']).and_return(message)
+    allow(product).to receive_messages(
+      'subscribed!' => true,
+      'unsubscribe!' => true
+    )
   end
 
-  context 'subscribed' do
-    let(:payload) do
-      XmlParser.parse(
-        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
-      '<alive product="1" timestamp="1532353934098" subscribed="1"/>'
-      )
+  context '.handle' do
+    context 'when alive message describes subscribed product' do
+      before do
+        allow(message).to receive(:subscribed?).and_return(true)
+        described_class.new(payload).handle
+      end
+
+      it 'changes product state to subscribed at message received time' do
+        expect(product).to have_received(:subscribed!)
+          .with(subscribed_at: message_received_at)
+          .once
+      end
     end
 
-    it 'updates subscription report timestamp' do
-      allow(Rails.cache).to receive(:write)
+    context 'when alive message describes unsubscribed product' do
+      let(:payload) do
+        XmlParser.parse(
+          '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' \
+          "<alive product=\"#{product.id}\" "\
+          "timestamp=\"#{timestamp}\" subscribed=\"0\"/>"
+        )
+      end
 
-      subject.handle
+      before do
+        allow(message).to receive(:subscribed?).and_return(false)
+        described_class.new(payload).handle
+      end
 
-      expect(Rails.cache)
-        .to have_received(:write)
-        .with(cache_key + '1', message_timestamp)
+      it 'changes product state to unsubscribed' do
+        expect(product).to have_received(:unsubscribe!).once
+      end
     end
 
-    it 'skips timestamp update if message outdated' do
-      allow(Rails.cache)
-        .to receive(:read)
-        .with(cache_key + '1')
-        .and_return(message_timestamp + 100_00)
-      allow(Rails.cache).to receive(:write)
+    context 'with expired alive message' do
+      let(:message) do
+        instance_double('OddsFeed::Radar::Alive::Message',
+                        product: product,
+                        timestamp: Time.zone.at(timestamp))
+      end
 
-      subject.handle
+      let(:response) do
+        described_class.new(payload).handle
+      end
 
-      expect(Rails.cache)
-        .not_to have_received(:write)
-        .with(cache_key + '1', message_timestamp)
-    end
+      before do
+        allow(message).to receive_messages(
+          'subscribed?' => false,
+          'expired?' => true
+        )
+        response
+      end
 
-    it 'updates application state' do
-      ApplicationState.instance.live_connected = false
-      expect(ApplicationState.instance.live_connected).to be_falsy
+      it 'is ignored' do
+        expect(message).not_to have_received(:subscribed?)
+      end
 
-      subject.handle
-
-      expect(ApplicationState.instance.live_connected).to be_truthy
-    end
-  end
-
-  context 'not subscribed' do
-    let(:payload) do
-      XmlParser.parse(
-        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' \
-        '<alive product="1" timestamp="1532353934098" subscribed="0"/>'
-      )
-    end
-
-    it 'updates application state' do
-      ApplicationState.instance.live_connected = true
-      expect(ApplicationState.instance.live_connected).to be_truthy
-
-      subject.handle
-
-      expect(ApplicationState.instance.live_connected).to be_falsy
-    end
-
-    it 'call subscription recovery service' do
-      last_subscribed_timestamp = 71.hours.ago.to_i
-      allow(Rails.cache)
-        .to receive(:read)
-        .with(cache_key + '1')
-        .and_return(last_subscribed_timestamp)
-
-      expect(OddsFeed::Radar::SubscriptionRecovery)
-        .to receive(:call)
-        .with(product_id: 1, start_at: last_subscribed_timestamp)
-
-      subject.handle
-    end
-
-    it 'call subscription recovery service expired' do
-      last_subscribed_timestamp = 73.hours.ago.to_i
-      allow(Rails.cache)
-        .to receive(:read)
-        .with(cache_key + '1')
-        .and_return(last_subscribed_timestamp)
-
-      expect(OddsFeed::Radar::SubscriptionRecovery)
-        .to receive(:call)
-        .with(product_id: 1, start_at: nil)
-
-      subject.handle
+      it 'returns false from service' do
+        expect(response).to be_falsey
+      end
     end
   end
 end

@@ -1,6 +1,8 @@
 module OddsFeed
   module Radar
     class FixtureChangeHandler < RadarMessageHandler
+      include EventCreatable
+
       CHANGE_TYPES = {
         '1' => :new,
         '2' => :datetime,
@@ -15,19 +17,20 @@ module OddsFeed
           event.update_from!(api_event)
         else
           log_on_create
-          create_event!
+          create_event
         end
+        update_event_producer!(producer)
         update_event_payload!
       end
 
       private
 
-      def event
-        @event ||= Event.find_by(external_id: external_id)
+      def producer
+        ::Radar::Producer.find(payload['product'])
       end
 
-      def api_event
-        @api_event ||= api_client.event(external_id).result
+      def event
+        @event ||= Event.find_by(external_id: external_id)
       end
 
       def payload
@@ -36,15 +39,6 @@ module OddsFeed
 
       def external_id
         payload['event_id']
-      end
-
-      def create_event!
-        @event = api_event
-        Event.create_or_update_on_duplicate(event)
-
-        return if event.bookable?
-
-        ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
       end
 
       def log_on_create
@@ -64,12 +58,16 @@ module OddsFeed
         log_job_message(:info, msg.squish)
       end
 
+      def update_event_producer!(new_producer)
+        return if new_producer == event.producer
+
+        log_job_message(:info, "Updating producer for event ID #{external_id}")
+        event.update(producer: new_producer)
+      end
+
       def update_event_payload!
         log_job_message(:info, "Updating payload for event ID #{external_id}")
 
-        event.add_to_payload(
-          producer: { origin: :radar, id: payload['product'] }
-        )
         event.active = false if change_type == :cancelled
 
         event.save!
