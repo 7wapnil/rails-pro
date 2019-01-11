@@ -39,10 +39,10 @@ module OddsFeed
         return unless payload_valid_for?('Category', payload)
 
         @category = EventScope.new(
-          kind:        EventScope::CATEGORY,
+          kind: EventScope::CATEGORY,
           external_id: payload['id'],
-          title:       @title,
-          name:        payload['name']
+          title: @title,
+          name: payload['name']
         )
         EventScope.create_or_update_on_duplicate(@category)
       end
@@ -51,11 +51,11 @@ module OddsFeed
         return unless payload_valid_for?('Tournament', payload)
 
         @tournament = EventScope.new(
-          kind:        EventScope::TOURNAMENT,
+          kind: EventScope::TOURNAMENT,
           external_id: payload['id'],
-          title:       @title,
+          title: @title,
           event_scope: @category,
-          name:        payload['name']
+          name: payload['name']
         )
         EventScope.create_or_update_on_duplicate(@tournament)
       end

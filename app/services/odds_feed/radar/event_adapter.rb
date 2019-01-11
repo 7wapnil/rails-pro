@@ -19,19 +19,16 @@ module OddsFeed
       end
 
       def title_fixture
-        unless tournament_fixture.present?
-          raise OddsFeed::InvalidMessageError,
-                'Tournament fixture not found'
-        end
-        tournament_fixture['sport']
+        return tournament_fixture['sport'] if tournament_fixture.present?
+
+        raise OddsFeed::InvalidMessageError, 'Tournament fixture not found'
       end
 
       def tournament_fixture
-        unless fixture['tournament'].present?
-          raise OddsFeed::InvalidMessageError,
-                'Tournament fixture must be present'
-        end
-        fixture['tournament']
+        return fixture['tournament'] if fixture['tournament'].present?
+
+        raise OddsFeed::InvalidMessageError,
+              'Tournament fixture must be present'
       end
 
       def season_fixture
@@ -84,9 +81,9 @@ module OddsFeed
 
         @category = find_or_create_scope!(
           external_id: category_fixture['id'],
-          name:        category_fixture['name'],
-          kind:        EventScope::CATEGORY,
-          title:       @event.title
+          name: category_fixture['name'],
+          kind: EventScope::CATEGORY,
+          title: @event.title
         )
       end
 
@@ -95,10 +92,10 @@ module OddsFeed
         log_job_message(:debug, "Tournament data received: #{data}")
         @tournament = find_or_create_scope!(
           external_id: data['id'],
-          name:        tournament_fixture['name'],
+          name: tournament_fixture['name'],
           event_scope: @category,
-          kind:        EventScope::TOURNAMENT,
-          title:       @event.title
+          kind: EventScope::TOURNAMENT,
+          title: @event.title
         )
       end
 
@@ -112,17 +109,16 @@ module OddsFeed
         end
 
         find_or_create_scope!(external_id: season_fixture['id'],
-                              name:        season_fixture['name'],
-                              kind:        EventScope::SEASON,
+                              name: season_fixture['name'],
+                              kind: EventScope::SEASON,
                               event_scope: @tournament,
-                              title:       @event.title)
+                              title: @event.title)
       end
 
       def find_or_create_scope!(attributes)
         scope = EventScope.new(attributes)
         EventScope.create_or_update_on_duplicate(scope)
         @event.scoped_events.build(event_scope: scope)
-
         scope
       end
     end
