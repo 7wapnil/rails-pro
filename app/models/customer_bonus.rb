@@ -5,6 +5,7 @@ class CustomerBonus < ApplicationRecord
   belongs_to :customer
   belongs_to :wallet
   belongs_to :original_bonus, class_name: 'Bonus', optional: true
+  belongs_to :source, class_name: 'EntryRequest', optional: true
 
   attr_reader :amount
 
@@ -45,5 +46,9 @@ class CustomerBonus < ApplicationRecord
   def self.customer_history(customer)
     with_deleted
       .where(customer: customer)
+  end
+
+  def activated?
+    source_id.present?
   end
 end

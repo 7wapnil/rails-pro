@@ -88,5 +88,9 @@ describe Deposits::PlacementService do
     it 'assigns correct balance entry request real money amount' do
       expect(real_balance_request.amount).to eq(amount)
     end
+
+    it 'applies customer bonus only once' do
+      expect { service_call }.not_to change(BalanceEntryRequest.bonus, :count)
+    end
   end
 end
