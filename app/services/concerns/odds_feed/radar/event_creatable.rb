@@ -4,10 +4,6 @@ module OddsFeed
       extend ActiveSupport::Concern
 
       included do
-        def api_client
-          raise NotImplementedError, 'Method #api_client has to be implemented'
-        end
-
         protected
 
         attr_reader :event
