@@ -2,6 +2,13 @@ module WebSocket
   class Client
     include Singleton
 
+    def trigger_event_update(event)
+      ArcanebetSchema.subscriptions.trigger('events_updated', {}, event)
+      trigger_kind_event event
+      trigger_sport_event event
+      trigger_tournament_event event
+    end
+
     def emit!(event, data = {})
       Rails.logger.debug "Sending websocket event '#{event}', data: #{data}"
       message = ActiveSupport::JSON.encode(event: event, data: data)
@@ -25,6 +32,29 @@ module WebSocket
 
     def channel_name
       'events'
+    end
+
+    private
+
+    def trigger_kind_event(event)
+      ArcanebetSchema.subscriptions.trigger('kind_event_updated',
+                                            { kind: event.title.kind,
+                                              live: event.in_play? },
+                                            event)
+    end
+
+    def trigger_sport_event(event)
+      ArcanebetSchema.subscriptions.trigger('sport_event_updated',
+                                            { title: event.title_id,
+                                              live: event.in_play? },
+                                            event)
+    end
+
+    def trigger_tournament_event(event)
+      ArcanebetSchema.subscriptions.trigger('tournament_event_updated',
+                                            { tournament: event.tournament.id,
+                                              live: event.in_play? },
+                                            event)
     end
   end
 end
