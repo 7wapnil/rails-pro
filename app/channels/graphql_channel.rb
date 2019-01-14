@@ -34,7 +34,6 @@ class GraphqlChannel < ApplicationCable::Channel
     Rails.logger.debug "Subscription: #{result.context[:subscription_id]}"
     if result.context[:subscription_id]
       @subscription_ids << context[:subscription_id]
-      Rails.logger.debug "Subscription: #{context[:subscription_id]}"
     end
 
     transmit(payload)

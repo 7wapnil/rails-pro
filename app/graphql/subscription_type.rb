@@ -1,17 +1,21 @@
 SubscriptionType = GraphQL::ObjectType.define do
   name 'Subscription'
 
-  field :events_updated, Events::EventType
+  field SubscriptionFields::EVENT_UPDATED, Events::EventType do
+    argument :id, types.ID
+  end
 
-  field :kind_event_updated, Events::EventType do
+  field SubscriptionFields::EVENTS_UPDATED, Events::EventType
+
+  field SubscriptionFields::KIND_EVENT_UPDATED, Events::EventType do
     argument :kind, types.String
     argument :live, types.Boolean
   end
-  field :sport_event_updated, Events::EventType do
+  field SubscriptionFields::SPORT_EVENT_UPDATED, Events::EventType do
     argument :title, types.ID
     argument :live, types.Boolean
   end
-  field :tournament_event_updated, Events::EventType do
+  field SubscriptionFields::TOURNAMENT_EVENT_UPDATED, Events::EventType do
     argument :tournament, types.ID
     argument :live, types.Boolean
   end
