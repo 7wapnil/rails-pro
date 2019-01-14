@@ -51,6 +51,15 @@ describe Deposits::PlacementService do
     end
   end
 
+  it 'closes customer bonus if expired' do
+    bonus = wallet.customer_bonus
+    allow(bonus).to receive(:expired?).and_return(true)
+
+    expect(bonus).to receive(:close!)
+
+    service_call
+  end
+
   context 'with customer bonus' do
     let(:calculated_percentage) { amount * percentage / 100.0 }
 
