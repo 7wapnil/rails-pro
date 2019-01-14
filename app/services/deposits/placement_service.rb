@@ -12,8 +12,8 @@ module Deposits
 
     def call
       validate_deposit_placement!
-      success = WalletEntry::AuthorizationService.call(entry_request)
-      attach_source_to_customer_bonus! if success
+      entry = WalletEntry::AuthorizationService.call(entry_request)
+      attach_source_to_customer_bonus!(entry) if entry
     end
 
     private
@@ -62,10 +62,10 @@ module Deposits
       amount >= bonus.min_deposit
     end
 
-    def attach_source_to_customer_bonus!
+    def attach_source_to_customer_bonus!(entry)
       return unless eligible_for_the_bonus?
 
-      customer_bonus.update_attributes!(source: entry_request)
+      customer_bonus.update_attributes!(source: entry)
     end
   end
 end

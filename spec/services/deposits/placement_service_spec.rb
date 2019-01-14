@@ -16,6 +16,7 @@ describe Deposits::PlacementService do
     create(:customer_bonus,
            customer: customer,
            percentage: percentage,
+           wallet: wallet,
            rollover_multiplier: rollover_multiplier)
     allow(EntryCurrencyRule).to receive(:find_by!) { rule }
     allow(Currency).to receive(:find_by!) { currency }
@@ -70,6 +71,14 @@ describe Deposits::PlacementService do
     it 'assigns correct balance entry request bonus money amount' do
       expect(bonus_balance_request.amount).to eq(calculated_percentage)
     end
+
+    it 'attaches entry to the customer bonus' do
+      expect(wallet.customer_bonus.source).to be_instance_of(Entry)
+    end
+
+    it 'applies customer bonus only once' do
+      expect { service_call }.not_to change(BalanceEntryRequest.bonus, :count)
+    end
   end
 
   context 'without customer bonus' do
@@ -87,10 +96,6 @@ describe Deposits::PlacementService do
 
     it 'assigns correct balance entry request real money amount' do
       expect(real_balance_request.amount).to eq(amount)
-    end
-
-    it 'applies customer bonus only once' do
-      expect { service_call }.not_to change(BalanceEntryRequest.bonus, :count)
     end
   end
 end

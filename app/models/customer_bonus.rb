@@ -5,7 +5,7 @@ class CustomerBonus < ApplicationRecord
   belongs_to :customer
   belongs_to :wallet
   belongs_to :original_bonus, class_name: 'Bonus', optional: true
-  belongs_to :source, class_name: 'EntryRequest', optional: true
+  belongs_to :source, class_name: Entry.name, optional: true
 
   attr_reader :amount
 
