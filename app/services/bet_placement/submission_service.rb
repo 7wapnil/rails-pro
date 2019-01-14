@@ -51,10 +51,7 @@ module BetPlacement
       error_msg = 'Real money amount can not be blank!'
       raise(ArgumentError, error_msg) if real_amount.nil? || real_amount.zero?
 
-      # TODO: clarify with team, solution with signs
-      calculations = { real_money: -amount_calculations[:real_money],
-                       bonus: -amount_calculations[:bonus] }
-      BalanceRequestBuilders::Bet.call(entry_request, calculations)
+      BalanceRequestBuilders::Bet.call(entry_request, amount_calculations)
       @entry = WalletEntry::AuthorizationService.call(entry_request)
       unless @entry_request.succeeded?
         @bet.register_failure!(@entry_request.result_message)

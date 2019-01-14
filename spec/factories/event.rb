@@ -15,6 +15,7 @@ FactoryBot.define do
     sequence(:external_id) { |n| "sr:match:#{n}" }
 
     association :title, strategy: :build
+    producer
 
     trait :upcoming do
       start_at { 1.hour.from_now }

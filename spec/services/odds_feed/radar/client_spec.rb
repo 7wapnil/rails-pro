@@ -61,4 +61,67 @@ describe OddsFeed::Radar::Client do
         .to raise_error(HTTParty::ResponseError, 'Malformed response body')
     end
   end
+
+  describe '#product_recovery_initiate_request' do
+    let(:recover_after) { Faker::Time.backward(2) }
+    let(:product_code) { Faker::Lorem.word.to_sym }
+
+    before do
+      allow(subject).to receive(:log_job_message)
+      allow(subject).to receive(:post)
+    end
+
+    context 'with requires arguments only' do
+      let(:expected_path) do
+        "/#{product_code}/recovery/initiate_request?after=#{recover_after.to_i}"
+      end
+
+      before do
+        subject.product_recovery_initiate_request(
+          product_code: product_code, after: recover_after
+        )
+      end
+
+      it 'logs job message' do
+        log_message = "Calling subscription recovery on #{expected_path}"
+        expect(subject).to have_received(:log_job_message)
+          .with(:info, log_message).once
+      end
+      it 'post to correct path' do
+        expect(subject).to have_received(:post)
+          .with(expected_path).once
+      end
+    end
+
+    context 'with all options provided' do
+      let(:request_id) { Faker::Number.number(4) }
+      let(:node_id) { Faker::Number.number(4) }
+
+      let(:expected_path) do
+        query_string = [
+          "after=#{recover_after.to_i}",
+          "node_id=#{node_id}",
+          "request_id=#{request_id}"
+        ].join('&')
+        "/#{product_code}/recovery/initiate_request?#{query_string}"
+      end
+
+      before do
+        subject.product_recovery_initiate_request(
+          product_code: product_code, after: recover_after,
+          request_id: request_id, node_id: node_id
+        )
+      end
+
+      it 'logs job message' do
+        log_message = "Calling subscription recovery on #{expected_path}"
+        expect(subject).to have_received(:log_job_message)
+          .with(:info, log_message).once
+      end
+      it 'post to correct path' do
+        expect(subject).to have_received(:post)
+          .with(expected_path).once
+      end
+    end
+  end
 end

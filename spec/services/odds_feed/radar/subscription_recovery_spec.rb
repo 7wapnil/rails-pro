@@ -1,66 +1,135 @@
 describe OddsFeed::Radar::SubscriptionRecovery do
-  let(:cache) { Rails.cache }
-  let(:cache_key) { 'radar:last_recovery_call' }
-
   describe '.call' do
+    let(:node_id) { Faker::Number.number(4).to_s }
+    let(:client_double) { instance_double(OddsFeed::Radar::Client.name) }
+    let(:product) { create(:producer) }
+    let(:another_product) { create(:producer) }
+    let(:recovery_time_timestamp) { Faker::Time.backward(100).to_i }
+    let(:recovery_time) { Time.zone.at(recovery_time_timestamp) }
+    let(:after_recovery_time) { recovery_time + 1.hour }
+    let(:oldest_recovery_since) do
+      recovery_time -
+        described_class::OLDEST_RECOVERY_AVAILABLE_IN_HOURS.hours
+    end
+
     before do
-      body =
-        <<-END_XML
-          <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-          <response response_code="ACCEPTED">
-          <action>
-            Request for PRE ALL messages from bookmaker 25238 received
-          </action>
-          </response>
-        END_XML
-      stub_request(:post, %r{/recovery/initiate_request})
-        .to_return(status: 202, body: body, headers: {})
+      allow(ENV).to receive(:[]).and_call_original
+      allow(ENV).to receive(:[]).with('RADAR_MQ_NODE_ID').and_return(node_id)
+
+      allow(OddsFeed::Radar::Client)
+        .to receive(:new) { client_double }
+      allow(client_double)
+        .to receive(:product_recovery_initiate_request).and_return(
+          'response' => {
+            'response_code' => 'ACCEPTED'
+          }
+        )
+      ::Radar::Producer.update_all('recover_requested_at = NULL')
+
+      Timecop.freeze(recovery_time)
     end
 
-    it 'calls recovery intiate request API endpoint' do
-      cache.write(cache_key, Time.zone.now - 1.minute)
-      assert(a_request(:post, %r{/recovery/initiate_request}))
-      described_class.call(product_id: 1, start_at: Time.now.to_i)
-    end
-
-    it 'stores last recovery call time' do
-      Timecop.freeze(Time.zone.now)
-      time = Time.zone.now
-      cache.write(cache_key, Time.now - 1.year)
-      described_class.call(product_id: 1, start_at: time.to_i)
-      expect(cache.read(cache_key).to_i).to eq time.to_i
-      Timecop.return
-    end
-  end
-
-  describe '.rates_available?' do
-    let(:timestamp) { Time.now.to_i }
-    let(:timestamp_date_time) { Time.at(timestamp).to_datetime }
-
-    it 'returns true when cache is empty' do
-      cache.delete(cache_key)
-      service = described_class.new(product_id: 1, start_at: timestamp)
-      expect(service.rates_available?).to be true
-    end
-
-    it 'returns true when cache is older than timeout' do
-      cache.write(cache_key, (timestamp_date_time - 40.seconds).to_i)
-      service = described_class.new(product_id: 1, start_at: timestamp)
-      expect(service.rates_available?).to be true
-    end
-
-    it 'returns false when cache is equal to timeout' do
-      Timecop.freeze(timestamp_date_time)
-      cache.write(cache_key, (timestamp_date_time - 30.seconds).to_i)
-      service = described_class.new(product_id: 1, start_at: timestamp)
-      expect(service.rates_available?).to be false
+    after do
       Timecop.return
     end
 
-    it 'returns false when cache is less that timeout' do
-      cache.write(cache_key, (timestamp_date_time - 1.seconds).to_i)
-      service = described_class.new(product_id: 1, start_at: timestamp)
-      expect(service.rates_available?).to be false
+    context 'with last_successful_subscribed_at expired' do
+      before do
+        allow(product)
+          .to receive(:last_successful_subscribed_at) {
+            oldest_recovery_since - 1.minute
+          }
+
+        described_class.call(product: product)
+        after_recovery_time = recovery_time + 1.hour
+        Timecop.freeze(after_recovery_time)
+      end
+
+      it 'calls recovery initiate request from API client' do
+        expect(
+          client_double
+        ).to have_received(:product_recovery_initiate_request)
+          .with(
+            product_code: product.code,
+            after: oldest_recovery_since,
+            node_id: node_id,
+            request_id: recovery_time_timestamp
+          )
+          .once
+      end
+
+      it 'modifies original product' do
+        expect(product)
+          .to have_attributes(
+            recover_requested_at: recovery_time,
+            recovery_snapshot_id: recovery_time_timestamp,
+            recovery_node_id: node_id.to_i
+          )
+      end
+    end
+
+    context 'with last_successful_subscribed_at appliable' do
+      let(:last_successful_subscribed_at) { oldest_recovery_since + 1.minute }
+
+      before do
+        allow(product)
+          .to receive(:last_successful_subscribed_at) {
+            last_successful_subscribed_at
+          }
+
+        described_class.call(product: product)
+        Timecop.freeze(after_recovery_time)
+      end
+
+      it 'calls recovery initiate request from API client' do
+        expect(
+          client_double
+        ).to have_received(:product_recovery_initiate_request)
+          .with(
+            product_code: product.code,
+            after: last_successful_subscribed_at,
+            node_id: node_id,
+            request_id: recovery_time_timestamp
+          )
+          .once
+      end
+
+      it 'modifies original product' do
+        expect(product)
+          .to have_attributes(
+            recover_requested_at: recovery_time,
+            recovery_snapshot_id: recovery_time_timestamp,
+            recovery_node_id: node_id.to_i
+          )
+      end
+    end
+
+    context 'with rates limit reached' do
+      before do
+        another_product.update(recover_requested_at: 1.second.ago)
+      end
+
+      it 'raises when rates reached' do
+        expect { described_class.call(product: product) }
+          .to raise_error('Recovery rates reached')
+      end
+    end
+
+    context 'with client response failure' do
+      before do
+        allow(client_double)
+          .to receive(:product_recovery_initiate_request)
+          .and_return(
+            'response' => {
+              'response_code' => 'FAILURE'
+            }
+          )
+      end
+
+      it 'raises when client responds unexpected way' do
+        expect { described_class.call(product: product) }
+          .to raise_error('Unsuccessful recovery')
+      end
     end
   end
 end

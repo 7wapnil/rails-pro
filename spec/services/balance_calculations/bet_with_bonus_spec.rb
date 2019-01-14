@@ -5,7 +5,7 @@ describe BalanceCalculations::BetWithBonus do
   let(:bet) { instance_double('Bet', ratio: 0.75, amount: amount) }
 
   context 'with existent bonus balance and real money balance' do
-    let(:calculations) { { real_money: 7.5, bonus: 2.5 } }
+    let(:calculations) { { real_money: -7.5, bonus: -2.5 } }
 
     it 'calculates real and bonus amount' do
       expect(service_call_response).to include(calculations)

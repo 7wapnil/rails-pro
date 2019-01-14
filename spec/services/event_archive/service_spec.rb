@@ -4,7 +4,7 @@ describe EventArchive::Service do
 
   before do
     event.event_scopes << tournament
-    event.event_scopes << create(:event_scope, kind: EventScope::COUNTRY)
+    event.event_scopes << create(:event_scope, kind: EventScope::CATEGORY)
     event.event_scopes << create(:event_scope, kind: EventScope::SEASON)
   end
 

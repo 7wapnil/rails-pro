@@ -4,6 +4,7 @@ describe Event do
   let(:stubbed_subject) { described_class.new }
 
   it { is_expected.to belong_to(:title) }
+  it { is_expected.to belong_to(:producer).class_name(Radar::Producer.name) }
   it { is_expected.to have_many(:markets) }
   it { is_expected.to have_many(:scoped_events) }
   it { is_expected.to have_many(:event_scopes).through(:scoped_events) }
@@ -233,6 +234,28 @@ describe Event do
       event.update_from!(other)
 
       expect(event.payload).to eq initial_payload
+    end
+  end
+
+  describe '#alive?' do
+    context 'without TRADED_LIVE' do
+      let(:event) { build(:event, status: Event::SUSPENDED) }
+
+      it { expect(event).not_to be_alive }
+    end
+
+    context 'with SUSPENDED status' do
+      let(:event) do
+        build(:event, traded_live: true, status: Event::SUSPENDED)
+      end
+
+      it { expect(event).to be_alive }
+    end
+
+    context 'in play' do
+      let(:event) { build(:event, :live) }
+
+      it { expect(event).to be_alive }
     end
   end
 

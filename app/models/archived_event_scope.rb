@@ -6,4 +6,5 @@ class ArchivedEventScope
   field :name, type: String
   field :external_id, type: String
   field :kind, type: String
+  field :event_scope_external_id, type: String
 end

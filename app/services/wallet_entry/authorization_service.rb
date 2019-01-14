@@ -17,7 +17,6 @@ module WalletEntry
 
     def update_database!
       ActiveRecord::Base.transaction do
-        # FIXME, clarify with team
         create_default_balance_entry_request! if @request.balance_entry_requests
                                                          .empty?
         update_wallet!
