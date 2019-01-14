@@ -62,7 +62,7 @@ module WebSocket
     def trigger_tournament_event(event)
       ArcanebetSchema.subscriptions.trigger(
         SubscriptionFields::TOURNAMENT_EVENT_UPDATED,
-        { tournament: event.tournament.id,
+        { tournament: event.tournament&.id,
           live: event.in_play? },
         event
       )
