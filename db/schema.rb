@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_15_145851) do
+ActiveRecord::Schema.define(version: 2019_01_15_151929) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,7 +62,6 @@ ActiveRecord::Schema.define(version: 2019_01_15_145851) do
     t.bigint "entry_request_id"
     t.bigint "balance_entry_id"
     t.string "kind"
-    t.string "status", default: "pending"
     t.decimal "amount", precision: 8, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

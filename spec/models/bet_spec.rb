@@ -206,36 +206,17 @@ describe Bet do
              kind: Balance::REAL_MONEY,
              balance_entry: create(:balance_entry, amount: 10, entry: entry),
              entry_request: entry_request,
-             amount: real_request_amount,
-             status: EntryRequest::SUCCEEDED)
+             amount: real_request_amount)
 
       create(:balance_entry_request,
              kind: Balance::BONUS,
              balance_entry: create(:balance_entry, amount: 100, entry: entry),
              entry_request: entry_request,
-             amount: bonus_request_amount,
-             status: EntryRequest::SUCCEEDED)
+             amount: bonus_request_amount)
     end
 
     describe '#real_money_total' do
       it 'returns sum of real money balance entry requests' do
-        expect(bet.real_money_total).to eq(real_request_amount)
-      end
-
-      it 'calculates only succeeded balance entry requests' do
-        balance_entry = create(:balance_entry, amount: 50, entry: entry)
-        supported_statuses = EntryRequest.statuses.reject do |status|
-          status == EntryRequest::SUCCEEDED
-        end
-        supported_statuses.each do |status|
-          create(:balance_entry_request,
-                 amount: 20,
-                 kind: Balance::REAL_MONEY,
-                 entry_request: entry_request,
-                 balance_entry: balance_entry,
-                 status: status.first)
-        end
-
         expect(bet.real_money_total).to eq(real_request_amount)
       end
 
@@ -251,22 +232,6 @@ describe Bet do
         expect(bet.bonus_money_total).to eq(bonus_request_amount)
       end
 
-      it 'calculates only succeeded balance entry requests' do
-        balance_entry = create(:balance_entry, amount: 50, entry: entry)
-        supported_statuses = EntryRequest.statuses.reject do |status|
-          status == EntryRequest::SUCCEEDED
-        end
-        supported_statuses.each do |status|
-          create(:balance_entry_request,
-                 amount: 20,
-                 kind: Balance::BONUS,
-                 entry_request: entry_request,
-                 balance_entry: balance_entry,
-                 status: status.first)
-        end
-
-        expect(bet.bonus_money_total).to eq(bonus_request_amount)
-      end
       it 'returns 0 when entry request is not succeeded' do
         entry_request.failed!
 
