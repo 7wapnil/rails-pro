@@ -51,7 +51,6 @@ module Deposits
     end
 
     def eligible_for_the_bonus?
-      customer_bonus = wallet.customer&.customer_bonus
       return false unless customer_bonus&.min_deposit
 
       if customer_bonus.expired?
@@ -59,7 +58,7 @@ module Deposits
                               reason: :expired_by_date)
         return false
       end
-      amount >= customer_bonus.min_deposit
+      customer_bonus.activated? && amount >= customer_bonus.min_deposit
     end
   end
 end

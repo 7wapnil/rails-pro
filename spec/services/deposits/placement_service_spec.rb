@@ -16,6 +16,7 @@ describe Deposits::PlacementService do
     create(:customer_bonus,
            customer: customer,
            percentage: percentage,
+           rollover_balance: 20,
            rollover_multiplier: rollover_multiplier)
     allow(EntryCurrencyRule).to receive(:find_by!) { rule }
     allow(Currency).to receive(:find_by!) { currency }

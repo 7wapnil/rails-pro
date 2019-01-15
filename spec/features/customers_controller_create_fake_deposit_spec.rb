@@ -19,7 +19,10 @@ describe CustomersController, '#create_fake_deposit' do
   context 'with bonus' do
     let(:percentage) { 25 }
     let!(:customer_bonus) do
-      create(:customer_bonus, customer: customer, percentage: percentage)
+      create(:customer_bonus,
+             customer: customer,
+             percentage: percentage,
+             rollover_balance: 20)
     end
 
     it 'creates 2 entries requests' do

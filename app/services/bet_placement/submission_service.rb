@@ -72,8 +72,7 @@ module BetPlacement
     end
 
     def ratio
-      # TODO: clarify with team this implementation
-      return 1.0 if @bet.customer_bonus.nil? || @bet.customer_bonus.expired?
+      return 1.0 unless @bet.customer_bonus&.activated?
 
       wallet.ratio_with_bonus
     end
