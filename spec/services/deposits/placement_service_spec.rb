@@ -16,6 +16,7 @@ describe Deposits::PlacementService do
     create(:customer_bonus,
            customer: customer,
            percentage: percentage,
+           wallet: wallet,
            rollover_multiplier: rollover_multiplier)
     allow(EntryCurrencyRule).to receive(:find_by!) { rule }
     allow(Currency).to receive(:find_by!) { currency }
@@ -50,6 +51,15 @@ describe Deposits::PlacementService do
     end
   end
 
+  it 'closes customer bonus if expired' do
+    bonus = wallet.customer_bonus
+    allow(bonus).to receive(:expired?).and_return(true)
+
+    expect(bonus).to receive(:close!)
+
+    service_call
+  end
+
   context 'with customer bonus' do
     before do
       service_call
@@ -58,6 +68,14 @@ describe Deposits::PlacementService do
     it_behaves_like 'entries splitting with bonus' do
       let(:real_money_amount) { 100 }
       let(:bonus_amount) { amount * percentage / 100.0 }
+    end
+
+    it 'attaches entry to the customer bonus' do
+      expect(wallet.customer_bonus.source).to be_instance_of(Entry)
+    end
+
+    it 'applies customer bonus only once' do
+      expect { service_call }.not_to change(BalanceEntryRequest.bonus, :count)
     end
   end
 

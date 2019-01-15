@@ -30,6 +30,10 @@ RSpec/DescribeClass:
   Exclude:
     - 'spec/features/*'
 
+RSpec/FilePath:
+  Exclude:
+    - 'spec/graphql/**/*'
+
 AllCops:
   Exclude:
     - 'config/initializers/simple_form.rb'
