@@ -12,7 +12,9 @@ module Deposits
 
     def call
       validate_deposit_placement!
-      WalletEntry::AuthorizationService.call(entry_request)
+      close_customer_bonus! if customer_bonus&.expired?
+      entry = WalletEntry::AuthorizationService.call(entry_request)
+      attach_source_to_customer_bonus!(entry) if entry
     end
 
     private
@@ -51,15 +53,19 @@ module Deposits
     end
 
     def eligible_for_the_bonus?
-      customer_bonus = wallet.customer&.customer_bonus
-      return false unless customer_bonus&.min_deposit
+      return false if customer_bonus&.source || customer_bonus&.min_deposit.nil?
 
-      if customer_bonus.expired?
-        customer_bonus.close!(BonusExpiration::Expired,
-                              reason: :expired_by_date)
-        return false
-      end
-      amount >= customer_bonus.min_deposit
+      customer_bonus.unexpired? && amount >= customer_bonus.min_deposit
+    end
+
+    def close_customer_bonus!
+      customer_bonus.close!(BonusExpiration::Expired, reason: :expired_by_date)
+    end
+
+    def attach_source_to_customer_bonus!(entry)
+      return unless eligible_for_the_bonus?
+
+      customer_bonus.update_attributes!(source: entry)
     end
   end
 end

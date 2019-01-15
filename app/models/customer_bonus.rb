@@ -5,6 +5,7 @@ class CustomerBonus < ApplicationRecord
   belongs_to :customer
   belongs_to :wallet
   belongs_to :original_bonus, class_name: 'Bonus', optional: true
+  belongs_to :source, class_name: Entry.name, optional: true
 
   attr_reader :amount
 
@@ -30,6 +31,10 @@ class CustomerBonus < ApplicationRecord
     deleted_at || ended_at < Time.zone.now
   end
 
+  def unexpired?
+    !expired?
+  end
+
   def status
     expired? ? 'expired' : 'active'
   end
@@ -45,5 +50,9 @@ class CustomerBonus < ApplicationRecord
   def self.customer_history(customer)
     with_deleted
       .where(customer: customer)
+  end
+
+  def activated?
+    source_id.present?
   end
 end
