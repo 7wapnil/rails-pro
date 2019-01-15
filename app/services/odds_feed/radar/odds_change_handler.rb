@@ -193,8 +193,7 @@ module OddsFeed
       end
 
       def emit_websocket
-        WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
-                                        id: event.id.to_s)
+        WebSocket::Client.instance.trigger_event_update(event)
       end
     end
     # rubocop:enable Metrics/ClassLength

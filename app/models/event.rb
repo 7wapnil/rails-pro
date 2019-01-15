@@ -7,9 +7,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   conflict_target :external_id
   conflict_updatable :name, :status, :traded_live, :payload
 
-  after_create :emit_created
-  after_update :emit_updated
-
   UPDATABLE_ATTRIBUTES = %w[name description start_at end_at].freeze
 
   PRIORITIES = [0, 1, 2].freeze
@@ -170,9 +167,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def emit_state_updated
-    WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
-                                    id: id.to_s,
-                                    changes: { state: state })
+    WebSocket::Client.instance.trigger_event_update(self)
   end
 
   def bookable?
@@ -181,24 +176,5 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   def alive?
     traded_live? && (in_play? || suspended?)
-  end
-
-  private
-
-  def emit_created
-    WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_CREATED,
-                                    id: id.to_s)
-  end
-
-  def emit_updated
-    excluded_keys = %w[updated_at payload]
-    changes = previous_changes
-              .except(*excluded_keys)
-              .transform_values! { |v| v[1] }
-    return if changes.empty?
-
-    WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
-                                    id: id.to_s,
-                                    changes: changes)
   end
 end
