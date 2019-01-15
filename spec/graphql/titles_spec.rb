@@ -31,6 +31,7 @@ describe GraphQL, '#titles' do
             id
             name
             kind
+            show_category_in_navigation
           }
       })
     end
