@@ -76,7 +76,7 @@ describe GraphQL, '#place_bet' do
 
   context 'bonus applying' do
     let(:odd) { create(:odd, value: 8.87) }
-    let(:bonus_amount) { 250 }
+    let(:bonus_balance_amount) { 250 }
     let(:real_amount) { 750 }
     let(:bet_amount) { 10 }
     let!(:active_bonus) do
@@ -111,8 +111,13 @@ describe GraphQL, '#place_bet' do
              currency: currency,
              min_amount: 10,
              max_amount: 100)
-      create(:balance, kind: :bonus, wallet: wallet, amount: bonus_amount)
-      create(:balance, wallet: wallet, amount: real_amount)
+      create(:balance,
+             kind: :bonus,
+             wallet: wallet,
+             amount: bonus_balance_amount)
+      create(:balance,
+             wallet: wallet,
+             amount: real_amount)
       create(
         :entry_currency_rule,
         currency: currency,
@@ -138,14 +143,14 @@ describe GraphQL, '#place_bet' do
       expected_real_balance = real_amount - bet_amount
 
       expect(wallet.real_money_balance.amount).to eq(expected_real_balance)
-      expect(wallet.bonus_balance.amount).to eq(bonus_amount)
+      expect(wallet.bonus_balance.amount).to eq(bonus_balance_amount)
     end
 
     it 'do not apply bonus when odd value is less than allowed' do
       active_bonus.update_attributes(min_odds_per_bet: odd.value + 1.0)
       execute_query
 
-      expect(wallet.bonus_balance.amount).to eq(bonus_amount)
+      expect(wallet.bonus_balance.amount).to eq(bonus_balance_amount)
     end
     it 'creates balance entry requests for real and bonus balances' do
       execute_query
@@ -154,22 +159,27 @@ describe GraphQL, '#place_bet' do
       expect(kinds).to match_array([Balance::REAL_MONEY, Balance::BONUS])
     end
 
-    it 'creates only real money balance entry request' do
-      auth_customer.customer_bonus.destroy
-      auth_customer.reload
-      execute_query
-      kinds = BalanceEntryRequest.pluck(:kind)
+    context 'when customer with bonus' do
+      before do
+        execute_query
+      end
 
-      expect(kinds).to match_array([Balance::REAL_MONEY])
+      it_behaves_like 'entries splitting with bonus' do
+        let(:real_money_amount) { -7.5 }
+        let(:bonus_amount) { -2.5 }
+      end
     end
 
-    it 'assigns correct real money amount' do
-      auth_customer.customer_bonus.destroy
-      auth_customer.reload
-      execute_query
-      real_balance_request = BalanceEntryRequest.real_money.first
+    context 'when customer without bonus' do
+      before do
+        auth_customer.customer_bonus.destroy
+        auth_customer.reload
+        execute_query
+      end
 
-      expect(real_balance_request.amount).to eq(-bet_amount)
+      it_behaves_like 'entries splitting without bonus' do
+        let(:real_money_amount) { -bet_amount }
+      end
     end
   end
 
