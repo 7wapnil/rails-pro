@@ -2,10 +2,9 @@
 
 FactoryBot.define do
   factory :comment do
-    text             { 'MyText' }
-    commentable_id   { 1 }
-    commentable_type { VerificationDocument.name }
+    association :commentable, factory: :verification_document
+    user
 
-    belongs_to       { user }
+    text { Faker::Lorem.sentence }
   end
 end
