@@ -2,7 +2,7 @@ module OddsFeed
   class BaseAdapter
     attr_reader :payload
 
-    def initialize(payload)
+    def initialize(payload = nil)
       @payload = payload
     end
 

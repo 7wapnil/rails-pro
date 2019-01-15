@@ -357,5 +357,16 @@ describe OddsFeed::Radar::OddsChangeHandler do
           .to raise_error(ActiveRecord::RecordInvalid)
       end
     end
+
+    context 'on unsupported external id' do
+      subject { described_class.new(payload) }
+
+      before { payload['odds_change']['event_id'] = 'sr:season:1234' }
+
+      it 'does nothing' do
+        expect_any_instance_of(Event).not_to receive(:save!)
+        subject_api.handle
+      end
+    end
   end
 end

@@ -6,7 +6,7 @@ module OddsFeed
       included do
         protected
 
-        attr_reader :event
+        attr_reader :event, :external_id
 
         def create_event
           @event = api_event
@@ -22,6 +22,17 @@ module OddsFeed
 
         def api_event
           @api_event ||= api_client.event(external_id).result
+        end
+
+        def valid_event_type?
+          external_id.to_s.match?(EventAdapter::MATCH_TYPE_REGEXP)
+        end
+
+        def invalid_event_type
+          log_job_failure(
+            "Event with external ID #{external_id} could not be processed yet"
+          )
+          nil
         end
 
         private

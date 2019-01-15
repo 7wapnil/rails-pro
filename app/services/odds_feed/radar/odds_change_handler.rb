@@ -6,6 +6,7 @@ module OddsFeed
 
       def handle
         return unless event_data
+        return invalid_event_type unless valid_event_type?
 
         create_or_update_event!
         touch_event!
