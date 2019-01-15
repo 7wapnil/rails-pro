@@ -5,7 +5,7 @@ class CustomerBonus < ApplicationRecord
   belongs_to :customer
   belongs_to :wallet
   belongs_to :original_bonus, class_name: 'Bonus', optional: true
-  belongs_to :source, class_name: Entry.name, optional: true
+  belongs_to :entry, optional: true
 
   attr_reader :amount
 
@@ -53,6 +53,6 @@ class CustomerBonus < ApplicationRecord
   end
 
   def applied?
-    source_id.present?
+    entry_id.present?
   end
 end

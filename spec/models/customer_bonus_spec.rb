@@ -26,7 +26,7 @@ describe CustomerBonus do
     end
 
     it '#applied?' do
-      customer_bonus = build(:customer_bonus, source_id: 1)
+      customer_bonus = build(:customer_bonus, entry_id: 1)
 
       expect(customer_bonus).to be_applied
     end
