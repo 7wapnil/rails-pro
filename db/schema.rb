@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_15_151929) do
+ActiveRecord::Schema.define(version: 2019_01_15_161822) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 2019_01_15_151929) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["balance_entry_id"], name: "index_balance_entry_requests_on_balance_entry_id"
+    t.index ["entry_request_id", "kind"], name: "index_balance_entry_requests_on_entry_request_id_and_kind", unique: true
     t.index ["entry_request_id"], name: "index_balance_entry_requests_on_entry_request_id"
   end
 

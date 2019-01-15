@@ -176,7 +176,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
     @real_money_total ||= entry_request
                           .balance_entry_requests
-                          .real_money.sum(:amount)
+                          .real_money.first.amount
   end
 
   def bonus_money_total
@@ -184,6 +184,6 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
     @bonus_money_total ||= entry_request
                            .balance_entry_requests
-                           .bonus.sum(:amount)
+                           .bonus.first.amount
   end
 end
