@@ -112,6 +112,7 @@ GEM
     cryptocompare (0.14.0)
       faraday
       json
+    database_cleaner (1.7.0)
     devise (4.5.0)
       bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
@@ -518,6 +519,7 @@ DEPENDENCIES
   capybara (>= 2.15, < 4.0)
   chromedriver-helper
   cryptocompare
+  database_cleaner
   devise
   dotenv-rails
   factory_bot_rails
