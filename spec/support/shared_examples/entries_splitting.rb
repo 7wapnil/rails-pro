@@ -57,6 +57,6 @@ shared_examples 'entries splitting without bonus' do
   end
 
   it 'creates only 1 balance entry request' do
-    expect(EntryRequest.count).to eq(1)
+    expect(BalanceEntryRequest.count).to eq(1)
   end
 end
