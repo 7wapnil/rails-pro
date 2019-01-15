@@ -152,6 +152,9 @@ describe GraphQL, '#titles' do
     let(:control_count) { rand(1..3) }
     let(:event) { title.events.first }
 
+    let(:inactive_event) { create(:event, :inactive, title: title) }
+    let(:invisible_event) { create(:event, :invisible, title: title) }
+
     let(:result_event_scope_ids) do
       result_titles.first['event_scopes'].map { |scope| scope['id'].to_i }
     end
@@ -159,11 +162,15 @@ describe GraphQL, '#titles' do
     let!(:control_event_scopes) do
       create_list(:event_scope, control_count,
                   events: [event],
-                  kind: EventScope::TOURNAMENT,
                   title: title)
     end
 
-    it 'returns event scopes attributes' do
+    before do
+      create(:event_scope, events: [inactive_event], title: title)
+      create(:event_scope, events: [invisible_event], title: title)
+    end
+
+    it 'returns event_scopes attributes' do
       expect(result_event_scope_ids)
         .to match_array(control_event_scopes.map(&:id))
     end
