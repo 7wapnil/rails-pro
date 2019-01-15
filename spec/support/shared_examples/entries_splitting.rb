@@ -5,15 +5,11 @@ shared_examples 'entries splitting with bonus' do
       kind: Balance::BONUS
     }
 
-    expect {}.to have_balance_entry_request
-      .with_attributes(attrs)
-      .count(1)
+    expect(BalanceEntryRequest.where(attrs).count).to eq(1)
   end
 
   it 'creates single balance entry for bonus money' do
-    expect {}.to have_balance_entry
-      .with_attributes(amount: bonus_amount)
-      .count(1)
+    expect(BalanceEntry.where(amount: bonus_amount).count).to eq(1)
   end
 
   it 'creates single real money balance entry request' do
@@ -22,19 +18,19 @@ shared_examples 'entries splitting with bonus' do
       kind: Balance::REAL_MONEY
     }
 
-    expect {}.to have_balance_entry_request
-      .with_attributes(attrs)
-      .count(1)
+    expect(BalanceEntryRequest.where(attrs).count).to eq(1)
   end
 
   it 'creates single balance entry for real money' do
-    expect {}.to have_balance_entry
-      .with_attributes(amount: real_money_amount)
-      .count(1)
+    expect(BalanceEntry.where(amount: real_money_amount).count).to eq(1)
   end
 
   it 'creates only 2 balance entries' do
-    expect {}.to have_balance_entry.count(2)
+    expect(BalanceEntry.count).to eq(2)
+  end
+
+  it 'creates only 2 balance entry requests' do
+    expect(BalanceEntryRequest.count).to eq(2)
   end
 end
 
@@ -45,23 +41,22 @@ shared_examples 'entries splitting without bonus' do
       kind: Balance::REAL_MONEY
     }
 
-    expect {}.to have_balance_entry_request
-      .with_attributes(attrs)
-      .count(1)
+    expect(BalanceEntryRequest.where(attrs).count).to eq(1)
   end
 
   it 'creates single balance entry for real money' do
-    expect {}.to have_balance_entry
-      .with_attributes(amount: real_money_amount)
-      .count(1)
+    expect(BalanceEntry.where(amount: real_money_amount).count).to eq(1)
   end
 
   it "don't create bonus balance entry request" do
-    expect {}.not_to have_balance_entry_request
-      .with_attributes(kind: Balance::BONUS)
+    expect(BalanceEntryRequest.bonus.count).to be_zero
   end
 
   it 'creates only 1 balance entry' do
-    expect {}.to have_balance_entry.count(1)
+    expect(BalanceEntry.count).to eq(1)
+  end
+
+  it 'creates only 1 balance entry request' do
+    expect(EntryRequest.count).to eq(1)
   end
 end
