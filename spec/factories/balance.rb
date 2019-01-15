@@ -6,5 +6,13 @@ FactoryBot.define do
     amount { Faker::Number.decimal(3, 2) }
 
     wallet
+
+    trait :bonus do
+      kind { Balance::BONUS }
+    end
+
+    trait :real_money do
+      kind { Balance::REAL_MONEY }
+    end
   end
 end

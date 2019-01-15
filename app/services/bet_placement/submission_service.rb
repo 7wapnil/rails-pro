@@ -61,12 +61,21 @@ module BetPlacement
     end
 
     def amount_calculations
-      @amount_calculations ||= BalanceCalculations::BetWithBonus.call(@bet)
+      @amount_calculations ||= begin
+        BalanceCalculations::BetWithBonus.call(@bet, ratio)
+      end
     end
 
     def wallet
-      @wallet ||= Wallet.find_by(customer_id: @bet.customer_id,
-                                 currency_id: @bet.currency_id)
+      @wallet ||= Wallet.find_or_create_by(customer_id: @bet.customer_id,
+                                           currency_id: @bet.currency_id)
+    end
+
+    def ratio
+      # TODO: clarify with team this implementation
+      return 1.0 if @bet.customer_bonus.nil? || @bet.customer_bonus.expired?
+
+      wallet.ratio_with_bonus
     end
 
     def entry_request

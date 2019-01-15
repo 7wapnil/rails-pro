@@ -9,6 +9,10 @@ describe BetPlacement::SubmissionService do
       currency: currency
     )
   end
+
+  let(:bonus_balance) { create(:balance, :bonus, wallet: wallet) }
+  let(:real_money_balance) { create(:balance, wallet: wallet) }
+
   let!(:bet) do
     create(
       :bet,
@@ -44,6 +48,7 @@ describe BetPlacement::SubmissionService do
       min_amount: -100
     )
     create(:balance, wallet: wallet, amount: bet.amount * 2)
+    create(:balance, :bonus, wallet: wallet, amount: 0)
   end
 
   it_behaves_like 'callable service'

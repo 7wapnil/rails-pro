@@ -31,6 +31,7 @@ class Wallet < ApplicationRecord
   end
 
   def ratio_with_bonus
+    # TODO: clarify with team, what to do if wallet without balances?
     @ratio_with_bonus ||= begin
       bonus_balance_amount = bonus_balance.amount
       real_balance_amount = real_money_balance.amount

@@ -1,7 +1,8 @@
 module BalanceCalculations
   class BetWithBonus < ApplicationService
-    def initialize(bet)
+    def initialize(bet, ratio)
       @bet = bet
+      @ratio = ratio
     end
 
     def call
@@ -13,14 +14,14 @@ module BalanceCalculations
 
     private
 
-    attr_reader :bet
+    attr_reader :bet, :ratio
 
     def calculate_bonus_amount
       bet.amount - calculate_real_amount
     end
 
     def calculate_real_amount
-      @calculate_real_amount ||= bet.amount * bet.ratio
+      @calculate_real_amount ||= bet.amount * ratio
     end
   end
 end

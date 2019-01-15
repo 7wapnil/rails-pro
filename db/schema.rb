@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_09_113252) do
+ActiveRecord::Schema.define(version: 2019_01_14_141949) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,7 +94,6 @@ ActiveRecord::Schema.define(version: 2019_01_09_113252) do
     t.datetime "validation_ticket_sent_at"
     t.string "settlement_status"
     t.bigint "customer_bonus_id"
-    t.decimal "ratio", precision: 8, scale: 2
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_bonus_id"], name: "index_bets_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
