@@ -15,7 +15,7 @@ FactoryBot.define do
           :with_entry,
           customer: deposit_limit.customer,
           currency: deposit_limit.currency,
-          kind:     :deposit,
+          kind:     EntryRequest::DEPOSIT,
           amount:   deposit_limit.value
         )
       end
