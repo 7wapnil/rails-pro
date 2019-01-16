@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :label_join do
-    label { nil }
+    label
+    association :labelable, factory: :customer
   end
 end
