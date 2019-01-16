@@ -7,8 +7,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   conflict_target :external_id
   conflict_updatable :name, :status, :traded_live, :payload
 
-  delegate :competitors, to: :details
-
   UPDATABLE_ATTRIBUTES = %w[name description start_at end_at].freeze
 
   PRIORITIES = [0, 1, 2].freeze
