@@ -17,6 +17,8 @@ describe BetPlacement::SubmissionService do
       .with(entry_request)
 
     allow(EntryCurrencyRule).to receive(:find_by!).and_return(rule)
+
+    allow_any_instance_of(Wallet).to receive(:ratio_with_bonus).and_return(0.75)
     entry
   end
 

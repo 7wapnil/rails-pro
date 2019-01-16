@@ -7,4 +7,5 @@ describe BalanceEntryRequest, type: :model do
   it { is_expected.to validate_numericality_of(:amount) }
 
   it { expect(described_class.kinds).to eq(Balance.kinds) }
+  it { is_expected.to have_one(:balance).through(:balance_entry) }
 end

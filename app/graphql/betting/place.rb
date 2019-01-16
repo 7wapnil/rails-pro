@@ -17,12 +17,10 @@ module Betting
       Bet.create!(bet_attrs(bet_payload))
     end
 
-    def bet_attrs(bet_payload) # rubocop:disable Metrics/MethodLength
+    def bet_attrs(bet_payload)
       currency = Currency.find_by!(code: bet_payload[:currencyCode])
       amount = bet_payload[:amount]
       bonus = applicable_bonus(bet_payload)
-      wallet = @current_customer.wallets.where(currency: currency).take!
-      ratio = bonus ? wallet.ratio_with_bonus : 1
       {
         customer: @current_customer,
         odd: Odd.find(bet_payload[:oddId]),
@@ -30,7 +28,6 @@ module Betting
         amount: amount,
         odd_value: bet_payload[:oddValue],
         status: Bet::INITIAL,
-        ratio: ratio,
         customer_bonus: bonus
       }
     end

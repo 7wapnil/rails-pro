@@ -25,10 +25,10 @@ describe CustomerBonus do
       customer_bonus.close!(deactivation_strategy)
     end
 
-    it '#activated?' do
-      customer_bonus = build(:customer_bonus, source_id: 1)
+    it '#applied?' do
+      customer_bonus = build(:customer_bonus, entry_id: 1)
 
-      expect(customer_bonus).to be_activated
+      expect(customer_bonus).to be_applied
     end
 
     describe '#expired?' do
@@ -49,6 +49,36 @@ describe CustomerBonus do
           created_at: Time.zone.now - 2.days
         )
         expect(customer_bonus).to be_expired
+      end
+    end
+
+    describe '#activated?' do
+      let(:customer_bonus) { build(:customer_bonus, rollover_balance: 12) }
+
+      it 'returns true when bonus is not expired and has rollover balance' do
+        allow(customer_bonus).to receive(:expired?).and_return(false)
+
+        expect(customer_bonus).to be_activated
+      end
+
+      it 'returns false when bonus expired' do
+        allow(customer_bonus).to receive(:expired?).and_return(true)
+
+        expect(customer_bonus).not_to be_activated
+      end
+
+      it 'returns false when bonus without rollover_balance' do
+        allow(customer_bonus).to receive(:expired?).and_return(false)
+        customer_bonus.rollover_balance = nil
+
+        expect(customer_bonus).not_to be_activated
+      end
+
+      it 'returns false when bonus is expired and without rollover_balance' do
+        allow(customer_bonus).to receive(:expired?).and_return(true)
+        customer_bonus.rollover_balance = nil
+
+        expect(customer_bonus).not_to be_activated
       end
     end
 
