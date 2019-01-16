@@ -258,7 +258,7 @@ ActiveRecord::Schema.define(version: 2019_01_09_113252) do
   end
 
   create_table "entry_requests", force: :cascade do |t|
-    t.string "status", default: "pending"
+    t.string "status", default: "initial"
     t.json "result"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

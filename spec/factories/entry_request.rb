@@ -2,9 +2,9 @@
 
 FactoryBot.define do
   factory :entry_request do
-    status  { EntryRequest::PENDING }
+    status  { EntryRequest::INITIAL }
     mode    { EntryRequest::CASHIER }
-    kind    { EntryRequest.kinds.keys.first }
+    kind    { EntryRequest::DEPOSIT }
     amount  { Random.new.rand(1.00..200.00).round(2) }
     comment { Faker::Lorem.paragraph }
 

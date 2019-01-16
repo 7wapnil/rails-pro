@@ -13,6 +13,7 @@ class EntryRequest < ApplicationRecord
   default_scope { order(created_at: :desc) }
 
   enum status: {
+    initial:   INITIAL   = 'initial',
     pending:   PENDING   = 'pending',
     succeeded: SUCCEEDED = 'succeeded',
     failed:    FAILED    = 'failed'
