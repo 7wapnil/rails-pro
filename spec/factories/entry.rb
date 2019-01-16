@@ -11,7 +11,9 @@ FactoryBot.define do
     before(:create) do |entry|
       create(:entry_currency_rule,
              currency: entry.currency,
-             kind: entry.kind)
+             kind: entry.kind,
+             min_amount: 0,
+             max_amount: entry.amount * 2)
     end
   end
 end
