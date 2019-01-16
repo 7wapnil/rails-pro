@@ -2,10 +2,15 @@ module OddsFeed
   module Radar
     # rubocop:disable Metrics/ClassLength
     class BetSettlementHandler < RadarMessageHandler
+      def initialize(payload)
+        super(payload)
+        @market_external_ids = []
+      end
+
       def handle
         validate_message
         markets.each do |market_data|
-          update_market(market_data)
+          store_market_id(market_data)
 
           market_data['outcome'].each do |outcome|
             generator = ExternalId.new(event_id: input_data['event_id'],
@@ -18,25 +23,23 @@ module OddsFeed
             process_bets(external_id)
           end
         end
+
+        update_markets
       end
 
       private
 
-      def update_market(market_data)
+      def store_market_id(market_data)
         generator = ExternalId.new(event_id: input_data['event_id'],
                                    market_id: market_data['id'],
                                    specs: market_data['specs'])
-        update_market_status(generator.generate)
+        @market_external_ids << generator.generate
       end
 
-      def update_market_status(external_id)
+      def update_markets
         Market
-          .find_by!(external_id: external_id)
-          .update(status: Market::SETTLED)
-      rescue ActiveRecord::RecordNotFound
-        log_job_message(
-          :warn, "Market with ID #{external_id} not found"
-        )
+          .where(external_id: @market_external_ids)
+          .update_all(status: Market::SETTLED)
       end
 
       def invalid_bet_ids
