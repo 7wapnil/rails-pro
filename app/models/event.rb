@@ -157,7 +157,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def details
-    ::EventDetails::Factory.build(self)
+    @details ||= EventDetails::Factory.build(self)
   end
 
   def state
