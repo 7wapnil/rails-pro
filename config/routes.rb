@@ -90,6 +90,19 @@ Rails.application.routes.draw do
 
   resources :market_templates, only: %i[index update]
 
+  namespace :redirection do
+    resources :deposits, only: [] do
+      collection do
+        get :initiate
+        get :success
+        get :error
+        get :pending
+        get :back
+        get :webhook
+      end
+    end
+  end
+
   devise_for :users, controllers: {
     sessions: 'users/sessions'
   }
