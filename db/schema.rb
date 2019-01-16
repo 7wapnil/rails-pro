@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_09_113252) do
+ActiveRecord::Schema.define(version: 2019_01_15_091946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -91,8 +91,8 @@ ActiveRecord::Schema.define(version: 2019_01_09_113252) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.datetime "validation_ticket_sent_at"
     t.string "settlement_status"
+    t.datetime "validation_ticket_sent_at"
     t.bigint "customer_bonus_id"
     t.decimal "ratio", precision: 8, scale: 2
     t.index ["currency_id"], name: "index_bets_on_currency_id"
@@ -171,6 +171,7 @@ ActiveRecord::Schema.define(version: 2019_01_09_113252) do
     t.decimal "rollover_balance", precision: 8, scale: 2
     t.decimal "rollover_initial_value", precision: 8, scale: 2
     t.string "expiration_reason"
+    t.integer "source_id"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["deleted_at"], name: "index_customer_bonuses_on_deleted_at"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -395,6 +396,7 @@ ActiveRecord::Schema.define(version: 2019_01_09_113252) do
     t.datetime "updated_at", null: false
     t.string "kind", default: "esports"
     t.string "external_id"
+    t.boolean "show_category_in_navigation", default: true
     t.index ["external_id"], name: "index_titles_on_external_id", unique: true
   end
 
