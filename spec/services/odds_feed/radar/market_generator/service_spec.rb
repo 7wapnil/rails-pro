@@ -38,6 +38,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
     before do
       allow(WebSocket::Client).to receive(:instance).and_return(web_socket)
       allow(web_socket).to        receive(:emit)
+      allow(web_socket).to        receive(:trigger_event_update)
 
       allow(OddsFeed::Radar::MarketGenerator::OddsGenerator)
         .to receive(:call)

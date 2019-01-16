@@ -258,36 +258,4 @@ describe Event do
       it { expect(event).to be_alive }
     end
   end
-
-  context 'callbacks' do
-    it 'emits web socket event on create' do
-      event = create(:event)
-      expect(WebSocket::Client.instance)
-        .to have_received(:emit)
-        .with(WebSocket::Signals::EVENT_CREATED,
-              id: event.id.to_s)
-    end
-
-    it 'emits web socket event on update' do
-      allow_any_instance_of(described_class).to receive(:emit_created)
-      event = create(:event)
-      event.assign_attributes(name: 'New name')
-      event.save!
-      expect(WebSocket::Client.instance)
-        .to have_received(:emit)
-        .with(WebSocket::Signals::EVENT_UPDATED,
-              id: event.id.to_s,
-              changes: { name: 'New name' })
-    end
-
-    it 'does not emit web socket event if no changes' do
-      allow_any_instance_of(described_class).to receive(:emit_created)
-      event = create(:event)
-      event.assign_attributes(updated_at: Time.now)
-      event.save!
-      expect(WebSocket::Client.instance)
-        .not_to have_received(:emit)
-        .with(WebSocket::Signals::EVENT_UPDATED, anything)
-    end
-  end
 end

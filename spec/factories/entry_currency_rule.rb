@@ -10,8 +10,7 @@ FactoryBot.define do
 
     initialize_with do
       EntryCurrencyRule
-        .where(currency: currency, kind: kind)
-        .first_or_initialize do |rule|
+        .find_or_initialize_by(currency: currency, kind: kind) do |rule|
           rule.assign_attributes(
             min_amount: min_amount,
             max_amount: max_amount

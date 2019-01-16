@@ -25,6 +25,12 @@ describe CustomerBonus do
       customer_bonus.close!(deactivation_strategy)
     end
 
+    it '#activated?' do
+      customer_bonus = build(:customer_bonus, source_id: 1)
+
+      expect(customer_bonus).to be_activated
+    end
+
     describe '#expired?' do
       it 'returns false for active bonus' do
         customer_bonus = create(:customer_bonus)

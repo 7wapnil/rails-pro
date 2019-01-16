@@ -34,6 +34,10 @@ build:
       code: bundle exec haml-lint --fail-level=warning
 
     - script:
+      name: factorybot factories lint
+      code: rake factory_bot:lint
+
+    - script:
       name: rspec
       code: bundle exec rspec
 

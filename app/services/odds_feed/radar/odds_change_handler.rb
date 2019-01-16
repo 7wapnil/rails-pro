@@ -6,6 +6,7 @@ module OddsFeed
 
       def handle
         return unless event_data
+        return invalid_event_type unless valid_event_type?
 
         create_or_update_event!
         touch_event!
@@ -193,8 +194,7 @@ module OddsFeed
       end
 
       def emit_websocket
-        WebSocket::Client.instance.emit(WebSocket::Signals::EVENT_UPDATED,
-                                        id: event.id.to_s)
+        WebSocket::Client.instance.trigger_event_update(event)
       end
     end
     # rubocop:enable Metrics/ClassLength

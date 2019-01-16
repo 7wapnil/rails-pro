@@ -16,6 +16,7 @@ describe Deposits::PlacementService do
     create(:customer_bonus,
            customer: customer,
            percentage: percentage,
+           wallet: wallet,
            rollover_multiplier: rollover_multiplier)
     allow(EntryCurrencyRule).to receive(:find_by!) { rule }
     allow(Currency).to receive(:find_by!) { currency }
@@ -50,25 +51,31 @@ describe Deposits::PlacementService do
     end
   end
 
-  context 'with customer bonus' do
-    let(:calculated_percentage) { amount * percentage / 100.0 }
+  it 'closes customer bonus if expired' do
+    bonus = wallet.customer_bonus
+    allow(bonus).to receive(:expired?).and_return(true)
 
+    expect(bonus).to receive(:close!)
+
+    service_call
+  end
+
+  context 'with customer bonus' do
     before do
       service_call
     end
 
-    it 'creates balance entry requests for real and bonus balances' do
-      kinds = BalanceEntryRequest.pluck(:kind)
-
-      expect(kinds).to match_array([Balance::REAL_MONEY, Balance::BONUS])
+    it_behaves_like 'entries splitting with bonus' do
+      let(:real_money_amount) { 100 }
+      let(:bonus_amount) { amount * percentage / 100.0 }
     end
 
-    it 'assigns correct balance entry request real money amount' do
-      expect(real_balance_request.amount).to eq(amount)
+    it 'attaches entry to the customer bonus' do
+      expect(wallet.customer_bonus.source).to be_instance_of(Entry)
     end
 
-    it 'assigns correct balance entry request bonus money amount' do
-      expect(bonus_balance_request.amount).to eq(calculated_percentage)
+    it 'applies customer bonus only once' do
+      expect { service_call }.not_to change(BalanceEntryRequest.bonus, :count)
     end
   end
 
@@ -79,14 +86,9 @@ describe Deposits::PlacementService do
       service_call
     end
 
-    it 'creates balance entry request only for real money' do
-      kinds = BalanceEntryRequest.pluck(:kind)
-
-      expect(kinds).to match_array([Balance::REAL_MONEY])
-    end
-
-    it 'assigns correct balance entry request real money amount' do
-      expect(real_balance_request.amount).to eq(amount)
+    it_behaves_like 'entries splitting without bonus' do
+      let(:real_money_amount) { 100 }
+      let(:bonus_amount) { amount * percentage / 100.0 }
     end
   end
 end

@@ -104,4 +104,5 @@ group :test do
   gem 'rspec-sidekiq'
   gem 'timecop'
   gem 'webmock'
+  gem 'database_cleaner' # utils only, not used in rspec
 end

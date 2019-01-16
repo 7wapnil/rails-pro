@@ -202,8 +202,9 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
     created_event = Event.find_by!(external_id: event_id)
     expect(WebSocket::Client.instance)
-      .to have_received(:emit)
-      .with(WebSocket::Signals::EVENT_UPDATED, id: created_event.id.to_s)
+      .to have_received(:trigger_event_update)
+      .with(created_event)
+      .twice
   end
 
   it 'calls for live coverage booking' do
@@ -354,6 +355,17 @@ describe OddsFeed::Radar::OddsChangeHandler do
       it 'and raise an error' do
         expect { subject_api.handle }
           .to raise_error(ActiveRecord::RecordInvalid)
+      end
+    end
+
+    context 'on unsupported external id' do
+      subject { described_class.new(payload) }
+
+      before { payload['odds_change']['event_id'] = 'sr:season:1234' }
+
+      it 'does nothing' do
+        expect_any_instance_of(Event).not_to receive(:save!)
+        subject_api.handle
       end
     end
   end
