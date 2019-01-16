@@ -292,7 +292,7 @@ describe GraphQL, '#events' do
     end
   end
 
-  context 'details' do
+  context 'competitors' do
     let(:payload) do
       { competitors: {
         competitor: [
@@ -304,11 +304,9 @@ describe GraphQL, '#events' do
     let(:query) do
       %({ events {
             id
-            details {
-              competitors {
-                id
-                name
-              }
+            competitors {
+              id
+              name
             }
       } })
     end
@@ -320,8 +318,7 @@ describe GraphQL, '#events' do
     it 'returns events with details' do
       expect(result['data']).not_to be_nil
       expect(result['data']['events'].count).to eq(1)
-      expect(result['data']['events'][0]['details']['competitors'].count)
-        .to eq(2)
+      expect(result['data']['events'][0]['competitors'].count).to eq(2)
     end
   end
 

@@ -5,7 +5,6 @@ module Events
     field :id, !types.ID
     field :name, !types.String
     field :description, !types.String
-    field :details, Events::EventDetailsType
     field :competitors, !types[Events::EventCompetitorType]
     field :priority, !types.Int
     field :visible, !types.Boolean
