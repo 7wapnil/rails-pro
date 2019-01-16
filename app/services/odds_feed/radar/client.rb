@@ -20,6 +20,12 @@ module OddsFeed
       end
 
       def event(id, cache: nil)
+        unless supported_external_id?(id)
+          log_job_failure("Payload for event #{id} is not supported yet")
+
+          return EventAdapter.new
+        end
+
         route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"
         payload = request(route, cache: cache)
                   .dig('fixtures_fixture', 'fixture')
@@ -119,6 +125,10 @@ module OddsFeed
       end
 
       private
+
+      def supported_external_id?(id)
+        id.to_s.match?(EventAdapter::MATCH_TYPE_REGEXP)
+      end
 
       def recovery_request_query_is_valid?(query)
         allowed_params = %i[request_id node_id]

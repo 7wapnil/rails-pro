@@ -12,6 +12,8 @@ module OddsFeed
       }.freeze
 
       def handle
+        return invalid_event_type unless valid_event_type?
+
         if event
           log_on_update
           event.update_from!(api_event)

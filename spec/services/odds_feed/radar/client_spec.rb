@@ -17,16 +17,6 @@ describe OddsFeed::Radar::Client do
 
       subject.who_am_i
     end
-
-    it 'returns adapter on event request' do
-      event_id = 'sr:match:10001'
-      route = "#{api_domain}/sports/en/sport_events/#{event_id}/fixture.xml"
-      stub_request(:any, route)
-        .with(headers: headers)
-        .to_return(body: '')
-
-      expect(subject.event(event_id)).to be_a(OddsFeed::Radar::EventAdapter)
-    end
   end
 
   context 'unexpected responses' do
@@ -59,6 +49,32 @@ describe OddsFeed::Radar::Client do
 
       expect { subject.who_am_i }
         .to raise_error(HTTParty::ResponseError, 'Malformed response body')
+    end
+  end
+
+  describe '#event' do
+    let(:event_id) { 'sr:match:10001' }
+    let(:route) do
+      "#{api_domain}/sports/en/sport_events/#{event_id}/fixture.xml"
+    end
+
+    it 'returns an adapter' do
+      stub_request(:any, route).with(headers: headers).to_return(body: '')
+
+      expect(subject.event(event_id)).to be_a(OddsFeed::Radar::EventAdapter)
+    end
+
+    context 'handle unexpected event types' do
+      let(:event_id) { 'sr:season:10001' }
+
+      it 'and returns an adapter' do
+        expect(subject.event(event_id)).to be_a(OddsFeed::Radar::EventAdapter)
+      end
+
+      it "and doesn't try to achieve Radar API" do
+        expect(OddsFeed::Radar::ResponseReader).not_to receive(:call)
+        subject.event(event_id)
+      end
     end
   end
 
