@@ -91,8 +91,8 @@ ActiveRecord::Schema.define(version: 2019_01_15_091946) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.string "settlement_status"
     t.datetime "validation_ticket_sent_at"
+    t.string "settlement_status"
     t.bigint "customer_bonus_id"
     t.decimal "ratio", precision: 8, scale: 2
     t.index ["currency_id"], name: "index_bets_on_currency_id"
