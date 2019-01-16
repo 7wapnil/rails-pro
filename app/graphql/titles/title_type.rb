@@ -6,10 +6,10 @@ module Titles
     field :name, !types.String
     field :kind, !types.String
     field :show_category_in_navigation, !types.Boolean
-    field :event_scopes, !types[Types::ScopeType]
+    field :event_scopes, !types[Types::ScopeType],
+          property: :dashboard_event_scopes
 
-    field :tournaments, types[Types::ScopeType] do
-      resolve ->(obj, _args, _ctx) { obj.tournaments.with_dashboard_events }
-    end
+    field :tournaments, !types[Types::ScopeType],
+          property: :dashboard_tournaments
   end
 end
