@@ -4,7 +4,7 @@ module Redirection
       entry_request =
         ::Deposits::InitiateHostedDepositService.call(
           customer: customer,
-          currency_code: initiate_params[:currency_code],
+          currency: currency_by_code,
           amount: initiate_params[:amount],
           bonus_code: initiate_params[:bonus_code]
         )
@@ -33,6 +33,10 @@ module Redirection
     end
 
     private
+
+    def currency_by_code
+      Currency.find_by(code: initiate_params[:currency_code])
+    end
 
     def initiate_request_url(entry_request)
       return request_failure_url(entry_request) if entry_request.failed?
