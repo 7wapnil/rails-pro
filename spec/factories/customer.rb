@@ -37,5 +37,9 @@ FactoryBot.define do
         create(:betting_limit, customer: customer, title: title)
       end
     end
+
+    trait :with_address do
+      association :address, factory: %i[address with_state], strategy: :build
+    end
   end
 end
