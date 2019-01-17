@@ -28,7 +28,7 @@ module Redirection
     private
 
     def callback(state)
-      redirect_url = ENV['FRONTEND_URL'] + '?state=' + state.to_s
+      redirect_url = [ENV['FRONTEND_URL'], '?state=', state].join
       render body: redirect_url
     end
   end
