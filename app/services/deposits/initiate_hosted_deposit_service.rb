@@ -1,6 +1,6 @@
 module Deposits
   class InitiateHostedDepositService < ApplicationService
-    def initialize(customer, currency_code, amount, bonus_code = nil)
+    def initialize(customer:, currency_code:, amount:, bonus_code: nil)
       @customer = customer
       @currency_code = currency_code
       @amount = amount

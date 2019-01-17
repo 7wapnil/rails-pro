@@ -3,10 +3,10 @@ module Redirection
     def initiate
       entry_request =
         ::Deposits::InitiateHostedDepositService.call(
-          customer,
-          initiate_params[:currency_code],
-          initiate_params[:amount],
-          initiate_params[:bonus_code]
+          customer: customer,
+          currency_code: initiate_params[:currency_code],
+          amount: initiate_params[:amount],
+          bonus_code: initiate_params[:bonus_code]
         )
 
       redirect_to initiate_request_url(entry_request)
