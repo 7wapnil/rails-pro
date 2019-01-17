@@ -16,7 +16,7 @@ describe Redirection::DepositsController do
   end
 
   describe '#webhook' do
-    subject { get :initiate }
+    subject { get :webhook }
 
     it 'does not raise' do
       expect { subject }.not_to raise_error
