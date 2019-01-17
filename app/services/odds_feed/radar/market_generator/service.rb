@@ -88,30 +88,12 @@ module OddsFeed
 
         def emit_events
           emit_markets_update
-          emit_odds_update
         end
 
         def emit_markets_update
-          data = @markets.map do |market|
-            { id: market.id.to_s,
-              status: market.status,
-              priority: market.priority }
+          @markets.map do |market|
+            WebSocket::Client.instance.trigger_market_update(market)
           end
-          WebSocket::Client.instance.emit(WebSocket::Signals::MARKETS_UPDATED,
-                                          id: @event.id.to_s,
-                                          data: data)
-        end
-
-        def emit_odds_update
-          data = @odds.map do |odd|
-            { id: odd.id.to_s,
-              marketId: odd.market.id.to_s,
-              status: odd.status,
-              value: odd.value }
-          end
-          WebSocket::Client.instance.emit(WebSocket::Signals::ODDS_UPDATED,
-                                          id: @event.id.to_s,
-                                          data: data)
         end
       end
     end

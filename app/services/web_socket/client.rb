@@ -14,6 +14,17 @@ module WebSocket
       trigger_tournament_event event
     end
 
+    def trigger_market_update(market)
+      ArcanebetSchema.subscriptions.trigger(
+        SubscriptionFields::MARKET_UPDATED,
+        { id: market.id },
+        market
+      )
+
+      trigger_event_market(market)
+      trigger_category_market(market)
+    end
+
     def emit!(event, data = {})
       Rails.logger.debug "Sending websocket event '#{event}', data: #{data}"
       message = ActiveSupport::JSON.encode(event: event, data: data)
@@ -65,6 +76,23 @@ module WebSocket
         { tournament: event.tournament&.id,
           live: event.in_play? },
         event
+      )
+    end
+
+    def trigger_event_market(market)
+      ArcanebetSchema.subscriptions.trigger(
+        SubscriptionFields::EVENT_MARKET_UPDATED,
+        { eventId: market.event_id },
+        market
+      )
+    end
+
+    def trigger_category_market(market)
+      ArcanebetSchema.subscriptions.trigger(
+        SubscriptionFields::CATEGORY_MARKET_UPDATED,
+        { eventId: market.event_id,
+          category: market.category },
+        market
       )
     end
   end

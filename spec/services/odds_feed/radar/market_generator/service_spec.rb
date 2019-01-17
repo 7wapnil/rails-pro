@@ -39,6 +39,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
       allow(WebSocket::Client).to receive(:instance).and_return(web_socket)
       allow(web_socket).to        receive(:emit)
       allow(web_socket).to        receive(:trigger_event_update)
+      allow(web_socket).to        receive(:trigger_market_update)
 
       allow(OddsFeed::Radar::MarketGenerator::OddsGenerator)
         .to receive(:call)
@@ -90,13 +91,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
       end
 
       it 'emit web-socket events' do
-        expect(web_socket)
-          .to receive(:emit)
-          .with(WebSocket::Signals::MARKETS_UPDATED, hash_including(:id, :data))
-        expect(web_socket)
-          .to receive(:emit)
-          .with(WebSocket::Signals::ODDS_UPDATED, hash_including(:id, :data))
-
+        expect(web_socket).to receive(:trigger_market_update)
         subject
       end
     end
