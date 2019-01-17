@@ -1,7 +1,8 @@
 module Redirection
   class DepositsController < ActionController::Base
     def initiate
-      redirect_to ENV['SAFECHARGE_HOSTED_PAYMENTS_URL']
+      redirect_url = ENV['SAFECHARGE_HOSTED_PAYMENTS_URL']
+      render body: 'NotImplemented: Redirect to Safecharge: ' + redirect_url
     end
 
     def success
@@ -27,7 +28,8 @@ module Redirection
     private
 
     def callback(state)
-      redirect_to ENV['FRONTEND_URL'] + '?state=' + state
+      redirect_url = ENV['FRONTEND_URL'] + '?state=' + state.to_s
+      render body: redirect_url
     end
   end
 end
