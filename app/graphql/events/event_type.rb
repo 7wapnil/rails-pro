@@ -5,7 +5,10 @@ module Events
     field :id, !types.ID
     field :name, !types.String
     field :description, !types.String
-    field :details, Events::EventDetailsType
+    field :competitors, !types[Events::EventCompetitorType] do
+      resolve ->(obj, _args, _ctx) { obj.details.competitors }
+    end
+
     field :priority, !types.Int
     field :visible, !types.Boolean
     field :title, Titles::TitleType

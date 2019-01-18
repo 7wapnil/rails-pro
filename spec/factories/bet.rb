@@ -4,7 +4,6 @@ FactoryBot.define do
   factory :bet do
     amount    { Faker::Number.decimal(2, 2) }
     odd_value { odd.value }
-    ratio     { 1 }
     status    { StateMachines::BetStateMachine::INITIAL }
 
     odd

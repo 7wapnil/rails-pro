@@ -17,6 +17,7 @@ describe Deposits::PlacementService do
            customer: customer,
            percentage: percentage,
            wallet: wallet,
+           rollover_balance: 20,
            rollover_multiplier: rollover_multiplier)
     allow(EntryCurrencyRule).to receive(:find_by!) { rule }
     allow(Currency).to receive(:find_by!) { currency }
@@ -71,7 +72,7 @@ describe Deposits::PlacementService do
     end
 
     it 'attaches entry to the customer bonus' do
-      expect(wallet.customer_bonus.source).to be_instance_of(Entry)
+      expect(wallet.customer_bonus.entry).to be_instance_of(Entry)
     end
 
     it 'applies customer bonus only once' do

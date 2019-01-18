@@ -50,14 +50,13 @@ describe OddsFeed::Radar::MarketGenerator::Service do
       expect(market.priority).to eq(1)
     end
 
-    it 'sends websocket message on new market creation' do
+    it 'sends websocket message on market update' do
       subject.call
 
       expect(WebSocket::Client.instance)
-        .to have_received(:emit)
-        .with(WebSocket::Signals::MARKETS_UPDATED,
-              id: event.id.to_s,
-              data: anything)
+        .to have_received(:trigger_market_update)
+        .exactly(5)
+        .times
     end
 
     it 'updates market if exists in db' do
@@ -70,20 +69,6 @@ describe OddsFeed::Radar::MarketGenerator::Service do
       subject.call
       updated_market = Market.find_by(external_id: external_id)
       expect(updated_market.updated_at).not_to eq(market.updated_at)
-    end
-
-    it 'does not send websocket message if market not change' do
-      create(:market,
-             external_id: external_id,
-             event: event,
-             name: 'transpiler value',
-             priority: 0,
-             status: :suspended)
-
-      subject.call
-      expect(WebSocket::Client.instance)
-        .not_to have_received(:emit)
-        .with(WebSocket::Signals::MARKET_UPDATED)
     end
 
     it 'sets appropriate status for market' do
@@ -130,16 +115,6 @@ describe OddsFeed::Radar::MarketGenerator::Service do
         subject.call
         expect(Odd.find_by(external_id: "#{external_id}:1").value).to eq(1.3)
         expect(Odd.find_by(external_id: "#{external_id}:2").value).to eq(1.7)
-      end
-
-      it 'sends websocket message on odds update' do
-        subject.call
-
-        expect(WebSocket::Client.instance)
-          .to have_received(:emit)
-          .with(WebSocket::Signals::ODDS_UPDATED,
-                id: event.id.to_s,
-                data: anything)
       end
     end
   end
