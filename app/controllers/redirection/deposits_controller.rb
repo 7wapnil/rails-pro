@@ -1,6 +1,5 @@
 module Redirection
   class DepositsController < ActionController::Base
-    # TODO: Review to remove this endpoint
     def initiate
       entry_request =
         ::Deposits::InitiateHostedDepositService.call(
