@@ -6,6 +6,8 @@ MutationType = GraphQL::ObjectType.define do
   field :activate, function: Account::Activate.new
   field :changePassword, function: Account::ChangePassword.new
 
+  field :requestDeposit, function: Account::DepositRequest.new
+
   field :placeBets, function: Betting::Place.new
   field :deleteFile, function: Documents::DeleteFile.new
 end
