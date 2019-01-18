@@ -1,5 +1,6 @@
 module Redirection
   class DepositsController < ActionController::Base
+    # TODO: Review to remove this endpoint
     def initiate
       entry_request =
         ::Deposits::InitiateHostedDepositService.call(
@@ -13,10 +14,12 @@ module Redirection
     end
 
     def success
+      # TODO: Change entry_request state
       callback(:success)
     end
 
     def error
+      # TODO: Change entry_request state
       callback(:error)
     end
 
@@ -25,10 +28,12 @@ module Redirection
     end
 
     def back
+      # TODO: Change entry_request state
       callback(:back)
     end
 
     def webhook
+      # TODO: Change entry_request state
       head :ok
     end
 
