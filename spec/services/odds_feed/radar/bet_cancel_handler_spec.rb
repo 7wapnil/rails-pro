@@ -30,6 +30,7 @@ describe OddsFeed::Radar::BetCancelHandler do
 
     event = create(:event, external_id: 'sr:match:4711')
     market_one = create(:market,
+                        status: Market::ACTIVE,
                         event: event,
                         external_id: 'sr:match:4711:520/gamenr=1|pointnr=20')
     market_one_odd = create(:odd, market: market_one)
@@ -43,6 +44,7 @@ describe OddsFeed::Radar::BetCancelHandler do
                          created_at: after_range)
 
     market_two = create(:market,
+                        status: Market::ACTIVE,
                         event: event,
                         external_id: 'sr:match:4711:1000')
     market_two_odd = create(:odd, market: market_two)
@@ -53,6 +55,14 @@ describe OddsFeed::Radar::BetCancelHandler do
                          created_at: in_range)
     create_list(:bet, 1, odd: market_two_odd, status: pending_status,
                          created_at: after_range)
+  end
+
+  it 'updates markets status' do
+    subject.handle
+
+    market = Market
+             .find_by!(external_id: 'sr:match:4711:520/gamenr=1|pointnr=20')
+    expect(market.status).to eq(Market::CANCELLED)
   end
 
   describe 'no time range' do

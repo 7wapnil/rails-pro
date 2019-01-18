@@ -19,21 +19,27 @@ describe OddsFeed::Radar::BetSettlementHandler do
       '</bet_settlement>'
     )
   end
-  let(:odd) { create(:odd, external_id: 'sr:match:3432:13:sr:player:222') }
+  let(:market_id) { 'sr:match:3432:13' }
+  let(:market) do
+    create(:market, status: Market::ACTIVE, external_id: market_id)
+  end
+  let(:odd) do
+    create(:odd, market: market, external_id: 'sr:match:3432:13:sr:player:222')
+  end
   let(:odd_secondary) do
-    create(:odd, external_id: 'sr:match:3432:13:sr:player:789')
+    create(:odd, market: market, external_id: 'sr:match:3432:13:sr:player:789')
   end
   let(:odd_third) do
-    create(:odd, external_id: 'sr:match:3432:13:sr:player:123')
+    create(:odd, market: market, external_id: 'sr:match:3432:13:sr:player:123')
   end
   let(:odd_fourth) do
-    create(:odd, external_id: 'sr:match:3432:13:sr:player:111')
+    create(:odd, market: market, external_id: 'sr:match:3432:13:sr:player:111')
   end
   let(:odd_fifth) do
-    create(:odd, external_id: 'sr:match:3432:13:sr:player:456')
+    create(:odd, market: market, external_id: 'sr:match:3432:13:sr:player:456')
   end
   let(:odd_not_from_payload) do
-    create(:odd, external_id: 'sr:match:3432:13:sr:player:999')
+    create(:odd, market: market, external_id: 'sr:match:3432:13:sr:player:999')
   end
 
   let(:total_bets_count)     { 25 }
@@ -81,6 +87,30 @@ describe OddsFeed::Radar::BetSettlementHandler do
         .to have_received(:call)
         .exactly(total_bets_count)
         .times
+    end
+
+    context 'market status' do
+      before do
+        allow(BetSettelement::Service).to receive(:call)
+      end
+
+      it 'sets market status to settled' do
+        subject_with_input.handle
+
+        expect(Market.find_by(external_id: market_id).status)
+          .to eq(Market::SETTLED)
+      end
+
+      it 'updates bets even when market not found' do
+        Market.find_by(external_id: market_id).destroy
+        allow(subject_with_input).to receive(:process_bets)
+
+        subject_with_input.handle
+
+        expect(subject_with_input)
+          .to have_received(:process_bets)
+          .at_least(:once)
+      end
     end
 
     context 'with suspended bets' do
