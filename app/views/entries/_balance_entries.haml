@@ -1,18 +1,22 @@
 .row.mt-4
   .col-6.offset-3
     = card header: t('entities.balance_entries'), class: 'balance-entries' do
-      %table.table
-        %thead
-          %tr
-            %th= t('attributes.id')
-            %th= t('attributes.balance_id')
-            %th= t('attributes.balance_kind')
-            %th= t('attributes.created_at')
-            %th= t('attributes.amount')
-        - balance_entries.includes(:balance).each do |balance_entry|
-          %tr
-            %td= balance_entry.id
-            %td= balance_entry.balance_id
-            %td= t("kinds.#{balance_entry.balance.kind}")
-            %td= l(balance_entry.created_at, format: :long)
-            %td= balance_entry.amount
+      - if balance_entries.any?
+        %table.table
+          %thead
+            %tr
+              %th= t('attributes.id')
+              %th= t('attributes.balance_id')
+              %th= t('attributes.balance_kind')
+              %th= t('attributes.created_at')
+              %th= t('attributes.amount')
+          - balance_entries.includes(:balance).each do |balance_entry|
+            %tr
+              %td= balance_entry.id
+              %td= balance_entry.balance_id
+              %td= t("kinds.#{balance_entry.balance.kind}")
+              %td= l(balance_entry.created_at, format: :long)
+              %td= balance_entry.amount
+      - else
+        .text-center
+          %em= t(:no_records)

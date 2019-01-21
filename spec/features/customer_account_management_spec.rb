@@ -91,4 +91,32 @@ describe Customer, '#account_management' do
       expect(page).to have_content I18n.t(:no_records)
     end
   end
+
+  context 'entries table' do
+    it 'shows Balance interactions section' do
+      expect_to_have_section 'customer-entries'
+    end
+
+    it 'shows existing entries' do
+      wallet = create(:wallet, customer: customer)
+      entries = create_list(:entry, 3, wallet: wallet)
+
+      visit page_path
+
+      within '.customer-entries' do
+        entries.each do |entry|
+          link_to_entry = I18n.l(entry.created_at, format: :long)
+
+          expect(page).to have_link(link_to_entry, href: entry_path(entry))
+          expect(page).to have_content I18n.t "kinds.#{entry.kind}"
+          expect(page).to have_content entry.amount
+          expect(page).to have_content entry.currency_code
+        end
+      end
+    end
+
+    it 'shows no records note' do
+      expect(page).to have_content I18n.t(:no_records)
+    end
+  end
 end

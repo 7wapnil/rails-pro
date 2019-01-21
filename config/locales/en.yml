@@ -31,6 +31,8 @@ en:
   to: To
   upload: Upload
   view: View
+  balance_interactions: Balance interactions
+  balance_interaction_requests: Balance interaction requests
 
   activate_instance: "Activate %{instance}"
   activated: "%{instance} activated"
@@ -159,6 +161,9 @@ en:
     winnings: Winnings
     zip_code: ZIP
     percentage: Percentage
+    confirmed_at: Confirmed at
+    balance_id: Balance ID
+    balance_kind: Balance kind
 
   date:
     formats:
@@ -261,6 +266,7 @@ en:
       one: 1 market
       other: "%{count} markets"
     request_information: Request information
+    entry_information: Entry information
     scope: Scope
     scopes: Scopes
     scope_count:
@@ -276,6 +282,8 @@ en:
     market_template: Market template
     market_templates: Market templates
     wallet_name: "%{currency} wallet"
+    balance_entries: Balance entries
+    balance_entry_requests: Balance entry requests
 
   errors:
     messages:
@@ -324,6 +332,8 @@ en:
     internal_debit: Internal debit
     win: Win
     withdraw: Withdraw
+    bonus: Bonus money
+    real_money: Real money
 
   lock_reasons:
     closed: Closed
