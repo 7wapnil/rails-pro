@@ -60,7 +60,7 @@ class CustomersController < ApplicationController
     @entries = @search.result.page(params[:page])
     @audit_logs = AuditLog
                   .where(customer_id: customer.id)
-                  .page(params[:page])
+                  .page(params[:audit_logs_page])
   end
 
   def create_fake_deposit
