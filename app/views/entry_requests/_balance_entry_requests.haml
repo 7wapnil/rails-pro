@@ -1,0 +1,14 @@
+.row.mt-4
+  .col-6.offset-3
+    = card header: t('entities.balance_entry_requests'), class: 'activity-info' do
+      %table.table
+        %thead
+          %tr
+            %th= t('attributes.id')
+            %th= t('attributes.kind')
+            %th= t('attributes.amount')
+        - balance_entry_requests.each do |balance_request|
+          %tr
+            %td= balance_request.id
+            %td= balance_request.kind
+            %td= balance_request.amount
