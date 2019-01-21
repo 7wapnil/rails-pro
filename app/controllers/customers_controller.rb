@@ -52,7 +52,7 @@ class CustomersController < ApplicationController
   def account_management
     @currencies = [Currency.primary]
     @entry_request = EntryRequest.new(customer: customer)
-    @entry_requests = customer.entry_requests.page(params[:page])
+    @entry_requests = customer.entry_requests.page(params[:entry_requests_page])
     @entries = Entry.joins(:wallet)
                     .where(wallets: { customer: @customer })
                     .page(params[:entries_page])
