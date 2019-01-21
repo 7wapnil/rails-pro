@@ -6,6 +6,8 @@ class Balance < ApplicationRecord
 
   validates :kind, presence: true
 
+  delegate :currency_code, to: :wallet
+
   validates :amount,
             numericality: {
               greater_than_or_equal_to: 0,

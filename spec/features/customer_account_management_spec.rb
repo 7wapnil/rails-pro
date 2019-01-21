@@ -13,14 +13,20 @@ describe Customer, '#account_management' do
     end
 
     it 'shows available balances' do
-      create_list(:wallet, 3, customer: customer)
+      wallets = create_list(:wallet, 3, customer: customer)
+      wallets.each do |wallet|
+        create(:balance, :bonus, wallet: wallet)
+        create(:balance, :real_money, wallet: wallet)
+      end
 
       visit page_path
 
       within '.balances' do
         customer.wallets.each do |wallet|
           expect(page).to have_content wallet.currency_name
-          expect(page).to have_content wallet.amount
+          wallet.balances.each do |balance|
+            expect(page).to have_content(balance.amount)
+          end
         end
       end
     end
@@ -77,6 +83,34 @@ describe Customer, '#account_management' do
           expect(page).to have_content request.amount
           expect(page).to have_content request.currency_code
           expect(page).to have_content I18n.t "statuses.#{request.status}"
+        end
+      end
+    end
+
+    it 'shows no records note' do
+      expect(page).to have_content I18n.t(:no_records)
+    end
+  end
+
+  context 'entries table' do
+    it 'shows Balance interactions section' do
+      expect_to_have_section 'customer-entries'
+    end
+
+    it 'shows existing entries' do
+      wallet = create(:wallet, customer: customer)
+      entries = create_list(:entry, 3, wallet: wallet)
+
+      visit page_path
+
+      within '.customer-entries' do
+        entries.each do |entry|
+          link_to_entry = I18n.l(entry.created_at, format: :long)
+
+          expect(page).to have_link(link_to_entry, href: entry_path(entry))
+          expect(page).to have_content I18n.t "kinds.#{entry.kind}"
+          expect(page).to have_content entry.amount
+          expect(page).to have_content entry.currency_code
         end
       end
     end

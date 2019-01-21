@@ -65,6 +65,7 @@ Rails.application.routes.draw do
   resources :labels, only: %i[index new edit create update destroy]
 
   resources :entry_requests, only: %i[index show create]
+  resources :entries, only: :show
 
   resources :bets, only: %i[index show]
 

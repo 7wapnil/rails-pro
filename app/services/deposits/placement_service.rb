@@ -36,7 +36,7 @@ module Deposits
           currency_id: wallet.currency_id,
           kind: ENTRY_REQUEST_KIND,
           mode: ENTRY_REQUEST_MODE,
-          amount: amount,
+          amount: balances_amounts.values.sum,
           initiator: initiator
         )
         BalanceRequestBuilders::Deposit.call(request, balances_amounts)
