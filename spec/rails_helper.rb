@@ -74,9 +74,10 @@ RSpec.configure do |config|
     allow(WebSocket::Client.instance).to receive(:emit)
     allow(WebSocket::Client.instance).to receive(:trigger_event_update)
     allow(WebSocket::Client.instance).to receive(:trigger_market_update)
+    allow(WebSocket::Client.instance).to receive(:trigger_app_update)
 
     # Drop stored application state
-    Rails.cache.delete(ApplicationState::STATE_STORAGE_KEY)
+    ::ApplicationState::StateModel.delete
   end
 end
 
