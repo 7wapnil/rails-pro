@@ -79,7 +79,7 @@ module BetPlacement
 
     def entry_request
       @entry_request ||= EntryRequest.create!(
-        amount: amount_calculations[:real_money],
+        amount: @bet.amount,
         currency: @bet.currency,
         kind: ENTRY_REQUEST_KIND,
         mode: ENTRY_REQUEST_MODE,
