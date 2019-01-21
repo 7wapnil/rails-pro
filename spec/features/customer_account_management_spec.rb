@@ -13,14 +13,20 @@ describe Customer, '#account_management' do
     end
 
     it 'shows available balances' do
-      create_list(:wallet, 3, customer: customer)
+      wallets = create_list(:wallet, 3, customer: customer)
+      wallets.each do |wallet|
+        create(:balance, :bonus, wallet: wallet)
+        create(:balance, :real_money, wallet: wallet)
+      end
 
       visit page_path
 
       within '.balances' do
         customer.wallets.each do |wallet|
           expect(page).to have_content wallet.currency_name
-          expect(page).to have_content wallet.amount
+          wallet.balances.each do |balance|
+            expect(page).to have_content(balance.amount)
+          end
         end
       end
     end

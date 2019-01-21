@@ -275,6 +275,7 @@ en:
       other: "%{count} wallets"
     market_template: Market template
     market_templates: Market templates
+    wallet_name: "%{currency} wallet"
 
   errors:
     messages:
