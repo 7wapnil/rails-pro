@@ -1,4 +1,4 @@
-describe Redirection::DepositsController do
+describe Redirect::DepositsController do
   describe '#initiate' do
     subject { get :initiate }
 

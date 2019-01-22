@@ -91,7 +91,7 @@ Rails.application.routes.draw do
 
   resources :market_templates, only: %i[index update]
 
-  namespace :redirection do
+  namespace :redirect do
     resources :deposits, only: [] do
       collection do
         get :initiate
