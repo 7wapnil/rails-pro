@@ -44,5 +44,25 @@ describe Deposits::InitiateHostedDepositService do
         kind: EntryRequest::DEPOSIT
       )
     end
+
+    context 'when business rules broken' do
+      let(:error_message) { Faker::Lorem.sentence(5) }
+
+      before do
+        allow_any_instance_of(described_class)
+          .to receive('validate_business_rules!') {
+                raise Deposits::InvalidDepositRequestError, error_message
+              }
+      end
+
+      it 'returns failed entry request with correct attributes' do
+        expect(subject).to have_attributes(
+          status: EntryRequest::FAILED,
+          result: { 'message' => error_message },
+          mode: EntryRequest::SYSTEM,
+          kind: EntryRequest::DEPOSIT
+        )
+      end
+    end
   end
 end
