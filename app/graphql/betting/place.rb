@@ -1,13 +1,24 @@
 module Betting
   class Place < ::Base::Resolver
-    type types[BetType]
+    type types[BetPlacementType]
 
     argument :bets, types[BetInput]
 
     def resolve(_obj, args)
       args[:bets].map do |bet_payload|
-        BetPlacement::SubmissionService.call(create_bet(bet_payload),
-                                             @impersonated_by)
+        bet = create_bet(bet_payload)
+        BetPlacement::SubmissionService.call(bet, @impersonated_by)
+
+        OpenStruct.new(id: bet_payload[:oddId],
+                       message: nil,
+                       success: true,
+                       bet: bet)
+
+      rescue StandardError => e
+
+        OpenStruct.new(id: bet_payload[:oddId],
+                       message: e.message,
+                       success: false)
       end
     end
 
