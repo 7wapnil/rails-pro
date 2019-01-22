@@ -153,18 +153,4 @@ describe OddsFeed::Radar::BetSettlementHandler do
     )
     expect(expected_result.count).to eq(5)
   end
-
-  it 'emits web socket event per bet' do
-    allow(subject_with_input).to receive(:process_bets)
-
-    create_list(:bet, 10,
-                odd: odd, status: StateMachines::BetStateMachine::ACCEPTED)
-    subject_with_input.handle
-
-    expect(WebSocket::Client.instance)
-      .to have_received(:emit)
-      .exactly(10)
-      .times
-      .with(WebSocket::Signals::BET_SETTLED, anything)
-  end
 end

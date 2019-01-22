@@ -47,7 +47,8 @@ describe ApplicationState do
     it 'sends websocket event on state update' do
       subject.live_connected = false
       expect(WebSocket::Client.instance)
-        .to have_received(:trigger_app_update)
+        .to have_received(:trigger)
+        .with(SubscriptionFields::APP_STATE_UPDATED, anything)
     end
   end
 end

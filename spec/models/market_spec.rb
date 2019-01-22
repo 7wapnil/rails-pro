@@ -86,30 +86,4 @@ describe Market do
       expect(market.errors[:status]).to be_blank
     end
   end
-
-  it 'emits web socket event on create' do
-    market = create(:market)
-    expect(WebSocket::Client.instance)
-      .to have_received(:emit)
-      .with(WebSocket::Signals::MARKET_CREATED,
-            id: market.id.to_s,
-            eventId: market.event_id.to_s)
-  end
-
-  it 'emits web socket event on update' do
-    allow_any_instance_of(described_class).to receive(:emit_created)
-    market = create(:market)
-    market.assign_attributes(name: 'New name',
-                             status: Market::ACTIVE)
-    market.save!
-    expect(WebSocket::Client.instance)
-      .to have_received(:emit)
-      .with(WebSocket::Signals::MARKET_UPDATED,
-            id: market.id.to_s,
-            eventId: market.event_id.to_s,
-            changes: {
-              name: 'New name',
-              status: Market::ACTIVE
-            })
-  end
 end

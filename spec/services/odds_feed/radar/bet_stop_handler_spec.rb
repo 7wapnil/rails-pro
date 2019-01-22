@@ -34,36 +34,4 @@ describe OddsFeed::Radar::BetStopHandler do
     expect(Market.where(status: Market::INACTIVE).count).to eq(5)
     expect(Market.where(status: Market::ACTIVE).count).to eq(2)
   end
-
-  it 'emits one web socket event per market' do
-    markets_amount = 5
-    create_list(:market,
-                markets_amount,
-                event: event,
-                status: Market::ACTIVE)
-
-    subject.handle
-    expect(WebSocket::Client.instance)
-      .to have_received(:emit)
-      .exactly(markets_amount)
-      .times
-      .with(WebSocket::Signals::MARKET_UPDATED, anything)
-  end
-
-  it 'emits web socket events in batches' do
-    allow(subject_with_input).to receive(:update_markets)
-    markets_amount = 20
-    create_list(:market,
-                markets_amount,
-                event: event,
-                status: Market::ACTIVE)
-
-    subject_with_input.batch_size = 5
-    subject_with_input.handle
-
-    expect(subject_with_input)
-      .to have_received(:update_markets)
-      .exactly(4)
-      .times
-  end
 end

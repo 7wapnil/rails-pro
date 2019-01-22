@@ -69,11 +69,6 @@ describe OddsFeed::Radar::BetCancelHandler do
     it 'cancels all market bets' do
       subject.handle
       expect(Bet.where(status: cancelled_status).count).to eq(5)
-      expect(WebSocket::Client.instance)
-        .to have_received(:emit)
-        .exactly(5)
-        .times
-        .with(WebSocket::Signals::BET_CANCELLED, anything)
     end
   end
 
@@ -83,11 +78,6 @@ describe OddsFeed::Radar::BetCancelHandler do
     it 'cancels all market bets' do
       subject.handle
       expect(Bet.where(status: cancelled_status).count).to eq(3)
-      expect(WebSocket::Client.instance)
-        .to have_received(:emit)
-        .exactly(3)
-        .times
-        .with(WebSocket::Signals::BET_CANCELLED, anything)
     end
   end
 
