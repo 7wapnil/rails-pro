@@ -80,6 +80,9 @@ describe OddsFeed::Radar::Client do
 
   describe '#product_recovery_initiate_request' do
     let(:recover_after) { Faker::Time.backward(2) }
+    let(:recover_after_milliseconds_timestamp) do
+      recover_after.to_datetime.strftime('%Q')
+    end
     let(:product_code) { Faker::Lorem.word.to_sym }
 
     before do
@@ -89,7 +92,8 @@ describe OddsFeed::Radar::Client do
 
     context 'with requires arguments only' do
       let(:expected_path) do
-        "/#{product_code}/recovery/initiate_request?after=#{recover_after.to_i}"
+        "/#{product_code}/recovery/initiate_request?after="\
+        "#{recover_after_milliseconds_timestamp}"
       end
 
       before do
@@ -115,7 +119,7 @@ describe OddsFeed::Radar::Client do
 
       let(:expected_path) do
         query_string = [
-          "after=#{recover_after.to_i}",
+          "after=#{recover_after_milliseconds_timestamp}",
           "node_id=#{node_id}",
           "request_id=#{request_id}"
         ].join('&')
