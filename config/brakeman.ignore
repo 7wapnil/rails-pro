@@ -1,0 +1,26 @@
+{
+  "ignored_warnings": [
+    {
+      "warning_type": "Redirect",
+      "warning_code": 18,
+      "fingerprint": "14a04d2649047a61e231bf9a0d558f98a06dd25219b9e894e67716e6a02350db",
+      "check_name": "Redirect",
+      "message": "Possible unprotected redirect",
+      "file": "app/controllers/redirection/deposits_controller.rb",
+      "line": 56,
+      "link": "https://brakemanscanner.org/docs/warning_types/redirect/",
+      "code": "redirect_to(Deposit::CallbackUrl.for(state))",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "Redirection::DepositsController",
+        "method": "callback"
+      },
+      "user_input": "Deposit::CallbackUrl.for(state)",
+      "confidence": "High",
+      "note": "This redirection is not public and designed to send to external host"
+    }
+  ],
+  "updated": "2019-01-22 08:13:56 +0000",
+  "brakeman_version": "4.3.1"
+}
