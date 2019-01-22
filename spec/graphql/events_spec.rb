@@ -12,10 +12,32 @@ describe GraphQL, '#events' do
       create_list(:event, 5, :upcoming, title: title)
     end
 
-    let(:query) { %({ events { id name } }) }
+    let(:query) do
+      %({
+        events (filter: { upcoming: true }) {
+          id
+          name
+        }
+      })
+    end
 
     it 'returns list of upcoming events' do
-      expect(result['data']['events'].count).to eq(5)
+      expect(result['data']['events'].length).to eq(5)
+    end
+  end
+
+  context 'query without tabs filter' do
+    let(:query) do
+      %({
+        events {
+          id
+        }
+      })
+    end
+
+    it 'returns an error' do
+      expect(result['errors'].first['message'])
+        .to eq  '`inPlay`, `upcoming` or `past` must be truthy!'
     end
   end
 
@@ -34,10 +56,17 @@ describe GraphQL, '#events' do
       )
     end
 
-    let(:query) { %({ events { id name } }) }
+    let(:query) do
+      %({
+        events (filter: { upcoming: true }) {
+          id
+          name
+        }
+      })
+    end
 
     it 'returns only visible events' do
-      expect(result['data']['events'].count).to eq(2)
+      expect(result['data']['events'].length).to eq(2)
     end
   end
 
@@ -45,11 +74,16 @@ describe GraphQL, '#events' do
     let!(:event) { create(:event_with_odds, :upcoming, title: title) }
     let(:query) do
       %({
-          events {
+        events (filter: { upcoming: true }) {
+          id
+          name
+          markets {
             id
             name
-            markets { id name priority status }
+            priority
+            status
           }
+        }
       })
     end
 
@@ -60,7 +94,7 @@ describe GraphQL, '#events' do
     it 'returns event markets list' do
       market = event.markets[0]
       event_result = result['data']['events'][0]
-      expect(event_result['markets'].count).to eq(1)
+      expect(event_result['markets'].length).to eq(1)
       expect(event_result['markets'][0]['id']).to eq(market.id.to_s)
       expect(event_result['markets'][0]['name']).to eq(market.name)
       expect(event_result['markets'][0]['status']).to eq('active')
@@ -70,11 +104,11 @@ describe GraphQL, '#events' do
   context 'ordered by priority' do
     let(:query) do
       %({
-          events {
-            id
-            name
-            priority
-          }
+        events (filter: { upcoming: true }) {
+          id
+          name
+          priority
+        }
       })
     end
 
@@ -94,11 +128,16 @@ describe GraphQL, '#events' do
   context 'with markets priority' do
     let(:query) do
       %({
-          events {
+        events (filter: { upcoming: true }) {
+          id
+          name
+          markets (priority: 1) {
             id
             name
-            markets (priority: 1) { id name priority status }
+            priority
+            status
           }
+        }
       })
     end
 
@@ -116,21 +155,21 @@ describe GraphQL, '#events' do
 
     it 'returns event markets list with priority 1' do
       event_result = result['data']['events'][0]
-      expect(event_result['markets'].count).to eq(1)
+      expect(event_result['markets'].length).to eq(1)
     end
   end
 
   context 'with odds' do
     let(:query) do
       %({
-          events {
+        events (filter: { upcoming: true }) {
+          id
+          name
+          markets {
             id
-            name
-            markets {
-              id
-              odds { id name status }
-            }
+            odds { id name status }
           }
+        }
       })
     end
 
@@ -141,30 +180,40 @@ describe GraphQL, '#events' do
 
     it 'returns event market odds list' do
       odd_result = result['data']['events'][0]['markets'][0]['odds']
-      expect(odd_result.count).to be > 0
+      expect(odd_result.length).to be > 0
     end
   end
 
   context 'without odds' do
-    let(:query) { %({ events { id name } }) }
+    let(:query) do
+      %({
+        events (filter: { upcoming: true }) {
+          id
+          name
+        }
+      })
+    end
 
     before do
       create_list(:event, 5, title: title, active: false)
     end
 
     it 'returns empty list when no odds' do
-      expect(result['data']['events'].count).to eq(0)
+      expect(result['data']['events'].length).to eq(0)
     end
   end
 
   context 'limited result' do
     let(:limit) { 3 }
     let(:query) do
-      %({ events (
-            limit: #{limit}
+      %({
+        events (
+          limit: #{limit},
+          filter: { upcoming: true }
         ) {
-            id
-      } })
+          id
+        }
+      })
     end
 
     before do
@@ -172,33 +221,38 @@ describe GraphQL, '#events' do
     end
 
     it 'returns limited events' do
-      expect(result['data']['events'].count).to eq(3)
+      expect(result['data']['events'].length).to eq(3)
     end
   end
 
   context 'single event' do
     let(:event) { create(:event, :upcoming) }
     let(:query) do
-      %({ events (
-            filter: { id: #{event.id} }
+      %({
+        events (
+          filter: {
+            id: #{event.id},
+            upcoming: true
+          }
         ) {
-            id
-      } })
+          id
+        }
+      })
     end
 
     it 'returns event with defined id' do
-      expect(result['data']['events'].count).to eq(1)
+      expect(result['data']['events'].length).to eq(1)
       expect(result['data']['events'][0]['id']).to eq(event.id.to_s)
     end
   end
 
   context 'in play' do
     let(:query) do
-      %({ events (
-            filter: { inPlay: true }
-        ) {
-            id
-      } })
+      %({
+        events (filter: { inPlay: true }) {
+          id
+        }
+      })
     end
 
     before do
@@ -213,17 +267,17 @@ describe GraphQL, '#events' do
     end
 
     it 'returns in play events' do
-      expect(result['data']['events'].count).to eq(5)
+      expect(result['data']['events'].length).to eq(5)
     end
   end
 
   context 'past' do
     let(:query) do
-      %({ events (
-            filter: { past: true }
-        ) {
-            id
-      } })
+      %({
+        events (filter: { past: true }) {
+          id
+        }
+      })
     end
 
     before do
@@ -238,17 +292,22 @@ describe GraphQL, '#events' do
     end
 
     it 'returns past events' do
-      expect(result['data']['events'].count).to eq(5)
+      expect(result['data']['events'].length).to eq(5)
     end
   end
 
   context 'title' do
     let(:query) do
-      %({ events (
-            filter: { titleId: #{title.id} }
+      %({
+        events (
+          filter: {
+            titleId: #{title.id},
+            upcoming: true
+          }
         ) {
-            id
-      } })
+          id
+        }
+      })
     end
 
     before do
@@ -258,18 +317,23 @@ describe GraphQL, '#events' do
     end
 
     it 'returns events by title ID' do
-      expect(result['data']['events'].count).to eq(5)
+      expect(result['data']['events'].length).to eq(5)
     end
   end
 
   context 'tournament' do
     let(:tournament) { create(:event_scope, kind: EventScope::TOURNAMENT) }
     let(:query) do
-      %({ events (
-            filter: { tournamentId: #{tournament.id} }
+      %({
+        events (
+          filter: {
+            tournamentId: #{tournament.id},
+            upcoming: true
+          }
         ) {
-            id
-      } })
+          id
+        }
+      })
     end
 
     before do
@@ -288,7 +352,7 @@ describe GraphQL, '#events' do
 
     it 'returns events by tournament ID' do
       expect(result['data']).not_to be_nil
-      expect(result['data']['events'].count).to eq(5)
+      expect(result['data']['events'].length).to eq(5)
     end
   end
 
@@ -302,13 +366,15 @@ describe GraphQL, '#events' do
       } }
     end
     let(:query) do
-      %({ events {
+      %({
+        events (filter: { upcoming: true }) {
+          id
+          competitors {
             id
-            competitors {
-              id
-              name
-            }
-      } })
+            name
+          }
+        }
+      })
     end
 
     before do
@@ -317,22 +383,24 @@ describe GraphQL, '#events' do
 
     it 'returns events with details' do
       expect(result['data']).not_to be_nil
-      expect(result['data']['events'].count).to eq(1)
-      expect(result['data']['events'][0]['competitors'].count).to eq(2)
+      expect(result['data']['events'].length).to eq(1)
+      expect(result['data']['events'][0]['competitors'].length).to eq(2)
     end
   end
 
   context 'live' do
     let(:query) do
-      %({ events {
-            id
-            live
-      } })
+      %({
+        events (filter: { inPlay: true }) {
+          id
+          live
+        }
+      })
     end
 
     context 'with SUSPENDED status' do
       let!(:event) do
-        create(:event, traded_live: true, status: Event::SUSPENDED)
+        create(:event, :live, traded_live: true, status: Event::SUSPENDED)
       end
 
       it 'value is truthy' do
@@ -352,27 +420,29 @@ describe GraphQL, '#events' do
       let!(:event) { create(:event, status: Event::SUSPENDED) }
 
       it 'value is falsey' do
-        expect(result['data']['events'].first['live']).to be_falsey
+        expect(result['data']['events']).to be_empty
       end
     end
   end
 
   context 'with state' do
     let(:query) do
-      %({ events {
+      %({
+        events (filter: { past: true }) {
+          id
+          state {
             id
-            state {
+            status_code
+            status
+            score
+            time
+            finished
+            period_scores {
               id
-              status_code
-              status
-              score
-              time
-              finished
-              period_scores {
-                id
-              }
             }
-      } })
+          }
+        }
+      })
     end
 
     it 'returns events with live flag true' do

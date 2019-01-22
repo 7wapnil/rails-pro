@@ -13,18 +13,24 @@ describe GraphQL, '#markets' do
       let(:query) { %({ markets { id name } }) }
 
       it 'returns error when no event ID defined' do
-        expect(result['errors'][0]['message']).to eq('Event ID is required')
+        expect(result['errors'].first['message'])
+          .to eq '`eventId`` or `id` must be specified!'
       end
     end
 
     context 'basic query' do
       let(:priority) { 0 }
       let(:query) do
-        %({ markets (eventId: #{event.id}, priority: #{priority}) {
-              id
-              name
-              priority
-        } })
+        %({
+          markets (
+            eventId: #{event.id},
+            priority: #{priority}
+          ) {
+            id
+            name
+            priority
+          }
+        })
       end
       let(:marker_instance) { instance_double(Market) }
 
@@ -35,24 +41,29 @@ describe GraphQL, '#markets' do
       it 'returns markets related to event only' do
         create_list(:market, 5, :with_odds, event: event, priority: 0)
         create_list(:market, 5, :with_odds, priority: 0)
-        expect(result['data']['markets'].count).to eq(5)
+        expect(result['data']['markets'].length).to eq(5)
       end
 
       it 'returns markets filtered by priority' do
         create_list(:market, 5, :with_odds, event: event, priority: 0)
         create_list(:market, 5, :with_odds, event: event, priority: 1)
-        expect(result['data']['markets'].count).to eq(5)
+        expect(result['data']['markets'].length).to eq(5)
       end
     end
 
     context 'market category' do
       let(:category) { 'popular' }
       let(:query) do
-        %({ markets (eventId: #{event.id}, category: #{category}) {
-              id
-              name
-              priority
-        } })
+        %({
+          markets (
+            eventId: #{event.id},
+            category: #{category}
+          ) {
+            id
+            name
+            priority
+          }
+        })
       end
 
       before do
@@ -65,17 +76,22 @@ describe GraphQL, '#markets' do
                     event:    event,
                     category: category)
 
-        expect(result['data']['markets'].count).to eq(2)
+        expect(result['data']['markets'].length).to eq(2)
       end
     end
 
     context 'ordering' do
       let(:query) do
-        %({ markets (eventId: #{event.id}, limit: null) {
-              id
-              name
-              priority
-        } })
+        %({
+          markets (
+            eventId: #{event.id},
+            limit: null
+          ) {
+            id
+            name
+            priority
+          }
+        })
       end
 
       it 'returns markets ordered by priority' do
@@ -90,11 +106,11 @@ describe GraphQL, '#markets' do
 
     context 'market visibility' do
       let(:query) do
-        %({ markets (
-              eventId: #{event.id},
-          ) {
-              id
-        } })
+        %({
+          markets (eventId: #{event.id}) {
+            id
+          }
+        })
       end
 
       before do
@@ -103,24 +119,26 @@ describe GraphQL, '#markets' do
       end
 
       it 'returns only visible markets' do
-        expect(result['data']['markets'].count).to eq(3)
+        expect(result['data']['markets'].length).to eq(3)
       end
 
       it 'does not return invisible markets' do
         Market.update_all(visible: false)
-        expect(result['data']['markets'].count).to eq(0)
+        expect(result['data']['markets'].length).to eq(0)
       end
     end
 
     context 'limited result' do
       let(:limit) { 3 }
       let(:query) do
-        %({ markets (
-              eventId: #{event.id},
-              limit: #{limit}
+        %({
+          markets (
+            eventId: #{event.id},
+            limit: #{limit}
           ) {
-              id
-        } })
+            id
+          }
+        })
       end
 
       before do
@@ -128,23 +146,22 @@ describe GraphQL, '#markets' do
       end
 
       it 'returns limited markets' do
-        expect(result['data']['markets'].count).to eq(3)
+        expect(result['data']['markets'].length).to eq(3)
       end
     end
 
     context 'single market' do
       let(:market) { create(:market, :with_odds, event: event) }
       let(:query) do
-        %({ markets (
-              eventId: #{event.id},
-              id: #{market.id}
-          ) {
-              id
-        } })
+        %({
+          markets (id: #{market.id}) {
+            id
+          }
+        })
       end
 
       it 'returns limited markets' do
-        expect(result['data']['markets'].count).to eq(1)
+        expect(result['data']['markets'].length).to eq(1)
         expect(result['data']['markets'][0]['id']).to eq(market.id.to_s)
       end
     end
