@@ -102,8 +102,6 @@ module StateMachines
 
       def on_successfull_bet_placement
         entry.confirmed_at = Time.zone.now
-        WebSocket::Client.instance.emit(WebSocket::Signals::BET_PLACED,
-                                        id: id.to_s)
       end
     end
   end

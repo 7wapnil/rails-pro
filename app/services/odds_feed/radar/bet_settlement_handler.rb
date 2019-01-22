@@ -1,6 +1,5 @@
 module OddsFeed
   module Radar
-    # rubocop:disable Metrics/ClassLength
     class BetSettlementHandler < RadarMessageHandler
       def initialize(payload)
         super(payload)
@@ -75,9 +74,6 @@ module OddsFeed
         bets = get_settled_bets(external_id)
         logger_level = bets.size.positive? ? :info : :debug
         log_job_message(logger_level, "#{bets.size} bets settled")
-
-        bets
-          .find_in_batches { |batch| emit_websocket_settlement_signals(batch) }
       end
 
       def revalidate_suspended_bets(bets)
@@ -124,17 +120,6 @@ module OddsFeed
           .unsuspended
           .where.not(id: invalid_bet_ids)
       end
-
-      def emit_websocket_settlement_signals(batch)
-        batch.each do |bet|
-          WebSocket::Client.instance.emit(WebSocket::Signals::BET_SETTLED,
-                                          id: bet.id,
-                                          customerId: bet.customer_id,
-                                          result: bet.won?,
-                                          voidFactor: bet.void_factor)
-        end
-      end
     end
-    # rubocop:enable Metrics/ClassLength
   end
 end

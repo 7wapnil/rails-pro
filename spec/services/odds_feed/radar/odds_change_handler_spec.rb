@@ -39,6 +39,9 @@ describe OddsFeed::Radar::OddsChangeHandler do
     create(:market_template, external_id: '188',
                              name: 'Template name')
 
+    allow(WebSocket::Client.instance).to receive(:trigger_event_update)
+    allow(WebSocket::Client.instance).to receive(:trigger_market_update)
+
     allow(subject_api).to receive(:call_markets_generator).and_return(timestamp)
     allow(subject_api).to receive(:timestamp).and_return(timestamp)
     allow(subject_api).to receive(:api_event).and_return(event)

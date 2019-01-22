@@ -3,104 +3,69 @@ module WebSocket
     include Singleton
 
     def trigger_event_update(event)
-      ArcanebetSchema.subscriptions.trigger(SubscriptionFields::EVENTS_UPDATED,
-                                            {},
-                                            event)
-      ArcanebetSchema.subscriptions.trigger(SubscriptionFields::EVENT_UPDATED,
-                                            { id: event.id },
-                                            event)
+      trigger(SubscriptionFields::EVENTS_UPDATED, event)
+      trigger(SubscriptionFields::EVENT_UPDATED, event, id: event.id)
+
       trigger_kind_event event
       trigger_sport_event event
       trigger_tournament_event event
     end
 
     def trigger_market_update(market)
-      ArcanebetSchema.subscriptions.trigger(
-        SubscriptionFields::MARKET_UPDATED,
-        { id: market.id },
-        market
-      )
-
+      trigger(SubscriptionFields::MARKET_UPDATED,
+              market,
+              id: market.id)
       trigger_event_market(market)
       trigger_category_market(market)
     end
 
     def trigger_app_update(state)
-      ArcanebetSchema.subscriptions.trigger(
-        SubscriptionFields::APP_STATE_UPDATED,
-        {},
-        state
-      )
-    end
-
-    def emit!(event, data = {})
-      Rails.logger.debug "Sending websocket event '#{event}', data: #{data}"
-      message = ActiveSupport::JSON.encode(event: event, data: data)
-      connection.publish(channel_name, message)
-    end
-
-    def emit(event, data = {})
-      emit!(event, data)
-    rescue StandardError => e
-      Rails.logger.error e.message
-      false
-    end
-
-    def connection
-      @connection ||= Redis.new(url: ENV['REDIS_URL'])
-    end
-
-    def reset_connection
-      @connection = nil
-    end
-
-    def channel_name
-      'events'
+      trigger(SubscriptionFields::APP_STATE_UPDATED, state)
     end
 
     private
 
+    def trigger(name, object, args = {})
+      ArcanebetSchema.subscriptions.trigger(name, args, object)
+    end
+
     def trigger_kind_event(event)
-      ArcanebetSchema.subscriptions.trigger(
+      trigger(
         SubscriptionFields::KIND_EVENT_UPDATED,
-        { kind: event.title.kind,
-          live: event.in_play? },
-        event
+        event,
+        kind: event.title.kind
       )
     end
 
     def trigger_sport_event(event)
-      ArcanebetSchema.subscriptions.trigger(
+      trigger(
         SubscriptionFields::SPORT_EVENT_UPDATED,
-        { title: event.title_id,
-          live: event.in_play? },
-        event
+        event,
+        title: event.title_id
       )
     end
 
     def trigger_tournament_event(event)
-      ArcanebetSchema.subscriptions.trigger(
+      trigger(
         SubscriptionFields::TOURNAMENT_EVENT_UPDATED,
-        { tournament: event.tournament&.id,
-          live: event.in_play? },
-        event
+        event,
+        tournament: event.tournament&.id
       )
     end
 
     def trigger_event_market(market)
-      ArcanebetSchema.subscriptions.trigger(
+      trigger(
         SubscriptionFields::EVENT_MARKET_UPDATED,
-        { eventId: market.event_id },
-        market
+        market,
+        eventId: market.event_id
       )
     end
 
     def trigger_category_market(market)
-      ArcanebetSchema.subscriptions.trigger(
+      trigger(
         SubscriptionFields::CATEGORY_MARKET_UPDATED,
-        { eventId: market.event_id,
-          category: market.category },
-        market
+        market,
+        eventId: market.event_id
       )
     end
   end
