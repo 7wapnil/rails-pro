@@ -23,7 +23,7 @@ module Deposits
     end
 
     def request_success_url
-      Deposits::PaymentPageUrlService
+      Deposits::GetPaymentPageUrl
         .call(entry_request: @entry_request)
     end
   end

@@ -1,5 +1,5 @@
 module Deposits
-  class PaymentPageUrlService < ApplicationService
+  class GetPaymentPageUrl < ApplicationService
     def initialize(entry_request:)
       @entry_request = entry_request
     end

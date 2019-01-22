@@ -2,13 +2,13 @@ describe Deposits::EntryRequestUrlService do
   let(:entry_request) { build(:entry_request, status: EntryRequest::INITIAL) }
 
   before do
-    allow(Deposits::PaymentPageUrlService).to receive(:call)
+    allow(Deposits::GetPaymentPageUrl).to receive(:call)
   end
 
   describe '.call' do
     it 'requests url from PaymentPageUrlService for initial entry request' do
       described_class.call(entry_request: entry_request)
-      expect(Deposits::PaymentPageUrlService)
+      expect(Deposits::GetPaymentPageUrl)
         .to have_received(:call)
         .with(entry_request: entry_request).once
     end
