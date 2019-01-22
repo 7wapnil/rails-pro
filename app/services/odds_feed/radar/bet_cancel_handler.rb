@@ -10,6 +10,8 @@ module OddsFeed
 
       def handle
         validate_message
+        update_markets_status
+
         query = build_query
         query.update_all(status: StateMachines::BetStateMachine::CANCELLED)
 
@@ -35,6 +37,12 @@ module OddsFeed
       def validate_message
         invalid = event_id.nil? || markets.empty?
         raise OddsFeed::InvalidMessageError, @payload if invalid
+      end
+
+      def update_markets_status
+        Market
+          .where(external_id: market_external_ids)
+          .update_all(status: Market::CANCELLED)
       end
 
       def build_query

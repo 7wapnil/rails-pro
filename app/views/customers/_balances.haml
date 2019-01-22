@@ -4,8 +4,14 @@
     %table.table
       - @customer.wallets.each do |wallet|
         %tr
-          %td= wallet.currency_name
-          %td= wallet_balance(wallet)
+          %td
+            %b= t('entities.wallet_name', currency: wallet.currency_name)
+          %td
+            %b= wallet_balance(wallet)
+        - wallet.balances.each do |balance|
+          %tr
+            %td= balance.kind
+            %td= wallet_balance(balance)
   - else
     .text-center
       %em= t(:no_records)

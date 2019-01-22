@@ -1,0 +1,16 @@
+= card header: t('balance_interactions'),
+       class: 'customer-entries' do
+  - if entries.any?
+    %table.table
+      %tbody
+        - entries.each do |entry|
+          %tr
+            %td= link_to l(entry.created_at, format: :long), entry
+            %td= t "kinds.#{entry.kind}"
+            %td= entry.amount
+            %td= entry.currency_code
+  - else
+    .text-center
+      %em= t(:no_records)
+
+  = paginate entries, param_name: :entries_page

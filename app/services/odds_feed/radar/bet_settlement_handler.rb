@@ -1,14 +1,28 @@
 module OddsFeed
   module Radar
+    # rubocop:disable Metrics/ClassLength
     class BetSettlementHandler < RadarMessageHandler
+      def initialize(payload)
+        super(payload)
+        @market_external_ids = []
+      end
+
       def handle
         validate_message
+        process_outcomes
+        update_markets
+      end
 
-        markets.each do |market|
-          market['outcome'].each do |outcome|
+      private
+
+      def process_outcomes
+        markets.each do |market_data|
+          store_market_id(market_data)
+
+          market_data['outcome'].each do |outcome|
             generator = ExternalId.new(event_id: input_data['event_id'],
-                                       market_id: market['id'],
-                                       specs: market['specs'],
+                                       market_id: market_data['id'],
+                                       specs: market_data['specs'],
                                        outcome_id: outcome['id'])
             external_id = generator.generate
 
@@ -18,7 +32,18 @@ module OddsFeed
         end
       end
 
-      private
+      def store_market_id(market_data)
+        generator = ExternalId.new(event_id: input_data['event_id'],
+                                   market_id: market_data['id'],
+                                   specs: market_data['specs'])
+        @market_external_ids << generator.generate
+      end
+
+      def update_markets
+        Market
+          .where(external_id: @market_external_ids)
+          .update_all(status: Market::SETTLED)
+      end
 
       def invalid_bet_ids
         @invalid_bet_ids ||= []
@@ -110,5 +135,6 @@ module OddsFeed
         end
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

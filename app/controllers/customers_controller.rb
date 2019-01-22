@@ -52,7 +52,10 @@ class CustomersController < ApplicationController
   def account_management
     @currencies = [Currency.primary]
     @entry_request = EntryRequest.new(customer: customer)
-    @entry_requests = customer.entry_requests.page(params[:page])
+    @entry_requests = customer.entry_requests.page(params[:entry_requests_page])
+    @entries = Entry.joins(:wallet)
+                    .where(wallets: { customer: @customer })
+                    .page(params[:entries_page])
   end
 
   def activity
@@ -60,7 +63,7 @@ class CustomersController < ApplicationController
     @entries = @search.result.page(params[:page])
     @audit_logs = AuditLog
                   .where(customer_id: customer.id)
-                  .page(params[:page])
+                  .page(params[:audit_logs_page])
   end
 
   def create_fake_deposit

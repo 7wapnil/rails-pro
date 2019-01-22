@@ -1,0 +1,29 @@
+.row.mt-4
+  .col-6.offset-3
+    = card header: t('entities.entry_information'), class: 'entry-info' do
+      %table.table
+        %tr
+          %td= t('attributes.id')
+          %td= @entry.id
+        %tr
+          %td= t('attributes.created_at')
+          %td= l(@entry.created_at, format: :long)
+        %tr
+          %td= t('attributes.authorized_at')
+          %td= l(@entry.authorized_at, format: :long) if @entry.authorized_at
+        %tr
+          %td= t('attributes.confirmed_at')
+          %td= l(@entry.confirmed_at, format: :long) if @entry.confirmed_at
+        %tr
+          %td= t('attributes.kind')
+          %td= t("kinds.#{@entry.kind}")
+        %tr
+          %td= t('attributes.amount')
+          %td
+            = number_with_precision @entry.amount, precision: 2
+            = @entry.currency_code
+
+      %hr
+      = link_back
+
+= render 'balance_entries', balance_entries: @entry.balance_entries
