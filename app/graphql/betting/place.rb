@@ -20,7 +20,7 @@ module Betting
     def bet_attrs(bet_payload)
       currency = Currency.find_by!(code: bet_payload[:currencyCode])
       amount = bet_payload[:amount]
-      bonus = applicable_bonus(bet_payload)
+      bonus = applicable_bonus
       {
         customer: @current_customer,
         odd: Odd.find(bet_payload[:oddId]),
@@ -32,13 +32,10 @@ module Betting
       }
     end
 
-    def applicable_bonus(bet_payload)
-      odd_value = bet_payload[:oddValue]
+    def applicable_bonus
       bonus = @current_customer.customer_bonus
 
-      return unless bonus
-
-      bonus unless bonus.expired? || odd_value < bonus.min_odds_per_bet
+      return bonus if bonus && !bonus.expired?
     end
   end
 end
