@@ -1,4 +1,4 @@
-module Redirection
+module Redirect
   class DepositsController < ActionController::Base
     def initiate
       redirect_url = ENV['SAFECHARGE_HOSTED_PAYMENTS_URL']
