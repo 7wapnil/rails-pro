@@ -25,6 +25,14 @@ module WebSocket
       trigger_category_market(market)
     end
 
+    def trigger_app_update(state)
+      ArcanebetSchema.subscriptions.trigger(
+        SubscriptionFields::APP_STATE_UPDATED,
+        {},
+        state
+      )
+    end
+
     def emit!(event, data = {})
       Rails.logger.debug "Sending websocket event '#{event}', data: #{data}"
       message = ActiveSupport::JSON.encode(event: event, data: data)
