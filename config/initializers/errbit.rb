@@ -7,10 +7,16 @@ Airbrake.configure do |config|
   config.ignore_environments = %w[development test]
 end
 
+runtime_error_message_pattern =
+  %r{middleware/debug_exceptions\.rb|ActionController::RoutingError}
+
+filter = lambda do |error|
+  error[:message].to_s.strip.blank? ||
+    (error[:type] == 'RuntimeError' &&
+     error[:message].match?(runtime_error_message_pattern)) ||
+    (error[:type] == 'SignalException' && error[:message] == 'SIGTERM')
+end
+
 Airbrake.add_filter do |notice|
-  if notice[:errors].any? do |error|
-       error[:type] == 'SignalException' && error[:message] == 'SIGTERM'
-     end
-    notice.ignore!
-  end
+  notice.ignore! if notice[:errors].any?(filter)
 end
