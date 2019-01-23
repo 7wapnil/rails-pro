@@ -8,7 +8,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
       '<bet_settlement event_id="sr:match:3432" '\
       'product="1" certainty="1" timestamp="1235">'\
         '<outcomes>'\
-          '<market id="13">'\
+          '<market id="13" specifiers="hcp=3.5">'\
             '<outcome id="sr:player:123" result="0"/>'\
             '<outcome id="sr:player:789" result="1"/>'\
             '<outcome id="sr:player:111" result="0" void_factor="1"/>'\
@@ -19,27 +19,33 @@ describe OddsFeed::Radar::BetSettlementHandler do
       '</bet_settlement>'
     )
   end
-  let(:market_id) { 'sr:match:3432:13' }
+  let(:market_id) { 'sr:match:3432:13/hcp=3.5' }
   let(:market) do
     create(:market, status: Market::ACTIVE, external_id: market_id)
   end
   let(:odd) do
-    create(:odd, market: market, external_id: 'sr:match:3432:13:sr:player:222')
+    create(:odd, market: market,
+                 external_id: 'sr:match:3432:13/hcp=3.5:sr:player:222')
   end
   let(:odd_secondary) do
-    create(:odd, market: market, external_id: 'sr:match:3432:13:sr:player:789')
+    create(:odd, market: market,
+                 external_id: 'sr:match:3432:13/hcp=3.5:sr:player:789')
   end
   let(:odd_third) do
-    create(:odd, market: market, external_id: 'sr:match:3432:13:sr:player:123')
+    create(:odd, market: market,
+                 external_id: 'sr:match:3432:13/hcp=3.5:sr:player:123')
   end
   let(:odd_fourth) do
-    create(:odd, market: market, external_id: 'sr:match:3432:13:sr:player:111')
+    create(:odd, market: market,
+                 external_id: 'sr:match:3432:13/hcp=3.5:sr:player:111')
   end
   let(:odd_fifth) do
-    create(:odd, market: market, external_id: 'sr:match:3432:13:sr:player:456')
+    create(:odd, market: market,
+                 external_id: 'sr:match:3432:13/hcp=3.5:sr:player:456')
   end
   let(:odd_not_from_payload) do
-    create(:odd, market: market, external_id: 'sr:match:3432:13:sr:player:999')
+    create(:odd, market: market,
+                 external_id: 'sr:match:3432:13/hcp=3.5:sr:player:999')
   end
 
   let(:total_bets_count)     { 25 }
@@ -115,7 +121,8 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
     context 'with suspended bets' do
       let(:odd) do
-        create(:odd, :suspended, external_id: 'sr:match:3432:13:sr:player:222')
+        create(:odd, :suspended,
+               external_id: 'sr:match:3432:13/hcp=3.5:sr:player:222')
       end
 
       before do
