@@ -210,10 +210,9 @@ describe OddsFeed::Radar::OddsChangeHandler do
       .twice
   end
 
-  it 'calls for live coverage booking' do
+  it 'does not call live coverage booking, moved to Radar CTRL' do
     expect(Radar::LiveCoverageBookingWorker)
-      .to receive(:perform_async)
-      .with(event_id)
+      .not_to receive(:perform_async)
 
     subject_api.handle
   end

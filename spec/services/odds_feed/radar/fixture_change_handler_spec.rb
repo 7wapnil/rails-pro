@@ -37,10 +37,9 @@ describe OddsFeed::Radar::FixtureChangeHandler do
         .to receive(:update_event_producer!).with(liveodds_producer)
     end
 
-    it 'calls for live coverage booking' do
+    it 'does not call live coverage booking, moved to Radar CTRL' do
       expect(Radar::LiveCoverageBookingWorker)
-        .to receive(:perform_async)
-        .with(api_event.external_id)
+        .not_to receive(:perform_async)
     end
   end
 
