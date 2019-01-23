@@ -3,6 +3,8 @@ module Events
     include Base::Limitable
     include Base::Offsetable
 
+    MANDATORY_TAB_FILTERS = %i[inPlay upcoming past].freeze
+
     type !types[EventType]
 
     description 'Get all events'
@@ -21,20 +23,31 @@ module Events
               .order(:priority)
               .order(:start_at)
 
+      query = query.offset(args[:offset]) if args[:offset]
+      query = query.limit(args[:limit]) if args[:limit]
+
       filter_query(query, args)
     end
 
     private
 
-    def filter_query(query, args) # rubocop:disable Metrics/CyclomaticComplexity
+    def filter_query(query, args)
       filter = args[:filter] || {}
 
+      query = filter_by_tabs(query, filter)
       query = filter_by_id(query, filter[:id])
       query = filter_by_title(query, filter[:titleId])
       query = filter_by_title_kind(query, filter[:titleKind])
       query = filter_by_tournament(query, filter[:tournamentId])
-      query = query.offset(args[:offset]) if args[:offset]
-      query = query.limit(args[:limit]) if args[:limit]
+
+      query
+    end
+
+    def filter_by_tabs(query, filter)
+      unless MANDATORY_TAB_FILTERS.any? { |field| filter[field].present? }
+        raise '`inPlay`, `upcoming` or `past` must be truthy!'
+      end
+
       query = query.in_play if filter[:inPlay]
       query = query.upcoming if filter[:upcoming]
       query = query.past if filter[:past]
