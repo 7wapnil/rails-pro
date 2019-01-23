@@ -71,12 +71,10 @@ RSpec.configure do |config|
     ArchivedEvent.delete_all
 
     # Stub web socket client
-    allow(WebSocket::Client.instance).to receive(:emit)
-    allow(WebSocket::Client.instance).to receive(:trigger_event_update)
-    allow(WebSocket::Client.instance).to receive(:trigger_market_update)
+    allow(WebSocket::Client.instance).to receive(:trigger)
 
     # Drop stored application state
-    Rails.cache.delete(ApplicationState::STATE_STORAGE_KEY)
+    ::ApplicationState::StateModel.delete
   end
 end
 

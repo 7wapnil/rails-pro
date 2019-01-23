@@ -33,6 +33,8 @@ describe OddsFeed::Radar::MarketGenerator::Service do
                              payload: payload)
     create(:market_template, external_id: '188',
                              name: 'Template name')
+
+    allow(WebSocket::Client.instance).to receive(:trigger_market_update)
   end
 
   context 'market with outcomes' do

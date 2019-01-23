@@ -7,7 +7,7 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
       '<bet_settlement event_id="sr:match:3432" '\
       'product="1" certainty="1" timestamp="1235">'\
         '<outcomes>'\
-          '<market id="13">'\
+          '<market id="13" specifiers="hcp=3.5">'\
             '<outcome id="sr:player:123" result="0"/>'\
             '<outcome id="sr:player:789" result="1"/>'\
             '<outcome id="sr:player:111" result="0" void_factor="1"/>'\
@@ -20,19 +20,19 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
   end
 
   let(:odd_entire_lose) do
-    create(:odd, external_id: 'sr:match:3432:13:sr:player:123')
+    create(:odd, external_id: 'sr:match:3432:13/hcp=3.5:sr:player:123')
   end
   let(:odd_entire_win) do
-    create(:odd, external_id: 'sr:match:3432:13:sr:player:789')
+    create(:odd, external_id: 'sr:match:3432:13/hcp=3.5:sr:player:789')
   end
   let(:odd_full_refund) do
-    create(:odd, external_id: 'sr:match:3432:13:sr:player:111')
+    create(:odd, external_id: 'sr:match:3432:13/hcp=3.5:sr:player:111')
   end
   let(:odd_half_win) do
-    create(:odd, external_id: 'sr:match:3432:13:sr:player:222')
+    create(:odd, external_id: 'sr:match:3432:13/hcp=3.5:sr:player:222')
   end
   let(:odd_lose_half_refund) do
-    create(:odd, external_id: 'sr:match:3432:13:sr:player:456')
+    create(:odd, external_id: 'sr:match:3432:13/hcp=3.5:sr:player:456')
   end
 
   let(:currency) { create(:currency) }

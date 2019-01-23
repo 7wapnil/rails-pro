@@ -1,4 +1,4 @@
-module Redirection
+module Redirect
   class DepositsController < ActionController::Base
     def initiate
       entry_request =

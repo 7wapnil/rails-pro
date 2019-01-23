@@ -14,10 +14,6 @@ module OddsFeed
 
         query = build_query
         query.update_all(status: StateMachines::BetStateMachine::CANCELLED)
-
-        query.find_in_batches(batch_size: @batch_size) do |batch|
-          emit_websocket_signals(batch)
-        end
       end
 
       private
@@ -82,14 +78,6 @@ module OddsFeed
           .at(timestamp.to_i)
           .to_datetime
           .in_time_zone
-      end
-
-      def emit_websocket_signals(batch)
-        batch.each do |bet|
-          WebSocket::Client.instance.emit(WebSocket::Signals::BET_CANCELLED,
-                                          id: bet.id,
-                                          customerId: bet.customer_id)
-        end
       end
     end
   end

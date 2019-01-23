@@ -3,6 +3,7 @@
   - expired_bonuses
   - expired_live
   - expired_prematch
+  - radar_snapshot_complete
   - radar_odds_change
   - radar_fixture_change
   - radar_alive
@@ -36,6 +37,7 @@
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 
   missing_heartbeat_check:
+    include_metadata: true
     every: <%= ENV.fetch('MISSING_HEARTBEAT_CHECK_INTERVAL', '20s') %>
     class: Radar::MissingHeartbeatWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>

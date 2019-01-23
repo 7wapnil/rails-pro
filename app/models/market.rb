@@ -4,8 +4,6 @@ class Market < ApplicationRecord
   include Visible
 
   before_validation :define_priority, if: :name_changed?
-  after_create :emit_created
-  after_update :emit_updated
 
   PRIORITIES_MAP = [
     { pattern: /^Winner$/, priority: 0 },
@@ -56,25 +54,6 @@ class Market < ApplicationRecord
   end
 
   private
-
-  def emit_created
-    WebSocket::Client.instance.emit(WebSocket::Signals::MARKET_CREATED,
-                                    id: id.to_s,
-                                    eventId: event_id.to_s)
-  end
-
-  def emit_updated
-    changes = {}
-    previous_changes.each do |attr, changed|
-      changes[attr.to_sym] = changed[1] if %w[name status].include?(attr)
-    end
-    return if changes.empty?
-
-    WebSocket::Client.instance.emit(WebSocket::Signals::MARKET_UPDATED,
-                                    id: id.to_s,
-                                    eventId: event_id.to_s,
-                                    changes: changes)
-  end
 
   def define_priority
     return if priority

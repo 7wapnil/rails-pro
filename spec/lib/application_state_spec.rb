@@ -1,54 +1,54 @@
 describe ApplicationState do
   subject { described_class.instance }
 
-  describe '.initialize' do
+  describe 'repository' do
     it 'defines defaults status as active' do
       expect(subject.status).to eq(:active)
+    end
+
+    it 'returns state model' do
+      expect(subject.state).to be_a(::ApplicationState::StateModel)
+    end
+
+    it 'state connected by default' do
+      expect(subject.state.live_connected).to be_truthy
+      expect(subject.state.pre_live_connected).to be_truthy
     end
   end
 
   describe '.status=' do
-    it 'sends web socket event on status change' do
-      subject.status = :inactive
-      expect(WebSocket::Client.instance)
-        .to have_received(:emit)
-        .with(WebSocket::Signals::APP_STATE_UPDATED, anything)
-    end
-
     it 'raises error on wrong status' do
       expect { subject.status = :unknown }.to raise_error(StandardError)
     end
   end
 
-  describe 'storage' do
-    subject { described_class.new }
+  describe 'state model' do
+    it 'reads actual state from storage' do
+      allow(Rails.cache).to receive(:read)
+      subject.state
 
-    let(:subject_with_store) { described_class.instance }
-
-    it 'reads actual state from storage on init' do
-      expect(subject.live_connected).to be_truthy
-      expect(subject.pre_live_connected).to be_truthy
+      expect(Rails.cache)
+        .to have_received(:read)
+        .with(ApplicationState::StateModel::STATE_STORAGE_KEY)
     end
 
-    it 'notify state update on init' do
-      described_class.new
-      expect(WebSocket::Client.instance)
-        .to have_received(:emit)
-        .with(WebSocket::Signals::APP_STATE_UPDATED, anything)
+    it 'stores state in storage on update' do
+      allow(Rails.cache).to receive(:write)
+      subject.live_connected = false
+
+      expect(Rails.cache)
+        .to have_received(:write)
+        .with(
+          ApplicationState::StateModel::STATE_STORAGE_KEY,
+          live_connected: false, pre_live_connected: true
+        )
     end
 
-    it 'stores state on update' do
-      allow(subject_with_store).to receive(:store_app_state)
-      subject_with_store.live_connected = false
-      expect(subject_with_store).to have_received(:store_app_state)
-    end
-
-    it 'emits websocket on state update' do
+    it 'sends websocket event on state update' do
       subject.live_connected = false
       expect(WebSocket::Client.instance)
-        .to have_received(:emit)
-        .twice
-        .with(WebSocket::Signals::APP_STATE_UPDATED, anything)
+        .to have_received(:trigger)
+        .with(SubscriptionFields::APP_STATE_UPDATED, anything)
     end
   end
 end
