@@ -13,7 +13,7 @@ module JobLogger
     Rails.logger.send(
       level,
       jid:          job_id,
-      worker:       self.class.name,
+      class_name:   self.class.name,
       message:      message,
       current_time: current_time,
       thread_id:    thread_id
