@@ -6,7 +6,6 @@ module Deposits
 
     def call
       return request_failure_url if @entry_request.failed?
-
       return request_success_url if @entry_request.initial?
 
       raise(

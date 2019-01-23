@@ -6,8 +6,12 @@ describe Deposits::EntryRequestUrlService do
   end
 
   describe '.call' do
-    it 'requests url from PaymentPageUrlService for initial entry request' do
+    subject(:service_call) do
       described_class.call(entry_request: entry_request)
+    end
+
+    it 'requests url from PaymentPageUrlService for initial entry request' do
+      service_call
       expect(Deposits::GetPaymentPageUrl)
         .to have_received(:call)
         .with(entry_request: entry_request).once
@@ -22,10 +26,10 @@ describe Deposits::EntryRequestUrlService do
 
       before do
         allow(Deposit::CallbackUrl).to receive(:for)
+        service_call
       end
 
       it 'calls callback service' do
-        described_class.call(entry_request: entry_request)
         expect(Deposit::CallbackUrl)
           .to have_received(:for)
           .with(:failed_entry_request, message: entry_request.result).once
@@ -37,9 +41,7 @@ describe Deposits::EntryRequestUrlService do
         let(:entry_request) { build(:entry_request, status: state) }
 
         it 'raises an error' do
-          expect do
-            described_class.call(entry_request: entry_request)
-          end.to raise_error(StandardError)
+          expect { service_call }.to raise_error(StandardError)
         end
       end
     end

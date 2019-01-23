@@ -30,7 +30,7 @@ describe Deposits::InitiateHostedDepositService do
     subject { described_class.call(service_call_params) }
 
     it 'returns entry request' do
-      expect(subject).to be_a EntryRequest
+      expect(subject).to be_an EntryRequest
     end
 
     it 'returns entry request with correct attributes' do
@@ -50,9 +50,8 @@ describe Deposits::InitiateHostedDepositService do
 
       before do
         allow_any_instance_of(described_class)
-          .to receive('validate_business_rules!') {
-                raise Deposits::InvalidDepositRequestError, error_message
-              }
+          .to receive('validate_business_rules!')
+          .and_raise(Deposits::InvalidDepositRequestError, error_message)
       end
 
       it 'returns failed entry request with correct attributes' do
