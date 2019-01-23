@@ -5,6 +5,9 @@ describe Radar::MissingHeartbeatWorker do
     context 'when performed' do
       let(:producer) { instance_double(Radar::Producer.name) }
       let(:producer_two) { instance_double(Radar::Producer.name) }
+      let(:metadata) do
+        { 'scheduled_at' => Faker::Number.decimal(10, 6).to_f }
+      end
 
       before do
         allow(producer).to receive(:unsubscribe_expired!)
@@ -14,7 +17,7 @@ describe Radar::MissingHeartbeatWorker do
           Radar::Producer
         ).to receive(:all).and_return producers
 
-        subject.perform
+        subject.perform(metadata)
       end
 
       it 'sends unsubscribe_expired! to first producer in the database' do

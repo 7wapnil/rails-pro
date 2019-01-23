@@ -78,7 +78,7 @@ module JobLogger
   end
 
   def performing_time
-    enqueued_at.to_i.zero? ? 0 : current_time - enqueued_at
+    enqueued_at.to_i.zero? ? 0 : current_time - enqueued_at.to_f
   end
 
   def execution_time
