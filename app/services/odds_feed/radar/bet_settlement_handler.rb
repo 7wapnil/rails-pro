@@ -21,7 +21,7 @@ module OddsFeed
           market_data['outcome'].each do |outcome|
             generator = ExternalId.new(event_id: input_data['event_id'],
                                        market_id: market_data['id'],
-                                       specs: market_data['specs'],
+                                       specs: market_data['specifiers'],
                                        outcome_id: outcome['id'])
             external_id = generator.generate
 
@@ -34,7 +34,7 @@ module OddsFeed
       def store_market_id(market_data)
         generator = ExternalId.new(event_id: input_data['event_id'],
                                    market_id: market_data['id'],
-                                   specs: market_data['specs'])
+                                   specs: market_data['specifiers'])
         @market_external_ids << generator.generate
       end
 
