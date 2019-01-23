@@ -210,13 +210,6 @@ describe OddsFeed::Radar::OddsChangeHandler do
       .twice
   end
 
-  it 'does not call live coverage booking, moved to Radar CTRL' do
-    expect(Radar::LiveCoverageBookingWorker)
-      .not_to receive(:perform_async)
-
-    subject_api.handle
-  end
-
   context 'empty payload' do
     context 'is nil' do
       let(:payload)  {}
