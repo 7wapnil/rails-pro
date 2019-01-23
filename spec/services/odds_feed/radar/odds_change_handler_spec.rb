@@ -210,14 +210,6 @@ describe OddsFeed::Radar::OddsChangeHandler do
       .twice
   end
 
-  it 'calls for live coverage booking' do
-    expect(Radar::LiveCoverageBookingWorker)
-      .to receive(:perform_async)
-      .with(event_id)
-
-    subject_api.handle
-  end
-
   context 'empty payload' do
     context 'is nil' do
       let(:payload)  {}

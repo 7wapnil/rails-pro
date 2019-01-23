@@ -16,8 +16,6 @@ module OddsFeed
           handle_duplicates
 
           return if event.bookable?
-
-          ::Radar::LiveCoverageBookingWorker.perform_async(event.external_id)
         end
 
         def api_event
