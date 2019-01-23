@@ -3,6 +3,9 @@ describe 'Producer state change feature. ' do
   let(:another_producer) { create(:producer) }
   let(:producers) { [producer, another_producer] }
   let(:time) { Time.zone.now }
+  let(:metadata) do
+    { 'scheduled_at' => time.to_datetime.strftime('%Q').to_f }
+  end
 
   include_context 'frozen_time'
 
@@ -18,7 +21,7 @@ describe 'Producer state change feature. ' do
         last_successful_subscribed_at: time - max_wait_time.seconds - 1.second
       )
 
-      ::Radar::MissingHeartbeatWorker.new.perform
+      ::Radar::MissingHeartbeatWorker.new.perform(metadata)
 
       producers.each(&:reload)
     end
