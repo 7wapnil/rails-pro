@@ -83,6 +83,7 @@ describe GraphQL, '#place_bet' do
       create(:customer_bonus,
              customer: auth_customer,
              wallet: wallet,
+             entry: create(:entry),
              rollover_balance: 10,
              percentage: 25)
     end

@@ -72,7 +72,7 @@ module BetPlacement
     end
 
     def ratio
-      return 1.0 unless @bet.customer_bonus&.activated?
+      return 1.0 unless @bet.customer_bonus&.applied?
 
       wallet.ratio_with_bonus
     end

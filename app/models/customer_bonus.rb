@@ -31,7 +31,7 @@ class CustomerBonus < ApplicationRecord
     deleted_at || ended_at < Time.zone.now
   end
 
-  def activated?
+  def applied?
     !expired? && rollover_balance.present?
   end
 
@@ -52,7 +52,7 @@ class CustomerBonus < ApplicationRecord
       .where(customer: customer)
   end
 
-  def applied?
+  def activated?
     entry_id.present?
   end
 end

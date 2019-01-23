@@ -35,7 +35,7 @@ module Betting
     def applicable_bonus
       bonus = @current_customer.customer_bonus
 
-      return bonus if bonus && !bonus.expired?
+      return bonus if bonus&.activated? && !bonus.expired?
     end
   end
 end
