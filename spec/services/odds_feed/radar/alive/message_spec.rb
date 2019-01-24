@@ -1,6 +1,6 @@
 describe OddsFeed::Radar::Alive::Message do
   let(:timestamp) { 1_532_353_934_098 }
-  let(:message_received_at) { Time.zone.at(timestamp) }
+  let(:message_received_at) { Time.zone.strptime(timestamp.to_s, '%Q') }
   let(:product) { create(:producer) }
 
   let(:subscribed_payload) do
@@ -88,6 +88,12 @@ describe OddsFeed::Radar::Alive::Message do
 
     it 'returns false for unsubscribed message' do
       expect(unsubscribed_message).not_to be_subscribed
+    end
+  end
+
+  describe '.received_at' do
+    it 'converts timestamp correctly' do
+      expect(subscribed_message.received_at).to eq message_received_at
     end
   end
 end
