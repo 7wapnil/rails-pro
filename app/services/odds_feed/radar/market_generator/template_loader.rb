@@ -34,6 +34,11 @@ module OddsFeed
 
         def stored_template
           @stored_template ||= MarketTemplate.find_by!(external_id: market_id)
+        rescue ActiveRecord::RecordNotFound
+          raise(
+            ActiveRecord::RecordNotFound,
+            "MarketTemplate with external id #{market_id} not found."
+          )
         end
 
         def player?(external_id)
