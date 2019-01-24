@@ -27,7 +27,7 @@ class Title < ApplicationRecord
 
   scope :with_active_events, -> {
     joins(:events)
-      .merge(Event.active.visible.upcoming(nil))
+      .merge(Event.active.visible.upcoming)
       .or(joins(:events).merge(Event.active.visible.in_play))
       .distinct
   }
