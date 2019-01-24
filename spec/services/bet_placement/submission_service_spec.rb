@@ -133,19 +133,16 @@ describe BetPlacement::SubmissionService do
       end
     end
 
-    context 'with empty real amount' do
-      it 'raise error when real amount is nil' do
-        calculations = { real_money: nil, bonus: 10 }
-        allow(subject).to receive(:amount_calculations).and_return(calculations)
+    context 'with failure' do
+      let(:error_message) { 'Error' }
 
-        expect { subject.call }.to raise_error(ArgumentError)
-      end
+      it 'call bet register_failure' do
+        allow(subject).to receive(:amount_calculations).and_raise(StandardError,
+                                                                  error_message)
 
-      it 'raise error when real amount is 0' do
-        calculations = { real_money: 0, bonus: 10 }
-        allow(subject).to receive(:amount_calculations).and_return(calculations)
+        expect(bet).to receive(:register_failure).with(error_message)
 
-        expect { subject.call }.to raise_error(ArgumentError)
+        subject.call
       end
     end
   end
