@@ -26,9 +26,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   BOOKABLE = 'bookable'
 
-  UPCOMING_DURATION_IN_HOURS =
-    ENV.fetch('UPCOMING_EVENTS_DURATION_IN_HOURS', 24).to_i
-
   ransacker :markets_count do
     Arel.sql('markets_count')
   end
@@ -95,12 +92,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     select("events.*, #{sub_query} as wager").group(:id)
   end
 
-  def self.upcoming(duration = UPCOMING_DURATION_IN_HOURS)
-    where(
-      'start_at > ? AND end_at IS NULL AND start_at < ?',
-      Time.zone.now,
-      duration.hours.from_now
-    )
+  def self.upcoming
+    where('start_at > ? AND end_at IS NULL', Time.zone.now)
   end
 
   # 4 hours ago is a temporary workaround to reduce amount of live events

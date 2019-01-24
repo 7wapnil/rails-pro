@@ -95,34 +95,6 @@ describe Event do
       event = create(:event, start_at: 1.hour.ago, end_at: 5.minutes.from_now)
       expect(described_class.upcoming).not_to include(event)
     end
-
-    context 'with default duration' do
-      let(:duration) { ::Event::UPCOMING_DURATION_IN_HOURS }
-      let!(:event) do
-        create(:event, :upcoming,
-               start_at: duration.hours.from_now + 5.seconds)
-      end
-
-      include_context 'frozen_time'
-
-      it 'include only events not later than `current time + duration`' do
-        expect(described_class.upcoming(duration)).not_to include(event)
-      end
-    end
-
-    context 'with passed duration' do
-      let(:duration) { Faker::Number.digit.to_i }
-      let!(:event) do
-        create(:event, :upcoming,
-               start_at: duration.hours.from_now + 5.seconds)
-      end
-
-      include_context 'frozen_time'
-
-      it 'include only events not later than `current time + duration`' do
-        expect(described_class.upcoming(duration)).not_to include(event)
-      end
-    end
   end
 
   describe '.past' do
