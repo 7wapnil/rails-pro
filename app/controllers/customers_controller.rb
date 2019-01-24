@@ -59,8 +59,6 @@ class CustomersController < ApplicationController
   end
 
   def activity
-    @search = customer.entries.ransack(query_params)
-    @entries = @search.result.page(params[:page])
     @audit_logs = AuditLog
                   .where(customer_id: customer.id)
                   .page(params[:audit_logs_page])

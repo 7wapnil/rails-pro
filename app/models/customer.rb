@@ -127,6 +127,10 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     DepositLimit.find_or_initialize_by(customer: self)
   end
 
+  def active_bonus
+    customer_bonus if customer_bonus&.activated? && customer_bonus&.applied?
+  end
+
   private
 
   def log_account_transition

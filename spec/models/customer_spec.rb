@@ -151,4 +151,33 @@ describe Customer do
       expect(subject.documents_history(:personal_id).count).to eq(3)
     end
   end
+
+  describe '#active_bonus' do
+    let(:customer) { create(:customer) }
+    let(:bonus) { create(:customer_bonus, customer: customer) }
+    let(:active_bonus) { customer.active_bonus }
+
+    it 'returns nil when customer without bonus' do
+      expect(active_bonus).to be_nil
+    end
+
+    it 'returns nil when customer bonus is not applied?' do
+      allow(bonus).to receive(:applied?).and_return(false)
+
+      expect(active_bonus).to be_nil
+    end
+
+    it 'returns nil when customer bonus is not activated?' do
+      allow(bonus).to receive(:activated?).and_return(false)
+
+      expect(active_bonus).to be_nil
+    end
+
+    it 'returns bonus when customer bonus is activated? and applied?' do
+      allow(bonus).to receive(:activated?).and_return(true)
+      allow(bonus).to receive(:applied?).and_return(true)
+
+      expect(active_bonus).to eq(bonus)
+    end
+  end
 end

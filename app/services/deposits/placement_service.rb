@@ -53,10 +53,10 @@ module Deposits
     end
 
     def eligible_for_the_bonus?
-      return false if customer_bonus&.applied? ||
+      return false if customer_bonus&.activated? ||
                       customer_bonus&.min_deposit.nil?
 
-      customer_bonus.activated? && amount >= customer_bonus.min_deposit
+      customer_bonus.applied? && amount >= customer_bonus.min_deposit
     end
 
     def close_customer_bonus!

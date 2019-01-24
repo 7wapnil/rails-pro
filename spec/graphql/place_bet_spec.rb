@@ -83,6 +83,7 @@ describe GraphQL, '#place_bet' do
       create(:customer_bonus,
              customer: auth_customer,
              wallet: wallet,
+             entry: create(:entry),
              rollover_balance: 10,
              percentage: 25)
     end
@@ -147,12 +148,6 @@ describe GraphQL, '#place_bet' do
       expect(wallet.bonus_balance.amount).to eq(bonus_balance_amount)
     end
 
-    it 'do not apply bonus when odd value is less than allowed' do
-      active_bonus.update_attributes(min_odds_per_bet: odd.value + 1.0)
-      execute_query
-
-      expect(wallet.bonus_balance.amount).to eq(bonus_balance_amount)
-    end
     it 'creates balance entry requests for real and bonus balances' do
       execute_query
       kinds = BalanceEntryRequest.pluck(:kind)
