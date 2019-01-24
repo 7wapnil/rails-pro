@@ -95,13 +95,11 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     select("events.*, #{sub_query} as wager").group(:id)
   end
 
-  def self.upcoming(offset = UPCOMING_DURATION_IN_HOURS)
-    return where('start_at > ? AND end_at IS NULL', Time.zone.now) unless offset
-
+  def self.upcoming(duration = UPCOMING_DURATION_IN_HOURS)
     where(
       'start_at > ? AND end_at IS NULL AND start_at < ?',
       Time.zone.now,
-      offset.hours.from_now
+      duration.hours.from_now
     )
   end
 

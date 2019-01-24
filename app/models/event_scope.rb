@@ -21,7 +21,7 @@ class EventScope < ApplicationRecord
 
   def self.with_dashboard_events
     joins(:events)
-      .merge(Event.active.visible.upcoming(nil))
+      .merge(Event.active.visible.upcoming)
       .or(joins(:events).merge(Event.active.visible.in_play))
       .distinct
   end
