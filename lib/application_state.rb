@@ -5,7 +5,7 @@ class ApplicationState
 
     STATE_STORAGE_KEY = :app_state
 
-    attr_reader :id, :upcoming_events_duration
+    attr_reader :id
     attr_accessor :live_connected,
                   :pre_live_connected
 
@@ -13,7 +13,6 @@ class ApplicationState
       @id = 1
       @live_connected = true
       @pre_live_connected = true
-      @upcoming_events_duration = ::Event::UPCOMING_DURATION_IN_HOURS
       super(attributes)
     end
 
