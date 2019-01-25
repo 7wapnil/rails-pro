@@ -39,13 +39,21 @@ module BetPlacement
     end
 
     def provider_connected?
-      app_state = ApplicationState.instance
-      connected = app_state.live_connected
-      connected = app_state.pre_live_connected if @bet.event.traded_live
-      return true if connected
+      return true if bet_producer_active?(@bet)
 
       @bet.register_failure!(I18n.t('errors.messages.provider_disconnected'))
       false
+    end
+
+    def bet_producer_active?(_bet)
+      app_state = ApplicationState.instance
+      event = @bet.event
+      upcoming_event_disconnection =
+        !app_state.pre_live_connected && Event.upcoming.include?(event)
+      return false if upcoming_event_disconnection
+      return false if !app_state.live_connected && event.in_play?
+
+      true
     end
 
     def entry_request_succeeded?

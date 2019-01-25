@@ -18,7 +18,8 @@ describe BetPlacement::SubmissionService do
       :bet,
       customer: wallet.customer,
       currency: currency,
-      amount: 100
+      amount: 100,
+      market: create(:event_with_market, :upcoming).markets.sample
     )
   end
 
@@ -91,22 +92,15 @@ describe BetPlacement::SubmissionService do
       end
     end
 
+    # TODO: To be extended
     context 'with disconnected provider' do
-      it 'updates bet status as valid' do
-        subject.call
-
-        expect(bet.status).to eq 'sent_to_external_validation'
-        expect(bet.message).to be_nil
-      end
-
-      it 'updates bet status and error message' do
-        ApplicationState.instance.live_connected = false
+      it 'fails when provider disconnected' do
         ApplicationState.instance.pre_live_connected = false
 
         subject.call
 
         expect(bet.status).to eq 'failed'
-        expect(bet.message).to be_a String
+        expect(bet.message).to eq 'Provider is disconnected'
       end
     end
 

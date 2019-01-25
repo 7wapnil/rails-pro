@@ -10,7 +10,11 @@ describe BetPlacement::SubmissionService do
   before do
     allow(ApplicationState)
       .to receive(:instance)
-      .and_return(instance_double(ApplicationState, live_connected: true))
+      .and_return(
+        instance_double(ApplicationState,
+                        live_connected: true,
+                        pre_live_connected: true)
+      )
     allow(EntryRequest).to receive(:create!).and_return(entry_request)
     allow(WalletEntry::AuthorizationService)
       .to receive(:call)
@@ -56,10 +60,15 @@ describe BetPlacement::SubmissionService do
 
     context 'on provider disconnected' do
       context 'live' do
+        let(:event)  { build(:event, :live) }
+        let(:market) { build(:market, event: event) }
+        let(:bet)    { build(:bet, market: market) }
+
         before do
           allow(ApplicationState)
             .to receive(:instance)
             .and_return(instance_double(ApplicationState,
+                                        pre_live_connected: true,
                                         live_connected: false))
         end
 
@@ -67,7 +76,7 @@ describe BetPlacement::SubmissionService do
       end
 
       context 'pre-live' do
-        let(:event)  { build(:event, traded_live: true) }
+        let(:event)  { build(:event, :upcoming) }
         let(:market) { build(:market, event: event) }
         let(:bet)    { build(:bet, market: market) }
 
