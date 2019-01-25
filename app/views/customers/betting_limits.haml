@@ -1,7 +1,7 @@
 - content_for :page_content do
   .mt-4.mb-4= render 'customers/betting_limits',
                       global_limit: @global_limit,
-                      limits_by_sports: @limits_by_sports
+                      limits_by_sport: @limits_by_sport
 
 - content_for :js do
   = javascript_pack_tag 'customers/navigation_links'
