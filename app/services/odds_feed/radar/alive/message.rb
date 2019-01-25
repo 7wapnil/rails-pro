@@ -23,7 +23,7 @@ module OddsFeed
         end
 
         def received_at
-          Time.zone.at(timestamp)
+          Time.zone.strptime(@timestamp.to_s, '%Q')
         end
       end
     end

@@ -3,8 +3,9 @@ describe 'Producer state change feature. ' do
   let(:another_producer) { create(:producer) }
   let(:producers) { [producer, another_producer] }
   let(:time) { Time.zone.now }
+  let(:time_milliseconds) { time.to_datetime.strftime('%Q').to_f }
   let(:metadata) do
-    { 'scheduled_at' => time.to_datetime.strftime('%Q').to_f }
+    { 'scheduled_at' => time_milliseconds }
   end
 
   include_context 'frozen_time'
@@ -37,9 +38,11 @@ describe 'Producer state change feature. ' do
 
   describe 'when alive message received' do
     let(:message_generated_at) { time - 2.seconds }
-    let(:message_generated_timestamp) { message_generated_at.to_i }
+    let(:message_generated_timestamp) do
+      message_generated_at.to_datetime.strftime('%Q').to_i
+    end
     let(:message_received_at_converted) do
-      Time.zone.at(message_generated_timestamp)
+      Time.zone.at(message_generated_timestamp / 1000)
     end
     let(:after_message_received_at) do
       message_received_at_converted + 1.second
@@ -109,7 +112,7 @@ describe 'Producer state change feature. ' do
 
         it "stores last_successful_subscribed_at for #{state} producer" do
           expect(producer.last_successful_subscribed_at)
-            .to eq Time.zone.at(message_generated_timestamp)
+            .to eq Time.zone.strptime(message_generated_timestamp.to_s, '%Q')
         end
       end
     end
