@@ -13,13 +13,13 @@ class EntryRequestsController < ApplicationController
 
   def create
     customer = Customer.find(payload_params[:customer_id])
-    @entry_request = if deposit_simulation?
-                       handle_deposit_simulation(customer)
-                     else
-                       handle_entry_request_creation
-                     end
+    entry_request = if deposit_simulation?
+                      handle_deposit_simulation(customer)
+                    else
+                      handle_entry_request_creation
+                    end
 
-    if @entry_request
+    if entry_request
       current_user.log_event :entry_request_created, @entry_request, customer
 
       redirect_to account_management_customer_path(customer)
