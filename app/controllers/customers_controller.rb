@@ -64,22 +64,6 @@ class CustomersController < ApplicationController
                   .page(params[:audit_logs_page])
   end
 
-  def create_fake_deposit
-    deposit = deposit_params
-    payment_provider = PaymentProvider::FakeDeposit.new
-    fake_credit = {}
-    amount = deposit[:amount].to_f
-    if payment_provider.pay!(amount, fake_credit)
-      wallet = Wallet.find_or_create_by!(customer: customer,
-                                         currency_id: deposit[:currency_id])
-      Deposits::PlacementService.call(wallet, amount)
-      flash[:notice] = I18n.t('events.deposit_created')
-    else
-      flash[:alert] = I18n.t('events.deposit_failed')
-    end
-    redirect_back fallback_location: account_management_customer_path(customer)
-  end
-
   def bonuses
     @history =
       CustomerBonus.customer_history(customer)
