@@ -16,6 +16,8 @@ module BetPlacement
         @bet.send_to_external_validation!
       end
       @bet
+    rescue StandardError => e
+      @bet.register_failure(e.message)
     end
 
     private
