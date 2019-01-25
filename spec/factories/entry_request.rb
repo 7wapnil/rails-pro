@@ -9,7 +9,8 @@ FactoryBot.define do
     comment { Faker::Lorem.paragraph }
 
     customer
-    currency
+    association :currency, factory: %i[currency allowed_by_safe_charge],
+                           strategy: :build
     association :initiator, factory: :customer
 
     trait :with_entry do
