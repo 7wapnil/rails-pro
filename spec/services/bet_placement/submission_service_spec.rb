@@ -28,7 +28,7 @@ describe BetPlacement::SubmissionService do
       amount: -bet.amount,
       currency: bet.currency,
       kind: 'bet',
-      mode: 'sports_ticket',
+      mode: EntryRequest::SYSTEM,
       initiator: bet.customer,
       customer: bet.customer,
       origin: bet

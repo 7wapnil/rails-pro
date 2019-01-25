@@ -2,7 +2,7 @@ module BetSettelement
   class Service < ApplicationService
     ENTRY_REQUEST_WIN_KIND = EntryRequest::WIN
     ENTRY_REQUEST_REFUND_KIND = EntryRequest::REFUND
-    ENTRY_REQUEST_MODE = EntryRequest::SPORTS_TICKET
+    ENTRY_REQUEST_MODE = EntryRequest::SYSTEM
 
     def initialize(bet)
       @bet = bet
