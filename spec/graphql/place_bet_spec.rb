@@ -6,6 +6,9 @@ describe GraphQL, '#place_bet' do
   end
   let(:context) { { current_customer: auth_customer } }
 
+  let!(:live_producer) { create(:liveodds_producer) }
+  let!(:prematch_producer) { create(:prematch_producer) }
+
   let(:query) do
     %(mutation placeBets($bets: [BetInput]) {
         placeBets(bets: $bets) {
