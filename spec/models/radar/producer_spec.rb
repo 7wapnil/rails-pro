@@ -176,7 +176,7 @@ describe Radar::Producer do
     [described_class::HEALTHY, described_class::RECOVERING].each do |state|
       context "with #{state} producer" do
         before do
-          producer.update(code: 'pre', state: state)
+          producer.update(state: state)
           producer.unsubscribe!
         end
 
