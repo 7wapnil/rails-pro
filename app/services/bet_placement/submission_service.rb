@@ -18,7 +18,8 @@ module BetPlacement
       @bet
     rescue StandardError => e
       @bet.register_failure(e.message)
-      false
+
+      raise e
     end
 
     private

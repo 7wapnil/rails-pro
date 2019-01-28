@@ -141,7 +141,7 @@ describe BetPlacement::SubmissionService do
 
         expect(bet).to receive(:register_failure).with(error_message)
 
-        subject.call
+        expect { subject.call }.to raise_error(StandardError)
       end
     end
   end
