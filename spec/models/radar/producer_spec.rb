@@ -63,7 +63,7 @@ describe Radar::Producer do
     end
   end
 
-  describe '.subscribed?' do
+  describe '#subscribed?' do
     it 'returns false for non live code' do
       allow(producer).to receive(:state)
         .and_return(Radar::Producer::UNSUBSCRIBED)
@@ -78,7 +78,7 @@ describe Radar::Producer do
     end
   end
 
-  describe '.unsubscribe_expired!' do
+  describe '#unsubscribe_expired!' do
     include_context 'frozen_time'
 
     let(:limit) do
@@ -100,7 +100,7 @@ describe Radar::Producer do
     end
   end
 
-  describe '.unsubscribe!' do
+  describe '#unsubscribe!' do
     it 'ignored for unsubscribed producers' do
       allow(producer).to receive_messages(
         'unsubscribed!' => nil,
@@ -121,7 +121,7 @@ describe Radar::Producer do
     end
   end
 
-  describe '.subscribed!' do
+  describe '#subscribed!' do
     include_context 'frozen_time'
 
     let(:time) { Time.zone.now }
@@ -162,7 +162,7 @@ describe Radar::Producer do
     end
   end
 
-  describe '.recover!' do
+  describe '#recover!' do
     it 'ignores anything but unsusbscribed' do
       allow(producer).to receive(:unsubscribed?).and_return(false)
       allow(OddsFeed::Radar::SubscriptionRecovery).to receive(:call)
@@ -188,7 +188,7 @@ describe Radar::Producer do
     end
   end
 
-  describe '.recovery_completed!' do
+  describe '#recovery_completed!' do
     it 'sets healthy state' do
       producer.recovery_completed!
       expect(producer.state).to eq Radar::Producer::HEALTHY
