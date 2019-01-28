@@ -16,5 +16,12 @@ FactoryBot.define do
         create(:entry_currency_rule, currency: currency, kind: bet_kind)
       end
     end
+
+    trait :allowed_by_safe_charge do
+      code do
+        (Currency.available_currency_codes &
+          SafeCharge::Currency::AVAILABLE_CURRENCY_LIST).sample
+      end
+    end
   end
 end
