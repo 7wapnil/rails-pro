@@ -17,6 +17,8 @@ class Title < ApplicationRecord
   has_many :dashboard_tournaments, -> { tournament.with_dashboard_events },
            class_name: EventScope.name
 
+  has_many :betting_limits, dependent: :destroy, inverse_of: :title
+
   enum kind: {
     esports: ESPORTS = 'esports',
     sports:  SPORTS  = 'sports'
