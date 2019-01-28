@@ -128,6 +128,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     where(start_at: [Date.today.beginning_of_day..Date.today.end_of_day])
   end
 
+  def upcoming?
+    start_at > Time.zone.now && !end_at
+  end
+
   def in_play?
     traded_live && start_at.past? && end_at.nil?
   end
