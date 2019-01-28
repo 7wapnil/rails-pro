@@ -11,13 +11,6 @@ describe BetPlacement::SubmissionService do
   let!(:prematch_producer) { create(:prematch_producer) }
 
   before do
-    allow(ApplicationState)
-      .to receive(:instance)
-      .and_return(
-        instance_double(ApplicationState,
-                        live_connected: true,
-                        pre_live_connected: true)
-      )
     allow(EntryRequest).to receive(:create!).and_return(entry_request)
     allow(WalletEntry::AuthorizationService)
       .to receive(:call)
