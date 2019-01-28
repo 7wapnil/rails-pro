@@ -12,13 +12,13 @@ FactoryBot.define do
     end
 
     factory :liveodds_producer do
-      id { 1 }
-      code { :liveodds }
+      id { Radar::Producer::LIVE_PROVIDER_ID }
+      code { Radar::Producer::LIVE_PROVIDER_CODE }
     end
 
     factory :prematch_producer do
-      id { 3 }
-      code { :pre }
+      id { Radar::Producer::PREMATCH_PROVIDER_ID }
+      code { Radar::Producer::PREMATCH_PROVIDER_CODE }
     end
   end
 end

@@ -7,6 +7,9 @@ describe Radar::Producer do
     create(:producer,
            recover_requested_at: Faker::Date.backward(14))
   end
+  let(:live_producer) { create(:liveodds_producer) }
+  let(:prematch_producer) { create(:prematch_producer) }
+  let(:real_producers_set) { [live_producer, prematch_producer] }
 
   it { is_expected.to have_many(:events) }
 
@@ -22,15 +25,41 @@ describe Radar::Producer do
     end
   end
 
-  describe '.live?' do
-    it 'returns false for non live code' do
-      allow(producer).to receive(:code).and_return(:none_live)
-      expect(producer).not_to be_live
+  describe '.live' do
+    it 'returns live producer' do
+      real_producers_set
+      expect(described_class.live).to eq live_producer
+    end
+  end
+
+  describe '.prematch' do
+    it 'returns prematch producer' do
+      real_producers_set
+      expect(described_class.prematch).to eq prematch_producer
+    end
+  end
+
+  describe '#live?' do
+    it 'returns false for prematch code' do
+      real_producers_set
+      expect(prematch_producer).not_to be_live
     end
 
     it 'return true for live code' do
-      allow(producer).to receive(:code).and_return(:liveodds)
-      expect(producer).to be_live
+      real_producers_set
+      expect(live_producer).to be_live
+    end
+  end
+
+  describe '#prematch?' do
+    it 'returns true for prematch code' do
+      real_producers_set
+      expect(prematch_producer).to be_prematch
+    end
+
+    it 'return false for live code' do
+      real_producers_set
+      expect(live_producer).not_to be_prematch
     end
   end
 
