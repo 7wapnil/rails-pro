@@ -9,15 +9,21 @@ describe GraphQL, '#place_bet' do
   let(:query) do
     %(mutation placeBets($bets: [BetInput]) {
         placeBets(bets: $bets) {
-          amount
-          market {
             id
-            name
-          }
-          odd {
-            id
-            name
-          }
+            message
+            success
+            bet {
+                 id
+                 amount
+                 market {
+                    id
+                    name
+                 }
+                 odd {
+                    id
+                    name
+                 }
+            }
         }
       })
   end
@@ -59,8 +65,12 @@ describe GraphQL, '#place_bet' do
       expect(bets).to be_an Array
     end
 
+    it 'returns success' do
+      expect(bets.first['success']).to be_truthy
+    end
+
     it 'array elements are bets' do
-      bets.each do |bet|
+      bets.map { |bet_response| bet_response['bet'] }.each do |bet|
         expect(bet['amount']).to be_a Numeric
 
         expect(bet['market']).to be_a Hash
@@ -196,8 +206,7 @@ describe GraphQL, '#place_bet' do
         context: context,
         variables: variables
       )
-
-      expect(response['errors'].first['message'])
+      expect(response['data']['placeBets'].first['message'])
         .to eq 'Couldn\'t find Odd with \'id\'=1'
     end
 
@@ -218,8 +227,60 @@ describe GraphQL, '#place_bet' do
         variables: variables
       )
 
-      expect(response['errors'].first['message'])
+      expect(response['data']['placeBets'].first['message'])
         .to eq 'Couldn\'t find Currency'
+    end
+  end
+
+  context 'multiple bets handling' do
+    let(:odd) { create(:odd, value: 8.87) }
+
+    let(:valid_bet_attrs) do
+      {
+        amount: 10,
+        currencyCode: 'EUR',
+        oddId: odd.id.to_s,
+        oddValue: odd.value
+      }
+    end
+
+    let(:invalid_bet_attrs) do
+      {
+        amount: 0,
+        currencyCode: 'EUR',
+        oddId: odd.id.to_s,
+        oddValue: odd.value
+      }
+    end
+
+    let(:variables) do
+      {
+        bets: [invalid_bet_attrs, valid_bet_attrs]
+      }
+    end
+
+    let(:response) do
+      ArcanebetSchema.execute(query, context: context, variables: variables)
+    end
+
+    let(:succeeded_bets_response) do
+      response['data']['placeBets'].select { |bet| bet['success'] }
+    end
+
+    let(:failed_bets_response) do
+      response['data']['placeBets'].reject { |bet| bet['success'] }
+    end
+
+    it 'returns correct count of succeeded responses' do
+      expect(succeeded_bets_response.count).to eq(1)
+    end
+
+    it 'returns correct count of failed responses' do
+      expect(failed_bets_response.count).to eq(1)
+    end
+
+    it 'succeeded response includes placed bet' do
+      expect(succeeded_bets_response.first['bet']).not_to be_nil
     end
   end
 end
