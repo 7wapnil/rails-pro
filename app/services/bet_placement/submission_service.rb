@@ -49,7 +49,7 @@ module BetPlacement
       app_state = ApplicationState.instance
       event = @bet.event
       upcoming_event_disconnection =
-        !app_state.pre_live_connected && Event.upcoming.include?(event)
+        !app_state.pre_live_connected && event.upcoming?
       return false if upcoming_event_disconnection
       return false if !app_state.live_connected && event.in_play?
 
