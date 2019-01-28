@@ -91,10 +91,6 @@ describe WebSocket::Client do
   describe 'providers updates' do
     let(:provider) { create(:producer) }
 
-    before do
-      subject.trigger_provider_update(provider)
-    end
-
     it 'triggers app state subscription' do
       expect(subject)
         .to have_received(:trigger)
