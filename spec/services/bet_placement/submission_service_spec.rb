@@ -36,11 +36,13 @@ describe BetPlacement::SubmissionService do
     }
   end
 
+  let!(:prematch_producer) { create(:prematch_producer) }
+  let!(:live_producer) { create(:liveodds_producer) }
+
   before do
     allow_any_instance_of(Mts::ValidationMessagePublisherWorker)
       .to receive(:perform)
-    ApplicationState.instance.live_connected = true
-    ApplicationState.instance.pre_live_connected = true
+    prematch_producer.healthy!
     create(
       :entry_currency_rule,
       currency: currency,
@@ -92,15 +94,18 @@ describe BetPlacement::SubmissionService do
       end
     end
 
-    # TODO: To be extended
     context 'with disconnected provider' do
       it 'fails when provider disconnected' do
-        ApplicationState.instance.pre_live_connected = false
+        live_producer.healthy!
+        prematch_producer.unsubscribed!
 
         subject.call
 
-        expect(bet.status).to eq 'failed'
-        expect(bet.message).to eq 'Provider is disconnected'
+        expect(bet)
+          .to have_attributes(
+            message: 'Provider is disconnected',
+            status: 'failed'
+          )
       end
     end
 

@@ -39,19 +39,20 @@ module BetPlacement
     end
 
     def provider_connected?
-      return true if bet_producer_active?(@bet)
+      return true if bet_producer_active?
 
       @bet.register_failure!(I18n.t('errors.messages.provider_disconnected'))
       false
     end
 
-    def bet_producer_active?(_bet)
-      app_state = ApplicationState.instance
+    def bet_producer_active?
       event = @bet.event
-      upcoming_event_disconnection =
-        !app_state.pre_live_connected && event.upcoming?
-      return false if upcoming_event_disconnection
-      return false if !app_state.live_connected && event.in_play?
+
+      live_producer = Radar::Producer.live
+      prematch_producer = Radar::Producer.prematch
+
+      return false if prematch_producer.unsubscribed? && event.upcoming?
+      return false if live_producer.unsubscribed? && event.in_play?
 
       true
     end

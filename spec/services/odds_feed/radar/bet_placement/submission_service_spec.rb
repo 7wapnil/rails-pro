@@ -7,6 +7,9 @@ describe BetPlacement::SubmissionService do
   let(:impersonated_by) { build(:customer) }
   let(:entry_request)   { build_stubbed(:entry_request, :succeeded) }
 
+  let!(:live_producer) { create(:liveodds_producer) }
+  let!(:prematch_producer) { create(:prematch_producer) }
+
   before do
     allow(ApplicationState)
       .to receive(:instance)
@@ -40,7 +43,6 @@ describe BetPlacement::SubmissionService do
   end
 
   context 'invalid' do
-    before { allow(bet).to receive(:register_failure!) }
 
     context 'on failed limits validation' do
       let(:bet)    { build(:bet, :sent_to_internal_validation) }
@@ -65,14 +67,12 @@ describe BetPlacement::SubmissionService do
         let(:bet)    { build(:bet, market: market) }
 
         before do
-          allow(ApplicationState)
-            .to receive(:instance)
-            .and_return(instance_double(ApplicationState,
-                                        pre_live_connected: true,
-                                        live_connected: false))
+          live_producer.unsubscribed!
+          prematch_producer.healthy!
         end
 
-        it { expect(subject).to be_sent_to_internal_validation }
+        it { expect(subject.message).to eq 'Provider is disconnected' }
+        it { expect(subject.status).to eq 'failed' }
       end
 
       context 'pre-live' do
@@ -81,14 +81,12 @@ describe BetPlacement::SubmissionService do
         let(:bet)    { build(:bet, market: market) }
 
         before do
-          allow(ApplicationState)
-            .to receive(:instance)
-            .and_return(instance_double(ApplicationState,
-                                        live_connected: true,
-                                        pre_live_connected: false))
+          live_producer.healthy!
+          prematch_producer.unsubscribed!
         end
 
-        it { expect(subject).to be_sent_to_internal_validation }
+        it { expect(subject.message).to eq 'Provider is disconnected' }
+        it { expect(subject.status).to eq 'failed' }
       end
     end
 
