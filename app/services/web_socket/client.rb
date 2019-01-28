@@ -19,8 +19,8 @@ module WebSocket
       trigger_category_market(market)
     end
 
-    def trigger_app_update(state)
-      trigger(SubscriptionFields::APP_STATE_UPDATED, state)
+    def trigger_provider_update(provider)
+      trigger(SubscriptionFields::PROVIDER_UPDATED, provider)
     end
 
     private

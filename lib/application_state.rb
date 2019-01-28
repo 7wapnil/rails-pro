@@ -23,7 +23,6 @@ class ApplicationState
 
     def save
       Rails.cache.write(STATE_STORAGE_KEY, attributes)
-      update_notify
     end
 
     def update(attributes = {})
@@ -38,12 +37,6 @@ class ApplicationState
 
     def self.delete
       Rails.cache.delete(STATE_STORAGE_KEY)
-    end
-
-    private
-
-    def update_notify
-      WebSocket::Client.instance.trigger_app_update(self)
     end
   end
 
