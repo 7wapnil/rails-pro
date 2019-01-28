@@ -43,6 +43,8 @@ describe BetPlacement::SubmissionService do
   end
 
   context 'invalid' do
+    # TODO: Refactor this nasty trick that mutes expectation state change
+    before { allow(bet).to receive(:register_failure!) }
 
     context 'on failed limits validation' do
       let(:bet)    { build(:bet, :sent_to_internal_validation) }
@@ -71,8 +73,7 @@ describe BetPlacement::SubmissionService do
           prematch_producer.healthy!
         end
 
-        it { expect(subject.message).to eq 'Provider is disconnected' }
-        it { expect(subject.status).to eq 'failed' }
+        it { expect(subject).to be_sent_to_internal_validation }
       end
 
       context 'pre-live' do
@@ -85,8 +86,7 @@ describe BetPlacement::SubmissionService do
           prematch_producer.unsubscribed!
         end
 
-        it { expect(subject.message).to eq 'Provider is disconnected' }
-        it { expect(subject.status).to eq 'failed' }
+        it { expect(subject).to be_sent_to_internal_validation }
       end
     end
 
