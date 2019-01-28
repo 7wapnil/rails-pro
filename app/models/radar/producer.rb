@@ -41,6 +41,7 @@ module Radar
       return false if unsubscribed?
 
       unsubscribed!
+      clean_recovery_data
     end
 
     def subscribed!(subscribed_at: Time.zone.now)
@@ -62,6 +63,10 @@ module Radar
     end
 
     private
+
+    def clean_recovery_data
+      update(recovery_snapshot_id: nil, recover_requested_at: nil)
+    end
 
     def expired?
       last_successful_subscribed_at <=

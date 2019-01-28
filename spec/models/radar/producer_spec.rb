@@ -1,11 +1,14 @@
 describe Radar::Producer do
+  let(:snapshot_id) { Faker::Number.number(8).to_i }
+  let(:recovery_time) { Faker::Date.backward(14).to_datetime }
   let(:another_producer) do
     create(:producer,
            recover_requested_at: producer.recover_requested_at - 1.day)
   end
   let(:producer) do
     create(:producer,
-           recover_requested_at: Faker::Date.backward(14))
+           recover_requested_at: recovery_time,
+           recovery_snapshot_id: snapshot_id)
   end
 
   it { is_expected.to have_many(:events) }
@@ -37,11 +40,11 @@ describe Radar::Producer do
   describe '.subscribed?' do
     it 'returns false for non live code' do
       allow(producer).to receive(:state)
-        .and_return(Radar::Producer::UNSUBSCRIBED)
+        .and_return(described_class::UNSUBSCRIBED)
       expect(producer).not_to be_live
     end
 
-    Radar::Producer::SUBSCRIBED_STATES.values.each do |status|
+    described_class::SUBSCRIBED_STATES.values.each do |status|
       it "returns true for subscribed state #{status}" do
         allow(producer).to receive(:state) { status }
         expect(producer).to be_subscribed
@@ -154,7 +157,36 @@ describe Radar::Producer do
       end
 
       it 'updates state to recovering' do
-        expect(producer.state).to eq Radar::Producer::RECOVERING
+        expect(producer.state).to eq described_class::RECOVERING
+      end
+    end
+  end
+
+  describe '.unsubscribe!' do
+    it 'ignores unsubscribed producer' do
+      producer.update(state: described_class::UNSUBSCRIBED)
+      producer.unsubscribe!
+      expect(producer).to have_attributes(
+        state: described_class::UNSUBSCRIBED,
+        recovery_snapshot_id: snapshot_id,
+        recover_requested_at: recovery_time
+      )
+    end
+
+    [described_class::HEALTHY, described_class::RECOVERING].each do |state|
+      context "with #{state} producer" do
+        before do
+          producer.update(state: state)
+          producer.unsubscribe!
+        end
+
+        it 'clears recovery snapshot id' do
+          expect(producer.recovery_snapshot_id).to eq nil
+        end
+
+        it 'clears recovery request time' do
+          expect(producer.recover_requested_at).to eq nil
+        end
       end
     end
   end
