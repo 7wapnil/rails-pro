@@ -28,8 +28,8 @@ describe BetPlacement::SubmissionService do
     {
       amount: -bet.amount,
       currency: bet.currency,
-      kind: 'bet',
-      mode: 'sports_ticket',
+      kind: EntryRequest::BET,
+      mode: EntryRequest::SPORTS_TICKET,
       initiator: bet.customer,
       customer: bet.customer,
       origin: bet
@@ -89,7 +89,8 @@ describe BetPlacement::SubmissionService do
       it 'updates bet status as valid' do
         subject.call
 
-        expect(bet.status).to eq 'sent_to_external_validation'
+        expect(bet.status)
+          .to eq StateMachines::BetStateMachine::SENT_TO_EXTERNAL_VALIDATION
         expect(bet.message).to be_nil
       end
     end
@@ -103,8 +104,8 @@ describe BetPlacement::SubmissionService do
 
         expect(bet)
           .to have_attributes(
-            message: 'Provider is disconnected',
-            status: 'failed'
+            message: I18n.t('errors.messages.provider_disconnected'),
+            status: StateMachines::BetStateMachine::FAILED
           )
       end
     end
@@ -127,13 +128,13 @@ describe BetPlacement::SubmissionService do
       it 'updates bet status and message on failure' do
         subject.call
 
-        expect(bet.status).to eq 'failed'
+        expect(bet.status).to eq StateMachines::BetStateMachine::FAILED
         expect(bet.message).to be_a String
       end
     end
 
     context 'with failure' do
-      let(:error_message) { 'Error' }
+      let(:error_message) { Faker::Lorem.sentence }
 
       it 'call bet register_failure' do
         allow(subject).to receive(:amount_calculations).and_raise(StandardError,
