@@ -13,6 +13,14 @@ describe Radar::Producer do
 
   it { is_expected.to have_many(:events) }
 
+  it 'emits websocket event on update' do
+    producer.update(state: Radar::Producer::RECOVERING)
+    expect(WebSocket::Client.instance)
+      .to have_received(:trigger)
+      .with(SubscriptionFields::PROVIDER_UPDATED, producer)
+      .at_least(:once)
+  end
+
   describe '#last_recovery_call_at' do
     before do
       producer

@@ -2,6 +2,8 @@ module Radar
   class Producer < ApplicationRecord
     self.table_name = 'radar_providers'
 
+    after_save :notify_application
+
     has_many :events
 
     HEARTBEAT_EXPIRATION_TIME_IN_SECONDS = 60
@@ -76,6 +78,10 @@ module Radar
     def timestamp_update_required(subscribed_at)
       !last_successful_subscribed_at ||
         last_successful_subscribed_at < subscribed_at
+    end
+
+    def notify_application
+      WebSocket::Client.instance.trigger_provider_update(self)
     end
   end
 end

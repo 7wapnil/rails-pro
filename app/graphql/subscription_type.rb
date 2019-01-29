@@ -1,8 +1,8 @@
 SubscriptionType = GraphQL::ObjectType.define do
   name 'Subscription'
 
-  # App state
-  field SubscriptionFields::APP_STATE_UPDATED, App::AppType
+  # Radar Providers fields
+  field SubscriptionFields::PROVIDER_UPDATED, Providers::ProviderType
 
   # Event fields
   field SubscriptionFields::EVENT_UPDATED, Events::EventType do
