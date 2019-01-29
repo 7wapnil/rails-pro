@@ -41,7 +41,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   scope :active, -> { where(active: true) }
 
   belongs_to :title
-  belongs_to :producer, class_name: Radar::Producer.name
+  belongs_to :producer, class_name: Radar::Producer.name, inverse_of: :events
   has_many :markets, dependent: :delete_all
   has_many :bets, through: :markets
   has_many :scoped_events, dependent: :delete_all
@@ -126,6 +126,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   def self.today
     where(start_at: [Date.today.beginning_of_day..Date.today.end_of_day])
+  end
+
+  def upcoming?
+    start_at > Time.zone.now && !end_at
   end
 
   def in_play?

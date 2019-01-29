@@ -10,6 +10,9 @@ describe Radar::Producer do
            recover_requested_at: recovery_time,
            recovery_snapshot_id: snapshot_id)
   end
+  let(:live_producer) { create(:liveodds_producer) }
+  let(:prematch_producer) { create(:prematch_producer) }
+  let(:real_producers_set) { [live_producer, prematch_producer] }
 
   it { is_expected.to have_many(:events) }
 
@@ -33,19 +36,45 @@ describe Radar::Producer do
     end
   end
 
-  describe '.live?' do
-    it 'returns false for non live code' do
-      allow(producer).to receive(:code).and_return(:none_live)
-      expect(producer).not_to be_live
-    end
-
-    it 'return true for live code' do
-      allow(producer).to receive(:code).and_return(:liveodds)
-      expect(producer).to be_live
+  describe '.live' do
+    it 'returns live producer' do
+      real_producers_set
+      expect(described_class.live).to eq live_producer
     end
   end
 
-  describe '.subscribed?' do
+  describe '.prematch' do
+    it 'returns prematch producer' do
+      real_producers_set
+      expect(described_class.prematch).to eq prematch_producer
+    end
+  end
+
+  describe '#live?' do
+    it 'returns false for prematch code' do
+      real_producers_set
+      expect(prematch_producer).not_to be_live
+    end
+
+    it 'return true for live code' do
+      real_producers_set
+      expect(live_producer).to be_live
+    end
+  end
+
+  describe '#prematch?' do
+    it 'returns true for prematch code' do
+      real_producers_set
+      expect(prematch_producer).to be_prematch
+    end
+
+    it 'return false for live code' do
+      real_producers_set
+      expect(live_producer).not_to be_prematch
+    end
+  end
+
+  describe '#subscribed?' do
     it 'returns false for non live code' do
       allow(producer).to receive(:state)
         .and_return(described_class::UNSUBSCRIBED)
@@ -60,7 +89,7 @@ describe Radar::Producer do
     end
   end
 
-  describe '.unsubscribe_expired!' do
+  describe '#unsubscribe_expired!' do
     include_context 'frozen_time'
 
     let(:limit) do
@@ -82,7 +111,7 @@ describe Radar::Producer do
     end
   end
 
-  describe '.unsubscribe!' do
+  describe '#unsubscribe!' do
     it 'ignored for unsubscribed producers' do
       allow(producer).to receive_messages(
         'unsubscribed!' => nil,
@@ -103,7 +132,7 @@ describe Radar::Producer do
     end
   end
 
-  describe '.subscribed!' do
+  describe '#subscribed!' do
     include_context 'frozen_time'
 
     let(:time) { Time.zone.now }
@@ -144,7 +173,7 @@ describe Radar::Producer do
     end
   end
 
-  describe '.recover!' do
+  describe '#recover!' do
     it 'ignores anything but unsusbscribed' do
       allow(producer).to receive(:unsubscribed?).and_return(false)
       allow(OddsFeed::Radar::SubscriptionRecovery).to receive(:call)
@@ -199,7 +228,7 @@ describe Radar::Producer do
     end
   end
 
-  describe '.recovery_completed!' do
+  describe '#recovery_completed!' do
     it 'sets healthy state' do
       producer.recovery_completed!
       expect(producer.state).to eq Radar::Producer::HEALTHY

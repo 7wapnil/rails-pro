@@ -7,10 +7,10 @@ describe BetPlacement::SubmissionService do
   let(:impersonated_by) { build(:customer) }
   let(:entry_request)   { build_stubbed(:entry_request, :succeeded) }
 
+  let!(:live_producer) { create(:liveodds_producer) }
+  let!(:prematch_producer) { create(:prematch_producer) }
+
   before do
-    allow(ApplicationState)
-      .to receive(:instance)
-      .and_return(instance_double(ApplicationState, live_connected: true))
     allow(EntryRequest).to receive(:create!).and_return(entry_request)
     allow(WalletEntry::AuthorizationService)
       .to receive(:call)
@@ -36,6 +36,7 @@ describe BetPlacement::SubmissionService do
   end
 
   context 'invalid' do
+    # TODO: Refactor this nasty trick that mutes expectation state change
     before { allow(bet).to receive(:register_failure!) }
 
     context 'on failed limits validation' do
@@ -56,27 +57,26 @@ describe BetPlacement::SubmissionService do
 
     context 'on provider disconnected' do
       context 'live' do
+        let(:event)  { build(:event, :live) }
+        let(:market) { build(:market, event: event) }
+        let(:bet)    { build(:bet, market: market) }
+
         before do
-          allow(ApplicationState)
-            .to receive(:instance)
-            .and_return(instance_double(ApplicationState,
-                                        live_connected: false))
+          live_producer.unsubscribed!
+          prematch_producer.healthy!
         end
 
         it { expect(subject).to be_sent_to_internal_validation }
       end
 
       context 'pre-live' do
-        let(:event)  { build(:event, traded_live: true) }
+        let(:event)  { build(:event, :upcoming) }
         let(:market) { build(:market, event: event) }
         let(:bet)    { build(:bet, market: market) }
 
         before do
-          allow(ApplicationState)
-            .to receive(:instance)
-            .and_return(instance_double(ApplicationState,
-                                        live_connected: true,
-                                        pre_live_connected: false))
+          live_producer.healthy!
+          prematch_producer.unsubscribed!
         end
 
         it { expect(subject).to be_sent_to_internal_validation }
