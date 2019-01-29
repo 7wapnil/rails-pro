@@ -7,7 +7,6 @@ describe 'creates deposit via entry request form' do
   let!(:currency) { create(:currency, :primary, code: 'EUR', name: 'Euro') }
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
   let(:deposit_form) { '.card.customer-entry-request-form form' }
-  let(:entry_request_form) { EntryRequestForm.new }
 
   before do
     create(:wallet, customer: customer, currency: currency, amount: 0)
@@ -15,42 +14,6 @@ describe 'creates deposit via entry request form' do
     allow(EntryCurrencyRule).to receive(:find_by!) { rule }
     allow(Currency).to receive(:find_by!) { currency }
     visit page_path
-  end
-
-  context 'trigger deposit creation flow' do
-    it 'calls Deposits::PlacementService' do
-      within deposit_form do
-        entry_request_form.fill_in_with(mode: EntryRequest::SIMULATED,
-                                        type: EntryRequest::DEPOSIT)
-
-        expect(Deposits::PlacementService).to receive(:call)
-
-        entry_request_form.submit
-      end
-    end
-  end
-
-  context 'trigger entry placement flow' do
-    let(:filled_form) do
-      entry_request_form.fill_in_with(mode: EntryRequest::CASHIER,
-                                      type: EntryRequest::DEPOSIT)
-    end
-
-    it "don't call Deposits::PlacementService" do
-      within deposit_form do
-        expect(Deposits::PlacementService).not_to receive(:call)
-
-        filled_form.submit
-      end
-    end
-
-    it 'passes entry request to EntryRequestProcessingWorker' do
-      within deposit_form do
-        expect(EntryRequestProcessingWorker).to receive(:perform_async)
-
-        filled_form.submit
-      end
-    end
   end
 
   context 'with bonus' do
@@ -61,42 +24,45 @@ describe 'creates deposit via entry request form' do
              percentage: percentage,
              rollover_balance: 20)
     end
-    let(:filled_form) do
-      entry_request_form.fill_in_with(amount: amount,
-                                      mode: EntryRequest::SIMULATED,
-                                      type: EntryRequest::DEPOSIT)
+
+    before do
+      within deposit_form do
+        fill_in 'Amount', with: amount
+        fill_in 'Comment', with: 'comment text'
+        select EntryRequest::SIMULATED.capitalize, from: 'Mode'
+        select EntryRequest::DEPOSIT.capitalize, from: 'Type'
+        select currency.name.capitalize, from: 'Currency'
+      end
     end
 
     it 'creates 2 entries requests' do
-      within deposit_form do
-        filled_form.submit
-        bonus_amount = (percentage / 100.0) * amount
+      click_on 'Confirm'
+      bonus_amount = (percentage / 100.0) * amount
 
-        expect(entries_amounts).to match_array([amount, bonus_amount])
-      end
+      expect(entries_amounts).to match_array([amount, bonus_amount])
     end
 
     it 'closes customer bonus when customer bonus is expired' do
       customer_bonus.update_attributes(created_at: 1.month.ago,
                                        valid_for_days: 2)
-      within deposit_form do
-        filled_form.submit
-        customer_bonus.reload
+      click_on 'Confirm'
 
-        expect(customer_bonus).to be_expired_by_date
-      end
+      expect(customer_bonus.reload).to be_expired_by_date
     end
   end
 
   context 'without bonus' do
     it 'creates 1 entry requests' do
       within deposit_form do
-        entry_request_form.fill_in_with(amount: amount,
-                                        mode: EntryRequest::SIMULATED,
-                                        type: EntryRequest::DEPOSIT).submit
-
-        expect(entries_amounts).to match_array([amount])
+        fill_in 'Amount', with: amount
+        fill_in 'Comment', with: 'comment text'
+        select EntryRequest::SIMULATED.capitalize, from: 'Mode'
+        select EntryRequest::DEPOSIT.capitalize, from: 'Type'
+        select currency.name.capitalize, from: 'Currency'
+        click_on 'Confirm'
       end
+
+      expect(entries_amounts).to match_array([amount])
     end
   end
 end

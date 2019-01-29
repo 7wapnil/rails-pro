@@ -3,12 +3,12 @@ module Deposits
     ENTRY_REQUEST_KIND = EntryRequest.kinds[:deposit]
     ENTRY_REQUEST_MODE = EntryRequest.modes[:cashier]
 
-    def initialize(wallet, amount, initiator: nil, mode: nil, comment: nil)
+    def initialize(wallet, amount, **options)
       @wallet = wallet
       @amount = amount
-      @initiator = initiator || wallet.customer
-      @mode = mode || EntryRequest::CASHIER
-      @comment = comment
+      @initiator = options[:initiator] || wallet.customer
+      @mode =  options[:mode] || EntryRequest::CASHIER
+      @comment = options[:comment]
       @customer_bonus = wallet.customer.customer_bonus
     end
 
