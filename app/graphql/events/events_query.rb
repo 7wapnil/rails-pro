@@ -26,12 +26,14 @@ module Events
 
     private
 
+    # rubocop:disable Metrics/AbcSize
     def filter_query(query, args) # rubocop:disable Metrics/CyclomaticComplexity
       filter = args[:filter] || {}
 
       query = filter_by_id(query, filter[:id])
       query = filter_by_title(query, filter[:titleId])
       query = filter_by_title_kind(query, filter[:titleKind])
+      query = filter_by_category(query, filter[:categoryId])
       query = filter_by_tournament(query, filter[:tournamentId])
       query = query.offset(args[:offset]) if args[:offset]
       query = query.limit(args[:limit]) if args[:limit]
@@ -41,6 +43,7 @@ module Events
 
       query
     end
+    # rubocop:enable Metrics/AbcSize
 
     def filter_by_id(query, id)
       return query if id.nil?
@@ -58,6 +61,14 @@ module Events
       return query if title_kind.nil?
 
       query.where(titles: { kind: title_kind })
+    end
+
+    def filter_by_category(query, category_id)
+      return query if category_id.nil?
+
+      query
+        .eager_load(:scoped_events)
+        .where(scoped_events: { event_scope_id: category_id })
     end
 
     def filter_by_tournament(query, tournament_id)

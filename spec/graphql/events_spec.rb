@@ -292,6 +292,36 @@ describe GraphQL, '#events' do
     end
   end
 
+  context 'category' do
+    let(:category) { create(:event_scope, kind: EventScope::CATEGORY) }
+    let(:query) do
+      %({ events (
+            filter: { categoryId: #{category.id} }
+        ) {
+            id
+      } })
+    end
+
+    before do
+      other_title = create(:title)
+      create_list(:event, 5, :upcoming, title: other_title)
+
+      events = create_list(
+        :event, 5, :upcoming,
+        title: category.title
+      )
+
+      events.each do |event|
+        event.event_scopes << category
+      end
+    end
+
+    it 'returns events by category ID' do
+      expect(result['data']).not_to be_nil
+      expect(result['data']['events'].count).to eq(5)
+    end
+  end
+
   context 'competitors' do
     let(:payload) do
       { competitors: {
