@@ -5,17 +5,27 @@ describe Radar::Producer do
   end
   let(:producer) do
     create(:producer,
-           recover_requested_at: Faker::Date.backward(14))
+           recover_requested_at: Faker::Date.backward(14),
+           state: Radar::Producer::HEALTHY)
   end
 
   it { is_expected.to have_many(:events) }
 
-  it 'emits websocket event on update' do
-    producer.update(state: Radar::Producer::RECOVERING)
-    expect(WebSocket::Client.instance)
-      .to have_received(:trigger)
-      .with(SubscriptionFields::PROVIDER_UPDATED, producer)
-      .at_least(:once)
+  describe 'callbacks' do
+    it 'emits websocket event on update' do
+      producer.update(state: Radar::Producer::RECOVERING)
+      expect(WebSocket::Client.instance)
+        .to have_received(:trigger)
+        .with(SubscriptionFields::PROVIDER_UPDATED, producer)
+        .at_least(:once)
+    end
+
+    it 'emits websocket event on state update only' do
+      producer.update(last_successful_subscribed_at: Time.zone.now)
+      expect(WebSocket::Client.instance)
+        .to have_received(:trigger)
+        .once
+    end
   end
 
   describe '#last_recovery_call_at' do

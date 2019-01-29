@@ -2,7 +2,7 @@ module Radar
   class Producer < ApplicationRecord
     self.table_name = 'radar_providers'
 
-    after_save :notify_application
+    after_save :notify_application, if: :saved_change_to_state?
 
     has_many :events
 
