@@ -50,13 +50,18 @@ module BetPlacement
     def bet_producer_active?
       event = @bet.event
 
-      live_producer = Radar::Producer.live
-      prematch_producer = Radar::Producer.prematch
+      !(
+          rejected_as_offline_upcoming_event(event) ||
+            rejected_as_in_play_offline_event(event)
+        )
+    end
 
-      return false if prematch_producer.unsubscribed? && event.upcoming?
-      return false if live_producer.unsubscribed? && event.in_play?
+    def rejected_as_in_play_offline_event(event)
+      event.in_play? && Radar::Producer.live.unsubscribed?
+    end
 
-      true
+    def rejected_as_offline_upcoming_event(event)
+      event.upcoming? && Radar::Producer.prematch.unsubscribed?
     end
 
     def entry_request_succeeded?
