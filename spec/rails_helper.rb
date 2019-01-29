@@ -59,6 +59,7 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include Rails.application.routes.url_helpers, type: :feature
+  config.include Rails.application.routes.url_helpers, routes: true
   config.include Warden::Test::Helpers, type: :feature
   config.include FeatureHelpers, type: :feature
   config.include RequestSpecHelper, type: :controller

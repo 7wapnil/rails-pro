@@ -30,12 +30,8 @@ FactoryBot.define do
       end
     end
 
-    factory :customer_with_betting_limits do
-      after(:create) do |customer|
-        create(:betting_limit, customer: customer, title: nil)
-        title = create(:title)
-        create(:betting_limit, customer: customer, title: title)
-      end
+    trait :with_address do
+      association :address, factory: %i[address with_state], strategy: :build
     end
   end
 end

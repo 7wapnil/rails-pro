@@ -140,6 +140,32 @@ describe Event do
     end
   end
 
+  describe '.#upcoming? ' do
+    shared_context 'frozen_time'
+
+    it 'when end_at exist is not upcoming' do
+      expect(build(:event, end_at: Time.zone.now)).not_to be_upcoming
+    end
+
+    it 'when start_at equals to now is not upcoming' do
+      expect(
+        build(:event, end_at: nil, start_at: Time.zone.now)
+      ).not_to be_upcoming
+    end
+
+    it 'when start_at less than now is not upcoming ' do
+      expect(
+        build(:event, end_at: nil, start_at: Time.zone.now - 1.second)
+      ).not_to be_upcoming
+    end
+
+    it 'when start_at more than now and missing end_at it is upcoming ' do
+      expect(
+        build(:event, end_at: nil, start_at: Time.zone.now + 1.second)
+      ).to be_upcoming
+    end
+  end
+
   describe '#in_play?' do
     it 'is true when started, not finished and is traded live' do
       event = create(:event,

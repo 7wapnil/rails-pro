@@ -1,5 +1,5 @@
 module SubscriptionFields
-  APP_STATE_UPDATED = :app_state_updated
+  PROVIDER_UPDATED = :provider_updated
   EVENT_UPDATED = :event_updated
   EVENTS_UPDATED = :events_updated
   KIND_EVENT_UPDATED = :kind_event_updated
