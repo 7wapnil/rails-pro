@@ -49,6 +49,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_many :label_joins, as: :labelable
   has_many :labels, through: :label_joins
 
+  has_one :dashboard_market, -> { for_displaying }, class_name: Market.name
+
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }
   validates :active, inclusion: { in: [true, false] }
