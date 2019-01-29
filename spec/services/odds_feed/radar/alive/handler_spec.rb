@@ -64,7 +64,10 @@ describe OddsFeed::Radar::Alive::Handler do
       let(:message) do
         instance_double('OddsFeed::Radar::Alive::Message',
                         product: product,
-                        timestamp: Time.zone.at(timestamp))
+                        timestamp: Time.zone.at(timestamp),
+                        received_at: Time.zone.at(timestamp),
+                        'subscribed?' => false,
+                        'expired?' => true)
       end
 
       let(:response) do
@@ -72,15 +75,15 @@ describe OddsFeed::Radar::Alive::Handler do
       end
 
       before do
-        allow(message).to receive_messages(
-          'subscribed?' => false,
-          'expired?' => true
-        )
         response
       end
 
-      it 'is ignored' do
-        expect(message).not_to have_received(:subscribed?)
+      it 'does not change producer state to unsubscribed' do
+        expect(product).not_to receive(:unsubscribe!)
+      end
+
+      it 'does not change producer state to subscribed' do
+        expect(product).not_to receive(:subscribed!)
       end
 
       it 'returns false from service' do
