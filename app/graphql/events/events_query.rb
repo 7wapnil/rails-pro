@@ -8,75 +8,17 @@ module Events
     description 'Get all events'
 
     argument :filter, EventFilter
+    argument :context, types.String
 
     def auth_protected?
       false
     end
 
     def resolve(_obj, args)
-      query = Event
-              .visible
-              .active
-              .joins(:title)
-              .order(:priority)
-              .order(:start_at)
-
-      filter_query(query, args)
-    end
-
-    private
-
-    # rubocop:disable Metrics/AbcSize
-    def filter_query(query, args) # rubocop:disable Metrics/CyclomaticComplexity
-      filter = args[:filter] || {}
-
-      query = filter_by_id(query, filter[:id])
-      query = filter_by_title(query, filter[:titleId])
-      query = filter_by_title_kind(query, filter[:titleKind])
-      query = filter_by_category(query, filter[:categoryId])
-      query = filter_by_tournament(query, filter[:tournamentId])
+      query = EventsLoader.new(args).load
+      # TODO: remove limit and offset
       query = query.offset(args[:offset]) if args[:offset]
-      query = query.limit(args[:limit]) if args[:limit]
-      query = query.in_play if filter[:inPlay]
-      query = query.upcoming if filter[:upcoming]
-      query = query.past if filter[:past]
-
-      query
-    end
-    # rubocop:enable Metrics/AbcSize
-
-    def filter_by_id(query, id)
-      return query if id.nil?
-
-      query.where(id: id)
-    end
-
-    def filter_by_title(query, title_id)
-      return query if title_id.nil?
-
-      query.where(title_id: title_id)
-    end
-
-    def filter_by_title_kind(query, title_kind)
-      return query if title_kind.nil?
-
-      query.where(titles: { kind: title_kind })
-    end
-
-    def filter_by_category(query, category_id)
-      return query if category_id.nil?
-
-      query
-        .eager_load(:scoped_events)
-        .where(scoped_events: { event_scope_id: category_id })
-    end
-
-    def filter_by_tournament(query, tournament_id)
-      return query if tournament_id.nil?
-
-      query
-        .eager_load(:scoped_events)
-        .where(scoped_events: { event_scope_id: tournament_id })
+      query.limit(args[:limit]) if args[:limit]
     end
   end
 end
