@@ -4,6 +4,10 @@ module OddsFeed
       MINIMAL_DELAY_BETWEEN_CALLS_IN_SECONDS = 30
       OLDEST_RECOVERY_AVAILABLE_IN_HOURS = 72
 
+      RECOVERY_RATES_REACHED_MESSAGE = 'Recovery rates reached'.freeze
+      UNSUCCESSFUL_RECOVERY_MESSAGE = 'Unsuccessful recovery'.freeze
+      RECOVERY_REQUEST_INITIATED_MESSAGE = 'Recovery request initiated'.freeze
+
       include JobLogger
 
       attr_reader :product
@@ -16,8 +20,14 @@ module OddsFeed
       end
 
       def call
-        log_job_message(:info, "Recovering #{@product.code} from #{@start_at}")
-        raise 'Recovery rates reached' unless rates_available?
+        log_job_message(:info,
+                        message: RECOVERY_REQUEST_INITIATED_MESSAGE,
+                        producer_code: @product.code,
+                        recovery_after: recover_after)
+        unless rates_available?
+          log_job_message(:error, RECOVERY_RATES_REACHED_MESSAGE)
+          return @product
+        end
 
         requested_at = Time.zone.now
         request_id = requested_at.to_i
@@ -46,7 +56,7 @@ module OddsFeed
           node_id: node_id,
           request_id: request_id
         )
-        raise 'Unsuccessful recovery' unless response_success(response)
+        raise UNSUCCESSFUL_RECOVERY_MESSAGE unless response_success(response)
       end
 
       def response_success(response)
