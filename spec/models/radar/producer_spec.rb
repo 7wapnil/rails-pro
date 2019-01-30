@@ -12,19 +12,20 @@ describe Radar::Producer do
   it { is_expected.to have_many(:events) }
 
   describe 'callbacks' do
+    let!(:producer) { create(:producer, state: Radar::Producer::HEALTHY) }
+
     it 'emits websocket event on update' do
-      producer.update(state: Radar::Producer::RECOVERING)
       expect(WebSocket::Client.instance)
-        .to have_received(:trigger)
+        .to receive(:trigger)
         .with(SubscriptionFields::PROVIDER_UPDATED, producer)
-        .at_least(:once)
+        .once
+
+      producer.update(state: Radar::Producer::RECOVERING)
     end
 
     it 'emits websocket event on state update only' do
+      expect(WebSocket::Client.instance).not_to receive(:trigger)
       producer.update(last_successful_subscribed_at: Time.zone.now)
-      expect(WebSocket::Client.instance)
-        .to have_received(:trigger)
-        .once
     end
   end
 
