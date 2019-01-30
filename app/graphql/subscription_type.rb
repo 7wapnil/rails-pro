@@ -1,3 +1,5 @@
+# Add `subscription_scope: :customer_id` to any field
+# you plan to require an authentication
 SubscriptionType = GraphQL::ObjectType.define do
   name 'Subscription'
 

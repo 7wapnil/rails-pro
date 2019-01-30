@@ -106,4 +106,5 @@ group :test do
   gem 'timecop'
   gem 'webmock'
   gem 'database_cleaner' # utils only, not used in rspec
+  gem 'action-cable-testing'
 end
