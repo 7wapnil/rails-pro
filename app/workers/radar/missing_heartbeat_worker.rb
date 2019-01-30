@@ -4,7 +4,8 @@ module Radar
 
     sidekiq_options queue: queue_name,
                     lock: :until_executed,
-                    on_conflict: :log
+                    on_conflict: :log,
+                    retry: 1
 
     def perform(metadata = nil)
       @metadata = metadata
