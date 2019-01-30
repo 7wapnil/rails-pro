@@ -23,6 +23,13 @@ module WebSocket
       trigger(SubscriptionFields::PROVIDER_UPDATED, provider)
     end
 
+    def trigger_wallet_update(wallet)
+      trigger(SubscriptionFields::WALLET_UPDATED,
+              wallet,
+              {},
+              wallet.customer_id)
+    end
+
     private
 
     def trigger(name, object, args = {}, scope = nil)

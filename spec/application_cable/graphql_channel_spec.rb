@@ -1,9 +1,3 @@
-# Add tests for auth-require subscription endpoints when
-# they will be added
-#
-# To stub connection use `stub_connection`
-# To stub with customer authenticated us `stub_connection customer: customer`
-#
 describe GraphqlChannel, type: :channel do
   let(:customer) { create(:customer) }
 
