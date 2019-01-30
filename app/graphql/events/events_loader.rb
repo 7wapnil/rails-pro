@@ -1,6 +1,7 @@
 module Events
   class EventsLoader
     SUPPORTED_CONTEXTS = %w[live upcoming_for_time upcoming_limited].freeze
+    UPCOMING_LIMIT = 16
 
     def initialize(query_args)
       @query_args = query_args
@@ -23,6 +24,20 @@ module Events
     private
 
     attr_reader :query_args, :context, :filter, :query
+
+    def upcoming_for_time
+      query.where('start_at > ? AND start_at <= ? AND end_at IS NULL',
+                  Time.zone.now,
+                  Time.zone.now + 24.hours)
+    end
+
+    def upcoming_limited
+      upcoming_for_time.limit(UPCOMING_LIMIT)
+    end
+
+    def live
+      query.in_play
+    end
 
     def filter_by_id(id)
       return query if id.nil?
@@ -59,7 +74,10 @@ module Events
     end
 
     def apply_context!
-      # TODO : handle context
+      return unless context_required?
+
+      verify_context!
+      @query = send(context)
     end
 
     def apply_filters!
@@ -75,7 +93,7 @@ module Events
       end
     end
 
-    def verify_context
+    def verify_context!
       error_msg = 'Context is required!'
       raise StandardError, error_msg if context_required? && context.blank?
 
@@ -90,8 +108,7 @@ module Events
       return if context.blank?
 
       error_msg = <<~MSG
-        Unsupported context '#{context}'.
-        Supported contexts are #{SUPPORTED_CONTEXTS.join(', ')}
+        Unsupported context '#{context}'.Supported contexts are #{SUPPORTED_CONTEXTS.join(', ')}
       MSG
 
       raise StandardError, error_msg unless SUPPORTED_CONTEXTS.include? context

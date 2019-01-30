@@ -15,6 +15,10 @@ FactoryBot.define do
       end
     end
 
+    trait :tournament do
+      kind { EventScope::TOURNAMENT }
+    end
+
     factory :event_scope_category do
       kind { EventScope::CATEGORY }
       name { Faker::Address.country }

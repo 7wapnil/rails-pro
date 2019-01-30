@@ -1,6 +1,10 @@
 describe GraphQL, '#events' do
   let(:context) { {} }
   let(:variables) { {} }
+  let(:upcoming_ctx) { 'upcoming_for_time' }
+  let(:upcoming_limited_ctx) { 'upcoming_limited' }
+  let(:live_ctx) { 'live' }
+
   let(:result) do
     ArcanebetSchema.execute(query, context: context, variables: variables)
   end
@@ -12,7 +16,7 @@ describe GraphQL, '#events' do
       create_list(:event, 5, :upcoming, title: title)
     end
 
-    let(:query) { %({ events { id name } }) }
+    let(:query) { %({ events(context: #{upcoming_ctx}) { id name } }) }
 
     it 'returns list of upcoming events' do
       expect(result['data']['events'].count).to eq(5)
@@ -34,7 +38,7 @@ describe GraphQL, '#events' do
       )
     end
 
-    let(:query) { %({ events { id name } }) }
+    let(:query) { %({ events(context: #{upcoming_ctx}) { id name } }) }
 
     it 'returns only visible events' do
       expect(result['data']['events'].count).to eq(2)
@@ -45,7 +49,7 @@ describe GraphQL, '#events' do
     let!(:event) { create(:event_with_odds, :upcoming, title: title) }
     let(:query) do
       %({
-          events {
+          events(context: #{upcoming_ctx}) {
             id
             name
             markets { id name priority status }
@@ -70,7 +74,7 @@ describe GraphQL, '#events' do
   context 'ordered by priority' do
     let(:query) do
       %({
-          events {
+          events(context: #{upcoming_ctx}) {
             id
             name
             priority
@@ -94,7 +98,7 @@ describe GraphQL, '#events' do
   context 'with markets priority' do
     let(:query) do
       %({
-          events {
+          events(context: #{upcoming_ctx}) {
             id
             name
             markets (priority: 1) { id name priority status }
@@ -123,7 +127,7 @@ describe GraphQL, '#events' do
   context 'with odds' do
     let(:query) do
       %({
-          events {
+          events(context: #{upcoming_ctx}) {
             id
             name
             markets {
@@ -146,7 +150,7 @@ describe GraphQL, '#events' do
   end
 
   context 'without odds' do
-    let(:query) { %({ events { id name } }) }
+    let(:query) { %({ events(context: #{upcoming_ctx}) { id name } }) }
 
     before do
       create_list(:event, 5, title: title, active: false)
@@ -157,30 +161,12 @@ describe GraphQL, '#events' do
     end
   end
 
-  context 'limited result' do
-    let(:limit) { 3 }
-    let(:query) do
-      %({ events (
-            limit: #{limit}
-        ) {
-            id
-      } })
-    end
-
-    before do
-      create_list(:event, 5, :upcoming, title: title)
-    end
-
-    it 'returns limited events' do
-      expect(result['data']['events'].count).to eq(3)
-    end
-  end
-
   context 'single event' do
     let(:event) { create(:event, :upcoming) }
     let(:query) do
       %({ events (
             filter: { id: #{event.id} }
+            context: #{upcoming_ctx}
         ) {
             id
       } })
@@ -195,7 +181,7 @@ describe GraphQL, '#events' do
   context 'in play' do
     let(:query) do
       %({ events (
-            filter: { inPlay: true }
+            context: #{live_ctx}
         ) {
             id
       } })
@@ -218,16 +204,20 @@ describe GraphQL, '#events' do
   end
 
   context 'past' do
+    let!(:tournament) { create(:event_scope, :tournament) }
     let(:query) do
       %({ events (
-            filter: { past: true }
+            filter: {
+                     past: true
+                     tournamentId: #{tournament.id}
+            }
         ) {
             id
       } })
     end
 
     before do
-      create_list(
+      events = create_list(
         :event,
         5,
         title: title,
@@ -235,6 +225,9 @@ describe GraphQL, '#events' do
         start_at: 5.minutes.ago,
         end_at: nil
       )
+      events.each do |event|
+        ScopedEvent.create(event: event, event_scope: tournament)
+      end
     end
 
     it 'returns past events' do
@@ -246,6 +239,7 @@ describe GraphQL, '#events' do
     let(:query) do
       %({ events (
             filter: { titleId: #{title.id} }
+            context: #{upcoming_ctx}
         ) {
             id
       } })
@@ -297,6 +291,7 @@ describe GraphQL, '#events' do
     let(:query) do
       %({ events (
             filter: { categoryId: #{category.id} }
+            context: #{upcoming_ctx}
         ) {
             id
       } })
@@ -332,7 +327,7 @@ describe GraphQL, '#events' do
       } }
     end
     let(:query) do
-      %({ events {
+      %({ events(context: #{upcoming_ctx}) {
             id
             competitors {
               id
@@ -354,7 +349,7 @@ describe GraphQL, '#events' do
 
   context 'live' do
     let(:query) do
-      %({ events {
+      %({ events(context: #{live_ctx}) {
             id
             live
       } })
@@ -362,7 +357,7 @@ describe GraphQL, '#events' do
 
     context 'with SUSPENDED status' do
       let!(:event) do
-        create(:event, traded_live: true, status: Event::SUSPENDED)
+        create(:event, :live)
       end
 
       it 'value is truthy' do
@@ -381,15 +376,16 @@ describe GraphQL, '#events' do
     context 'without TRADED_LIVE' do
       let!(:event) { create(:event, status: Event::SUSPENDED) }
 
-      it 'value is falsey' do
-        expect(result['data']['events'].first['live']).to be_falsey
+      it 'value is empty' do
+        expect(result['data']['events']).to be_empty
       end
     end
   end
 
   context 'with state' do
+    let!(:tournament) { create(:event_scope) }
     let(:query) do
-      %({ events {
+      %({ events(filter: { tournamentId: #{tournament.id}}) {
             id
             state {
               id
@@ -406,10 +402,90 @@ describe GraphQL, '#events' do
     end
 
     it 'returns events with live flag true' do
-      create(:event, payload: { producer: { origin: 'radar', id: '3' } })
+      payload = { producer: { origin: 'radar', id: '3' } }
+      event = create(:event, :live, payload: payload)
+      ScopedEvent.create(event: event, event_scope: tournament)
 
       expect(result['errors']).to be_nil
       expect(result['data']['events'][0]['state']).to be_nil
+    end
+  end
+
+  describe 'context usage' do
+    include_context 'frozen_time'
+    context 'returns errors' do
+      let(:query) do
+        %({ events(context: abcd) {
+            id
+            live
+      } })
+      end
+
+      it 'pass unsupported context' do
+        expect(result['errors']).not_to be_empty
+      end
+
+      it 'calls without context' do
+        query = %({ events{id} })
+
+        result = ArcanebetSchema.execute(query,
+                                         context: context,
+                                         variables: variables)
+
+        expect(result['errors']).not_to be_empty
+      end
+    end
+
+    it 'context can be omitted when tournament filter is present' do
+      tournament = create(:event_scope, :with_event)
+      query = %({ events(filter: {tournamentId: #{tournament.id}}){id} })
+
+      result = ArcanebetSchema.execute(query,
+                                       context: context,
+                                       variables: variables)
+
+      expect(result['errors']).to be_nil
+    end
+
+    it "'calls with 'live' context" do
+      query = %({ events(context: live){id} })
+      create_list(:event, 5)
+      live_event = create(:event, :live)
+      result = ArcanebetSchema.execute(query,
+                                       context: context,
+                                       variables: variables)
+      event_ids = result['data']['events'].map { |event| event['id'].to_i }
+
+      expect(event_ids).to match_array([live_event.id])
+    end
+
+    it "calls with 'upcoming_for_time' context" do
+      query = %({ events(context: #{upcoming_ctx}){id} })
+
+      upcoming_events_ids = create_list(:event, 2, :upcoming).map(&:id)
+      time_in_future = (24 * 60 + 1).minutes.from_now
+      create_list(:event, 2, start_at: time_in_future, end_at: nil)
+      create_list(:event, 2, start_at: 1.minute.ago, end_at: nil)
+      result = ArcanebetSchema.execute(query,
+                                       context: context,
+                                       variables: variables)
+      result_ids = result['data']['events'].map { |event| event['id'].to_i }
+
+      expect(result_ids).to match_array(upcoming_events_ids)
+    end
+
+    it "calls with 'upcoming_limited' context" do
+      query = %({ events(context: #{upcoming_limited_ctx}){id} })
+      limit = Events::EventsLoader::UPCOMING_LIMIT
+      upcoming_events_ids = create_list(:event, limit + 2, :upcoming).map(&:id)
+      create_list(:event, 5)
+      result = ArcanebetSchema.execute(query,
+                                       context: context,
+                                       variables: variables)
+      result_ids = result['data']['events'].map { |event| event['id'].to_i }
+      upcoming_result_ids = upcoming_events_ids & result_ids
+
+      expect(upcoming_result_ids.count).to eq(limit)
     end
   end
 end
