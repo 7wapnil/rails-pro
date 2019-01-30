@@ -25,8 +25,8 @@ module WebSocket
 
     private
 
-    def trigger(name, object, args = {})
-      ArcanebetSchema.subscriptions.trigger(name, args, object)
+    def trigger(name, object, args = {}, scope = nil)
+      ArcanebetSchema.subscriptions.trigger(name, args, object, scope: scope)
     end
 
     def trigger_kind_event(event)
