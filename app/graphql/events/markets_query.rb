@@ -16,7 +16,7 @@ module Events
     end
 
     def resolve(_obj, args)
-      Markets::QueryResolver.call(args: args)
+      MarketsQueryResolver.call(args: args)
     end
   end
 end

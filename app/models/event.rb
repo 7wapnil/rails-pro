@@ -49,6 +49,14 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_many :label_joins, as: :labelable
   has_many :labels, through: :label_joins
 
+  has_one :tournament_scoped_event,
+          -> { tournament },
+          class_name: ScopedEvent.name
+  has_one :tournament,
+          through: :tournament_scoped_event,
+          class_name: EventScope.name,
+          source: :event_scope
+
   has_one :dashboard_market, -> { for_displaying }, class_name: Market.name
 
   validates :name, presence: true
@@ -156,10 +164,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
     payload&.merge!(addition)
     self.payload = addition unless payload
-  end
-
-  def tournament
-    event_scopes.where(kind: EventScope::TOURNAMENT).first
   end
 
   def details

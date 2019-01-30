@@ -1,5 +1,5 @@
-module Markets
-  class QueryResolver < ApplicationService
+module Events
+  class MarketsQueryResolver < ApplicationService
     def initialize(args: {})
       @args = args.to_h.with_indifferent_access
     end
