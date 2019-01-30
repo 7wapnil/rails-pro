@@ -16,15 +16,16 @@ describe Radar::Producer do
 
     it 'emits websocket event on update' do
       expect(WebSocket::Client.instance)
-        .to receive(:trigger)
-        .with(SubscriptionFields::PROVIDER_UPDATED, producer)
+        .to receive(:trigger_provider_update)
+        .with(producer)
         .once
 
       producer.update(state: Radar::Producer::RECOVERING)
     end
 
     it 'emits websocket event on state update only' do
-      expect(WebSocket::Client.instance).not_to receive(:trigger)
+      expect(WebSocket::Client.instance)
+        .not_to receive(:trigger_provider_update)
       producer.update(last_successful_subscribed_at: Time.zone.now)
     end
   end
