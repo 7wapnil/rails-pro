@@ -463,8 +463,7 @@ describe GraphQL, '#events' do
       query = %({ events(context: #{upcoming_ctx}){id} })
 
       upcoming_events_ids = create_list(:event, 2, :upcoming).map(&:id)
-      time_in_future = (24 * 60 + 1).minutes.from_now
-      create_list(:event, 2, start_at: time_in_future, end_at: nil)
+      create_list(:event, 2, start_at: 1.day.from_now + 1.minute, end_at: nil)
       create_list(:event, 2, start_at: 1.minute.ago, end_at: nil)
       result = ArcanebetSchema.execute(query,
                                        context: context,
