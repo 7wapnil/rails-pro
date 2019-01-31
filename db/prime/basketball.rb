@@ -23,21 +23,30 @@ class BasketballPrimer # rubocop:disable Metrics/ClassLength
     'KBL'
   ].freeze
 
+  BASKETBALL_CATEGORIES = [
+    'International Clubs',
+    'Spain',
+    'Asia',
+    'Europe'
+  ].freeze
+
   REASONABLE_MATCH_TIME = 3.hours.freeze
 
   class << self
     def title
-      @title ||= Title.find_or_create_by!(name: 'Basketball') do |title|
+      @title ||= Title.find_or_create_by!(name: 'Basketball',
+                                          kind: Title::SPORTS) do |title|
         title.kind = Title::SPORTS
       end
     end
 
     def create_event(attributes) # rubocop:disable Metrics/MethodLength
       default_attributes, market_external_id, odd_external_id,
-        teams, tournament = prepare_event_related_data
+        teams, tournament, category = prepare_event_related_data
 
       event = Event.new(default_attributes.merge(attributes))
       event.event_scopes << tournament
+      event.event_scopes << category
       event.add_to_payload(
         state:
           OddsFeed::Radar::EventStatusService.new.call(
@@ -57,22 +66,14 @@ class BasketballPrimer # rubocop:disable Metrics/ClassLength
       @producers ||= begin
         return Radar::Producer.all if Radar::Producer.exists?
 
-        subscription_time = Faker::Time.between(Time.zone.now - 30.second,
-                                                Time.zone.now - 1.second)
-        base_attrs = {
-          recovery_snapshot_id: Faker::Number.number(8),
-          state: Radar::Producer::HEALTHY,
-          last_successful_subscribed_at: subscription_time
-        }
-        prematch = base_attrs.merge(code: :pre)
-        live = base_attrs.merge(code: :liveodds)
-
-        [Radar::Producer.create!(prematch), Radar::Producer.create!(live)]
+        provider_kinds = %i[liveodds_producer prematch_producer]
+        provider_kinds.map { |kind| FactoryBot.create!(kind, :healthy) }
       end
     end
 
     def prepare_event_related_data # rubocop:disable Metrics/MethodLength:
       tournament = EventScope.tournament.order(Arel.sql('RANDOM()')).first
+      category = EventScope.category.order(Arel.sql('RANDOM()')).first
       teams = BASKETBALL_TEAMS.sample(2)
       event_name = "#{teams.first} vs #{teams.last}"
       match_id = Faker::Number.number(8)
@@ -92,7 +93,7 @@ class BasketballPrimer # rubocop:disable Metrics/ClassLength
         external_id: event_external_id
       }
       [default_attributes, market_external_id,
-       odd_external_id, teams, tournament]
+       odd_external_id, teams, tournament, category]
     end
 
     def create_odds(market, odd_external_id, teams)
@@ -127,10 +128,18 @@ title = BasketballPrimer.title
 puts 'Checking Tournaments ...'
 
 BasketballPrimer::BASKETBALL_TOURNAMENTS.each_with_index do |name, index|
-  EventScope.find_or_create_by!(name: name) do |tournament|
+  EventScope.tournament.find_or_create_by!(name: name) do |tournament|
     tournament.title = title
     tournament.kind = EventScope::TOURNAMENT
     tournament.external_id = ['sr:tournament', index + 1000].join(':')
+  end
+end
+
+BasketballPrimer::BASKETBALL_CATEGORIES.each_with_index do |name, index|
+  EventScope.category.find_or_create_by!(name: name) do |tournament|
+    tournament.title = title
+    tournament.kind = EventScope::CATEGORY
+    tournament.external_id = ['sr:category', index + 1000].join(':')
   end
 end
 

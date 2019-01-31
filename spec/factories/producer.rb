@@ -21,6 +21,10 @@ FactoryBot.define do
       code { Radar::Producer::PREMATCH_PROVIDER_CODE }
     end
 
+    trait :healthy do
+      state { Radar::Producer::HEALTHY }
+    end
+
     initialize_with do
       Radar::Producer
         .find_or_initialize_by(code: code) do |producer|
