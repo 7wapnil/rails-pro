@@ -23,17 +23,6 @@ module OddsFeed
 
         private
 
-        def log_parsed_message
-          Rails.logger.send(
-            :info,
-            class: OddsFeed::Radar::Alive::Message.class.name,
-            received_at: message.received_at,
-            producer_code: message&.product&.code,
-            subscription_state: message.subscribed?,
-            expired: message.expired?
-          )
-        end
-
         def message
           Message.new(@payload['alive'])
         end
