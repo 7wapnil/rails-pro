@@ -35,4 +35,9 @@ SubscriptionType = GraphQL::ObjectType.define do
     argument :eventId, types.ID
     argument :category, types.String
   end
+
+  # Customer specific fields
+  field SubscriptionFields::WALLET_UPDATED,
+        Wallets::WalletType,
+        subscription_scope: :customer_id
 end
