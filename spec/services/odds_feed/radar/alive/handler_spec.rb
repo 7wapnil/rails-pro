@@ -1,12 +1,13 @@
 describe OddsFeed::Radar::Alive::Handler do
   let(:product) { create(:producer) }
-  let(:timestamp) { 1_532_353_934_098 }
+  let(:timestamp) { (Time.zone.now.to_f * 1000).to_i }
   let(:message_received_at) { Time.zone.at(timestamp) }
   let(:message) do
     instance_double(OddsFeed::Radar::Alive::Message.name,
                     product: product,
                     timestamp: timestamp,
                     received_at: message_received_at,
+                    'subscribed?' => true,
                     'expired?' => false)
   end
 
@@ -28,9 +29,22 @@ describe OddsFeed::Radar::Alive::Handler do
   end
 
   context '.handle' do
+    it 'logs message stats' do
+      expect_any_instance_of(JobLogger)
+        .to receive(:log_job_message)
+        .with(
+          :info,
+          received_at: message_received_at,
+          producer_code: product.code,
+          subscription_state: true,
+          expired: false
+        ).once
+
+      described_class.new(payload).handle
+    end
+
     context 'when alive message describes subscribed product' do
       before do
-        allow(message).to receive(:subscribed?).and_return(true)
         described_class.new(payload).handle
       end
 
