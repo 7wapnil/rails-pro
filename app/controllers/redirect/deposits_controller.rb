@@ -9,6 +9,8 @@ module Redirect
           bonus_code: initiate_params[:bonus_code]
         )
 
+      entry_request.save!
+
       redirect_to Deposits::EntryRequestUrlService
         .call(entry_request: entry_request)
     rescue ActiveRecord::RecordNotFound, JWT::DecodeError
