@@ -1,4 +1,6 @@
 class Wallet < ApplicationRecord
+  after_save :notify_application, if: :saved_change_to_amount?
+
   belongs_to :customer
   belongs_to :currency
   has_many :balances
@@ -37,5 +39,9 @@ class Wallet < ApplicationRecord
       total_balance = bonus_balance_amount + real_balance_amount
       real_balance_amount / total_balance
     end
+  end
+
+  def notify_application
+    WebSocket::Client.instance.trigger_wallet_update(self)
   end
 end

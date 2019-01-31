@@ -1,5 +1,10 @@
 module Radar
   class Producer < ApplicationRecord
+    LIVE_PROVIDER_ID = 1
+    LIVE_PROVIDER_CODE = 'liveodds'.freeze
+    PREMATCH_PROVIDER_ID = 3
+    PREMATCH_PROVIDER_CODE = 'pre'.freeze
+
     self.table_name = 'radar_providers'
 
     after_save :notify_application, if: :saved_change_to_state?
@@ -21,14 +26,28 @@ module Radar
 
     enum state: STATES
 
-    def self.last_recovery_call_at
-      Radar::Producer
-        .order('recover_requested_at DESC NULLS LAST')
-        .first&.recover_requested_at
+    class << self
+      def last_recovery_call_at
+        Radar::Producer
+          .order('recover_requested_at DESC NULLS LAST')
+          .first&.recover_requested_at
+      end
+
+      def live
+        find_by(code: LIVE_PROVIDER_CODE)
+      end
+
+      def prematch
+        find_by(code: PREMATCH_PROVIDER_CODE)
+      end
     end
 
     def live?
-      code == :liveodds
+      code == LIVE_PROVIDER_CODE
+    end
+
+    def prematch?
+      code == PREMATCH_PROVIDER_CODE
     end
 
     def subscribed?
@@ -43,6 +62,7 @@ module Radar
       return false if unsubscribed?
 
       unsubscribed!
+      clean_recovery_data
     end
 
     def subscribed!(subscribed_at: Time.zone.now)
@@ -64,6 +84,10 @@ module Radar
     end
 
     private
+
+    def clean_recovery_data
+      update(recovery_snapshot_id: nil, recover_requested_at: nil)
+    end
 
     def expired?
       last_successful_subscribed_at <=

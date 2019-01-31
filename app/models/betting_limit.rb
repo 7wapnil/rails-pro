@@ -1,6 +1,6 @@
 class BettingLimit < ApplicationRecord
   belongs_to :customer
-  belongs_to :title, optional: true
+  belongs_to :title, optional: true, inverse_of: :betting_limits
 
   validates :customer, presence: true
   validates :customer, uniqueness: { scope: :title }

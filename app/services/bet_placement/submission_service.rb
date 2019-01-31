@@ -18,6 +18,8 @@ module BetPlacement
       @bet
     rescue StandardError => e
       @bet.register_failure(e.message)
+
+      raise e
     end
 
     private
@@ -39,13 +41,27 @@ module BetPlacement
     end
 
     def provider_connected?
-      app_state = ApplicationState.instance
-      connected = app_state.live_connected
-      connected = app_state.pre_live_connected if @bet.event.traded_live
-      return true if connected
+      return true if bet_producer_active?
 
       @bet.register_failure!(I18n.t('errors.messages.provider_disconnected'))
       false
+    end
+
+    def bet_producer_active?
+      event = @bet.event
+
+      !(
+          rejected_as_offline_upcoming_event(event) ||
+            rejected_as_in_play_offline_event(event)
+        )
+    end
+
+    def rejected_as_in_play_offline_event(event)
+      event.in_play? && Radar::Producer.live.unsubscribed?
+    end
+
+    def rejected_as_offline_upcoming_event(event)
+      event.upcoming? && Radar::Producer.prematch.unsubscribed?
     end
 
     def entry_request_succeeded?

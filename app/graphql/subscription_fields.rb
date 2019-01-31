@@ -8,4 +8,5 @@ module SubscriptionFields
   MARKET_UPDATED = :market_updated
   EVENT_MARKET_UPDATED = :event_market_updated
   CATEGORY_MARKET_UPDATED = :category_market_updated
+  WALLET_UPDATED = :wallet_updated
 end
