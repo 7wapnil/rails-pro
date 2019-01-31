@@ -475,7 +475,7 @@ describe GraphQL, '#events' do
 
     it "calls with 'upcoming_limited' context" do
       query = %({ events(context: #{upcoming_limited_ctx}){id} })
-      limit = Events::EventsLoader::UPCOMING_LIMIT
+      limit = Events::EventsQueryResolver::UPCOMING_LIMIT
       upcoming_events_ids = create_list(:event, limit + 2, :upcoming).map(&:id)
       create_list(:event, 5)
       result = ArcanebetSchema.execute(query,

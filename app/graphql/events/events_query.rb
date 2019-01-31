@@ -14,7 +14,7 @@ module Events
     end
 
     def resolve(_obj, args)
-      EventsLoader.new(args).load
+      EventsQueryResolver.new(args).resolve
     end
   end
 end
