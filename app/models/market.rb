@@ -32,6 +32,8 @@ class Market < ApplicationRecord
   has_many :label_joins, as: :labelable
   has_many :labels, through: :label_joins
 
+  scope :for_displaying, -> { joins(:odds).visible.order(priority: :asc) }
+
   validates :name, :priority, :status, presence: true
   validates_with MarketStateValidator, restrictions: [
     %i[active cancelled],
