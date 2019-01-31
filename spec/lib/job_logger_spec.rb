@@ -1,5 +1,5 @@
 describe JobLogger do
-  let(:dummy_class) { Class.new { include JobLogger } }
+  let(:dummy_class) { Class.new { extend JobLogger } }
   let(:job_id) { Faker::Internet.password(13, 13, false, false) }
   let(:logger_double) { instance_double('Logger', send: true) }
   let(:logger_level) { %i[info debug fatal error].sample }
