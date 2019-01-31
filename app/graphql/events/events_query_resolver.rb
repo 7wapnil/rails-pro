@@ -24,9 +24,9 @@ module Events
       Event
         .visible
         .active
+        .preload(:dashboard_market, :tournament)
         .joins(:title)
-        .order(:priority)
-        .order(:start_at)
+        .order(:priority, :start_at)
     end
 
     def upcoming_for_time

@@ -29,7 +29,7 @@ module Events
     end
 
     field :tournament, Types::ScopeType
-    field :markets, function: Events::MarketsQuery.new
+    field :dashboard_market, Types::MarketType
     field :state, Types::EventStateType
   end
 end
