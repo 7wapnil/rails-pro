@@ -1,5 +1,5 @@
 describe JobLogger do
-  let(:dummy_class) { Class.new { extend JobLogger } }
+  let(:dummy_class) { Class.new { include JobLogger } }
   let(:job_id) { Faker::Internet.password(13, 13, false, false) }
   let(:logger_double) { instance_double('Logger', send: true) }
   let(:logger_level) { %i[info debug fatal error].sample }
@@ -46,7 +46,17 @@ describe JobLogger do
   end
 
   describe 'protected #log_job_message' do
-    context 'when job_id is not available' do
+    let(:payload_hash) { { foo: :bar, boo: :baz } }
+    let(:default_expectation_arguments) do
+      {
+        jid:          job_id,
+        class_name:   dummy_class.class.name,
+        current_time: Time.now.to_f,
+        thread_id:    Thread.current.object_id
+      }
+    end
+
+    context 'when job_id is not available and payload is a simple message' do
       before do
         allow(dummy_class).to receive(:job_id).and_return(nil)
         dummy_class.send(:log_job_message, logger_level, message)
@@ -58,20 +68,43 @@ describe JobLogger do
       end
     end
 
-    context 'when job_id is available' do
+    context 'when job_id is not available and payload is a hash' do
+      before do
+        allow(dummy_class).to receive(:job_id).and_return(nil)
+        dummy_class.send(:log_job_message, logger_level, payload_hash)
+      end
+
+      it 'calls simple logger' do
+        expect(logger_double).to have_received('send')
+          .with(logger_level, payload_hash).once
+      end
+    end
+
+    context 'when job_id is available and payload is a message' do
       before do
         dummy_class.send(:log_job_message, logger_level, message)
       end
 
       it 'calls extended logger' do
+        arguments =
+          default_expectation_arguments.merge(message: message)
         expect(logger_double)
           .to have_received('send')
-          .with(logger_level,
-                jid:          job_id,
-                class_name:   dummy_class.class.name,
-                message:      message,
-                current_time: Time.now.to_f,
-                thread_id:    Thread.current.object_id).once
+          .with(logger_level, **arguments).once
+      end
+    end
+
+    context 'when job_id is available and payload is a hash' do
+      before do
+        dummy_class.send(:log_job_message, logger_level, payload_hash)
+      end
+
+      it 'calls extended logger' do
+        arguments =
+          default_expectation_arguments.merge payload_hash
+        expect(logger_double)
+          .to have_received('send')
+          .with(logger_level, **arguments).once
       end
     end
   end

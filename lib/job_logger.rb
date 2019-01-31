@@ -7,16 +7,18 @@ module JobLogger
 
   protected
 
-  def log_job_message(level, message)
-    return Rails.logger.send(level, message) unless job_id
+  def log_job_message(level, payload)
+    return Rails.logger.send(level, payload) unless job_id
+
+    data = payload.is_a?(Hash) ? payload : { message: payload }
 
     Rails.logger.send(
       level,
       jid:          job_id,
       class_name:   self.class.name,
-      message:      message,
       current_time: current_time,
-      thread_id:    thread_id
+      thread_id:    thread_id,
+      **data
     )
   end
 
