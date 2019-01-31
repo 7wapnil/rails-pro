@@ -66,4 +66,20 @@ describe Wallet do
       end.to raise_error(NoMethodError)
     end
   end
+
+  describe 'callbacks' do
+    let!(:wallet) { create(:wallet) }
+
+    it 'emits websocket event on update' do
+      expect(WebSocket::Client.instance)
+        .to receive(:trigger_wallet_update)
+        .with(wallet)
+      wallet.update(amount: 1000)
+    end
+
+    it 'emits websocket event on amount update only' do
+      expect(WebSocket::Client.instance).not_to receive(:trigger_wallet_update)
+      wallet.update(updated_at: Time.now)
+    end
+  end
 end
