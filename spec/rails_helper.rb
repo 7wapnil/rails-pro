@@ -74,9 +74,6 @@ RSpec.configure do |config|
 
     # Stub web socket client
     allow(WebSocket::Client.instance).to receive(:trigger)
-
-    # Drop stored application state
-    ::ApplicationState::StateModel.delete
   end
 end
 
