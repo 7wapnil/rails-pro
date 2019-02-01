@@ -6,7 +6,9 @@ class EntryRequestForm
   end
 
   def submit
-    deposit_simulation? ? create_deposit : create_entry_request
+    return create_deposit if deposit_simulation?
+
+    create_entry_request
   end
 
   private
