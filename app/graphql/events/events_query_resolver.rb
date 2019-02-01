@@ -2,6 +2,7 @@ module Events
   class EventsQueryResolver
     SUPPORTED_CONTEXTS = %w[live upcoming_for_time upcoming_limited].freeze
     UPCOMING_LIMIT = 16
+    CONTEXT_REQUIRED_ERROR_MSG = 'Context is required!'.freeze
 
     def initialize(query_args)
       @query_args = query_args
@@ -88,8 +89,7 @@ module Events
     end
 
     def verify_context!
-      error_msg = 'Context is required!'
-      raise StandardError, error_msg if context.blank?
+      raise StandardError, CONTEXT_REQUIRED_ERROR_MSG if context.blank?
 
       check_context_support!
     end

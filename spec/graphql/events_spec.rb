@@ -453,8 +453,9 @@ describe GraphQL, '#events' do
         result = ArcanebetSchema.execute(query,
                                          context: context,
                                          variables: variables)
+        error_msg = Events::EventsQueryResolver::CONTEXT_REQUIRED_ERROR_MSG
 
-        expect(result['errors']).not_to be_empty
+        expect(result['errors'].first['message']).to eq(error_msg)
       end
     end
 
