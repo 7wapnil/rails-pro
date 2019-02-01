@@ -2,6 +2,7 @@ module BetPlacement
   class SubmissionService < ApplicationService
     ENTRY_REQUEST_KIND = EntryRequest::BET
     ENTRY_REQUEST_MODE = EntryRequest::SPORTS_TICKET
+    REAL_MONEY_BLANK_ERROR_MSG = 'Real money amount can not be blank!'.freeze
 
     def initialize(bet, impersonated_by = nil)
       @bet = bet
@@ -17,8 +18,7 @@ module BetPlacement
       end
       @bet
     rescue StandardError => e
-      @bet.register_failure(e.message)
-
+      @bet.register_failure!(e.message)
       raise e
     end
 
@@ -66,8 +66,8 @@ module BetPlacement
 
     def entry_request_succeeded?
       real_amount = amount_calculations[:real_money]
-      error_msg = 'Real money amount can not be blank!'
-      raise(ArgumentError, error_msg) if real_amount.nil? || real_amount.zero?
+      raise(ArgumentError, REAL_MONEY_BLANK_ERROR_MSG) if real_amount.nil? ||
+                                                          real_amount.zero?
 
       BalanceRequestBuilders::Bet.call(entry_request, amount_calculations)
       @entry = WalletEntry::AuthorizationService.call(entry_request)
