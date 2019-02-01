@@ -3,6 +3,7 @@
 .env
 .yarn-integrity
 .idea
+.DS_Store
 
 config/master.key
 log/*
