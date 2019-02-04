@@ -105,13 +105,29 @@ describe OddsFeed::Radar::SubscriptionRecovery do
     end
 
     context 'with rates limit reached' do
+      let(:original_state) { Radar::Producer::UNSUBSCRIBED }
+
       before do
+        product.update(state: original_state)
         another_product.update(recover_requested_at: 1.second.ago)
+
+        allow(Rails.logger).to receive(:error)
+
+        described_class.call(product: product)
       end
 
-      it 'raises when rates reached' do
-        expect { described_class.call(product: product) }
-          .to raise_error('Recovery rates reached')
+      it 'writes rate error to logs' do
+        expect(Rails.logger)
+          .to have_received(:error)
+          .with(described_class::RECOVERY_RATES_REACHED_MESSAGE)
+          .once
+      end
+
+      it 'returns original producer' do
+        expect(described_class.call(product: product))
+          .to have_attributes(
+            state: original_state
+          )
       end
     end
 
@@ -128,7 +144,7 @@ describe OddsFeed::Radar::SubscriptionRecovery do
 
       it 'raises when client responds unexpected way' do
         expect { described_class.call(product: product) }
-          .to raise_error('Unsuccessful recovery')
+          .to raise_error(described_class::UNSUCCESSFUL_RECOVERY_MESSAGE)
       end
     end
   end

@@ -23,10 +23,17 @@ module WebSocket
       trigger(SubscriptionFields::PROVIDER_UPDATED, provider)
     end
 
+    def trigger_wallet_update(wallet)
+      trigger(SubscriptionFields::WALLET_UPDATED,
+              wallet,
+              {},
+              wallet.customer_id)
+    end
+
     private
 
-    def trigger(name, object, args = {})
-      ArcanebetSchema.subscriptions.trigger(name, args, object)
+    def trigger(name, object, args = {}, scope = nil)
+      ArcanebetSchema.subscriptions.trigger(name, args, object, scope: scope)
     end
 
     def trigger_kind_event(event)

@@ -17,9 +17,9 @@ module Events
       query = Event
               .visible
               .active
+              .preload(:dashboard_market, :tournament)
               .joins(:title)
-              .order(:priority)
-              .order(:start_at)
+              .order(:priority, :start_at)
 
       filter_query(query, args)
     end

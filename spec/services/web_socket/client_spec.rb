@@ -97,4 +97,17 @@ describe WebSocket::Client do
         .with(SubscriptionFields::PROVIDER_UPDATED, provider)
     end
   end
+
+  describe 'wallets updates' do
+    let(:wallet) { create(:wallet) }
+
+    it 'triggers wallet update subscription' do
+      expect(subject)
+        .to have_received(:trigger)
+        .with(SubscriptionFields::WALLET_UPDATED,
+              wallet,
+              {},
+              wallet.customer_id)
+    end
+  end
 end

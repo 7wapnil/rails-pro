@@ -8,6 +8,7 @@ if Rails.env.production?
   abort('The Rails environment is running in production mode!')
 end
 require 'rspec/rails'
+require 'action_cable/testing/rspec'
 # Add additional requires below this line. Rails is not loaded until this point!
 
 # Requires supporting ruby files with custom matchers and macros, etc, in
@@ -73,9 +74,6 @@ RSpec.configure do |config|
 
     # Stub web socket client
     allow(WebSocket::Client.instance).to receive(:trigger)
-
-    # Drop stored application state
-    ::ApplicationState::StateModel.delete
   end
 end
 

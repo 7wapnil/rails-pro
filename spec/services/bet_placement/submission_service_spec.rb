@@ -127,6 +127,7 @@ describe BetPlacement::SubmissionService do
 
       it 'updates bet status and message on failure' do
         subject.call
+        bet.reload
 
         expect(bet.status).to eq StateMachines::BetStateMachine::FAILED
         expect(bet.message).to be_a String
@@ -140,9 +141,19 @@ describe BetPlacement::SubmissionService do
         allow(subject).to receive(:amount_calculations).and_raise(StandardError,
                                                                   error_message)
 
-        expect(bet).to receive(:register_failure).with(error_message)
+        expect(bet).to receive(:register_failure!).with(error_message)
 
         expect { subject.call }.to raise_error(StandardError)
+      end
+
+      it 'registers failure when bet amount is 0' do
+        bet.update(amount: 0)
+
+        error_msg = described_class::REAL_MONEY_BLANK_ERROR_MSG
+        expect { subject.call }.to raise_error(ArgumentError, error_msg)
+
+        bet.reload
+        expect(bet).to be_failed
       end
     end
   end
