@@ -58,14 +58,16 @@ module Events
 
     def filter_by_category_id(category_id)
       query
-        .eager_load(:scoped_events)
-        .where(scoped_events: { event_scope_id: category_id })
+        .eager_load(:event_scopes)
+        .where(event_scopes: { id: category_id,
+                               kind: EventScope::CATEGORY })
     end
 
     def filter_by_tournament_id(tournament_id)
       query
-        .eager_load(:scoped_events)
-        .where(scoped_events: { event_scope_id: tournament_id })
+        .eager_load(:event_scopes)
+        .where(event_scopes: { id: tournament_id,
+                               kind: EventScope::TOURNAMENT })
     end
 
     def apply_context!
