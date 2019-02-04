@@ -150,7 +150,7 @@ describe BetPlacement::SubmissionService do
         bet.update(amount: 0)
 
         error_msg = described_class::REAL_MONEY_BLANK_ERROR_MSG
-        expect { subject.call }.to raise_error(StandardError, error_msg)
+        expect { subject.call }.to raise_error(ArgumentError, error_msg)
 
         bet.reload
         expect(bet).to be_failed
