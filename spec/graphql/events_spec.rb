@@ -288,7 +288,7 @@ describe GraphQL, '#events' do
 
     let(:query) do
       %({
-          events(filter: {tournamentId: #{tournament.id}}) {
+          events(filter: { tournamentId: #{tournament.id} }) {
             id
             competitors { id }
           }
@@ -330,7 +330,7 @@ describe GraphQL, '#events' do
 
     it 'returns events by category ID' do
       expect(result['data']).not_to be_nil
-      expect(result['data']['events'].count).to eq(5)
+      expect(result['data']['events'].length).to eq(5)
     end
   end
 
@@ -448,7 +448,7 @@ describe GraphQL, '#events' do
       end
 
       it 'calls without context' do
-        query = %({ events{id} })
+        query = %({ events{ id } })
 
         result = ArcanebetSchema.execute(query,
                                          context: context,
@@ -461,7 +461,7 @@ describe GraphQL, '#events' do
 
     it 'context can be omitted when tournament filter is present' do
       tournament = create(:event_scope, :with_event)
-      query = %({ events(filter: {tournamentId: #{tournament.id}}){id} })
+      query = %({ events(filter: { tournamentId: #{tournament.id} }){ id } })
 
       result = ArcanebetSchema.execute(query,
                                        context: context,
@@ -471,7 +471,7 @@ describe GraphQL, '#events' do
     end
 
     it "'calls with 'live' context" do
-      query = %({ events(context: live){id} })
+      query = %({ events(context: live){ id } })
       create_list(:event, 5)
       live_event = create(:event, :live)
       result = ArcanebetSchema.execute(query,
@@ -483,7 +483,7 @@ describe GraphQL, '#events' do
     end
 
     it "calls with 'upcoming_for_time' context" do
-      query = %({ events(context: #{upcoming_ctx}){id} })
+      query = %({ events(context: #{upcoming_ctx}){ id } })
 
       upcoming_events_ids = create_list(:event, 2, :upcoming).map(&:id)
       create_list(:event, 2, start_at: 1.day.from_now + 1.minute, end_at: nil)
@@ -497,7 +497,7 @@ describe GraphQL, '#events' do
     end
 
     it "calls with 'upcoming_limited' context" do
-      query = %({ events(context: #{upcoming_limited_ctx}){id} })
+      query = %({ events(context: #{upcoming_limited_ctx}){ id } })
       limit = Events::EventsQueryResolver::UPCOMING_LIMIT
       upcoming_events_ids = create_list(:event, limit + 2, :upcoming).map(&:id)
       create_list(:event, 5)
@@ -507,7 +507,7 @@ describe GraphQL, '#events' do
       result_ids = result['data']['events'].map { |event| event['id'].to_i }
       upcoming_result_ids = upcoming_events_ids & result_ids
 
-      expect(upcoming_result_ids.count).to eq(limit)
+      expect(upcoming_result_ids.length).to eq(limit)
     end
   end
 end
