@@ -22,7 +22,7 @@ module Events
               FROM markets
               INNER JOIN odds
               ON odds.market_id = markets.id
-              WHERE event_id = events.id AND
+              WHERE markets.event_id = events.id AND
                     markets.visible = TRUE AND
                     event_id IN (#{event_ids.join(', ')})
               ORDER BY priority ASC
