@@ -64,9 +64,18 @@ class CustomersController < ApplicationController
                   .page(params[:audit_logs_page])
   end
 
+  def create_fake_deposit
+    @result = Customers::CreateFakeDeposit
+              .call(customer: customer, params: deposit_params)
+
+    return fake_deposit_created! if @result
+
+    flash[:alert] = I18n.t('events.deposit_failed')
+    redirect_back fallback_location: account_management_customer_path(customer)
+  end
+
   def bonuses
-    @history =
-      CustomerBonus.customer_history(customer)
+    @history = CustomerBonus.customer_history(customer)
     @current_bonus = customer.customer_bonus
     @active_bonuses = Bonus.active
     @new_bonus = CustomerBonus.new(
@@ -80,8 +89,7 @@ class CustomersController < ApplicationController
       customer.customer_notes.page(params[:page]).per(NOTES_PER_PAGE)
   end
 
-  def documents
-  end
+  def documents; end
 
   def betting_limits
     @global_limit = BettingLimit
@@ -262,6 +270,11 @@ class CustomersController < ApplicationController
 
   def customer_notes_widget
     @customer_notes_widget = customer.customer_notes.limit(WIDGET_NOTES_COUNT)
+  end
+
+  def fake_deposit_created!
+    flash[:notice] = I18n.t('events.deposit_created')
+    redirect_back fallback_location: account_management_customer_path(customer)
   end
 end
 # rubocop:enable Metrics/ClassLength

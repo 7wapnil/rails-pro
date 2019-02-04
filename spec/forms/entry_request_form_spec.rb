@@ -35,8 +35,8 @@ describe EntryRequestForm do
 
       let(:form) { described_class.new(deposit_params) }
 
-      it 'calls Deposits::PlacementService' do
-        expect(Deposits::PlacementService).to receive(:call)
+      it 'calls EntryRequests::DepositService' do
+        expect(EntryRequests::DepositService).to receive(:call)
 
         form.submit
       end
@@ -55,8 +55,8 @@ describe EntryRequestForm do
 
       let(:form) { described_class.new(entry_params) }
 
-      it 'do not calls Deposits::PlacementService' do
-        expect(Deposits::PlacementService).not_to receive(:call)
+      it 'does not call EntryRequests::DepositService' do
+        expect(EntryRequests::DepositService).not_to receive(:call)
 
         form.submit
       end
@@ -88,7 +88,9 @@ describe EntryRequestForm do
     end
 
     it 'returns deposit placement errors' do
-      allow(Deposits::PlacementService).to receive(:call).and_return(nil)
+      allow(EntryRequests::DepositService)
+        .to receive(:call)
+        .and_raise(RuntimeError)
 
       form.submit
 

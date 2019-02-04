@@ -1,4 +1,6 @@
-describe Deposits::PlacementService do
+# frozen_string_literal: true
+
+describe EntryRequests::DepositService do
   let(:customer) { create(:customer) }
   let(:currency) { create(:currency) }
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
@@ -6,11 +8,14 @@ describe Deposits::PlacementService do
   let(:amount) { 100 }
   let(:rollover_multiplier) { 5 }
   let(:wallet) do
-    create(:wallet, customer: customer, currency: currency, amount: 0)
+    create(:wallet, customer: customer, currency: currency, amount: 0.0)
   end
-  let(:real_balance_request) { BalanceEntryRequest.real_money.first }
-  let(:bonus_balance_request) { BalanceEntryRequest.bonus.first }
-  let(:service_call) { described_class.call(wallet, amount) }
+  let(:entry_request) do
+    EntryRequests::Factories::Deposit.call(wallet: wallet, amount: amount)
+  end
+  let(:service_call) do
+    described_class.call(entry_request: entry_request, amount: amount)
+  end
 
   before do
     create(:customer_bonus,
