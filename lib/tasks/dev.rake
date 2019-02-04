@@ -2,6 +2,7 @@ namespace :dev do
   desc 'Populates database with sample data for local development environment'
   task prime: :environment do
     Rake::Task['dev:prime:csgo'].invoke
+    Rake::Task['dev:prime:basketball'].invoke
     Rake::Task['dev:prime:customers'].invoke
     Rake::Task['dev:prime:entries'].invoke
     Rake::Task['dev:prime:bets'].invoke
@@ -11,6 +12,11 @@ namespace :dev do
     desc 'Populates database with sample CSGO events'
     task csgo: :environment do
       require Rails.root.join('db/prime/csgo')
+    end
+
+    desc 'Populates database with sample Basketball events'
+    task basketball: :environment do
+      require Rails.root.join('db/prime/basketball')
     end
 
     desc 'Populates database with sample customers'

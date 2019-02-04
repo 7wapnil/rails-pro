@@ -5,6 +5,7 @@ module Events
     argument :id, ID, required: false
     argument :titleId, ID, required: false
     argument :titleKind, String, required: false
+    argument :categoryId, ID, required: false
     argument :tournamentId, ID, required: false
     argument :inPlay, Boolean, required: false
     argument :upcoming, Boolean, required: false
