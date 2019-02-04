@@ -51,6 +51,18 @@ describe OddsFeed::Radar::BetSettlementHandler do
   let(:total_bets_count)     { 25 }
   let(:first_odd_bets_count) { 6 }
 
+  let(:mocked_entry_request) { double }
+
+  before do
+    allow(EntryRequests::Factories::BetSettlement)
+      .to receive(:call)
+      .and_return([mocked_entry_request])
+
+    allow(EntryRequests::BetSettlementService)
+      .to receive(:call)
+      .with(entry_request: mocked_entry_request)
+  end
+
   it 'raises error on invalid message' do
     allow(subject_with_input).to receive(:input_data).and_return({})
     expect do
@@ -95,12 +107,12 @@ describe OddsFeed::Radar::BetSettlementHandler do
                   odd: odd_not_from_payload, currency: currency)
     end
 
-    it 'calls BetSettelement service to process all affected bets' do
-      allow(BetSettelement::Service).to receive(:call)
+    it 'calls BetSettlement service to process all affected bets' do
+      allow(EntryRequests::BetSettlementService).to receive(:call)
 
       subject_with_input.handle
 
-      expect(BetSettelement::Service)
+      expect(EntryRequests::BetSettlementService)
         .to have_received(:call)
         .exactly(total_bets_count)
         .times
@@ -108,7 +120,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
     context 'market status' do
       before do
-        allow(BetSettelement::Service).to receive(:call)
+        allow(EntryRequests::BetSettlementService).to receive(:call)
       end
 
       it 'sets market status to settled' do

@@ -37,7 +37,7 @@ class EntryRequest < ApplicationRecord
 
   delegate :code, to: :currency, prefix: true
 
-  before_validation { adjust_amount_value }
+  before_validation :adjust_amount_value
 
   def customer_initiated?
     self[:initiator_type] == Customer.to_s

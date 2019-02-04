@@ -1,5 +1,6 @@
 module OddsFeed
   module Radar
+    # rubocop:disable Metrics/ClassLength
     class BetSettlementHandler < RadarMessageHandler
       def initialize(payload)
         super(payload)
@@ -96,7 +97,16 @@ module OddsFeed
 
       def process_bets(external_id)
         get_settled_bets(external_id)
-          .each { |bet| BetSettelement::Service.call(bet) }
+          .each { |bet| process_bet(bet) }
+      end
+
+      def process_bet(bet)
+        entry_requests = EntryRequests::Factories::BetSettlement.call(bet: bet)
+        entry_requests.each(&method(:process_entry_request))
+      end
+
+      def process_entry_request(request)
+        EntryRequests::BetSettlementService.call(entry_request: request)
       end
 
       def bets_by_external_id(external_id)
@@ -109,5 +119,6 @@ module OddsFeed
         bets_by_external_id(external_id).where.not(id: invalid_bet_ids)
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end
