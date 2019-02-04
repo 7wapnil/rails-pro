@@ -312,6 +312,10 @@ en:
       withdrawal:
         not_enouh_money: Not enough money in wallet!
         bonus_exists: Active bonus exists!
+      graphql:
+        events:
+          context:
+            invalid: "Unsupported context '%{context}'. Supported contexts: %{contexts}"
 
   expiration_reasons:
     converted: Converted
