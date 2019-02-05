@@ -57,7 +57,7 @@ module EntryRequests
 
       def comment
         passed_comment.presence ||
-          "Deposit #{amount_value} #{wallet.currency} from #{initiator}"
+          "Deposit #{amount_value} #{wallet.currency} for #{initiator}"
       end
 
       def create_balance_request!

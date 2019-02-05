@@ -83,7 +83,7 @@ describe EntryRequests::Factories::Deposit do
         amount: total_amount,
         mode: EntryRequest::CASHIER,
         kind: EntryRequest::DEPOSIT,
-        comment: "Deposit #{total_amount} #{wallet.currency} from #{customer}",
+        comment: "Deposit #{total_amount} #{wallet.currency} for #{customer}",
         initiator_type: Customer.name,
         initiator_id: wallet.customer_id
       }
