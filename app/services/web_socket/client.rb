@@ -37,6 +37,8 @@ module WebSocket
     end
 
     def trigger_kind_event(event)
+      return warn("Event ID #{event.id} has no title") unless event.title
+
       trigger(
         SubscriptionFields::KIND_EVENT_UPDATED,
         event,
@@ -45,6 +47,8 @@ module WebSocket
     end
 
     def trigger_sport_event(event)
+      return unless event.title_id
+
       trigger(
         SubscriptionFields::SPORT_EVENT_UPDATED,
         event,
@@ -53,10 +57,12 @@ module WebSocket
     end
 
     def trigger_tournament_event(event)
+      return warn("Event #{event.id} has no tournament") unless event.tournament
+
       trigger(
         SubscriptionFields::TOURNAMENT_EVENT_UPDATED,
         event,
-        tournament: event.tournament&.id, live: event.in_play?
+        tournament: event.tournament.id, live: event.in_play?
       )
     end
 
@@ -74,6 +80,10 @@ module WebSocket
         market,
         eventId: market.event_id, category: market.category
       )
+    end
+
+    def warn(msg)
+      Rails.logger.warn msg
     end
   end
 end

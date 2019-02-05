@@ -2,7 +2,11 @@ describe WebSocket::Client do
   subject { described_class.instance }
 
   describe 'event updates' do
-    let(:event) { create(:event) }
+    let(:event) do
+      event = create(:event)
+      event.event_scopes << create(:event_scope, kind: EventScope::TOURNAMENT)
+      event
+    end
 
     before do
       subject.trigger_event_update(event)
