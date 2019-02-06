@@ -123,11 +123,9 @@ describe OddsFeed::Radar::SubscriptionRecovery do
           .once
       end
 
-      it 'returns original producer' do
+      it 'returns false' do
         expect(described_class.call(product: product))
-          .to have_attributes(
-            state: original_state
-          )
+          .to be_falsey
       end
     end
 

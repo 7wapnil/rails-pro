@@ -195,8 +195,11 @@ describe Radar::Producer do
 
     context 'when unsubscribed' do
       before do
+        allow(producer).to receive(:recover_requested_at).and_return(1.hour.ago)
         allow(producer).to receive(:unsubscribed?).and_return(true)
-        allow(OddsFeed::Radar::SubscriptionRecovery).to receive(:call)
+        allow(OddsFeed::Radar::SubscriptionRecovery).to receive(:call) {
+          producer
+        }
         producer.recover!
       end
 
@@ -207,6 +210,23 @@ describe Radar::Producer do
 
       it 'updates state to recovering' do
         expect(producer.state).to eq described_class::RECOVERING
+      end
+    end
+
+    context 'when unsubscribed and rates not available' do
+      let(:original_status) { described_class::UNSUBSCRIBED }
+
+      before do
+        producer.update(state: original_status)
+        allow(producer)
+          .to receive(:recover_requested_at).and_return(1.second.ago)
+        allow(producer).to receive(:unsubscribed?).and_return(true)
+        allow(OddsFeed::Radar::SubscriptionRecovery).to receive(:call)
+        producer.recover!
+      end
+
+      it 'keeps original state' do
+        expect(producer.state).to eq original_status
       end
     end
   end

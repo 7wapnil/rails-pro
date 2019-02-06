@@ -26,7 +26,7 @@ module OddsFeed
                         recovery_after: recover_after)
         unless rates_available?
           log_job_message(:error, RECOVERY_RATES_REACHED_MESSAGE)
-          return @product
+          return false
         end
 
         requested_at = Time.zone.now
