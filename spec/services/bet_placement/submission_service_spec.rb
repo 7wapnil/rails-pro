@@ -149,7 +149,7 @@ describe BetPlacement::SubmissionService do
       it 'registers failure when bet amount is 0' do
         bet.update(amount: 0)
 
-        error_msg = described_class::REAL_MONEY_BLANK_ERROR_MSG
+        error_msg = I18n.t('errors.messages.real_money_blank_amount')
         expect { subject.call }.to raise_error(ArgumentError, error_msg)
 
         bet.reload
