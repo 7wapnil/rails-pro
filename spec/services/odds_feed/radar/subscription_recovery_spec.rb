@@ -72,10 +72,12 @@ describe OddsFeed::Radar::SubscriptionRecovery do
       let(:last_successful_subscribed_at) { oldest_recovery_since + 1.minute }
 
       before do
-        allow(product)
-          .to receive(:last_successful_subscribed_at) {
-            last_successful_subscribed_at
-          }
+        product.update(
+          last_successful_subscribed_at: last_successful_subscribed_at,
+          recover_requested_at: nil,
+          recovery_snapshot_id: nil,
+          recovery_node_id: nil
+        )
 
         described_class.call(product: product)
         Timecop.freeze(after_recovery_time)

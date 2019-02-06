@@ -85,7 +85,9 @@ module Radar
     private
 
     def clean_recovery_data
-      update(recovery_snapshot_id: nil, recover_requested_at: nil)
+      update(recovery_snapshot_id: nil,
+             recover_requested_at: nil,
+             recovery_node_id: nil)
     end
 
     def expired?

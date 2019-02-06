@@ -1,5 +1,6 @@
 describe Radar::Producer do
   let(:snapshot_id) { Faker::Number.number(8).to_i }
+  let(:node_id) { Faker::Number.number(4).to_i }
   let(:recovery_time) { Faker::Date.backward(14).to_datetime }
   let(:another_producer) do
     create(:producer,
@@ -9,6 +10,7 @@ describe Radar::Producer do
     create(:producer,
            recover_requested_at: recovery_time,
            recovery_snapshot_id: snapshot_id,
+           recovery_node_id: node_id,
            state: Radar::Producer::HEALTHY)
   end
   let(:live_producer) { create(:liveodds_producer) }
@@ -238,7 +240,8 @@ describe Radar::Producer do
       expect(producer).to have_attributes(
         state: described_class::UNSUBSCRIBED,
         recovery_snapshot_id: snapshot_id,
-        recover_requested_at: recovery_time
+        recover_requested_at: recovery_time,
+        recovery_node_id: node_id
       )
     end
 
@@ -255,6 +258,10 @@ describe Radar::Producer do
 
         it 'clears recovery request time' do
           expect(producer.recover_requested_at).to eq nil
+        end
+
+        it 'clears recovery node id' do
+          expect(producer.recovery_node_id).to eq nil
         end
       end
     end
