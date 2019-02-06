@@ -142,9 +142,9 @@ describe BetPlacement::SubmissionService do
 
         expect(bet)
           .to have_attributes(
-                message: I18n.t('errors.messages.market_suspended'),
-                status: StateMachines::BetStateMachine::FAILED
-              )
+            message: I18n.t('errors.messages.market_suspended'),
+            status: StateMachines::BetStateMachine::FAILED
+          )
       end
     end
 
