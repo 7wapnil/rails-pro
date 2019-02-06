@@ -99,7 +99,7 @@ Rails.application.routes.draw do
         get :error
         get :pending
         get :back
-        get :webhook
+        post :webhook
       end
     end
   end
