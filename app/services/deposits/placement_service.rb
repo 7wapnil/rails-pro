@@ -3,10 +3,12 @@ module Deposits
     ENTRY_REQUEST_KIND = EntryRequest.kinds[:deposit]
     ENTRY_REQUEST_MODE = EntryRequest.modes[:cashier]
 
-    def initialize(wallet, amount, initiator = nil)
+    def initialize(wallet, amount, **options)
       @wallet = wallet
       @amount = amount
-      @initiator = initiator || wallet.customer
+      @initiator = options[:initiator] || wallet.customer
+      @mode =  options[:mode] || EntryRequest::CASHIER
+      @comment = options[:comment]
       @customer_bonus = wallet.customer.customer_bonus
     end
 
@@ -15,11 +17,12 @@ module Deposits
       close_customer_bonus! if customer_bonus&.expired?
       entry = WalletEntry::AuthorizationService.call(entry_request)
       attach_entry_to_customer_bonus!(entry) if entry
+      entry_request
     end
 
     private
 
-    attr_reader :wallet, :amount, :initiator, :customer_bonus
+    attr_reader :wallet, :amount, :initiator, :customer_bonus, :mode, :comment
 
     def balances_amounts
       @balances_amounts ||= begin
@@ -35,7 +38,8 @@ module Deposits
           customer_id: wallet.customer_id,
           currency_id: wallet.currency_id,
           kind: ENTRY_REQUEST_KIND,
-          mode: ENTRY_REQUEST_MODE,
+          mode: mode,
+          comment: comment,
           amount: balances_amounts.values.sum,
           initiator: initiator
         )

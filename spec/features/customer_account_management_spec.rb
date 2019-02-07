@@ -62,6 +62,16 @@ describe Customer, '#account_management' do
         expect_to_have_notification(I18n.t('messages.entry_request.flash'))
       end
     end
+
+    it 'displays select option for cashier and simulated modes only' do
+      within '.card.customer-entry-request-form #entry_request_mode' do
+        options = all('option').map(&:text).map(&:downcase)
+        supported_options = [EntryRequest::CASHIER,
+                             EntryRequest::SIMULATED].map(&:downcase)
+
+        expect(options).to match_array(supported_options)
+      end
+    end
   end
 
   context 'entry requests table' do
