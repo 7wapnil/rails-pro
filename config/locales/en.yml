@@ -306,6 +306,7 @@ en:
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
       account_transition: "can't bet changed from '%{from}' to '%{to}'"
       balance_request_uniqueness: 'already has balance entry request with this kind.'
+      deposit_attempts_exceeded: Deposit attempts exceeded, contact support agent
 
   expiration_reasons:
     converted: Converted

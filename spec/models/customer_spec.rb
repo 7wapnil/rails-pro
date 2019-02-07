@@ -180,4 +180,33 @@ describe Customer do
       expect(active_bonus).to eq(bonus)
     end
   end
+
+  describe '#deposit_attempts' do
+    include_context 'frozen_time'
+
+    let(:customer) { create(:customer) }
+
+    it "returns count of deposits without 'SUCCEEDED' status for last 24hrs" do
+      not_succeeded_statuses = EntryRequest
+                               .statuses
+                               .except(EntryRequest::SUCCEEDED)
+
+      EntryRequest.statuses.values.each do |status|
+        create(:entry_request,
+               :deposit,
+               status: status,
+               customer: customer,
+               created_at: 1.minute.ago)
+
+        create(:entry_request,
+               :deposit,
+               status: status,
+               customer: customer,
+               created_at: (24.hours.ago - 1.minute))
+      end
+      expected_count = not_succeeded_statuses.length
+
+      expect(customer.deposit_attempts).to eq(expected_count)
+    end
+  end
 end
