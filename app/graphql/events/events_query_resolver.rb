@@ -25,15 +25,13 @@ module Events
       Event
         .visible
         .active
-        .preload(:dashboard_market, :tournament)
+        .preload(:tournament)
         .joins(:title)
         .order(:priority, :start_at)
     end
 
     def upcoming_for_time
-      query.where('start_at > ? AND start_at <= ? AND end_at IS NULL',
-                  Time.zone.now,
-                  24.hours.from_now)
+      query.where(start_at: Time.zone.now..24.hours.from_now, end_at: nil)
     end
 
     def upcoming_limited

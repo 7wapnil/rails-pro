@@ -29,7 +29,11 @@ module Events
     end
 
     field :tournament, Types::ScopeType
-    field :dashboard_market, Types::MarketType
+    field :dashboard_market, Types::MarketType do
+      resolve ->(obj, _args, _ctx) do
+        EventMarketsLoader.for(Market).load(obj.id)
+      end
+    end
     field :state, Types::EventStateType
   end
 end
