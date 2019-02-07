@@ -121,7 +121,7 @@ describe OddsFeed::Radar::EventAdapter do
       context 'when traded_live is marked in fixture change' do
         before do
           payload['liveodds'] =
-            OddsFeed::Radar::EventAdapter::BOOKED_FIXTURE_STATUS
+            OddsFeed::Radar::EventFixtureBasedFactory::BOOKED_FIXTURE_STATUS
         end
 
         it 'returns filled traded_live event' do
