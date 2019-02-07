@@ -7,7 +7,7 @@ module Radar
 
     self.table_name = 'radar_providers'
 
-    after_save :notify_application, if: :saved_change_to_state?
+    after_commit :notify_application
 
     has_many :events
 
@@ -101,6 +101,8 @@ module Radar
     end
 
     def notify_application
+      return unless saved_change_to_state?
+
       WebSocket::Client.instance.trigger_provider_update(self)
     end
   end
