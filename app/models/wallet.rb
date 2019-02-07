@@ -1,5 +1,5 @@
 class Wallet < ApplicationRecord
-  after_save :notify_application, if: :saved_change_to_amount?
+  after_commit :notify_application, on: %i[create update]
 
   belongs_to :customer
   belongs_to :currency
@@ -42,6 +42,8 @@ class Wallet < ApplicationRecord
   end
 
   def notify_application
+    return unless saved_change_to_amount?
+
     WebSocket::Client.instance.trigger_wallet_update(self)
   end
 end
