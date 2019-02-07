@@ -4,6 +4,8 @@ module OddsFeed
       include JobLogger
 
       def initialize(event_external_id)
+        ActiveSupport::Deprecation
+          .warn('This service is deprecated in favor of CTRL based coverage')
         @event_external_id = event_external_id
       end
 

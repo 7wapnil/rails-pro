@@ -106,12 +106,34 @@ describe OddsFeed::Radar::EventAdapter do
       end
 
       it('returns correct object') { expect(result).to be_a(Event) }
+
       it 'returns filled event' do
         expect(result).to have_attributes(
           external_id: event_id,
-          payload: expected_payload,
-          start_at: '2016-10-31T18:00:00+00:00'.to_time
+          start_at: '2016-10-31T18:00:00+00:00'.to_time,
+          name: 'IK Oddevold VS Tvaakers IF',
+          description: 'IK Oddevold VS Tvaakers IF',
+          traded_live: false,
+          payload: expected_payload
         )
+      end
+
+      context 'when traded_live is marked in fixture change' do
+        before do
+          payload['liveodds'] =
+            OddsFeed::Radar::EventFixtureBasedFactory::BOOKED_FIXTURE_STATUS
+        end
+
+        it 'returns filled traded_live event' do
+          expect(result).to have_attributes(
+            external_id: event_id,
+            start_at: '2016-10-31T18:00:00+00:00'.to_time,
+            name: 'IK Oddevold VS Tvaakers IF',
+            description: 'IK Oddevold VS Tvaakers IF',
+            traded_live: true,
+            payload: expected_payload
+          )
+        end
       end
     end
 

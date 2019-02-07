@@ -8,7 +8,7 @@ module OddsFeed
       def result
         return Event.new unless fixture
 
-        @event = Event.new(event_attributes)
+        @event = EventFixtureBasedFactory.new(fixture: fixture).event
         attach_title!
         find_or_create_scopes!
         @event
@@ -39,26 +39,6 @@ module OddsFeed
 
       def category_fixture
         tournament_fixture['category']
-      end
-
-      def event_attributes
-        start_at_field = fixture['start_time'] || fixture['scheduled']
-
-        { external_id: fixture['id'],
-          start_at: start_at_field.to_time,
-          name: event_name,
-          description: event_name,
-          payload: { competitors: fixture['competitors'],
-                     liveodds:    fixture['liveodds'] } }
-      end
-
-      def event_name
-        competitors = fixture['competitors']['competitor']
-        raise NotImplementedError unless competitors.length == 2
-
-        competitor1 = competitors[0]
-        competitor2 = competitors[1]
-        "#{competitor1['name']} VS #{competitor2['name']}"
       end
 
       def attach_title!
