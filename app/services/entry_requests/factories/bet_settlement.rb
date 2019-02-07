@@ -22,7 +22,7 @@ module EntryRequests
       end
 
       def create_win_entry_request!
-        @entry_requests << Common.call(
+        @entry_requests << ::EntryRequests::Factories::Common.call(
           origin: bet,
           kind: EntryRequest::WIN,
           mode: EntryRequest::SYSTEM,
@@ -31,7 +31,7 @@ module EntryRequests
       end
 
       def create_refund_entry_request!
-        @entry_requests << Common.call(
+        @entry_requests << ::EntryRequests::Factories::Common.call(
           origin: bet,
           kind: EntryRequest::REFUND,
           mode: EntryRequest::SYSTEM,

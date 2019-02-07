@@ -28,7 +28,7 @@ describe Customers::CreateFakeDeposit do
 
     allow(EntryRequests::DepositService)
       .to receive(:call)
-      .with(hash_including(entry_request: mocked_entry_request))
+      .with(entry_request: mocked_entry_request)
   end
 
   it 'asks payment provider to perform payment' do
@@ -72,7 +72,7 @@ describe Customers::CreateFakeDeposit do
     it 'calls Deposit Service to proceed entry request' do
       allow(EntryRequests::DepositService)
         .to receive(:call)
-        .with(entry_request: mocked_entry_request, amount: amount)
+        .with(entry_request: mocked_entry_request)
 
       subject
     end

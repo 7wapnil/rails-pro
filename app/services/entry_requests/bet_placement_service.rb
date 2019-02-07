@@ -1,5 +1,5 @@
 module EntryRequests
-  class WithdrawalService < ApplicationService
+  class BetPlacementService < ApplicationService
     def initialize(entry_request:)
       @entry_request = entry_request
       @bet = entry_request.origin

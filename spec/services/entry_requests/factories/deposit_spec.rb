@@ -10,8 +10,7 @@ describe EntryRequests::Factories::Deposit do
   let(:wallet) do
     create(:wallet, customer: customer, currency: currency, amount: 0)
   end
-  let(:real_balance_request) { BalanceEntryRequest.real_money.first }
-  let(:bonus_balance_request) { BalanceEntryRequest.bonus.first }
+
   let(:service_call) do
     described_class.call(wallet: wallet, amount: amount)
   end
@@ -107,13 +106,93 @@ describe EntryRequests::Factories::Deposit do
     it 'returns entry request with wallet attributes' do
       expect(service_call).to have_attributes(wallet_attributes)
     end
+  end
 
-    context 'if not eligible' do
+  context 'when customer has deposit limit' do
+    let!(:deposit_limit) do
+      create(:deposit_limit, customer: customer, currency: currency)
+    end
+
+    it "raises an error and doesn't proceed" do
+      expect { service_call }.to raise_error 'Customer has a deposit limit'
+    end
+  end
+
+  context 'when customer bonus is expired' do
+    let!(:customer_bonus) do
+      create(:customer_bonus,
+             customer: customer,
+             wallet: wallet,
+             created_at: 1.year.ago)
+    end
+
+    it "raises an error and doesn't proceed" do
+      expect { service_call }.to raise_error 'Bonus is expired'
+    end
+
+    context 'bonus' do
+      include_context 'frozen_time' do
+        let(:frozen_time) { Time.zone.now }
+      end
+
+      it 'receives expiration reason' do
+        expect { service_call }
+          .to raise_error(RuntimeError)
+          .and change(customer_bonus, :expiration_reason)
+          .to('expired_by_date')
+      end
+
+      it 'becomes deleted' do
+        expect { service_call }
+          .to raise_error(RuntimeError)
+          .and change(customer_bonus, :deleted_at)
+          .to(Time.zone.now)
+      end
+    end
+  end
+
+  context 'not eligible for bonus' do
+    context 'accepted' do
       before do
         allow(customer_bonus)
-          .to receive(:eligible_with?)
-          .with(amount)
+          .to receive(:activated?)
+          .and_return(true)
+      end
+
+      it 'ignores bonus in amount calculation' do
+        expect(service_call.amount).to eq(amount)
+      end
+    end
+
+    context 'without min deposit' do
+      before do
+        allow(customer_bonus)
+          .to receive(:min_deposit)
+          .and_return(nil)
+      end
+
+      it 'ignores bonus in amount calculation' do
+        expect(service_call.amount).to eq(amount)
+      end
+    end
+
+    context 'applied?' do
+      before do
+        allow(customer_bonus)
+          .to receive(:applied?)
           .and_return(false)
+      end
+
+      it 'ignores bonus in amount calculation' do
+        expect(service_call.amount).to eq(amount)
+      end
+    end
+
+    context 'amount less than min deposit' do
+      before do
+        allow(customer_bonus)
+          .to receive(:min_deposit)
+          .and_return(amount + 1)
       end
 
       it 'ignores bonus in amount calculation' do

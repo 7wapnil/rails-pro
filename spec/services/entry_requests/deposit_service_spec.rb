@@ -13,9 +13,7 @@ describe EntryRequests::DepositService do
   let(:entry_request) do
     EntryRequests::Factories::Deposit.call(wallet: wallet, amount: amount)
   end
-  let(:service_call) do
-    described_class.call(entry_request: entry_request, amount: amount)
-  end
+  let(:service_call) { described_class.call(entry_request: entry_request) }
 
   before do
     create(:customer_bonus,
@@ -61,9 +59,9 @@ describe EntryRequests::DepositService do
     bonus = wallet.customer_bonus
     allow(bonus).to receive(:expired?).and_return(true)
 
-    expect(bonus).to receive(:close!)
-
-    service_call
+    expect { service_call }
+      .to raise_error(RuntimeError)
+      .and(change { bonus.deleted_at })
   end
 
   context 'with customer bonus' do

@@ -11,12 +11,12 @@ module Customers
     def call
       return unless payment_provider.pay!(amount, fake_credit)
 
-      EntryRequests::DepositService.call(
-        entry_request: created_entry_request,
-        amount: amount
-      )
+      EntryRequests::DepositService.call(entry_request: created_entry_request)
 
       true
+    rescue StandardError => e
+      Rails.logger.error("DEPOSIT ERROR: #{e.message}")
+      false
     end
 
     private
@@ -32,10 +32,8 @@ module Customers
     end
 
     def wallet
-      @wallet ||= Wallet.find_or_create_by!(
-        customer: customer,
-        currency_id: currency_id
-      )
+      @wallet ||= Wallet.find_or_create_by!(customer: customer,
+                                            currency_id: currency_id)
     end
   end
 end

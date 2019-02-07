@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe EntryRequests::WithdrawalService do
+describe EntryRequests::BetPlacementService do
   subject { described_class.call(entry_request: entry_request) }
 
   let(:bet)             { create(:bet) }

@@ -18,7 +18,7 @@ module Betting
       bet = create_bet!(bet_payload)
       entry_request = create_entry_request!(bet)
 
-      EntryRequests::WithdrawalService.call(entry_request: entry_request)
+      ::EntryRequests::BetPlacementService.call(entry_request: entry_request)
 
       OpenStruct.new(id: bet_payload[:oddId],
                      message: nil,
@@ -37,7 +37,7 @@ module Betting
     end
 
     def create_entry_request!(bet)
-      @entry_request = EntryRequests::Factories::Withdrawal.call(
+      @entry_request = ::EntryRequests::Factories::BetPlacement.call(
         bet: bet,
         initiator: impersonated_by
       )

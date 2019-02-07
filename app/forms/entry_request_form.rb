@@ -60,6 +60,6 @@ class EntryRequestForm
   end
 
   def validate_deposit!
-    EntryRequests::DepositService.call(entry_request: deposit, amount: amount)
+    EntryRequests::DepositService.call(entry_request: deposit)
   end
 end

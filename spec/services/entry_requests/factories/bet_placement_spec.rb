@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe EntryRequests::Factories::Withdrawal do
+describe EntryRequests::Factories::BetPlacement do
   subject { described_class.call(bet: bet, initiator: impersonated_by) }
 
   let(:bet) do
@@ -96,7 +96,7 @@ describe EntryRequests::Factories::Withdrawal do
     it 'calls calculation service with default ratio' do
       expect(BalanceCalculations::BetWithBonus)
         .to receive(:call)
-        .with(bet, described_class::DEFAULT_RATIO)
+        .with(bet, 1.0)
         .and_call_original
 
       subject

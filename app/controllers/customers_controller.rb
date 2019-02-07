@@ -97,8 +97,7 @@ class CustomersController < ApplicationController
     @limits_by_sport = Customers::LimitsCollector.call(customer: customer)
   end
 
-  def deposit_limit
-  end
+  def deposit_limit; end
 
   def bets
     @filter = BetsFilter.new(source: customer.bets,

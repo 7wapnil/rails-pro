@@ -10,6 +10,9 @@ class EntryRequest < ApplicationRecord
   belongs_to :origin, polymorphic: true, optional: true
   has_many :balance_entry_requests
 
+  has_one :bonus_balance_entry_request, -> { bonus },
+          class_name: BalanceEntryRequest.name
+
   default_scope { order(created_at: :desc) }
 
   enum status: {

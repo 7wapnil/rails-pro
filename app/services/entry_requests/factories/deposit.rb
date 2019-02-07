@@ -1,6 +1,8 @@
 module EntryRequests
   module Factories
     class Deposit < ApplicationService
+      delegate :expired?, to: :customer_bonus, allow_nil: true, prefix: true
+
       def initialize(wallet:, amount:, **attributes)
         @wallet = wallet
         @amount = amount
@@ -11,6 +13,9 @@ module EntryRequests
       end
 
       def call
+        validate_deposit_placement!
+        close_customer_bonus! if customer_bonus_expired?
+
         create_entry_request!
         create_balance_request!
 
@@ -21,6 +26,21 @@ module EntryRequests
 
       attr_reader :wallet, :amount, :initiator, :mode,
                   :passed_comment, :customer_bonus, :entry_request
+
+      def validate_deposit_placement!
+        # TODO : implement validation logic
+        deposit_limit = DepositLimit.find_by(customer: wallet.customer,
+                                             currency: wallet.currency)
+
+        raise 'Customer has a deposit limit' if deposit_limit
+      end
+
+      def close_customer_bonus!
+        customer_bonus.close!(BonusExpiration::Expired,
+                              reason: :expired_by_date)
+
+        raise 'Bonus is expired'
+      end
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
@@ -65,7 +85,11 @@ module EntryRequests
       end
 
       def eligible_for_bonus?
-        customer_bonus.present? && customer_bonus.eligible_with?(amount)
+        customer_bonus.present? &&
+          !customer_bonus.activated? &&
+          customer_bonus.min_deposit &&
+          customer_bonus.applied? &&
+          amount >= customer_bonus.min_deposit
       end
     end
   end

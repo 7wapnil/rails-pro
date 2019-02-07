@@ -1,8 +1,6 @@
 module EntryRequests
   module Factories
-    class Withdrawal < ApplicationService
-      DEFAULT_RATIO = 1.0
-
+    class BetPlacement < ApplicationService
       delegate :customer_bonus, to: :bet
       delegate :applied?, to: :customer_bonus, allow_nil: true, prefix: true
 
@@ -34,7 +32,7 @@ module EntryRequests
       end
 
       def ratio
-        return DEFAULT_RATIO unless customer_bonus_applied?
+        return 1.0 unless customer_bonus_applied?
 
         wallet.ratio_with_bonus
       end

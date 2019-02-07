@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe EntryRequests::WithdrawalService do
+describe EntryRequests::BetPlacementService do
   subject(:submission_service) do
     described_class.new(entry_request: entry_request)
   end
@@ -26,7 +26,7 @@ describe EntryRequests::WithdrawalService do
       market: create(:event_with_market, :upcoming).markets.sample
     )
   end
-  let(:entry_request) { EntryRequests::Factories::Withdrawal.call(bet: bet) }
+  let(:entry_request) { EntryRequests::Factories::BetPlacement.call(bet: bet) }
 
   let(:bet_request) { submission_service.send(:entry_request) }
   let(:bet_attributes) do

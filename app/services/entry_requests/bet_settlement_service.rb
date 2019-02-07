@@ -21,9 +21,5 @@ module EntryRequests
         'Entry request for settled bet is expected!'
       )
     end
-
-    def validate_entry_request(entry_request)
-      ::WalletEntry::AuthorizationService.call(entry_request)
-    end
   end
 end

@@ -55,10 +55,4 @@ class CustomerBonus < ApplicationRecord
   def activated?
     entry_id.present?
   end
-
-  def eligible_with?(amount)
-    return false if activated? || !min_deposit
-
-    applied? && amount >= min_deposit
-  end
 end
