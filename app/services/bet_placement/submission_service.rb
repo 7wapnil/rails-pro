@@ -26,7 +26,7 @@ module BetPlacement
     def valid?
       limits_validation_succeeded? &&
         provider_connected? &&
-        !market_suspended? &&
+        market_not_suspended? &&
         entry_request_succeeded?
     end
 
@@ -107,8 +107,11 @@ module BetPlacement
       )
     end
 
-    def market_suspended?
-      @bet.market.suspended?
+    def market_not_suspended?
+      return true unless @bet.market.suspended?
+
+      @bet.register_failure!(I18n.t('errors.messages.market_suspended'))
+      false
     end
   end
 end

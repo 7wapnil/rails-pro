@@ -134,6 +134,20 @@ describe BetPlacement::SubmissionService do
       end
     end
 
+    context 'with suspended market' do
+      it 'fails when market suspended' do
+        bet.market.update!(status: Market::SUSPENDED)
+
+        subject.call
+
+        expect(bet)
+          .to have_attributes(
+            message: I18n.t('errors.messages.market_suspended'),
+            status: StateMachines::BetStateMachine::FAILED
+          )
+      end
+    end
+
     context 'with failure' do
       let(:error_message) { Faker::Lorem.sentence }
 

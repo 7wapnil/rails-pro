@@ -300,6 +300,7 @@ en:
       document_type_not_supported: Document type not supported
       entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
       provider_disconnected: Provider is disconnected
+      market_suspended: Bet market is suspended
       with_instance:
         not_negative: "of %{instance} cannot be negative"
       wrong_login_credentials: Wrong username, email or password
