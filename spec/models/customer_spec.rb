@@ -186,11 +186,7 @@ describe Customer do
 
     let(:customer) { create(:customer) }
 
-    it "returns count of deposits without 'SUCCEEDED' status for last 24hrs" do
-      not_succeeded_statuses = EntryRequest
-                               .statuses
-                               .except(EntryRequest::SUCCEEDED)
-
+    before do
       EntryRequest.statuses.values.each do |status|
         create(:entry_request,
                :deposit,
@@ -204,6 +200,12 @@ describe Customer do
                customer: customer,
                created_at: (24.hours.ago - 1.minute))
       end
+    end
+
+    it "returns count of deposits without 'SUCCEEDED' status for last 24hrs" do
+      not_succeeded_statuses = EntryRequest
+                               .statuses
+                               .except(EntryRequest::SUCCEEDED)
       expected_count = not_succeeded_statuses.length
 
       expect(customer.deposit_attempts).to eq(expected_count)
