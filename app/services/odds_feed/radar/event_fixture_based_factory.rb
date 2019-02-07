@@ -21,7 +21,7 @@ module OddsFeed
           start_at: start_at,
           name: event_name,
           description: event_name,
-          traded_live: event_traded_live,
+          traded_live: event_traded_live?,
           payload: payload
         }
       end
@@ -47,7 +47,7 @@ module OddsFeed
         "#{competitor1['name']} VS #{competitor2['name']}"
       end
 
-      def event_traded_live
+      def event_traded_live?
         fixture['liveodds'] == BOOKED_FIXTURE_STATUS
       end
     end
