@@ -4,6 +4,7 @@ module OddsFeed
       include JobLogger
 
       MATCH_TYPE_REGEXP = /:match:/
+      BOOKED_FIXTURE_STATUS = 'booked'.freeze
 
       def result
         return Event.new unless fixture
@@ -48,6 +49,7 @@ module OddsFeed
           start_at: start_at_field.to_time,
           name: event_name,
           description: event_name,
+          traded_live: event_traded_live,
           payload: { competitors: fixture['competitors'],
                      liveodds:    fixture['liveodds'] } }
       end
@@ -59,6 +61,10 @@ module OddsFeed
         competitor1 = competitors[0]
         competitor2 = competitors[1]
         "#{competitor1['name']} VS #{competitor2['name']}"
+      end
+
+      def event_traded_live
+        fixture['liveodds'] == BOOKED_FIXTURE_STATUS
       end
 
       def attach_title!
