@@ -11,7 +11,7 @@ module Radar
 
     has_many :events
 
-    HEARTBEAT_EXPIRATION_TIME_IN_SECONDS = 60
+    HEARTBEAT_EXPIRATION_TIME_IN_SECONDS = 15
 
     UNSUBSCRIBED_STATES = {
       unsubscribed: UNSUBSCRIBED = 'unsubscribed'.freeze
