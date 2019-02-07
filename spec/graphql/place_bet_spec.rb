@@ -168,6 +168,12 @@ describe GraphQL, '#place_bet' do
       expect(kinds).to match_array([Balance::REAL_MONEY, Balance::BONUS])
     end
 
+    it 'places bet with system mode' do
+      execute_query
+
+      expect(EntryRequest.pluck(:mode).uniq).to eq([EntryRequest::SYSTEM])
+    end
+
     context 'when customer with bonus' do
       before do
         execute_query

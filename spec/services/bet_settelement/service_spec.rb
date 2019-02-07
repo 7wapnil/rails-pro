@@ -47,7 +47,7 @@ describe BetSettelement::Service do
             {
               currency: bet.currency,
               kind: 'win',
-              mode: 'sports_ticket',
+              mode: EntryRequest::SYSTEM,
               initiator: bet.customer,
               customer: bet.customer,
               origin: bet
@@ -110,7 +110,7 @@ describe BetSettelement::Service do
             {
               currency: bet.currency,
               kind: 'refund',
-              mode: 'sports_ticket',
+              mode: EntryRequest::SYSTEM,
               initiator: bet.customer,
               customer: bet.customer,
               origin: bet
@@ -121,7 +121,7 @@ describe BetSettelement::Service do
             {
               currency: bet.currency,
               kind: 'win',
-              mode: 'sports_ticket',
+              mode: EntryRequest::SYSTEM,
               initiator: bet.customer,
               customer: bet.customer,
               origin: bet
@@ -192,7 +192,7 @@ describe BetSettelement::Service do
             {
               currency: bet.currency,
               kind: 'refund',
-              mode: 'sports_ticket',
+              mode: EntryRequest::SYSTEM,
               initiator: bet.customer,
               customer: bet.customer,
               origin: bet

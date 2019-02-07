@@ -33,7 +33,6 @@ Rails.application.routes.draw do
       get :deposit_limit
       get :bets
       get :impersonate
-      post :create_fake_deposit
       post :update_promotional_subscription
       patch :update_status
       post :reset_password_to_default
@@ -99,7 +98,7 @@ Rails.application.routes.draw do
         get :error
         get :pending
         get :back
-        get :webhook
+        post :webhook
       end
     end
   end

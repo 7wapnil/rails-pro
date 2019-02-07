@@ -11,7 +11,7 @@ module Radar
 
     has_many :events
 
-    HEARTBEAT_EXPIRATION_TIME_IN_SECONDS = 60
+    HEARTBEAT_EXPIRATION_TIME_IN_SECONDS = 15
 
     UNSUBSCRIBED_STATES = {
       unsubscribed: UNSUBSCRIBED = 'unsubscribed'.freeze
@@ -85,7 +85,9 @@ module Radar
     private
 
     def clean_recovery_data
-      update(recovery_snapshot_id: nil, recover_requested_at: nil)
+      update(recovery_snapshot_id: nil,
+             recover_requested_at: nil,
+             recovery_node_id: nil)
     end
 
     def expired?

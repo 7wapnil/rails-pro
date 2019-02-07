@@ -12,18 +12,16 @@ class EntryRequestsController < ApplicationController
   end
 
   def create
-    entry_request = EntryRequest.new(payload_params)
+    customer = Customer.find(payload_params[:customer_id])
+    form = EntryRequestForm.new(payload_params)
+    entry_request = form.submit
 
-    if entry_request.save
-      EntryRequestProcessingWorker.perform_async(entry_request.id)
-      customer = entry_request.customer
-      current_user.log_event :entry_request_created,
-                             entry_request,
-                             customer
+    if entry_request
+      current_user.log_event :entry_request_created, entry_request, customer
       flash[:success] = t('messages.entry_request.flash')
       redirect_to account_management_customer_path(customer)
     else
-      flash[:error] = entry_request.errors.full_messages
+      flash[:error] = form.errors
       redirect_back fallback_location: root_path
     end
   end

@@ -126,7 +126,9 @@ describe Redirect::DepositsController do
     end
 
     it 'responds to webhook endpoint with ok' do
+      allow(SafeCharge::WebhookHandler).to receive(:call)
       get(:webhook)
+
       expect(response).to have_http_status(:ok)
     end
   end

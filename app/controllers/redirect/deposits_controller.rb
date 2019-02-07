@@ -1,5 +1,7 @@
 module Redirect
   class DepositsController < ActionController::Base
+    skip_before_action :verify_authenticity_token, only: :webhook
+
     def initiate # rubocop:disable Metrics/MethodLength
       entry_request =
         ::Deposits::InitiateHostedDepositService.call(
@@ -42,6 +44,8 @@ module Redirect
 
     def webhook
       # TODO: Change entry_request state
+      SafeCharge::WebhookHandler.call(params)
+
       head :ok
     end
 
