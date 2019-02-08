@@ -308,6 +308,9 @@ en:
       account_transition: "can't bet changed from '%{from}' to '%{to}'"
       balance_request_uniqueness: 'already has balance entry request with this kind.'
       real_money_blank_amount: Real money amount can not be blank!
+      withdrawal:
+        not_enouh_money: Not enough money in wallet!
+        bonus_exists: Active bonus exists!
 
   expiration_reasons:
     converted: Converted
