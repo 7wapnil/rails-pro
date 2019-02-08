@@ -31,5 +31,7 @@ module Events
     field :tournament, Types::ScopeType
     field :dashboard_market, Types::MarketType
     field :state, Types::EventStateType
+
+    field :categories, !types[Events::MarketCategoryType]
   end
 end

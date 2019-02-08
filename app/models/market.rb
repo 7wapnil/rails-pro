@@ -33,6 +33,9 @@ class Market < ApplicationRecord
   has_many :labels, through: :label_joins
 
   scope :for_displaying, -> { joins(:odds).visible.order(priority: :asc) }
+  scope :with_category, -> {
+    joins(:odds).where.not(category: nil).group('markets.id')
+  }
 
   validates :name, :priority, :status, presence: true
   validates_with MarketStateValidator, restrictions: [

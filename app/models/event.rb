@@ -43,6 +43,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   belongs_to :title
   belongs_to :producer, class_name: Radar::Producer.name, inverse_of: :events
   has_many :markets, dependent: :delete_all
+  has_many :categorized_markets, -> { with_category }, class_name: Market.name
   has_many :bets, through: :markets
   has_many :scoped_events, dependent: :delete_all
   has_many :event_scopes, through: :scoped_events
@@ -136,6 +137,14 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   def self.today
     where(start_at: [Date.today.beginning_of_day..Date.today.end_of_day])
+  end
+
+  def categories
+    categorized_markets.group_by(&:category).map do |id, markets|
+      OpenStruct.new(id: id,
+                     name: I18n.t("market_categories.#{id}"),
+                     count: markets.count)
+    end
   end
 
   def upcoming?

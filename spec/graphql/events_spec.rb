@@ -101,6 +101,47 @@ describe GraphQL, '#events' do
     end
   end
 
+  context 'with categories' do
+    let(:event) { create(:event, :upcoming, title: title) }
+    let(:query) do
+      %({
+          events(context: #{upcoming_ctx}, filter: { id: #{event.id} }) {
+            id
+            categories { id name count }
+          }
+      })
+    end
+
+    before do
+      create_list(:market,
+                  3,
+                  :with_odds,
+                  event: event,
+                  category: MarketTemplate::POPULAR)
+      create_list(:market,
+                  2,
+                  :with_odds,
+                  event: event,
+                  category: MarketTemplate::PLAYERS)
+      create_list(:market,
+                  1,
+                  :with_odds,
+                  event: event,
+                  category: nil)
+    end
+
+    it 'returns a list of categories with count' do
+      categories = result['data']['events'][0]['categories']
+      expect(categories.count).to eq(2)
+
+      expect(categories[0]['id']).to eq(MarketTemplate::POPULAR)
+      expect(categories[0]['count']).to eq(3)
+
+      expect(categories[1]['id']).to eq(MarketTemplate::PLAYERS)
+      expect(categories[1]['count']).to eq(2)
+    end
+  end
+
   context 'prioritizes market by priority' do
     let(:control_event) do
       create(:event_with_market, :upcoming, title: title)
