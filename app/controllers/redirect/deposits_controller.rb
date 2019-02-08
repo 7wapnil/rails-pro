@@ -2,7 +2,7 @@ module Redirect
   class DepositsController < ActionController::Base
     skip_before_action :verify_authenticity_token, only: :webhook
 
-    def initiate
+    def initiate # rubocop:disable Metrics/MethodLength
       entry_request =
         ::Deposits::InitiateHostedDepositService.call(
           customer: customer,
@@ -18,6 +18,9 @@ module Redirect
     rescue ActiveRecord::RecordNotFound, JWT::DecodeError
       Rails.logger.error 'Deposit request with corrupted data received.'
       callback(:something_went_wrong)
+    rescue Deposits::DepositAttemptError
+      Rails.logger.error 'Customer deposit attempts exceeded.'
+      callback(:deposit_attempts_exceeded)
     end
 
     def success
