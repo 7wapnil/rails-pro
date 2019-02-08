@@ -22,5 +22,4 @@ describe Withdrawals::WithdrawalRequestBuilder do
   it 'creates entry request with correct customer' do
     expect(created_entry_request.customer).to eq(wallet.customer)
   end
-
 end

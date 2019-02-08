@@ -1,6 +1,5 @@
 module Withdrawals
   class WithdrawalRequestBuilder < ApplicationService
-
     def initialize(wallet, amount)
       @wallet = wallet
       @amount = amount

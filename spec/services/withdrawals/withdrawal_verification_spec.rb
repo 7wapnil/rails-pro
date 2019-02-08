@@ -40,6 +40,5 @@ describe Withdrawals::WithdrawalVerification do
 
       expect { service.call }.to raise_error(error_class, bonus_exists_msg)
     end
-
   end
 end

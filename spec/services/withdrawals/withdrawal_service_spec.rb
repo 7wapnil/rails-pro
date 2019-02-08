@@ -28,7 +28,6 @@ describe Withdrawals::WithdrawalService do
     end
   end
 
-
   context 'build entry request' do
     before do
       request = create(:entry_request)
@@ -72,7 +71,6 @@ describe Withdrawals::WithdrawalService do
       expect { described_class.call(wallet, balance_amount + 1) }
         .to raise_error(withdraw_error)
     end
-
   end
 
   it 'subtract withdrawal amount from customer balance amount' do
