@@ -22,7 +22,7 @@ module Deposits
       # TODO: Existing deposit request found
       # TODO: Check bonus code
       # TODO: Responsible gambling manager check
-      # TODO: Rates check
+      VerifyDepositAttempt.call(@customer)
 
       true
     end

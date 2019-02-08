@@ -88,6 +88,28 @@ describe Redirect::DepositsController do
       end
     end
 
+    context 'when customer deposit attempts exceeded' do
+      let(:callback_url) { Faker::Internet.url }
+      let(:valid_token) { JwtService.encode(id: customer.id) }
+
+      before do
+        allow(Deposit::CallbackUrl)
+          .to receive(:for).with(:deposit_attempts_exceeded) { callback_url }
+
+        allow(Deposits::InitiateHostedDepositService)
+          .to receive(:call).and_raise(Deposits::DepositAttemptError)
+      end
+
+      it 'redirects to callback url when deposit attempts exceeded' do
+        expect(
+          get(
+            :initiate,
+            params: valid_params.update(token: valid_token)
+          )
+        ).to redirect_to(callback_url)
+      end
+    end
+
     %i[success error pending back].each do |state|
       context "When #{state} callback request made" do
         let(:callback_url) { Faker::Internet.url }
