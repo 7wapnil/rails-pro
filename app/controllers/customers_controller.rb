@@ -10,7 +10,6 @@ class CustomersController < ApplicationController
     documents
     deposit_limit
     show
-    create_fake_deposit
   ]
   before_action :new_note, only: %i[
     account_management
@@ -62,16 +61,6 @@ class CustomersController < ApplicationController
     @audit_logs = AuditLog
                   .where(customer_id: customer.id)
                   .page(params[:audit_logs_page])
-  end
-
-  def create_fake_deposit
-    @result = Customers::CreateFakeDeposit
-              .call(customer: customer, params: deposit_params)
-
-    return fake_deposit_created! if @result
-
-    flash[:alert] = I18n.t('events.deposit_failed')
-    redirect_back fallback_location: account_management_customer_path(customer)
   end
 
   def bonuses
