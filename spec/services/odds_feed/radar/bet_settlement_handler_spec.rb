@@ -118,30 +118,6 @@ describe OddsFeed::Radar::BetSettlementHandler do
           .at_least(:once)
       end
     end
-
-    context 'with suspended bets' do
-      let(:odd) do
-        create(:odd, :suspended,
-               external_id: 'sr:match:3432:13/hcp=3.5:sr:player:222')
-      end
-
-      before do
-        allow(BetSettelement::Service).to receive(:call)
-        subject.handle
-      end
-
-      it 'and calls BetSettelement service to process unsuspended bets' do
-        expect(BetSettelement::Service)
-          .to have_received(:call)
-          .exactly(total_bets_count - first_odd_bets_count)
-          .times
-      end
-
-      it 'and re-validates all suspended bets' do
-        expect(Bet.sent_to_internal_validation.count)
-          .to eq(first_odd_bets_count)
-      end
-    end
   end
 
   it 'settles odd bets with result and void factor' do
