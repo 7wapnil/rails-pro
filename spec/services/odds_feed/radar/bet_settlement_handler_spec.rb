@@ -58,6 +58,17 @@ describe OddsFeed::Radar::BetSettlementHandler do
     end.to raise_error(OddsFeed::InvalidMessageError)
   end
 
+  describe '#invalid_bet_ids' do
+    it 'returns empty array' do
+      expect(subject.send(:invalid_bet_ids)).to eq []
+    end
+
+    it 'returns an item added' do
+      subject.send(:invalid_bet_ids).push :foo
+      expect(subject.send(:invalid_bet_ids)).to eq [:foo]
+    end
+  end
+
   context 'settled bets processing' do
     let(:currency) { create(:currency) }
     let(:rule_for_refund) do
@@ -116,30 +127,6 @@ describe OddsFeed::Radar::BetSettlementHandler do
         expect(subject_with_input)
           .to have_received(:process_bets)
           .at_least(:once)
-      end
-    end
-
-    context 'with suspended bets' do
-      let(:odd) do
-        create(:odd, :suspended,
-               external_id: 'sr:match:3432:13/hcp=3.5:sr:player:222')
-      end
-
-      before do
-        allow(BetSettelement::Service).to receive(:call)
-        subject.handle
-      end
-
-      it 'and calls BetSettelement service to process unsuspended bets' do
-        expect(BetSettelement::Service)
-          .to have_received(:call)
-          .exactly(total_bets_count - first_odd_bets_count)
-          .times
-      end
-
-      it 'and re-validates all suspended bets' do
-        expect(Bet.sent_to_internal_validation.count)
-          .to eq(first_odd_bets_count)
       end
     end
   end
