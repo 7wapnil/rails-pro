@@ -15,6 +15,12 @@ module OddsFeed
 
       private
 
+      def validate_message
+        is_invalid = input_data['outcomes'].nil? ||
+                     input_data['outcomes']['market'].nil?
+        raise OddsFeed::InvalidMessageError if is_invalid
+      end
+
       def store_market_ids
         markets.each { |payload| store_market_id(payload) }
       end
@@ -49,12 +55,6 @@ module OddsFeed
 
       def invalid_bet_ids
         @invalid_bet_ids ||= []
-      end
-
-      def validate_message
-        is_invalid = input_data['outcomes'].nil? ||
-                     input_data['outcomes']['market'].nil?
-        raise OddsFeed::InvalidMessageError if is_invalid
       end
 
       def input_data
