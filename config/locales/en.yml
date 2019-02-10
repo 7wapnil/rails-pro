@@ -45,6 +45,10 @@ en:
   instance_overview: "%{instance} overview"
   not_found: "No %{instance} found"
 
+  logs:
+    odds_feed:
+      low_certainty: "Ignoring BetSettelement for %{event_external_id} because of insufficient certainty level %{certainty_level}"
+
   actions:
     expire: Expire
     impersonate: Impersonate

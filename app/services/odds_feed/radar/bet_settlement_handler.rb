@@ -1,5 +1,6 @@
 module OddsFeed
   module Radar
+    # rubocop:disable Metrics/ClassLength
     class BetSettlementHandler < RadarMessageHandler
       def initialize(payload)
         super(payload)
@@ -8,6 +9,9 @@ module OddsFeed
 
       def handle
         validate_message
+
+        return exit_with_uncertainty if certainty_level < 2
+
         store_market_ids
         process_outcomes
         update_markets
@@ -17,7 +21,8 @@ module OddsFeed
 
       def validate_message
         is_invalid = input_data['outcomes'].nil? ||
-                     input_data['outcomes']['market'].nil?
+                     input_data['outcomes']['market'].nil? ||
+                     input_data['certainty'].nil?
         raise OddsFeed::InvalidMessageError if is_invalid
       end
 
@@ -59,6 +64,23 @@ module OddsFeed
 
       def input_data
         @payload['bet_settlement']
+      end
+
+      def certainty_level
+        input_data['certainty'].to_i
+      end
+
+      def event_external_id
+        input_data['event_id']
+      end
+
+      def exit_with_uncertainty
+        log_job_message(
+          :info,
+          I18n.t('logs.odds_feed.low_certainty',
+                 event_external_id: event_external_id,
+                 certainty_level: certainty_level)
+        )
       end
 
       def markets
@@ -109,5 +131,6 @@ module OddsFeed
         bets_by_external_id(external_id).where.not(id: invalid_bet_ids)
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

@@ -6,7 +6,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
     XmlParser.parse(
       '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
       '<bet_settlement event_id="sr:match:3432" '\
-      'product="1" certainty="1" timestamp="1235">'\
+      'product="1" certainty="2" timestamp="1235">'\
         '<outcomes>'\
           '<market id="13" specifiers="hcp=3.5">'\
             '<outcome id="sr:player:123" result="0"/>'\
@@ -66,6 +66,49 @@ describe OddsFeed::Radar::BetSettlementHandler do
     it 'returns an item added' do
       subject.send(:invalid_bet_ids).push :foo
       expect(subject.send(:invalid_bet_ids)).to eq [:foo]
+    end
+  end
+
+  describe 'certainty level' do
+    before do
+      allow(subject_with_input).to receive(:store_market_ids)
+      allow(subject_with_input).to receive(:process_outcomes)
+      allow(subject_with_input).to receive(:update_markets)
+    end
+
+    context 'certainty = 1' do
+      before do
+        payload['bet_settlement']['certainty'] = '1'
+        subject_with_input.handle
+      end
+
+      it 'does not call #store_market_ids' do
+        expect(subject_with_input).not_to have_received(:store_market_ids)
+      end
+
+      it 'does not call #process_outcomes' do
+        expect(subject_with_input).not_to have_received(:process_outcomes)
+      end
+
+      it 'does not call #update_markets' do
+        expect(subject_with_input).not_to have_received(:update_markets)
+      end
+    end
+
+    context 'certainty = 2' do
+      before { subject_with_input.handle }
+
+      it 'calls #store_market_ids' do
+        expect(subject_with_input).to have_received(:store_market_ids)
+      end
+
+      it 'calls #process_outcomes' do
+        expect(subject_with_input).to have_received(:process_outcomes)
+      end
+
+      it 'calls #update_markets' do
+        expect(subject_with_input).to have_received(:update_markets)
+      end
     end
   end
 
