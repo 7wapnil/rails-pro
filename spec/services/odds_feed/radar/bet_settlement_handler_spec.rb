@@ -58,6 +58,17 @@ describe OddsFeed::Radar::BetSettlementHandler do
     end.to raise_error(OddsFeed::InvalidMessageError)
   end
 
+  describe '#invalid_bet_ids' do
+    it 'returns empty array' do
+      expect(subject.send(:invalid_bet_ids)).to eq []
+    end
+
+    it 'returns an item added' do
+      subject.send(:invalid_bet_ids).push :foo
+      expect(subject.send(:invalid_bet_ids)).to eq [:foo]
+    end
+  end
+
   context 'settled bets processing' do
     let(:currency) { create(:currency) }
     let(:rule_for_refund) do
