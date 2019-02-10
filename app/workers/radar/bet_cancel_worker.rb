@@ -1,8 +1,6 @@
 module Radar
   class BetCancelWorker < BaseUofWorker
-    include ::QueueName
-
-    sidekiq_options queue: queue_name
+    sidekiq_options queue: :radar_odds_feed
 
     def worker_class
       OddsFeed::Radar::BetCancelHandler
