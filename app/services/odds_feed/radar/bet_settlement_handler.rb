@@ -8,16 +8,19 @@ module OddsFeed
 
       def handle
         validate_message
+        store_market_ids
         process_outcomes
         update_markets
       end
 
       private
 
+      def store_market_ids
+        markets.each { |payload| store_market_id(payload) }
+      end
+
       def process_outcomes
         markets.each do |market_data|
-          store_market_id(market_data)
-
           market_data['outcome'].each do |outcome|
             generator = ExternalId.new(event_id: input_data['event_id'],
                                        market_id: market_data['id'],
@@ -59,7 +62,7 @@ module OddsFeed
       end
 
       def markets
-        Array.wrap(input_data['outcomes']['market'])
+        @markets ||= Array.wrap(input_data['outcomes']['market'])
       end
 
       def update_bets(external_id, outcome)
