@@ -77,9 +77,11 @@ module OddsFeed
       def exit_with_uncertainty
         log_job_message(
           :info,
-          I18n.t('logs.odds_feed.low_certainty',
-                 event_external_id: event_external_id,
-                 certainty_level: certainty_level)
+          {
+            message: I18n.t('logs.odds_feed.low_certainty'),
+            event_external_id: event_external_id,
+            certainty_level: certainty_level
+          }
         )
       end
 

@@ -47,7 +47,7 @@ en:
 
   logs:
     odds_feed:
-      low_certainty: "Ignoring BetSettelement for %{event_external_id} because of insufficient certainty level %{certainty_level}"
+      low_certainty: "Ignoring BetSettelement because of insufficient certainty level"
 
   actions:
     expire: Expire
