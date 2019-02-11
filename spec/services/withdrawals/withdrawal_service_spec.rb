@@ -1,5 +1,7 @@
 describe Withdrawals::WithdrawalService do
-  subject(:service) { described_class.new(wallet, withdraw_amount) }
+  subject(:service) do
+    described_class.new(wallet, withdraw_amount, mode: EntryRequest::CASHIER)
+  end
 
   let(:currency) { create(:currency, :with_withdrawal_rule) }
   let(:withdraw_amount) { 50 }
@@ -33,7 +35,7 @@ describe Withdrawals::WithdrawalService do
     it 'passes wallet and amount to WithdrawalRequestBuilder' do
       expect(Withdrawals::WithdrawalRequestBuilder)
         .to have_received(:call)
-        .with(wallet, withdraw_amount).once
+        .with(wallet, withdraw_amount, mode: EntryRequest::CASHIER).once
     end
   end
 

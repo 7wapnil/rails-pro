@@ -1,5 +1,7 @@
 describe Withdrawals::WithdrawalRequestBuilder do
-  let(:created_entry_request) { described_class.call(wallet, withdraw_amount) }
+  let(:created_entry_request) do
+    described_class.call(wallet, withdraw_amount, mode: EntryRequest::CASHIER)
+  end
   let(:wallet) { create(:wallet) }
   let(:withdraw_amount) { 100 }
 

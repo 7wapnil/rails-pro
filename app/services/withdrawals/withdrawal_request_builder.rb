@@ -1,8 +1,9 @@
 module Withdrawals
   class WithdrawalRequestBuilder < ApplicationService
-    def initialize(wallet, amount)
+    def initialize(wallet, amount, **options)
       @wallet = wallet
       @amount = amount
+      @mode = options[:mode]
     end
 
     def call
@@ -11,7 +12,7 @@ module Withdrawals
 
     private
 
-    attr_reader :wallet, :amount
+    attr_reader :wallet, :amount, :mode
 
     def build_entry_request!
       EntryRequest.create!(
@@ -20,7 +21,7 @@ module Withdrawals
         customer: wallet.customer,
         amount: amount,
         initiator: wallet.customer,
-        mode: EntryRequest::CASHIER
+        mode: mode
       )
     end
   end
