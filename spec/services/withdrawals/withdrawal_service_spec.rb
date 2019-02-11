@@ -1,18 +1,13 @@
 describe Withdrawals::WithdrawalService do
   subject(:service) { described_class.new(wallet, withdraw_amount) }
 
-  let(:currency) { create(:currency) }
-  let(:rule) { create(:entry_currency_rule, min_amount: -500, max_amount: 500) }
+  let(:currency) { create(:currency, :with_withdrawal_rule) }
   let(:withdraw_amount) { 50 }
   let(:balance_amount) { 200 }
   let(:customer) { create(:customer) }
-  let(:wallet) { create(:wallet, customer: customer) }
+  let(:wallet) { create(:wallet, customer: customer, currency: currency) }
   let!(:balance) do
     create(:balance, :real_money, amount: balance_amount, wallet: wallet)
-  end
-
-  before do
-    allow(EntryCurrencyRule).to receive(:find_by!) { rule }
   end
 
   context 'withdraw verification' do
@@ -30,7 +25,7 @@ describe Withdrawals::WithdrawalService do
 
   context 'build entry request' do
     before do
-      request = create(:entry_request)
+      request = create(:entry_request, :withdraw, currency: currency)
       allow(Withdrawals::WithdrawalRequestBuilder).to receive(:call) { request }
       service.call
     end
