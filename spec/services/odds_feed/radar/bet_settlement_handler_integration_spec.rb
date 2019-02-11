@@ -5,7 +5,7 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
     XmlParser.parse(
       '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
       '<bet_settlement event_id="sr:match:3432" '\
-      'product="1" certainty="2" timestamp="1235">'\
+      'product="1" certainty="1" timestamp="1235">'\
         '<outcomes>'\
           '<market id="13" specifiers="hcp=3.5">'\
             '<outcome id="sr:player:123" result="0"/>'\
