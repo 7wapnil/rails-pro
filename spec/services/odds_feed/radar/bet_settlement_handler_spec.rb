@@ -54,13 +54,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
   let(:mocked_entry_request) { double }
 
   before do
-    allow(EntryRequests::Factories::BetSettlement)
-      .to receive(:call)
-      .and_return([mocked_entry_request])
-
-    allow(EntryRequests::BetSettlementService)
-      .to receive(:call)
-      .with(entry_request: mocked_entry_request)
+    allow(Bets::Settlement::Proceed).to receive(:call)
   end
 
   it 'raises error on invalid message' do
@@ -107,12 +101,12 @@ describe OddsFeed::Radar::BetSettlementHandler do
                   odd: odd_not_from_payload, currency: currency)
     end
 
-    it 'calls BetSettlement service to process all affected bets' do
-      allow(EntryRequests::BetSettlementService).to receive(:call)
+    it 'calls Proceed service to process all affected bets' do
+      allow(Bets::Settlement::Proceed).to receive(:call)
 
       subject_with_input.handle
 
-      expect(EntryRequests::BetSettlementService)
+      expect(Bets::Settlement::Proceed)
         .to have_received(:call)
         .exactly(total_bets_count)
         .times
@@ -120,7 +114,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
     context 'market status' do
       before do
-        allow(EntryRequests::BetSettlementService).to receive(:call)
+        allow(Bets::Settlement::Proceed).to receive(:call)
       end
 
       it 'sets market status to settled' do
@@ -132,19 +126,19 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
       it 'updates bets even when market not found' do
         Market.find_by(external_id: market_id).destroy
-        allow(subject_with_input).to receive(:process_bets)
+        allow(subject_with_input).to receive(:proceed_bets)
 
         subject_with_input.handle
 
         expect(subject_with_input)
-          .to have_received(:process_bets)
+          .to have_received(:proceed_bets)
           .at_least(:once)
       end
     end
   end
 
   it 'settles odd bets with result and void factor' do
-    allow(subject_with_input).to receive(:process_bets)
+    allow(subject_with_input).to receive(:proceed_bets)
     create_list(:bet, 5,
                 odd: odd,
                 status: StateMachines::BetStateMachine::ACCEPTED)

@@ -31,6 +31,10 @@ describe GraphQL, '#place_bet' do
       })
   end
 
+  let(:response) do
+    ArcanebetSchema.execute(query, context: context, variables: variables)
+  end
+
   context 'success' do
     let(:odds) { create_list(:odd, 2, value: 8.87) }
     let(:variables) do
@@ -44,10 +48,6 @@ describe GraphQL, '#place_bet' do
           }
         end
       }
-    end
-
-    let(:response) do
-      ArcanebetSchema.execute(query, context: context, variables: variables)
     end
 
     let(:bets) { response['data']['placeBets'] }
@@ -256,7 +256,7 @@ describe GraphQL, '#place_bet' do
     let(:invalid_bet_attrs) do
       {
         amount: 0,
-        currencyCode: 'EUR',
+        currencyCode: 'TEST CURRENCY',
         oddId: odd.id.to_s,
         oddValue: odd.value
       }
@@ -266,10 +266,6 @@ describe GraphQL, '#place_bet' do
       {
         bets: [invalid_bet_attrs, valid_bet_attrs]
       }
-    end
-
-    let(:response) do
-      ArcanebetSchema.execute(query, context: context, variables: variables)
     end
 
     let(:succeeded_bets_response) do
@@ -290,6 +286,25 @@ describe GraphQL, '#place_bet' do
 
     it 'succeeded response includes placed bet' do
       expect(succeeded_bets_response.first['bet']).not_to be_nil
+    end
+
+    context 'with predictably invalid bet on internal validation' do
+      let(:invalid_bet_attrs) do
+        {
+          amount: 0,
+          currencyCode: 'EUR',
+          oddId: odd.id.to_s,
+          oddValue: odd.value
+        }
+      end
+
+      let(:variables) do
+        { bets: [invalid_bet_attrs] }
+      end
+
+      it 'recognizes it as success for GraphQL response' do
+        expect(succeeded_bets_response.count).to eq(1)
+      end
     end
   end
 end

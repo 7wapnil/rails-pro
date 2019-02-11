@@ -259,10 +259,5 @@ class CustomersController < ApplicationController
   def customer_notes_widget
     @customer_notes_widget = customer.customer_notes.limit(WIDGET_NOTES_COUNT)
   end
-
-  def fake_deposit_created!
-    flash[:notice] = I18n.t('events.deposit_created')
-    redirect_back fallback_location: account_management_customer_path(customer)
-  end
 end
 # rubocop:enable Metrics/ClassLength

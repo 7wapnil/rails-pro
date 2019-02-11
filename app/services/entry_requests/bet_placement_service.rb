@@ -62,12 +62,27 @@ module EntryRequests
     end
 
     def validate_entry_request!
+      return entry_request_failed! if entry_request.failed?
+      return zero_amount! if entry_request.amount.zero?
+
       WalletEntry::AuthorizationService.call(entry_request)
 
       return true if entry_request.succeeded?
 
       bet.register_failure!(entry_request.result_message)
       false
+    end
+
+    def entry_request_failed!
+      bet.register_failure!(I18n.t('errors.messages.entry_request_failed',
+                                   bet_id: bet.id))
+      false
+    end
+
+    def zero_amount!
+      bet.register_failure!(I18n.t('errors.messages.real_money_blank_amount'))
+      entry_request
+        .register_failure!(I18n.t('errors.messages.real_money_blank_amount'))
     end
   end
 end

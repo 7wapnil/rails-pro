@@ -7,7 +7,7 @@ class EntryRequestForm
   end
 
   def submit
-    return create_and_validate_deposit if deposit_simulation?
+    return create_and_proceed_deposit if deposit_simulation?
 
     create_entry_request
   end
@@ -30,9 +30,11 @@ class EntryRequestForm
     entry_request
   end
 
-  def create_and_validate_deposit
+  def create_and_proceed_deposit
     create_deposit!
-    validate_deposit!
+    raise if deposit.failed?
+
+    EntryRequests::DepositService.call(entry_request: deposit)
 
     deposit
   rescue StandardError
@@ -57,9 +59,5 @@ class EntryRequestForm
       customer_id: params[:customer_id],
       currency_id: params[:currency_id]
     )
-  end
-
-  def validate_deposit!
-    EntryRequests::DepositService.call(entry_request: deposit)
   end
 end

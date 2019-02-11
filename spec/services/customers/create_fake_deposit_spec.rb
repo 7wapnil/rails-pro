@@ -7,7 +7,7 @@ describe Customers::CreateFakeDeposit do
   let(:currency) { create(:currency) }
   let(:amount) { rand(1..100) }
 
-  let(:mocked_entry_request) { double }
+  let(:mocked_entry_request) { create(:entry_request) }
   let(:credit) { {} }
 
   let(:params) do
@@ -48,12 +48,27 @@ describe Customers::CreateFakeDeposit do
     expect(subject).to be_truthy
   end
 
-  it 'returns falsey value on invalid payment' do
-    allow_any_instance_of(PaymentProvider::FakeDeposit)
-      .to receive(:pay!)
-      .and_return(false)
+  context 'on invalid payment' do
+    before do
+      allow_any_instance_of(PaymentProvider::FakeDeposit)
+        .to receive(:pay!)
+        .and_return(false)
 
-    expect(subject).to be_falsey
+      subject
+    end
+
+    it 'returns falsey' do
+      expect(subject).to be_falsey
+    end
+
+    it 'fails entry request' do
+      expect(mocked_entry_request).to have_attributes(
+        status: EntryRequest::FAILED,
+        result: {
+          'message' => I18n.t('errors.messages.deposit_payment_error')
+        }
+      )
+    end
   end
 
   context 'with pre-created wallet' do
@@ -79,6 +94,23 @@ describe Customers::CreateFakeDeposit do
 
     it "doesn't create wallet" do
       expect { subject }.not_to change(Wallet, :count)
+    end
+  end
+
+  context 'if entry request failed' do
+    let(:mocked_entry_request) do
+      create(:entry_request, status: EntryRequest::FAILED)
+    end
+
+    it 'does not call payment provider ' do
+      expect_any_instance_of(PaymentProvider::FakeDeposit)
+        .not_to receive(:pay!)
+
+      subject
+    end
+
+    it 'returns nil' do
+      expect(subject).to be_nil
     end
   end
 end

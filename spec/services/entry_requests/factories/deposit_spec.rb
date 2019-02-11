@@ -77,15 +77,31 @@ describe EntryRequests::Factories::Deposit do
       }
     end
 
+    let(:comment) { Faker::Lorem.sentence }
+    let(:mode) { EntryRequest.modes.keys.sample }
+    let(:admin) { create(:user) }
+
     let(:deposit_attributes) do
       {
         amount: total_amount,
-        mode: EntryRequest::CASHIER,
+        mode: mode,
         kind: EntryRequest::DEPOSIT,
-        comment: "Deposit #{total_amount} #{wallet.currency} for #{customer}",
-        initiator_type: Customer.name,
-        initiator_id: wallet.customer_id
+        comment: comment,
+        initiator_type: User.name,
+        initiator_id: admin.id
       }
+    end
+
+    let(:attributes) do
+      {
+        comment: comment,
+        mode: mode,
+        initiator: admin
+      }
+    end
+
+    let(:service_call) do
+      described_class.call(wallet: wallet, amount: amount, **attributes)
     end
 
     before do
@@ -108,13 +124,66 @@ describe EntryRequests::Factories::Deposit do
     end
   end
 
+  context 'with initiator and without passed comment' do
+    let(:admin) { create(:user) }
+    let(:service_call) do
+      described_class.call(wallet: wallet, amount: amount, initiator: admin)
+    end
+
+    let(:message) do
+      "Deposit #{amount} #{currency} for #{customer} by #{admin}"
+    end
+
+    before do
+      allow(BalanceCalculations::Deposit)
+        .to receive(:call)
+        .and_return(real_money: amount)
+    end
+
+    it 'mentions him in comment' do
+      expect(service_call.comment).to eq(message)
+    end
+  end
+
+  context 'without impersonated person and passed comment' do
+    let(:impersonated_by) {}
+    let(:message) do
+      "Deposit #{amount} #{currency} for #{customer}"
+    end
+
+    before do
+      allow(BalanceCalculations::Deposit)
+        .to receive(:call)
+        .and_return(real_money: amount)
+    end
+
+    it 'does not mention him in comment' do
+      expect(service_call.comment).to eq(message)
+    end
+
+    it 'sets wallet customer as initiator' do
+      expect(service_call.initiator).to eq(wallet.customer)
+    end
+  end
+
+  context 'without mode' do
+    it 'sets mode as CASHIER' do
+      expect(service_call.mode).to eq(EntryRequest::CASHIER)
+    end
+  end
+
   context 'when customer has deposit limit' do
     let!(:deposit_limit) do
       create(:deposit_limit, customer: customer, currency: currency)
     end
 
-    it "raises an error and doesn't proceed" do
-      expect { service_call }.to raise_error 'Customer has a deposit limit'
+    it 'fails created empty request' do
+      expect(service_call).to have_attributes(
+        status: EntryRequest::FAILED,
+        result: {
+          'message' => I18n.t('errors.messages.deposit_limit_present')
+        }
+      )
     end
   end
 
@@ -123,11 +192,15 @@ describe EntryRequests::Factories::Deposit do
       create(:customer_bonus,
              customer: customer,
              wallet: wallet,
+             percentage: percentage,
              created_at: 1.year.ago)
     end
 
-    it "raises an error and doesn't proceed" do
-      expect { service_call }.to raise_error 'Bonus is expired'
+    it 'fails created empty request' do
+      expect(service_call).to have_attributes(
+        status: EntryRequest::FAILED,
+        result: { 'message' => I18n.t('errors.messages.bonus_expired') }
+      )
     end
 
     context 'bonus' do
@@ -135,18 +208,12 @@ describe EntryRequests::Factories::Deposit do
         let(:frozen_time) { Time.zone.now }
       end
 
-      it 'receives expiration reason' do
-        expect { service_call }
-          .to raise_error(RuntimeError)
-          .and change(customer_bonus, :expiration_reason)
-          .to('expired_by_date')
-      end
-
-      it 'becomes deleted' do
-        expect { service_call }
-          .to raise_error(RuntimeError)
-          .and change(customer_bonus, :deleted_at)
-          .to(Time.zone.now)
+      it 'becomes closed' do
+        service_call
+        expect(customer_bonus).to have_attributes(
+          expiration_reason: 'expired_by_date',
+          deleted_at: Time.zone.now
+        )
       end
     end
   end

@@ -60,6 +60,14 @@ class EntryRequest < ApplicationRecord
       mode: mode }
   end
 
+  def register_failure!(message)
+    update_columns(
+      status: EntryRequest::FAILED,
+      result: { message: message }
+    )
+    false
+  end
+
   private
 
   def adjust_amount_value

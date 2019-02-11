@@ -9,6 +9,8 @@ module EntryRequests
     end
 
     def call
+      return if entry_request.failed?
+
       validate_entry_request!
       attach_entry_to_bonus!
     end

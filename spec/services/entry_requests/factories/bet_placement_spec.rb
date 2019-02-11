@@ -66,7 +66,7 @@ describe EntryRequests::Factories::BetPlacement do
       "by #{impersonated_by}"
     end
 
-    it 'sets comment' do
+    it 'mentions him in comment' do
       expect(subject.comment).to eq(message)
     end
   end
@@ -77,7 +77,7 @@ describe EntryRequests::Factories::BetPlacement do
       "Withdrawal #{bet.amount} #{currency} for #{bet.customer}"
     end
 
-    it 'sets comment' do
+    it 'does not mention him in comment' do
       expect(subject.comment).to eq(message)
     end
 
@@ -103,43 +103,6 @@ describe EntryRequests::Factories::BetPlacement do
     end
   end
 
-  context 'with invalid amount' do
-    let(:ratio) { 0.25 }
-
-    before do
-      allow_any_instance_of(Wallet)
-        .to receive(:ratio_with_bonus)
-        .and_return(ratio)
-    end
-
-    context 'with empty' do
-      before do
-        allow(BalanceCalculations::BetWithBonus)
-          .to receive(:call)
-          .with(bet, ratio)
-          .and_return(real_money: nil, bonus: rand(1..5))
-      end
-
-      it 'raises an error' do
-        expect { subject }.to raise_error(
-          ArgumentError,
-          I18n.t('errors.messages.real_money_blank_amount')
-        )
-      end
-    end
-
-    context 'with zero' do
-      before { bet.amount = 0 }
-
-      it 'raises an error' do
-        expect { subject }.to raise_error(
-          ArgumentError,
-          I18n.t('errors.messages.real_money_blank_amount')
-        )
-      end
-    end
-  end
-
   context 'if wallet not found' do
     before do
       allow_any_instance_of(Wallet)
@@ -150,9 +113,7 @@ describe EntryRequests::Factories::BetPlacement do
     end
 
     it 'creates new wallet' do
-      expect { subject }
-        .to raise_error(ArgumentError)
-        .and change(Wallet, :count).by(1)
+      expect { subject }.to change(Wallet, :count).by(1)
     end
   end
 end

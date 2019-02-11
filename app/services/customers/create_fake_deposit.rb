@@ -9,23 +9,26 @@ module Customers
     end
 
     def call
-      return unless payment_provider.pay!(amount, fake_credit)
+      create_entry_request!
 
-      EntryRequests::DepositService.call(entry_request: created_entry_request)
+      return if entry_request.failed?
+      return failed_payment! unless payment_provider.pay!(amount, fake_credit)
+
+      EntryRequests::DepositService.call(entry_request: entry_request)
 
       true
-    rescue StandardError => e
-      Rails.logger.error("DEPOSIT ERROR: #{e.message}")
+    rescue StandardError
       false
     end
 
     private
 
     attr_accessor :customer, :amount, :currency_id,
-                  :fake_credit, :payment_provider
+                  :fake_credit, :payment_provider,
+                  :entry_request
 
-    def created_entry_request
-      @created_entry_request ||= EntryRequests::Factories::Deposit.call(
+    def create_entry_request!
+      @entry_request = EntryRequests::Factories::Deposit.call(
         wallet: wallet,
         amount: amount
       )
@@ -34,6 +37,11 @@ module Customers
     def wallet
       @wallet ||= Wallet.find_or_create_by!(customer: customer,
                                             currency_id: currency_id)
+    end
+
+    def failed_payment!
+      entry_request
+        .register_failure!(I18n.t('errors.messages.deposit_payment_error'))
     end
   end
 end

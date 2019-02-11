@@ -58,10 +58,12 @@ describe EntryRequests::DepositService do
   it 'closes customer bonus if expired' do
     bonus = wallet.customer_bonus
     allow(bonus).to receive(:expired?).and_return(true)
+    service_call
 
-    expect { service_call }
-      .to raise_error(RuntimeError)
-      .and(change { bonus.deleted_at })
+    expect(entry_request).to have_attributes(
+      status: EntryRequest::FAILED,
+      result: { 'message' => I18n.t('errors.messages.bonus_expired') }
+    )
   end
 
   context 'with customer bonus' do
@@ -93,6 +95,15 @@ describe EntryRequests::DepositService do
     it_behaves_like 'entries splitting without bonus' do
       let(:real_money_amount) { 100 }
       let(:bonus_amount) { amount * percentage / 100.0 }
+    end
+  end
+
+  context 'with failed entry request' do
+    before { entry_request.failed! }
+
+    it 'does not proceed' do
+      service_call
+      expect(WalletEntry::AuthorizationService).not_to receive(:call)
     end
   end
 end

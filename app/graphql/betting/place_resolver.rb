@@ -25,7 +25,7 @@ module Betting
                      success: true,
                      bet: bet)
     rescue StandardError => e
-      bet&.register_failure(e.message)
+      bet&.register_failure!(e.message)
 
       OpenStruct.new(id: bet_payload[:oddId],
                      message: e.message,

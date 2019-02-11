@@ -10,8 +10,6 @@ module EntryRequests
       end
 
       def call
-        return no_amount! if !real_amount || real_amount.zero?
-
         create_entry_request!
         create_balance_request!
 
@@ -42,10 +40,6 @@ module EntryRequests
           customer_id: bet.customer_id,
           currency_id: bet.currency_id
         )
-      end
-
-      def no_amount!
-        raise ArgumentError, I18n.t('errors.messages.real_money_blank_amount')
       end
 
       def create_entry_request!
@@ -80,7 +74,7 @@ module EntryRequests
       end
 
       def initiator_comment_suffix
-        passed_initiator ? " by #{passed_initiator}" : ''
+        " by #{passed_initiator}" if passed_initiator
       end
 
       def create_balance_request!

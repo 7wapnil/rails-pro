@@ -154,4 +154,57 @@ describe EntryRequests::BetPlacementService do
       expect { subject.call }.to raise_error(StandardError, error_message)
     end
   end
+
+  context 'with zero amount for entry request' do
+    let(:error_message) { I18n.t('errors.messages.real_money_blank_amount') }
+    let(:subject_result) { subject.call }
+
+    before do
+      entry_request.amount = 0
+      subject_result
+    end
+
+    it 'service returns nothing' do
+      expect(subject_result).to be_nil
+    end
+
+    it 'bet is failed' do
+      expect(bet).to have_attributes(
+        status: StateMachines::BetStateMachine::FAILED,
+        message: error_message
+      )
+    end
+
+    it 'entry request is failed' do
+      expect(entry_request).to have_attributes(
+        status: EntryRequest::FAILED,
+        result: { 'message' => error_message }
+      )
+    end
+  end
+
+  context 'with failed entry request' do
+    let(:error_message) do
+      I18n.t('errors.messages.entry_request_failed', bet_id: bet.id)
+    end
+
+    before { entry_request.failed! }
+
+    it 'returns falsey result' do
+      expect(subject.call).to be_falsey
+    end
+
+    it 'does not proceed' do
+      subject.call
+      expect(WalletEntry::AuthorizationService).not_to receive(:call)
+    end
+
+    it 'fails bet' do
+      subject.call
+      expect(bet).to have_attributes(
+        status: StateMachines::BetStateMachine::FAILED,
+        message: error_message
+      )
+    end
+  end
 end

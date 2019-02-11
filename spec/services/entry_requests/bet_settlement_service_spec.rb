@@ -3,7 +3,7 @@
 describe EntryRequests::BetSettlementService do
   subject { described_class.call(entry_request: entry_request) }
 
-  let(:entry_request) { build(:entry_request, origin: bet) }
+  let(:entry_request) { create(:entry_request, origin: bet) }
 
   before do
     allow(::WalletEntry::AuthorizationService).to receive(:call)
@@ -12,12 +12,17 @@ describe EntryRequests::BetSettlementService do
   context 'entry request with pending bet' do
     let(:bet) { create(:bet) }
 
+    let(:error_message) do
+      I18n.t('errors.messages.entry_request_for_settled_bet', bet_id: bet.id)
+    end
+
+    before { subject }
+
     it 'is not proceeded' do
-      expect { subject }
-        .to raise_error(
-          ArgumentError,
-          'Entry request for settled bet is expected!'
-        )
+      expect(entry_request).to have_attributes(
+        status: EntryRequest::FAILED,
+        result: { 'message' => error_message }
+      )
     end
   end
 
@@ -30,6 +35,16 @@ describe EntryRequests::BetSettlementService do
         .with(entry_request)
 
       subject
+    end
+  end
+
+  context 'with failed entry request' do
+    let(:entry_request) do
+      create(:entry_request, origin: bet, status: EntryRequest::FAILED)
+    end
+
+    it "doesn't proceed" do
+      expect(WalletEntry::AuthorizationService).not_to receive(:call)
     end
   end
 end

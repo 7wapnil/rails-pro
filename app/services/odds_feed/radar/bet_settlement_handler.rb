@@ -1,6 +1,5 @@
 module OddsFeed
   module Radar
-    # rubocop:disable Metrics/ClassLength
     class BetSettlementHandler < RadarMessageHandler
       def initialize(payload)
         super(payload)
@@ -36,7 +35,7 @@ module OddsFeed
             external_id = generator.generate
 
             update_bets(external_id, outcome)
-            process_bets(external_id)
+            proceed_bets(external_id)
           end
         end
       end
@@ -95,18 +94,9 @@ module OddsFeed
         log_job_failure(error)
       end
 
-      def process_bets(external_id)
+      def proceed_bets(external_id)
         get_settled_bets(external_id)
-          .each { |bet| process_bet(bet) }
-      end
-
-      def process_bet(bet)
-        entry_requests = EntryRequests::Factories::BetSettlement.call(bet: bet)
-        entry_requests.each(&method(:process_entry_request))
-      end
-
-      def process_entry_request(request)
-        EntryRequests::BetSettlementService.call(entry_request: request)
+          .each { |bet| Bets::Settlement::Proceed.call(bet: bet) }
       end
 
       def bets_by_external_id(external_id)
@@ -119,6 +109,5 @@ module OddsFeed
         bets_by_external_id(external_id).where.not(id: invalid_bet_ids)
       end
     end
-    # rubocop:enable Metrics/ClassLength
   end
 end
