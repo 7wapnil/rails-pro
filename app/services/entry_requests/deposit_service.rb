@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EntryRequests
   class DepositService < ApplicationService
     delegate :bonus_balance_entry_request, to: :entry_request

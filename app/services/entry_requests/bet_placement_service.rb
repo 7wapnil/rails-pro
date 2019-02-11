@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EntryRequests
   class BetPlacementService < ApplicationService
     def initialize(entry_request:)

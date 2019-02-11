@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe EntryRequestForm do
   let(:customer) { create(:customer) }
   let(:initiator) { create(:user) }
@@ -36,7 +38,7 @@ describe EntryRequestForm do
       let(:form) { described_class.new(deposit_params) }
 
       it 'calls EntryRequests::DepositService' do
-        expect(EntryRequests::DepositService).to receive(:call)
+        expect(EntryRequests::DepositWorker).to receive(:perform_async)
 
         form.submit
       end
@@ -56,7 +58,7 @@ describe EntryRequestForm do
       let(:form) { described_class.new(entry_params) }
 
       it 'does not call EntryRequests::DepositService' do
-        expect(EntryRequests::DepositService).not_to receive(:call)
+        expect(EntryRequests::DepositWorker).not_to receive(:perform_async)
 
         form.submit
       end
@@ -88,8 +90,8 @@ describe EntryRequestForm do
     end
 
     it 'returns deposit placement errors' do
-      allow(EntryRequests::DepositService)
-        .to receive(:call)
+      allow(EntryRequests::DepositWorker)
+        .to receive(:perform_async)
         .and_raise(RuntimeError)
 
       form.submit

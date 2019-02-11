@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EntryRequests
   module Factories
     class Deposit < ApplicationService

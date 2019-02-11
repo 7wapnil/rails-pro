@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
   subject { described_class.new(payload) }
 
@@ -36,6 +38,8 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
   end
 
   let(:currency) { create(:currency) }
+
+  include_context 'asynchronous to synchronous'
 
   before do
     create(:entry_currency_rule,

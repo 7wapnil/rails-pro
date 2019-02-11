@@ -38,7 +38,7 @@ describe Bets::Settlement::Proceed do
     end
 
     it 'calls service for proceeding entry request' do
-      expect(EntryRequests::BetSettlementService).to receive(:call)
+      expect(EntryRequests::BetSettlementWorker).to receive(:perform_async)
       subject
     end
   end
@@ -74,7 +74,7 @@ describe Bets::Settlement::Proceed do
     end
 
     it 'calls service for proceeding entry request' do
-      expect(EntryRequests::BetSettlementService).to receive(:call)
+      expect(EntryRequests::BetSettlementWorker).to receive(:perform_async)
       subject
     end
   end
@@ -110,7 +110,7 @@ describe Bets::Settlement::Proceed do
     end
 
     it 'calls service for proceeding entry request' do
-      expect(EntryRequests::BetSettlementService).to receive(:call)
+      expect(EntryRequests::BetSettlementWorker).to receive(:perform_async)
       subject
     end
   end
@@ -123,7 +123,7 @@ describe Bets::Settlement::Proceed do
     end
 
     it 'does not call service for proceeding entry request' do
-      expect(EntryRequests::BetSettlementService).not_to receive(:call)
+      expect(EntryRequests::BetSettlementWorker).not_to receive(:perform_async)
       subject
     end
   end

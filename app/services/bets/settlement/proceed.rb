@@ -12,7 +12,7 @@ module Bets
 
         return unless entry_request
 
-        EntryRequests::BetSettlementService.call(entry_request: entry_request)
+        ::EntryRequests::BetSettlementWorker.perform_async(entry_request.id)
       end
 
       private

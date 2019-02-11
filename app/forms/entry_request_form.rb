@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class EntryRequestForm
   attr_reader :errors, :params
   def initialize(entry_request_params)
@@ -34,7 +36,7 @@ class EntryRequestForm
     create_deposit!
     raise if deposit.failed?
 
-    EntryRequests::DepositService.call(entry_request: deposit)
+    ::EntryRequests::DepositWorker.perform_async(deposit.id)
 
     deposit
   rescue StandardError

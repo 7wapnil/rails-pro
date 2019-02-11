@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Betting
   class PlaceResolver < ApplicationService
     def initialize(args:, impersonated_by:, customer:)
@@ -18,7 +20,7 @@ module Betting
       bet = create_bet!(bet_payload)
       entry_request = create_entry_request!(bet)
 
-      ::EntryRequests::BetPlacementService.call(entry_request: entry_request)
+      ::EntryRequests::BetPlacementWorker.perform_async(entry_request.id)
 
       OpenStruct.new(id: bet_payload[:oddId],
                      message: nil,

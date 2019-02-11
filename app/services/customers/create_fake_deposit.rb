@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Customers
   class CreateFakeDeposit < ApplicationService
     def initialize(customer:, params: {})
@@ -14,7 +16,7 @@ module Customers
       return if entry_request.failed?
       return failed_payment! unless payment_provider.pay!(amount, fake_credit)
 
-      EntryRequests::DepositService.call(entry_request: entry_request)
+      ::EntryRequests::DepositWorker.perform_async(entry_request.id)
 
       true
     rescue StandardError

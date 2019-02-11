@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe GraphQL, '#place_bet' do
   let!(:currency) { create(:currency, code: 'EUR') }
   let(:auth_customer) { create(:customer) }
@@ -136,29 +138,10 @@ describe GraphQL, '#place_bet' do
       create(
         :entry_currency_rule,
         currency: currency,
-        kind: EntryRequest.kinds[:bet],
+        kind: EntryKinds::BET,
         max_amount: 0,
         min_amount: -100
       )
-    end
-
-    it 'charges real and bonus balances for customer with bonus' do
-      execute_query
-      expected_bonus_balance = 247.5
-      expected_real_balance = 742.5
-
-      expect(wallet.bonus_balance.amount).to eq(expected_bonus_balance)
-      expect(wallet.real_money_balance.amount).to eq(expected_real_balance)
-    end
-
-    it 'charge only real money balance' do
-      auth_customer.customer_bonus.destroy
-      auth_customer.reload
-      execute_query
-      expected_real_balance = real_amount - bet_amount
-
-      expect(wallet.real_money_balance.amount).to eq(expected_real_balance)
-      expect(wallet.bonus_balance.amount).to eq(bonus_balance_amount)
     end
 
     it 'creates balance entry requests for real and bonus balances' do
@@ -172,29 +155,6 @@ describe GraphQL, '#place_bet' do
       execute_query
 
       expect(EntryRequest.pluck(:mode).uniq).to eq([EntryRequest::SYSTEM])
-    end
-
-    context 'when customer with bonus' do
-      before do
-        execute_query
-      end
-
-      it_behaves_like 'entries splitting with bonus' do
-        let(:real_money_amount) { -7.5 }
-        let(:bonus_amount) { -2.5 }
-      end
-    end
-
-    context 'when customer without bonus' do
-      before do
-        auth_customer.customer_bonus.destroy
-        auth_customer.reload
-        execute_query
-      end
-
-      it_behaves_like 'entries splitting without bonus' do
-        let(:real_money_amount) { -bet_amount }
-      end
     end
   end
 
