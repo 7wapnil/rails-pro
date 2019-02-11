@@ -17,7 +17,7 @@ module Radar
     end
 
     def templates
-      client.markets['market_descriptions']['market']
+      client.markets(include_mappings: true)['market_descriptions']['market']
     end
 
     def create_or_update_market!(market_data)
@@ -27,7 +27,8 @@ module Radar
       template.groups = market_data['groups']
       template.payload = { outcomes: prepare_outcomes(market_data),
                            specifiers: market_data['specifiers'],
-                           attributes: market_data['attributes'] }
+                           attributes: market_data['attributes'],
+                           products: prepare_products(market_data) }
       template.save!
       log_job_message(:debug, "Market template id '#{template.id}' updated")
     end
@@ -46,6 +47,16 @@ module Radar
         outcomes['outcome'] =
           outcome_list.is_a?(Hash) ? [outcome_list] : outcome_list
       end
+    end
+
+    def prepare_products(market_data)
+      mappings = market_data['mappings']
+      return unless mappings
+
+      Array
+        .wrap(mappings['mapping'])
+        .map { |mapping| mapping['product_id'] }
+        .uniq
     end
   end
 end
