@@ -23,7 +23,10 @@ module OddsFeed
       def build_query
         Market
           .joins(:event)
-          .where(events: { external_id: input_data['event_id'] })
+          .where(
+            status: Market::ACTIVE,
+            events: { external_id: input_data['event_id'] }
+          )
       end
 
       def stop_status
