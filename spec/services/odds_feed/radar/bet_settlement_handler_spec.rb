@@ -69,11 +69,61 @@ describe OddsFeed::Radar::BetSettlementHandler do
     end
   end
 
-  describe 'certainty level' do
+  describe 'uncertain settlement for prelive markets' do
+    let(:original_message) do
+      <<~XML
+        <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+        <bet_settlement
+          event_id="sr:match:3432"
+          product="1"
+          certainty="2"
+          timestamp="1235">
+          <outcomes>
+            <market id="13" specifiers="hcp=3.5">
+              <outcome id="sr:player:123" result="0"/>
+              <outcome id="sr:player:789" result="1"/>
+              <outcome id="sr:player:111" result="0" void_factor="1"/>
+              <outcome id="sr:player:222" result="1" void_factor="0.5"/>
+              <outcome id="sr:player:456" result="0" void_factor="0.5"/>
+            </market>
+            <market id="14" specifiers="hcp=3.5">
+              <outcome id="sr:player:123" result="0"/>
+              <outcome id="sr:player:789" result="1"/>
+              <outcome id="sr:player:111" result="0" void_factor="1"/>
+              <outcome id="sr:player:222" result="1" void_factor="0.5"/>
+              <outcome id="sr:player:456" result="0" void_factor="0.5"/>
+            </market>
+            <market id="15" specifiers="hcp=3.5">
+              <outcome id="sr:player:123" result="0"/>
+              <outcome id="sr:player:789" result="1"/>
+              <outcome id="sr:player:111" result="0" void_factor="1"/>
+              <outcome id="sr:player:222" result="1" void_factor="0.5"/>
+              <outcome id="sr:player:456" result="0" void_factor="0.5"/>
+            </market>
+          </outcomes>
+        </bet_settlement>
+      XML
+    end
+
+    let(:payload) { XmlParser.parse(original_message) }
+
     before do
-      allow(subject_with_input).to receive(:store_market_ids)
-      allow(subject_with_input).to receive(:process_outcomes)
-      allow(subject_with_input).to receive(:update_markets)
+      allow(subject_with_input).to receive(:process_outcomes_for)
+
+      allow(subject_with_input)
+        .to receive(:market_template_for)
+        .with('13')
+        .and_return(build(:market_template, :products_live))
+
+      allow(subject_with_input)
+        .to receive(:market_template_for)
+        .with('14')
+        .and_return(build(:market_template, :products_prelive))
+
+      allow(subject_with_input)
+        .to receive(:market_template_for)
+        .with('15')
+        .and_return(build(:market_template, :products_all))
     end
 
     context 'certainty = 1' do
@@ -82,32 +132,46 @@ describe OddsFeed::Radar::BetSettlementHandler do
         subject_with_input.handle
       end
 
-      it 'does not call #store_market_ids' do
-        expect(subject_with_input).not_to have_received(:store_market_ids)
+      it 'processes live market' do
+        expect(subject_with_input)
+          .to have_received(:process_outcomes_for)
+          .with(payload['bet_settlement']['outcomes']['market'][0])
       end
 
-      it 'does not call #process_outcomes' do
-        expect(subject_with_input).not_to have_received(:process_outcomes)
+      it 'skips prelive market' do
+        expect(subject_with_input)
+          .not_to have_received(:process_outcomes_for)
+          .with(payload['bet_settlement']['outcomes']['market'][1])
       end
 
-      it 'does not call #update_markets' do
-        expect(subject_with_input).not_to have_received(:update_markets)
+      it 'processes market for both products' do
+        expect(subject_with_input)
+          .to have_received(:process_outcomes_for)
+          .with(payload['bet_settlement']['outcomes']['market'][2])
       end
     end
 
     context 'certainty = 2' do
-      before { subject_with_input.handle }
-
-      it 'calls #store_market_ids' do
-        expect(subject_with_input).to have_received(:store_market_ids)
+      before do
+        subject_with_input.handle
       end
 
-      it 'calls #process_outcomes' do
-        expect(subject_with_input).to have_received(:process_outcomes)
+      it 'processes live market' do
+        expect(subject_with_input)
+          .to have_received(:process_outcomes_for)
+          .with(payload['bet_settlement']['outcomes']['market'][0])
       end
 
-      it 'calls #update_markets' do
-        expect(subject_with_input).to have_received(:update_markets)
+      it 'processes prelive market' do
+        expect(subject_with_input)
+          .to have_received(:process_outcomes_for)
+          .with(payload['bet_settlement']['outcomes']['market'][1])
+      end
+
+      it 'processes market for both products' do
+        expect(subject_with_input)
+          .to have_received(:process_outcomes_for)
+          .with(payload['bet_settlement']['outcomes']['market'][2])
       end
     end
   end
@@ -136,6 +200,8 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
       create_list(:bet, 8, :accepted,
                   odd: odd_not_from_payload, currency: currency)
+
+      allow(subject_with_input).to receive(:skip_uncertain_settlement?)
     end
 
     it 'calls BetSettelement service to process all affected bets' do
@@ -176,6 +242,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
   it 'settles odd bets with result and void factor' do
     allow(subject_with_input).to receive(:process_bets)
+    allow(subject_with_input).to receive(:skip_uncertain_settlement?)
     create_list(:bet, 5,
                 odd: odd,
                 status: StateMachines::BetStateMachine::ACCEPTED)

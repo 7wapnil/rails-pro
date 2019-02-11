@@ -9,9 +9,6 @@ module OddsFeed
 
       def handle
         validate_message
-
-        return exit_with_uncertainty if certainty_level < 2
-
         store_market_ids
         process_outcomes
         update_markets
@@ -32,16 +29,9 @@ module OddsFeed
 
       def process_outcomes
         markets.each do |market_data|
-          market_data['outcome'].each do |outcome|
-            generator = ExternalId.new(event_id: input_data['event_id'],
-                                       market_id: market_data['id'],
-                                       specs: market_data['specifiers'],
-                                       outcome_id: outcome['id'])
-            external_id = generator.generate
+          next if skip_uncertain_settlement?(market_data)
 
-            update_bets(external_id, outcome)
-            process_bets(external_id)
-          end
+          process_outcomes_for(market_data)
         end
       end
 
@@ -74,6 +64,20 @@ module OddsFeed
         input_data['event_id']
       end
 
+      def market_template_for(external_id)
+        MarketTemplate
+          .select(:id, :external_id, :payload)
+          .find_by(external_id: external_id)
+      end
+
+      def skip_uncertain_settlement?(market_data)
+        market_template = market_template_for(market_data['id'])
+
+        market_template &&
+          !market_template.payload['products'].include?('1') &&
+          certainty_level < 2
+      end
+
       def exit_with_uncertainty
         log_job_message(
           :info,
@@ -85,6 +89,19 @@ module OddsFeed
 
       def markets
         @markets ||= Array.wrap(input_data['outcomes']['market'])
+      end
+
+      def process_outcomes_for(market_data)
+        market_data['outcome'].each do |outcome|
+          generator = ExternalId.new(event_id: input_data['event_id'],
+                                     market_id: market_data['id'],
+                                     specs: market_data['specifiers'],
+                                     outcome_id: outcome['id'])
+          external_id = generator.generate
+
+          update_bets(external_id, outcome)
+          process_bets(external_id)
+        end
       end
 
       def update_bets(external_id, outcome)
