@@ -68,6 +68,41 @@ describe OddsFeed::Radar::SubscriptionRecovery do
       end
     end
 
+    context 'with last_successful_subscribed_at missing' do
+      before do
+        allow(product)
+          .to receive(:last_successful_subscribed_at) {
+            nil
+          }
+
+        described_class.call(product: product)
+        after_recovery_time = recovery_time + 1.hour
+        Timecop.freeze(after_recovery_time)
+      end
+
+      it 'calls recovery initiate request from API client' do
+        expect(
+          client_double
+        ).to have_received(:product_recovery_initiate_request)
+               .with(
+                 product_code: product.code,
+                 after: oldest_recovery_since,
+                 node_id: node_id,
+                 request_id: recovery_time_timestamp
+               )
+               .once
+      end
+
+      it 'modifies original product' do
+        expect(product)
+          .to have_attributes(
+                recover_requested_at: recovery_time,
+                recovery_snapshot_id: recovery_time_timestamp,
+                recovery_node_id: node_id.to_i
+              )
+      end
+    end
+
     context 'with last_successful_subscribed_at appliable' do
       let(:last_successful_subscribed_at) { oldest_recovery_since + 1.minute }
 
