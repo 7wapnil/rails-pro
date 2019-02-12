@@ -45,7 +45,7 @@ module Redirect
     def webhook
       # TODO: Change entry_request state
       SafeCharge::WebhookHandler.call(params)
-
+    ensure
       head :ok
     end
 
