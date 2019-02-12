@@ -10,6 +10,7 @@ module Withdrawals
       WithdrawalVerification.call(wallet, amount)
       entry_request = WithdrawalRequestBuilder.call(wallet, amount, mode: mode)
       WalletEntry::AuthorizationService.call(entry_request)
+      entry_request
     end
 
     private

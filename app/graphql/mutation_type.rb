@@ -8,4 +8,6 @@ MutationType = GraphQL::ObjectType.define do
 
   field :placeBets, function: Betting::Place.new
   field :deleteFile, function: Documents::DeleteFile.new
+
+  field :createWithdraw, function: Withdrawals::WithdrawCreate.new
 end
