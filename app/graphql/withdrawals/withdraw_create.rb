@@ -6,10 +6,13 @@ module Withdrawals
 
     argument :amount, !types.Float
     argument :walletId, !types.ID
+    argument :payment_method, types.String
 
     def resolve(_obj, args)
       wallet = find_customer_wallet(args['walletId'])
-      request = Withdrawals::WithdrawalService.call(wallet, args['amount'])
+      request = Withdrawals::WithdrawalService.call(wallet,
+                                                    args['amount'],
+                                                    EntryRequest::CASHIER)
       OpenStruct.new(
         entryRequest: request,
         error: nil
