@@ -71,9 +71,7 @@ describe OddsFeed::Radar::SubscriptionRecovery do
     context 'with last_successful_subscribed_at missing' do
       before do
         allow(product)
-          .to receive(:last_successful_subscribed_at) {
-            nil
-          }
+          .to receive(:last_successful_subscribed_at).and_return(nil)
 
         described_class.call(product: product)
         after_recovery_time = recovery_time + 1.hour
@@ -84,22 +82,22 @@ describe OddsFeed::Radar::SubscriptionRecovery do
         expect(
           client_double
         ).to have_received(:product_recovery_initiate_request)
-               .with(
-                 product_code: product.code,
-                 after: oldest_recovery_since,
-                 node_id: node_id,
-                 request_id: recovery_time_timestamp
-               )
-               .once
+          .with(
+            product_code: product.code,
+            after: oldest_recovery_since,
+            node_id: node_id,
+            request_id: recovery_time_timestamp
+          )
+          .once
       end
 
       it 'modifies original product' do
         expect(product)
           .to have_attributes(
-                recover_requested_at: recovery_time,
-                recovery_snapshot_id: recovery_time_timestamp,
-                recovery_node_id: node_id.to_i
-              )
+            recover_requested_at: recovery_time,
+            recovery_snapshot_id: recovery_time_timestamp,
+            recovery_node_id: node_id.to_i
+          )
       end
     end
 
