@@ -1,6 +1,6 @@
 describe Withdrawals::WithdrawalService do
   subject(:service) do
-    described_class.new(wallet, withdraw_amount, mode: EntryRequest::CASHIER)
+    described_class.new(wallet, withdraw_amount, EntryRequest::CASHIER)
   end
 
   let(:currency) { create(:currency, :with_withdrawal_rule) }

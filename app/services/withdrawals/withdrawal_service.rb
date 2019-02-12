@@ -1,9 +1,9 @@
 module Withdrawals
   class WithdrawalService < ApplicationService
-    def initialize(wallet, amount, **options)
+    def initialize(wallet, amount, mode = EntryRequest::CASHIER)
       @wallet = wallet
       @amount = amount
-      @mode = options[:mode] || EntryRequest::CASHIER
+      @mode = mode
     end
 
     def call
