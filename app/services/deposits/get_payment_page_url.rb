@@ -55,7 +55,7 @@ module Deposits
         encoding: extra_query_params.fetch(:encoding) { Encoding::UTF_8.to_s },
         time_stamp: time_stamp,
         currency: extra_query_params.fetch(:currency_code) { currency.code },
-        userId: customer_id,
+        userid: customer_id,
         merchant_unique_id: entry_request.id,
         user_token_id: customer_id,
         item_name_1: extra_query_params.fetch(:item_name_1) { item_name },
