@@ -49,7 +49,7 @@ module StateMachines
         state :settled
 
         event :send_to_internal_validation do
-          transitions from: %i[initial accepted],
+          transitions from: :initial,
                       to: :sent_to_internal_validation
         end
 

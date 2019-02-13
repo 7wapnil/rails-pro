@@ -39,5 +39,13 @@ FactoryBot.define do
     trait :succeeded do
       status { EntryRequest::SUCCEEDED }
     end
+
+    trait :deposit do
+      kind { EntryRequest::DEPOSIT }
+    end
+
+    trait :withdraw do
+      kind { EntryRequest::WITHDRAW }
+    end
   end
 end

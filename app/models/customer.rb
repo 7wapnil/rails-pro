@@ -132,6 +132,14 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     customer_bonus if customer_bonus&.activated? && customer_bonus&.applied?
   end
 
+  def deposit_attempts
+    entry_requests
+      .deposit
+      .where.not(status: EntryRequest::SUCCEEDED)
+      .where('created_at >= ?', 24.hours.ago)
+      .count
+  end
+
   private
 
   def log_account_transition

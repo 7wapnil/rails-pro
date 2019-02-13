@@ -17,6 +17,17 @@ FactoryBot.define do
       end
     end
 
+    trait :with_withdrawal_rule do
+      after(:create) do |currency|
+        withdraw_kind = EntryRequest::WITHDRAW
+        create(:entry_currency_rule,
+               currency: currency,
+               kind: withdraw_kind,
+               min_amount: -1000,
+               max_amount: 0)
+      end
+    end
+
     trait :allowed_by_safe_charge do
       code do
         (Currency.available_currency_codes &

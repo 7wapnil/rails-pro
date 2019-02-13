@@ -28,13 +28,9 @@ module Deposits
       # TODO: Check bonus code
       DepositLimitCheckService
         .call(@customer, @amount, @currency)
-      # TODO: Rates check
+      VerifyDepositAttempt.call(@customer)
 
       true
-    end
-
-    def wallet
-      customer.wallets.find_by(currency: @currency)
     end
 
     def initial_entry_request
