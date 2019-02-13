@@ -45,6 +45,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     end
   end
 
+  has_many :deposit_limits
   has_many :customer_notes
   has_many :wallets
   has_many :currencies, through: :wallets
