@@ -125,27 +125,6 @@ describe Radar::Producer do
     end
   end
 
-  describe '#unsubscribe!' do
-    it 'ignored for unsubscribed producers' do
-      allow(producer).to receive_messages(
-        'unsubscribed!' => nil,
-        'unsubscribed?' => true
-      )
-      producer.unsubscribe!
-      expect(producer).not_to have_received('unsubscribed!')
-    end
-
-    it 'unsubscribes subscribed producer' do
-      allow(producer).to receive_messages(
-        'unsubscribe!' => nil,
-        'subscribed?' => true
-      )
-      producer.unsubscribe!
-      expect(producer)
-        .to have_received('unsubscribe!').once
-    end
-  end
-
   describe '#subscribed!' do
     include_context 'frozen_time'
 
@@ -233,18 +212,17 @@ describe Radar::Producer do
     end
   end
 
-  describe '.unsubscribe!' do
+  describe '#unsubscribe!' do
     include_context 'frozen_time'
 
-    it 'ignores unsubscribed producer' do
-      producer.update(state: described_class::UNSUBSCRIBED)
-      producer.unsubscribe!
-      expect(producer).to have_attributes(
-        state: described_class::UNSUBSCRIBED,
-        recovery_snapshot_id: snapshot_id,
-        recover_requested_at: recovery_time,
-        recovery_node_id: node_id
+    it 'unsubscribes subscribed producer' do
+      allow(producer).to receive_messages(
+        'unsubscribe!' => nil,
+        'subscribed?' => true
       )
+      producer.unsubscribe!
+      expect(producer)
+        .to have_received('unsubscribe!').once
     end
 
     it 'ignores unsubscription when had recovery recently' do

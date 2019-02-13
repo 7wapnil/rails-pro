@@ -60,7 +60,6 @@ module Radar
     end
 
     def unsubscribe!(with_recovery: false)
-      return false if unsubscribed?
       return false if recovery_requested_recently?
 
       unsubscribed!
@@ -88,6 +87,8 @@ module Radar
     private
 
     def recovery_requested_recently?
+      return false unless recover_requested_at
+
       recover_requested_at >= RECOVERY_WAIT_TIME_IN_SECONDS.second.ago
     end
 
