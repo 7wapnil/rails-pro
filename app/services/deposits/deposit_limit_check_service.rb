@@ -6,10 +6,10 @@ module Deposits
       @currency = currency
     end
 
-    SERVICE_SPECIFIC_ERROR = Deposits::DepositLimitRestrictionError
+    BUSINESS_EXCEPTION = Deposits::DepositLimitRestrictionError
 
     def call
-      raise SERVICE_SPECIFIC_ERROR unless available_deposit_limit?
+      raise BUSINESS_EXCEPTION unless available_deposit_limit?
 
       true
     end

@@ -48,6 +48,8 @@ describe Deposits::DepositLimitCheckService do
       }
     end
 
+    let(:business_error) { described_class::BUSINESS_EXCEPTION }
+
     context 'when wallet has no deposit limits' do
       let(:another_customer) { build(:customer) }
 
@@ -74,7 +76,7 @@ describe Deposits::DepositLimitCheckService do
       end
 
       it 'raises DepositLimitRestrictionError exception' do
-        expect { service_call }.to raise_error(Deposits::DepositLimitRestrictionError)
+        expect { service_call }.to raise_error(business_error)
       end
     end
 
@@ -95,7 +97,7 @@ describe Deposits::DepositLimitCheckService do
       end
 
       it 'raises DepositLimitRestrictionError exception' do
-        expect { service_call }.to raise_error(Deposits::DepositLimitRestrictionError)
+        expect { service_call }.to raise_error(business_error)
       end
     end
 
