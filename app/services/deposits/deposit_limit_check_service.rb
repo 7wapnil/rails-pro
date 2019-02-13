@@ -1,23 +1,20 @@
 module Deposits
   class DepositLimitCheckService < ApplicationService
-    def initialize(wallet, amount)
-      @wallet = wallet
+    def initialize(customer, amount, currency)
+      @customer = customer
       @amount = amount
+      @currency = currency
     end
 
+    SERVICE_SPECIFIC_ERROR = Deposits::DepositLimitRestrictionError
+
     def call
-      available_deposit_limit?
+      raise SERVICE_SPECIFIC_ERROR unless available_deposit_limit?
+
+      true
     end
 
     private
-
-    def currency
-      @wallet.currency
-    end
-
-    def customer
-      @wallet.customer
-    end
 
     def available_deposit_limit?
       return true unless deposit_limits
@@ -30,11 +27,11 @@ module Deposits
     end
 
     def deposit_limits
-      @deposit_limits ||= customer.deposit_limits.find_by(currency: currency)
+      @deposit_limits ||= @customer.deposit_limits.find_by(currency: @currency)
     end
 
     def existing_deposits_volume
-      customer
+      @customer
         .entry_requests
         .where(
           status: [EntryRequest::PENDING, EntryRequest::SUCCEEDED],

@@ -2,7 +2,9 @@ describe Deposits::DepositLimitCheckService do
   describe '.call' do
     include_context 'frozen_time'
 
-    subject(:service_call) { described_class.call(wallet, deposit_amount) }
+    subject(:service_call) do
+      described_class.call(customer, deposit_amount, currency)
+    end
 
     let(:deposit_amount) { Faker::Number.number(2).to_i }
 
@@ -10,6 +12,7 @@ describe Deposits::DepositLimitCheckService do
       create(:deposit_limit, value: deposit_amount + 100)
     end
     let(:customer) { deposit_limit.customer }
+    let(:currency) { deposit_limit.currency }
     let(:wallet) do
       create(:wallet, customer: customer, currency: deposit_limit.currency)
     end
@@ -46,17 +49,19 @@ describe Deposits::DepositLimitCheckService do
     end
 
     context 'when wallet has no deposit limits' do
-      let(:wallet) { create(:wallet) }
+      let(:another_customer) { build(:customer) }
 
       it 'returns true' do
-        expect(described_class.call(wallet, deposit_amount)).to be_truthy
+        expect(
+          described_class.call(another_customer, deposit_amount, currency)
+        ).to be_truthy
       end
     end
 
     context 'when volume is under limit' do
       before { create(:entry_request, &under_limit_attributes) }
 
-      it 'returns false' do
+      it 'returns true' do
         expect(service_call).to be_truthy
       end
     end
@@ -68,8 +73,8 @@ describe Deposits::DepositLimitCheckService do
                  .merge(amount: over_deposit_limit))
       end
 
-      it 'returns false' do
-        expect(service_call).to be_falsey
+      it 'raises DepositLimitRestrictionError exception' do
+        expect { service_call }.to raise_error(Deposits::DepositLimitRestrictionError)
       end
     end
 
@@ -89,8 +94,8 @@ describe Deposits::DepositLimitCheckService do
                  ))
       end
 
-      it 'returns false' do
-        expect(service_call).to be_falsey
+      it 'raises DepositLimitRestrictionError exception' do
+        expect { service_call }.to raise_error(Deposits::DepositLimitRestrictionError)
       end
     end
 
