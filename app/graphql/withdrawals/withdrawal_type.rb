@@ -1,6 +1,7 @@
 module Withdrawals
   WithdrawalType = GraphQL::ObjectType.define do
     name 'Withdrawal'
+
     field :id, !types.ID
     field :customer_id, types.ID
     field :status, types.String

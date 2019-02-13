@@ -7,18 +7,14 @@ module Withdrawals
     end
 
     def resolve
-      build_query
-    end
-
-    private
-
-    attr_reader :customer_id, :per_page, :page
-
-    def build_query
       EntryRequest.withdraw
                   .where(customer_id: customer_id)
                   .page(page)
                   .per(per_page)
     end
+
+    private
+
+    attr_reader :customer_id, :per_page, :page
   end
 end
