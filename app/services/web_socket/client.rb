@@ -6,6 +6,8 @@ module WebSocket
       trigger(SubscriptionFields::EVENTS_UPDATED, event)
       trigger(SubscriptionFields::EVENT_UPDATED, event, id: event.id)
 
+      return unless event_available?(event)
+
       trigger_kind_event event
       trigger_sport_event event
       trigger_tournament_event event
@@ -34,6 +36,10 @@ module WebSocket
 
     def trigger(name, object, args = {}, scope = nil)
       ArcanebetSchema.subscriptions.trigger(name, args, object, scope: scope)
+    end
+
+    def event_available?(event)
+      event.active? && event.visible?
     end
 
     def trigger_kind_event(event)
