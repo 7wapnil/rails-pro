@@ -22,8 +22,9 @@ module OddsFeed
         return check_message_time if event
 
         log_job_message(
-          :info,
-          "Event with external ID #{external_id} not found, creating new"
+          :warn,
+          "[LOG-FILTER-1] Event with external ID #{external_id} not found. " \
+          'Creating new.'
         )
         create_event
       end

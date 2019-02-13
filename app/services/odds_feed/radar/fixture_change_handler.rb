@@ -13,6 +13,7 @@ module OddsFeed
 
       def handle
         return invalid_event_type unless valid_event_type?
+        return if event.blank? && producer.live?
 
         if event
           log_on_update
@@ -27,28 +28,20 @@ module OddsFeed
 
       private
 
-      def producer
-        ::Radar::Producer.find(payload['product'])
-      end
-
       def event
         @event ||= Event.find_by(external_id: external_id)
-      end
-
-      def payload
-        @payload['fixture_change']
       end
 
       def external_id
         payload['event_id']
       end
 
-      def log_on_create
-        log_job_message(:info, "Creating event with external ID #{external_id}")
+      def payload
+        @payload['fixture_change']
       end
 
-      def change_type
-        CHANGE_TYPES[payload['change_type']]
+      def producer
+        ::Radar::Producer.find(payload['product'])
       end
 
       def log_on_update
@@ -58,6 +51,14 @@ module OddsFeed
         MESSAGE
 
         log_job_message(:info, msg.squish)
+      end
+
+      def change_type
+        CHANGE_TYPES[payload['change_type']]
+      end
+
+      def log_on_create
+        log_job_message(:info, "Creating event with external ID #{external_id}")
       end
 
       def update_event_producer!(new_producer)
