@@ -125,27 +125,6 @@ describe Radar::Producer do
     end
   end
 
-  describe '#unsubscribe!' do
-    it 'ignored for unsubscribed producers' do
-      allow(producer).to receive_messages(
-        'unsubscribed!' => nil,
-        'unsubscribed?' => true
-      )
-      producer.unsubscribe!
-      expect(producer).not_to have_received('unsubscribed!')
-    end
-
-    it 'unsubscribes subscribed producer' do
-      allow(producer).to receive_messages(
-        'unsubscribe!' => nil,
-        'subscribed?' => true
-      )
-      producer.unsubscribe!
-      expect(producer)
-        .to have_received('unsubscribe!').once
-    end
-  end
-
   describe '#subscribed!' do
     include_context 'frozen_time'
 
@@ -233,22 +212,46 @@ describe Radar::Producer do
     end
   end
 
-  describe '.unsubscribe!' do
-    it 'ignores unsubscribed producer' do
-      producer.update(state: described_class::UNSUBSCRIBED)
+  describe '#unsubscribe!' do
+    include_context 'frozen_time'
+
+    it 'unsubscribes subscribed producer' do
+      allow(producer).to receive_messages(
+        'unsubscribe!' => nil,
+        'subscribed?' => true
+      )
+      producer.unsubscribe!
+      expect(producer)
+        .to have_received('unsubscribe!').once
+    end
+
+    it 'ignores unsubscription when had recovery recently' do
+      recent_recovery_time =
+        described_class::RECOVERY_WAIT_TIME_IN_SECONDS.seconds.ago
+      producer
+        .update(
+          state: described_class::RECOVERING,
+          recover_requested_at: recent_recovery_time
+        )
       producer.unsubscribe!
       expect(producer).to have_attributes(
-        state: described_class::UNSUBSCRIBED,
+        state: described_class::RECOVERING,
         recovery_snapshot_id: snapshot_id,
-        recover_requested_at: recovery_time,
+        recover_requested_at: recent_recovery_time,
         recovery_node_id: node_id
       )
     end
 
     [described_class::HEALTHY, described_class::RECOVERING].each do |state|
-      context "with #{state} producer" do
+      context "with #{state} producer and no recent recovery" do
         before do
-          producer.update(state: state)
+          non_recent_recovery_time =
+            (described_class::RECOVERY_WAIT_TIME_IN_SECONDS + 1).seconds.ago
+          producer.update(
+            state: state,
+            recover_requested_at: non_recent_recovery_time
+          )
+          allow(producer).to receive(:recover!)
           producer.unsubscribe!
         end
 
@@ -262,6 +265,27 @@ describe Radar::Producer do
 
         it 'clears recovery node id' do
           expect(producer.recovery_node_id).to eq nil
+        end
+
+        it 'does not call recovery!' do
+          expect(producer).not_to have_received(:recover!)
+        end
+      end
+
+      context "with #{state} producer, no recent recovery, with recovery" do
+        before do
+          non_recent_recovery_time =
+            (described_class::RECOVERY_WAIT_TIME_IN_SECONDS + 1).seconds.ago
+          producer.update(
+            state: state,
+            recover_requested_at: non_recent_recovery_time
+          )
+          allow(producer).to receive(:recover!)
+          producer.unsubscribe!(with_recovery: true)
+        end
+
+        it 'calls recovery!' do
+          expect(producer).to have_received(:recover!).once
         end
       end
     end

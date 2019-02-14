@@ -4,6 +4,7 @@ module Radar
     LIVE_PROVIDER_CODE = 'liveodds'.freeze
     PREMATCH_PROVIDER_ID = 3
     PREMATCH_PROVIDER_CODE = 'pre'.freeze
+    RECOVERY_WAIT_TIME_IN_SECONDS = 10
 
     self.table_name = 'radar_providers'
 
@@ -58,11 +59,12 @@ module Radar
       expired? ? unsubscribe! : false
     end
 
-    def unsubscribe!
-      return false if unsubscribed?
+    def unsubscribe!(with_recovery: false)
+      return false if recovery_requested_recently?
 
       unsubscribed!
       clean_recovery_data
+      recover! if with_recovery
     end
 
     def subscribed!(subscribed_at: Time.zone.now)
@@ -83,6 +85,12 @@ module Radar
     end
 
     private
+
+    def recovery_requested_recently?
+      return false unless recover_requested_at
+
+      recover_requested_at >= RECOVERY_WAIT_TIME_IN_SECONDS.seconds.ago
+    end
 
     def clean_recovery_data
       update(recovery_snapshot_id: nil,
