@@ -1,5 +1,8 @@
+require 'graphql/batch'
+
 ArcanebetSchema = GraphQL::Schema.define do
   use GraphQL::Subscriptions::ActionCableSubscriptions
+  use GraphQL::Batch
 
   mutation(MutationType)
   query(QueryType)

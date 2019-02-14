@@ -28,6 +28,7 @@ gem 'bootsnap', '>= 1.1.0', require: false
 gem 'haml-rails', '~> 1.0'
 gem 'webpacker', '~> 3.4'
 gem 'graphql', '~>1.8'
+gem 'graphql-batch'
 gem 'goldiloader'
 gem 'devise'
 gem 'jwt'

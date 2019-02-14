@@ -1,19 +1,27 @@
+# frozen_string_literal: true
+
 module Events
   class EventsQueryResolver
-    SUPPORTED_CONTEXTS = %w[live upcoming_for_time upcoming_limited].freeze
+    LIVE = 'live'
+    UPCOMING_CONTEXTS =
+      %w[upcoming_for_time upcoming_limited upcoming_unlimited].freeze
+    SUPPORTED_CONTEXTS = [LIVE, *UPCOMING_CONTEXTS].freeze
     UPCOMING_LIMIT = 16
-    CONTEXT_REQUIRED_ERROR_MSG = 'Context is required!'.freeze
+    UPCOMING_DURATION = 24
 
     def initialize(query_args)
       @query_args = query_args
       @context = query_args.context
-      @filter = query_args.filter
+      @filter = OpenStruct.new(query_args.filter.to_h)
     end
 
     def resolve
       @query = base_query
-      apply_context!
-      apply_filters!
+      @query = filter_by_id
+      @query = filter_by_title_id
+      @query = filter_by_title_kind
+      @query = filter_by_event_scopes
+      filter_by_context!
       query
     end
 
@@ -23,89 +31,102 @@ module Events
 
     def base_query
       Event
+        .joins(:title)
+        .preload(:tournament)
         .visible
         .active
-        .preload(:dashboard_market, :tournament)
-        .joins(:title)
         .order(:priority, :start_at)
     end
 
-    def upcoming_for_time
-      query.where('start_at > ? AND start_at <= ? AND end_at IS NULL',
-                  Time.zone.now,
-                  24.hours.from_now)
+    # It tries to call:
+    # #live, #upcoming_for_time, #upcoming_limited, #upcoming_unlimited
+    def filter_by_context!
+      return context_not_supported! if SUPPORTED_CONTEXTS.exclude?(context)
+
+      @query = query.upcoming if UPCOMING_CONTEXTS.include?(context)
+      @query = send(context)
     end
 
-    def upcoming_limited
-      upcoming_for_time.limit(UPCOMING_LIMIT)
+    def context_not_supported!
+      raise StandardError,
+            I18n.t('errors.messages.graphql.events.context.invalid',
+                   context: context,
+                   contexts: SUPPORTED_CONTEXTS.join(', '))
     end
 
     def live
       query.in_play
     end
 
-    def filter_by_id(id)
-      query.where(id: id)
+    def upcoming_for_time
+      query.where('events.start_at <= ?', UPCOMING_DURATION.hours.from_now)
     end
 
-    def filter_by_title_id(title_id)
-      query.where(title_id: title_id)
+    def upcoming_limited
+      query.where(id: limited_per_tournament_ids)
     end
 
-    def filter_by_title_kind(title_kind)
-      query.where(titles: { kind: title_kind })
+    def limited_per_tournament_ids
+      EventScope
+        .select('events.id AS event_id')
+        .joins(:scoped_events)
+        .joins(join_tournaments_to_events_sql)
+        .tournament
+        .where(events: { id: query_ids })
+        .pluck(:event_id)
     end
 
-    def filter_by_category_id(category_id)
+    def join_tournaments_to_events_sql
+      <<~SQL
+        JOIN events
+        ON scoped_events.event_id = events.id AND events.id IN (
+          SELECT events.id
+          FROM events
+          INNER JOIN scoped_events se
+          ON se.event_id = events.id AND se.event_scope_id = event_scopes.id
+          WHERE events.id IN (#{query_ids.join(', ')})
+          ORDER BY priority, start_at ASC
+          LIMIT #{UPCOMING_LIMIT}
+        )
+      SQL
+    end
+
+    def query_ids
+      @query_ids ||= query.ids
+    end
+
+    def upcoming_unlimited
+      query
+    end
+
+    def filter_by_id
+      return query unless filter.id
+
+      query.where(id: filter.id)
+    end
+
+    def filter_by_title_id
+      return query unless filter.title_id
+
+      query.where(title_id: filter.title_id)
+    end
+
+    def filter_by_title_kind
+      return query unless filter.title_kind
+
+      query.where(titles: { kind: filter.title_kind })
+    end
+
+    def filter_by_event_scopes
+      return query if event_scope_ids.blank?
+
       query
         .eager_load(:event_scopes)
-        .where(event_scopes: { id: category_id,
-                               kind: EventScope::CATEGORY })
+        .where(event_scopes: { id: event_scope_ids })
     end
 
-    def filter_by_tournament_id(tournament_id)
-      query
-        .eager_load(:event_scopes)
-        .where(event_scopes: { id: tournament_id,
-                               kind: EventScope::TOURNAMENT })
-    end
-
-    def apply_context!
-      return unless context_required?
-
-      verify_context!
-      @query = send(context)
-    end
-
-    def apply_filter!(filter, value)
-      return if value.is_a?(FalseClass)
-      return @query = @query.public_send(filter) if value.is_a?(TrueClass)
-
-      @query = send("filter_by_#{filter}", value)
-    end
-
-    def apply_filters!
-      filter.to_h.compact.each do |filter_option, value|
-        apply_filter!(filter_option, value)
-      end
-    end
-
-    def verify_context!
-      raise StandardError, CONTEXT_REQUIRED_ERROR_MSG if context.blank?
-
-      check_context_support!
-    end
-
-    def context_required?
-      filter&.tournament_id.nil?
-    end
-
-    def check_context_support!
-      error_msg = <<~MSG
-        Unsupported context '#{context}'.Supported contexts are #{SUPPORTED_CONTEXTS.join(', ')}
-      MSG
-
-      raise StandardError, error_msg unless SUPPORTED_CONTEXTS.include? context
+    def event_scope_ids
+      @event_scope_ids ||= [filter.category_id, filter.tournament_id].compact
     end
   end
 end
