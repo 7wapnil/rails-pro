@@ -49,7 +49,9 @@ describe GraphQL, '#events' do
 
   context 'with market' do
     let(:control_event) { create(:event_with_odds, :upcoming, title: title) }
-    let(:control_market) { control_event.dashboard_market }
+    let(:control_market) do
+      control_event.markets.for_displaying.distinct.first
+    end
     let(:control_odds) { control_market.odds }
 
     let(:result_market) { result_event.dashboard_market }
@@ -86,7 +88,7 @@ describe GraphQL, '#events' do
       end
 
       it 'is not returned' do
-        expect(result_event.market).to be_nil
+        expect(result_event.dashboard_market).to be_nil
       end
     end
 
@@ -97,7 +99,7 @@ describe GraphQL, '#events' do
       end
 
       it 'is not returned' do
-        expect(result_event.market).to be_nil
+        expect(result_event.dashboard_market).to be_nil
       end
     end
   end

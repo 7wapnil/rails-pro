@@ -57,8 +57,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
           class_name: EventScope.name,
           source: :event_scope
 
-  has_one :dashboard_market, -> { for_displaying }, class_name: Market.name
-
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }
   validates :active, inclusion: { in: [true, false] }
