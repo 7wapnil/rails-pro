@@ -5,8 +5,8 @@ FactoryBot.define do
     value { Faker::Number.decimal(3, 1) }
     range { 30 }
 
-    customer
-    currency
+    association :customer, strategy: :build
+    association :currency, strategy: :build
 
     trait :reached do
       after(:create) do |deposit_limit|
