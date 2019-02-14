@@ -95,8 +95,7 @@ describe 'Producer state change feature. ' do
     context 'with disconnected meaning, first' do
       Radar::Producer::STATES.values.each do |state, _expected_state|
         it "recovers #{state} producer" do
-          previous_recover_long_time_ago =
-            1.year.ago
+          previous_recover_long_time_ago = 1.year.ago
           producer.update(
             state: state,
             recover_requested_at: previous_recover_long_time_ago,
@@ -113,8 +112,7 @@ describe 'Producer state change feature. ' do
     context 'with disconnected meaning, after recovery' do
       Radar::Producer::STATES.values.each do |state|
         it "does not change #{state} producer state" do
-          previous_recover_recently =
-            Time.current
+          previous_recover_recently = Time.current
           producer.update(
             state: state,
             recover_requested_at: previous_recover_recently,

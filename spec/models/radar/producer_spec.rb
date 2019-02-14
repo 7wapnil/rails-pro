@@ -227,7 +227,7 @@ describe Radar::Producer do
 
     it 'ignores unsubscription when had recovery recently' do
       recent_recovery_time =
-        described_class::RECOVERY_WAIT_TIME_IN_SECONDS.second.ago
+        described_class::RECOVERY_WAIT_TIME_IN_SECONDS.seconds.ago
       producer
         .update(
           state: described_class::RECOVERING,
@@ -246,7 +246,7 @@ describe Radar::Producer do
       context "with #{state} producer and no recent recovery" do
         before do
           non_recent_recovery_time =
-            (described_class::RECOVERY_WAIT_TIME_IN_SECONDS + 1).second.ago
+            (described_class::RECOVERY_WAIT_TIME_IN_SECONDS + 1).seconds.ago
           producer.update(
             state: state,
             recover_requested_at: non_recent_recovery_time
@@ -275,7 +275,7 @@ describe Radar::Producer do
       context "with #{state} producer, no recent recovery, with recovery" do
         before do
           non_recent_recovery_time =
-            (described_class::RECOVERY_WAIT_TIME_IN_SECONDS + 1).second.ago
+            (described_class::RECOVERY_WAIT_TIME_IN_SECONDS + 1).seconds.ago
           producer.update(
             state: state,
             recover_requested_at: non_recent_recovery_time

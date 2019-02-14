@@ -89,7 +89,7 @@ module Radar
     def recovery_requested_recently?
       return false unless recover_requested_at
 
-      recover_requested_at >= RECOVERY_WAIT_TIME_IN_SECONDS.second.ago
+      recover_requested_at >= RECOVERY_WAIT_TIME_IN_SECONDS.seconds.ago
     end
 
     def clean_recovery_data
