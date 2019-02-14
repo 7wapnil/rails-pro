@@ -10,7 +10,5 @@ module Withdrawals
           resolve: ->(obj, _args, _ctx) { obj.currency.code }
     field :amount, types.Float
     field :comment, types.String
-    field :visible, types.Boolean
-    field :category, types.String
   end
 end
