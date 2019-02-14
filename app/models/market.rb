@@ -28,6 +28,7 @@ class Market < ApplicationRecord
 
   belongs_to :event
   has_many :odds, -> { order(id: :asc) }, dependent: :delete_all
+  has_many :active_odds, -> { active.order(id: :asc) }, class_name: Odd.name
   has_many :bets, through: :odds
   has_many :label_joins, as: :labelable
   has_many :labels, through: :label_joins

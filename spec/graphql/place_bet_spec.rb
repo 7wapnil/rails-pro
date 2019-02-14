@@ -38,7 +38,7 @@ describe GraphQL, '#place_bet' do
   end
 
   context 'success' do
-    let(:odds) { create_list(:odd, 2, value: 8.87) }
+    let(:odds) { create_list(:odd, 2, :active, value: 8.87) }
     let(:variables) do
       {
         bets: odds.map do |odd|
@@ -90,7 +90,7 @@ describe GraphQL, '#place_bet' do
   end
 
   context 'bonus applying' do
-    let(:odd) { create(:odd, value: 8.87) }
+    let(:odd) { create(:odd, :active, value: 8.87) }
     let(:bonus_balance_amount) { 250 }
     let(:real_amount) { 750 }
     let(:bet_amount) { 10 }
@@ -176,11 +176,11 @@ describe GraphQL, '#place_bet' do
         variables: variables
       )
       expect(response['data']['placeBets'].first['message'])
-        .to eq 'Couldn\'t find Odd with \'id\'=1'
+        .to include 'Couldn\'t find Odd with \'id\'=1'
     end
 
     it 'doesn\'t find the currency' do
-      odd = create(:odd)
+      odd = create(:odd, :active)
 
       variables = {
         bets: [
@@ -202,7 +202,7 @@ describe GraphQL, '#place_bet' do
   end
 
   context 'multiple bets handling' do
-    let(:odd) { create(:odd, value: 8.87) }
+    let(:odd) { create(:odd, :active, value: 8.87) }
 
     let(:valid_bet_attrs) do
       {

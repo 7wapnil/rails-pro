@@ -60,7 +60,7 @@ module Betting
     end
 
     def find_odd(bet_payload)
-      Odd.find(bet_payload[:oddId])
+      Odd.active.find(bet_payload[:oddId])
     end
   end
 end

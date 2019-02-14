@@ -10,5 +10,9 @@ FactoryBot.define do
     sequence(:external_id) { |n| "sr:match:#{n}:280/hcp=0.5:#{n}" }
 
     market
+
+    trait :active do
+      status { Odd::ACTIVE }
+    end
   end
 end

@@ -293,6 +293,7 @@ en:
         default: "Account is locked%{additional_info}"
       age_adult: Must be adult!
       betting_limits: Betting limits validation failed
+      bet_odd_inactive: Odd for bet became inactive
       bonus_activation_failed: Bonus activation failed, please try later
       customer_account_kind_transit: Can't transit customer account kind
       customer_activated: Customer already activated
