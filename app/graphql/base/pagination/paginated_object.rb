@@ -2,6 +2,6 @@
 
 module Base
   module Pagination
-    PaginatedObject = Struct.new(:pagination, :data)
+    PaginatedObject = Struct.new(:pagination, :collection)
   end
 end

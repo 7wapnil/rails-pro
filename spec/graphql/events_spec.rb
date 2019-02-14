@@ -40,6 +40,14 @@ describe GraphQL, '#events' do
 
     before { create_list(:event, 3, :upcoming, visible: false, title: title) }
 
+    # TODO: uncomment after pagination implementation
+    # it_behaves_like Base::Pagination do
+    #   let(:paginated_collection) { control_events }
+    #   let(:pagination_query) { query }
+    #   let(:pagination_variables) { variables }
+    #   let(:pagination_context) { context }
+    # end
+
     it 'returns valid events' do
       expect(result_event_ids).to match_array(control_events.map(&:id))
     end

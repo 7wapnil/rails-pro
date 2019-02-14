@@ -3,18 +3,18 @@
 module Base
   module Pagination
     class ObjectBuilder < ApplicationService
-      def initialize(data:, pagy:)
-        @data = data
+      def initialize(collection:, pagy:)
+        @collection = collection
         @pagy = pagy
       end
 
       def call
-        Pagination::PaginatedObject.new(pagination_info, data)
+        Pagination::PaginatedObject.new(pagination_info, collection)
       end
 
       private
 
-      attr_reader :data, :pagy
+      attr_reader :collection, :pagy
 
       def pagination_info
         Pagination::Info.new(*pagination_info_values)

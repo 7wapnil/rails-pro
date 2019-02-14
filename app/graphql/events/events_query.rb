@@ -1,7 +1,6 @@
 module Events
   class EventsQuery < ::Base::Resolver
     include Base::Offsetable
-    # include Base::Pagination
 
     type !types[EventType]
 

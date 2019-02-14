@@ -6,7 +6,7 @@ module Base
       def call(obj, args = {}, ctx = {})
         pagy, data = pagy(super, page: args[:page], items: args[:per_page])
 
-        Pagination::ObjectBuilder.call(data: data, pagy: pagy)
+        Pagination::ObjectBuilder.call(collection: data, pagy: pagy)
       end
     end
   end

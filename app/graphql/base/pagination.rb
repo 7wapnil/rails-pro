@@ -21,7 +21,7 @@ module Base
           name "#{name}Pagination"
 
           field :pagination, !Types::PaginationType
-          field :data, type
+          field :collection, type
         end
       end
     end
