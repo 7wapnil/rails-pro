@@ -33,9 +33,6 @@ class Market < ApplicationRecord
   has_many :label_joins, as: :labelable
   has_many :labels, through: :label_joins
 
-  scope :for_displaying,
-        -> { joins(:odds).visible.group('markets.id').order(priority: :asc) }
-
   validates :name, :priority, :status, presence: true
   validates_with MarketStateValidator, restrictions: [
     %i[active cancelled],
@@ -48,6 +45,13 @@ class Market < ApplicationRecord
     %i[cancelled suspended],
     %i[cancelled settled]
   ]
+
+  def self.for_displaying
+    joins(:active_odds)
+      .visible
+      .group('markets.id')
+      .order(priority: :asc)
+  end
 
   def specifier
     external_id

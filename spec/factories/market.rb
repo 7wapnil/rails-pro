@@ -19,6 +19,12 @@ FactoryBot.define do
       end
     end
 
+    trait :with_inactive_odds do
+      after(:create) do |market|
+        create_list(:odd, 2, market: market)
+      end
+    end
+
     trait :suspended do
       status { Market::SUSPENDED }
     end

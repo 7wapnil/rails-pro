@@ -29,7 +29,11 @@ module OddsFeed
           return odd_data_is_not_payload(odd_data) unless odd_data.is_a?(Hash)
 
           odd = build_odd(odd_data)
-          @odds << odd if odd_valid?(odd)
+          odd.validate!
+
+          @odds << odd
+        rescue ActiveRecord::RecordInvalid => e
+          log_job_message(:warn, e.message)
         rescue StandardError => e
           log_job_failure(e)
         end
@@ -46,17 +50,6 @@ module OddsFeed
             odd_data: odd_data,
             market_data: market_data
           )
-        end
-
-        def odd_valid?(odd)
-          return true if odd.valid?
-
-          msg = <<-MESSAGE
-            Odd '#{odd.external_id}' is invalid: \
-            #{odd.errors.full_messages.join("\n")}
-          MESSAGE
-          log_job_message(:warn, msg.squish)
-          false
         end
       end
     end

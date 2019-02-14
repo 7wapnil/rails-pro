@@ -159,45 +159,41 @@ describe GraphQL, '#place_bet' do
   end
 
   context 'errors' do
-    before do
-      wallet.update_attributes(currency: currency)
+    let(:error_message) { response['data']['placeBets'].first['message'] }
+    let(:odd) { instance_double(Odd, id: 1, value: 1.85) }
+    let(:bet_currency) { currency }
+    let(:variables) do
+      {
+        bets: [{
+          amount: 10,
+          currencyCode: bet_currency.code,
+          oddId: odd.id.to_s,
+          oddValue: odd.value
+        }]
+      }
     end
 
-    it 'doesn\'t find the odd' do
-      variables = {
-        bets: [
-          { amount: 10, currencyCode: 'EUR', oddId: '1', oddValue: 1.85 }
-        ]
-      }
+    before { wallet.update_attributes(currency: currency) }
 
-      response = ArcanebetSchema.execute(
-        query,
-        context: context,
-        variables: variables
-      )
-      expect(response['data']['placeBets'].first['message'])
-        .to include 'Couldn\'t find Odd with \'id\'=1'
+    it 'does not find not-existing odd and gives an error' do
+      expect(error_message).to include "Couldn't find Odd with 'id'=#{odd.id}"
     end
 
-    it 'doesn\'t find the currency' do
-      odd = create(:odd, :active)
+    context 'with inactive odd' do
+      let!(:odd) { create(:odd) }
 
-      variables = {
-        bets: [
-          {
-            amount: 10, currencyCode: 'ZZZ', oddId: odd.id.to_s, oddValue: 1.85
-          }
-        ]
-      }
+      it 'gives an error' do
+        expect(error_message).to include "Couldn't find Odd with 'id'=#{odd.id}"
+      end
+    end
 
-      response = ArcanebetSchema.execute(
-        query,
-        context: context,
-        variables: variables
-      )
+    context 'when currency does not exists' do
+      let!(:odd) { create(:odd, :active) }
+      let(:bet_currency) { instance_double(Currency, code: 'ZZZ') }
 
-      expect(response['data']['placeBets'].first['message'])
-        .to eq 'Couldn\'t find Currency'
+      it 'gives an error' do
+        expect(error_message).to eq 'Couldn\'t find Currency'
+      end
     end
   end
 
