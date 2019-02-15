@@ -10,11 +10,11 @@ module Withdrawals
 
     def resolve(_obj, args)
       wallet = find_customer_wallet(args['walletId'])
-      request = Withdrawals::WithdrawalService.call(wallet,
-                                                    args['amount'],
-                                                    EntryRequest::CASHIER)
+      withdrawal = initiate_withdrawal(wallet, args['amount'])
+      EntryRequests::WithdrawWorker.perform_async(withdrawal.id)
+
       OpenStruct.new(
-        entryRequest: request,
+        entryRequest: withdrawal,
         error: nil
       )
     rescue StandardError => e
@@ -28,6 +28,11 @@ module Withdrawals
 
     def find_customer_wallet(wallet_id)
       @current_customer.wallets.find(wallet_id)
+    end
+
+    def initiate_withdrawal(wallet, amount)
+      Withdrawals::InitiateWithdrawalService.call(wallet: wallet,
+                                                  amount: amount)
     end
   end
 end

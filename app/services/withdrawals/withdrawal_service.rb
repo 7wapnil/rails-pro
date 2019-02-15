@@ -1,20 +1,29 @@
 module Withdrawals
   class WithdrawalService < ApplicationService
-    def initialize(wallet, amount, mode = EntryRequest::CASHIER)
-      @wallet = wallet
-      @amount = amount
-      @mode = mode
+    def initialize(entry_request:)
+      @entry_request = entry_request
     end
 
     def call
-      WithdrawalVerification.call(wallet, amount)
-      entry_request = WithdrawalRequestBuilder.call(wallet, amount, mode: mode)
-      WalletEntry::AuthorizationService.call(entry_request)
-      entry_request
+      authorize_entry_request!
+      authorize_entry!
     end
 
     private
 
-    attr_reader :wallet, :amount, :mode
+    attr_reader :entry_request, :entry
+
+    def wallet
+      @wallet ||= Wallet.find_by(customer_id: entry_request.customer_id,
+                                 currency_id: entry_request.currency_id)
+    end
+
+    def authorize_entry_request!
+      @entry = WalletEntry::AuthorizationService.call(entry_request)
+    end
+
+    def authorize_entry!
+      entry.update_attributes!(authorized_at: Time.zone.now)
+    end
   end
 end

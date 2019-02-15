@@ -48,4 +48,21 @@ describe Withdrawals::InitiateWithdrawalService do
       expect(created_request).to eq(entry_request)
     end
   end
+
+  context 'when error' do
+    let(:withdraw_error) { Withdrawals::WithdrawalError }
+
+    it 'raises error when customer has active bonus' do
+      bonus = create(:customer_bonus)
+      allow_any_instance_of(Customer).to receive(:active_bonus) { bonus }
+
+      expect { service.call }.to raise_error withdraw_error
+    end
+
+    it 'raises error when withdraw.amount > balance.amount' do
+      balance.update_attributes(amount: withdraw_amount - 1)
+
+      expect { service.call }.to raise_error(withdraw_error)
+    end
+  end
 end

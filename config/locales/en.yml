@@ -315,7 +315,7 @@ en:
       entry_request_failed: "Entry request has been already failed for bet #{bet_id}"
       deposit_attempts_exceeded: Deposit attempts exceeded, contact support agent
       withdrawal:
-        not_enouh_money: Not enough money in wallet!
+        not_enough_money: Not enough money in wallet!
         bonus_exists: Active bonus exists!
       graphql:
         events:

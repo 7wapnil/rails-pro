@@ -1,10 +1,13 @@
 module EntryRequests
   module Factories
     class Withdraw < ApplicationService
-      def initialize(wallet:, amount:, mode: EntryRequest::CASHIER)
+      def initialize(wallet:, amount:, mode: EntryRequest::CASHIER, **attrs)
         @wallet = wallet
         @amount = amount
         @mode = mode
+        @comment = attrs[:comment]
+        @initiator = attrs[:initiator] || wallet.customer
+        @origin = attrs[:origin]
       end
 
       def call
@@ -15,7 +18,7 @@ module EntryRequests
 
       private
 
-      attr_reader :wallet, :mode, :entry_request
+      attr_reader :wallet, :mode, :entry_request, :comment, :initiator
 
       def amount
         -@amount.abs
@@ -28,7 +31,8 @@ module EntryRequests
           customer: wallet.customer,
           amount: amount,
           initiator: wallet.customer,
-          mode: mode
+          mode: mode,
+          comment: comment
         )
       end
 

@@ -28,7 +28,20 @@ describe GraphQL, '#withdraw_create' do
     let(:response_entry_request) { OpenStruct.new(response['entryRequest']) }
 
     before do
-      allow(Withdrawals::WithdrawalService).to receive(:call) { entry_request }
+      allow(Withdrawals::InitiateWithdrawalService)
+        .to receive(:call) { entry_request }
+
+      allow(EntryRequests::WithdrawWorker)
+        .to receive(:perform_async)
+        .and_call_original
+    end
+
+    it 'passes withdraw request to WithdrawWorker' do
+      response
+
+      expect(EntryRequests::WithdrawWorker)
+        .to have_received(:perform_async)
+        .with(entry_request.id)
     end
 
     it "don't return error message" do
@@ -48,7 +61,7 @@ describe GraphQL, '#withdraw_create' do
     let(:error_msg) { Faker::Lorem.sentence }
 
     before do
-      allow(Withdrawals::WithdrawalService).to receive(:call)
+      allow(Withdrawals::InitiateWithdrawalService).to receive(:call)
         .and_raise(error_class, error_msg)
     end
 

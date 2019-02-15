@@ -1,6 +1,6 @@
 describe Withdrawals::WithdrawalService do
   subject(:service) do
-    described_class.new(wallet, withdraw_amount, EntryRequest::CASHIER)
+    described_class.new(entry_request: entry_request)
   end
 
   let(:currency) { create(:currency, :with_withdrawal_rule) }
@@ -8,65 +8,38 @@ describe Withdrawals::WithdrawalService do
   let(:balance_amount) { 200 }
   let(:customer) { create(:customer) }
   let(:wallet) { create(:wallet, customer: customer, currency: currency) }
+  let(:entry_request) do
+    create(:entry_request, :withdraw,
+           amount: withdraw_amount,
+           customer: customer,
+           currency: currency)
+  end
+  let(:entry) do
+    create(:entry,
+           currency: currency,
+           customer: customer,
+           kind: EntryRequest::WITHDRAW)
+  end
   let!(:balance) do
     create(:balance, :real_money, amount: balance_amount, wallet: wallet)
   end
 
-  context 'withdraw verification' do
+  context 'authorize entry request' do
+    include_context 'frozen_time'
+
     before do
-      allow(Withdrawals::WithdrawalVerification).to receive(:call)
+      allow(WalletEntry::AuthorizationService).to receive(:call) { entry }
       service.call
     end
 
-    it 'passes wallet and amount to withdrawal verification service' do
-      expect(Withdrawals::WithdrawalVerification)
-        .to have_received(:call)
-        .with(wallet, withdraw_amount).once
-    end
-  end
-
-  context 'build entry request' do
-    before do
-      request = create(:entry_request, :withdraw, currency: currency)
-      allow(Withdrawals::WithdrawalRequestBuilder).to receive(:call) { request }
-      service.call
-    end
-
-    it 'passes wallet and amount to WithdrawalRequestBuilder' do
-      expect(Withdrawals::WithdrawalRequestBuilder)
-        .to have_received(:call)
-        .with(wallet, withdraw_amount, mode: EntryRequest::CASHIER).once
-    end
-  end
-
-  context 'authorize created entry request' do
-    let(:request) { create(:entry_request) }
-
-    before do
-      allow(Withdrawals::WithdrawalRequestBuilder).to receive(:call) { request }
-      allow(WalletEntry::AuthorizationService).to receive(:call)
-      service.call
-    end
-
-    it 'passes created entry request to WalletEntry::AuthorizationService' do
+    it 'passes entry request to WalletEntry::AuthorizationService' do
       expect(WalletEntry::AuthorizationService)
         .to have_received(:call)
-        .with(request).once
-    end
-  end
-
-  context "can't withdraw money" do
-    let(:withdraw_error) { Withdrawals::WithdrawalError }
-
-    it 'raises error when customer has active bonus' do
-      allow(customer).to receive(:active_bonus) { create(:customer_bonus) }
-
-      expect { service.call }.to raise_error withdraw_error
+        .with(entry_request).once
     end
 
-    it 'raises error when withdraw amount is more than balance amount' do
-      expect { described_class.call(wallet, balance_amount + 1) }
-        .to raise_error(withdraw_error)
+    it 'saves authorization date to entry' do
+      expect(entry.authorized_at).to eq(Time.zone.now)
     end
   end
 
