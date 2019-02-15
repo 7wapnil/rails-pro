@@ -10,7 +10,6 @@ class CustomersController < ApplicationController
     documents
     deposit_limit
     show
-    create_fake_deposit
   ]
   before_action :new_note, only: %i[
     account_management
@@ -65,8 +64,7 @@ class CustomersController < ApplicationController
   end
 
   def bonuses
-    @history =
-      CustomerBonus.customer_history(customer)
+    @history = CustomerBonus.customer_history(customer)
     @current_bonus = customer.customer_bonus
     @active_bonuses = Bonus.active
     @new_bonus = CustomerBonus.new(
@@ -80,8 +78,7 @@ class CustomersController < ApplicationController
       customer.customer_notes.page(params[:page]).per(NOTES_PER_PAGE)
   end
 
-  def documents
-  end
+  def documents; end
 
   def betting_limits
     @global_limit = BettingLimit
@@ -89,8 +86,7 @@ class CustomersController < ApplicationController
     @limits_by_sport = Customers::LimitsCollector.call(customer: customer)
   end
 
-  def deposit_limit
-  end
+  def deposit_limit; end
 
   def bets
     @filter = BetsFilter.new(source: customer.bets,

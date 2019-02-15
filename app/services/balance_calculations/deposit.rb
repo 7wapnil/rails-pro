@@ -1,5 +1,7 @@
 module BalanceCalculations
   class Deposit < ApplicationService
+    delegate :min_deposit, to: :bonus, allow_nil: true
+
     def initialize(bonus, deposit_amount)
       @amount = deposit_amount
       @bonus = bonus
@@ -17,12 +19,21 @@ module BalanceCalculations
     attr_reader :bonus, :amount
 
     def calculate_bonus_amount
-      min_deposit = bonus&.min_deposit
-      return 0 if bonus.nil? || min_deposit > amount
+      return 0.0 unless valid_bonus?
 
-      bonus_amount = amount * (bonus.percentage / 100.0)
-      max_deposit_bonus = bonus.max_deposit_match
       bonus_amount > max_deposit_bonus ? max_deposit_bonus : bonus_amount
+    end
+
+    def valid_bonus?
+      min_deposit.present? && amount >= min_deposit
+    end
+
+    def bonus_amount
+      @bonus_amount ||= amount * (bonus.percentage / 100.0)
+    end
+
+    def max_deposit_bonus
+      @max_deposit_bonus ||= bonus.max_deposit_match
     end
   end
 end

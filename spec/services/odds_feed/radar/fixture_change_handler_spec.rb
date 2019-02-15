@@ -11,13 +11,13 @@ describe OddsFeed::Radar::FixtureChangeHandler do
       'fixture_change' => {
         'event_id' => external_event_id,
         'change_type' => '4',
-        'product' => liveodds_producer.id.to_s
+        'product' => prematch_producer.id.to_s
       }
     }
   end
 
   let(:event_id)  { payload['fixture_change']['event_id'] }
-  let(:api_event) { build(:event, producer: prematch_producer) }
+  let(:api_event) { build(:event, producer: liveodds_producer) }
 
   let(:payload_update) { { producer: { origin: :radar, id: '1' } } }
 
@@ -26,15 +26,38 @@ describe OddsFeed::Radar::FixtureChangeHandler do
   end
 
   context 'new event' do
-    after { subject_api.handle }
-
     it 'logs event create message' do
       expect(subject_api).to receive(:log_on_create)
+
+      subject_api.handle
     end
 
     it 'sets producer' do
       expect(subject_api)
-        .to receive(:update_event_producer!).with(liveodds_producer)
+        .to receive(:update_event_producer!)
+        .with(prematch_producer)
+
+      subject_api.handle
+    end
+
+    it 'creates event' do
+      expect { subject_api.handle }.to change(Event, :count).by(1)
+    end
+
+    context 'with liveodds producer' do
+      let(:payload) do
+        {
+          'fixture_change' => {
+            'event_id' => external_event_id,
+            'change_type' => '4',
+            'product' => liveodds_producer.id.to_s
+          }
+        }
+      end
+
+      it 'does not create event' do
+        expect { subject_api.handle }.not_to change(Event, :count)
+      end
     end
   end
 
@@ -104,7 +127,7 @@ describe OddsFeed::Radar::FixtureChangeHandler do
 
     it 'updates producer info' do
       expect(subject_api)
-        .to receive(:update_event_producer!).with(liveodds_producer)
+        .to receive(:update_event_producer!).with(prematch_producer)
     end
 
     context 'cancelled event' do
@@ -113,7 +136,7 @@ describe OddsFeed::Radar::FixtureChangeHandler do
           'fixture_change' => {
             'event_id' => external_event_id,
             'change_type' => '3',
-            'product' => liveodds_producer.id.to_s
+            'product' => prematch_producer.id.to_s
           }
         }
       end
@@ -148,7 +171,7 @@ describe OddsFeed::Radar::FixtureChangeHandler do
           'fixture_change' => {
             'event_id' => external_event_id,
             'change_type' => '3',
-            'product' => liveodds_producer.id.to_s
+            'product' => prematch_producer.id.to_s
           }
         }
       end

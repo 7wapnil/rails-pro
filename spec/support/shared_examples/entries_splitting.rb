@@ -34,6 +34,30 @@ shared_examples 'entries splitting with bonus' do
   end
 end
 
+shared_examples 'entry requests splitting with bonus' do
+  it 'creates single bonus balance entry request' do
+    attrs = {
+      amount: bonus_amount,
+      kind: Balance::BONUS
+    }
+
+    expect(BalanceEntryRequest.where(attrs).count).to eq(1)
+  end
+
+  it 'creates single real money balance entry request' do
+    attrs = {
+      amount: real_money_amount,
+      kind: Balance::REAL_MONEY
+    }
+
+    expect(BalanceEntryRequest.where(attrs).count).to eq(1)
+  end
+
+  it 'creates only 2 balance entry requests' do
+    expect(BalanceEntryRequest.count).to eq(2)
+  end
+end
+
 shared_examples 'entries splitting without bonus' do
   it 'creates single real money balance entry request' do
     attrs = {
@@ -54,6 +78,25 @@ shared_examples 'entries splitting without bonus' do
 
   it 'creates only 1 balance entry' do
     expect(BalanceEntry.count).to eq(1)
+  end
+
+  it 'creates only 1 balance entry request' do
+    expect(BalanceEntryRequest.count).to eq(1)
+  end
+end
+
+shared_examples 'entry requests splitting without bonus' do
+  it 'creates single real money balance entry request' do
+    attrs = {
+      amount: real_money_amount,
+      kind: Balance::REAL_MONEY
+    }
+
+    expect(BalanceEntryRequest.where(attrs).count).to eq(1)
+  end
+
+  it "don't create bonus balance entry request" do
+    expect(BalanceEntryRequest.bonus.count).to be_zero
   end
 
   it 'creates only 1 balance entry request' do
