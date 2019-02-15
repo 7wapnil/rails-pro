@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
   subject { described_class.new(payload) }
 
@@ -37,6 +39,8 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
 
   let(:currency) { create(:currency) }
 
+  include_context 'asynchronous to synchronous'
+
   before do
     create(:entry_currency_rule,
            currency: currency,
@@ -62,7 +66,7 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
       win: nil, refund: 22.4, records_count: 1 },
     { name: 'half win, half refund', odd_name: 'odd_half_win',
       odd_value: 1.5, stake: 100,
-      win: 75, refund: 50, records_count: 2 },
+      win: 75, refund: 50, records_count: 1 },
     { name: 'lose, half refund', odd_name: 'odd_lose_half_refund',
       odd_value: 1.65, stake: 22.4,
       win: nil, refund: 11.2, records_count: 1 }
@@ -84,13 +88,13 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
           expect(BalanceEntry.all.length).to eq state[:records_count]
         end
 
-        unless state[:win].nil?
+        if state[:win]
           it 'adds win to balance' do
             expect(BalanceEntry.find_by(amount: state[:win])).to be_truthy
           end
         end
 
-        unless state[:refund].nil?
+        if state[:refund] && !state[:win]
           it 'adds refund to balance' do
             expect(BalanceEntry.find_by(amount: state[:refund])).to be_truthy
           end

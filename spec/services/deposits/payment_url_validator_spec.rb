@@ -31,7 +31,7 @@ describe Deposits::PaymentUrlValidator do
       encoding: Encoding::UTF_8.to_s,
       time_stamp: time_stamp,
       currency: currency.code,
-      userId: customer.id,
+      userid: customer.id,
       merchant_unique_id: entry_request.id,
       user_token_id: customer.id,
       item_name_1: Faker::WorldOfWarcraft.quote,

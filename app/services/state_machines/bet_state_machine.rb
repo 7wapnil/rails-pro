@@ -76,7 +76,7 @@ module StateMachines
         end
 
         event :register_failure do
-          transitions from: :sent_to_internal_validation,
+          transitions from: %i[initial sent_to_internal_validation],
                       to: :failed,
                       after: proc { |msg| update(message: msg) }
         end

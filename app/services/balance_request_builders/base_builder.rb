@@ -7,23 +7,12 @@ module BalanceRequestBuilders
     end
 
     def call
-      build!
-    end
-
-    def build!
-      build_cache
+      balance_entry_requests.map { |request| request.tap(&:save!) }
     end
 
     protected
 
     attr_accessor :entry_request, :real_money, :bonus
-
-    def build_cache
-      @build_cache ||= balance_entry_requests.map do |request|
-        request.save!
-        request
-      end
-    end
 
     def balance_entry_requests
       error_msg = "#{__method__} needs to be implemented in #{self.class}"
