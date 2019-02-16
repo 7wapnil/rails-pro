@@ -47,5 +47,9 @@ FactoryBot.define do
     trait :withdraw do
       kind { EntryRequest::WITHDRAW }
     end
+
+    trait :refund do
+      kind { EntryRequest::REFUND }
+    end
   end
 end
