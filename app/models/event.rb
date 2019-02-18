@@ -9,6 +9,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   UPDATABLE_ATTRIBUTES = %w[name description start_at end_at].freeze
 
+  # 4 hours ago is a temporary workaround to reduce amount of live events
+  # Will be removed when proper event ending logic is implemented
+  START_AT_OFFSET_IN_HOURS = 4
+
   PRIORITIES = [0, 1, 2].freeze
 
   STATUSES = {
@@ -67,10 +71,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   delegate :name, to: :title, prefix: true
 
-  def self.start_time_offset
-    4.hours.ago
-  end
-
   def self.with_markets_count
     query = <<-SQL
       events.*,
@@ -106,8 +106,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     where('start_at > ? AND end_at IS NULL', Time.zone.now)
   end
 
-  # 4 hours ago is a temporary workaround to reduce amount of live events
-  # Will be removed when proper event ending logic is implemented
   def self.in_play
     where(
       [
@@ -117,7 +115,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
         'traded_live IS TRUE'
       ].join,
       Time.zone.now,
-      start_time_offset
+      START_AT_OFFSET_IN_HOURS.hours.ago
     )
   end
 
@@ -142,8 +140,9 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     start_at > Time.zone.now && !end_at
   end
 
-  def in_play?
-    traded_live && start_at.past? && end_at.nil?
+  def in_play?(limited: false)
+    traded_live && start_at.past? && end_at.nil? &&
+      (!limited || start_at > START_AT_OFFSET_IN_HOURS.hours.ago)
   end
 
   def update_from!(other)

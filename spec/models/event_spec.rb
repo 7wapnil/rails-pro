@@ -202,6 +202,16 @@ describe Event do
 
       expect(event.in_play?).not_to be true
     end
+
+    it 'is false when start_at later than 4 hours' do
+      start_at = Event::START_AT_OFFSET_IN_HOURS.hours.ago - 1.minute
+      event = create(:event,
+                     start_at: start_at,
+                     end_at: nil,
+                     traded_live: false)
+
+      expect(event.in_play?).not_to be true
+    end
   end
 
   describe '#update_from!' do
