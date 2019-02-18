@@ -1,0 +1,42 @@
+%h1.display-4= t('entities.withdrawals')
+
+%table.table
+  %thead
+    %tr
+      %th= t('attributes.customer')
+      %th= t('entities.wallet')
+      %th= t('attributes.amount')
+      %th= t('attributes.authorized_at')
+      %th= t('attributes.confirmed_at')
+      %th
+      %th
+  %tbody
+    - if @withdrawals.any?
+      - @withdrawals.each do |withdrawal|
+        %tr{ id: "withdrawal-#{withdrawal.id}" }
+          %td
+            = link_to withdrawal.customer.username, customer_path(withdrawal.customer)
+          %td= t('entities.wallet_name', currency: withdrawal.wallet.currency_name)
+          %td= withdrawal.amount
+          %td= l(withdrawal.authorized_at, format: :long) if withdrawal.authorized_at
+          %td= l(withdrawal.confirmed_at, format: :long) if withdrawal.confirmed_at
+          %td= link_to t('confirm'),
+                confirm_withdrawal_path(withdrawal),
+                method: :post,
+                class: 'btn btn-success'
+          %td
+            = form_for :rejection, url: reject_withdrawal_path(withdrawal), method: :post do |f|
+              .form-row
+                .col
+                  = f.text_field :comment,
+                    placeholder: t('attributes.comment'),
+                    class: 'form-control'
+                .col
+                  = f.submit t('reject'),
+                    data: { confirm: t('confirm_sure') },
+                    class: 'btn btn-danger'
+    - else
+      %tr
+        %td{ colspan: 6 }= t(:not_found, instance: t('entities.withdrawals'))
+
+= paginate @withdrawals
