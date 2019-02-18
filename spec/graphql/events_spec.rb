@@ -156,22 +156,6 @@ describe GraphQL, '#events' do
     end
   end
 
-  context 'with id' do
-    let(:control_event) { create(:event, :upcoming) }
-    let(:query) do
-      %({
-          events (
-            filter: { id: #{control_event.id} },
-            context: #{upcoming_ctx}
-          ) { id }
-      })
-    end
-
-    it 'returns single event' do
-      expect(result_event_ids).to eq([control_event.id])
-    end
-  end
-
   context 'with title' do
     let(:other_title) { create(:title) }
     let(:query) do
@@ -416,23 +400,6 @@ describe GraphQL, '#events' do
   it 'context cannot be omitted even when tournament filter is present' do
     tournament = create(:event_scope, :with_event)
     query = %({ events(filter: { tournamentId: #{tournament.id} }) { id } })
-
-    result = ArcanebetSchema.execute(query,
-                                     context: context,
-                                     variables: variables)
-
-    error_msg = I18n.t(
-      'errors.messages.graphql.events.context.invalid',
-      context: nil,
-      contexts: Events::EventsQueryResolver::SUPPORTED_CONTEXTS.join(', ')
-    )
-
-    expect(result['errors'].first['message']).to eq(error_msg)
-  end
-
-  it 'context cannot be omitted even when event id filter is present' do
-    event = control_events.first
-    query = %({ events(filter: { id: #{event.id} }) { id } })
 
     result = ArcanebetSchema.execute(query,
                                      context: context,
