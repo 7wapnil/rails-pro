@@ -4,12 +4,12 @@ module SafeCharge
     TYPE_ERROR = Deposits::IncompatibleRequestStateError
     BUSINESS_EXCEPTIONS = [AUTHENTICATION_ERROR, TYPE_ERROR].freeze
 
-    attr_reader :params, :status, :ppt_status
+    attr_reader :params, :transaction_status, :payment_message_status
 
     def initialize(params)
       @params = params
-      @status = params['Status']
-      @ppt_status = params['ppp_status']
+      @transaction_status = params['Status']
+      @payment_message_status = params['ppp_status']
     end
 
     def entry_request
@@ -17,11 +17,11 @@ module SafeCharge
     end
 
     def approved?
-      check_ppt_status && status.casecmp?(Statuses::APPROVED)
+      status_ok? && transaction_status.casecmp?(Statuses::APPROVED)
     end
 
     def pending?
-      check_ppt_status && status.casecmp?(Statuses::PENDING)
+      status_ok? && transaction_status.casecmp?(Statuses::PENDING)
     end
 
     def validate!
@@ -55,8 +55,8 @@ module SafeCharge
       params['merchant_unique_id'].to_i
     end
 
-    def check_ppt_status
-      ppt_status.casecmp? Statuses::OK
+    def status_ok?
+      payment_message_status.casecmp? Statuses::OK
     end
 
     def checksum
