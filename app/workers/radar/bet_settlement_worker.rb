@@ -1,6 +1,8 @@
 module Radar
   class BetSettlementWorker < BaseUofWorker
-    sidekiq_options queue: :radar_odds_feed,
+    include ::QueueName
+
+    sidekiq_options queue: queue_name,
                     retry: 0
 
     def worker_class

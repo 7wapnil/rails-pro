@@ -18,8 +18,7 @@ module OddsFeed
 
       def validate_message
         is_invalid = input_data['outcomes'].nil? ||
-                     input_data['outcomes']['market'].nil? ||
-                     input_data['certainty'].nil?
+                     input_data['outcomes']['market'].nil?
         raise OddsFeed::InvalidMessageError if is_invalid
       end
 
@@ -28,11 +27,9 @@ module OddsFeed
       end
 
       def process_outcomes
-        markets.each do |market_data|
-          next if skip_uncertain_settlement?(market_data)
-
-          process_outcomes_for(market_data)
-        end
+        markets
+          .reject { |market_data| skip_uncertain_settlement?(market_data) }
+          .map { |market_data| process_outcomes_for(market_data) }
       end
 
       def store_market_id(market_data)
@@ -52,22 +49,17 @@ module OddsFeed
         @invalid_bet_ids ||= []
       end
 
-      def input_data
-        @payload['bet_settlement']
-      end
-
-      def certainty_level
-        input_data['certainty'].to_i
-      end
-
-      def event_external_id
-        input_data['event_id']
+      def market_templates
+        @market_templates ||=
+          MarketTemplate
+          .select(:id, :external_id, :payload)
+          .where(external_id: markets.map { |m| m['id'] })
       end
 
       def market_template_for(external_id)
-        MarketTemplate
-          .select(:id, :external_id, :payload)
-          .find_by(external_id: external_id)
+        market_templates.find do |market_template|
+          market_template.external_id == external_id
+        end
       end
 
       def skip_uncertain_settlement?(market_data)
@@ -100,8 +92,20 @@ module OddsFeed
           external_id = generator.generate
 
           update_bets(external_id, outcome)
-          process_bets(external_id)
+          proceed_bets(external_id)
         end
+      end
+
+      def input_data
+        @payload['bet_settlement']
+      end
+
+      def event_external_id
+        input_data['event_id']
+      end
+
+      def certainty_level
+        input_data['certainty'].to_i
       end
 
       def update_bets(external_id, outcome)
@@ -133,9 +137,9 @@ module OddsFeed
         log_job_failure(error)
       end
 
-      def process_bets(external_id)
+      def proceed_bets(external_id)
         get_settled_bets(external_id)
-          .each { |bet| BetSettelement::Service.call(bet) }
+          .each { |bet| Bets::Settlement::Proceed.call(bet: bet) }
       end
 
       def bets_by_external_id(external_id)

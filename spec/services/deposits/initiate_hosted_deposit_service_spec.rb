@@ -45,22 +45,24 @@ describe Deposits::InitiateHostedDepositService do
       )
     end
 
-    context 'when business rules broken' do
-      let(:error_message) { Faker::Lorem.sentence(5) }
+    described_class::BUSINESS_ERRORS.each do |error_class|
+      context "when #{error_class.name} exception occurs" do
+        let(:error_message) { Faker::Lorem.sentence(5) }
 
-      before do
-        allow_any_instance_of(described_class)
-          .to receive('validate_business_rules!')
-          .and_raise(Deposits::InvalidDepositRequestError, error_message)
-      end
+        before do
+          allow_any_instance_of(described_class)
+            .to receive('validate_business_rules!')
+            .and_raise(error_class, error_message)
+        end
 
-      it 'returns failed entry request with correct attributes' do
-        expect(subject).to have_attributes(
-          status: EntryRequest::FAILED,
-          result: { 'message' => error_message },
-          mode: EntryRequest::SYSTEM,
-          kind: EntryRequest::DEPOSIT
-        )
+        it 'returns failed entry request with correct attributes' do
+          expect(subject).to have_attributes(
+            status: EntryRequest::FAILED,
+            result: { 'message' => error_message },
+            mode: EntryRequest::SYSTEM,
+            kind: EntryRequest::DEPOSIT
+          )
+        end
       end
     end
   end

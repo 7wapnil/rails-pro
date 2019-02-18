@@ -1,6 +1,8 @@
 module Radar
   class BetStopWorker < BaseUofWorker
-    sidekiq_options queue: :radar_odds_feed
+    include ::QueueName
+
+    sidekiq_options queue: queue_name
 
     def worker_class
       OddsFeed::Radar::BetStopHandler

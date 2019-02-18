@@ -9,11 +9,11 @@ FactoryBot.define do
     category    { MarketTemplate::POPULAR }
 
     trait :products_live do
-      payload { { products: ['1'] } }
+      payload { { products: %w[1] } }
     end
 
     trait :products_prelive do
-      payload { { products: ['3'] } }
+      payload { { products: %w[3] } }
     end
 
     trait :products_all do

@@ -24,7 +24,8 @@ describe OddsFeed::Radar::Alive::Handler do
       .to receive(:new).with(payload['alive']).and_return(message)
     allow(product).to receive_messages(
       'subscribed!' => true,
-      'unsubscribe!' => true
+      'unsubscribe!' => true,
+      'recover!' => true
     )
   end
 
@@ -70,7 +71,8 @@ describe OddsFeed::Radar::Alive::Handler do
       end
 
       it 'changes product state to unsubscribed' do
-        expect(product).to have_received(:unsubscribe!).once
+        expect(product).to have_received(:unsubscribe!)
+          .with(with_recovery: true).once
       end
     end
 

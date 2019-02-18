@@ -6,7 +6,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
     XmlParser.parse(
       '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
       '<bet_settlement event_id="sr:match:3432" '\
-      'product="1" certainty="2" timestamp="1235">'\
+      'product="1" certainty="1" timestamp="1235">'\
         '<outcomes>'\
           '<market id="13" specifiers="hcp=3.5">'\
             '<outcome id="sr:player:123" result="0"/>'\
@@ -50,6 +50,12 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
   let(:total_bets_count)     { 25 }
   let(:first_odd_bets_count) { 6 }
+
+  let(:mocked_entry_request) { double }
+
+  before do
+    allow(Bets::Settlement::Proceed).to receive(:call)
+  end
 
   it 'raises error on invalid message' do
     allow(subject_with_input).to receive(:input_data).and_return({})
@@ -204,12 +210,12 @@ describe OddsFeed::Radar::BetSettlementHandler do
       allow(subject_with_input).to receive(:skip_uncertain_settlement?)
     end
 
-    it 'calls BetSettelement service to process all affected bets' do
-      allow(BetSettelement::Service).to receive(:call)
+    it 'calls Proceed service to process all affected bets' do
+      allow(Bets::Settlement::Proceed).to receive(:call)
 
       subject_with_input.handle
 
-      expect(BetSettelement::Service)
+      expect(Bets::Settlement::Proceed)
         .to have_received(:call)
         .exactly(total_bets_count)
         .times
@@ -217,7 +223,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
     context 'market status' do
       before do
-        allow(BetSettelement::Service).to receive(:call)
+        allow(Bets::Settlement::Proceed).to receive(:call)
       end
 
       it 'sets market status to settled' do
@@ -229,20 +235,20 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
       it 'updates bets even when market not found' do
         Market.find_by(external_id: market_id).destroy
-        allow(subject_with_input).to receive(:process_bets)
+        allow(subject_with_input).to receive(:proceed_bets)
 
         subject_with_input.handle
 
         expect(subject_with_input)
-          .to have_received(:process_bets)
+          .to have_received(:proceed_bets)
           .at_least(:once)
       end
     end
   end
 
   it 'settles odd bets with result and void factor' do
-    allow(subject_with_input).to receive(:process_bets)
     allow(subject_with_input).to receive(:skip_uncertain_settlement?)
+    allow(subject_with_input).to receive(:proceed_bets)
     create_list(:bet, 5,
                 odd: odd,
                 status: StateMachines::BetStateMachine::ACCEPTED)

@@ -10,6 +10,9 @@ class EntryRequest < ApplicationRecord
   belongs_to :origin, polymorphic: true, optional: true
   has_many :balance_entry_requests
 
+  has_one :bonus_balance_entry_request, -> { bonus },
+          class_name: BalanceEntryRequest.name
+
   default_scope { order(created_at: :desc) }
 
   enum status: {
@@ -37,7 +40,7 @@ class EntryRequest < ApplicationRecord
 
   delegate :code, to: :currency, prefix: true
 
-  before_validation { adjust_amount_value }
+  before_validation :adjust_amount_value
 
   def customer_initiated?
     self[:initiator_type] == Customer.to_s
@@ -55,6 +58,14 @@ class EntryRequest < ApplicationRecord
       amount: amount,
       comment: comment,
       mode: mode }
+  end
+
+  def register_failure!(message)
+    update_columns(
+      status: EntryRequest::FAILED,
+      result: { message: message }
+    )
+    false
   end
 
   private

@@ -1,4 +1,6 @@
-describe Deposits::PlacementService do
+# frozen_string_literal: true
+
+describe EntryRequests::DepositService do
   let(:customer) { create(:customer) }
   let(:currency) { create(:currency) }
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
@@ -6,11 +8,12 @@ describe Deposits::PlacementService do
   let(:amount) { 100 }
   let(:rollover_multiplier) { 5 }
   let(:wallet) do
-    create(:wallet, customer: customer, currency: currency, amount: 0)
+    create(:wallet, customer: customer, currency: currency, amount: 0.0)
   end
-  let(:real_balance_request) { BalanceEntryRequest.real_money.first }
-  let(:bonus_balance_request) { BalanceEntryRequest.bonus.first }
-  let(:service_call) { described_class.call(wallet, amount) }
+  let(:entry_request) do
+    EntryRequests::Factories::Deposit.call(wallet: wallet, amount: amount)
+  end
+  let(:service_call) { described_class.call(entry_request: entry_request) }
 
   before do
     create(:customer_bonus,
@@ -55,10 +58,12 @@ describe Deposits::PlacementService do
   it 'closes customer bonus if expired' do
     bonus = wallet.customer_bonus
     allow(bonus).to receive(:expired?).and_return(true)
-
-    expect(bonus).to receive(:close!)
-
     service_call
+
+    expect(entry_request).to have_attributes(
+      status: EntryRequest::FAILED,
+      result: { 'message' => I18n.t('errors.messages.bonus_expired') }
+    )
   end
 
   context 'with customer bonus' do
@@ -90,6 +95,15 @@ describe Deposits::PlacementService do
     it_behaves_like 'entries splitting without bonus' do
       let(:real_money_amount) { 100 }
       let(:bonus_amount) { amount * percentage / 100.0 }
+    end
+  end
+
+  context 'with failed entry request' do
+    before { entry_request.failed! }
+
+    it 'does not proceed' do
+      service_call
+      expect(WalletEntry::AuthorizationService).not_to receive(:call)
     end
   end
 end
