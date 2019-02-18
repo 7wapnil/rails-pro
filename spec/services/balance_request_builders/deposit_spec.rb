@@ -2,13 +2,11 @@ describe BalanceRequestBuilders::Deposit do
   let(:entry_request) { create(:entry_request) }
   let(:balance_requests) { entry_request.balance_entry_requests }
 
-  describe '#build!' do
-    it 'returns array of balance entry requests' do
-      calculations = { real_money: 100, bonus: 100 }
-      build_result = described_class.new(entry_request, calculations).build!
+  it 'returns array of balance entry requests' do
+    calculations = { real_money: 100, bonus: 100 }
+    build_result = described_class.call(entry_request, calculations)
 
-      expect(build_result).to match_array(balance_requests)
-    end
+    expect(build_result).to match_array(balance_requests)
   end
 
   context 'creates balance entry requests' do

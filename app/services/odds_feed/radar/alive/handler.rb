@@ -16,7 +16,9 @@ module OddsFeed
           )
           return false if message.expired?
 
-          return product.unsubscribe! unless message.subscribed?
+          unless message.subscribed?
+            return product.unsubscribe!(with_recovery: true)
+          end
 
           product.subscribed!(subscribed_at: message.received_at)
         end

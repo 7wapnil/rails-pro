@@ -1,5 +1,10 @@
 module Deposits
   class InitiateHostedDepositService < ApplicationService
+    BUSINESS_ERRORS = [
+      Deposits::DepositLimitRestrictionError,
+      Deposits::InvalidDepositRequestError
+    ].freeze
+
     def initialize(customer:, currency:, amount:, bonus_code: nil)
       @customer = customer
       @currency = currency
@@ -11,9 +16,9 @@ module Deposits
       validate_business_rules!
 
       initial_entry_request
-    rescue Deposits::InvalidDepositRequestError => e
+    rescue *BUSINESS_ERRORS => e
       Rails.logger.info e.message
-      missing_data_entry_request(e)
+      entry_request_failure(e)
     end
 
     private
@@ -21,8 +26,9 @@ module Deposits
     def validate_business_rules!
       # TODO: Existing deposit request found
       # TODO: Check bonus code
-      # TODO: Responsible gambling manager check
-      # TODO: Rates check
+      DepositLimitCheckService
+        .call(@customer, @amount, @currency)
+      VerifyDepositAttempt.call(@customer)
 
       true
     end
@@ -39,7 +45,7 @@ module Deposits
       )
     end
 
-    def missing_data_entry_request(error)
+    def entry_request_failure(error)
       EntryRequest.new(
         status: EntryRequest::FAILED,
         amount: @amount,

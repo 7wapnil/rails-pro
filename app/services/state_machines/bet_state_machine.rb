@@ -49,7 +49,7 @@ module StateMachines
         state :settled
 
         event :send_to_internal_validation do
-          transitions from: %i[initial accepted],
+          transitions from: :initial,
                       to: :sent_to_internal_validation
         end
 
@@ -76,7 +76,7 @@ module StateMachines
         end
 
         event :register_failure do
-          transitions from: :sent_to_internal_validation,
+          transitions from: %i[initial sent_to_internal_validation],
                       to: :failed,
                       after: proc { |msg| update(message: msg) }
         end

@@ -8,16 +8,25 @@ module OddsFeed
 
       def handle
         validate_message
+        store_market_ids
         process_outcomes
         update_markets
       end
 
       private
 
+      def validate_message
+        is_invalid = input_data['outcomes'].nil? ||
+                     input_data['outcomes']['market'].nil?
+        raise OddsFeed::InvalidMessageError if is_invalid
+      end
+
+      def store_market_ids
+        markets.each { |payload| store_market_id(payload) }
+      end
+
       def process_outcomes
         markets.each do |market_data|
-          store_market_id(market_data)
-
           market_data['outcome'].each do |outcome|
             generator = ExternalId.new(event_id: input_data['event_id'],
                                        market_id: market_data['id'],
@@ -26,7 +35,7 @@ module OddsFeed
             external_id = generator.generate
 
             update_bets(external_id, outcome)
-            process_bets(external_id)
+            proceed_bets(external_id)
           end
         end
       end
@@ -48,18 +57,12 @@ module OddsFeed
         @invalid_bet_ids ||= []
       end
 
-      def validate_message
-        is_invalid = input_data['outcomes'].nil? ||
-                     input_data['outcomes']['market'].nil?
-        raise OddsFeed::InvalidMessageError if is_invalid
-      end
-
       def input_data
         @payload['bet_settlement']
       end
 
       def markets
-        Array.wrap(input_data['outcomes']['market'])
+        @markets ||= Array.wrap(input_data['outcomes']['market'])
       end
 
       def update_bets(external_id, outcome)
@@ -68,7 +71,6 @@ module OddsFeed
         )
 
         bets = bets_by_external_id(external_id)
-        revalidate_suspended_bets(bets)
         settle_bets(bets, outcome)
 
         bets = get_settled_bets(external_id)
@@ -76,20 +78,8 @@ module OddsFeed
         log_job_message(logger_level, "#{bets.size} bets settled")
       end
 
-      def revalidate_suspended_bets(bets)
-        bets.suspended.each { |bet| revalidate_suspended_bet(bet) }
-      end
-
-      def revalidate_suspended_bet(bet)
-        bet.send_to_internal_validation!
-      rescue AASM::InvalidTransition, ActiveRecord::Error => error
-        log_job_failure(error)
-      rescue ActiveRecord::Error
-        log_job_failure("Bet ##{bet.id} can't be set as `suspended`")
-      end
-
       def settle_bets(bets, outcome)
-        bets.unsuspended.each { |bet| settle_bet(bet, outcome) }
+        bets.each { |bet| settle_bet(bet, outcome) }
       end
 
       def settle_bet(bet, outcome)
@@ -104,9 +94,9 @@ module OddsFeed
         log_job_failure(error)
       end
 
-      def process_bets(external_id)
+      def proceed_bets(external_id)
         get_settled_bets(external_id)
-          .each { |bet| BetSettelement::Service.call(bet) }
+          .each { |bet| Bets::Settlement::Proceed.call(bet: bet) }
       end
 
       def bets_by_external_id(external_id)
@@ -116,9 +106,7 @@ module OddsFeed
       end
 
       def get_settled_bets(external_id)
-        bets_by_external_id(external_id)
-          .unsuspended
-          .where.not(id: invalid_bet_ids)
+        bets_by_external_id(external_id).where.not(id: invalid_bet_ids)
       end
     end
   end

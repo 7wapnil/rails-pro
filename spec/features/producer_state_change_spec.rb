@@ -7,6 +7,18 @@ describe 'Producer state change feature. ' do
   let(:metadata) do
     { 'scheduled_at' => time_milliseconds }
   end
+  let(:client_double) { instance_double('OddsFeed::Radar::Client') }
+
+  before do
+    allow(OddsFeed::Radar::Client)
+      .to receive(:new) { client_double }
+    allow(client_double)
+      .to receive(:product_recovery_initiate_request).and_return(
+        'response' => {
+          'response_code' => 'ACCEPTED'
+        }
+      )
+  end
 
   include_context 'frozen_time'
 
@@ -80,17 +92,36 @@ describe 'Producer state change feature. ' do
       end
     end
 
-    context 'with disconnected meaning' do
-      Radar::Producer::STATES.values.each do |state|
-        it "unsubscribes #{state} producer" do
+    context 'with disconnected meaning, first' do
+      Radar::Producer::STATES.values.each do |state, _expected_state|
+        it "recovers #{state} producer" do
+          previous_recover_long_time_ago = 1.year.ago
           producer.update(
             state: state,
+            recover_requested_at: previous_recover_long_time_ago,
             last_successful_subscribed_at: before_message_received_at
           )
           OddsFeed::Radar::Alive::Handler.new(unsubscribed_payload).handle
           producer.reload
 
-          expect(producer.state).to eq Radar::Producer::UNSUBSCRIBED
+          expect(producer.state).to eq Radar::Producer::RECOVERING
+        end
+      end
+    end
+
+    context 'with disconnected meaning, after recovery' do
+      Radar::Producer::STATES.values.each do |state|
+        it "does not change #{state} producer state" do
+          previous_recover_recently = Time.current
+          producer.update(
+            state: state,
+            recover_requested_at: previous_recover_recently,
+            last_successful_subscribed_at: before_message_received_at
+          )
+          OddsFeed::Radar::Alive::Handler.new(unsubscribed_payload).handle
+          producer.reload
+
+          expect(producer.state).to eq state
         end
       end
     end
@@ -119,20 +150,10 @@ describe 'Producer state change feature. ' do
 
     context 'with connected meaning for unsubscribed producer' do
       let(:node_id) { Faker::Number.number(2).to_s }
-      let(:client_double) { instance_double('OddsFeed::Radar::Client') }
 
       before do
         allow(ENV).to receive(:[]).and_call_original
         allow(ENV).to receive(:[]).with('RADAR_MQ_NODE_ID').and_return(node_id)
-
-        allow(OddsFeed::Radar::Client)
-          .to receive(:new) { client_double }
-        allow(client_double)
-          .to receive(:product_recovery_initiate_request).and_return(
-            'response' => {
-              'response_code' => 'ACCEPTED'
-            }
-          )
 
         producer.update(
           recover_requested_at: nil,

@@ -45,6 +45,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     end
   end
 
+  has_many :deposit_limits
   has_many :customer_notes
   has_many :wallets
   has_many :currencies, through: :wallets
@@ -129,6 +130,14 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   def active_bonus
     customer_bonus if customer_bonus&.activated? && customer_bonus&.applied?
+  end
+
+  def deposit_attempts
+    entry_requests
+      .deposit
+      .where.not(status: EntryRequest::SUCCEEDED)
+      .where('created_at >= ?', 24.hours.ago)
+      .count
   end
 
   private
