@@ -41,10 +41,15 @@ module Events
     # It tries to call:
     # #live, #upcoming_for_time, #upcoming_limited, #upcoming_unlimited
     def filter_by_context!
+      return if context.blank? && context_optional?
       return context_not_supported! if SUPPORTED_CONTEXTS.exclude?(context)
 
       @query = query.upcoming if UPCOMING_CONTEXTS.include?(context)
       @query = send(context)
+    end
+
+    def context_optional?
+      filter.id.present?
     end
 
     def context_not_supported!
