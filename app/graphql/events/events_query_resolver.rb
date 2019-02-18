@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 module Events
+  # rubocop:disable Metrics/ClassLength
   class EventsQueryResolver
     LIVE = 'live'
     UPCOMING_CONTEXTS =
       %w[upcoming_for_time upcoming_limited upcoming_unlimited].freeze
     SUPPORTED_CONTEXTS = [LIVE, *UPCOMING_CONTEXTS].freeze
     UPCOMING_LIMIT = 16
-    UPCOMING_DURATION = 24
+    UPCOMING_DURATION = 6
 
     def initialize(query_args)
       @query_args = query_args
@@ -122,4 +123,5 @@ module Events
       @event_scope_ids ||= [filter.category_id, filter.tournament_id].compact
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
