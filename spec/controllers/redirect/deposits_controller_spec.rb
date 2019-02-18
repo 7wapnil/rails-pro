@@ -54,11 +54,24 @@ describe Redirect::DepositsController do
       end
       let(:non_existing_customer_id) { customer.ids.max + 1 }
       let(:invalid_currency_code) { wallet.currency.code + 'RUBBISH' }
-      let(:callback_url) { Faker::Internet.url }
+      let(:generic_error_callback_url) { Faker::Internet.url }
+      let(:error_callback_url) { Faker::Internet.url }
+      let(:deposit_attempts_exeeded_callback_url) { Faker::Internet.url }
 
       before do
         allow(Deposit::CallbackUrl)
-          .to receive(:for).with(:something_went_wrong) { callback_url }
+          .to receive(:for).with(Deposit::CallbackUrl::SOMETHING_WENT_WRONG) {
+                generic_error_callback_url
+              }
+        allow(Deposit::CallbackUrl)
+          .to receive(:for).with(Deposit::CallbackUrl::ERROR) {
+                error_callback_url
+              }
+        allow(Deposit::CallbackUrl)
+          .to receive(:for)
+            .with(Deposit::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED) {
+                deposit_attempts_exeeded_callback_url
+              }
       end
 
       it 'redirects to callback url on invalid customer id ' do
@@ -68,7 +81,7 @@ describe Redirect::DepositsController do
             params: valid_params
                         .update(token: JwtService.encode(id: customer.id + 1))
           )
-        ).to redirect_to(callback_url)
+        ).to redirect_to(error_callback_url)
       end
 
       it 'redirects to callback url on invalid currency' do
@@ -77,14 +90,14 @@ describe Redirect::DepositsController do
             :initiate,
             params: valid_params.update(currency: invalid_currency_code)
           )
-        ).to redirect_to(callback_url)
+        ).to redirect_to(error_callback_url)
       end
 
       it 'redirects to callback url on invalid token' do
         expect(
           get(:initiate,
               params: valid_params.update(token: invalid_token))
-        ).to redirect_to(callback_url)
+        ).to redirect_to(error_callback_url)
       end
     end
 
@@ -113,13 +126,16 @@ describe Redirect::DepositsController do
     %i[success error pending back].each do |state|
       context "When #{state} callback request made" do
         let(:callback_url) { Faker::Internet.url }
+        let(:some_state) { Faker::Lorem.word }
 
         before do
+          allow(SafeCharge::CallbackHandler)
+            .to receive(:call) { some_state }
           allow(Deposit::CallbackUrl)
-            .to receive(:for).with(state) { callback_url }
+            .to receive(:for).with(some_state) { callback_url }
         end
 
-        it "redirects #{state} to callback url with state" do
+        it "redirects #{state} to callback service state" do
           expect(get(state)).to redirect_to(callback_url)
         end
       end
