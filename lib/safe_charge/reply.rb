@@ -1,7 +1,8 @@
 module SafeCharge
   class Reply
     AUTHENTICATION_ERROR = DmnAuthenticationError
-    BUSINESS_EXCEPTIONS = [AUTHENTICATION_ERROR].freeze
+    TYPE_ERROR = Deposits::IncompatibleRequestStateError
+    BUSINESS_EXCEPTIONS = [AUTHENTICATION_ERROR, TYPE_ERROR].freeze
 
     attr_reader :params, :status, :ppt_status
 
@@ -25,10 +26,22 @@ module SafeCharge
 
     def validate!
       validate_checksum!
+      validate_entry_request_state!
       true
     end
 
     private
+
+    def validate_entry_request_state!
+      raise TYPE_ERROR unless valid_entry_request_state?
+    end
+
+    def valid_entry_request_state?
+      entry_request &&
+        entry_request.kind == EntryRequest::DEPOSIT &&
+        [EntryRequest::INITIAL, EntryRequest::PENDING]
+          .include?(entry_request.status)
+    end
 
     def validate_checksum!
       raise DmnAuthenticationError unless valid_checksum?

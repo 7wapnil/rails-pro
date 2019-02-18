@@ -125,5 +125,31 @@ describe SafeCharge::Reply do
           .to raise_error(described_class::AUTHENTICATION_ERROR)
       end
     end
+
+    context 'when entry request of invalid type referenced' do
+      let(:entry_request) do
+        build_stubbed(:entry_request,
+                      kind: EntryRequest::WITHDRAW,
+                      status: EntryRequest::INITIAL)
+      end
+
+      it 'raises type error' do
+        expect { verification_result }
+          .to raise_error(described_class::TYPE_ERROR)
+      end
+    end
+
+    context 'when entry request already in final state' do
+      let(:entry_request) do
+        build_stubbed(:entry_request,
+                      kind: EntryRequest::DEPOSIT,
+                      status: EntryRequest::FAILED)
+      end
+
+      it 'raises type error' do
+        expect { verification_result }
+          .to raise_error(described_class::TYPE_ERROR)
+      end
+    end
   end
 end
