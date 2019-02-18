@@ -1,4 +1,4 @@
-describe Bet, '#index' do
+describe 'Withdrawals index page' do
   context 'signed in' do
     let(:per_page_count) { 10 }
 
