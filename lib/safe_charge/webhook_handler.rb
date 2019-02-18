@@ -5,7 +5,7 @@ module SafeCharge
     end
 
     def call
-      reply.verify_checksum!
+      reply.validate!
       return entry_request.succeeded! if reply.approved?
       return entry_request.pending! if reply.pending?
 

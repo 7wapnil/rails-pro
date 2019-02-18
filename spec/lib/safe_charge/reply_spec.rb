@@ -106,12 +106,12 @@ describe SafeCharge::Reply do
     end
   end
 
-  describe 'verify_checksum!' do
+  describe '#validate!' do
     subject(:verification_result) do
-      described_class.new(params).verify_checksum!
+      described_class.new(params).validate!
     end
 
-    it 'validates correct reply message checksum integrity' do
+    it 'truthy on valid checksum' do
       expect(verification_result).to be_truthy
     end
 
@@ -119,10 +119,10 @@ describe SafeCharge::Reply do
       %w[totalAmount currency responseTimeStamp PPP_TransactionID
          Status productId advanceResponseChecksum].freeze
     CHECKSUM_PARAMS.each do |param|
-      it "corruption in #{param} causes checksum to fail" do
+      it "raise checksum vaildation error on corrupted #{param}" do
         params[param] = 'incorrect'
         expect { verification_result }
-          .to raise_error(SafeCharge::DmnAuthenticationError)
+          .to raise_error(described_class::AUTHENTICATION_ERROR)
       end
     end
   end

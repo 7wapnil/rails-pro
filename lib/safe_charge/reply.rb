@@ -1,5 +1,8 @@
 module SafeCharge
   class Reply
+    AUTHENTICATION_ERROR = DmnAuthenticationError
+    BUSINESS_EXCEPTIONS = [AUTHENTICATION_ERROR].freeze
+
     attr_reader :params, :status, :ppt_status
 
     def initialize(params)
@@ -20,14 +23,20 @@ module SafeCharge
       check_ppt_status && status.casecmp?(Statuses::PENDING)
     end
 
-    def verify_checksum!
-      provided_checksum = params['advanceResponseChecksum']
-      raise DmnAuthenticationError unless provided_checksum == checksum
-
+    def validate!
+      validate_checksum!
       true
     end
 
     private
+
+    def validate_checksum!
+      raise DmnAuthenticationError unless valid_checksum?
+    end
+
+    def valid_checksum?
+      params['advanceResponseChecksum'] == checksum
+    end
 
     def entry_request_id
       params['merchant_unique_id'].to_i
