@@ -56,13 +56,13 @@ describe SafeCharge::Reply do
       .to receive(:find).with(entry_request.id).and_return(entry_request)
   end
 
-  describe 'entry_request' do
+  describe '#entry_request' do
     it 'returns entry request described in response' do
       expect(described_class.new(params).entry_request).to eq entry_request
     end
   end
 
-  describe 'approved?' do
+  describe '#approved?' do
     subject(:check) { described_class.new(params).approved? }
 
     it 'returns true for ok request and status approved' do
@@ -84,7 +84,7 @@ describe SafeCharge::Reply do
     end
   end
 
-  describe 'pending?' do
+  describe '#pending?' do
     subject(:check) { described_class.new(params).pending? }
 
     it 'returns true for ok request and status pending' do
