@@ -7,7 +7,7 @@ module Events
       %w[upcoming_for_time upcoming_limited upcoming_unlimited].freeze
     SUPPORTED_CONTEXTS = [LIVE, *UPCOMING_CONTEXTS].freeze
     UPCOMING_LIMIT = 16
-    UPCOMING_DURATION = 24
+    UPCOMING_DURATION = 6
 
     def initialize(query_args)
       @query_args = query_args
@@ -17,7 +17,6 @@ module Events
 
     def resolve
       @query = base_query
-      @query = filter_by_id
       @query = filter_by_title_id
       @query = filter_by_title_kind
       @query = filter_by_event_scopes
@@ -32,7 +31,7 @@ module Events
     def base_query
       Event
         .joins(:title)
-        .preload(:tournament)
+        .preload(:tournament, :dashboard_markets)
         .visible
         .active
         .order(:priority, :start_at)
@@ -97,12 +96,6 @@ module Events
 
     def upcoming_unlimited
       query
-    end
-
-    def filter_by_id
-      return query unless filter.id
-
-      query.where(id: filter.id)
     end
 
     def filter_by_title_id

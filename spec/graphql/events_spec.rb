@@ -33,9 +33,7 @@ describe GraphQL, '#events' do
 
   context 'basic query' do
     let(:control_events) do
-      create_list(:event, control_count, :upcoming,
-                  visible: true,
-                  title: title)
+      create_list(:event, control_count, :upcoming, title: title)
     end
 
     let(:query) { %({ events(context: #{upcoming_ctx}) { id } }) }
@@ -49,7 +47,7 @@ describe GraphQL, '#events' do
 
   context 'with market' do
     let(:control_event) { create(:event_with_odds, :upcoming, title: title) }
-    let(:control_market) { control_event.dashboard_market }
+    let(:control_market) { control_event.dashboard_markets.first }
     let(:control_odds) { control_market.odds }
 
     let(:result_market) { result_event.dashboard_market }
@@ -70,6 +68,28 @@ describe GraphQL, '#events' do
       expect(result_market['id']).to eq(control_market.id.to_s)
     end
 
+    context 'with markets_count' do
+      let(:control_count) { rand(2..5) }
+      let(:control_events) {}
+      let(:control_event) { create(:event, :upcoming, title: title) }
+
+      let(:query) do
+        %({ events(context: #{upcoming_ctx}) { id markets_count } })
+      end
+
+      before do
+        create_list(:market, rand(1..3), event: control_event)
+        create_list(:market, control_count, :with_odds, event: control_event)
+        create_list(:market, rand(1..3), :with_odds,
+                    visible: false,
+                    event: control_event)
+      end
+
+      it 'returns valid markets count' do
+        expect(result_event.markets_count).to eq(control_count)
+      end
+    end
+
     context 'with odds' do
       let(:result_odd_ids) do
         result_market['odds'].map { |odd| odd['id'].to_i }
@@ -86,7 +106,7 @@ describe GraphQL, '#events' do
       end
 
       it 'is not returned' do
-        expect(result_event.market).to be_nil
+        expect(result_event.dashboard_market).to be_nil
       end
     end
 
@@ -97,7 +117,7 @@ describe GraphQL, '#events' do
       end
 
       it 'is not returned' do
-        expect(result_event.market).to be_nil
+        expect(result_event.dashboard_market).to be_nil
       end
     end
   end
@@ -153,22 +173,6 @@ describe GraphQL, '#events' do
 
     it 'returns events in valid order' do
       expect(result_event_ids).to eq(sorted_events.map(&:id))
-    end
-  end
-
-  context 'with id' do
-    let(:control_event) { create(:event, :upcoming) }
-    let(:query) do
-      %({
-          events (
-            filter: { id: #{control_event.id} },
-            context: #{upcoming_ctx}
-          ) { id }
-      })
-    end
-
-    it 'returns single event' do
-      expect(result_event_ids).to eq([control_event.id])
     end
   end
 
@@ -416,23 +420,6 @@ describe GraphQL, '#events' do
   it 'context cannot be omitted even when tournament filter is present' do
     tournament = create(:event_scope, :with_event)
     query = %({ events(filter: { tournamentId: #{tournament.id} }) { id } })
-
-    result = ArcanebetSchema.execute(query,
-                                     context: context,
-                                     variables: variables)
-
-    error_msg = I18n.t(
-      'errors.messages.graphql.events.context.invalid',
-      context: nil,
-      contexts: Events::EventsQueryResolver::SUPPORTED_CONTEXTS.join(', ')
-    )
-
-    expect(result['errors'].first['message']).to eq(error_msg)
-  end
-
-  it 'context cannot be omitted even when event id filter is present' do
-    event = control_events.first
-    query = %({ events(filter: { id: #{event.id} }) { id } })
 
     result = ArcanebetSchema.execute(query,
                                      context: context,
