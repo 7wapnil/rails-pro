@@ -14,6 +14,8 @@ module OddsFeed
 
         query = build_query
         query.update_all(status: StateMachines::BetStateMachine::CANCELLED)
+
+        emit_websocket
       end
 
       private
@@ -78,6 +80,22 @@ module OddsFeed
           .at(timestamp.to_i)
           .to_datetime
           .in_time_zone
+      end
+
+      def event
+        @event ||= Event.find_by(external_id: event_id)
+      end
+
+      def emit_websocket
+        unless event
+          return log_job_message(
+            :warn,
+            message: 'Event not found',
+            event_id: event_id
+          )
+        end
+
+        WebSocket::Client.instance.trigger_event_update(event)
       end
     end
   end

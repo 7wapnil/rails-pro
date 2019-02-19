@@ -12,6 +12,7 @@ module OddsFeed
         store_market_ids
         process_outcomes
         update_markets
+        emit_websocket
       end
 
       private
@@ -150,6 +151,22 @@ module OddsFeed
 
       def get_settled_bets(external_id)
         bets_by_external_id(external_id).where.not(id: invalid_bet_ids)
+      end
+
+      def event
+        @event ||= Event.find_by(external_id: input_data['event_id'])
+      end
+
+      def emit_websocket
+        unless event
+          return log_job_message(
+            :warn,
+            message: 'Event not found',
+            event_id: input_data['event_id']
+          )
+        end
+
+        WebSocket::Client.instance.trigger_event_update(event)
       end
     end
     # rubocop:enable Metrics/ClassLength

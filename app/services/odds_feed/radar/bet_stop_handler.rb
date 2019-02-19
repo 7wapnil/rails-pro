@@ -12,6 +12,8 @@ module OddsFeed
         build_query.find_in_batches(batch_size: @batch_size) do |batch|
           update_markets(batch)
         end
+
+        emit_websocket
       end
 
       private
@@ -45,6 +47,22 @@ module OddsFeed
         rescue ActiveRecord::RecordInvalid => e
           log_job_failure(e)
         end
+      end
+
+      def event
+        @event ||= Event.find_by(external_id: input_data['event_id'])
+      end
+
+      def emit_websocket
+        unless event
+          return log_job_message(
+            :warn,
+            message: 'Event not found',
+            event_id: input_data['event_id']
+          )
+        end
+
+        WebSocket::Client.instance.trigger_event_update(event)
       end
     end
   end
