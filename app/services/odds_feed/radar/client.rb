@@ -1,6 +1,6 @@
 module OddsFeed
   module Radar
-    class Client
+    class Client # rubocop:disable Metrics/ClassLength
       include HTTParty
       include JobLogger
 
@@ -70,9 +70,10 @@ module OddsFeed
       # Market templates descriptions request
       # Returns a list of market templates with outcome name, specifiers
       # and attributes
-      def markets(cache: nil)
-        route = "/descriptions/#{@language}/markets.xml?include_mappings=false"
-        request(route, cache: cache)
+      def markets(include_mappings: false, cache: nil)
+        route = "/descriptions/#{@language}/markets.xml"
+        options = { query: { include_mappings: include_mappings } }
+        request(route, cache: cache, options: options)
       end
 
       # All available tournaments for all sports request
@@ -115,8 +116,8 @@ module OddsFeed
         request(route, cache: cache)
       end
 
-      def request(path, method: :get, cache: nil)
-        ResponseReader.call(path: path, method: method, cache: cache)
+      def request(path, method: :get, cache: nil, **options)
+        ResponseReader.call(path: path, method: method, cache: cache, **options)
       end
 
       def post(path)
