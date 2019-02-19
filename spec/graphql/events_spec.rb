@@ -33,9 +33,7 @@ describe GraphQL, '#events' do
 
   context 'basic query' do
     let(:control_events) do
-      create_list(:event, control_count, :upcoming,
-                  visible: true,
-                  title: title)
+      create_list(:event, control_count, :upcoming, title: title)
     end
 
     let(:query) { %({ events(context: #{upcoming_ctx}) { id } }) }
@@ -49,7 +47,7 @@ describe GraphQL, '#events' do
 
   context 'with market' do
     let(:control_event) { create(:event_with_odds, :upcoming, title: title) }
-    let(:control_market) { control_event.dashboard_market }
+    let(:control_market) { control_event.dashboard_markets.first }
     let(:control_odds) { control_market.odds }
 
     let(:result_market) { result_event.dashboard_market }
@@ -70,6 +68,28 @@ describe GraphQL, '#events' do
       expect(result_market['id']).to eq(control_market.id.to_s)
     end
 
+    context 'with markets_count' do
+      let(:control_count) { rand(2..5) }
+      let(:control_events) {}
+      let(:control_event) { create(:event, :upcoming, title: title) }
+
+      let(:query) do
+        %({ events(context: #{upcoming_ctx}) { id markets_count } })
+      end
+
+      before do
+        create_list(:market, rand(1..3), event: control_event)
+        create_list(:market, control_count, :with_odds, event: control_event)
+        create_list(:market, rand(1..3), :with_odds,
+                    visible: false,
+                    event: control_event)
+      end
+
+      it 'returns valid markets count' do
+        expect(result_event.markets_count).to eq(control_count)
+      end
+    end
+
     context 'with odds' do
       let(:result_odd_ids) do
         result_market['odds'].map { |odd| odd['id'].to_i }
@@ -86,7 +106,7 @@ describe GraphQL, '#events' do
       end
 
       it 'is not returned' do
-        expect(result_event.market).to be_nil
+        expect(result_event.dashboard_market).to be_nil
       end
     end
 
@@ -97,7 +117,7 @@ describe GraphQL, '#events' do
       end
 
       it 'is not returned' do
-        expect(result_event.market).to be_nil
+        expect(result_event.dashboard_market).to be_nil
       end
     end
   end
