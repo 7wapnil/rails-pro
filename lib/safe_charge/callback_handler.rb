@@ -33,6 +33,8 @@ module SafeCharge
     end
 
     def fail_flow
+      return Deposit::CallbackUrl::ERROR if entry_request.failed?
+
       entry_request.failed!
       Deposit::CallbackUrl::ERROR
     end
@@ -48,6 +50,8 @@ module SafeCharge
     end
 
     def success_flow
+      return Deposit::CallbackUrl::SUCCESS if entry_request.succeeded?
+
       return Deposit::CallbackUrl::SOMETHING_WENT_WRONG unless success_context?
 
       entry_request.succeeded!
