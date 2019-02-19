@@ -103,33 +103,33 @@ describe GraphQL, '#events' do
   end
 
   context 'with categories' do
-    let(:event) { create(:event, :upcoming, title: title) }
     let(:query) do
       %({
-          events(context: #{upcoming_ctx}, filter: { id: #{event.id} }) {
+          events(context: #{upcoming_ctx}) {
             id
             categories { id name count }
-            dashboard_market { id }
           }
       })
     end
 
     before do
-      create_list(:market,
-                  3,
-                  :with_odds,
-                  event: event,
-                  category: MarketTemplate::POPULAR)
-      create_list(:market,
-                  2,
-                  :with_odds,
-                  event: event,
-                  category: MarketTemplate::PLAYERS)
-      create_list(:market,
-                  1,
-                  :with_odds,
-                  event: event,
-                  category: nil)
+      control_events.each do |event|
+        create_list(:market,
+                    3,
+                    :with_odds,
+                    event: event,
+                    category: MarketTemplate::POPULAR)
+        create_list(:market,
+                    2,
+                    :with_odds,
+                    event: event,
+                    category: MarketTemplate::PLAYERS)
+        create_list(:market,
+                    1,
+                    :with_odds,
+                    event: event,
+                    category: nil)
+      end
     end
 
     it 'returns a list of categories with count' do
