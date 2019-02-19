@@ -109,6 +109,7 @@ describe GraphQL, '#events' do
           events(context: #{upcoming_ctx}, filter: { id: #{event.id} }) {
             id
             categories { id name count }
+            dashboard_market { id }
           }
       })
     end
@@ -132,13 +133,16 @@ describe GraphQL, '#events' do
     end
 
     it 'returns a list of categories with count' do
-      categories = result['data']['events'][0]['categories']
+      event = result['data']['events'][0]
+      categories = event['categories']
       expect(categories.count).to eq(2)
 
-      expect(categories[0]['id']).to eq(MarketTemplate::POPULAR)
+      expect(categories[0]['id'])
+        .to eq("#{event['id']}:#{MarketTemplate::POPULAR}")
       expect(categories[0]['count']).to eq(3)
 
-      expect(categories[1]['id']).to eq(MarketTemplate::PLAYERS)
+      expect(categories[1]['id'])
+        .to eq("#{event['id']}:#{MarketTemplate::PLAYERS}")
       expect(categories[1]['count']).to eq(2)
     end
   end

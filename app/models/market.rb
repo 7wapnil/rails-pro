@@ -34,7 +34,7 @@ class Market < ApplicationRecord
 
   scope :for_displaying, -> { joins(:odds).visible.order(priority: :asc) }
   scope :with_category, -> {
-    joins(:odds).where.not(category: nil).group('markets.id')
+    where.not(category: nil).group('markets.id')
   }
 
   validates :name, :priority, :status, presence: true

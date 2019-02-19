@@ -140,9 +140,9 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def categories
-    categorized_markets.group_by(&:category).map do |id, markets|
-      OpenStruct.new(id: id,
-                     name: I18n.t("market_categories.#{id}"),
+    categorized_markets.group_by(&:category).map do |category, markets|
+      OpenStruct.new(id: "#{id}:#{category}",
+                     name: I18n.t("market_categories.#{category}"),
                      count: markets.count)
     end
   end
