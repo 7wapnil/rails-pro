@@ -10,9 +10,9 @@ describe GraphQL, '#currencies' do
   describe 'query' do
     let(:query) { %({ currencies { id name code primary } }) }
 
-    let(:currencies_in_system){ 2 }
-    let(:currencies)  do
-      Array.new(currencies_in_system) {|_| build_stubbed(:currency) }
+    let(:currencies_in_system) { 2 }
+    let(:currencies) do
+      Array.new(currencies_in_system) { |_| build_stubbed(:currency) }
     end
 
     let(:expected_result_array) do
