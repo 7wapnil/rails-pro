@@ -17,7 +17,6 @@ module Events
 
     def resolve
       @query = base_query
-      @query = filter_by_id
       @query = filter_by_title_id
       @query = filter_by_title_kind
       @query = filter_by_event_scopes
@@ -97,12 +96,6 @@ module Events
 
     def upcoming_unlimited
       query
-    end
-
-    def filter_by_id
-      return query unless filter.id
-
-      query.where(id: filter.id)
     end
 
     def filter_by_title_id
