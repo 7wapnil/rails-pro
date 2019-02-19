@@ -4,7 +4,7 @@ module Betting
 
     field :id, !types.ID
     field :amount, !types.Float
-    field :currency, !Wallets::CurrencyType
+    field :currency, !Currencies::CurrencyType
     field :odd, !Types::OddType
     field :market, !Types::MarketType
     field :created_at, types.String do

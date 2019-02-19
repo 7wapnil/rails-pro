@@ -1,4 +1,4 @@
-module Wallets
+module Currencies
   CurrencyType = GraphQL::ObjectType.define do
     name 'Currency'
 
