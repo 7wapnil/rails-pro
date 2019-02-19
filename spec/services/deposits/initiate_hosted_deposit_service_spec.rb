@@ -4,7 +4,7 @@ describe Deposits::InitiateHostedDepositService do
 
   let(:customer) { wallet.customer }
   let(:currency) { wallet.currency }
-  let(:amount) { Faker::Number.decimal(2, 2) }
+  let(:amount) { Faker::Number.decimal(2, 2).to_d }
 
   let(:service_call_params) do
     {
@@ -43,6 +43,19 @@ describe Deposits::InitiateHostedDepositService do
         mode: EntryRequest::SYSTEM,
         kind: EntryRequest::DEPOSIT
       )
+    end
+
+    context 'when amount sent as a string' do
+      it 'raises ArgumentError' do
+        expect do
+          described_class.call(
+            customer: 1,
+            currency: 1,
+            amount: '80.3',
+            bonus_code: 1
+          )
+        end.to raise_error(ArgumentError)
+      end
     end
 
     described_class::BUSINESS_ERRORS.each do |error_class|
