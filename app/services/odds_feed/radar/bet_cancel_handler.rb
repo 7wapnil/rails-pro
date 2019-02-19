@@ -1,6 +1,8 @@
 module OddsFeed
   module Radar
     class BetCancelHandler < RadarMessageHandler
+      include WebsocketEventEmittable
+
       attr_accessor :batch_size
 
       def initialize(payload)
@@ -22,10 +24,6 @@ module OddsFeed
 
       def input_data
         @payload['bet_cancel']
-      end
-
-      def event_id
-        input_data['event_id']
       end
 
       def markets
@@ -80,22 +78,6 @@ module OddsFeed
           .at(timestamp.to_i)
           .to_datetime
           .in_time_zone
-      end
-
-      def event
-        @event ||= Event.find_by(external_id: event_id)
-      end
-
-      def emit_websocket
-        unless event
-          return log_job_message(
-            :warn,
-            message: 'Event not found',
-            event_id: event_id
-          )
-        end
-
-        WebSocket::Client.instance.trigger_event_update(event)
       end
     end
   end

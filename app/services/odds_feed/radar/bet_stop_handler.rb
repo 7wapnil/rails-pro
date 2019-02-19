@@ -1,6 +1,8 @@
 module OddsFeed
   module Radar
     class BetStopHandler < RadarMessageHandler
+      include WebsocketEventEmittable
+
       attr_accessor :batch_size
 
       def initialize(payload)
@@ -27,7 +29,7 @@ module OddsFeed
           .joins(:event)
           .where(
             status: Market::ACTIVE,
-            events: { external_id: input_data['event_id'] }
+            events: { external_id: event_id }
           )
       end
 
@@ -47,22 +49,6 @@ module OddsFeed
         rescue ActiveRecord::RecordInvalid => e
           log_job_failure(e)
         end
-      end
-
-      def event
-        @event ||= Event.find_by(external_id: input_data['event_id'])
-      end
-
-      def emit_websocket
-        unless event
-          return log_job_message(
-            :warn,
-            message: 'Event not found',
-            event_id: input_data['event_id']
-          )
-        end
-
-        WebSocket::Client.instance.trigger_event_update(event)
       end
     end
   end
