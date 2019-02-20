@@ -1,5 +1,5 @@
 module Withdrawals
-  class WithdrawCreate < ::Base::Resolver
+  class Create < ::Base::Resolver
     type WithdrawalResultType
 
     description 'Create withdrawal'

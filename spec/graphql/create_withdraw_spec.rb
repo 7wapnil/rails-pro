@@ -9,8 +9,8 @@ describe GraphQL, '#withdraw_create' do
   let!(:balance) { create(:balance, :real_money, wallet: wallet) }
 
   let(:query) do
-    %(mutation createWithdraw($amount: Float!, $walletId: ID!) {
-        createWithdraw(amount: $amount, walletId: $walletId) {
+    %(mutation withdraw($amount: Float!, $walletId: ID!) {
+        withdraw(amount: $amount, walletId: $walletId) {
           error
           entryRequest { id status }
         }
@@ -19,7 +19,7 @@ describe GraphQL, '#withdraw_create' do
   let(:response) do
     ArcanebetSchema.execute(query,
                             context: context,
-                            variables: variables)['data']['createWithdraw']
+                            variables: variables)['data']['withdraw']
   end
 
   context 'when successfully' do
