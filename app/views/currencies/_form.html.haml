@@ -8,6 +8,10 @@
       .col
         = f.input :name, required: true
         = f.input :code, required: true
+        = f.select :kind,
+            Currency.kinds,
+            { include_blank: false, required: true },
+            class: 'form-control'
 
         .row.mt-5
           .col
