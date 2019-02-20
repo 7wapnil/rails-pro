@@ -1,5 +1,5 @@
 class WithdrawalsController < ApplicationController
-  before_action :initiate_withdrawal, except: :index
+  before_action :find_withdrawal, only: %i[confirm reject]
 
   def index
     @withdrawals = Entry.withdraw.page(params[:page])
@@ -21,7 +21,7 @@ class WithdrawalsController < ApplicationController
 
   private
 
-  def initiate_withdrawal
+  def find_withdrawal
     @withdrawal = Entry.find(params[:id])
   end
 
