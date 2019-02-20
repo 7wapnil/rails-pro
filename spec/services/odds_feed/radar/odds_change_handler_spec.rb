@@ -260,7 +260,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
   describe '#market data' do
     subject { described_class.new(payload_single_market) }
 
-    context 'event_data odds empty' do
+    context 'input_data odds empty' do
       subject { described_class.new(payload) }
 
       let(:payload) do
