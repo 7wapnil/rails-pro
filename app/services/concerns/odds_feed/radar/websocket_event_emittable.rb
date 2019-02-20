@@ -25,6 +25,10 @@ module OddsFeed
 
           WebSocket::Client.instance.trigger_event_update(event)
         end
+
+        def input_data
+          raise NotImplementedError, 'The class must implement #input_data'
+        end
       end
     end
   end
