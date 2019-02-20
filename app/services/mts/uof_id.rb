@@ -8,7 +8,6 @@ module Mts
 
     def initialize(odd)
       @odd = odd
-      @event = odd.market.event
 
       event_producer_failure! unless producer
     end
@@ -31,6 +30,8 @@ module Mts
 
     private
 
+    delegate :producer, :title, to: :event
+
     def event_producer_failure!
       error = ArgumentError.new('Error with getting producer for event')
 
@@ -50,10 +51,6 @@ module Mts
       @event ||= @odd.market.event
     end
 
-    def producer
-      @event.producer
-    end
-
     def outcome_id
       parse_odd_external_id[4]
     end
@@ -63,7 +60,7 @@ module Mts
     end
 
     def sport_id
-      @event.title.external_id
+      title.external_id
     end
 
     def specifiers
