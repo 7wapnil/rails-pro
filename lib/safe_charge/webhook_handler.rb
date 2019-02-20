@@ -5,21 +5,21 @@ module SafeCharge
     end
 
     def call
-      reply.validate!
-      return entry_request.succeeded! if reply.approved?
-      return entry_request.pending! if reply.pending?
+      response.validate!
+      return entry_request.succeeded! if response.approved?
+      return entry_request.pending! if response.pending?
 
       entry_request.failed!
-    end
+    ends
 
     private
 
-    def reply
-      @reply ||= SafeCharge::Response.new(@params)
+    def response
+      @response ||= SafeCharge::Response.new(@params)
     end
 
     def entry_request
-      @entry_request ||= reply.entry_request
+      @entry_request ||= response.entry_request
     end
   end
 end
