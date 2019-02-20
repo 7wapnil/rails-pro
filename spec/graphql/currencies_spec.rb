@@ -7,32 +7,38 @@ describe GraphQL, '#currencies' do
                             variables: variables)
   end
 
-  describe 'query' do
+  describe '#resolve' do
     let(:query) { %({ currencies { id name code primary kind } }) }
 
     let(:currencies_in_system) { 2 }
-    let(:currencies) do
-      Array.new(currencies_in_system) { |_| build_stubbed(:currency) }
-    end
+    let(:currencies) { create_list(:currency, currencies_in_system) }
 
-    let(:expected_result_array) do
+    let!(:expected_result_array) do
       currencies.map do |currency|
         {
-          code: currency.code.to_s,
+          code: currency.code,
           id: currency.id.to_s,
-          name: currency.name.to_s,
+          name: currency.name,
           primary: currency.primary,
           kind: currency.kind
         }.stringify_keys!
       end
     end
 
-    before do
-      allow(Currency).to receive(:all) { currencies }
-    end
-
     it 'returns correct content of existing currencies' do
       expect(result['data']['currencies']).to match_array(expected_result_array)
+    end
+
+    context 'when multiple calls made' do
+      before do
+        allow(Currency).to receive(:all) { currencies }
+        Rails.cache.delete(Currencies::CurrencyQuery::CACHE_KEY)
+        2.times { result }
+      end
+
+      it 'caches responses' do
+        expect(Currency).to have_received(:all).once
+      end
     end
   end
 end
