@@ -4,6 +4,11 @@ class Currency < ApplicationRecord
   has_many :entry_currency_rules
   has_many :wallets
 
+  enum kind: {
+    fiat:   FIAT   = 'fiat'.freeze,
+    crypto: CRYPTO = 'crypto'.freeze
+  }
+
   accepts_nested_attributes_for :entry_currency_rules
 
   validates :name, :code, presence: true

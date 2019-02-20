@@ -5,6 +5,7 @@ FactoryBot.define do
     name    { Faker::Currency.name }
     code    { Currency.available_currency_codes.sample }
     primary { false }
+    kind    { Currency::FIAT }
 
     trait :primary do
       primary { true }
