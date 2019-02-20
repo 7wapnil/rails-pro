@@ -5,6 +5,7 @@ module Currencies
     field :id, types.ID
     field :code, !types.String
     field :name, !types.String
+    field :kind, !types.String
     field :primary, !types.Boolean
   end
 end

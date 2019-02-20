@@ -8,7 +8,7 @@ describe GraphQL, '#currencies' do
   end
 
   describe 'query' do
-    let(:query) { %({ currencies { id name code primary } }) }
+    let(:query) { %({ currencies { id name code primary kind } }) }
 
     let(:currencies_in_system) { 2 }
     let(:currencies) do
@@ -21,7 +21,8 @@ describe GraphQL, '#currencies' do
           code: currency.code.to_s,
           id: currency.id.to_s,
           name: currency.name.to_s,
-          primary: currency.primary
+          primary: currency.primary,
+          kind: currency.kind
         }.stringify_keys!
       end
     end
