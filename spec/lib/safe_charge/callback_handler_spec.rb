@@ -10,7 +10,7 @@ describe SafeCharge::CallbackHandler do
   let(:params) { { unique: :hash } }
   let(:approved_reply) do
     instance_double(
-      SafeCharge::Reply,
+      SafeCharge::Response,
       'validate!' => true,
       'approved?' => true,
       'pending?' => false,
@@ -20,7 +20,7 @@ describe SafeCharge::CallbackHandler do
 
   let(:pending_reply) do
     instance_double(
-      SafeCharge::Reply,
+      SafeCharge::Response,
       'validate!' => true,
       'approved?' => false,
       'pending?' => true,
@@ -30,7 +30,7 @@ describe SafeCharge::CallbackHandler do
 
   let(:cancel_reply) do
     instance_double(
-      SafeCharge::Reply,
+      SafeCharge::Response,
       'validate!' => true,
       'approved?' => false,
       'pending?' => false,
@@ -47,17 +47,17 @@ describe SafeCharge::CallbackHandler do
     [
       {
         name: 'invalid checksum',
-        error: SafeCharge::Reply::AUTHENTICATION_ERROR,
+        error: SafeCharge::Response::AUTHENTICATION_ERROR,
         outcome: Deposit::CallbackUrl::ERROR
       },
       {
         name: 'invalid entry request state',
-        error: SafeCharge::Reply::TYPE_ERROR,
+        error: SafeCharge::Response::TYPE_ERROR,
         outcome: Deposit::CallbackUrl::FAILED_ENTRY_REQUEST
       },
       {
         name: 'unknown source',
-        error: SafeCharge::Reply::AUTHENTICATION_ERROR,
+        error: SafeCharge::Response::AUTHENTICATION_ERROR,
         outcome: Deposit::CallbackUrl::ERROR
       }
     ].each do |example|
@@ -69,7 +69,7 @@ describe SafeCharge::CallbackHandler do
         before do
           allow(approved_reply)
             .to receive(:validate!).and_raise(example[:error])
-          allow(SafeCharge::Reply)
+          allow(SafeCharge::Response)
             .to receive(:new).with(params).and_return(approved_reply)
         end
 
@@ -129,7 +129,7 @@ describe SafeCharge::CallbackHandler do
         end
 
         before do
-          allow(SafeCharge::Reply)
+          allow(SafeCharge::Response)
             .to receive(:new).with(params)
                              .and_return(send(example[:reply_stub]))
         end

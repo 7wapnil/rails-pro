@@ -15,7 +15,7 @@ module SafeCharge
     private
 
     def reply
-      @reply ||= SafeCharge::Reply.new(@params)
+      @reply ||= SafeCharge::Response.new(@params)
     end
 
     def entry_request

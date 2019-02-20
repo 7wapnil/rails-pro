@@ -1,4 +1,4 @@
-describe SafeCharge::Reply do
+describe SafeCharge::Response do
   let(:secret_key) { Faker::Internet.password(30) }
 
   let(:transaction_status_code) { SafeCharge::Statuses::OK }

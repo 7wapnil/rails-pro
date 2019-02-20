@@ -1,5 +1,5 @@
 module SafeCharge
-  class Reply
+  class Response
     AUTHENTICATION_ERROR = DmnAuthenticationError
     TYPE_ERROR = Deposits::IncompatibleRequestStateError
     BUSINESS_EXCEPTIONS = [AUTHENTICATION_ERROR, TYPE_ERROR].freeze
