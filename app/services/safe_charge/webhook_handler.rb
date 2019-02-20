@@ -17,7 +17,7 @@ module SafeCharge
     delegate :entry_request, to: :response
 
     def response
-      @response ||= SafeCharge::Response.new(@params)
+      @response ||= SafeCharge::DepositResponse.new(@params)
     end
   end
 end

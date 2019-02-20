@@ -10,7 +10,7 @@ describe SafeCharge::CallbackHandler do
   let(:params) { { unique: :hash } }
   let(:approved_reply) do
     instance_double(
-      SafeCharge::Response,
+      SafeCharge::DepositResponse,
       'validate!' => true,
       'approved?' => true,
       'pending?' => false,
@@ -20,7 +20,7 @@ describe SafeCharge::CallbackHandler do
 
   let(:pending_reply) do
     instance_double(
-      SafeCharge::Response,
+      SafeCharge::DepositResponse,
       'validate!' => true,
       'approved?' => false,
       'pending?' => true,
@@ -30,7 +30,7 @@ describe SafeCharge::CallbackHandler do
 
   let(:cancel_reply) do
     instance_double(
-      SafeCharge::Response,
+      SafeCharge::DepositResponse,
       'validate!' => true,
       'approved?' => false,
       'pending?' => false,
@@ -47,17 +47,17 @@ describe SafeCharge::CallbackHandler do
     [
       {
         name: 'invalid checksum',
-        error: SafeCharge::Response::AUTHENTICATION_ERROR,
+        error: SafeCharge::DepositResponse::AUTHENTICATION_ERROR,
         outcome: Deposit::CallbackUrl::ERROR
       },
       {
         name: 'invalid entry request state',
-        error: SafeCharge::Response::TYPE_ERROR,
+        error: SafeCharge::DepositResponse::TYPE_ERROR,
         outcome: Deposit::CallbackUrl::FAILED_ENTRY_REQUEST
       },
       {
         name: 'unknown source',
-        error: SafeCharge::Response::AUTHENTICATION_ERROR,
+        error: SafeCharge::DepositResponse::AUTHENTICATION_ERROR,
         outcome: Deposit::CallbackUrl::ERROR
       }
     ].each do |example|
@@ -69,7 +69,7 @@ describe SafeCharge::CallbackHandler do
         before do
           allow(approved_reply)
             .to receive(:validate!).and_raise(example[:error])
-          allow(SafeCharge::Response)
+          allow(SafeCharge::DepositResponse)
             .to receive(:new).with(params).and_return(approved_reply)
         end
 
@@ -129,7 +129,7 @@ describe SafeCharge::CallbackHandler do
         end
 
         before do
-          allow(SafeCharge::Response)
+          allow(SafeCharge::DepositResponse)
             .to receive(:new).with(params)
                              .and_return(send(example[:reply_stub]))
         end

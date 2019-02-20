@@ -12,9 +12,9 @@ module SafeCharge
       return back_flow if cancel_context?
 
       fail_flow
-    rescue SafeCharge::Response::AUTHENTICATION_ERROR
+    rescue SafeCharge::DepositResponse::AUTHENTICATION_ERROR
       Deposit::CallbackUrl::ERROR
-    rescue SafeCharge::Response::TYPE_ERROR
+    rescue SafeCharge::DepositResponse::TYPE_ERROR
       Deposit::CallbackUrl::FAILED_ENTRY_REQUEST
     rescue StandardError => e
       Rails.logger.error(e.message)
@@ -65,7 +65,7 @@ module SafeCharge
     end
 
     def response
-      @response ||= SafeCharge::Response.new(@params)
+      @response ||= SafeCharge::DepositResponse.new(@params)
     end
   end
 end
