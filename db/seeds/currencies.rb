@@ -1,10 +1,10 @@
 puts 'Checking currencies ...'
 
 currency_mapping = [
-  { name: 'Euro', code: 'EUR', primary: true, kind: 'fiat' },
-  { name: 'Swedish Kronor', code: 'SEK', kind: 'fiat' },
-  { name: 'BitCoin', code: 'mBTC', kind: 'crypto' },
-  { name: 'Ethereum', code: 'ETH', kind: 'crypto' }
+  { name: 'Euro', code: 'EUR', primary: true, kind: Currency::FIAT },
+  { name: 'Swedish Kronor', code: 'SEK', kind: Currency::FIAT },
+  { name: 'BitCoin', code: 'mBTC', kind: Currency::CRYPTO },
+  { name: 'Ethereum', code: 'ETH', kind: Currency::CRYPTO }
 ]
 
 entry_currency_rule_ranges = {
