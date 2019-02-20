@@ -9,7 +9,7 @@ module Mts
     def initialize(odd)
       @odd = odd
 
-      not_radar_event! unless radar_event?
+      event_producer_failure! unless producer
     end
 
     # "uof:<product_id>/<sport id>/<market id>/<outcome
@@ -30,8 +30,10 @@ module Mts
 
     private
 
-    def not_radar_event!
-      error = ArgumentError.new('Not radar Event')
+    delegate :producer, :title, to: :event
+
+    def event_producer_failure!
+      error = ArgumentError.new('Error with getting producer for event')
 
       log_job_failure(error)
       raise error
@@ -41,27 +43,12 @@ module Mts
       specifiers.empty? ? nil : "?#{specifiers}"
     end
 
-    def radar_event?
-      producer['origin'] == 'radar'
-    end
-
     def product_id
-      producer['id'].to_i
+      producer.id
     end
 
-    def producer
-      unless @odd.market.event.payload
-        log_job_failure('Missing payload')
-        raise 'Missing payload'
-      end
-
-      producer_value = @odd.market.event.payload['producer']
-      unless producer_value
-        log_job_failure('Missing producer')
-        raise 'Missing producer'
-      end
-
-      producer_value
+    def event
+      @event ||= @odd.market.event
     end
 
     def outcome_id
@@ -73,7 +60,7 @@ module Mts
     end
 
     def sport_id
-      @odd.market.event.title.external_id
+      title.external_id
     end
 
     def specifiers
