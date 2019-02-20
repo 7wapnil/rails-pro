@@ -10,7 +10,7 @@ module SafeCharge
       return entry_request.pending! if response.pending?
 
       entry_request.failed!
-    ends
+    end
 
     private
 
