@@ -1,6 +1,6 @@
 module EntryRequests
   module Factories
-    class Withdraw < ApplicationService
+    class Withdrawal < ApplicationService
       def initialize(wallet:, amount:, mode: EntryRequest::CASHIER, **attrs)
         @wallet = wallet
         @amount = amount
@@ -12,8 +12,11 @@ module EntryRequests
 
       def call
         create_entry_request!
+        verify_withdrawal!
         create_balance_entry_request!
         entry_request
+      rescue Withdrawals::WithdrawalError => e
+        entry_request.register_failure!(e.message)
       end
 
       private
@@ -36,8 +39,13 @@ module EntryRequests
         )
       end
 
+      def verify_withdrawal!
+        Withdrawals::WithdrawalVerification.call(wallet, amount)
+      end
+
       def create_balance_entry_request!
-        BalanceRequestBuilders::Withdraw.call(entry_request, real_money: amount)
+        BalanceRequestBuilders::Withdrawal.call(entry_request,
+                                                real_money: amount)
       end
     end
   end

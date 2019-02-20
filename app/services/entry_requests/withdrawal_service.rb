@@ -1,4 +1,4 @@
-module Withdrawals
+module EntryRequests
   class WithdrawalService < ApplicationService
     def initialize(entry_request:)
       @entry_request = entry_request

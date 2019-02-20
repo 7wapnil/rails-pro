@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 module EntryRequests
-  class WithdrawWorker < BaseWorker
+  class WithdrawalWorker < BaseWorker
     private
 
     def processing_service
-      Withdrawals::WithdrawalService
+      EntryRequests::WithdrawalService
     end
   end
 end

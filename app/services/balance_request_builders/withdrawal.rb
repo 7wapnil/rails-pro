@@ -1,5 +1,5 @@
 module BalanceRequestBuilders
-  class Withdraw < BaseBuilder
+  class Withdrawal < BaseBuilder
     protected
 
     def balance_entry_requests

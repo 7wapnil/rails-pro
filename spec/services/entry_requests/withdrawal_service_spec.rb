@@ -1,4 +1,4 @@
-describe Withdrawals::WithdrawalService do
+describe EntryRequests::WithdrawalService do
   subject(:service) do
     described_class.new(entry_request: entry_request)
   end

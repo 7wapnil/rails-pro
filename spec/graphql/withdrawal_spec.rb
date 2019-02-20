@@ -1,4 +1,4 @@
-describe GraphQL, '#withdraw_create' do
+describe GraphQL, '#withdraw' do
   let(:auth_customer) { create(:customer) }
   let(:context) { { current_customer: auth_customer } }
   let(:variables) { { amount: 10.0, walletId: wallet.id } }
@@ -28,18 +28,18 @@ describe GraphQL, '#withdraw_create' do
     let(:response_entry_request) { OpenStruct.new(response['entryRequest']) }
 
     before do
-      allow(Withdrawals::InitiateWithdrawalService)
+      allow(EntryRequests::Factories::Withdrawal)
         .to receive(:call) { entry_request }
 
-      allow(EntryRequests::WithdrawWorker)
+      allow(EntryRequests::WithdrawalWorker)
         .to receive(:perform_async)
         .and_call_original
     end
 
-    it 'passes withdraw request to WithdrawWorker' do
+    it 'passes withdrawal request to WithdrawalWorker' do
       response
 
-      expect(EntryRequests::WithdrawWorker)
+      expect(EntryRequests::WithdrawalWorker)
         .to have_received(:perform_async)
         .with(entry_request.id)
     end
@@ -61,7 +61,7 @@ describe GraphQL, '#withdraw_create' do
     let(:error_msg) { Faker::Lorem.sentence }
 
     before do
-      allow(Withdrawals::InitiateWithdrawalService).to receive(:call)
+      allow(EntryRequests::Factories::Withdrawal).to receive(:call)
         .and_raise(error_class, error_msg)
     end
 

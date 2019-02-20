@@ -10,8 +10,8 @@ module Withdrawals
 
     def resolve(_obj, args)
       wallet = find_customer_wallet(args['walletId'])
-      withdrawal = initiate_withdrawal(wallet, args['amount'])
-      EntryRequests::WithdrawWorker.perform_async(withdrawal.id)
+      withdrawal = create_withdrawal!(wallet, args['amount'])
+      EntryRequests::WithdrawalWorker.perform_async(withdrawal.id)
 
       OpenStruct.new(
         entryRequest: withdrawal,
@@ -30,9 +30,8 @@ module Withdrawals
       @current_customer.wallets.find(wallet_id)
     end
 
-    def initiate_withdrawal(wallet, amount)
-      Withdrawals::InitiateWithdrawalService.call(wallet: wallet,
-                                                  amount: amount)
+    def create_withdrawal!(wallet, amount)
+      EntryRequests::Factories::Withdrawal.call(wallet: wallet, amount: amount)
     end
   end
 end
