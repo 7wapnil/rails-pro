@@ -37,10 +37,7 @@ module SafeCharge
     end
 
     def valid_entry_request_state?
-      entry_request &&
-        entry_request.kind == EntryRequest::DEPOSIT &&
-        [EntryRequest::INITIAL, EntryRequest::PENDING]
-          .include?(entry_request.status)
+      entry_request&.kind == EntryRequest::DEPOSIT
     end
 
     def validate_checksum!
