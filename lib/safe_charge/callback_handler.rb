@@ -6,9 +6,9 @@ module SafeCharge
     end
 
     def call
-      reply.validate!
-      return success_flow if reply.approved?
-      return pending_flow if reply.pending?
+      response.validate!
+      return success_flow if response.approved?
+      return pending_flow if response.pending?
       return back_flow if cancel_context?
 
       fail_flow
@@ -22,6 +22,8 @@ module SafeCharge
     end
 
     private
+
+    delegate :entry_request, to: :response, allow_nil: true
 
     def cancel_context?
       @context == Deposit::CallbackUrl::BACK
@@ -62,12 +64,8 @@ module SafeCharge
       @context == Deposit::CallbackUrl::SUCCESS
     end
 
-    def reply
-      @reply ||= SafeCharge::Response.new(@params)
-    end
-
-    def entry_request
-      @entry_request ||= reply.entry_request
+    def response
+      @response ||= SafeCharge::Response.new(@params)
     end
   end
 end

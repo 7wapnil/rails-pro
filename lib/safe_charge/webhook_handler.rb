@@ -14,12 +14,10 @@ module SafeCharge
 
     private
 
+    delegate :entry_request, to: :response
+
     def response
       @response ||= SafeCharge::Response.new(@params)
-    end
-
-    def entry_request
-      @entry_request ||= response.entry_request
     end
   end
 end
