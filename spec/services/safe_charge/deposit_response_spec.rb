@@ -11,7 +11,7 @@ describe SafeCharge::DepositResponse do
   let(:transaction_id) { Faker::Number.number(9) }
   let(:transaction_status) { SafeCharge::Statuses::APPROVED }
   let(:product_id) do
-    "Deposit #{total_amount} to your #{currency_code} wallet on ArcaneBet."
+    entry_request.id.to_s
   end
 
   let(:correct_checksum) do
@@ -28,7 +28,6 @@ describe SafeCharge::DepositResponse do
     Digest::SHA256.hexdigest(checksum_string)
   end
 
-  # TODO: Do not use merchant_unique_id, due to insecure nature
   let(:params) do
     {
       'ppp_status' => transaction_status_code,
@@ -38,8 +37,7 @@ describe SafeCharge::DepositResponse do
       'PPP_TransactionID' => transaction_id.to_s,
       'Status' => transaction_status,
       'productId' => product_id,
-      'advanceResponseChecksum' => correct_checksum,
-      'merchant_unique_id' => entry_request.id.to_s
+      'advanceResponseChecksum' => correct_checksum
     }
   end
 
@@ -51,7 +49,7 @@ describe SafeCharge::DepositResponse do
 
   before do
     allow(ENV).to receive(:[])
-                    .with('SAFECHARGE_SECRET_KEY').and_return(secret_key)
+      .with('SAFECHARGE_SECRET_KEY').and_return(secret_key)
     allow(EntryRequest)
       .to receive(:find).with(entry_request.id).and_return(entry_request)
   end

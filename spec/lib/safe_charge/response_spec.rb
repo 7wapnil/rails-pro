@@ -28,7 +28,6 @@ describe SafeCharge::Response do
     Digest::SHA256.hexdigest(checksum_string)
   end
 
-  # TODO: Do not use merchant_unique_id, due to insecure nature
   let(:params) do
     {
       'ppp_status' => transaction_status_code,

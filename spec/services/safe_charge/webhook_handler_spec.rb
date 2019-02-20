@@ -7,7 +7,7 @@ describe SafeCharge::WebhookHandler do
       'ppp_status' => SafeCharge::Statuses::OK,
       'Status' => SafeCharge::Statuses::APPROVED,
       'advanceResponseChecksum' => webhook_checksum,
-      'merchant_unique_id' => entry_request.id
+      'productId' => entry_request.id
     }
   end
 

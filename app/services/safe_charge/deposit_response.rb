@@ -33,7 +33,7 @@ module SafeCharge
     end
 
     def entry_request_id
-      params['merchant_unique_id'].to_i
+      params['productId'].to_i
     end
   end
 end
