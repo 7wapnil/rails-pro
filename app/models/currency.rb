@@ -1,6 +1,8 @@
 class Currency < ApplicationRecord
   include Loggable
 
+  after_save :invalidate_cache
+
   has_many :entry_currency_rules
   has_many :wallets
 
@@ -34,5 +36,11 @@ class Currency < ApplicationRecord
     { id: id,
       code: code,
       name: name }
+  end
+
+  private
+
+  def invalidate_cache
+    Rails.cache.delete(Currencies::CurrencyQuery::CACHE_KEY)
   end
 end

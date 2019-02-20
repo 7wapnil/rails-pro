@@ -40,5 +40,19 @@ describe GraphQL, '#currencies' do
         expect(Currency).to have_received(:all).once
       end
     end
+
+    context 'when multiple calls made with data changed on the go' do
+      before do
+        allow(Currency).to receive(:all) { currencies }
+        Rails.cache.delete(Currencies::CurrencyQuery::CACHE_KEY)
+        result
+        Currency.first.update(code: 'NEW')
+        result
+      end
+
+      it 'caches responses' do
+        expect(Currency).to have_received(:all).twice
+      end
+    end
   end
 end
