@@ -56,22 +56,21 @@ describe Redirect::DepositsController do
       let(:invalid_currency_code) { wallet.currency.code + 'RUBBISH' }
       let(:generic_error_callback_url) { Faker::Internet.url }
       let(:error_callback_url) { Faker::Internet.url }
-      let(:deposit_attempts_exeeded_callback_url) { Faker::Internet.url }
+      let(:deposit_attempts_exceeded_callback_url) { Faker::Internet.url }
 
       before do
         allow(Deposit::CallbackUrl)
-          .to receive(:for).with(Deposit::CallbackUrl::SOMETHING_WENT_WRONG) {
-                generic_error_callback_url
-              }
-        allow(Deposit::CallbackUrl)
-          .to receive(:for).with(Deposit::CallbackUrl::ERROR) {
-                error_callback_url
-              }
+          .to receive(:for)
+          .with(Deposit::CallbackUrl::SOMETHING_WENT_WRONG)
+          .and_return(generic_error_callback_url)
         allow(Deposit::CallbackUrl)
           .to receive(:for)
-            .with(Deposit::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED) {
-                deposit_attempts_exeeded_callback_url
-              }
+          .with(Deposit::CallbackUrl::ERROR)
+          .and_return(error_callback_url)
+        allow(Deposit::CallbackUrl)
+          .to receive(:for)
+          .with(Deposit::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
+          .and_return(deposit_attempts_exceeded_callback_url)
       end
 
       it 'redirects to callback url on invalid customer id ' do
