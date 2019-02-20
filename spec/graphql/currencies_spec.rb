@@ -29,29 +29,13 @@ describe GraphQL, '#currencies' do
       expect(result['data']['currencies']).to match_array(expected_result_array)
     end
 
-    context 'when multiple calls made' do
+    describe 'relies on cached data' do
       before do
-        allow(Currency).to receive(:all) { currencies }
-        Rails.cache.delete(Currencies::CurrencyQuery::CACHE_KEY)
-        2.times { result }
+        allow(Currency).to receive(:cached_all) { [create(:currency)] }
       end
 
-      it 'caches responses' do
-        expect(Currency).to have_received(:all).once
-      end
-    end
-
-    context 'when multiple calls made with data changed on the go' do
-      before do
-        allow(Currency).to receive(:all) { currencies }
-        Rails.cache.delete(Currencies::CurrencyQuery::CACHE_KEY)
-        result
-        Currency.first.update(code: 'NEW')
-        result
-      end
-
-      it 'caches responses' do
-        expect(Currency).to have_received(:all).twice
+      it 'returns cached source length of currencies' do
+        expect(result['data']['currencies'].size).to eq 1
       end
     end
   end

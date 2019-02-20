@@ -1,7 +1,5 @@
 module Currencies
   class CurrencyQuery < ::Base::Resolver
-    CACHE_KEY = 'cache/currencies'.freeze
-
     type !types[CurrencyType]
 
     description 'Get supported currencies'
@@ -11,9 +9,7 @@ module Currencies
     end
 
     def resolve(_obj, _args)
-      Rails.cache.fetch(CACHE_KEY, expires_in: 24.hours) do
-        Currency.all
-      end
+      Currency.cached_all
     end
   end
 end
