@@ -13,11 +13,6 @@ module EntryRequests
 
     attr_reader :entry_request, :entry
 
-    def wallet
-      @wallet ||= Wallet.find_by(customer_id: entry_request.customer_id,
-                                 currency_id: entry_request.currency_id)
-    end
-
     def authorize_entry_request!
       @entry = WalletEntry::AuthorizationService.call(entry_request)
     end
