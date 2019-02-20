@@ -1,9 +1,13 @@
 module Deposit
   class CallbackUrl
-    REQUEST_FAILED_MESSAGE = 'Deposit request failed'.freeze
-    REQUEST_MESSAGE_CANCELLED_MESSAGE = 'Deposit request cancelled'.freeze
-    SOMETHING_WENT_WRONG_MESSAGE = 'Technical error happened'.freeze
-    FAILED_ENTRY_REQUEST_MESSAGE = 'Deposit is not allowed'.freeze
+    REQUEST_FAILED_MESSAGE =
+      I18n.t('errors.messages.deposit_request_failed')
+    REQUEST_MESSAGE_CANCELLED_MESSAGE =
+      I18n.t('errors.messages.deposit_request_cancelled')
+    SOMETHING_WENT_WRONG_MESSAGE =
+      I18n.t('errors.messages.technical_error_happened')
+    FAILED_ENTRY_REQUEST_MESSAGE =
+      I18n.t('errors.messages.deposit_attempt_is_not_succeded')
     DEPOSIT_ATTEMPTS_EXCEEDED_MESSAGE =
       I18n.t('errors.messages.deposit_attempts_exceeded')
 
