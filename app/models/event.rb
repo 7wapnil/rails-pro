@@ -31,6 +31,11 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   BOOKABLE = 'bookable'
 
+  START_STATUSES = [
+    UPCOMING = 'upcoming',
+    LIVE = 'live'
+  ].freeze
+
   ransacker :markets_count do
     Arel.sql('markets_count')
   end
@@ -129,6 +134,12 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     where(start_at: [Date.today.beginning_of_day..Date.today.end_of_day])
   end
 
+  def start_status
+    return LIVE if alive?
+
+    UPCOMING if upcoming?
+  end
+
   def upcoming?
     start_at > Time.zone.now && !end_at
   end
@@ -177,6 +188,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def alive?
-    traded_live? && (in_play? || suspended?)
+    traded_live? && (in_play?(limited: true) || suspended?)
   end
 end

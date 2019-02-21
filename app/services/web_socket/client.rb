@@ -51,8 +51,7 @@ module WebSocket
       trigger(
         SubscriptionFields::KIND_EVENT_UPDATED,
         event,
-        kind: event.title.kind,
-        live: event.in_play?(limited: true)
+        kind: event.title.kind
       )
     end
 
@@ -62,8 +61,7 @@ module WebSocket
       trigger(
         SubscriptionFields::SPORT_EVENT_UPDATED,
         event,
-        title: event.title_id,
-        live: event.in_play?(limited: true)
+        title: event.title_id
       )
     end
 
@@ -73,8 +71,7 @@ module WebSocket
       trigger(
         SubscriptionFields::CATEGORY_EVENT_UPDATED,
         event,
-        category: event.category.id,
-        live: event.in_play?(limited: true)
+        category: event.category.id
       )
     end
 
@@ -84,8 +81,7 @@ module WebSocket
       trigger(
         SubscriptionFields::TOURNAMENT_EVENT_UPDATED,
         event,
-        tournament: event.tournament.id,
-        live: event.in_play?(limited: true)
+        tournament: event.tournament.id
       )
     end
 

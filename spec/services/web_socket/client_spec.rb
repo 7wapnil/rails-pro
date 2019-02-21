@@ -33,8 +33,7 @@ describe WebSocket::Client do
         .with(
           SubscriptionFields::KIND_EVENT_UPDATED,
           event,
-          kind: event.title.kind,
-          live: event.in_play?
+          kind: event.title.kind
         )
     end
 
@@ -44,8 +43,7 @@ describe WebSocket::Client do
         .with(
           SubscriptionFields::SPORT_EVENT_UPDATED,
           event,
-          title: event.title_id,
-          live: event.in_play?
+          title: event.title_id
         )
     end
 
@@ -55,8 +53,7 @@ describe WebSocket::Client do
         .with(
           SubscriptionFields::CATEGORY_EVENT_UPDATED,
           event,
-          category: event.category.id,
-          live: event.in_play?
+          category: event.category.id
         )
     end
 
@@ -66,8 +63,7 @@ describe WebSocket::Client do
         .with(
           SubscriptionFields::TOURNAMENT_EVENT_UPDATED,
           event,
-          tournament: event.tournament&.id,
-          live: event.in_play?
+          tournament: event.tournament.id
         )
     end
   end
