@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :producer, class: Radar::Producer.name do
     sequence(:id, 10) { |n| n }
     recover_requested_at { nil }
-    code { Faker::Lorem.word.to_sym }
+    code { Faker::Alphanumeric.alpha(10).to_sym }
     recovery_snapshot_id { Faker::Number.number(8) }
     state { Radar::Producer::HEALTHY }
     last_successful_subscribed_at do
