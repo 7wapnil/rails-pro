@@ -1,6 +1,8 @@
 module OddsFeed
   module Radar
     class BetStopHandler < RadarMessageHandler
+      include WebsocketEventEmittable
+
       attr_accessor :batch_size
 
       def initialize(payload)
@@ -12,6 +14,8 @@ module OddsFeed
         build_query.find_in_batches(batch_size: @batch_size) do |batch|
           update_markets(batch)
         end
+
+        emit_websocket
       end
 
       private
@@ -25,7 +29,7 @@ module OddsFeed
           .joins(:event)
           .where(
             status: Market::ACTIVE,
-            events: { external_id: input_data['event_id'] }
+            events: { external_id: event_id }
           )
       end
 

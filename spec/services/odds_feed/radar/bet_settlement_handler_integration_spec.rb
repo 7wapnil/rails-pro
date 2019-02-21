@@ -52,6 +52,8 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
            kind: EntryRequest::REFUND,
            min_amount: 1,
            max_amount: 1000)
+
+    allow(WebSocket::Client.instance).to receive(:trigger_event_update)
   end
 
   BETS_OUTCOME_EXAMPLES = [

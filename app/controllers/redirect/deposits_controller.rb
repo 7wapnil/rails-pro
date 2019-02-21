@@ -7,7 +7,7 @@ module Redirect
         ::Deposits::InitiateHostedDepositService.call(
           customer: customer,
           currency: currency_by_code,
-          amount: initiate_params[:amount],
+          amount: initiate_params[:amount].to_d,
           bonus_code: initiate_params[:bonus_code]
         )
 

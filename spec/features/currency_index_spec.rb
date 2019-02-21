@@ -14,6 +14,7 @@ describe Currency, '#index' do
         Currency.limit(per_page_count).each do |currency|
           expect(page).to have_content(currency.code)
           expect(page).to have_content(currency.name)
+          expect(page).to have_content(currency.kind)
         end
       end
     end

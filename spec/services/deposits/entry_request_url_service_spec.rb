@@ -32,7 +32,10 @@ describe Deposits::EntryRequestUrlService do
       it 'calls callback service' do
         expect(Deposits::CallbackUrl)
           .to have_received(:for)
-          .with(:failed_entry_request, message: entry_request.result).once
+          .with(
+            :failed_entry_request,
+            message: entry_request.result['message']
+          ).once
       end
     end
 
