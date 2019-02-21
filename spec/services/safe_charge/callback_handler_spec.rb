@@ -8,7 +8,7 @@ describe SafeCharge::CallbackHandler do
   end
 
   let(:params) { { unique: :hash } }
-  let(:approved_reply) do
+  let(:approved_response) do
     instance_double(
       SafeCharge::DepositResponse,
       'validate!' => true,
@@ -18,7 +18,7 @@ describe SafeCharge::CallbackHandler do
     )
   end
 
-  let(:pending_reply) do
+  let(:pending_response) do
     instance_double(
       SafeCharge::DepositResponse,
       'validate!' => true,
@@ -28,7 +28,7 @@ describe SafeCharge::CallbackHandler do
     )
   end
 
-  let(:cancel_reply) do
+  let(:cancel_response) do
     instance_double(
       SafeCharge::DepositResponse,
       'validate!' => true,
@@ -41,6 +41,7 @@ describe SafeCharge::CallbackHandler do
   before do
     allow(entry_request).to receive('succeeded!')
     allow(entry_request).to receive('failed!')
+    allow(entry_request).to receive('pending!')
   end
 
   describe '#call' do
@@ -67,85 +68,102 @@ describe SafeCharge::CallbackHandler do
         end
 
         before do
-          allow(approved_reply)
+          allow(approved_response)
             .to receive(:validate!).and_raise(example[:error])
           allow(SafeCharge::DepositResponse)
-            .to receive(:new).with(params).and_return(approved_reply)
+            .to receive(:new).with(params).and_return(approved_response)
         end
 
-        it 'returns success' do
+        it "returns #{example[:outcome]}" do
           expect(service_outcome).to eq example[:outcome]
         end
       end
     end
 
-    [
-      {
-        name: 'approved message, correct context',
-        passed_context: Deposits::CallbackUrl::SUCCESS,
-        reply_stub: 'approved_reply',
-        request_change: 'succeeded!',
-        outcome: Deposits::CallbackUrl::SUCCESS
-      },
-      {
-        name: 'approved message, incorrect context',
-        passed_context: 'invalid_context',
-        reply_stub: 'approved_reply',
-        request_change: nil,
-        outcome: Deposits::CallbackUrl::SOMETHING_WENT_WRONG
-      },
-      {
-        name: 'pending message',
-        passed_context: Deposits::CallbackUrl::PENDING,
-        reply_stub: 'pending_reply',
-        request_change: nil,
-        outcome: Deposits::CallbackUrl::PENDING
-      },
-      {
-        name: 'pending message, incorrect context',
-        passed_context: 'invalid_context',
-        reply_stub: 'pending_reply',
-        request_change: nil,
-        outcome: Deposits::CallbackUrl::SOMETHING_WENT_WRONG
-      },
-      {
-        name: 'cancel flow',
-        passed_context: Deposits::CallbackUrl::BACK,
-        reply_stub: 'cancel_reply',
-        request_change: 'failed!',
-        outcome: Deposits::CallbackUrl::BACK
-      },
-      {
-        name: 'default failure flow',
-        passed_context: 'invalid_context',
-        reply_stub: 'cancel_reply',
-        request_change: 'failed!',
-        outcome: Deposits::CallbackUrl::ERROR
-      }
-    ].each do |example|
-      context "with valid reply, #{example[:name]}" do
-        subject(:service_outcome) do
-          described_class.call(params, example[:passed_context])
-        end
-
-        before do
-          allow(SafeCharge::DepositResponse)
-            .to receive(:new).with(params)
-                             .and_return(send(example[:reply_stub]))
-        end
-
-        if example[:request_change]
-          it "calls #{example[:request_change]} on entry request" do
-            service_outcome
-            expect(entry_request)
-              .to have_received(example[:request_change]).once
-          end
-        end
-
-        it "return #{example[:outcome]}" do
-          expect(service_outcome).to eq example[:outcome]
-        end
+    shared_examples 'SafeCharge callback spec' do
+      subject(:service_outcome) do
+        described_class.call(params, passed_context)
       end
+
+      before do
+        allow(SafeCharge::DepositResponse)
+          .to receive(:new)
+          .with(params)
+          .and_return(response)
+      end
+
+      it 'processes entry request correctly' do
+        service_outcome
+        expect(entry_request)
+          .to have_received(entry_request_call)
+          .exactly(expected_entry_request_call_count).times
+      end
+
+      it 'returns expected outcome' do
+        expect(service_outcome).to eq expected_outcome
+      end
+    end
+
+    let(:invalid_context) { 'invalid_context' }
+
+    context 'with approved message, correct context' do
+      let(:passed_context) { Deposits::CallbackUrl::SUCCESS }
+      let(:response) { approved_response }
+      let(:entry_request_call) { 'succeeded!' }
+      let(:expected_entry_request_call_count) { 1 }
+      let(:expected_outcome) { Deposits::CallbackUrl::SUCCESS }
+
+      it_behaves_like 'SafeCharge callback spec'
+    end
+
+    context 'with approved message, incorrect context' do
+      let(:passed_context) { invalid_context }
+      let(:response) { approved_response }
+      let(:entry_request_call) { 'succeeded!' }
+      let(:expected_entry_request_call_count) { 0 }
+      let(:expected_outcome) { Deposits::CallbackUrl::SOMETHING_WENT_WRONG }
+
+      it_behaves_like 'SafeCharge callback spec'
+    end
+
+    context 'with pending message' do
+      let(:passed_context) { Deposits::CallbackUrl::PENDING }
+      let(:response) { pending_response }
+      let(:entry_request_call) { 'pending!' }
+      let(:expected_entry_request_call_count) { 0 }
+      let(:expected_outcome) { Deposits::CallbackUrl::PENDING }
+
+      it_behaves_like 'SafeCharge callback spec'
+    end
+
+    context 'with pending message, incorrect context' do
+      let(:passed_context) { invalid_context }
+      let(:response) { pending_response }
+      let(:entry_request_call) { 'pending!' }
+      let(:expected_entry_request_call_count) { 0 }
+      let(:expected_outcome) { Deposits::CallbackUrl::SOMETHING_WENT_WRONG }
+
+      it_behaves_like 'SafeCharge callback spec'
+    end
+
+    context 'with cancel flow' do
+      let(:passed_context) { Deposits::CallbackUrl::BACK }
+      let(:response) { cancel_response }
+      let(:entry_request_call) { 'failed!' }
+      let(:expected_entry_request_call_count) { 1 }
+      let(:expected_outcome) { Deposits::CallbackUrl::BACK }
+
+      it_behaves_like 'SafeCharge callback spec'
+    end
+
+    context 'with default failure flow' do
+      let(:passed_context) { invalid_context }
+      let(:response) { cancel_response }
+      let(:entry_request_call) { 'failed!' }
+      let(:expected_entry_request_call_count) { 1 }
+      let(:expected_outcome) { Deposits::CallbackUrl::ERROR }
+
+      it_behaves_like 'SafeCharge callback spec'
     end
   end
 end
