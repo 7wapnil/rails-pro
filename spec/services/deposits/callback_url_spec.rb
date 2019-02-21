@@ -1,4 +1,4 @@
-describe Deposit::CallbackUrl do
+describe Deposits::CallbackUrl do
   let(:frontend_url) { Faker::Internet.url }
 
   before do

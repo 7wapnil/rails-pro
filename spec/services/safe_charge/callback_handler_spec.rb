@@ -48,22 +48,22 @@ describe SafeCharge::CallbackHandler do
       {
         name: 'invalid checksum',
         error: SafeCharge::DepositResponse::AUTHENTICATION_ERROR,
-        outcome: Deposit::CallbackUrl::ERROR
+        outcome: Deposits::CallbackUrl::ERROR
       },
       {
         name: 'invalid entry request state',
         error: SafeCharge::DepositResponse::TYPE_ERROR,
-        outcome: Deposit::CallbackUrl::FAILED_ENTRY_REQUEST
+        outcome: Deposits::CallbackUrl::FAILED_ENTRY_REQUEST
       },
       {
         name: 'unknown source',
         error: SafeCharge::DepositResponse::AUTHENTICATION_ERROR,
-        outcome: Deposit::CallbackUrl::ERROR
+        outcome: Deposits::CallbackUrl::ERROR
       }
     ].each do |example|
       context "with #{example[:name]} failure on entry request validation" do
         subject(:service_outcome) do
-          described_class.call(params, Deposit::CallbackUrl::SUCCESS)
+          described_class.call(params, Deposits::CallbackUrl::SUCCESS)
         end
 
         before do
@@ -82,45 +82,45 @@ describe SafeCharge::CallbackHandler do
     [
       {
         name: 'approved message, correct context',
-        passed_context: Deposit::CallbackUrl::SUCCESS,
+        passed_context: Deposits::CallbackUrl::SUCCESS,
         reply_stub: 'approved_reply',
         request_change: 'succeeded!',
-        outcome: Deposit::CallbackUrl::SUCCESS
+        outcome: Deposits::CallbackUrl::SUCCESS
       },
       {
         name: 'approved message, incorrect context',
         passed_context: 'invalid_context',
         reply_stub: 'approved_reply',
         request_change: nil,
-        outcome: Deposit::CallbackUrl::SOMETHING_WENT_WRONG
+        outcome: Deposits::CallbackUrl::SOMETHING_WENT_WRONG
       },
       {
         name: 'pending message',
-        passed_context: Deposit::CallbackUrl::PENDING,
+        passed_context: Deposits::CallbackUrl::PENDING,
         reply_stub: 'pending_reply',
         request_change: nil,
-        outcome: Deposit::CallbackUrl::PENDING
+        outcome: Deposits::CallbackUrl::PENDING
       },
       {
         name: 'pending message, incorrect context',
         passed_context: 'invalid_context',
         reply_stub: 'pending_reply',
         request_change: nil,
-        outcome: Deposit::CallbackUrl::SOMETHING_WENT_WRONG
+        outcome: Deposits::CallbackUrl::SOMETHING_WENT_WRONG
       },
       {
         name: 'cancel flow',
-        passed_context: Deposit::CallbackUrl::BACK,
+        passed_context: Deposits::CallbackUrl::BACK,
         reply_stub: 'cancel_reply',
         request_change: 'failed!',
-        outcome: Deposit::CallbackUrl::BACK
+        outcome: Deposits::CallbackUrl::BACK
       },
       {
         name: 'default failure flow',
         passed_context: 'invalid_context',
         reply_stub: 'cancel_reply',
         request_change: 'failed!',
-        outcome: Deposit::CallbackUrl::ERROR
+        outcome: Deposits::CallbackUrl::ERROR
       }
     ].each do |example|
       context "with valid reply, #{example[:name]}" do

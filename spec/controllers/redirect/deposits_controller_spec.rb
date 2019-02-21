@@ -59,17 +59,17 @@ describe Redirect::DepositsController do
       let(:deposit_attempts_exceeded_callback_url) { Faker::Internet.url }
 
       before do
-        allow(Deposit::CallbackUrl)
+        allow(Deposits::CallbackUrl)
           .to receive(:for)
-          .with(Deposit::CallbackUrl::SOMETHING_WENT_WRONG)
+          .with(Deposits::CallbackUrl::SOMETHING_WENT_WRONG)
           .and_return(generic_error_callback_url)
-        allow(Deposit::CallbackUrl)
+        allow(Deposits::CallbackUrl)
           .to receive(:for)
-          .with(Deposit::CallbackUrl::ERROR)
+          .with(Deposits::CallbackUrl::ERROR)
           .and_return(error_callback_url)
-        allow(Deposit::CallbackUrl)
+        allow(Deposits::CallbackUrl)
           .to receive(:for)
-          .with(Deposit::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
+          .with(Deposits::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
           .and_return(deposit_attempts_exceeded_callback_url)
       end
 
@@ -105,7 +105,7 @@ describe Redirect::DepositsController do
       let(:valid_token) { JwtService.encode(id: customer.id) }
 
       before do
-        allow(Deposit::CallbackUrl)
+        allow(Deposits::CallbackUrl)
           .to receive(:for).with(:deposit_attempts_exceeded) { callback_url }
 
         allow(Deposits::InitiateHostedDepositService)
@@ -130,7 +130,7 @@ describe Redirect::DepositsController do
         before do
           allow(SafeCharge::CallbackHandler)
             .to receive(:call) { some_state }
-          allow(Deposit::CallbackUrl)
+          allow(Deposits::CallbackUrl)
             .to receive(:for).with(some_state) { callback_url }
         end
 

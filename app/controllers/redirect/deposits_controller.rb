@@ -17,29 +17,29 @@ module Redirect
         .call(entry_request: entry_request)
     rescue ActiveRecord::RecordNotFound, JWT::DecodeError
       Rails.logger.error 'Deposit request with corrupted data received.'
-      callback_redirect_for(Deposit::CallbackUrl::ERROR)
+      callback_redirect_for(Deposits::CallbackUrl::ERROR)
     rescue Deposits::DepositAttemptError
       Rails.logger.error 'Customer deposit attempts exceeded.'
-      callback_redirect_for(Deposit::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
+      callback_redirect_for(Deposits::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
     rescue StandardError
       Rails.logger.error 'Something went wrong on deposit initiation'
-      callback_redirect_for(Deposit::CallbackUrl::SOMETHING_WENT_WRONG)
+      callback_redirect_for(Deposits::CallbackUrl::SOMETHING_WENT_WRONG)
     end
 
     def success
-      callback(Deposit::CallbackUrl::SUCCESS)
+      callback(Deposits::CallbackUrl::SUCCESS)
     end
 
     def error
-      callback(Deposit::CallbackUrl::ERROR)
+      callback(Deposits::CallbackUrl::ERROR)
     end
 
     def pending
-      callback(Deposit::CallbackUrl::PENDING)
+      callback(Deposits::CallbackUrl::PENDING)
     end
 
     def back
-      callback(Deposit::CallbackUrl::BACK)
+      callback(Deposits::CallbackUrl::BACK)
     end
 
     def callback(context)
@@ -68,7 +68,7 @@ module Redirect
     end
 
     def callback_redirect_for(state)
-      redirect_to Deposit::CallbackUrl.for(state)
+      redirect_to Deposits::CallbackUrl.for(state)
     end
 
     def initiate_params

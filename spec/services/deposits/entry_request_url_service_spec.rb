@@ -25,12 +25,12 @@ describe Deposits::EntryRequestUrlService do
       end
 
       before do
-        allow(Deposit::CallbackUrl).to receive(:for)
+        allow(Deposits::CallbackUrl).to receive(:for)
         service_call
       end
 
       it 'calls callback service' do
-        expect(Deposit::CallbackUrl)
+        expect(Deposits::CallbackUrl)
           .to have_received(:for)
           .with(:failed_entry_request, message: entry_request.result).once
       end

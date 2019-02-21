@@ -13,12 +13,12 @@ module SafeCharge
 
       fail_flow
     rescue SafeCharge::DepositResponse::AUTHENTICATION_ERROR
-      Deposit::CallbackUrl::ERROR
+      Deposits::CallbackUrl::ERROR
     rescue SafeCharge::DepositResponse::TYPE_ERROR
-      Deposit::CallbackUrl::FAILED_ENTRY_REQUEST
+      Deposits::CallbackUrl::FAILED_ENTRY_REQUEST
     rescue StandardError => e
       Rails.logger.error(e.message)
-      Deposit::CallbackUrl::SOMETHING_WENT_WRONG
+      Deposits::CallbackUrl::SOMETHING_WENT_WRONG
     end
 
     private
@@ -26,42 +26,42 @@ module SafeCharge
     delegate :entry_request, to: :response, allow_nil: true
 
     def cancel_context?
-      @context == Deposit::CallbackUrl::BACK
+      @context == Deposits::CallbackUrl::BACK
     end
 
     def back_flow
       entry_request.failed!
-      Deposit::CallbackUrl::BACK
+      Deposits::CallbackUrl::BACK
     end
 
     def fail_flow
-      return Deposit::CallbackUrl::ERROR if entry_request.failed?
+      return Deposits::CallbackUrl::ERROR if entry_request.failed?
 
       entry_request.failed!
-      Deposit::CallbackUrl::ERROR
+      Deposits::CallbackUrl::ERROR
     end
 
     def pending_flow
-      return Deposit::CallbackUrl::SOMETHING_WENT_WRONG unless pending_context?
+      return Deposits::CallbackUrl::SOMETHING_WENT_WRONG unless pending_context?
 
-      Deposit::CallbackUrl::PENDING
+      Deposits::CallbackUrl::PENDING
     end
 
     def pending_context?
-      @context == Deposit::CallbackUrl::PENDING
+      @context == Deposits::CallbackUrl::PENDING
     end
 
     def success_flow
-      return Deposit::CallbackUrl::SUCCESS if entry_request.succeeded?
+      return Deposits::CallbackUrl::SUCCESS if entry_request.succeeded?
 
-      return Deposit::CallbackUrl::SOMETHING_WENT_WRONG unless success_context?
+      return Deposits::CallbackUrl::SOMETHING_WENT_WRONG unless success_context?
 
       entry_request.succeeded!
-      Deposit::CallbackUrl::SUCCESS
+      Deposits::CallbackUrl::SUCCESS
     end
 
     def success_context?
-      @context == Deposit::CallbackUrl::SUCCESS
+      @context == Deposits::CallbackUrl::SUCCESS
     end
 
     def response

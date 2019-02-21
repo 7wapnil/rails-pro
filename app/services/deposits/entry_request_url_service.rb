@@ -17,7 +17,7 @@ module Deposits
     private
 
     def request_failure_url
-      Deposit::CallbackUrl
+      Deposits::CallbackUrl
         .for(:failed_entry_request, message: @entry_request.result)
     end
 
