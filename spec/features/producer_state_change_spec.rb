@@ -189,43 +189,54 @@ describe 'Producer state change feature. ' do
         )
       end
 
-      it 'sets recovering producer as healthy' do
-        producer.update(
-          recover_requested_at: time - 1.hour,
-          recovery_snapshot_id: Faker::Number.number(2),
-          recovery_node_id: Faker::Number.number(2),
-          state: Radar::Producer::RECOVERING
-        )
-        OddsFeed::Radar::SnapshotCompleteHandler.new(payload).handle
-        producer.reload
+      shared_examples 'snapshot_completed spec' do
+        before do
+          producer.update(
+            recover_requested_at: time - 1.hour,
+            recovery_snapshot_id: Faker::Number.number(2),
+            recovery_node_id: Faker::Number.number(2),
+            last_disconnection_at: initial_last_disconnection_at,
+            state: initial_state
+          )
+          OddsFeed::Radar::SnapshotCompleteHandler.new(payload).handle
+          producer.reload
+        end
 
-        expect(producer.state).to eq Radar::Producer::HEALTHY
+        it 'sets producer in correct state' do
+          expect(producer.state).to eq expected_outcome
+        end
+
+        it 'controls recovery timestamp' do
+          expect(producer.last_disconnection_at)
+            .to eq expected_last_disconnection_at
+        end
       end
 
-      it 'ignores snapshot for unsubscribed producer' do
-        producer.update(
-          recover_requested_at: time - 1.hour,
-          recovery_snapshot_id: Faker::Number.number(2),
-          recovery_node_id: Faker::Number.number(2),
-          state: Radar::Producer::UNSUBSCRIBED
-        )
-        OddsFeed::Radar::SnapshotCompleteHandler.new(payload).handle
-        producer.reload
-
-        expect(producer.state).to eq Radar::Producer::UNSUBSCRIBED
+      context 'sets recovering producer as healthy' do
+        it_behaves_like 'snapshot_completed spec' do
+          let(:initial_last_disconnection_at) { 1.second.ago }
+          let(:initial_state) { Radar::Producer::RECOVERING }
+          let(:expected_outcome) { Radar::Producer::HEALTHY }
+          let(:expected_last_disconnection_at) { nil }
+        end
       end
 
-      it 'ignores snapshot for healthy producer' do
-        producer.update(
-          recover_requested_at: time - 1.hour,
-          recovery_snapshot_id: Faker::Number.number(2),
-          recovery_node_id: Faker::Number.number(2),
-          state: Radar::Producer::HEALTHY
-        )
-        OddsFeed::Radar::SnapshotCompleteHandler.new(payload).handle
-        producer.reload
+      context 'ignores snapshot for unsubscribed producer' do
+        it_behaves_like 'snapshot_completed spec' do
+          let(:initial_last_disconnection_at) { 1.second.ago }
+          let(:initial_state) { Radar::Producer::UNSUBSCRIBED }
+          let(:expected_outcome) { Radar::Producer::UNSUBSCRIBED }
+          let(:expected_last_disconnection_at) { initial_last_disconnection_at }
+        end
+      end
 
-        expect(producer.state).to eq Radar::Producer::HEALTHY
+      context 'ignores snapshot for healthy producer' do
+        it_behaves_like 'snapshot_completed spec' do
+          let(:initial_last_disconnection_at) { 1.second.ago }
+          let(:initial_state) { Radar::Producer::HEALTHY }
+          let(:expected_outcome) { Radar::Producer::HEALTHY }
+          let(:expected_last_disconnection_at) { initial_last_disconnection_at }
+        end
       end
     end
   end
