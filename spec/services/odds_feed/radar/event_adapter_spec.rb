@@ -110,7 +110,6 @@ describe OddsFeed::Radar::EventAdapter do
       it 'returns filled event' do
         expect(result).to have_attributes(
           external_id: event_id,
-          start_at: '2016-10-31T18:00:00+00:00'.to_time,
           name: 'IK Oddevold VS Tvaakers IF',
           description: 'IK Oddevold VS Tvaakers IF',
           traded_live: false,
@@ -127,7 +126,6 @@ describe OddsFeed::Radar::EventAdapter do
         it 'returns filled traded_live event' do
           expect(result).to have_attributes(
             external_id: event_id,
-            start_at: '2016-10-31T18:00:00+00:00'.to_time,
             name: 'IK Oddevold VS Tvaakers IF',
             description: 'IK Oddevold VS Tvaakers IF',
             traded_live: true,
