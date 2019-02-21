@@ -61,7 +61,5 @@ module Arcanebet
       Rails.logger = Airbrake::AirbrakeLogger.new(Rails.logger)
       Rails.logger.airbrake_level = Logger::FATAL
     end
-
-    config.action_controller.forgery_protection_origin_check = false
   end
 end
