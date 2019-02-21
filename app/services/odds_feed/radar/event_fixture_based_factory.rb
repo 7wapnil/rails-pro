@@ -18,12 +18,16 @@ module OddsFeed
       def event_attributes
         {
           external_id: fixture['id'],
-          start_at: patched_start_time,
+          start_at: replay_mode? ? patched_start_time : start_at,
           name: event_name,
           description: event_name,
           traded_live: event_traded_live?,
           payload: payload
         }
+      end
+
+      def replay_mode?
+        ENV['RADAR_MQ_IS_REPLAY'] == 'true'
       end
 
       def start_at
