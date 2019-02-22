@@ -88,6 +88,8 @@ describe GraphQL, '#events' do
       before do
         create_list(:market, rand(1..3), event: control_event)
         create_list(:market, control_count, :with_odds, event: control_event)
+        create_list(:market, rand(1..3), :with_inactive_odds,
+                    event: control_event)
         create_list(:market, rand(1..3), :with_odds,
                     visible: false,
                     event: control_event)
