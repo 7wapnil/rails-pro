@@ -63,6 +63,7 @@ module Radar
       return false if recovery_requested_recently?
 
       unsubscribed!
+      register_disconnection
       clean_recovery_data
       recover! if with_recovery
     end
@@ -82,9 +83,16 @@ module Radar
 
     def recovery_completed!
       healthy!
+      update(last_disconnection_at: nil)
     end
 
     private
+
+    def register_disconnection
+      return if last_disconnection_at
+
+      update(last_disconnection_at: last_successful_subscribed_at)
+    end
 
     def recovery_requested_recently?
       return false unless recover_requested_at
