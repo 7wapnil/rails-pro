@@ -3,6 +3,7 @@
 class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Visible
   include Importable
+  include EventScopeAssociations
 
   conflict_target :external_id
   conflict_updatable :name, :status, :traded_live, :payload
@@ -54,14 +55,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_many :labels, through: :label_joins
 
   has_many :dashboard_markets, -> { for_displaying }, class_name: Market.name
-
-  has_one :tournament_scoped_event,
-          -> { tournament },
-          class_name: ScopedEvent.name
-  has_one :tournament,
-          through: :tournament_scoped_event,
-          class_name: EventScope.name,
-          source: :event_scope
 
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }

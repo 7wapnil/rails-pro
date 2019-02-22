@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Events
   class EventMarketsLoader < BatchLoader
     def perform(event_ids)
@@ -37,7 +39,7 @@ module Events
           ORDER BY priority ASC
           LIMIT 1
         ) markets
-        WHERE events.id IN (#{event_ids.join(', ')})
+        WHERE events.id IN (#{event_ids.join(', ').presence || 'NULL'})
       SQL
     end
   end
