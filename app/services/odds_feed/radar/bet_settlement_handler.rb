@@ -2,6 +2,8 @@ module OddsFeed
   module Radar
     # rubocop:disable Metrics/ClassLength
     class BetSettlementHandler < RadarMessageHandler
+      include WebsocketEventEmittable
+
       def initialize(payload)
         super(payload)
         @market_external_ids = []
@@ -12,6 +14,7 @@ module OddsFeed
         store_market_ids
         process_outcomes
         update_markets
+        emit_websocket
       end
 
       private
@@ -33,7 +36,7 @@ module OddsFeed
       end
 
       def store_market_id(market_data)
-        generator = ExternalId.new(event_id: input_data['event_id'],
+        generator = ExternalId.new(event_id: event_id,
                                    market_id: market_data['id'],
                                    specs: market_data['specifiers'])
         @market_external_ids << generator.generate
@@ -74,7 +77,7 @@ module OddsFeed
         log_job_message(
           :info,
           message: I18n.t('logs.odds_feed.low_certainty'),
-          event_id: event_external_id,
+          event_id: event_id,
           certainty_level: certainty_level
         )
       end
@@ -85,7 +88,7 @@ module OddsFeed
 
       def process_outcomes_for(market_data)
         market_data['outcome'].each do |outcome|
-          generator = ExternalId.new(event_id: input_data['event_id'],
+          generator = ExternalId.new(event_id: event_id,
                                      market_id: market_data['id'],
                                      specs: market_data['specifiers'],
                                      outcome_id: outcome['id'])
@@ -98,10 +101,6 @@ module OddsFeed
 
       def input_data
         @payload['bet_settlement']
-      end
-
-      def event_external_id
-        input_data['event_id']
       end
 
       def certainty_level

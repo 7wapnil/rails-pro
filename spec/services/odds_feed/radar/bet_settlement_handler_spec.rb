@@ -55,6 +55,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
   before do
     allow(Bets::Settlement::Proceed).to receive(:call)
+    allow(WebSocket::Client.instance).to receive(:trigger_event_update)
   end
 
   it 'raises error on invalid message' do

@@ -7,7 +7,7 @@ module Events
       %w[upcoming_for_time upcoming_limited upcoming_unlimited].freeze
     SUPPORTED_CONTEXTS = [LIVE, *UPCOMING_CONTEXTS].freeze
     UPCOMING_LIMIT = 16
-    UPCOMING_DURATION = 24
+    UPCOMING_DURATION = 6
 
     def initialize(query_args)
       @query_args = query_args
@@ -31,7 +31,7 @@ module Events
     def base_query
       Event
         .joins(:title)
-        .preload(:tournament)
+        .preload(:tournament, :dashboard_markets)
         .visible
         .active
         .order(:priority, :start_at)

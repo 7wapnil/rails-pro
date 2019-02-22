@@ -1,6 +1,8 @@
 module OddsFeed
   module Radar
     class BetCancelHandler < RadarMessageHandler
+      include WebsocketEventEmittable
+
       attr_accessor :batch_size
 
       def initialize(payload)
@@ -14,16 +16,14 @@ module OddsFeed
 
         query = build_query
         query.update_all(status: StateMachines::BetStateMachine::CANCELLED)
+
+        emit_websocket
       end
 
       private
 
       def input_data
         @payload['bet_cancel']
-      end
-
-      def event_id
-        input_data['event_id']
       end
 
       def markets

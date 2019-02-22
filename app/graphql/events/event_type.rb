@@ -29,6 +29,13 @@ module Events
     end
 
     field :tournament, Types::ScopeType
+
+    field :markets_count, !types.Int do
+      resolve ->(obj, _args, _ctx) do
+        obj.dashboard_markets.size
+      end
+    end
+
     field :dashboard_market, Types::MarketType do
       resolve ->(obj, _args, _ctx) do
         EventMarketsLoader.for(Market).load(obj.id)

@@ -2,11 +2,13 @@ module Deposits
   class DepositLimitCheckService < ApplicationService
     def initialize(customer, amount, currency)
       @customer = customer
-      @amount = amount
+      @amount = amount.to_d
       @currency = currency
     end
 
-    BUSINESS_EXCEPTION = Deposits::DepositLimitRestrictionError
+    BUSINESS_EXCEPTION =
+      Deposits::DepositLimitRestrictionError
+      .new('Deposit limit is not available')
 
     def call
       raise BUSINESS_EXCEPTION unless available_deposit_limit?

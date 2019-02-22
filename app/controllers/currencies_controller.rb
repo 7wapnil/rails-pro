@@ -53,6 +53,7 @@ class CurrenciesController < ApplicationController
       .require(:currency)
       .permit(:code,
               :name,
+              :kind,
               entry_currency_rules_attributes: %i[id
                                                   kind
                                                   min_amount

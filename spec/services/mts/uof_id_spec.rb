@@ -1,5 +1,21 @@
 describe Mts::UofId do
-  describe '.uof_id' do
+  describe '#initialize' do
+    context 'with missing producer' do
+      let(:odd) { create(:odd) }
+
+      before do
+        odd.market.event.update(producer: nil)
+      end
+
+      it 'raises an error' do
+        expect do
+          described_class.new(odd)
+        end.to raise_error(ArgumentError)
+      end
+    end
+  end
+
+  describe '#uof_id' do
     [
       {
         title: 'odd with specifiers',
@@ -21,13 +37,14 @@ describe Mts::UofId do
       context example[:title] do
         subject { described_class.new(odd) }
 
+        let(:producer) do
+          create(:producer, id: example[:producer_id] || '1')
+        end
         let(:title) { create(:title, external_id: 'sr:sport:110') }
-        let(:producer_id) { example[:producer_id] || '1' }
         let(:event) do
-          payload = { "producer": { "origin": 'radar', "id": producer_id } }
           create(:event,
                  title: title,
-                 payload: payload)
+                 producer: producer)
         end
         let(:market) { create(:market, event: event) }
         let(:odd) do

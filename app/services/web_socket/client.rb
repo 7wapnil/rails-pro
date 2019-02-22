@@ -6,6 +6,8 @@ module WebSocket
       trigger(SubscriptionFields::EVENTS_UPDATED, event)
       trigger(SubscriptionFields::EVENT_UPDATED, event, id: event.id)
 
+      return unless event_available?(event)
+
       trigger_kind_event event
       trigger_sport_event event
       trigger_tournament_event event
@@ -36,13 +38,17 @@ module WebSocket
       ArcanebetSchema.subscriptions.trigger(name, args, object, scope: scope)
     end
 
+    def event_available?(event)
+      event.active? && event.visible?
+    end
+
     def trigger_kind_event(event)
       return warn("Event ID #{event.id} has no title") unless event.title
 
       trigger(
         SubscriptionFields::KIND_EVENT_UPDATED,
         event,
-        kind: event.title.kind, live: event.in_play?
+        kind: event.title.kind, live: event.in_play?(limited: true)
       )
     end
 
@@ -52,7 +58,7 @@ module WebSocket
       trigger(
         SubscriptionFields::SPORT_EVENT_UPDATED,
         event,
-        title: event.title_id, live: event.in_play?
+        title: event.title_id, live: event.in_play?(limited: true)
       )
     end
 
@@ -62,7 +68,7 @@ module WebSocket
       trigger(
         SubscriptionFields::TOURNAMENT_EVENT_UPDATED,
         event,
-        tournament: event.tournament.id, live: event.in_play?
+        tournament: event.tournament.id, live: event.in_play?(limited: true)
       )
     end
 

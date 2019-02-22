@@ -5,6 +5,8 @@ module Deposits
       Deposits::InvalidDepositRequestError
     ].freeze
 
+    AMOUNT_TYPE_ERROR = ArgumentError.new('amount must be Numeric')
+
     def initialize(customer:, currency:, amount:, bonus_code: nil)
       @customer = customer
       @currency = currency
@@ -13,6 +15,7 @@ module Deposits
     end
 
     def call
+      validate_ambiguous_input!
       validate_business_rules!
 
       initial_entry_request
@@ -22,6 +25,10 @@ module Deposits
     end
 
     private
+
+    def validate_ambiguous_input!
+      raise AMOUNT_TYPE_ERROR unless @amount.is_a? Numeric
+    end
 
     def validate_business_rules!
       # TODO: Existing deposit request found

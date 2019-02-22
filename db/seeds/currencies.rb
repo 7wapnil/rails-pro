@@ -1,10 +1,10 @@
 puts 'Checking currencies ...'
 
 currency_mapping = [
-  { name: 'Euro', code: 'EUR', primary: true },
-  { name: 'Swedish Kronor', code: 'SEK' },
-  { name: 'BitCoin', code: 'mBTC' },
-  { name: 'Ethereum', code: 'ETH' }
+  { name: 'Euro', code: 'EUR', primary: true, kind: Currency::FIAT },
+  { name: 'Swedish Kronor', code: 'SEK', kind: Currency::FIAT },
+  { name: 'BitCoin', code: 'mBTC', kind: Currency::CRYPTO },
+  { name: 'Ethereum', code: 'ETH', kind: Currency::CRYPTO }
 ]
 
 entry_currency_rule_ranges = {
@@ -20,6 +20,7 @@ currency_mapping.each do |payload|
   Currency.find_or_create_by(name: payload[:name]) do |currency|
     currency.code = payload[:code]
     currency.primary = payload[:primary] || false
+    currency.kind = payload[:kind]
   end
 end
 
