@@ -26,7 +26,6 @@ module Events
       query = filter_by(:category, args[:category], query)
       query = filter_by(:priority, args[:priority], query)
       query = filter_by(:id, args[:id], query)
-      query = query.limit(args[:limit]) if args[:limit]
       query
     end
 
