@@ -14,17 +14,25 @@ module Withdrawals
       EntryRequests::WithdrawalWorker.perform_async(withdrawal.id)
 
       OpenStruct.new(
-        entryRequest: withdrawal,
-        error: nil
+        **withdrawal.attributes.symbolize_keys,
+        success: true,
+        error_messages: nil
       )
-    rescue StandardError => e
-      OpenStruct.new(
-        entryRequest: nil,
-        error: e.message
-      )
+    rescue StandardError => error
+      respond_with_error(error)
     end
 
     private
+
+    def respond_with_error(error)
+      errors = if error.instance_of? ActiveRecord::RecordInvalid
+                 error.record.errors.full_messages
+               else
+                 [error.message]
+               end
+
+      OpenStruct.new(success: false, error_messages: errors)
+    end
 
     def find_customer_wallet(wallet_id)
       @current_customer.wallets.find(wallet_id)

@@ -11,8 +11,9 @@ describe GraphQL, '#withdraw' do
   let(:query) do
     %(mutation withdraw($amount: Float!, $walletId: ID!) {
         withdraw(amount: $amount, walletId: $walletId) {
-          error
-          entryRequest { id status }
+          error_messages
+          id
+          status
         }
       })
   end
@@ -25,7 +26,6 @@ describe GraphQL, '#withdraw' do
   context 'when successfully' do
     let(:variables) { { amount: 10.0, walletId: wallet.id.to_s } }
     let(:entry_request) { create(:entry_request) }
-    let(:response_entry_request) { OpenStruct.new(response['entryRequest']) }
 
     before do
       allow(EntryRequests::Factories::Withdrawal)
@@ -45,14 +45,14 @@ describe GraphQL, '#withdraw' do
     end
 
     it "don't return error message" do
-      expect(response['error']).to be_nil
+      expect(response['error_messages']).to be_nil
     end
     it 'returns entry request status' do
-      expect(response_entry_request.status).to eq(entry_request.status)
+      expect(response['status']).to eq(entry_request.status)
     end
 
     it 'returns entry request id' do
-      expect(response_entry_request.id.to_i).to eq(entry_request.id)
+      expect(response['id'].to_i).to eq(entry_request.id)
     end
   end
 
@@ -65,8 +65,8 @@ describe GraphQL, '#withdraw' do
         .and_raise(error_class, error_msg)
     end
 
-    it 'returns error message' do
-      expect(response['error']).to eq(error_msg)
+    it 'returns array of error messages' do
+      expect(response['error_messages']).to eq([error_msg])
     end
   end
 end
