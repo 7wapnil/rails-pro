@@ -135,7 +135,7 @@ describe GraphQL, '#events' do
     it 'returns a list of categories with count' do
       event = result['data']['events'][0]
       categories = event['categories']
-      expect(categories.count).to eq(2)
+      expect(categories.length).to eq(2)
 
       expect(categories[0]['id'])
         .to eq("#{event['id']}:#{MarketTemplate::POPULAR}")
