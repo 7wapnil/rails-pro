@@ -10,7 +10,7 @@ module Events
 
     def scope(event_ids)
       model
-        .preload(:odds)
+        .preload(:active_odds)
         .where(id: market_ids(event_ids))
         .order(:priority)
     end
@@ -31,7 +31,8 @@ module Events
           JOIN odds
           ON odds.market_id = markets.id
           WHERE markets.event_id = events.id AND
-                markets.visible = TRUE
+                markets.visible IS TRUE AND
+                odds.status = '#{Odd::ACTIVE}'
           GROUP BY markets.id
           ORDER BY priority ASC
           LIMIT 1

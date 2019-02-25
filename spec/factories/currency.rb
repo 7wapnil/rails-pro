@@ -18,6 +18,13 @@ FactoryBot.define do
       end
     end
 
+    trait :with_refund_rule do
+      after(:create) do |currency|
+        kind = EntryRequest::REFUND
+        create(:entry_currency_rule, currency: currency, kind: kind)
+      end
+    end
+
     trait :with_withdrawal_rule do
       after(:create) do |currency|
         withdraw_kind = EntryRequest::WITHDRAW
