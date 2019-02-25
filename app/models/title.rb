@@ -27,9 +27,9 @@ class Title < ApplicationRecord
   validates :name, :kind, presence: true
   validates :name, uniqueness: true
 
-  scope :with_active_events, -> {
+  scope :with_active_events, ->(limit_start_at: nil) {
     joins(:events)
-      .merge(Event.active.visible.upcoming)
+      .merge(Event.active.visible.upcoming(limit_start_at: limit_start_at))
       .or(joins(:events).merge(Event.active.visible.in_play))
       .distinct
   }
