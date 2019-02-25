@@ -20,12 +20,19 @@
                            placeholder: t(:search, subject: t('attributes.name')),
                            autocomplete: :off
         %th
+          = f.label :kind, class: 'sr-only'
+          = f.search_field :kind_cont,
+                           class: 'form-control',
+                           placeholder: t(:search, subject: t('attributes.kind')),
+                           autocomplete: :off
+        %th
           = f.submit class: 'btn btn-outline-dark btn-block'
     %tbody
       - @currencies.each do |currency|
         %tr{ id: "currency-#{currency.id}" }
           %td= link_to currency.code, edit_currency_path(currency)
           %td= link_to currency.name, edit_currency_path(currency)
+          %td= link_to currency.kind, edit_currency_path(currency)
           %td
 
 = paginate @currencies

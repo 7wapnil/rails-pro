@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_01_15_161822) do
+ActiveRecord::Schema.define(version: 2019_02_21_103901) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -148,6 +148,7 @@ ActiveRecord::Schema.define(version: 2019_01_15_161822) do
     t.boolean "primary", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "kind", default: "fiat", null: false
   end
 
   create_table "customer_bonuses", force: :cascade do |t|
@@ -375,6 +376,7 @@ ActiveRecord::Schema.define(version: 2019_01_15_161822) do
     t.datetime "recover_requested_at"
     t.integer "recovery_snapshot_id"
     t.integer "recovery_node_id"
+    t.datetime "last_disconnection_at"
     t.index ["code"], name: "index_radar_providers_on_code"
     t.index ["recovery_snapshot_id"], name: "index_radar_providers_on_recovery_snapshot_id"
   end

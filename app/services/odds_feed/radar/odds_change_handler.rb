@@ -3,9 +3,10 @@ module OddsFeed
     # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
       include EventCreatable
+      include WebsocketEventEmittable
 
       def handle
-        return unless event_data
+        return unless input_data
         return invalid_event_type unless valid_event_type?
 
         create_or_update_event!
@@ -23,16 +24,16 @@ module OddsFeed
 
         log_job_message(
           :warn,
-          "[LOG-FILTER-1] Event with external ID #{external_id} not found. " \
+          "[LOG-FILTER-1] Event with external ID #{event_id} not found. " \
           'Creating new.'
         )
         create_event
       end
 
       def touch_event!
-        event.producer = ::Radar::Producer.find(event_data['product'])
+        event.producer = ::Radar::Producer.find(input_data['product'])
         new_state = OddsFeed::Radar::EventStatusService.new.call(
-          event_id: event.id, data: event_data['sport_event_status']
+          event_id: event.id, data: input_data['sport_event_status']
         )
         event.add_to_payload(state: new_state)
         process_updates!
@@ -80,8 +81,8 @@ module OddsFeed
 
       def log_updates!(updates)
         msg = <<-MESSAGE
-            Updating event with ID #{external_id}, \
-            product ID #{event_data['product']}, attributes #{updates}
+            Updating event with ID #{event_id}, \
+            product ID #{input_data['product']}, attributes #{updates}
         MESSAGE
         log_job_message(:info, msg)
       end
@@ -117,16 +118,16 @@ module OddsFeed
       end
 
       def odds_payload
-        @odds_payload ||= event_data['odds']
+        @odds_payload ||= input_data['odds']
       end
 
       def log_missing_payload
         log_job_message(
-          :info, "Odds payload is missing for Event #{external_id}"
+          :info, "Odds payload is missing for Event #{event_id}"
         )
       end
 
-      def event_data
+      def input_data
         @payload.fetch('odds_change')
       rescue KeyError, NoMethodError
         log_job_failure(
@@ -142,13 +143,13 @@ module OddsFeed
         event_statuses_map[status] || Event::NOT_STARTED
       rescue KeyError
         log_job_message(
-          :warn, "Event status missing in payload for Event #{external_id}"
+          :warn, "Event status missing in payload for Event #{event_id}"
         )
         Event::NOT_STARTED
       end
 
       def event_status_payload
-        event_data['sport_event_status']
+        input_data['sport_event_status']
       end
 
       def event_end_time
@@ -172,16 +173,8 @@ module OddsFeed
         }.stringify_keys
       end
 
-      def event
-        @event ||= Event.find_by(external_id: external_id)
-      end
-
       def timestamp
-        Time.at(event_data['timestamp'].to_i / 1000).utc
-      end
-
-      def external_id
-        event_data['event_id']
+        Time.at(input_data['timestamp'].to_i / 1000).utc
       end
 
       def check_message_time
@@ -192,10 +185,6 @@ module OddsFeed
 
         msg = "Message came at #{timestamp}, but last update was #{last_update}"
         log_job_message(:warn, msg)
-      end
-
-      def emit_websocket
-        WebSocket::Client.instance.trigger_event_update(event)
       end
     end
     # rubocop:enable Metrics/ClassLength

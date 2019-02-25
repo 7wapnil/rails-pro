@@ -44,8 +44,13 @@ module JobLogger
       job_performing_time:     performing_time.round(3),
       job_execution_time:      execution_time.round(3),
       overall_processing_time: processing_time.round(3),
-      thread_id:               thread_id
+      thread_id:               thread_id,
+      event_id:                event_id
     )
+  end
+
+  def event_id
+    Thread.current[:event_id]
   end
 
   def enqueued_at

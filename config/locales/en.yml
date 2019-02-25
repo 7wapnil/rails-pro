@@ -294,6 +294,7 @@ en:
         default: "Account is locked%{additional_info}"
       age_adult: Must be adult!
       betting_limits: Betting limits validation failed
+      bet_odd_inactive: Odd for bet became inactive
       bonus_activation_failed: Bonus activation failed, please try later
       customer_account_kind_transit: Can't transit customer account kind
       customer_activated: Customer already activated
@@ -316,7 +317,7 @@ en:
       entry_request_failed: "Entry request has been already failed for bet #{bet_id}"
       deposit_attempts_exceeded: Deposit attempts exceeded, contact support agent
       withdrawal:
-        not_enouh_money: Not enough money in wallet!
+        not_enough_money: Not enough money in wallet!
         bonus_exists: Active bonus exists!
       graphql:
         events:

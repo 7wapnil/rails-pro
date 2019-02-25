@@ -8,7 +8,7 @@ describe Redirect::DepositsController do
                     bonus_code: bonus.code }
     end
 
-    let(:amount) { Faker::Number.number 2 }
+    let(:amount) { Faker::Number.decimal(2, 2).to_d }
     let(:bonus) { build(:bonus) }
     let(:wallet) { build(:wallet) }
     let(:customer) { wallet.customer }
@@ -21,7 +21,7 @@ describe Redirect::DepositsController do
       {
         customer: customer,
         currency: wallet.currency,
-        amount: amount.to_d,
+        amount: amount,
         bonus_code: bonus.code
       }
     end

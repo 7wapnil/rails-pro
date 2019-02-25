@@ -22,12 +22,10 @@ module Events
       query = Market
               .for_displaying
               .where(event_id: event_id)
-              .group('markets.id')
 
       query = filter_by(:category, args[:category], query)
       query = filter_by(:priority, args[:priority], query)
       query = filter_by(:id, args[:id], query)
-      query = query.limit(args[:limit]) if args[:limit]
       query
     end
 

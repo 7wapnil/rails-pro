@@ -17,6 +17,7 @@ describe Radar::MarketsUpdateWorker do
           { 'name': 'maxovers', 'type': 'integer' }
         ]
       },
+      products: nil,
       attributes: nil
     }.deep_stringify_keys!
   end
@@ -66,6 +67,7 @@ describe Radar::MarketsUpdateWorker do
         ]
       },
       specifiers: nil,
+      products: nil,
       attributes: nil
     }.deep_stringify_keys!
 

@@ -5,6 +5,6 @@ module Wallets
     field :id, types.ID
     field :amount, !types.Float
 
-    field :currency, CurrencyType
+    field :currency, Currencies::CurrencyType
   end
 end

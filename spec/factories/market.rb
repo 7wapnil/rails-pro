@@ -15,6 +15,12 @@ FactoryBot.define do
 
     trait :with_odds do
       after(:create) do |market|
+        create_list(:odd, 2, :active, market: market)
+      end
+    end
+
+    trait :with_inactive_odds do
+      after(:create) do |market|
         create_list(:odd, 2, market: market)
       end
     end

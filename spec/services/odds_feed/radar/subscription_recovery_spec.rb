@@ -33,12 +33,10 @@ describe OddsFeed::Radar::SubscriptionRecovery do
       Timecop.return
     end
 
-    context 'with last_successful_subscribed_at expired' do
+    context 'with last_disconnection_at expired' do
       before do
-        allow(product)
-          .to receive(:last_successful_subscribed_at) {
-            oldest_recovery_since - 1.minute
-          }
+        product
+          .update(last_disconnection_at: oldest_recovery_since - 1.minute)
 
         described_class.call(product: product)
         after_recovery_time = recovery_time + 1.hour
@@ -68,10 +66,10 @@ describe OddsFeed::Radar::SubscriptionRecovery do
       end
     end
 
-    context 'with last_successful_subscribed_at missing' do
+    context 'with last_disconnection_at missing' do
       before do
-        allow(product)
-          .to receive(:last_successful_subscribed_at).and_return(nil)
+        product
+          .update(last_disconnection_at: nil)
 
         described_class.call(product: product)
         after_recovery_time = recovery_time + 1.hour
@@ -101,12 +99,12 @@ describe OddsFeed::Radar::SubscriptionRecovery do
       end
     end
 
-    context 'with last_successful_subscribed_at appliable' do
-      let(:last_successful_subscribed_at) { oldest_recovery_since + 1.minute }
+    context 'with last_disconnection_at is applicable' do
+      let(:last_disconnection_at) { oldest_recovery_since + 1.minute }
 
       before do
         product.update(
-          last_successful_subscribed_at: last_successful_subscribed_at,
+          last_disconnection_at: last_disconnection_at,
           recover_requested_at: nil,
           recovery_snapshot_id: nil,
           recovery_node_id: nil
@@ -122,7 +120,7 @@ describe OddsFeed::Radar::SubscriptionRecovery do
         ).to have_received(:product_recovery_initiate_request)
           .with(
             product_code: product.code,
-            after: last_successful_subscribed_at,
+            after: last_disconnection_at,
             node_id: node_id,
             request_id: recovery_time_timestamp
           )

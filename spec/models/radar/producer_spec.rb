@@ -215,14 +215,50 @@ describe Radar::Producer do
   describe '#unsubscribe!' do
     include_context 'frozen_time'
 
-    it 'unsubscribes subscribed producer' do
-      allow(producer).to receive_messages(
-        'unsubscribe!' => nil,
-        'subscribed?' => true
-      )
-      producer.unsubscribe!
-      expect(producer)
-        .to have_received('unsubscribe!').once
+    context 'with subscribed producer' do
+      let(:last_successful_subscribed_at) { Faker::Time.backward(20) }
+
+      before do
+        allow(producer)
+          .to receive_messages(
+            'unsubscribed!' => nil,
+            'subscribed?' => true,
+            'recovery_requested_recently?' => false
+          )
+        producer
+          .update(
+            last_successful_subscribed_at: last_successful_subscribed_at,
+            last_disconnection_at: nil
+          )
+        producer.unsubscribe!
+      end
+
+      it 'unsubscribes producer' do
+        expect(producer)
+          .to have_received('unsubscribed!').once
+      end
+
+      it 'registers first disconnection' do
+        expect(producer.last_disconnection_at)
+          .to eq last_successful_subscribed_at
+      end
+    end
+
+    context 'with recovering producer, but recovery not finished properly' do
+      let(:last_disconnection_at) { Faker::Time.backward(20) }
+
+      before do
+        allow(producer).to receive_messages(
+          'unsubscribed!' => nil,
+          'recovery_requested_recently?' => false,
+          'last_disconnection_at' => last_disconnection_at
+        )
+        producer.unsubscribe!
+      end
+
+      it 'does not overwrite disconnection time' do
+        expect(producer.last_disconnection_at).to eq last_disconnection_at
+      end
     end
 
     it 'ignores unsubscription when had recovery recently' do
@@ -292,9 +328,16 @@ describe Radar::Producer do
   end
 
   describe '#recovery_completed!' do
-    it 'sets healthy state' do
+    before do
       producer.recovery_completed!
+    end
+
+    it 'sets healthy state' do
       expect(producer.state).to eq Radar::Producer::HEALTHY
+    end
+
+    it 'cleans last disconnection time' do
+      expect(producer.last_disconnection_at).to eq nil
     end
   end
 end

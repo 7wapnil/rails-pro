@@ -12,65 +12,43 @@ module OddsFeed
 
         def call
           build
-          @odds
+          odds
         end
 
         private
 
+        attr_reader :market, :market_data, :odds
+
         def build
-          return if @market_data.outcome.blank?
+          return if market_data.outcome.blank?
 
-          valuable_outcome.each do |odd_data|
-            odd = build_odd(odd_data)
-            @odds << odd if odd && valid?(odd)
-          rescue StandardError => e
-            log_job_failure(e)
-            next
-          end
+          market_data.outcome.each { |odd_data| build_and_push_odd(odd_data) }
         end
 
-        def valuable_outcome
-          @market_data.outcome.reject { |odd_data| odd_data['odds'].to_f.zero? }
-        end
+        def build_and_push_odd(odd_data)
+          return odd_data_is_not_payload(odd_data) unless odd_data.is_a?(Hash)
 
-        def valid?(odd)
-          return true if odd.valid?
+          odd = build_odd(odd_data)
+          odd.validate!
 
-          msg = <<-MESSAGE
-            Odd '#{odd.external_id}' is invalid: \
-            #{odd.errors.full_messages.join("\n")}
-          MESSAGE
-          log_job_message(:warn, msg.squish)
-          false
-        end
-
-        def build_odd(odd_data)
-          unless odd_data.is_a?(Hash)
-            odd_data_is_not_payload(odd_data)
-            return
-          end
-
-          external_id = "#{@market_data.external_id}:#{odd_data['id']}"
-          log_job_message(
-            :debug, "Building odd ID #{external_id}, #{odd_data}"
-          )
-
-          Odd.new(external_id: external_id,
-                  market: @market,
-                  name: @market_data.odd_name(odd_data['id']),
-                  status: odd_status(odd_data['active']),
-                  value: odd_data['odds'])
-        end
-
-        def odd_status(radar_status)
-          return Odd::ACTIVE if radar_status == '1'
-
-          Odd::INACTIVE
+          @odds << odd
+        rescue ActiveRecord::RecordInvalid => e
+          log_job_message(:warn, e.message)
+        rescue StandardError => e
+          log_job_failure(e)
         end
 
         def odd_data_is_not_payload(odd_data)
           log_job_message(
             :warn, "Odd data should be a payload, but received: `#{odd_data}`"
+          )
+        end
+
+        def build_odd(odd_data)
+          OddBuilder.call(
+            market: market,
+            odd_data: odd_data,
+            market_data: market_data
           )
         end
       end
