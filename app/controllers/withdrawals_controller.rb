@@ -13,7 +13,9 @@ class WithdrawalsController < ApplicationController
   end
 
   def reject
-    # TODO : call withdrawal rejection service
+    reason = rejection_params[:comment]
+    Withdrawals::WithdrawalRejectionService.call(@withdrawal.id,
+                                                 comment: reason)
     flash[:notice] = I18n.t('messages.withdrawal_rejected')
 
     redirect_back fallback_location: withdrawals_path

@@ -1,7 +1,8 @@
 module Withdrawals
   class WithdrawalRejectionService < ApplicationService
-    def initialize(entry_id)
+    def initialize(entry_id, comment: nil)
       @entry_id = entry_id
+      @comment = comment
     end
 
     def call
@@ -10,10 +11,11 @@ module Withdrawals
 
     private
 
-    attr_reader :entry_id
+    attr_reader :entry_id, :comment
 
     def create_refund!
-      refund = EntryRequests::Factories::Refund.call(entry: entry)
+      refund = EntryRequests::Factories::Refund.call(entry: entry,
+                                                     comment: comment)
       EntryRequests::RefundWorker.perform_async(refund.id)
     end
 
