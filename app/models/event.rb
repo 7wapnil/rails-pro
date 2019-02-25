@@ -102,8 +102,12 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     select("events.*, #{sub_query} as wager").group(:id)
   end
 
-  def self.upcoming
-    where('start_at > ? AND end_at IS NULL', Time.zone.now)
+  def self.upcoming(limit_start_at: nil)
+    start_at_upper_limit =
+      limit_start_at || DateTime::Infinity.new
+    start_at_range =
+      Time.zone.now..start_at_upper_limit
+    where(start_at: start_at_range, end_at: nil)
   end
 
   def self.in_play

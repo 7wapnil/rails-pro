@@ -191,4 +191,34 @@ describe GraphQL, '#titles' do
       expect(result_titles.first['id']).to eq(title.id.to_s)
     end
   end
+
+  context 'with upcoming_for_time context' do
+    let(:query) do
+      %({
+          titles (context: "upcoming_for_time") {
+            id
+          }
+      })
+    end
+
+    let!(:upcoming_for_time_event) do
+      create(:event,
+             start_at:
+               (Events::EventsQueryResolver::UPCOMING_DURATION - 1)
+                 .hours.from_now,
+             end_at: nil)
+    end
+
+    let!(:event_in_future) do
+      create(:event,
+             start_at:
+               (Events::EventsQueryResolver::UPCOMING_DURATION + 1)
+                 .hours.from_now,
+             end_at: nil)
+    end
+
+    it 'returns upcoming for time titles list' do
+      expect(result_title_ids).to eq([upcoming_for_time_event.title.id])
+    end
+  end
 end
