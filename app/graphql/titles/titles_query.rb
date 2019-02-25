@@ -1,5 +1,7 @@
 module Titles
   class TitlesQuery < ::Base::Resolver
+    UPCOMING_FOR_TIME = 'upcoming_for_time'.freeze
+
     type !types[TitleType]
 
     description 'Get all titles'
@@ -14,7 +16,7 @@ module Titles
 
     def resolve(_obj, args)
       query = Title
-              .with_active_events(active_events_query_arguments(args))
+              .with_active_events(limit_start_at: limit_start_at(args))
               .order(name: :asc)
 
       query = query.where(id: args[:id]) if args[:id]
@@ -24,14 +26,10 @@ module Titles
 
     private
 
-    def active_events_query_arguments(args)
-      limit_start_at = nil
-      if args[:context] == 'upcoming_for_time'
-        limit_start_at =
-          Events::EventsQueryResolver::UPCOMING_DURATION.hours.from_now
-      end
+    def limit_start_at(args)
+      return unless args[:context] == UPCOMING_FOR_TIME
 
-      { limit_start_at: limit_start_at }
+      Events::EventsQueryResolver::UPCOMING_DURATION.hours.from_now
     end
   end
 end
