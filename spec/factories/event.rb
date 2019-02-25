@@ -50,11 +50,5 @@ FactoryBot.define do
         create_list(:odd, 2, :active, market: create(:market, event: event))
       end
     end
-
-    trait :with_dashboard_market do
-      after(:create) do |event|
-        create(:market, event: event, priority: 1)
-      end
-    end
   end
 end
