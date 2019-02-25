@@ -103,10 +103,9 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def self.upcoming(limit_start_at: nil)
-    start_at_upper_limit =
-      limit_start_at || DateTime::Infinity.new
-    start_at_range =
-      Time.zone.now..start_at_upper_limit
+    start_at_upper_limit = limit_start_at || DateTime::Infinity.new
+    start_at_range = Time.zone.now..start_at_upper_limit
+
     where(start_at: start_at_range, end_at: nil)
   end
 
