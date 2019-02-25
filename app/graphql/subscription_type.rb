@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 SubscriptionType = GraphQL::ObjectType.define do
   name 'Subscription'
 
@@ -13,15 +15,15 @@ SubscriptionType = GraphQL::ObjectType.define do
 
   field SubscriptionFields::KIND_EVENT_UPDATED, Events::EventType do
     argument :kind, types.String
-    argument :live, types.Boolean
   end
   field SubscriptionFields::SPORT_EVENT_UPDATED, Events::EventType do
     argument :title, types.ID
-    argument :live, types.Boolean
+  end
+  field SubscriptionFields::CATEGORY_EVENT_UPDATED, Events::EventType do
+    argument :category, types.ID
   end
   field SubscriptionFields::TOURNAMENT_EVENT_UPDATED, Events::EventType do
     argument :tournament, types.ID
-    argument :live, types.Boolean
   end
 
   # Market fields

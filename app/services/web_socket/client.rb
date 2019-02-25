@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WebSocket
   class Client
     include Singleton
@@ -8,9 +10,10 @@ module WebSocket
 
       return unless event_available?(event)
 
-      trigger_kind_event event
-      trigger_sport_event event
-      trigger_tournament_event event
+      trigger_kind_event(event)
+      trigger_sport_event(event)
+      trigger_category_event(event)
+      trigger_tournament_event(event)
     end
 
     def trigger_market_update(market)
@@ -48,7 +51,7 @@ module WebSocket
       trigger(
         SubscriptionFields::KIND_EVENT_UPDATED,
         event,
-        kind: event.title.kind, live: event.in_play?(limited: true)
+        kind: event.title.kind
       )
     end
 
@@ -58,7 +61,17 @@ module WebSocket
       trigger(
         SubscriptionFields::SPORT_EVENT_UPDATED,
         event,
-        title: event.title_id, live: event.in_play?(limited: true)
+        title: event.title_id
+      )
+    end
+
+    def trigger_category_event(event)
+      return unless event.category
+
+      trigger(
+        SubscriptionFields::CATEGORY_EVENT_UPDATED,
+        event,
+        category: event.category.id
       )
     end
 
@@ -68,7 +81,7 @@ module WebSocket
       trigger(
         SubscriptionFields::TOURNAMENT_EVENT_UPDATED,
         event,
-        tournament: event.tournament.id, live: event.in_play?(limited: true)
+        tournament: event.tournament.id
       )
     end
 
@@ -89,7 +102,7 @@ module WebSocket
     end
 
     def warn(msg)
-      Rails.logger.warn msg
+      Rails.logger.warn(msg)
     end
   end
 end
