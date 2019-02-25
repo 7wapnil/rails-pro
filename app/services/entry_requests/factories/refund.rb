@@ -36,10 +36,10 @@ module EntryRequests
       def create_balance_requests!
         balance_entry_amounts = entry
                                 .balance_entries
-                                .includes(:balance).map do |balance_entry|
-          [balance_entry.balance.kind, balance_entry.amount]
-        end
-        balance_entry_amounts = balance_entry_amounts.to_h.symbolize_keys!
+                                .includes(:balance)
+                                .pluck('balances.kind, balance_entries.amount')
+                                .to_h
+                                .symbolize_keys
         BalanceRequestBuilders::Refund.call(entry_request,
                                             balance_entry_amounts)
       end
