@@ -4,11 +4,12 @@ module OddsFeed
       class MarketData
         attr_reader :event
 
-        def initialize(event, payload)
+        def initialize(event, payload, cache = {})
           @event = event
           @payload = payload
           @interpreter = OddsFeed::Radar::Transpiling::Interpreter.new(event,
                                                                        tokens)
+          @cache = cache
         end
 
         def id
@@ -48,7 +49,7 @@ module OddsFeed
         end
 
         def template
-          @template ||= TemplateLoader.new(id, tokens['variant'])
+          @template ||= TemplateLoader.new(id, tokens['variant'], @cache)
         end
 
         private

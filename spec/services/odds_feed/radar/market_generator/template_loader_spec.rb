@@ -3,7 +3,8 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
 
   let(:template)   { create(:market_template) }
   let(:variant_id) { rand(0..5) }
-  let(:args)       { [template.external_id, variant_id] }
+  let(:cache)      { {} }
+  let(:args)       { [template.external_id, variant_id, cache] }
 
   let(:payload) do
     XmlParser.parse(
@@ -77,6 +78,25 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
       it do
         expect { subject_with_template.odd_name(external_id) }
           .to raise_error(StandardError, message)
+      end
+    end
+
+    context 'template loader receives cached market templates' do
+      let(:cache) { { market_templates_cache: [template] } }
+
+      let(:market_name) { subject.market_name }
+
+      before do
+        allow(MarketTemplate).to receive(:find_by!)
+      end
+
+      it 'takes market from cache' do
+        expect(market_name).to eq template.name
+      end
+
+      it 'does not call real model' do
+        market_name
+        expect(MarketTemplate).not_to have_received(:find_by!)
       end
     end
   end

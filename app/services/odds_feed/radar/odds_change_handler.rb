@@ -5,6 +5,12 @@ module OddsFeed
       include EventCreatable
       include WebsocketEventEmittable
 
+      def initialize(payload, configuration: {})
+        super
+
+        default_configuration
+      end
+
       def handle
         return unless input_data
         return invalid_event_type unless valid_event_type?
@@ -18,6 +24,25 @@ module OddsFeed
       end
 
       private
+
+      def default_configuration
+        @configuration[:cached_market_templates] ||= true
+      end
+
+      def market_templates_cache
+        return unless @configuration[:cached_market_templates]
+        return @market_templates_cache if @market_templates_cache
+
+        markets_hash = @payload['odds_change']['odds']['market']
+        market_template_ids =
+          markets_hash.map { |market| market['id'] }
+        @market_templates_cache ||=
+          MarketTemplate.where(external_id: market_template_ids).to_a
+      end
+
+      def cached_data
+        { market_templates_cache: market_templates_cache }
+      end
 
       def create_or_update_event!
         return check_message_time if event
@@ -98,7 +123,8 @@ module OddsFeed
       end
 
       def call_markets_generator
-        ::OddsFeed::Radar::MarketGenerator::Service.call(event.id, markets_data)
+        ::OddsFeed::Radar::MarketGenerator::Service
+          .call(event.id, markets_data, cached_data)
       end
 
       def markets_data

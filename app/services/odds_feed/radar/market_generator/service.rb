@@ -4,11 +4,12 @@ module OddsFeed
       class Service < ::ApplicationService
         include JobLogger
 
-        def initialize(event_id, markets_data)
+        def initialize(event_id, markets_data, cache = {})
           @event = Event.find(event_id)
           @markets_data = markets_data
           @markets = []
           @odds = []
+          @cache = cache
         end
 
         def call
@@ -29,7 +30,7 @@ module OddsFeed
         end
 
         def build_market(market_data)
-          data_object = MarketData.new(@event, market_data)
+          data_object = MarketData.new(@event, market_data, @cache)
           market = build_market_model(data_object)
           return unless valid?(market)
 

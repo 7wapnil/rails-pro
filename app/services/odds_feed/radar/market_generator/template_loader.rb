@@ -6,9 +6,10 @@ module OddsFeed
 
         PLAYER_REGEX = /.*:player:.*/
 
-        def initialize(market_id, variant_id = nil)
+        def initialize(market_id, variant_id = nil, cache = {})
           @market_id  = market_id
           @variant_id = variant_id
+          @cache = cache
         end
 
         def market_name
@@ -33,12 +34,21 @@ module OddsFeed
         attr_reader :market_id, :variant_id
 
         def stored_template
-          @stored_template ||= MarketTemplate.find_by!(external_id: market_id)
+          @stored_template ||=
+            cached_market_template ||
+            MarketTemplate.find_by!(external_id: market_id)
         rescue ActiveRecord::RecordNotFound
           raise(
             ActiveRecord::RecordNotFound,
             "MarketTemplate with external id #{market_id} not found."
           )
+        end
+
+        def cached_market_template
+          return nil unless @cache[:market_templates_cache]
+
+          @cache[:market_templates_cache]
+            .detect { |e| e.external_id == market_id.to_s }
         end
 
         def player?(external_id)
