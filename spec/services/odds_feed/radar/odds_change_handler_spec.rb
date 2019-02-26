@@ -105,12 +105,23 @@ describe OddsFeed::Radar::OddsChangeHandler do
   end
 
   context 'event activity' do
-    it 'defines event as active' do
-      create(:event,
-             external_id: event_id,
-             status: Event::NOT_STARTED,
-             active: false)
+    let(:positive_status) { Event::NOT_STARTED }
+    let(:event_to_be_marked_as_active) do
+      create(
+        :event_with_odds,
+        external_id: event_id,
+        status: positive_status,
+        active: false
+      )
+        .tap do |event|
+          event_market = event.markets.sample
+          event_market.update(status: Market::ACTIVE)
+          event_market.odds.sample.update(status: Odd::ACTIVE)
+        end
+    end
 
+    it 'defines event as active' do
+      event_to_be_marked_as_active
       described_class.new(payload).handle
       event = Event.find_by(external_id: event_id)
       expect(event.active).to be_truthy
@@ -178,7 +189,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
     payload_addition = {
       state:
         OddsFeed::Radar::EventStatusService.new.call(
-          event_id: event.id,
+          event: event,
           data: payload['odds_change']['sport_event_status']
         )
     }

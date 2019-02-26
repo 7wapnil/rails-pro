@@ -4,8 +4,8 @@ module OddsFeed
       class Service < ::ApplicationService
         include JobLogger
 
-        def initialize(event_id, markets_data)
-          @event = Event.find(event_id)
+        def initialize(event, markets_data)
+          @event = event
           @markets_data = markets_data
           @markets = []
           @odds = []
