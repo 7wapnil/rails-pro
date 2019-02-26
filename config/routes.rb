@@ -90,6 +90,13 @@ Rails.application.routes.draw do
 
   resources :market_templates, only: %i[index update]
 
+  resources :withdrawals, only: :index do
+    member do
+      post :confirm
+      post :reject
+    end
+  end
+
   namespace :redirect do
     resources :deposits, only: [] do
       collection do

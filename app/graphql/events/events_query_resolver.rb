@@ -83,7 +83,7 @@ module Events
           FROM events
           INNER JOIN scoped_events se
           ON se.event_id = events.id AND se.event_scope_id = event_scopes.id
-          WHERE events.id IN (#{query_ids.join(', ')})
+          WHERE events.id IN (#{query_ids.join(', ').presence || 'NULL'})
           ORDER BY priority, start_at ASC
           LIMIT #{UPCOMING_LIMIT}
         )
