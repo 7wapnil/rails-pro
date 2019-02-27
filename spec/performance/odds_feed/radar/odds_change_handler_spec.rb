@@ -29,10 +29,10 @@ describe OddsFeed::Radar::OddsChangeHandler, :perf do
     payload['odds_change']['odds']['market'] =
       preloaded_market_template_ids.map do |market_template_id|
         {
-          id: market_template_id,
+          id: market_template_id.to_s,
           specifiers: 'score=41.5',
-          favorite: 1,
-          status: 1,
+          favorite: '1',
+          status: '1',
           outcome: Array.new(3).each_with_index.map do |_, i|
             {
               id: i + 1,
@@ -40,7 +40,7 @@ describe OddsFeed::Radar::OddsChangeHandler, :perf do
               active: 1
             }.stringify_keys.transform_values(&:to_s)
           end
-        }.stringify_keys.transform_values(&:to_s)
+        }.stringify_keys
       end
 
     payload
