@@ -98,15 +98,26 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
 
       before do
         allow(MarketTemplate).to receive(:find_by!)
+        market_name
       end
 
-      it 'takes market from cache' do
-        expect(market_name).to eq template.name
-      end
+      it('takes market from cache') { expect(market_name).to eq template.name }
 
       it 'does not call real model' do
-        market_name
         expect(MarketTemplate).not_to have_received(:find_by!)
+      end
+    end
+
+    context 'when cache is empty' do
+      let(:cache) { nil }
+
+      before do
+        allow(MarketTemplate).to receive(:find_by!).and_return(template)
+        subject.market_name
+      end
+
+      it 'fallbacks to active record call' do
+        expect(MarketTemplate).to have_received(:find_by!).once
       end
     end
   end

@@ -45,7 +45,7 @@ module OddsFeed
         end
 
         def cached_market_template
-          return nil unless @cache[:market_templates_cache]
+          return nil unless @cache && @cache[:market_templates_cache]
 
           @cache[:market_templates_cache][market_id.to_sym]
         end
