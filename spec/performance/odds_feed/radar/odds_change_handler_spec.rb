@@ -61,6 +61,7 @@ describe OddsFeed::Radar::OddsChangeHandler, :perf do
   def execute_performance_test(experiments_count: 1)
     test_results = Array.new(experiments_count).map do
       result_time = nil
+      GC.start
       ActiveRecord::Base.connection.query_cache.clear
 
       DatabaseCleaner.cleaning do
