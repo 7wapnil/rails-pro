@@ -10,9 +10,9 @@ describe OddsFeed::Radar::OddsChangeHandler, :perf do
   end
 
   let!(:preload_market_templates) do
-    preloaded_market_template_ids.each do |id|
-      create(:market_template, external_id: id)
-    end
+    preloaded_market_template_ids.map do |id|
+      build(:market_template, :with_outcome_data, external_id: id)
+    end.tap { |templates| MarketTemplate.import(templates, validate: false) }
   end
 
   let(:producer_id_in_file) { 2 }

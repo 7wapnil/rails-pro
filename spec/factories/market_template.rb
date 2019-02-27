@@ -19,5 +19,19 @@ FactoryBot.define do
     trait :products_all do
       payload { { products: %w[1 3] } }
     end
+
+    trait :with_outcome_data do
+      payload do
+        {
+          outcomes: {
+            outcome: [
+              { 'id' => '1', 'name' => 'foo' },
+              { 'id' => '2', 'name' => 'bar' },
+              { 'id' => '3', 'name' => 'baz' }
+            ]
+          }
+        }
+      end
+    end
   end
 end
