@@ -1,9 +1,16 @@
 describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
   subject { described_class.new(*args) }
 
-  let(:template)   { create(:market_template) }
+  let(:empty_cache) { {} }
+
+  let!(:template) do
+    create(:market_template,
+           :with_outcome_data,
+           specific_outcome_id: outcome['id'],
+           specific_outcome_name: outcome['name'])
+  end
   let(:variant_id) { rand(0..5) }
-  let(:cache)      { {} }
+  let(:cache)      { empty_cache }
   let(:args)       { [template.external_id, variant_id, cache] }
 
   let(:payload) do
@@ -11,9 +18,11 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
       file_fixture('radar_markets_description_for_variant.xml').read
     )
   end
+
   let(:outcomes) do
     payload.dig('market_descriptions', 'market')['outcomes']
   end
+  let(:outcome) { outcomes['outcome'].first }
 
   describe '#market_name' do
     it { expect(subject.market_name).to eq(template.name) }
@@ -22,7 +31,6 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
   describe '#odd_name' do
     let(:name)      { Faker::WorldOfWarcraft.hero }
     let(:player_id) { 'sr:player:1234' }
-    let(:outcome)   { outcomes['outcome'].first }
 
     context 'player odd payload' do
       let(:subject_with_template) { described_class.new(*args) }
@@ -59,9 +67,9 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
       end
 
       before do
+        template.update(payload: { 'outcomes' => nil })
         expect_any_instance_of(OddsFeed::Radar::Client)
           .to receive(:market_variants)
-          .with(template.external_id, variant_id, cache_settings)
           .and_return(payload)
       end
 
