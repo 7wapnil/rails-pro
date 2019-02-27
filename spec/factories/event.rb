@@ -47,7 +47,7 @@ FactoryBot.define do
 
     factory :event_with_odds do
       after(:create) do |event|
-        create_list(:odd, 2, market: create(:market, event: event))
+        create_list(:odd, 2, :active, market: create(:market, event: event))
       end
     end
   end

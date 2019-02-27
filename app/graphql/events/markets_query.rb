@@ -1,7 +1,5 @@
 module Events
   class MarketsQuery < ::Base::Resolver
-    include Base::Limitable
-
     type !types[Types::MarketType]
 
     description 'Get all markets list'

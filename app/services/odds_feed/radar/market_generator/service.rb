@@ -72,7 +72,7 @@ module OddsFeed
           Market.import(@markets,
                         validate: false,
                         on_duplicate_key_update: {
-                          conflict_target: [:external_id],
+                          conflict_target: %i[external_id],
                           columns: %i[status priority]
                         })
         end
@@ -81,7 +81,7 @@ module OddsFeed
           Odd.import(@odds,
                      validate: false,
                      on_duplicate_key_update: {
-                       conflict_target: [:external_id],
+                       conflict_target: %i[external_id],
                        columns: %i[status value]
                      })
         end

@@ -12,8 +12,7 @@ module OddsFeed
 
       attr_reader :product
 
-      delegate :last_successful_subscribed_at, to: :product
-      alias latest_subscribed_at last_successful_subscribed_at
+      delegate :last_disconnection_at, to: :product
 
       def initialize(product:)
         @product = product
@@ -76,11 +75,11 @@ module OddsFeed
       def recover_after
         return oldest_recovery_at if use_max_available_recovery?
 
-        latest_subscribed_at
+        last_disconnection_at
       end
 
       def use_max_available_recovery?
-        !latest_subscribed_at || latest_subscribed_at < oldest_recovery_at
+        !last_disconnection_at || last_disconnection_at < oldest_recovery_at
       end
 
       def oldest_recovery_at

@@ -77,6 +77,14 @@ describe 'Producer state change feature. ' do
       )
     end
 
+    let(:snapshot_complete_payload) do
+      XmlParser.parse(
+        '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
+      "<snapshot_complete request_id=\"#{producer.recovery_snapshot_id}\" "\
+      " timestamp=\"1234578\" product=\"#{producer.id}\"/>"
+      )
+    end
+
     context 'with expired timestamp' do
       Radar::Producer::STATES.values.each do |state|
         it "does not influence on #{state} producer status" do
@@ -180,52 +188,54 @@ describe 'Producer state change feature. ' do
       end
     end
 
-    describe 'snapshot_completed message processing' do
-      let(:payload) do
-        XmlParser.parse(
-          '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
-      "<snapshot_complete request_id=\"#{producer.recovery_snapshot_id}\" "\
-      " timestamp=\"1234578\" product=\"#{producer.id}\"/>"
-        )
-      end
-
-      it 'sets recovering producer as healthy' do
+    shared_examples 'snapshot_completed spec' do
+      before do
         producer.update(
           recover_requested_at: time - 1.hour,
           recovery_snapshot_id: Faker::Number.number(2),
           recovery_node_id: Faker::Number.number(2),
-          state: Radar::Producer::RECOVERING
+          last_disconnection_at: initial_last_disconnection_at,
+          state: initial_state
         )
-        OddsFeed::Radar::SnapshotCompleteHandler.new(payload).handle
+        OddsFeed::Radar::SnapshotCompleteHandler
+          .new(snapshot_complete_payload).handle
         producer.reload
-
-        expect(producer.state).to eq Radar::Producer::HEALTHY
       end
 
-      it 'ignores snapshot for unsubscribed producer' do
-        producer.update(
-          recover_requested_at: time - 1.hour,
-          recovery_snapshot_id: Faker::Number.number(2),
-          recovery_node_id: Faker::Number.number(2),
-          state: Radar::Producer::UNSUBSCRIBED
-        )
-        OddsFeed::Radar::SnapshotCompleteHandler.new(payload).handle
-        producer.reload
-
-        expect(producer.state).to eq Radar::Producer::UNSUBSCRIBED
+      it 'sets psets recovering producer roducer in correct state' do
+        expect(producer.state).to eq expected_outcome
       end
 
-      it 'ignores snapshot for healthy producer' do
-        producer.update(
-          recover_requested_at: time - 1.hour,
-          recovery_snapshot_id: Faker::Number.number(2),
-          recovery_node_id: Faker::Number.number(2),
-          state: Radar::Producer::HEALTHY
-        )
-        OddsFeed::Radar::SnapshotCompleteHandler.new(payload).handle
-        producer.reload
+      it 'controls recovery timestamp' do
+        expect(producer.last_disconnection_at)
+          .to eq expected_last_disconnection_at
+      end
+    end
 
-        expect(producer.state).to eq Radar::Producer::HEALTHY
+    context 'with snapshot_completed, sets recovering producer as healthy' do
+      it_behaves_like 'snapshot_completed spec' do
+        let(:initial_last_disconnection_at) { 1.second.ago }
+        let(:initial_state) { Radar::Producer::RECOVERING }
+        let(:expected_outcome) { Radar::Producer::HEALTHY }
+        let(:expected_last_disconnection_at) { nil }
+      end
+    end
+
+    context 'with snapshot_completed, ignored for unsubscribed producer' do
+      it_behaves_like 'snapshot_completed spec' do
+        let(:initial_last_disconnection_at) { 1.second.ago }
+        let(:initial_state) { Radar::Producer::UNSUBSCRIBED }
+        let(:expected_outcome) { Radar::Producer::UNSUBSCRIBED }
+        let(:expected_last_disconnection_at) { initial_last_disconnection_at }
+      end
+    end
+
+    context 'with snapshot_completed, ignored for healthy producer' do
+      it_behaves_like 'snapshot_completed spec' do
+        let(:initial_last_disconnection_at) { 1.second.ago }
+        let(:initial_state) { Radar::Producer::HEALTHY }
+        let(:expected_outcome) { Radar::Producer::HEALTHY }
+        let(:expected_last_disconnection_at) { initial_last_disconnection_at }
       end
     end
   end

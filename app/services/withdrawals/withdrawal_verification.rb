@@ -1,11 +1,11 @@
 module Withdrawals
   class WithdrawalVerification < ApplicationService
-    NOT_ENOUGH_MONEY = I18n.t('errors.messages.withdrawal.not_enouh_money')
+    NOT_ENOUGH_MONEY = I18n.t('errors.messages.withdrawal.not_enough_money')
     ACTIVE_BONUS_EXISTS = I18n.t('errors.messages.withdrawal.bonus_exists')
 
     def initialize(wallet, amount)
       @wallet = wallet
-      @amount = amount
+      @amount = amount.abs
     end
 
     def call

@@ -12,7 +12,7 @@ describe EntryRequests::BetPlacementWorker do
   let!(:live_producer) { create(:liveodds_producer) }
   let!(:prematch_producer) { create(:prematch_producer) }
 
-  let(:odd) { create(:odd, value: 8.87) }
+  let(:odd) { create(:odd, :active, value: 8.87) }
   let(:bonus_balance_amount) { 250 }
   let(:real_amount) { 750 }
   let(:bet_amount) { 10 }

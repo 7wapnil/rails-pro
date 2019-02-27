@@ -23,7 +23,6 @@ describe OddsFeed::Radar::EventFixtureBasedFactory do
     it 'returns filled event' do
       expect(result).to have_attributes(
         external_id: event_id,
-        start_at: start_at,
         name: event_name,
         description: event_description,
         traded_live: false,
@@ -40,7 +39,6 @@ describe OddsFeed::Radar::EventFixtureBasedFactory do
       it 'returns filled traded_live event' do
         expect(result).to have_attributes(
           external_id: event_id,
-          start_at: start_at,
           name: event_name,
           description: event_description,
           traded_live: true,

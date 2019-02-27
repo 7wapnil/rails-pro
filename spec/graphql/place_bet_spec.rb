@@ -38,7 +38,7 @@ describe GraphQL, '#place_bet' do
   end
 
   context 'success' do
-    let(:odds) { create_list(:odd, 2, value: 8.87) }
+    let(:odds) { create_list(:odd, 2, :active, value: 8.87) }
     let(:variables) do
       {
         bets: odds.map do |odd|
@@ -90,7 +90,7 @@ describe GraphQL, '#place_bet' do
   end
 
   context 'bonus applying' do
-    let(:odd) { create(:odd, value: 8.87) }
+    let(:odd) { create(:odd, :active, value: 8.87) }
     let(:bonus_balance_amount) { 250 }
     let(:real_amount) { 750 }
     let(:bet_amount) { 10 }
@@ -159,50 +159,46 @@ describe GraphQL, '#place_bet' do
   end
 
   context 'errors' do
-    before do
-      wallet.update_attributes(currency: currency)
+    let(:error_message) { response['data']['placeBets'].first['message'] }
+    let(:odd) { instance_double(Odd, id: 1, value: 1.85) }
+    let(:bet_currency) { currency }
+    let(:variables) do
+      {
+        bets: [{
+          amount: 10,
+          currencyCode: bet_currency.code,
+          oddId: odd.id.to_s,
+          oddValue: odd.value
+        }]
+      }
     end
 
-    it 'doesn\'t find the odd' do
-      variables = {
-        bets: [
-          { amount: 10, currencyCode: 'EUR', oddId: '1', oddValue: 1.85 }
-        ]
-      }
+    before { wallet.update_attributes(currency: currency) }
 
-      response = ArcanebetSchema.execute(
-        query,
-        context: context,
-        variables: variables
-      )
-      expect(response['data']['placeBets'].first['message'])
-        .to eq 'Couldn\'t find Odd with \'id\'=1'
+    it 'does not find not-existing odd and gives an error' do
+      expect(error_message).to include "Couldn't find Odd with 'id'=#{odd.id}"
     end
 
-    it 'doesn\'t find the currency' do
-      odd = create(:odd)
+    context 'with inactive odd' do
+      let!(:odd) { create(:odd) }
 
-      variables = {
-        bets: [
-          {
-            amount: 10, currencyCode: 'ZZZ', oddId: odd.id.to_s, oddValue: 1.85
-          }
-        ]
-      }
+      it 'gives an error' do
+        expect(error_message).to include "Couldn't find Odd with 'id'=#{odd.id}"
+      end
+    end
 
-      response = ArcanebetSchema.execute(
-        query,
-        context: context,
-        variables: variables
-      )
+    context 'when currency does not exists' do
+      let!(:odd) { create(:odd, :active) }
+      let(:bet_currency) { instance_double(Currency, code: 'ZZZ') }
 
-      expect(response['data']['placeBets'].first['message'])
-        .to eq 'Couldn\'t find Currency'
+      it 'gives an error' do
+        expect(error_message).to eq 'Couldn\'t find Currency'
+      end
     end
   end
 
   context 'multiple bets handling' do
-    let(:odd) { create(:odd, value: 8.87) }
+    let(:odd) { create(:odd, :active, value: 8.87) }
 
     let(:valid_bet_attrs) do
       {
