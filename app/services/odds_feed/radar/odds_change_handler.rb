@@ -37,7 +37,12 @@ module OddsFeed
         market_template_ids =
           markets_hash.map { |market| market['id'] }
         @market_templates_cache ||=
-          MarketTemplate.where(external_id: market_template_ids).to_a
+          MarketTemplate
+          .where(external_id: market_template_ids)
+          .order(:external_id)
+          .to_a
+          .index_by(&:external_id)
+          .symbolize_keys
       end
 
       def cached_data
