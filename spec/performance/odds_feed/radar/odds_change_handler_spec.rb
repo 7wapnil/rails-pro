@@ -24,8 +24,8 @@ describe OddsFeed::Radar::OddsChangeHandler, :perf do
     create(:event, external_id: event_external_id_in_file, producer: producer)
   end
 
-  let!(:payload) do
-    payload = base_payload.dup
+  let!(:custom_payload) do
+    payload = XmlParser.parse(file_fixture('odds_change_message.xml').read)
     payload['odds_change']['odds']['market'] =
       preloaded_market_template_ids.map do |market_template_id|
         {
@@ -45,6 +45,8 @@ describe OddsFeed::Radar::OddsChangeHandler, :perf do
 
     payload
   end
+
+  let(:payload) { custom_payload }
 
   before do
     allow(WebSocket::Client.instance).to receive(:trigger_event_update)
@@ -75,9 +77,9 @@ describe OddsFeed::Radar::OddsChangeHandler, :perf do
     test_results.instance_eval { reduce(:+) / size.to_f }
   end
 
-  it 'runs better with cached markets' do
+  it 'runs faster with cached markets' do
     # Heat the DB
-    execute_performance_test(experiments_count: 3) do
+    execute_performance_test(experiments_count: 2) do
       described_class.new(payload).handle
     end
 
