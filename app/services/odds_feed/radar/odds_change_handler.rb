@@ -42,7 +42,7 @@ module OddsFeed
           .order(:external_id)
           .to_a
           .index_by(&:external_id)
-          .symbolize_keys
+          .transform_keys!(&:to_i)
       end
 
       def cached_data

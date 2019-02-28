@@ -47,7 +47,7 @@ module OddsFeed
         def cached_market_template
           return nil unless @cache && @cache[:market_templates_cache]
 
-          @cache[:market_templates_cache][market_id.to_sym]
+          @cache[:market_templates_cache][market_id.to_i]
         end
 
         def player?(external_id)
