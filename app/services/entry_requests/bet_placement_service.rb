@@ -2,6 +2,8 @@
 
 module EntryRequests
   class BetPlacementService < ApplicationService
+    delegate :odd, :market, to: :bet
+
     def initialize(entry_request:)
       @entry_request = entry_request
       @bet = entry_request.origin
@@ -9,7 +11,7 @@ module EntryRequests
 
     def call
       bet.send_to_internal_validation!
-      return unless valid_bet? && validate_entry_request!
+      return unless validate
 
       bet.finish_internal_validation_successfully! do
         bet.send_to_external_validation!
@@ -20,25 +22,38 @@ module EntryRequests
 
     attr_reader :entry_request, :bet
 
-    def valid_bet?
-      limits_validation_succeeded? &&
-        provider_connected? &&
-        market_not_suspended?
+    def validate
+      validate_bet! && validate_entry_request!
+    rescue Bets::PlacementError => error
+      bet.register_failure!(error.message)
+      false
     end
 
-    def limits_validation_succeeded?
+    def validate_bet!
+      check_if_odd_active! &&
+        limits_validation! &&
+        check_provider_connection! &&
+        check_if_market_not_suspended!
+    end
+
+    def check_if_odd_active!
+      return true if odd.active?
+
+      raise Bets::PlacementError, I18n.t('errors.messages.bet_odd_inactive')
+    end
+
+    def limits_validation!
       BetPlacement::BettingLimitsValidationService.call(bet)
       return true if bet.errors.empty?
 
-      bet.register_failure!(I18n.t('errors.messages.betting_limits'))
-      false
+      raise Bets::PlacementError, I18n.t('errors.messages.betting_limits')
     end
 
-    def provider_connected?
+    def check_provider_connection!
       return true if bet_producer_active?
 
-      bet.register_failure!(I18n.t('errors.messages.provider_disconnected'))
-      false
+      raise Bets::PlacementError,
+            I18n.t('errors.messages.provider_disconnected')
     end
 
     def bet_producer_active?
@@ -56,11 +71,10 @@ module EntryRequests
       event.upcoming? && Radar::Producer.prematch.unsubscribed?
     end
 
-    def market_not_suspended?
-      return true unless bet.market.suspended?
+    def check_if_market_not_suspended!
+      return true unless market.suspended?
 
-      bet.register_failure!(I18n.t('errors.messages.market_suspended'))
-      false
+      raise Bets::PlacementError, I18n.t('errors.messages.market_suspended')
     end
 
     def validate_entry_request!
@@ -71,20 +85,20 @@ module EntryRequests
 
       return true if entry_request.succeeded?
 
-      bet.register_failure!(entry_request.result_message)
-      false
+      raise Bets::PlacementError, entry_request.result_message
     end
 
     def entry_request_failed!
-      bet.register_failure!(I18n.t('errors.messages.entry_request_failed',
-                                   bet_id: bet.id))
-      false
+      raise Bets::PlacementError,
+            I18n.t('errors.messages.entry_request_failed', bet_id: bet.id)
     end
 
     def zero_amount!
-      bet.register_failure!(I18n.t('errors.messages.real_money_blank_amount'))
       entry_request
         .register_failure!(I18n.t('errors.messages.real_money_blank_amount'))
+
+      raise Bets::PlacementError,
+            I18n.t('errors.messages.real_money_blank_amount')
     end
   end
 end

@@ -71,7 +71,7 @@ describe GraphQL, '#markets' do
 
     context 'ordering' do
       let(:query) do
-        %({ markets (eventId: #{event.id}, limit: null) {
+        %({ markets (eventId: #{event.id}) {
               id
               name
               priority
@@ -112,7 +112,7 @@ describe GraphQL, '#markets' do
       end
     end
 
-    context 'limited result' do
+    context 'with limit' do
       let(:limit) { 3 }
       let(:query) do
         %({ markets (
@@ -123,12 +123,9 @@ describe GraphQL, '#markets' do
         } })
       end
 
-      before do
-        create_list(:market, 5, :with_odds, event: event)
-      end
-
-      it 'returns limited markets' do
-        expect(result['data']['markets'].count).to eq(3)
+      it 'returns an error' do
+        expect(result['errors'][0]['message'])
+          .to eq("Field 'markets' doesn't accept argument 'limit'")
       end
     end
 

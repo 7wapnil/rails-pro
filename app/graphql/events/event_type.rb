@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Events
   EventType = GraphQL::ObjectType.define do
     name 'Event'
@@ -14,7 +16,7 @@ module Events
     field :visible, !types.Boolean
     field :title, Titles::TitleType
 
-    field :live, types.Boolean, property: :alive?
+    field :start_status, Events::StartStatusEnum
 
     field :start_at, types.String do
       resolve ->(obj, _args, _ctx) { obj.start_at&.iso8601 }

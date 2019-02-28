@@ -17,11 +17,13 @@ describe EntryRequests::BetPlacementService do
   let(:bonus_balance) { create(:balance, :bonus, wallet: wallet) }
   let(:real_money_balance) { create(:balance, wallet: wallet) }
 
+  let(:odd) { create(:odd, :active) }
   let!(:bet) do
     create(
       :bet,
       customer: wallet.customer,
       currency: currency,
+      odd: odd,
       amount: 100,
       market: create(:event_with_market, :upcoming).markets.sample
     )
@@ -97,6 +99,19 @@ describe EntryRequests::BetPlacementService do
           message: I18n.t('errors.messages.provider_disconnected'),
           status: StateMachines::BetStateMachine::FAILED
         )
+    end
+  end
+
+  context 'with inactive odd' do
+    let(:odd) { create(:odd) }
+
+    before { subject.call }
+
+    it 'bet fails' do
+      expect(bet).to have_attributes(
+        message: I18n.t('errors.messages.bet_odd_inactive'),
+        status: StateMachines::BetStateMachine::FAILED
+      )
     end
   end
 

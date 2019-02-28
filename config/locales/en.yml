@@ -284,6 +284,7 @@ en:
     wallet_name: "%{currency} wallet"
     balance_entries: Balance entries
     balance_entry_requests: Balance entry requests
+    withdrawals: Withdrawals
 
   errors:
     messages:
@@ -293,6 +294,7 @@ en:
         default: "Account is locked%{additional_info}"
       age_adult: Must be adult!
       betting_limits: Betting limits validation failed
+      bet_odd_inactive: Odd for bet became inactive
       bonus_activation_failed: Bonus activation failed, please try later
       customer_account_kind_transit: Can't transit customer account kind
       customer_activated: Customer already activated
@@ -315,7 +317,7 @@ en:
       entry_request_failed: "Entry request has been already failed for bet #{bet_id}"
       deposit_attempts_exceeded: Deposit attempts exceeded, contact support agent
       withdrawal:
-        not_enouh_money: Not enough money in wallet!
+        not_enough_money: Not enough money in wallet!
         bonus_exists: Active bonus exists!
       graphql:
         events:
@@ -371,6 +373,8 @@ en:
     reset_password_confirmation: "Are you sure you want to reset customer (%{customer_name}) password?"
     reset_password_success: Password copied to clipboard
     reset_password_error: Could not copy password to clipboard
+    withdrawal_confirmed: Withdrawal confirmed.
+    withdrawal_rejected: Withdrawal rejected.
 
   navigation:
     customer:

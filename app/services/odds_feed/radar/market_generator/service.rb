@@ -4,8 +4,8 @@ module OddsFeed
       class Service < ::ApplicationService
         include JobLogger
 
-        def initialize(event_id, markets_data)
-          @event = Event.find(event_id)
+        def initialize(event, markets_data)
+          @event = event
           @markets_data = markets_data
           @markets = []
           @odds = []
@@ -72,7 +72,7 @@ module OddsFeed
           Market.import(@markets,
                         validate: false,
                         on_duplicate_key_update: {
-                          conflict_target: [:external_id],
+                          conflict_target: %i[external_id],
                           columns: %i[status priority]
                         })
         end
@@ -81,7 +81,7 @@ module OddsFeed
           Odd.import(@odds,
                      validate: false,
                      on_duplicate_key_update: {
-                       conflict_target: [:external_id],
+                       conflict_target: %i[external_id],
                        columns: %i[status value]
                      })
         end

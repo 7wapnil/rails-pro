@@ -88,6 +88,8 @@ describe GraphQL, '#events' do
       before do
         create_list(:market, rand(1..3), event: control_event)
         create_list(:market, control_count, :with_odds, event: control_event)
+        create_list(:market, rand(1..3), :with_inactive_odds,
+                    event: control_event)
         create_list(:market, rand(1..3), :with_odds,
                     visible: false,
                     event: control_event)
@@ -340,32 +342,42 @@ describe GraphQL, '#events' do
     end
   end
 
-  context 'live' do
-    let(:query) { %({ events(context: #{live_ctx}) { id live } }) }
+  context 'start status' do
+    let(:query) { %({ events(context: #{ctx}) { id start_status } }) }
+    let(:ctx) { 'live' }
 
     context 'with SUSPENDED status' do
       let(:control_event) do
         create(:event, :live)
       end
 
-      it 'value is truthy' do
-        expect(result_event.live).to be_truthy
+      it 'value is LIVE' do
+        expect(result_event.start_status).to eq Event::LIVE
       end
     end
 
     context 'in play' do
       let(:control_event) { create(:event, :live) }
 
-      it 'value is truthy' do
-        expect(result_event.live).to be_truthy
+      it 'value is LIVE' do
+        expect(result_event.start_status).to eq Event::LIVE
       end
     end
 
     context 'without TRADED_LIVE' do
       let(:control_event) { create(:event, status: Event::SUSPENDED) }
 
-      it 'value is falsey' do
-        expect(result_event.live).to be_falsey
+      it 'value is nil' do
+        expect(result_event.start_status).to be_nil
+      end
+    end
+
+    context 'when upcoming' do
+      let(:ctx) { 'upcoming_unlimited' }
+      let(:control_event) { create(:event, :upcoming) }
+
+      it 'value is UPCOMING' do
+        expect(result_event.start_status).to eq Event::UPCOMING
       end
     end
   end

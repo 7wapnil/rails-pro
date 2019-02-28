@@ -76,24 +76,48 @@ describe Event do
   end
 
   describe '.upcoming' do
-    it 'includes not started events' do
-      event = create(:event, start_at: 5.minutes.from_now, end_at: nil)
-      expect(described_class.upcoming).to include(event)
+    shared_examples 'upcoming event query' do
+      it 'doesn\'t include started events' do
+        event = create(:event, start_at: 5.minutes.ago)
+        expect(described_class.upcoming).not_to include(event)
+      end
+
+      it 'doesn\'t include ended events' do
+        event = create(:event, start_at: 1.hour.ago, end_at: 5.minutes.ago)
+        expect(described_class.upcoming).not_to include(event)
+      end
+
+      it 'doesn\'t include events with :end_at in future' do
+        event = create(:event, start_at: 1.hour.ago, end_at: 5.minutes.from_now)
+        expect(described_class.upcoming).not_to include(event)
+      end
     end
 
-    it 'doesn\'t include started events' do
-      event = create(:event, start_at: 5.minutes.ago)
-      expect(described_class.upcoming).not_to include(event)
+    context 'without arguments' do
+      include_context 'upcoming event query'
+
+      it 'includes not started events' do
+        event = create(:event, start_at: 5.minutes.from_now, end_at: nil)
+        expect(described_class.upcoming).to include(event)
+      end
     end
 
-    it 'doesn\'t include ended events' do
-      event = create(:event, start_at: 1.hour.ago, end_at: 5.minutes.ago)
-      expect(described_class.upcoming).not_to include(event)
-    end
+    context 'with upper limit set' do
+      include_context 'upcoming event query'
 
-    it 'doesn\'t include events with :end_at in future' do
-      event = create(:event, start_at: 1.hour.ago, end_at: 5.minutes.from_now)
-      expect(described_class.upcoming).not_to include(event)
+      let(:limit_start_at) { 10.minutes.from_now }
+
+      it 'includes not started events in range' do
+        event = create(:event, start_at: 5.minutes.from_now, end_at: nil)
+        expect(described_class.upcoming(limit_start_at: limit_start_at))
+          .to include(event)
+      end
+
+      it 'does not includes not started events outside of range' do
+        event = create(:event, start_at: 15.minutes.from_now, end_at: nil)
+        expect(described_class.upcoming(limit_start_at: limit_start_at))
+          .not_to include(event)
+      end
     end
   end
 
