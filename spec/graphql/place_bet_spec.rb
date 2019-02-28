@@ -176,14 +176,16 @@ describe GraphQL, '#place_bet' do
     before { wallet.update_attributes(currency: currency) }
 
     it 'does not find not-existing odd and gives an error' do
-      expect(error_message).to include "Couldn't find Odd with 'id'=#{odd.id}"
+      expect(error_message)
+        .to eq I18n.t('errors.messages.graphql.betting.place.failure')
     end
 
     context 'with inactive odd' do
       let!(:odd) { create(:odd) }
 
       it 'gives an error' do
-        expect(error_message).to include "Couldn't find Odd with 'id'=#{odd.id}"
+        expect(error_message)
+          .to eq I18n.t('errors.messages.graphql.betting.place.failure')
       end
     end
 
@@ -192,7 +194,8 @@ describe GraphQL, '#place_bet' do
       let(:bet_currency) { instance_double(Currency, code: 'ZZZ') }
 
       it 'gives an error' do
-        expect(error_message).to eq 'Couldn\'t find Currency'
+        expect(error_message)
+          .to eq I18n.t('errors.messages.graphql.betting.place.failure')
       end
     end
   end
