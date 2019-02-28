@@ -44,5 +44,7 @@ module Events
       end
     end
     field :state, Types::EventStateType
+
+    field :categories, !types[Events::MarketCategoryType]
   end
 end
