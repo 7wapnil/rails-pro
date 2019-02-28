@@ -63,7 +63,7 @@ module OddsFeed
       def touch_event!
         event.producer = ::Radar::Producer.find(input_data['product'])
         new_state = OddsFeed::Radar::EventStatusService.new.call(
-          event_id: event.id, data: input_data['sport_event_status']
+          event: event, data: input_data['sport_event_status']
         )
         event.add_to_payload(state: new_state)
         process_updates!

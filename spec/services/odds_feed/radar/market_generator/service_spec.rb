@@ -8,7 +8,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
   let(:event)      { create(:event) }
 
   describe 'market attributes' do
-    subject { described_class.new(event.id, markets_data) }
+    subject { described_class.new(event, markets_data) }
 
     it 'assigns market template category' do
       market_templates = markets_data.map do |payload|
@@ -29,7 +29,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
   end
 
   describe '#call' do
-    subject { described_class.call(event.id, markets_data) }
+    subject { described_class.call(event, markets_data) }
 
     let(:web_socket) { double }
     let(:odds)       { build_stubbed_list(:odd, 5) }
