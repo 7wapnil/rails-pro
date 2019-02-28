@@ -320,6 +320,9 @@ en:
         not_enough_money: Not enough money in wallet!
         bonus_exists: Active bonus exists!
       graphql:
+        betting:
+          place:
+            failure: Oops! Bet cannot be accepted. Feel free to contact administration or try again later
         events:
           context:
             invalid: "Unsupported context '%{context}'. Supported contexts: %{contexts}"

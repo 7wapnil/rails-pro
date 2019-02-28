@@ -30,7 +30,7 @@ module Betting
       bet&.register_failure!(e.message)
 
       OpenStruct.new(id: bet_payload[:oddId],
-                     message: e.message,
+                     message: failure_message,
                      success: false)
     end
 
@@ -61,6 +61,10 @@ module Betting
 
     def find_odd(bet_payload)
       Odd.active.find(bet_payload[:oddId])
+    end
+
+    def failure_message
+      I18n.t('errors.messages.graphql.betting.place.failure')
     end
   end
 end
