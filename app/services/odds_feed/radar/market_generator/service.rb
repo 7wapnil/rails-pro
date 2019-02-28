@@ -5,7 +5,7 @@ module OddsFeed
         include JobLogger
 
         def initialize(event, markets_data, cache = {})
-          @event = Event.find(event_id)
+          @event = event
           @markets_data = markets_data
           @markets = []
           @odds = []
