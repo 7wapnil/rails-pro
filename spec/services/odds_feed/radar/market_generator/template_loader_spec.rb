@@ -91,7 +91,7 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
 
     context 'template loader receives cached market templates' do
       let(:cache) do
-        { market_templates_cache: { template.external_id.to_sym => template } }
+        { market_templates_cache: { template.external_id.to_i => template } }
       end
 
       let(:market_name) { subject.market_name }
