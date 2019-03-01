@@ -1,5 +1,5 @@
 describe OddsFeed::Radar::MarketGenerator::MarketData do
-  subject { described_class.new(event, payload) }
+  subject { described_class.new(event, payload, market_template) }
 
   let(:event) { build_stubbed(:event) }
 
@@ -8,11 +8,8 @@ describe OddsFeed::Radar::MarketGenerator::MarketData do
              .dig('odds_change', 'odds', 'market')
              .first
   end
-
-  describe '#id' do
-    let(:id) { payload['id'] }
-
-    it { expect(subject.id).to eq(id) }
+  let(:market_template) do
+    create(:market_template, external_id: payload['id'])
   end
 
   describe '#name' do
@@ -53,15 +50,25 @@ describe OddsFeed::Radar::MarketGenerator::MarketData do
   end
 
   describe '#external_id' do
-    let(:external_id) { 'sr:player:1234' }
-
     before do
-      allow_any_instance_of(OddsFeed::Radar::ExternalId)
+      allow(OddsFeed::Radar::ExternalId)
         .to receive(:generate)
-        .and_return(external_id)
+        .and_return(market_template.external_id)
     end
 
-    it { expect(subject.external_id).to eq(external_id) }
+    it { expect(subject.external_id).to eq(market_template.external_id) }
+
+    it 'builds correct generator' do
+      subject.external_id
+
+      expect(OddsFeed::Radar::ExternalId)
+        .to have_received(:generate)
+        .with(
+          event_id: event.external_id,
+          market_id: market_template.external_id,
+          specs: payload['specifiers']
+        )
+    end
   end
 
   describe '#specifiers' do

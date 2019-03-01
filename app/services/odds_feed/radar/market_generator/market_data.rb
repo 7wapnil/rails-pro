@@ -2,18 +2,14 @@ module OddsFeed
   module Radar
     module MarketGenerator
       class MarketData
-        attr_reader :event
+        attr_reader :event, :market_template
 
-        def initialize(event, payload, cache = {})
+        def initialize(event, payload, market_template)
           @event = event
           @payload = payload
           @interpreter = OddsFeed::Radar::Transpiling::Interpreter.new(event,
                                                                        tokens)
-          @cache = cache
-        end
-
-        def id
-          @payload['id']
+          @market_template = market_template
         end
 
         def name
@@ -30,10 +26,9 @@ module OddsFeed
 
         def external_id
           @external_id ||= OddsFeed::Radar::ExternalId
-                           .new(event_id: @event.external_id,
-                                market_id: id,
-                                specs: specifiers)
-                           .generate
+                           .generate(event_id: event.external_id,
+                                     market_id: market_template.external_id,
+                                     specs: specifiers)
         end
 
         def specifiers
@@ -49,7 +44,8 @@ module OddsFeed
         end
 
         def template
-          @template ||= TemplateLoader.new(id, tokens['variant'], @cache)
+          @template ||=
+            TemplateLoader.new(market_template, tokens['variant'])
         end
 
         private

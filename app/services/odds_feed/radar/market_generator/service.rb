@@ -30,7 +30,9 @@ module OddsFeed
         end
 
         def build_market(market_data)
-          data_object = MarketData.new(@event, market_data, @cache)
+          market_template =
+            market_template_find_by!(external_id: market_data['id'])
+          data_object = MarketData.new(@event, market_data, market_template)
           market = build_market_model(data_object)
           return unless valid?(market)
 
@@ -44,6 +46,22 @@ module OddsFeed
                      name: data_object.name,
                      status: data_object.status,
                      category: data_object.category)
+        end
+
+        def market_template_find_by!(external_id:)
+          market_template_from_cache(external_id) ||
+            MarketTemplate.find_by!(external_id: external_id)
+        rescue ActiveRecord::RecordNotFound
+          raise(
+            ActiveRecord::RecordNotFound,
+            "MarketTemplate with external id #{external_id} not found."
+          )
+        end
+
+        def market_template_from_cache(external_id)
+          return nil unless @cache && @cache[:market_templates_cache]
+
+          @cache[:market_templates_cache][external_id.to_i]
         end
 
         def valid?(market)
