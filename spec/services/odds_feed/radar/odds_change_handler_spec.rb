@@ -338,6 +338,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
           .to receive(:call)
           .and_call_original
 
+        event.save!
         subject_api.handle
       end
 
@@ -346,7 +347,8 @@ describe OddsFeed::Radar::OddsChangeHandler do
           .to have_received(:call)
           .with(
             event,
-            instance_of(Array)
+            instance_of(Array),
+            instance_of(Hash)
           )
           .once
       end
