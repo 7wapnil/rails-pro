@@ -129,7 +129,7 @@ module OddsFeed
 
       def call_markets_generator
         ::OddsFeed::Radar::MarketGenerator::Service
-          .call(event.id, markets_data, cached_data)
+          .call(event, markets_data, cached_data)
       end
 
       def markets_data
