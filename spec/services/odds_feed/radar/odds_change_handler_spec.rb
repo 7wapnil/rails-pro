@@ -330,10 +330,25 @@ describe OddsFeed::Radar::OddsChangeHandler do
         end
       end
 
-      before { subject_api.handle }
+      before do
+        allow(subject_api)
+          .to receive(:call_markets_generator)
+          .and_call_original
+        allow(OddsFeed::Radar::MarketGenerator::Service)
+          .to receive(:call)
+          .and_call_original
+
+        subject_api.handle
+      end
 
       it 'calls generate markets' do
-        expect(subject_api).to have_received(:call_markets_generator)
+        expect(OddsFeed::Radar::MarketGenerator::Service)
+          .to have_received(:call)
+          .with(
+            event,
+            instance_of(Array)
+          )
+          .once
       end
     end
 
