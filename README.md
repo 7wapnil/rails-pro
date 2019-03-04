@@ -26,6 +26,8 @@ $ cp docker-compose.yml.example docker-compose.yml
 $ cp .env.example .env
 ```
 
+Put the values you got from the development team into .env
+
 Connect to web container's bash and install the dependencies in the volume
 ```
 docker-compose run --rm web bash
