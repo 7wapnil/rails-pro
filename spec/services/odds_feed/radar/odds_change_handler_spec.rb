@@ -189,7 +189,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
     payload_addition = {
       state:
         OddsFeed::Radar::EventStatusService.new.call(
-          event: event,
+          event_id: event.id,
           data: payload['odds_change']['sport_event_status']
         )
     }
