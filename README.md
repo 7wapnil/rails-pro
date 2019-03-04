@@ -26,6 +26,13 @@ $ cp docker-compose.yml.example docker-compose.yml
 $ cp .env.example .env
 ```
 
+Connect to web container's bash and install the dependencies in the volume
+```
+docker-compose run --rm web bash
+bundle install
+exit
+```
+
 To launch the application stack run:
 
 ```
@@ -70,9 +77,20 @@ Development fixture data that simulates production (i.e. events and markets, cus
 $ rake dev:prime
 ```
 
+## Back-office frontend setup
+Launch web container's bash and execute the following:
+
+```bash
+npm install
+./bin/webpack-dev-server
+```
+
+This process has to keep running while you work with the admin panel
+
+
 ## Sanity Checks
 
-We use Codeship as the CI/CD system. It runs following sanity checks on the code during builds:
+We use Werker as the CI/CD system. It runs following sanity checks on the code during builds:
 
 - rspec - Ruby automated tests
 - rubocop - Ruby style guide checks
