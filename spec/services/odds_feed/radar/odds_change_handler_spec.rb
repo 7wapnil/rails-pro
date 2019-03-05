@@ -185,24 +185,35 @@ describe OddsFeed::Radar::OddsChangeHandler do
     end
   end
 
-  it 'does not add producer id to event payload' do
-    payload_addition = {
-      state:
-        OddsFeed::Radar::EventStatusService.new.call(
-          event: event,
-          data: payload['odds_change']['sport_event_status']
-        )
-    }
+  context 'with persisted event' do
+    before { event.save! }
 
-    allow(Event).to receive(:find_by) { event }
-    allow(event)
-      .to receive(:add_to_payload).and_call_original
+    let(:payload_addition_to_event) do
+      {
+        state:
+          {
+            id: event.id * 1000,
+            status_code: '1',
+            status: '1st period',
+            score: '2:0',
+            time: '10:00',
+            period_scores: [],
+            finished: false
+          }
+      }
+    end
 
-    subject_api.handle
+    it 'applies correct diff to event' do
+      allow(Event).to receive(:find_by) { event }
+      allow(event)
+        .to receive(:add_to_payload).and_call_original
 
-    expect(event)
-      .to have_received(:add_to_payload)
-      .with(payload_addition).once
+      subject_api.handle
+
+      expect(event)
+        .to have_received(:add_to_payload)
+        .with(payload_addition_to_event).once
+    end
   end
 
   it 'changes event producer' do
