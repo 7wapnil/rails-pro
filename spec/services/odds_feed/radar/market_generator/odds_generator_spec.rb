@@ -4,8 +4,14 @@ describe OddsFeed::Radar::MarketGenerator::OddsGenerator do
   let(:market) { build_stubbed(:market) }
   let(:event)  { build_stubbed(:event) }
 
+  let(:market_template) do
+    create(:market_template,
+           external_id: payload['id'])
+  end
+
   let(:market_data) do
-    OddsFeed::Radar::MarketGenerator::MarketData.new(event, payload)
+    OddsFeed::Radar::MarketGenerator::MarketData
+      .new(event, payload, market_template)
   end
 
   let(:payload) do
