@@ -358,6 +358,7 @@ en:
     withdraw: Withdraw
     bonus: Bonus money
     real_money: Real money
+    visa_mastercard: Visa/Mastercard
 
   lock_reasons:
     closed: Closed

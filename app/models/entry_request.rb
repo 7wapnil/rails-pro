@@ -23,9 +23,10 @@ class EntryRequest < ApplicationRecord
   }
 
   enum mode: {
-    cashier:       CASHIER = 'cashier',
-    system:        SYSTEM = 'system',
-    simulated:     SIMULATED = 'simulated'
+    cashier:         CASHIER         = 'cashier',
+    system:          SYSTEM          = 'system',
+    simulated:       SIMULATED       = 'simulated',
+    visa_mastercard: VISA_MASTERCARD = 'visa/mastercard'
   }
 
   validates :amount,

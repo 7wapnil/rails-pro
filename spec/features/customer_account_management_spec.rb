@@ -67,7 +67,8 @@ describe Customer, '#account_management' do
       within '.card.customer-entry-request-form #entry_request_mode' do
         options = all('option').map(&:text).map(&:downcase)
         supported_options = [EntryRequest::CASHIER,
-                             EntryRequest::SIMULATED].map(&:downcase)
+                             EntryRequest::SIMULATED,
+                             EntryRequest::VISA_MASTERCARD].map(&:downcase)
 
         expect(options).to match_array(supported_options)
       end
