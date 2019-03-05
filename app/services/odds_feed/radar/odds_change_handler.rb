@@ -33,9 +33,8 @@ module OddsFeed
         return unless @configuration[:cached_market_templates]
         return @market_templates_cache if @market_templates_cache
 
-        markets_hash = @payload['odds_change']['odds']['market']
         market_template_ids =
-          markets_hash.map { |market| market['id'] }
+          markets_data.map { |market| market['id'] }
         @market_templates_cache ||=
           MarketTemplate
           .where(external_id: market_template_ids)
