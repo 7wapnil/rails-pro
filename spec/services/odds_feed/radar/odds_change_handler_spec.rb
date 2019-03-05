@@ -307,11 +307,11 @@ describe OddsFeed::Radar::OddsChangeHandler do
           .and_call_original
         allow(::OddsFeed::Radar::MarketGenerator::Service)
           .to receive(:call)
+
+        subject_api.handle
       end
 
       let(:payload) { payload_single_market }
-
-      before { subject_api.handle }
 
       it 'calls generate markets' do
         expect(::OddsFeed::Radar::MarketGenerator::Service)
