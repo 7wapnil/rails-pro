@@ -92,7 +92,7 @@ This process has to keep running while you work with the admin panel
 
 ## Sanity Checks
 
-We use Werker as the CI/CD system. It runs following sanity checks on the code during builds:
+We use Werсker as the CI/CD system. It runs following sanity checks on the code during builds:
 
 - rspec - Ruby automated tests
 - rubocop - Ruby style guide checks
