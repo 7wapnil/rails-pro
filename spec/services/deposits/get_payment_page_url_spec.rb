@@ -105,7 +105,7 @@ describe Deposits::GetPaymentPageUrl do
           encoding: Encoding::UTF_8.to_s,
           time_stamp: time_stamp,
           userid: customer.id.to_s,
-          merchant_unique_id: entry_request.id.to_s,
+          productId: entry_request.id.to_s,
           currency: currency.code,
           user_token_id: customer.id.to_s,
           item_name_1: item_name,

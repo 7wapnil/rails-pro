@@ -316,6 +316,10 @@ en:
       deposit_payment_error: 'Deposit payment error!'
       entry_request_failed: "Entry request has been already failed for bet #{bet_id}"
       deposit_attempts_exceeded: Deposit attempts exceeded, contact support agent
+      deposit_attempt_is_not_succeded: Deposit attempt is not succeded
+      technical_error_happened: Technical error happened
+      deposit_request_cancelled: Deposit request canceled
+      deposit_request_failed: Deposit request failed
       withdrawal:
         not_enough_money: Not enough money in wallet!
         bonus_exists: Active bonus exists!

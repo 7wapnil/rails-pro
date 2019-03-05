@@ -17,33 +17,39 @@ module Redirect
         .call(entry_request: entry_request)
     rescue ActiveRecord::RecordNotFound, JWT::DecodeError
       Rails.logger.error 'Deposit request with corrupted data received.'
-      callback(:something_went_wrong)
+      callback_redirect_for(Deposits::CallbackUrl::ERROR)
     rescue Deposits::DepositAttemptError
       Rails.logger.error 'Customer deposit attempts exceeded.'
-      callback(:deposit_attempts_exceeded)
+      callback_redirect_for(Deposits::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
+    rescue StandardError => e
+      Rails.logger.error 'Something went wrong on deposit initiation', e.message
+      callback_redirect_for(Deposits::CallbackUrl::SOMETHING_WENT_WRONG)
     end
 
     def success
-      # TODO: Change entry_request state
-      callback(:success)
+      callback(Deposits::CallbackUrl::SUCCESS)
     end
 
     def error
-      # TODO: Change entry_request state
-      callback(:error)
+      callback(Deposits::CallbackUrl::ERROR)
     end
 
     def pending
-      callback(:pending)
+      callback(Deposits::CallbackUrl::PENDING)
     end
 
     def back
-      # TODO: Change entry_request state
-      callback(:back)
+      callback(Deposits::CallbackUrl::BACK)
+    end
+
+    def callback(context)
+      # TODO: Verify balances updated accordingly
+      state = SafeCharge::CallbackHandler.call(params, context)
+      callback_redirect_for(state)
     end
 
     def webhook
-      # TODO: Change entry_request state
+      # TODO: Verify balances updated accordingly
       SafeCharge::WebhookHandler.call(params)
     ensure
       head :ok
@@ -61,8 +67,8 @@ module Redirect
       Customer.find(decoded_token[:id])
     end
 
-    def callback(state)
-      redirect_to Deposit::CallbackUrl.for(state)
+    def callback_redirect_for(state)
+      redirect_to Deposits::CallbackUrl.for(state)
     end
 
     def initiate_params
