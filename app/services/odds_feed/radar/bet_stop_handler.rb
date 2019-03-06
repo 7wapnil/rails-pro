@@ -34,8 +34,9 @@ module OddsFeed
       end
 
       def stop_status
-        is_suspended = input_data['market_status'].nil? ||
-                       input_data['market_status'] == 'suspended'
+        market_status = MarketStatus.new(input_data['market_status'])
+        is_suspended = market_status.empty? ||
+                       market_status.status == MarketStatus::SUSPENDED
 
         return Market::SUSPENDED if is_suspended
 

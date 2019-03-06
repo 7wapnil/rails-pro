@@ -1,9 +1,5 @@
 describe OddsFeed::Radar::BetStopHandler do
-  subject { described_class.new(payload) }
-
-  let(:subject_with_input) { described_class.new(payload) }
-
-  let(:payload) do
+  let(:base_payload) do
     XmlParser.parse(
       '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
       '<bet_stop timestamp="1532353934098" product="3" '\
@@ -13,25 +9,54 @@ describe OddsFeed::Radar::BetStopHandler do
 
   let(:event) { create(:event, external_id: 'sr:match:471123') }
 
-  it 'suspends event markets' do
-    create_list(:market, 5, event: event, status: Market::ACTIVE)
-    create_list(:market, 2, status: Market::ACTIVE) # other event
+  shared_context 'handler state transition spec' do
+    let(:payload) do
+      base_payload.tap do |payload|
+        payload['bet_stop']['market_status'] =
+          OddsFeed::Radar::MarketStatus.code(market_status)
+      end
+    end
 
-    subject.handle
-    expect(Market.where(status: Market::SUSPENDED).count).to eq(5)
-    expect(Market.where(status: Market::ACTIVE).count).to eq(2)
+    let(:initial_state) { Market::ACTIVE }
+
+    let!(:markets) do
+      create_list(:market, 2, event: event, status: initial_state)
+    end
+    let!(:other_markets) { create_list(:market, 2, status: initial_state) }
+
+    before do
+      described_class.new(payload).handle
+      markets.each(&:reload)
+      other_markets.each(&:reload)
+    end
+
+    it 'affects payload event markets' do
+      expect(markets.map(&:status).uniq).to eq([expected_state])
+    end
+
+    it 'does not change other markets' do
+      expect(other_markets.map(&:status).uniq).to eq([initial_state])
+    end
   end
 
-  it 'deactivates event markets' do
-    input_data = payload['bet_stop']
-    input_data['market_status'] = 'deactivated'
-    allow(subject_with_input).to receive(:input_data).and_return(input_data)
+  context 'when market_status is missing' do
+    include_context 'handler state transition spec' do
+      let(:market_status) { nil }
+      let(:expected_state) { Market::SUSPENDED }
+    end
+  end
 
-    create_list(:market, 5, event: event, status: Market::ACTIVE)
-    create_list(:market, 2, status: Market::ACTIVE) # other event
+  context 'when market_status is suspended' do
+    include_context 'handler state transition spec' do
+      let(:market_status) { OddsFeed::Radar::MarketStatus::SUSPENDED }
+      let(:expected_state) { Market::SUSPENDED }
+    end
+  end
 
-    subject_with_input.handle
-    expect(Market.where(status: Market::INACTIVE).count).to eq(5)
-    expect(Market.where(status: Market::ACTIVE).count).to eq(2)
+  context 'when market_status is not suspended, e.g. inactive' do
+    include_context 'handler state transition spec' do
+      let(:market_status) { OddsFeed::Radar::MarketStatus::INACTIVE }
+      let(:expected_state) { Market::INACTIVE }
+    end
   end
 end
