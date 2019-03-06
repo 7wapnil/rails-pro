@@ -320,6 +320,7 @@ en:
       technical_error_happened: Technical error happened
       deposit_request_cancelled: Deposit request canceled
       deposit_request_failed: Deposit request failed
+      unsupported_payment_method: "Payment method '%{code}' is not implemented"
       withdrawal:
         not_enough_money: Not enough money in wallet!
         bonus_exists: Active bonus exists!
@@ -358,7 +359,7 @@ en:
     withdraw: Withdraw
     bonus: Bonus money
     real_money: Real money
-    visa_mastercard: Visa/Mastercard
+    credit_card: Credit Card
 
   lock_reasons:
     closed: Closed
