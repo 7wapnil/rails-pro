@@ -47,9 +47,14 @@ module OddsFeed
         batch.each do |market|
           market.status = stop_status
           market.save!
+          emit_market_update(market)
         rescue ActiveRecord::RecordInvalid => e
           log_job_failure(e)
         end
+      end
+
+      def emit_market_update(market)
+        WebSocket::Client.instance.trigger_market_update(market)
       end
     end
   end
