@@ -35,12 +35,10 @@ module OddsFeed
 
       def stop_status
         market_status = MarketStatus.new(input_data['market_status'])
-        is_suspended = market_status.empty? ||
-                       market_status.status == MarketStatus::SUSPENDED
 
-        return Market::SUSPENDED if is_suspended
+        return Market::SUSPENDED if market_status.empty?
 
-        Market::INACTIVE
+        market_status.market_status
       end
 
       def update_markets(batch)

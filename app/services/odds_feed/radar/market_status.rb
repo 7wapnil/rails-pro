@@ -7,7 +7,16 @@ module OddsFeed
         -1 => SUSPENDED   = :suspended,
         -2 => HANDED_OVER = :handed_over,
         -3 => SETTLED     = :settled,
-        -4 => CANCELED    = :canceled
+        -4 => CANCELLED    = :cancelled
+      }.freeze
+
+      MARKET_MODEL_STATUS_MAP = {
+        INACTIVE => Market::INACTIVE,
+        ACTIVE => Market::ACTIVE,
+        SUSPENDED => Market::SUSPENDED,
+        CANCELLED => Market::CANCELLED,
+        SETTLED => Market::SETTLED,
+        HANDED_OVER => Market::HANDED_OVER
       }.freeze
 
       attr_reader :id
@@ -26,6 +35,10 @@ module OddsFeed
 
       def status
         MARKET_STATUS_MAP[id] if id
+      end
+
+      def market_status
+        MARKET_MODEL_STATUS_MAP[status]
       end
     end
   end
