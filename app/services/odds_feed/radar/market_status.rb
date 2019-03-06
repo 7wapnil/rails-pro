@@ -17,7 +17,7 @@ module OddsFeed
       end
 
       def initialize(id)
-        @id = id.nil? ? nil : id.to_i
+        @id = id&.to_i
       end
 
       def empty?
@@ -25,7 +25,7 @@ module OddsFeed
       end
 
       def status
-        empty? ? nil : MARKET_STATUS_MAP[id]
+        MARKET_STATUS_MAP[id] if id
       end
     end
   end
