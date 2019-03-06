@@ -89,6 +89,20 @@ npm install
 
 This process has to keep running while you work with the admin panel
 
+## Set up the listener service
+1. Comment out the listener service section in `docker-compose.yml`
+2. Run `docker-compose up -d`
+3. Connect to postgres (docker-compose exposes 5432 port, everything else you need is in `config/database.yml` and `.env`)
+4. Go to the admin panel which is on `localhost:3000/users/sign_in`
+    1. `select * from users`, pick any email
+    2. Password can be found in `.env` under `SEED_USER_DEFAULT_PASSWORD` key
+5. Go to `http://localhost:3000/sidekiq/recurring-jobs` and enqueue `radar_market_templates_update` and `mts_live_validation` jobs
+6. Run this against the database
+`
+update market_templates set category = 'popular'; update markets set category = 'popular';
+`
+7. Uncomment the listener service in `docker-compose.yml` and restart the entire thing.
+8. Events should appear in the responses shortly after listener works for some time. If they don't, double check the RADAR section of current `.env` file.
 
 ## Sanity Checks
 
