@@ -83,7 +83,7 @@ $ rake dev:prime
 Launch web container's bash and execute the following:
 
 ```bash
-npm install
+yarn install
 ./bin/webpack-dev-server
 ```
 
