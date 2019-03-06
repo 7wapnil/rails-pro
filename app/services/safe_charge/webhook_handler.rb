@@ -6,6 +6,8 @@ module SafeCharge
 
     def call
       response.validate!
+      update_entry_request_mode!
+
       return entry_request.succeeded! if response.approved?
       return entry_request.pending! if response.pending?
 
@@ -14,10 +16,19 @@ module SafeCharge
 
     private
 
+    attr_reader :params
+
     delegate :entry_request, to: :response
 
     def response
-      @response ||= SafeCharge::DepositResponse.new(@params)
+      @response ||= SafeCharge::DepositResponse.new(params)
+    end
+
+    def update_entry_request_mode!
+      ::EntryRequests::PaymentMethodService.call(
+        payment_method_code: params['payment_method'],
+        entry_request:       entry_request
+      )
     end
   end
 end
