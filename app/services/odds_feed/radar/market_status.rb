@@ -2,12 +2,12 @@ module OddsFeed
   module Radar
     class MarketStatus
       MARKET_STATUS_MAP = {
-        1  => ACTIVE      = :active,
-        0  => INACTIVE    = :inactive,
-        -1 => SUSPENDED   = :suspended,
+        1 => ACTIVE = :active,
+        0 => INACTIVE = :inactive,
+        -1 => SUSPENDED = :suspended,
         -2 => HANDED_OVER = :handed_over,
-        -3 => SETTLED     = :settled,
-        -4 => CANCELLED    = :cancelled
+        -3 => SETTLED = :settled,
+        -4 => CANCELLED = :cancelled
       }.freeze
 
       MARKET_MODEL_STATUS_MAP = {
