@@ -7,6 +7,7 @@ describe EntryRequest do
   it { is_expected.to belong_to(:origin) }
   it { is_expected.to validate_presence_of(:amount) }
   it { is_expected.to validate_presence_of(:kind) }
+  it { is_expected.to respond_to(:external_id) }
 
   context 'user initiated' do
     before { entry_request.initiator = build(:user) }
