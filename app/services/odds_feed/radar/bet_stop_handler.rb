@@ -11,9 +11,10 @@ module OddsFeed
       end
 
       def handle
+        market_ids = build_query.pluck(:id)
         build_query
           .update_all(status: MarketStatus.stop_status(market_status_code))
-        build_query.find_in_batches(batch_size: @batch_size) do |batch|
+        Market.where(id: market_ids).find_in_batches(batch_size: @batch_size) do |batch|
           batch.each do |market|
             emit_market_update(market)
           rescue ActiveRecord::RecordInvalid => e
