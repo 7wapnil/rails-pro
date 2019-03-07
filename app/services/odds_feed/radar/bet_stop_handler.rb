@@ -11,10 +11,15 @@ module OddsFeed
       end
 
       def handle
+        build_query
+          .update_all(status: MarketStatus.stop_status(market_status_code))
         build_query.find_in_batches(batch_size: @batch_size) do |batch|
-          update_markets(batch)
+          batch.each do |market|
+            emit_market_update(market)
+          rescue ActiveRecord::RecordInvalid => e
+            log_job_failure(e)
+          end
         end
-
         emit_websocket
       end
 
@@ -35,15 +40,6 @@ module OddsFeed
             status: Market::ACTIVE,
             events: { external_id: event_id }
           )
-      end
-
-      def update_markets(batch)
-        batch.each do |market|
-          market.update(status: MarketStatus.stop_status(market_status_code))
-          emit_market_update(market)
-        rescue ActiveRecord::RecordInvalid => e
-          log_job_failure(e)
-        end
       end
 
       def emit_market_update(market)
