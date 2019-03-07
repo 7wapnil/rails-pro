@@ -19,26 +19,39 @@ module OddsFeed
         HANDED_OVER => Market::HANDED_OVER
       }.freeze
 
-      attr_reader :id
+      UNEXPECTED_CODE_MSG = 'unexpected market_status code'.freeze
 
-      def self.code(status)
-        MARKET_STATUS_MAP.key(status)
+      attr_reader :code
+
+      def self.stop_status(code)
+        new(code).market_status || Market::SUSPENDED
       end
 
-      def initialize(id)
-        @id = id&.to_i
-      end
-
-      def empty?
-        id.nil?
-      end
-
-      def status
-        MARKET_STATUS_MAP[id] if id
+      def initialize(code)
+        validate_code!(code)
+        @code = code&.to_i
       end
 
       def market_status
         MARKET_MODEL_STATUS_MAP[status]
+      end
+
+      private
+
+      def validate_code!(code)
+        invalid_code_exception unless allowed_codes.include?(code)
+      end
+
+      def invalid_code_exception
+        raise ArgumentError, UNEXPECTED_CODE_MSG
+      end
+
+      def allowed_codes
+        MARKET_STATUS_MAP.keys + [nil]
+      end
+
+      def status
+        MARKET_STATUS_MAP[code] if code
       end
     end
   end

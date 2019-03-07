@@ -9,15 +9,12 @@ describe OddsFeed::Radar::BetStopHandler do
 
   let(:event) { create(:event, external_id: 'sr:match:471123') }
 
-  shared_context 'handler state transition spec' do
-    let(:payload) do
-      base_payload.tap do |payload|
-        payload['bet_stop']['market_status'] =
-          OddsFeed::Radar::MarketStatus.code(market_status)
-      end
-    end
+  describe 'market_status update' do
+    let(:market_status_class) { OddsFeed::Radar::MarketStatus }
 
     let(:initial_state) { Market::ACTIVE }
+    let(:not_active_states) { Market::STATUSES.except(:active) }
+    let(:target_state) { not_active_states[not_active_states.keys.sample] }
 
     let!(:markets) do
       create_list(:market, 2, event: event, status: initial_state)
@@ -25,38 +22,20 @@ describe OddsFeed::Radar::BetStopHandler do
     let!(:other_markets) { create_list(:market, 2, status: initial_state) }
 
     before do
-      described_class.new(payload).handle
+      allow(market_status_class).to receive(:stop_status) { target_state }
+
+      described_class.new(base_payload).handle
+
       markets.each(&:reload)
       other_markets.each(&:reload)
     end
 
     it 'affects payload event markets' do
-      expect(markets.map(&:status).uniq).to eq([expected_state])
+      expect(markets.map(&:status).uniq).to eq([target_state])
     end
 
     it 'does not change other markets' do
       expect(other_markets.map(&:status).uniq).to eq([initial_state])
-    end
-  end
-
-  context 'when market_status is missing' do
-    include_context 'handler state transition spec' do
-      let(:market_status) { nil }
-      let(:expected_state) { Market::SUSPENDED }
-    end
-  end
-
-  context 'when market_status is suspended' do
-    include_context 'handler state transition spec' do
-      let(:market_status) { OddsFeed::Radar::MarketStatus::SUSPENDED }
-      let(:expected_state) { Market::SUSPENDED }
-    end
-  end
-
-  context 'when market_status is not suspended, e.g. inactive' do
-    include_context 'handler state transition spec' do
-      let(:market_status) { OddsFeed::Radar::MarketStatus::INACTIVE }
-      let(:expected_state) { Market::INACTIVE }
     end
   end
 end

@@ -24,6 +24,10 @@ module OddsFeed
         @payload['bet_stop']
       end
 
+      def market_status_code
+        input_data['market_status']
+      end
+
       def build_query
         Market
           .joins(:event)
@@ -33,18 +37,9 @@ module OddsFeed
           )
       end
 
-      def stop_status
-        market_status = MarketStatus.new(input_data['market_status'])
-
-        return Market::SUSPENDED if market_status.empty?
-
-        market_status.market_status
-      end
-
       def update_markets(batch)
         batch.each do |market|
-          market.status = stop_status
-          market.save!
+          market.update(status: MarketStatus.stop_status(market_status_code))
           emit_market_update(market)
         rescue ActiveRecord::RecordInvalid => e
           log_job_failure(e)
