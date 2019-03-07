@@ -10,8 +10,6 @@ describe Entry do
   end
   let(:wallet) { create(:wallet, currency: currency) }
 
-  # it { should define_enum_for(:kind) }
-
   it { is_expected.to belong_to(:wallet) }
   it { is_expected.to belong_to(:origin) }
   it { is_expected.to have_one(:currency) }

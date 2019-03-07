@@ -1,5 +1,4 @@
 describe Market do
-  # it { should define_enum_for(:status) }
   subject(:market) { described_class.new }
 
   it { is_expected.to belong_to(:event) }

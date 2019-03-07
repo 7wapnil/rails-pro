@@ -1,5 +1,4 @@
 describe Odd do
-  # it { should define_enum_for(:status) }
   subject(:odd) { described_class.new }
 
   it { is_expected.to belong_to(:market) }
