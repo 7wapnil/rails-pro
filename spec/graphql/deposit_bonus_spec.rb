@@ -30,7 +30,7 @@ describe GraphQL, '#deposit_bonus' do
       let(:amount) { bonus.min_deposit - 1.0 }
 
       it 'returns zero bonus' do
-        expect(deposit_bonus['bonus']).to eq(0.0)
+        expect(deposit_bonus['bonus']).to be_zero
       end
     end
 
