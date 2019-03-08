@@ -11,20 +11,25 @@ module OddsFeed
       end
 
       def handle
-        market_ids = build_query.pluck(:id)
-        build_query
-          .update_all(status: MarketStatus.stop_status(market_status_code))
-        Market.where(id: market_ids).find_in_batches(batch_size: @batch_size) do |batch|
-          batch.each do |market|
-            emit_market_update(market)
-          rescue ActiveRecord::RecordInvalid => e
-            log_job_failure(e)
-          end
-        end
+        update_markets
         emit_websocket
       end
 
       private
+
+      def update_markets
+        target_status = MarketStatus.stop_status(market_status_code)
+
+        markets = markets_to_be_changed_query
+                  .find_each(batch_size: @batch_size).to_a
+        markets_to_be_changed_query.update_all(status: target_status)
+        markets.each do |market|
+          market.status = target_status
+          emit_market_update(market)
+        rescue ActiveRecord::RecordInvalid => e
+          log_job_failure(e)
+        end
+      end
 
       def input_data
         @payload['bet_stop']
@@ -34,7 +39,7 @@ module OddsFeed
         input_data['market_status']
       end
 
-      def build_query
+      def markets_to_be_changed_query
         Market
           .joins(:event)
           .where(

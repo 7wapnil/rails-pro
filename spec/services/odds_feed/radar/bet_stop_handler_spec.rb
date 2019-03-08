@@ -1,3 +1,7 @@
+RSpec::Matchers.define :a_model_with_status do |status|
+  match { |actual| actual.status == status }
+end
+
 describe OddsFeed::Radar::BetStopHandler do
   let(:base_payload) do
     XmlParser.parse(
@@ -21,13 +25,13 @@ describe OddsFeed::Radar::BetStopHandler do
     end
     let!(:other_markets) { create_list(:market, 2, status: initial_state) }
 
-    let(:ws_double){
+    let(:ws_double) do
       instance_double(WebSocket::Client, trigger_market_update: true)
-    }
+    end
 
     before do
       allow(market_status_class).to receive(:stop_status) { target_state }
-      allow(WebSocket::Client).to receive(:instance){ ws_double }
+      allow(WebSocket::Client).to receive(:instance) { ws_double }
       allow(ws_double).to receive(:trigger_event_update)
 
       described_class.new(base_payload).handle
@@ -44,9 +48,10 @@ describe OddsFeed::Radar::BetStopHandler do
       expect(other_markets.map(&:status).uniq).to eq([initial_state])
     end
 
-    it 'emits correct number of market update calls' do
+    it 'emits markets with correct state' do
       expect(ws_double)
         .to have_received(:trigger_market_update)
+        .with(a_model_with_status(target_state))
         .exactly(markets.count).times
     end
   end
