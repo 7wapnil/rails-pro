@@ -9,7 +9,7 @@ describe EntryRequest, '#show' do
     end
 
     let!(:request) do
-      create(:entry_request, currency: currency, kind: rule.kind, amount: 200)
+      create(:entry_request, :succeeded, currency: currency, kind: rule.kind, amount: 200)
     end
 
     before do
@@ -31,6 +31,7 @@ describe EntryRequest, '#show' do
         expect(page).to have_content(expected_kind)
         expect(page).to have_content(request.customer.full_name)
         expect(page).to have_content(expected_amount)
+        expect(page).to have_content(request.external_id)
       end
     end
   end

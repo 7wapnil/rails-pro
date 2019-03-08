@@ -7,6 +7,7 @@ describe EntryRequest, '#index' do
     before do
       create_list(:entry_request,
                   5,
+                  :succeeded,
                   currency: currency,
                   amount: 200)
 
@@ -29,6 +30,7 @@ describe EntryRequest, '#index' do
           expect(page).to have_content(expected_kind)
           expect(page).to have_content(request.customer.full_name)
           expect(page).to have_content(expected_amount)
+          expect(page).to have_content(request.external_id)
         end
       end
     end
