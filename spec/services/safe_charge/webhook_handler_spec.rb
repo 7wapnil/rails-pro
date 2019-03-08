@@ -8,7 +8,8 @@ describe SafeCharge::WebhookHandler do
       'Status' => SafeCharge::Statuses::APPROVED,
       'advanceResponseChecksum' => webhook_checksum,
       'productId' => entry_request.id,
-      'payment_method' => SafeCharge::PaymentMethods::CC_CARD
+      'payment_method' => SafeCharge::PaymentMethods::CC_CARD,
+      'transactionId' => [*10000..20000].sample.to_s
     }
   end
 
@@ -35,6 +36,7 @@ describe SafeCharge::WebhookHandler do
     service_call
 
     expect(entry_request.reload).to be_succeeded
+    expect(entry_request.reload.external_id).to eq(params['transactionId'])
   end
 
   it 'sets entry request status to pending when webhook status is pending' do

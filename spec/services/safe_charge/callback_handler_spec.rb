@@ -2,9 +2,9 @@ describe SafeCharge::CallbackHandler do
   let(:invalid_context) { Faker::Lorem.word }
 
   let(:entry_request) do
-    build_stubbed(:entry_request,
-                  kind: EntryRequest::DEPOSIT,
-                  status: EntryRequest::INITIAL)
+    create(:entry_request,
+           kind: EntryRequest::DEPOSIT,
+           status: EntryRequest::INITIAL)
   end
 
   let(:params) { { unique: :hash } }
@@ -14,7 +14,8 @@ describe SafeCharge::CallbackHandler do
       'validate!' => true,
       'approved?' => true,
       'pending?' => false,
-      'entry_request' => entry_request
+      'entry_request' => entry_request,
+      'transaction_id' => [*10000..20000].sample.to_s
     )
   end
 
@@ -24,7 +25,8 @@ describe SafeCharge::CallbackHandler do
       'validate!' => true,
       'approved?' => false,
       'pending?' => true,
-      'entry_request' => entry_request
+      'entry_request' => entry_request,
+      'transaction_id' => [*10000..20000].sample.to_s
     )
   end
 
@@ -34,7 +36,8 @@ describe SafeCharge::CallbackHandler do
       'validate!' => true,
       'approved?' => false,
       'pending?' => false,
-      'entry_request' => entry_request
+      'entry_request' => entry_request,
+      'transaction_id' => nil
     )
   end
 
@@ -97,6 +100,10 @@ describe SafeCharge::CallbackHandler do
         expect(entry_request)
           .to have_received(entry_request_call)
           .exactly(expected_entry_request_call_count).times
+
+        if expected_outcome == Deposits::CallbackUrl::SUCCESS
+          expect(entry_request.external_id).to eq(response.transaction_id)
+        end
       end
 
       it 'returns expected outcome' do

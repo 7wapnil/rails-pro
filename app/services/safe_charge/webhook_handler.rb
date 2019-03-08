@@ -8,6 +8,7 @@ module SafeCharge
       response.validate!
       update_entry_request_mode!
 
+      entry_request.update_attribute(:external_id, response.transaction_id)
       return entry_request.succeeded! if response.approved?
       return entry_request.pending! if response.pending?
 
