@@ -301,21 +301,27 @@ describe OddsFeed::Radar::OddsChangeHandler do
     context 'markets_data prepared for one markets_payload' do
       subject { described_class.new(payload) }
 
-      let(:payload) do
-        payload_single_market.tap do |payload|
-          payload['odds_change']['odds']['market'] = {
-            id: 124,
-            specifiers: 'set=2|game=3|point=1',
-            status: -1,
-            outcome: [{ id: 1, odds: 1.3, active: 1 }]
-          }
-        end
+      before do
+        allow(subject_api)
+          .to receive(:call_markets_generator)
+          .and_call_original
+        allow(::OddsFeed::Radar::MarketGenerator::Service)
+          .to receive(:call)
+
+        subject_api.handle
       end
 
-      before { subject_api.handle }
+      let(:payload) { payload_single_market }
 
       it 'calls generate markets' do
-        expect(subject_api).to have_received(:call_markets_generator)
+        expect(::OddsFeed::Radar::MarketGenerator::Service)
+          .to have_received(:call)
+          .with(
+            event,
+            [payload['odds_change']['odds']['market']],
+            instance_of(Hash)
+          )
+          .once
       end
     end
 
@@ -349,6 +355,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
           .to receive(:call)
           .and_call_original
 
+        event.save!
         subject_api.handle
       end
 
@@ -357,7 +364,8 @@ describe OddsFeed::Radar::OddsChangeHandler do
           .to have_received(:call)
           .with(
             event,
-            instance_of(Array)
+            instance_of(Array),
+            instance_of(Hash)
           )
           .once
       end
@@ -372,7 +380,12 @@ describe OddsFeed::Radar::OddsChangeHandler do
         end
       end
 
-      before { subject_api.handle }
+      before do
+        allow(subject_api)
+          .to receive(:call_markets_generator)
+          .and_call_original
+        subject_api.handle
+      end
 
       it 'does not generate markets' do
         expect(subject_api).not_to have_received(:call_markets_generator)

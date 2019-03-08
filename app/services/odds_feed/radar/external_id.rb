@@ -3,6 +3,10 @@ module OddsFeed
     class ExternalId
       attr_writer :event_id, :market_id, :specs, :outcome_id
 
+      def self.generate(*args, &block)
+        new(*args, &block).generate
+      end
+
       def initialize(event_id: nil, market_id: nil, specs: nil, outcome_id: nil)
         @event_id = event_id
         @market_id = market_id

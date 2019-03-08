@@ -8,6 +8,11 @@ FactoryBot.define do
     payload     { { test: 1 } }
     category    { MarketTemplate::POPULAR }
 
+    transient do
+      specific_outcome_id { '4' }
+      specific_outcome_name { 'zoo' }
+    end
+
     trait :products_live do
       payload { { products: %w[1] } }
     end
@@ -18,6 +23,22 @@ FactoryBot.define do
 
     trait :products_all do
       payload { { products: %w[1 3] } }
+    end
+
+    trait :with_outcome_data do
+      payload do
+        {
+          outcomes: {
+            outcome: [
+              { 'id' => '1', 'name' => 'foo' },
+              { 'id' => '2', 'name' => 'bar' },
+              { 'id' => '3', 'name' => 'baz' },
+              { 'id' => specific_outcome_id,
+                'name' => specific_outcome_name }
+            ]
+          }
+        }
+      end
     end
   end
 end

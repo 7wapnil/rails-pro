@@ -16,16 +16,17 @@ class EntryRequest < ApplicationRecord
   default_scope { order(created_at: :desc) }
 
   enum status: {
-    initial:   INITIAL   = 'initial',
-    pending:   PENDING   = 'pending',
+    initial:   INITIAL = 'initial',
+    pending:   PENDING = 'pending',
     succeeded: SUCCEEDED = 'succeeded',
-    failed:    FAILED    = 'failed'
+    failed:    FAILED = 'failed'
   }
 
   enum mode: {
-    cashier:       CASHIER = 'cashier',
-    system:        SYSTEM = 'system',
-    simulated:     SIMULATED = 'simulated'
+    cashier: CASHIER = 'cashier',
+    system: SYSTEM = 'system',
+    simulated: SIMULATED = 'simulated',
+    credit_card: CREDIT_CARD = 'credit_card'
   }
 
   validates :amount,

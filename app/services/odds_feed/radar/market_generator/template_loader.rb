@@ -6,8 +6,10 @@ module OddsFeed
 
         PLAYER_REGEX = /.*:player:.*/
 
-        def initialize(market_id, variant_id = nil)
-          @market_id  = market_id
+        attr_reader :stored_template
+
+        def initialize(stored_template, variant_id = nil)
+          @stored_template = stored_template
           @variant_id = variant_id
         end
 
@@ -30,16 +32,7 @@ module OddsFeed
 
         private
 
-        attr_reader :market_id, :variant_id
-
-        def stored_template
-          @stored_template ||= MarketTemplate.find_by!(external_id: market_id)
-        rescue ActiveRecord::RecordNotFound
-          raise(
-            ActiveRecord::RecordNotFound,
-            "MarketTemplate with external id #{market_id} not found."
-          )
-        end
+        attr_reader :variant_id
 
         def player?(external_id)
           external_id.match?(PLAYER_REGEX)
@@ -55,7 +48,7 @@ module OddsFeed
         end
 
         def find_odd_template(external_id)
-          outcomes.find { |outcome| outcome['id'] == external_id }
+          outcomes.find { |outcome| outcome['id'] == external_id.to_s }
         end
 
         def outcomes
@@ -78,6 +71,10 @@ module OddsFeed
 
         def variant?
           stored_template.payload['outcomes'].nil? && variant_id.present?
+        end
+
+        def market_id
+          @stored_template.external_id
         end
 
         def notify_outcome_is_empty

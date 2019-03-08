@@ -56,7 +56,7 @@ module Deposits
         time_stamp: time_stamp,
         currency: extra_query_params.fetch(:currency_code) { currency.code },
         userid: customer_id,
-        merchant_unique_id: entry_request.id,
+        productId: entry_request.id,
         user_token_id: customer_id,
         item_name_1: extra_query_params.fetch(:item_name_1) { item_name },
         item_number_1: entry_request.id,

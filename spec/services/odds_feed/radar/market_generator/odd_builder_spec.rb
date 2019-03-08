@@ -23,8 +23,14 @@ describe OddsFeed::Radar::MarketGenerator::OddBuilder do
     payload.dig('odds', 'market').first
   end
 
+  let(:market_template) do
+    create(:market_template,
+           external_id: market_payload['id'])
+  end
+
   let(:market_data) do
-    OddsFeed::Radar::MarketGenerator::MarketData.new(event, market_payload)
+    OddsFeed::Radar::MarketGenerator::MarketData
+      .new(event, market_payload, market_template)
   end
 
   let(:odd_data) { market_data.outcome.first }

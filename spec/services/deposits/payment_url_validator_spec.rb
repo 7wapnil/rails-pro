@@ -32,7 +32,7 @@ describe Deposits::PaymentUrlValidator do
       time_stamp: time_stamp,
       currency: currency.code,
       userid: customer.id,
-      merchant_unique_id: entry_request.id,
+      productId: entry_request.id,
       user_token_id: customer.id,
       item_name_1: Faker::WorldOfWarcraft.quote,
       item_number_1: entry_request.id,
