@@ -15,7 +15,7 @@ describe SafeCharge::CallbackHandler do
       'approved?' => true,
       'pending?' => false,
       'entry_request' => entry_request,
-      'transaction_id' => [*10000..20000].sample.to_s
+      'transaction_id' => [*10_000..20_000].sample.to_s
     )
   end
 
@@ -26,7 +26,7 @@ describe SafeCharge::CallbackHandler do
       'approved?' => false,
       'pending?' => true,
       'entry_request' => entry_request,
-      'transaction_id' => [*10000..20000].sample.to_s
+      'transaction_id' => [*10_000..20_000].sample.to_s
     )
   end
 
@@ -95,12 +95,14 @@ describe SafeCharge::CallbackHandler do
           .and_return(response)
       end
 
-      it 'processes entry request correctly' do
+      it 'sets entry status correctly' do
         service_outcome
         expect(entry_request)
           .to have_received(entry_request_call)
           .exactly(expected_entry_request_call_count).times
-
+      end
+      it 'sets external_id with transactionId if nothing went wrong' do
+        service_outcome
         if expected_outcome == Deposits::CallbackUrl::SUCCESS
           expect(entry_request.external_id).to eq(response.transaction_id)
         end

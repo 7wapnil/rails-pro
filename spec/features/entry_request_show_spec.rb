@@ -9,7 +9,11 @@ describe EntryRequest, '#show' do
     end
 
     let!(:request) do
-      create(:entry_request, :succeeded, currency: currency, kind: rule.kind, amount: 200)
+      create(:entry_request,
+             :succeeded,
+             currency: currency,
+             kind: rule.kind,
+             amount: 200)
     end
 
     before do

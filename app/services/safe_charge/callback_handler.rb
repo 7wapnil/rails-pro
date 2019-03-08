@@ -43,6 +43,7 @@ module SafeCharge
 
     def pending_flow
       return Deposits::CallbackUrl::SOMETHING_WENT_WRONG unless pending_context?
+
       entry_request.update_attribute(:external_id, @response.transaction_id)
       Deposits::CallbackUrl::PENDING
     end
