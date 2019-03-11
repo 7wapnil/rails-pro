@@ -28,8 +28,8 @@ module OddsFeed
       end
 
       def initialize(code)
-        validate_code!(code)
         @code = code&.to_i
+        validate_code!(@code)
       end
 
       def market_status
