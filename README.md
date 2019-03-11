@@ -26,6 +26,15 @@ $ cp docker-compose.yml.example docker-compose.yml
 $ cp .env.example .env
 ```
 
+Put the values you got from the development team into .env
+
+Connect to web container's bash and install the dependencies in the volume
+```
+docker-compose run --rm web bash
+bundle install
+exit
+```
+
 To launch the application stack run:
 
 ```
@@ -70,9 +79,34 @@ Development fixture data that simulates production (i.e. events and markets, cus
 $ rake dev:prime
 ```
 
+## Back-office frontend setup
+Launch web container's bash and execute the following:
+
+```bash
+yarn install
+./bin/webpack-dev-server
+```
+
+This process has to keep running while you work with the admin panel
+
+## Set up the listener service
+1. Comment out the listener service section in `docker-compose.yml`
+2. Run `docker-compose up -d`
+3. Connect to postgres (docker-compose exposes 5432 port, everything else you need is in `config/database.yml` and `.env`)
+4. Go to the admin panel which is on `localhost:3000/users/sign_in`
+    1. `select * from users`, pick any email
+    2. Password can be found in `.env` under `SEED_USER_DEFAULT_PASSWORD` key
+5. Go to `http://localhost:3000/sidekiq/recurring-jobs` and enqueue `radar_market_templates_update` and `mts_live_validation` jobs
+6. Run this against the database
+`
+update market_templates set category = 'popular'; update markets set category = 'popular';
+`
+7. Uncomment the listener service in `docker-compose.yml` and restart the entire thing.
+8. Events should appear in the responses shortly after listener works for some time. If they don't, double check the RADAR section of current `.env` file.
+
 ## Sanity Checks
 
-We use Codeship as the CI/CD system. It runs following sanity checks on the code during builds:
+We use Werсker as the CI/CD system. It runs following sanity checks on the code during builds:
 
 - rspec - Ruby automated tests
 - rubocop - Ruby style guide checks
