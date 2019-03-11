@@ -14,10 +14,6 @@ module SafeCharge
       true
     end
 
-    def transaction_id
-      params['transactionId']
-    end
-
     private
 
     def validate_entry_request_state!

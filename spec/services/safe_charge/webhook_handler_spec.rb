@@ -9,7 +9,7 @@ describe SafeCharge::WebhookHandler do
       'advanceResponseChecksum' => webhook_checksum,
       'productId' => entry_request.id,
       'payment_method' => SafeCharge::PaymentMethods::CC_CARD,
-      'transactionId' => [*10_000..20_000].sample.to_s
+      'PPP_TransactionID' => Faker::Number.number(10).to_s
     }
   end
 
@@ -31,17 +31,10 @@ describe SafeCharge::WebhookHandler do
     end
   end
 
-  context 'sets request status to succeeded if webhook status is Approved' do
-    it 'marks the entry request as succeeded' do
-      params['Status'] = SafeCharge::Statuses::APPROVED
-      service_call
-      expect(entry_request.reload).to be_succeeded
-    end
-    it 'stores transactionId as external_id' do
-      params['Status'] = SafeCharge::Statuses::APPROVED
-      service_call
-      expect(entry_request.reload.external_id).to eq(params['transactionId'])
-    end
+  it 'sets request status to succeeded if webhook status is Approved' do
+    params['Status'] = SafeCharge::Statuses::APPROVED
+    service_call
+    expect(entry_request.reload).to be_succeeded
   end
 
   it 'sets entry request status to pending if webhook status is pending' do

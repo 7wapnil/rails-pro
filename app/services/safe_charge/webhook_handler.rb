@@ -5,10 +5,10 @@ module SafeCharge
     end
 
     def call
+      save_external_id
       response.validate!
       update_entry_request_mode!
 
-      entry_request.update_attribute(:external_id, response.transaction_id)
       return entry_request.succeeded! if response.approved?
       return entry_request.pending! if response.pending?
 
@@ -30,6 +30,10 @@ module SafeCharge
         payment_method_code: params['payment_method'],
         entry_request:       entry_request
       )
+    end
+
+    def save_external_id
+      entry_request.update_attribute(:external_id, response.transaction_id)
     end
   end
 end

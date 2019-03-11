@@ -6,7 +6,9 @@ module SafeCharge
     end
 
     def call
+      save_transaction_id
       response.validate!
+
       return success_flow if response.approved?
       return pending_flow if response.pending?
       return back_flow if cancel_context?
@@ -44,7 +46,6 @@ module SafeCharge
     def pending_flow
       return Deposits::CallbackUrl::SOMETHING_WENT_WRONG unless pending_context?
 
-      entry_request.update_attribute(:external_id, @response.transaction_id)
       Deposits::CallbackUrl::PENDING
     end
 
@@ -58,7 +59,6 @@ module SafeCharge
       return Deposits::CallbackUrl::SOMETHING_WENT_WRONG unless success_context?
 
       entry_request.succeeded!
-      entry_request.update_attribute(:external_id, @response.transaction_id)
       Deposits::CallbackUrl::SUCCESS
     end
 
@@ -68,6 +68,10 @@ module SafeCharge
 
     def response
       @response ||= SafeCharge::DepositResponse.new(@params)
+    end
+
+    def save_transaction_id
+      entry_request.update_attribute(:external_id, @response.transaction_id)
     end
   end
 end
