@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     module MarketGenerator
@@ -54,7 +56,7 @@ module OddsFeed
         def outcomes
           notify_outcome_is_empty if outcome_empty?
 
-          outcome_list.is_a?(Hash) ? [outcome_list] : outcome_list
+          outcome_list.is_a?(Hash) ? [outcome_list] : outcome_list.to_a
         end
 
         def outcome_empty?

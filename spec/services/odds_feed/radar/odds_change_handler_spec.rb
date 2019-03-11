@@ -45,6 +45,9 @@ describe OddsFeed::Radar::OddsChangeHandler do
     allow(subject_api).to receive(:call_markets_generator).and_return(timestamp)
     allow(subject_api).to receive(:timestamp).and_return(timestamp)
     allow(subject_api).to receive(:api_event).and_return(event)
+    allow(OddsFeed::Radar::Entities::PlayerLoader)
+      .to receive(:call)
+      .and_return(Faker::Name.name)
   end
 
   it 'requests event data from API if not found in db' do

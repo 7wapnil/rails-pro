@@ -31,7 +31,8 @@ describe OddsFeed::Radar::MarketGenerator::Service do
 
     before do
       allow(OddsFeed::Radar::Entities::PlayerLoader)
-        .to receive(:call) { Faker::Name.name }
+        .to receive(:call)
+        .and_return(Faker::Name.name)
     end
 
     it 'assigns market template category' do
