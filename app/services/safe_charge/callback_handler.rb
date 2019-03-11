@@ -71,7 +71,7 @@ module SafeCharge
     end
 
     def save_transaction_id
-      entry_request.update_attribute(:external_id, @response.transaction_id)
+      entry_request.update!(external_id: @response.transaction_id)
     end
   end
 end

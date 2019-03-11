@@ -95,20 +95,22 @@ describe SafeCharge::CallbackHandler do
           .and_return(response)
       end
 
-      it 'sets entry status correctly' do
-        service_outcome
-        expect(entry_request)
-          .to have_received(entry_request_call)
-          .exactly(expected_entry_request_call_count).times
+      context 'service call' do
+        before { service_outcome }
+
+        it 'sets entry status correctly' do
+          expect(entry_request)
+            .to have_received(entry_request_call)
+            .exactly(expected_entry_request_call_count).times
+        end
+
+        it 'sets the external_id to whatever Response#transaction_id returns' do
+          expect(entry_request.external_id).to eq(response.transaction_id)
+        end
       end
 
       it 'returns expected outcome' do
         expect(service_outcome).to eq expected_outcome
-      end
-
-      it 'sets the external_id to whatever Response#transaction_id returns' do
-        service_outcome
-        expect(entry_request.external_id).to eq(response.transaction_id)
       end
     end
 
