@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     module EventCreatable
@@ -14,8 +16,7 @@ module OddsFeed
           collect_possible_duplicates
           Event.create_or_update_on_duplicate(event)
           handle_duplicates
-
-          return if event.bookable?
+          cache_event_competitors
         end
 
         def api_event
@@ -31,6 +32,15 @@ module OddsFeed
             "Event with external ID #{event_id} could not be processed yet"
           )
           nil
+        end
+
+        def cache_event_competitors
+          event
+            .payload
+            .to_h
+            .dig('competitors', 'competitor')
+            .to_a
+            .each { |attributes| cache_competitor(attributes['id']) }
         end
 
         private
@@ -52,6 +62,10 @@ module OddsFeed
           MESSAGE
 
           log_job_message(:warn, message.squish)
+        end
+
+        def cache_competitor(external_id)
+          Entities::CompetitorLoader.call(external_id: external_id)
         end
       end
     end

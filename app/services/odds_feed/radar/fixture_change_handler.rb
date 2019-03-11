@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     class FixtureChangeHandler < RadarMessageHandler
@@ -18,6 +20,7 @@ module OddsFeed
         if event
           log_on_update
           event.update_from!(api_event)
+          cache_event_competitors
         else
           log_on_create
           create_event
