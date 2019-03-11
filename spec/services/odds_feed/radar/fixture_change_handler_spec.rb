@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::FixtureChangeHandler do
   let(:subject_api) { described_class.new(payload) }
 
@@ -16,8 +18,32 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     }
   end
 
-  let(:event_id)  { payload['fixture_change']['event_id'] }
-  let(:api_event) { build(:event, producer: liveodds_producer) }
+  let(:event_id) { payload['fixture_change']['event_id'] }
+
+  let(:competitor_payload) do
+    XmlParser
+      .parse(file_fixture('radar_team_sport_competitor_profile.xml').read)
+  end
+
+  let(:competitor_id) do
+    competitor_payload.dig('competitor_profile', 'competitor', 'id')
+  end
+
+  let(:competitor_name) do
+    competitor_payload.dig('competitor_profile', 'competitor', 'name')
+  end
+
+  let(:event_competitor_payload) do
+    {
+      id: competitor_id,
+      name: competitor_name
+    }.stringify_keys
+  end
+
+  let(:event_payload) {}
+  let(:api_event) do
+    build(:event, producer: liveodds_producer, payload: event_payload)
+  end
 
   let(:payload_update) { { producer: { origin: :radar, id: '1' } } }
 
@@ -26,6 +52,23 @@ describe OddsFeed::Radar::FixtureChangeHandler do
   end
 
   context 'new event' do
+    it_behaves_like 'service caches competitors and players' do
+      let(:event_payload) do
+        {
+          competitors: {
+            competitor: [event_competitor_payload]
+          }
+        }.deep_stringify_keys
+      end
+      let(:service_call) { subject_api.handle }
+
+      it 'calls CompetitorLoader' do
+        expect(OddsFeed::Radar::Entities::CompetitorLoader)
+          .to have_received(:call)
+          .with(external_id: competitor_id)
+      end
+    end
+
     it 'logs event create message' do
       expect(subject_api).to receive(:log_on_create)
 
@@ -109,12 +152,34 @@ describe OddsFeed::Radar::FixtureChangeHandler do
   end
 
   context 'existing event' do
-    after { subject_api.handle }
-
-    let(:event) { create(:event, external_id: event_id, active: true) }
+    let(:event) do
+      create(:event,
+             external_id: event_id,
+             active: true,
+             payload: event_payload)
+    end
 
     before do
       allow(subject_api).to receive(:event) { event }
+    end
+
+    after { subject_api.handle }
+
+    it_behaves_like 'service caches competitors and players' do
+      let(:event_payload) do
+        {
+          competitors: {
+            competitor: [event_competitor_payload]
+          }
+        }.deep_stringify_keys
+      end
+      let(:service_call) { subject_api.handle }
+
+      it 'calls CompetitorLoader' do
+        expect(OddsFeed::Radar::Entities::CompetitorLoader)
+          .to have_received(:call)
+          .with(external_id: competitor_id)
+      end
     end
 
     it 'calls #update_from! on found event' do
