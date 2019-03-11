@@ -56,7 +56,7 @@ module OddsFeed
         def outcomes
           notify_outcome_is_empty if outcome_empty?
 
-          outcome_list.is_a?(Hash) ? [outcome_list] : outcome_list.to_a
+          Array.wrap(outcome_list)
         end
 
         def outcome_empty?
