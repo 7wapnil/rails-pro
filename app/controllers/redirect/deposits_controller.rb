@@ -51,8 +51,12 @@ module Redirect
     def webhook
       # TODO: Verify balances updated accordingly
       SafeCharge::WebhookHandler.call(params)
-    ensure
+
       head :ok
+    rescue StandardError => e
+      Rails.logger.fatal(e.message)
+
+      head :internal_server_error
     end
 
     private

@@ -139,12 +139,47 @@ describe Redirect::DepositsController do
         end
       end
     end
+  end
 
-    it 'responds to webhook endpoint with ok' do
-      allow(SafeCharge::WebhookHandler).to receive(:call)
-      get(:webhook)
+  describe '#webhook' do
+    context 'success' do
+      before do
+        allow(Rails.logger).to receive(:fatal)
+        allow(SafeCharge::WebhookHandler).to receive(:call)
 
-      expect(response).to have_http_status(:ok)
+        get(:webhook)
+      end
+
+      it 'responds with ok' do
+        expect(response).to have_http_status(:ok)
+      end
+
+      it 'does not log anything' do
+        expect(Rails.logger).not_to have_received(:fatal)
+      end
+    end
+
+    context 'error' do
+      let(:error) do
+        ActiveRecord::RecordNotFound.new(Faker::Superhero.name)
+      end
+
+      before do
+        allow(Rails.logger).to receive(:fatal)
+        allow(SafeCharge::WebhookHandler)
+          .to receive(:call)
+          .and_raise(error)
+
+        get(:webhook)
+      end
+
+      it 'responds with internal server error' do
+        expect(response).to have_http_status(:internal_server_error)
+      end
+
+      it 'notifies about an error' do
+        expect(Rails.logger).to have_received(:fatal).with(error.message)
+      end
     end
   end
 end
