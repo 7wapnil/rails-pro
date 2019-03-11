@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::OddsChangeHandler do
   subject { described_class.new(payload) }
 

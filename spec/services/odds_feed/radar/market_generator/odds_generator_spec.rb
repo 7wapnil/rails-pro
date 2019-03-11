@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::MarketGenerator::OddsGenerator do
   subject { described_class.call(market, market_data) }
 

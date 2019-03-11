@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::MarketGenerator::MarketData do
   subject { described_class.new(event, payload, market_template) }
 

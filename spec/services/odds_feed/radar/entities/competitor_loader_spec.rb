@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::Entities::CompetitorLoader do
   subject { described_class.new(external_id: external_id) }
 
