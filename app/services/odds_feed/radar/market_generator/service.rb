@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     module MarketGenerator
@@ -15,6 +17,7 @@ module OddsFeed
         def call
           build
           import
+          emit_events
         end
 
         private
@@ -76,15 +79,12 @@ module OddsFeed
         end
 
         def build_odds(market, data_object)
-          OddsGenerator.call(market, data_object).each do |odd|
-            @odds << odd
-          end
+          @odds.push(*OddsGenerator.call(market, data_object))
         end
 
         def import
           import_markets
           import_odds
-          emit_events
         end
 
         def import_markets
