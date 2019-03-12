@@ -22,6 +22,10 @@
           %td
             = number_with_precision @entry.amount, precision: 2
             = @entry.currency_code
+        %tr
+          %td= t('attributes.external_id')
+          %td
+            = @entry.external_id
 
       %hr
       = link_back

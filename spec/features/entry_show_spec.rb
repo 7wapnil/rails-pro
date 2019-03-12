@@ -46,6 +46,12 @@ describe Entry, '#show' do
           expect(page).to have_content(expected_amount)
         end
       end
+
+      it 'shows :external_id' do
+        within entry_card do
+          expect(page).to have_content(entry.external_id)
+        end
+      end
     end
 
     context 'related balance entries' do

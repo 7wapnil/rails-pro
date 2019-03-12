@@ -3,7 +3,6 @@ describe Balance do
 
   it { is_expected.to belong_to(:wallet) }
   it { is_expected.to have_many(:balance_entries) }
-  # it { should define_enum_for :kind }
 
   it do
     expect(balance).to validate_numericality_of(:amount)

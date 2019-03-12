@@ -31,13 +31,15 @@ FactoryBot.define do
           :entry,
           wallet: wallet,
           kind:   entry_request.kind,
-          amount: entry_request.amount
+          amount: entry_request.amount,
+          external_id: entry_request.external_id
         )
       end
     end
 
     trait :succeeded do
       status { EntryRequest::SUCCEEDED }
+      sequence(:external_id) { |n| "ID_#{n}" }
     end
 
     trait :deposit do

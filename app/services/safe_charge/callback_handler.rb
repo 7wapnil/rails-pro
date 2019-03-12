@@ -6,7 +6,9 @@ module SafeCharge
     end
 
     def call
+      save_transaction_id
       response.validate!
+
       return success_flow if response.approved?
       return pending_flow if response.pending?
       return back_flow if cancel_context?
@@ -66,6 +68,10 @@ module SafeCharge
 
     def response
       @response ||= SafeCharge::DepositResponse.new(@params)
+    end
+
+    def save_transaction_id
+      entry_request.update!(external_id: @response.transaction_id)
     end
   end
 end

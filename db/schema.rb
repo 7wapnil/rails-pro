@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_02_21_103901) do
+ActiveRecord::Schema.define(version: 2019_03_07_075445) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -243,6 +243,7 @@ ActiveRecord::Schema.define(version: 2019_02_21_103901) do
     t.bigint "origin_id"
     t.datetime "authorized_at"
     t.datetime "confirmed_at"
+    t.string "external_id"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
   end
@@ -273,6 +274,7 @@ ActiveRecord::Schema.define(version: 2019_02_21_103901) do
     t.string "mode"
     t.string "origin_type"
     t.bigint "origin_id"
+    t.string "external_id"
     t.index ["initiator_type", "initiator_id"], name: "index_entry_requests_on_initiator_type_and_initiator_id"
     t.index ["origin_type", "origin_id"], name: "index_entry_requests_on_origin_type_and_origin_id"
   end

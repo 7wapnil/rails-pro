@@ -5,6 +5,7 @@ module SafeCharge
     end
 
     def call
+      save_external_id
       response.validate!
       update_entry_request_mode!
 
@@ -29,6 +30,10 @@ module SafeCharge
         payment_method_code: params['payment_method'],
         entry_request:       entry_request
       )
+    end
+
+    def save_external_id
+      entry_request.update!(external_id: response.transaction_id)
     end
   end
 end

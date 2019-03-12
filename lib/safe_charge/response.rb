@@ -16,6 +16,10 @@ module SafeCharge
       status_ok? && transaction_status.casecmp?(Statuses::PENDING)
     end
 
+    def transaction_id
+      @params['PPP_TransactionID']
+    end
+
     private
 
     def status_ok?
