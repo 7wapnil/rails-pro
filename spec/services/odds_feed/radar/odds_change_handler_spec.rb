@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::OddsChangeHandler do
   subject { described_class.new(payload) }
 
@@ -14,7 +16,34 @@ describe OddsFeed::Radar::OddsChangeHandler do
     XmlParser.parse(file_fixture('odds_change_with_inactive_outcomes.xml').read)
   end
   let(:event_id) { payload['odds_change']['event_id'] }
-  let(:event) { build(:event, title: build(:title), external_id: event_id) }
+
+  let(:competitor_payload) do
+    XmlParser
+      .parse(file_fixture('radar_team_sport_competitor_profile.xml').read)
+  end
+
+  let(:competitor_id) do
+    competitor_payload.dig('competitor_profile', 'competitor', 'id')
+  end
+
+  let(:competitor_name) do
+    competitor_payload.dig('competitor_profile', 'competitor', 'name')
+  end
+
+  let(:event_competitor_payload) do
+    {
+      id: competitor_id,
+      name: competitor_name
+    }.stringify_keys
+  end
+
+  let(:event_payload) {}
+  let(:event) do
+    build(:event,
+          title: build(:title),
+          external_id: event_id,
+          payload: event_payload)
+  end
   let!(:timestamp) { Time.now + 60 }
 
   before do
@@ -45,6 +74,9 @@ describe OddsFeed::Radar::OddsChangeHandler do
     allow(subject_api).to receive(:call_markets_generator).and_return(timestamp)
     allow(subject_api).to receive(:timestamp).and_return(timestamp)
     allow(subject_api).to receive(:api_event).and_return(event)
+    allow(OddsFeed::Radar::Entities::PlayerLoader)
+      .to receive(:call)
+      .and_return(Faker::Name.name)
   end
 
   it 'requests event data from API if not found in db' do
@@ -64,6 +96,23 @@ describe OddsFeed::Radar::OddsChangeHandler do
     subject_api.handle
     event = Event.find_by(external_id: event_id)
     expect(event.status).to eq(Event::STARTED)
+  end
+
+  it_behaves_like 'service caches competitors and players' do
+    let(:event_payload) do
+      {
+        competitors: {
+          competitor: [event_competitor_payload]
+        }
+      }.deep_stringify_keys
+    end
+    let(:service_call) { subject_api.handle }
+
+    it 'calls CompetitorLoader' do
+      expect(OddsFeed::Radar::Entities::CompetitorLoader)
+        .to have_received(:call)
+        .with(external_id: competitor_id)
+    end
   end
 
   context 'events are updating simultaneously' do
@@ -213,6 +262,18 @@ describe OddsFeed::Radar::OddsChangeHandler do
       expect(event)
         .to have_received(:add_to_payload)
         .with(payload_addition_to_event).once
+    end
+
+    context 'with competitor payload' do
+      before do
+        allow(OddsFeed::Radar::Entities::CompetitorLoader).to receive(:call)
+        subject_api.handle
+      end
+
+      it 'does not call CompetitorLoader' do
+        expect(OddsFeed::Radar::Entities::CompetitorLoader)
+          .not_to have_received(:call)
+      end
     end
   end
 

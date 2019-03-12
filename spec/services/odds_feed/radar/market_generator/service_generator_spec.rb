@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::MarketGenerator::Service do
   subject do
     described_class.new(event, markets_payload)
@@ -35,6 +37,9 @@ describe OddsFeed::Radar::MarketGenerator::Service do
                              name: 'Template name')
 
     allow(WebSocket::Client.instance).to receive(:trigger_market_update)
+    allow(OddsFeed::Radar::Entities::PlayerLoader)
+      .to receive(:call)
+      .and_return(Faker::Name.name)
   end
 
   context 'market with outcomes' do

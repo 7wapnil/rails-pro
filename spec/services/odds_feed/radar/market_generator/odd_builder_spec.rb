@@ -35,7 +35,7 @@ describe OddsFeed::Radar::MarketGenerator::OddBuilder do
 
   let(:odd_data) { market_data.outcome.first }
   let(:external_id) { "#{market.external_id}:#{odd_data['id']}" }
-  let(:odd_name) { Faker::WorldOfWarcraft.name }
+  let(:odd_name) { Faker::WorldOfWarcraft.hero }
 
   let(:market) do
     Market.new(external_id: market_data.external_id,

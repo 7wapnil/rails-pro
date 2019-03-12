@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
   subject { described_class.new(*args) }
 
