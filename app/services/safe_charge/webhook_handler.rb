@@ -9,8 +9,8 @@ module SafeCharge
       response.validate!
       update_entry_request_mode!
 
+      return if response.pending?
       return entry_request.succeeded! if response.approved?
-      return entry_request.pending! if response.pending?
 
       entry_request.failed!
     end

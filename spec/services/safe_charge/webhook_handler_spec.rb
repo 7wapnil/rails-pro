@@ -37,11 +37,11 @@ describe SafeCharge::WebhookHandler do
     expect(entry_request.reload).to be_succeeded
   end
 
-  it 'sets entry request status to pending if webhook status is pending' do
+  it 'does not change entry request status when webhook status is pending' do
     params['Status'] = SafeCharge::Statuses::PENDING
-    service_call
 
-    expect(entry_request.reload).to be_pending
+    expect { service_call }
+      .not_to(change { entry_request.reload.status })
   end
 
   it "sets entry request status to 'failed' when ppp_status is 'FAIL'" do
