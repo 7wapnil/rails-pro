@@ -17,7 +17,7 @@ module Deposits
     argument :code, !types.String
 
     def resolve(_obj, args)
-      bonus = Bonus.find_by!(code: args[:code])
+      bonus = Bonus.active.find_by!(code: args[:code])
       bonus_hash = BalanceCalculations::Deposit.call(bonus, args[:amount])
       CalculatedBonus.new(bonus_hash)
     end
