@@ -16,7 +16,7 @@ module OddsFeed
           collect_possible_duplicates
           Event.create_or_update_on_duplicate(event)
           handle_duplicates
-          cache_event_competitors
+          cache_event_based_data
         end
 
         def api_event
@@ -34,13 +34,8 @@ module OddsFeed
           nil
         end
 
-        def cache_event_competitors
-          event
-            .payload
-            .to_h
-            .dig('competitors', 'competitor')
-            .to_a
-            .each { |attributes| cache_competitor(attributes['id']) }
+        def cache_event_based_data
+          EventBasedCache::Writer.call(event: event)
         end
 
         private
@@ -62,10 +57,6 @@ module OddsFeed
           MESSAGE
 
           log_job_message(:warn, message.squish)
-        end
-
-        def cache_competitor(external_id)
-          Entities::CompetitorLoader.call(external_id: external_id)
         end
       end
     end

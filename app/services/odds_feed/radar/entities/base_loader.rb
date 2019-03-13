@@ -6,17 +6,20 @@ module OddsFeed
       class BaseLoader < ApplicationService
         CACHE_TERM = 1.week
 
-        def initialize(external_id:)
+        def initialize(external_id:, **options)
           @external_id = external_id
+          @options = options
         end
 
         def call
+          return collect_data if options[:collect_only]
+
           cached_entity_name || cache_entity_name
         end
 
         protected
 
-        attr_reader :external_id
+        attr_reader :external_id, :options
 
         def cache_additional_entries; end
 
@@ -24,8 +27,16 @@ module OddsFeed
           raise NotImplementedError, 'Implement `radar_entity_name` method!'
         end
 
+        def collect_data
+          raise NotImplementedError, 'Implement `collect_data` method!'
+        end
+
         def entity_cache_key(id)
           "entity-names:#{id}"
+        end
+
+        def entity_name
+          @entity_name ||= radar_entity_name
         end
 
         private
@@ -42,10 +53,6 @@ module OddsFeed
           cache_additional_entries
 
           entity_name
-        end
-
-        def entity_name
-          @entity_name ||= radar_entity_name
         end
       end
     end
