@@ -20,7 +20,7 @@ describe Redirect::DepositsController do
     let(:valid_params) do
       {
         customer: customer,
-        currency: wallet.currency,
+        currency_code: wallet.currency.code,
         amount: amount,
         bonus_code: bonus.code
       }
@@ -105,11 +105,15 @@ describe Redirect::DepositsController do
       let(:valid_token) { JwtService.encode(id: customer.id) }
 
       before do
-        allow(Deposits::CallbackUrl)
-          .to receive(:for).with(:deposit_attempts_exceeded) { callback_url }
+        allow(::Deposits::CallbackUrl)
+          .to receive(:for)
+          .with(Deposits::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
+          .and_return(callback_url)
 
-        allow(Deposits::InitiateHostedDepositService)
+        allow(::Deposits::InitiateHostedDepositService)
           .to receive(:call).and_raise(Deposits::DepositAttemptError)
+
+        wallet.currency.save!
       end
 
       it 'redirects to callback url when deposit attempts exceeded' do
