@@ -5,11 +5,18 @@ describe GraphQL, '#deposit_bonus' do
   let(:amount) { 100.0 }
 
   let(:query) do
-    %({ deposit_bonus (amount: #{amount}, code: #{code}) { real_money bonus } })
+    %(mutation deposit_bonus($amount: Float!, $code: String!) {
+      deposit_bonus(amount: $amount, code: $code) {
+        real_money
+        bonus
+      }
+    })
   end
 
   let(:result) do
-    ArcanebetSchema.execute(query, context: context, variables: variables)
+    ArcanebetSchema.execute(query,
+                            context: context,
+                            variables: variables)
   end
   let(:error_message) { result['errors'][0]['message'] }
 
