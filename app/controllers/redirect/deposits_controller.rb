@@ -62,7 +62,7 @@ module Redirect
     private
 
     def currency_by_code
-      Currency.find_by(code: initiate_params[:currency_code])
+      Currency.find_by!(code: initiate_params[:currency_code])
     end
 
     def customer
