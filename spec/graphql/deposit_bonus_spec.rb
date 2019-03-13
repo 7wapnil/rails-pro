@@ -24,7 +24,7 @@ describe GraphQL, '#deposit_bonus' do
     let(:error_message) { result['errors'][0]['message'] }
 
     it 'returns an error on a missing bonus code' do
-      expect(error_message).to start_with('Couldn\'t find Bonus')
+      expect(error_message).to eq('No bonus found')
     end
   end
 
@@ -70,7 +70,7 @@ describe GraphQL, '#deposit_bonus' do
     let(:error_message) { result['errors'][0]['message'] }
 
     it 'returns an error on a missing bonus code' do
-      expect(error_message).to start_with('Couldn\'t find Bonus')
+      expect(error_message).to eq('No bonus found')
     end
   end
 end
