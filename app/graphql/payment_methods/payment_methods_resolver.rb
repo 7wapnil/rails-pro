@@ -14,12 +14,15 @@ module PaymentMethods
 
     attr_reader :current_customer
 
-    def entries
-      @entries ||= current_customer.entry_requests.succeeded
+    def deposit_entry_requests
+      @deposit_entry_requests ||= current_customer
+                                  .entry_requests
+                                  .deposit
+                                  .succeeded
     end
 
     def payment_methods
-      entries.pluck(:mode).uniq
+      deposit_entry_requests.pluck(:mode).uniq
     end
   end
 end

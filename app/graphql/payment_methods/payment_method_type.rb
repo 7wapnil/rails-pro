@@ -9,7 +9,7 @@ module PaymentMethods
           resolve: ->(obj, _args, _ctx) { obj }
 
     field :type, !types.String,
-          resolve: ->(_obj, _args, _ctx) { 'fiat' }
+          resolve: ->(_obj, _args, _ctx) { Currency::FIAT }
 
     field :fields, !types[PaymentDetailsType],
           resolve: ->(obj, _args, _ctx) do
