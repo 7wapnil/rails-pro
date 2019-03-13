@@ -22,7 +22,8 @@ module Redirect
       Rails.logger.error 'Customer deposit attempts exceeded.'
       callback_redirect_for(Deposits::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
     rescue StandardError => e
-      Rails.logger.error 'Something went wrong on deposit initiation', e.message
+      msg = 'Something went wrong on deposit initiation.'
+      Rails.logger.error msg + e.message.to_s
       callback_redirect_for(Deposits::CallbackUrl::SOMETHING_WENT_WRONG)
     end
 
