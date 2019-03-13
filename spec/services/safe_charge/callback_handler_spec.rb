@@ -2,9 +2,9 @@ describe SafeCharge::CallbackHandler do
   let(:invalid_context) { Faker::Lorem.word }
 
   let(:entry_request) do
-    build_stubbed(:entry_request,
-                  kind: EntryRequest::DEPOSIT,
-                  status: EntryRequest::INITIAL)
+    create(:entry_request,
+           kind: EntryRequest::DEPOSIT,
+           status: EntryRequest::INITIAL)
   end
 
   let(:params) { { unique: :hash } }
@@ -14,6 +14,7 @@ describe SafeCharge::CallbackHandler do
       'validate!' => true,
       'approved?' => true,
       'pending?' => false,
+      'payment_method' => ::SafeCharge::PaymentMethods::CC_CARD,
       'entry_request' => entry_request
     )
   end
@@ -24,6 +25,7 @@ describe SafeCharge::CallbackHandler do
       'validate!' => true,
       'approved?' => false,
       'pending?' => true,
+      'payment_method' => ::SafeCharge::PaymentMethods::CC_CARD,
       'entry_request' => entry_request
     )
   end
@@ -34,6 +36,7 @@ describe SafeCharge::CallbackHandler do
       'validate!' => true,
       'approved?' => false,
       'pending?' => false,
+      'payment_method' => ::SafeCharge::PaymentMethods::CC_CARD,
       'entry_request' => entry_request
     )
   end

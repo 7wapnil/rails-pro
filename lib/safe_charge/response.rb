@@ -16,6 +16,10 @@ module SafeCharge
       status_ok? && transaction_status.casecmp?(Statuses::PENDING)
     end
 
+    def payment_method
+      params['payment_method']
+    end
+
     private
 
     def status_ok?
