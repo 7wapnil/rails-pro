@@ -7,7 +7,7 @@ FactoryBot.define do
     kind    { EntryRequest::DEPOSIT }
     amount  { Random.new.rand(1.00..200.00).round(2) }
     comment { Faker::Lorem.paragraph }
-    created_at { rand(1..5).days.ago }
+    created_at { Faker::Time.backward(5) }
 
     customer
     association :currency, factory: %i[currency allowed_by_safe_charge],

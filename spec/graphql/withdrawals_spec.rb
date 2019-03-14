@@ -52,13 +52,19 @@ describe GraphQL, '#withdrawals' do
   #   let(:pagination_context) { context }
   # end
 
-  it 'returns withdrawals' do
-    expect(result['data']['withdrawals']['collection'][0]['id'])
-      .to eq(withdrawal.id.to_s)
-  end
+  context 'basic query' do
+    before do
+      create_list(:entry_request, 5, customer: customer)
+    end
 
-  it 'includes pagination param - items' do
-    expect(result['data']['withdrawals']['pagination']['items'])
-      .to eq(withdrawals.length)
+    it 'returns correctly first entry request' do
+      expect(result['data']['withdrawals']['collection'][0]['id'])
+        .to eq(withdrawal.id.to_s)
+    end
+
+    it 'includes pagination param - items' do
+      expect(result['data']['withdrawals']['pagination']['items'])
+        .to eq(withdrawals.length)
+    end
   end
 end
