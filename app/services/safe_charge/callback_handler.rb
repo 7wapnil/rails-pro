@@ -2,7 +2,7 @@ module SafeCharge
   class CallbackHandler < ApplicationService
     def initialize(params, context)
       @params = params
-      @context = context
+      @context = context.to_sym
     end
 
     def call

@@ -67,7 +67,7 @@ describe SafeCharge::Response do
     subject(:check) { described_class.new(params).pending? }
 
     it 'returns true for ok request and status pending' do
-      params['ppp_status'] = SafeCharge::Statuses::OK
+      params['ppp_status'] = SafeCharge::Statuses::PENDING
       params['Status'] = SafeCharge::Statuses::PENDING
       expect(check).to be_truthy
     end

@@ -2,7 +2,7 @@ module Redirect
   class DepositsController < ActionController::Base
     skip_before_action :verify_authenticity_token, only: :webhook
 
-    def initiate # rubocop:disable Metrics/MethodLength
+    def initiate # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       entry_request =
         ::Deposits::InitiateHostedDepositService.call(
           customer: customer,
@@ -15,14 +15,17 @@ module Redirect
 
       redirect_to Deposits::EntryRequestUrlService
         .call(entry_request: entry_request)
-    rescue ActiveRecord::RecordNotFound, JWT::DecodeError
-      Rails.logger.error 'Deposit request with corrupted data received.'
+    rescue ActiveRecord::RecordNotFound, JWT::DecodeError => e
+      Rails.logger.error(
+        'Deposit request with corrupted data received. ' + e.message
+      )
       callback_redirect_for(Deposits::CallbackUrl::ERROR)
     rescue Deposits::DepositAttemptError
       Rails.logger.error 'Customer deposit attempts exceeded.'
       callback_redirect_for(Deposits::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
     rescue StandardError => e
-      Rails.logger.error 'Something went wrong on deposit initiation', e.message
+      msg = 'Something went wrong on deposit initiation.'
+      Rails.logger.error msg + e.message.to_s
       callback_redirect_for(Deposits::CallbackUrl::SOMETHING_WENT_WRONG)
     end
 
@@ -62,7 +65,11 @@ module Redirect
     private
 
     def currency_by_code
-      Currency.find_by(code: initiate_params[:currency_code])
+      Currency.find_by!(code: initiate_params[:currency_code])
+    rescue ActiveRecord::RecordNotFound
+      message =
+        "Currency with code #{initiate_params[:currency_code]} not found."
+      raise ActiveRecord::RecordNotFound.new, message
     end
 
     def customer

@@ -38,6 +38,7 @@ describe SafeCharge::WebhookHandler do
   end
 
   it 'does not change entry request status when webhook status is pending' do
+    params['ppp_status'] = SafeCharge::Statuses::PENDING
     params['Status'] = SafeCharge::Statuses::PENDING
 
     expect { service_call }

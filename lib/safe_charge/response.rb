@@ -13,7 +13,7 @@ module SafeCharge
     end
 
     def pending?
-      status_ok? && transaction_status.casecmp?(Statuses::PENDING)
+      status_pending? && transaction_status.casecmp?(Statuses::PENDING)
     end
 
     def transaction_id
@@ -24,6 +24,10 @@ module SafeCharge
 
     def status_ok?
       payment_message_status.casecmp? Statuses::OK
+    end
+
+    def status_pending?
+      payment_message_status.casecmp? Statuses::PENDING
     end
 
     def checksum
