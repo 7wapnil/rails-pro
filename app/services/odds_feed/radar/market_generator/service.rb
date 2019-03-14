@@ -17,7 +17,6 @@ module OddsFeed
         def call
           build
           import
-          emit_events
         end
 
         private
@@ -103,16 +102,6 @@ module OddsFeed
                        conflict_target: %i[external_id],
                        columns: %i[status value]
                      })
-        end
-
-        def emit_events
-          emit_markets_update
-        end
-
-        def emit_markets_update
-          @markets.map do |market|
-            WebSocket::Client.instance.trigger_market_update(market)
-          end
         end
       end
     end

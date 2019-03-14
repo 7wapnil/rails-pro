@@ -151,12 +151,6 @@ describe OddsFeed::Radar::MarketGenerator::Service do
           .with(array_including(odds), hash_including)
           .once
       end
-
-      it 'emit web-socket events' do
-        expect(web_socket)
-          .to have_received(:trigger_market_update)
-          .exactly(markets_data.count).times
-      end
     end
 
     context 'when market templates cache is empty' do
