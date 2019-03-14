@@ -143,6 +143,30 @@ describe Redirect::DepositsController do
         end
       end
     end
+
+    context 'when unsupported currency received' do
+      let(:expected_message) do
+        'Deposit request with corrupted data received. ' \
+        'Currency with code INVALID not found.'
+      end
+
+      before do
+        allow(Rails.logger).to receive(:error)
+        get(
+          :initiate,
+          params: valid_params
+                    .update(currency_code: 'INVALID',
+                            token: JwtService.encode(id: customer.id))
+        )
+      end
+
+      it 'notifies about an error' do
+        expect(Rails.logger)
+          .to have_received(:error)
+          .with(expected_message)
+          .once
+      end
+    end
   end
 
   describe '#webhook' do
