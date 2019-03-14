@@ -18,8 +18,8 @@ module SafeCharge
     delegate :entry_request, to: :response, allow_nil: true
 
     def succeed_entry_request!
-      # TODO: Verify balances updated accordingly
-      entry_request.succeeded!
+      attach_wallet_to_entry_request!
+      EntryRequests::DepositService.call(entry_request: entry_request)
     end
 
     def response
@@ -27,6 +27,14 @@ module SafeCharge
     end
 
     private
+
+    def attach_wallet_to_entry_request!
+      wallet = Wallet.find_or_create_by!(
+        customer: entry_request.customer,
+        currency: entry_request.currency
+      )
+      entry_request.update(origin: wallet)
+    end
 
     def save_transaction_id
       entry_request.update!(external_id: response.transaction_id)
