@@ -27,6 +27,10 @@ describe Redirect::DepositsController do
     end
 
     before do
+      allow(ENV)
+        .to receive(:[])
+        .with('FRONTEND_URL')
+        .and_return(frontend_url)
       allow(Deposits::InitiateHostedDepositService)
         .to receive(:call) {
           entry_request
