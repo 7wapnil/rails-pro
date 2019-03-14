@@ -7,6 +7,7 @@ FactoryBot.define do
     kind    { EntryRequest::DEPOSIT }
     amount  { Random.new.rand(1.00..200.00).round(2) }
     comment { Faker::Lorem.paragraph }
+    created_at { Faker::Time.backward(5) }
 
     customer
     association :currency, factory: %i[currency allowed_by_safe_charge],
@@ -31,13 +32,15 @@ FactoryBot.define do
           :entry,
           wallet: wallet,
           kind:   entry_request.kind,
-          amount: entry_request.amount
+          amount: entry_request.amount,
+          external_id: entry_request.external_id
         )
       end
     end
 
     trait :succeeded do
       status { EntryRequest::SUCCEEDED }
+      sequence(:external_id) { |n| "ID_#{n}" }
     end
 
     trait :deposit do
@@ -50,6 +53,10 @@ FactoryBot.define do
 
     trait :refund do
       kind { EntryRequest::REFUND }
+    end
+
+    trait :bet do
+      kind { EntryRequest::BET }
     end
   end
 end

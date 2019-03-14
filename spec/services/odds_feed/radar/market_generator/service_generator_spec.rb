@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::MarketGenerator::Service do
   subject do
     described_class.new(event, markets_payload)
@@ -35,6 +37,9 @@ describe OddsFeed::Radar::MarketGenerator::Service do
                              name: 'Template name')
 
     allow(WebSocket::Client.instance).to receive(:trigger_market_update)
+    allow(OddsFeed::Radar::Entities::PlayerLoader)
+      .to receive(:call)
+      .and_return(Faker::Name.name)
   end
 
   context 'market with outcomes' do
@@ -50,15 +55,6 @@ describe OddsFeed::Radar::MarketGenerator::Service do
       subject.call
       market = Market.find_by!(external_id: external_id)
       expect(market.priority).to eq(1)
-    end
-
-    it 'sends websocket message on market update' do
-      subject.call
-
-      expect(WebSocket::Client.instance)
-        .to have_received(:trigger_market_update)
-        .exactly(5)
-        .times
     end
 
     it 'updates market if exists in db' do

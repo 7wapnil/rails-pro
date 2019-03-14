@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::MarketGenerator::MarketData do
   subject { described_class.new(event, payload, market_template) }
 
@@ -14,7 +16,7 @@ describe OddsFeed::Radar::MarketGenerator::MarketData do
 
   describe '#name' do
     let(:market_name) { Faker::Science.element }
-    let(:name)        { Faker::WorldOfWarcraft.name }
+    let(:name)        { Faker::WorldOfWarcraft.hero }
 
     before do
       allow_any_instance_of(OddsFeed::Radar::MarketGenerator::TemplateLoader)

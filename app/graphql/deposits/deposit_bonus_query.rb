@@ -17,9 +17,18 @@ module Deposits
     argument :code, !types.String
 
     def resolve(_obj, args)
-      bonus = Bonus.find_by!(code: args[:code])
+      bonus = find_bonus!(args)
       bonus_hash = BalanceCalculations::Deposit.call(bonus, args[:amount])
       CalculatedBonus.new(bonus_hash)
+    end
+
+    private
+
+    def find_bonus!(args)
+      Bonus.active.find_by!(code: args[:code])
+    rescue ActiveRecord::RecordNotFound
+      message = format(I18n.t('not_found'), instance: 'bonus')
+      raise ActiveRecord::RecordNotFound.new, message
     end
   end
 end

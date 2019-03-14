@@ -9,6 +9,7 @@ module SafeCharge
 
     def call
       response.validate!
+      save_transaction_id
       update_entry_request_mode!
     end
 
@@ -19,6 +20,10 @@ module SafeCharge
     def succeed_entry_request!
       # TODO: Verify balances updated accordingly
       entry_request.succeeded!
+    end
+
+    def save_transaction_id
+      entry_request.update!(external_id: @response.transaction_id)
     end
 
     def response

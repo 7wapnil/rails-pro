@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     module MarketGenerator
@@ -76,15 +78,12 @@ module OddsFeed
         end
 
         def build_odds(market, data_object)
-          OddsGenerator.call(market, data_object).each do |odd|
-            @odds << odd
-          end
+          @odds.push(*OddsGenerator.call(market, data_object))
         end
 
         def import
           import_markets
           import_odds
-          emit_events
         end
 
         def import_markets
@@ -103,16 +102,6 @@ module OddsFeed
                        conflict_target: %i[external_id],
                        columns: %i[status value]
                      })
-        end
-
-        def emit_events
-          emit_markets_update
-        end
-
-        def emit_markets_update
-          @markets.map do |market|
-            WebSocket::Client.instance.trigger_market_update(market)
-          end
         end
       end
     end

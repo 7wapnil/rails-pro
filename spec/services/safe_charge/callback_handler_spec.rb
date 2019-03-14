@@ -6,8 +6,8 @@ describe SafeCharge::CallbackHandler do
            kind: EntryRequest::DEPOSIT,
            status: EntryRequest::INITIAL)
   end
-
   let(:params) { { unique: :hash } }
+  let(:transaction_id) { Faker::Number.number(10).to_s }
   let(:approved_response) do
     instance_double(
       SafeCharge::DepositResponse,
@@ -15,7 +15,8 @@ describe SafeCharge::CallbackHandler do
       'approved?' => true,
       'pending?' => false,
       'payment_method' => ::SafeCharge::PaymentMethods::CC_CARD,
-      'entry_request' => entry_request
+      'entry_request' => entry_request,
+      'transaction_id' => transaction_id
     )
   end
 
@@ -26,7 +27,8 @@ describe SafeCharge::CallbackHandler do
       'approved?' => false,
       'pending?' => true,
       'payment_method' => ::SafeCharge::PaymentMethods::CC_CARD,
-      'entry_request' => entry_request
+      'entry_request' => entry_request,
+      'transaction_id' => transaction_id
     )
   end
 
@@ -37,7 +39,8 @@ describe SafeCharge::CallbackHandler do
       'approved?' => false,
       'pending?' => false,
       'payment_method' => ::SafeCharge::PaymentMethods::CC_CARD,
-      'entry_request' => entry_request
+      'entry_request' => entry_request,
+      'transaction_id' => transaction_id
     )
   end
 
@@ -95,11 +98,18 @@ describe SafeCharge::CallbackHandler do
           .and_return(response)
       end
 
-      it 'processes entry request correctly' do
-        service_outcome
-        expect(entry_request)
-          .to have_received(entry_request_call)
-          .exactly(expected_entry_request_call_count).times
+      context 'service call' do
+        before { service_outcome }
+
+        it 'sets entry status correctly' do
+          expect(entry_request)
+            .to have_received(entry_request_call)
+            .exactly(expected_entry_request_call_count).times
+        end
+
+        it 'sets the external_id to whatever Response#transaction_id returns' do
+          expect(entry_request.external_id).to eq(response.transaction_id)
+        end
       end
 
       it 'returns expected outcome' do

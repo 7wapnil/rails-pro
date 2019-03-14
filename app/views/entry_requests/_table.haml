@@ -7,6 +7,7 @@
       %th= t('attributes.customer_name')
       %th= t('attributes.amount')
       %th= t('attributes.result')
+      %th= t('attributes.external_id')
   %tbody
     - if filter.requests.any?
       - filter.requests.each do |request|
@@ -21,6 +22,7 @@
             = number_with_precision request.amount, precision: 2
             = request.currency.code
           %td= request.result_message
+          %td= request.external_id
     - else
       %tr
         %td{ colspan: 6 }= t(:not_found, instance: t('entities.entry_requests'))

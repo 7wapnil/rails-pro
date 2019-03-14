@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::MarketGenerator::OddsGenerator do
   subject { described_class.call(market, market_data) }
 
@@ -52,7 +54,7 @@ describe OddsFeed::Radar::MarketGenerator::OddsGenerator do
     context 'ignore invalid odds' do
       let(:invalid_names) { Array.new(invalid_odds_count) }
       let(:valid_names) do
-        Array.new(valid_odds_count) { Faker::WorldOfWarcraft.name }
+        Array.new(valid_odds_count) { Faker::WorldOfWarcraft.hero }
       end
       let(:names) { [*invalid_names, *valid_names] }
 

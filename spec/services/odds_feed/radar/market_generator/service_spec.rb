@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::MarketGenerator::Service do
   let(:markets_data) do
     XmlParser
@@ -31,7 +33,8 @@ describe OddsFeed::Radar::MarketGenerator::Service do
 
     before do
       allow(OddsFeed::Radar::Entities::PlayerLoader)
-        .to receive(:call) { Faker::Name.name }
+        .to receive(:call)
+        .and_return(Faker::Name.name)
     end
 
     it 'assigns market template category' do
@@ -147,12 +150,6 @@ describe OddsFeed::Radar::MarketGenerator::Service do
           .to have_received(:import)
           .with(array_including(odds), hash_including)
           .once
-      end
-
-      it 'emit web-socket events' do
-        expect(web_socket)
-          .to have_received(:trigger_market_update)
-          .exactly(markets_data.count).times
       end
     end
 

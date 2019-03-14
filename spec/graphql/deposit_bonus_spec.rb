@@ -5,19 +5,26 @@ describe GraphQL, '#deposit_bonus' do
   let(:amount) { 100.0 }
 
   let(:query) do
-    %({ deposit_bonus (amount: #{amount}, code: #{code}) { real_money bonus } })
+    %(mutation deposit_bonus($amount: Float!, $code: String!) {
+      deposit_bonus(amount: $amount, code: $code) {
+        real_money
+        bonus
+      }
+    })
   end
 
   let(:result) do
-    ArcanebetSchema.execute(query, context: context, variables: variables)
+    ArcanebetSchema.execute(query,
+                            context: context,
+                            variables: variables)
   end
-  let(:error_message) { result['errors'][0]['message'] }
 
   describe 'when bonus not found' do
     let(:code) { 'haha_not_found' }
+    let(:error_message) { result['errors'][0]['message'] }
 
     it 'returns an error on a missing bonus code' do
-      expect(error_message).to eq('Couldn\'t find Bonus')
+      expect(error_message).to eq('No bonus found')
     end
   end
 
@@ -54,6 +61,16 @@ describe GraphQL, '#deposit_bonus' do
 
     it 'returns the original amount along with bonus value' do
       expect(deposit_bonus['real_money']).to eq(amount)
+    end
+  end
+
+  describe 'when bonus is expired' do
+    let(:bonus) { create(:bonus, expires_at: 1.day.ago) }
+    let(:code) { bonus.code }
+    let(:error_message) { result['errors'][0]['message'] }
+
+    it 'returns an error on a missing bonus code' do
+      expect(error_message).to eq('No bonus found')
     end
   end
 end

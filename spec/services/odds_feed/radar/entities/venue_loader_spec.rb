@@ -23,7 +23,7 @@ describe OddsFeed::Radar::Entities::VenueLoader do
     allow(Rails.cache).to receive(:read)
   end
 
-  context 'take cached value' do
+  context 'takes cached value' do
     let(:name) { Faker::WorldOfWarcraft.hero }
 
     before { expect(Rails.cache).to receive(:read).and_return(name) }
@@ -36,7 +36,7 @@ describe OddsFeed::Radar::Entities::VenueLoader do
     end
   end
 
-  context 'load new player from Radar API' do
+  context 'loads new venue from Radar API' do
     before { expect(Rails.cache).to receive(:write) }
 
     let(:subject_with_radar_entity) do

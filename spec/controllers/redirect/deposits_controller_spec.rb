@@ -20,13 +20,17 @@ describe Redirect::DepositsController do
     let(:valid_params) do
       {
         customer: customer,
-        currency: wallet.currency,
+        currency_code: wallet.currency.code,
         amount: amount,
         bonus_code: bonus.code
       }
     end
 
     before do
+      allow(ENV)
+        .to receive(:[])
+        .with('FRONTEND_URL')
+        .and_return(frontend_url)
       allow(Deposits::InitiateHostedDepositService)
         .to receive(:call) {
           entry_request
@@ -105,11 +109,15 @@ describe Redirect::DepositsController do
       let(:valid_token) { JwtService.encode(id: customer.id) }
 
       before do
-        allow(Deposits::CallbackUrl)
-          .to receive(:for).with(:deposit_attempts_exceeded) { callback_url }
+        allow(::Deposits::CallbackUrl)
+          .to receive(:for)
+          .with(Deposits::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
+          .and_return(callback_url)
 
-        allow(Deposits::InitiateHostedDepositService)
+        allow(::Deposits::InitiateHostedDepositService)
           .to receive(:call).and_raise(Deposits::DepositAttemptError)
+
+        wallet.currency.save!
       end
 
       it 'redirects to callback url when deposit attempts exceeded' do
@@ -137,6 +145,30 @@ describe Redirect::DepositsController do
         it "redirects #{state} to callback service state" do
           expect(get(state)).to redirect_to(callback_url)
         end
+      end
+    end
+
+    context 'when unsupported currency received' do
+      let(:expected_message) do
+        'Deposit request with corrupted data received. ' \
+        'Currency with code INVALID not found.'
+      end
+
+      before do
+        allow(Rails.logger).to receive(:error)
+        get(
+          :initiate,
+          params: valid_params
+                    .update(currency_code: 'INVALID',
+                            token: JwtService.encode(id: customer.id))
+        )
+      end
+
+      it 'notifies about an error' do
+        expect(Rails.logger)
+          .to have_received(:error)
+          .with(expected_message)
+          .once
       end
     end
   end
