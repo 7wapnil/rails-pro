@@ -46,9 +46,8 @@ describe SafeCharge::DepositResponse do
   end
 
   before do
-    # allow(ENV).to receive(:[])
-    #   .with('SAFECHARGE_SECRET_KEY').and_return(secret_key)
-    ENV['SAFECHARGE_SECRET_KEY'] = secret_key
+    allow(ENV).to receive(:[])
+      .with('SAFECHARGE_SECRET_KEY').and_return(secret_key)
     allow(EntryRequest)
       .to receive(:find).with(entry_request.id).and_return(entry_request)
   end
