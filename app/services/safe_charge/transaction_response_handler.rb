@@ -22,15 +22,15 @@ module SafeCharge
       entry_request.succeeded!
     end
 
-    def save_transaction_id
-      entry_request.update!(external_id: @response.transaction_id)
-    end
-
     def response
       @response ||= SafeCharge::DepositResponse.new(params)
     end
 
     private
+
+    def save_transaction_id
+      entry_request.update!(external_id: response.transaction_id)
+    end
 
     def update_entry_request_mode!
       ::EntryRequests::PaymentMethodService.call(
