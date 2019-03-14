@@ -53,5 +53,9 @@ FactoryBot.define do
     trait :refund do
       kind { EntryRequest::REFUND }
     end
+
+    trait :bet do
+      kind { EntryRequest::BET }
+    end
   end
 end
