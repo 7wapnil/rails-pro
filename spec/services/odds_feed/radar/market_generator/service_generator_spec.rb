@@ -57,15 +57,6 @@ describe OddsFeed::Radar::MarketGenerator::Service do
       expect(market.priority).to eq(1)
     end
 
-    it 'sends websocket message on market update' do
-      subject.call
-
-      expect(WebSocket::Client.instance)
-        .to have_received(:trigger_market_update)
-        .exactly(5)
-        .times
-    end
-
     it 'updates market if exists in db' do
       market = create(:market,
                       external_id: external_id,
