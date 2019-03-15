@@ -18,6 +18,8 @@ module SafeCharge
     delegate :entry_request, to: :response, allow_nil: true
 
     def succeed_entry_request!
+      return if entry_request.succeeded?
+
       attach_wallet_to_entry_request!
       EntryRequests::DepositService.call(entry_request: entry_request)
     end

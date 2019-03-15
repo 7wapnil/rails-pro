@@ -45,8 +45,6 @@ module SafeCharge
     end
 
     def success_flow
-      return Deposits::CallbackUrl::SUCCESS if entry_request.succeeded?
-
       return Deposits::CallbackUrl::SOMETHING_WENT_WRONG unless success_context?
 
       succeed_entry_request!
