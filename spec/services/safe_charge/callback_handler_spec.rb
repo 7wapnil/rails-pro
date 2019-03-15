@@ -122,8 +122,8 @@ describe SafeCharge::CallbackHandler do
     context 'with approved message, correct context' do
       let(:passed_context) { Deposits::CallbackUrl::SUCCESS }
       let(:response) { approved_response }
-      let(:entry_request_call) { 'succeeded!' }
-      let(:expected_entry_request_call_count) { 1 }
+      let(:entry_request_call) { 'failed!' }
+      let(:expected_entry_request_call_count) { 0 }
       let(:expected_outcome) { Deposits::CallbackUrl::SUCCESS }
 
       it_behaves_like 'SafeCharge callback spec'
