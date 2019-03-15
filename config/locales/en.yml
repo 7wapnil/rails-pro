@@ -331,6 +331,9 @@ en:
         events:
           context:
             invalid: "Unsupported context '%{context}'. Supported contexts: %{contexts}"
+        transactions:
+          kind:
+            invalid: "Invalid transaction kind: '%{kind}'"
 
   expiration_reasons:
     converted: Converted
