@@ -22,7 +22,7 @@ module PaymentMethods
     end
 
     def payment_methods
-      deposit_entry_requests.pluck(:mode).uniq
+      deposit_entry_requests.pluck(:mode).uniq.compact
     end
   end
 end

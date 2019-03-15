@@ -24,6 +24,12 @@ describe GraphQL, '#payment_methods' do
 
         create(:entry_request,
                customer: auth_customer,
+               status: EntryRequest::SUCCEEDED,
+               kind: EntryRequest::DEPOSIT)
+          .update_attribute(:mode, nil)
+
+        create(:entry_request,
+               customer: auth_customer,
                mode: EntryRequest::CREDIT_CARD,
                status: EntryRequest::PENDING,
                kind: EntryRequest::DEPOSIT)
