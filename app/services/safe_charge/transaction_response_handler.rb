@@ -9,8 +9,9 @@ module SafeCharge
 
     def call
       response.validate!
-      save_transaction_id
-      update_entry_request_mode!
+      save_transaction_id unless entry_request.external_id
+      safecharge_unknown = EntryRequest::SAFECHARGE_UNKNOWN
+      update_entry_request_mode! if entry_request.mode == safecharge_unknown
     end
 
     protected
