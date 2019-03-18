@@ -48,7 +48,7 @@ describe SafeCharge::CallbackHandler do
     allow(entry_request).to receive('succeeded!')
     allow(entry_request).to receive('failed!')
     allow(entry_request).to receive('pending!')
-    allow(EntryRequests::DepositService).to receive('call')
+    allow(EntryRequests::DepositService).to receive(:call)
   end
 
   describe '#call' do
