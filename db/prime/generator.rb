@@ -3,7 +3,7 @@ class PrimeGenerator
     @counts = counts
   end
 
-  def generate(counts:)
+  def generate
     count_correction!
     hardcoded_prerequisites
     populate_data
@@ -25,7 +25,7 @@ class PrimeGenerator
   def titles
     puts 'Generating titles...'
     football_attrs = FactoryBot.attributes_for :title,
-                                               name: 'Football', 
+                                               name: 'Football',
                                                kind: Title::SPORTS
     @football = Title.find_or_create_by football_attrs
 
@@ -51,7 +51,7 @@ class PrimeGenerator
       count = @counts[k]
       options = factory_list_options(count)[k]
       puts "Generating #{count} #{k}..."
-      FactoryBot.create_list *options
+      FactoryBot.create_list(*options)
     end
   end
 

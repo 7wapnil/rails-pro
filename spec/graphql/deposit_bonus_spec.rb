@@ -22,7 +22,7 @@ describe GraphQL, '#deposit_bonus' do
 
   describe 'when bonus not found' do
     let(:code) { 'haha_not_found' }
-    
+
     it 'returns an error on a missing bonus code' do
       expect(error_message).to eq('No bonus found')
     end
@@ -62,7 +62,7 @@ describe GraphQL, '#deposit_bonus' do
     describe 'when amount is not a number' do
       let(:amount) { 'eleven' }
       let(:code) { bonus.code }
-  
+
       it 'returns a human readable error' do
         expect(error_message).to eq('Please use correct format')
       end

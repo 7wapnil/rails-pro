@@ -17,11 +17,11 @@ FactoryBot.define do
 
     name do
       faker = if title.kind == Title::ESPORTS
-        Faker::Esport
-      else
-        Faker::Football
-      end
-        "#{faker.team} vs. #{faker.team}"
+                Faker::Esport
+              else
+                Faker::Football
+              end
+      "#{faker.team} vs. #{faker.team}"
     end
 
     association :producer, factory: :prematch_producer

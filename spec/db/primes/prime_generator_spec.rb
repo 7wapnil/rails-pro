@@ -1,14 +1,6 @@
 require './db/prime/generator'
 
 describe PrimeGenerator do
-  let(:enough_scopes) { 6 }
-  let(:enough_past_events) { 10 }
-  let(:enough_live_events) { 5 }
-  let(:enough_upcoming_events) { 10 }
-  let(:enough_entries) { 50 }
-  let(:enough_bets) { 10 }
-  let(:enough_customers) { 20 }
-
   subject do
     counts = {
       tournaments: enough_scopes,
@@ -22,27 +14,32 @@ describe PrimeGenerator do
     described_class.new.generate counts: counts
   end
 
-  before :each do
-    subject 
+  let(:enough_scopes) { 6 }
+  let(:enough_past_events) { 10 }
+  let(:enough_live_events) { 5 }
+  let(:enough_upcoming_events) { 10 }
+  let(:enough_entries) { 50 }
+  let(:enough_bets) { 10 }
+  let(:enough_customers) { 20 }
+
+  before do
+    subject
   end
 
-  %w(Football CS:GO).each do |name|
+  %w[Football CS:GO].each do |name|
     it "ensures #{name} title exists" do
       expect(Title.find_by(name: name)).to be_present
     end
   end
 
-  [
-    'LIVE_PROVIDER', 
-    'PREMATCH_PROVIDER'
-  ].each do |type|
+  %w[LIVE_PROVIDER PREMATCH_PROVIDER].each do |type|
     it "ensures #{type} exists" do
       id = Radar::Producer.const_get(type + '_ID')
       expect(Radar::Producer.find(id)).to be_present
     end
   end
 
-  %w(tournament category).each do |kind|
+  %w[tournament category].each do |kind|
     it "ensures there are enough #{kind.pluralize}" do
       expect(EventScope.where(kind: kind).count).to be >= enough_scopes
     end

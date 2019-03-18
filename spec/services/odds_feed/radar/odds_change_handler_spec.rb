@@ -157,7 +157,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
     let(:positive_status) { Event::NOT_STARTED }
     let(:event_to_be_marked_as_active) do
       create(
-        :event, 
+        :event,
         :with_odds,
         external_id: event_id,
         status: positive_status,
