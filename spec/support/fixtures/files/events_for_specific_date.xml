@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schedule xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" generated_at="2019-03-18T08:12:07+00:00" xmlns="http://schemas.sportradar.com/sportsapi/v1/unified" xsi:schemaLocation="http://schemas.sportradar.com/sportsapi/v1/unified http://schemas.sportradar.com/bsa/unified/v1/xml/endpoints/unified/schedule.xsd">
+  <sport_event id="sr:match:1" scheduled="2019-02-25T00:00:00+00:00" start_time_tbd="false" status="closed" next_live_time="2019-02-25T00:00:00+00:00" liveodds="not_available">
+    <tournament_round type="group" number="1" group="Central Di" group_id="sr:group:33987" group_long_name="NHL" betradar_id="142"/>
+    <season id="sr:season:54837" name="NHL 18/19" start_date="2018-10-03" end_date="2019-06-17" year="18/19" tournament_id="sr:tournament:234"/>
+    <tournament id="sr:tournament:234" name="NHL">
+      <sport id="sr:sport:4" name="Ice Hockey"/>
+      <category id="sr:category:37" name="USA" country_code="USA"/>
+    </tournament>
+    <competitors>
+      <competitor id="sr:competitor:1" name="Minnesota Wild" country="USA" country_code="USA" abbreviation="MIN" qualifier="home">
+        <reference_ids>
+          <reference_id name="betradar" value="9831"/>
+          <reference_id name="rotation_number" value="64"/>
+        </reference_ids>
+      </competitor>
+      <competitor id="sr:competitor:2" name="St. Louis Blues" country="USA" country_code="USA" abbreviation="STL" qualifier="away">
+        <reference_ids>
+          <reference_id name="betradar" value="9759"/>
+          <reference_id name="rotation_number" value="63"/>
+        </reference_ids>
+      </competitor>
+    </competitors>
+    <venue id="sr:venue:20171" name="Xcel Energy Center" capacity="18064" city_name="St. Paul" country_name="USA" country_code="USA"/>
+  </sport_event>
+  <sport_event id="sr:match:2" scheduled="2019-02-25T15:45:00+00:00" start_time_tbd="false" status="closed" next_live_time="2019-02-25T15:45:00+00:00" liveodds="not_available">
+    <tournament_round type="group" number="16" group_long_name="Omani League" betradar_id="5023"/>
+    <season id="sr:season:56470" name="Omani League 18/19" start_date="2018-08-17" end_date="2019-06-09" year="18/19" tournament_id="sr:tournament:965"/>
+    <tournament id="sr:tournament:965" name="Omani League">
+      <sport id="sr:sport:1" name="Soccer"/>
+      <category id="sr:category:415" name="Oman" country_code="OMN"/>
+    </tournament>
+    <competitors>
+      <competitor id="sr:competitor:3" name="Al Orouba (Oma)" country="Oman" country_code="OMN" abbreviation="ALO" qualifier="home">
+        <reference_ids>
+          <reference_id name="betradar" value="901552"/>
+        </reference_ids>
+      </competitor>
+      <competitor id="sr:competitor:4" name="Sur" country="Oman" country_code="OMN" abbreviation="SUR" qualifier="away">
+        <reference_ids>
+          <reference_id name="betradar" value="901549"/>
+        </reference_ids>
+      </competitor>
+    </competitors>
+    <venue id="sr:venue:17863" name="Sur Sports Complex" capacity="8000" city_name="Sur" country_name="Oman" map_coordinates="22.527700,59.473500" country_code="OMN"/>
+  </sport_event>
+</schedule>

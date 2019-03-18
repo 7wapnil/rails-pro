@@ -70,7 +70,7 @@ module OddsFeed
         def events
           @events ||= OddsFeed::Radar::Client
                       .new
-                      .events_to_date(date)
+                      .events_for_date(date)
                       .map(&:result)
         end
 
