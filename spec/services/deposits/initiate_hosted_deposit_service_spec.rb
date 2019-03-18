@@ -40,7 +40,7 @@ describe Deposits::InitiateHostedDepositService do
         initiator: customer,
         customer: customer,
         currency: currency,
-        mode: EntryRequest::SYSTEM,
+        mode: EntryRequest::SAFECHARGE_UNKNOWN,
         kind: EntryRequest::DEPOSIT
       )
     end
@@ -72,7 +72,7 @@ describe Deposits::InitiateHostedDepositService do
           expect(subject).to have_attributes(
             status: EntryRequest::FAILED,
             result: { 'message' => error_message },
-            mode: EntryRequest::SYSTEM,
+            mode: EntryRequest::SAFECHARGE_UNKNOWN,
             kind: EntryRequest::DEPOSIT
           )
         end

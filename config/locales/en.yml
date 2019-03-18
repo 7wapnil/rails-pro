@@ -363,6 +363,7 @@ en:
     bonus: Bonus money
     real_money: Real money
     credit_card: Credit Card
+    safecharge_unknown: Safecharge unknown
 
   lock_reasons:
     closed: Closed
