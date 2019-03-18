@@ -22,7 +22,16 @@ module PaymentMethods
     end
 
     def payment_methods
-      deposit_entry_requests.pluck(:mode).uniq.compact
+      deposit_entry_requests
+        .pluck(:mode)
+        .uniq
+        .compact
+        .flat_map(&method(:withdrawal_methods_for))
+        .compact
+    end
+
+    def withdrawal_methods_for(payment_method)
+      SafeCharge::Withdraw::AVAILABLE_WITHDRAW_MODES[payment_method]
     end
   end
 end
