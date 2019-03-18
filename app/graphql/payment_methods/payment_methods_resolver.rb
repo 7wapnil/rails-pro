@@ -27,7 +27,7 @@ module PaymentMethods
         .uniq
         .compact
         .flat_map(&method(:withdrawal_methods_for))
-        .compact
+        .uniq
     end
 
     def withdrawal_methods_for(payment_method)
