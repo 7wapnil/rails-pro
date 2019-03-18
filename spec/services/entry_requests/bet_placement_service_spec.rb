@@ -25,7 +25,7 @@ describe EntryRequests::BetPlacementService do
       currency: currency,
       odd: odd,
       amount: 100,
-      market: create(:event_with_market, :upcoming).markets.sample
+      market: create(:event, :with_market, :upcoming).markets.sample
     )
   end
   let(:entry_request) { EntryRequests::Factories::BetPlacement.call(bet: bet) }

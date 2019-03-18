@@ -1,38 +1,19 @@
+require Rails.root.join('db/prime/generator')
+
 namespace :dev do
   desc 'Populates database with sample data for local development environment'
   task prime: :environment do
-    Rake::Task['dev:prime:csgo'].invoke
-    Rake::Task['dev:prime:basketball'].invoke
-    Rake::Task['dev:prime:customers'].invoke
-    Rake::Task['dev:prime:entries'].invoke
-    Rake::Task['dev:prime:bets'].invoke
-  end
-
-  namespace :prime do
-    desc 'Populates database with sample CSGO events'
-    task csgo: :environment do
-      require Rails.root.join('db/prime/csgo')
-    end
-
-    desc 'Populates database with sample Basketball events'
-    task basketball: :environment do
-      require Rails.root.join('db/prime/basketball')
-    end
-
-    desc 'Populates database with sample customers'
-    task customers: :environment do
-      require Rails.root.join('db/prime/customers')
-    end
-
-    desc 'Populates database with sample trading entries'
-    task entries: :environment do
-      require Rails.root.join('db/prime/entries')
-    end
-
-    desc 'Populates database with sample bet entries'
-    task bets: :environment do
-      require Rails.root.join('db/prime/bets')
-    end
+    counts = {
+      tournaments: 6,
+      categories: 6,
+      past_events: 10,
+      live_events: 5,
+      upcoming_events: 10,
+      entries: 50,
+      bets: 15,
+      customers: 30
+    }
+    PrimeGenerator.new(counts: counts).generate
   end
 
   namespace :odds_feed do

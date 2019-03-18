@@ -18,11 +18,11 @@ describe GraphQL, '#deposit_bonus' do
                             context: context,
                             variables: variables)
   end
+  let(:error_message) { result['errors'][0]['message'] }
 
   describe 'when bonus not found' do
     let(:code) { 'haha_not_found' }
-    let(:error_message) { result['errors'][0]['message'] }
-
+    
     it 'returns an error on a missing bonus code' do
       expect(error_message).to eq('No bonus found')
     end
@@ -59,6 +59,15 @@ describe GraphQL, '#deposit_bonus' do
       end
     end
 
+    describe 'when amount is not a number' do
+      let(:amount) { 'eleven' }
+      let(:code) { bonus.code }
+  
+      it 'returns a human readable error' do
+        expect(error_message).to eq('Please use correct format')
+      end
+    end
+
     it 'returns the original amount along with bonus value' do
       expect(deposit_bonus['real_money']).to eq(amount)
     end
@@ -67,7 +76,6 @@ describe GraphQL, '#deposit_bonus' do
   describe 'when bonus is expired' do
     let(:bonus) { create(:bonus, expires_at: 1.day.ago) }
     let(:code) { bonus.code }
-    let(:error_message) { result['errors'][0]['message'] }
 
     it 'returns an error on a missing bonus code' do
       expect(error_message).to eq('No bonus found')

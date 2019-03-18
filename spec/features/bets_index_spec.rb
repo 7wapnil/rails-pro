@@ -5,9 +5,9 @@ describe Bet, '#index' do
     before do
       create(:event_scope, kind: EventScope::TOURNAMENT, name: 'X-Bet')
       create(:event_scope, kind: EventScope::TOURNAMENT, name: 'Crazy PANDAS')
-      create(:event_scope_category, name: 'Pakistan')
-      create(:event_scope_category, name: 'France')
-      create(:event_scope_category, name: 'Germany')
+      create(:event_scope, :category, name: 'Pakistan')
+      create(:event_scope, :category, name: 'France')
+      create(:event_scope, :category, name: 'Germany')
       create_list(:bet, per_page_count / 2)
 
       login_as create(:admin_user), scope: :user

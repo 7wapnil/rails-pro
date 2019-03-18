@@ -70,7 +70,7 @@ describe Bet do
     it 'Returns expired live bets' do
       timeout = ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10).to_i
       expired_time = (timeout + 3).seconds.ago
-      live_event = create(:event_with_odds, traded_live: true)
+      live_event = create(:event, :with_odds, traded_live: true)
       expired_bets = create_list(:bet, 2,
                                  odd: live_event.markets.first.odds.first,
                                  validation_ticket_sent_at: expired_time,
@@ -223,7 +223,7 @@ describe Bet do
   describe 'filter out non-regular customers bets' do
     let(:regular_customer) { create(:customer, account_kind: :regular) }
     let(:test_customer) { create(:customer, account_kind: :testing) }
-    let(:event) { create(:event_with_odds) }
+    let(:event) { create(:event, :with_odds) }
 
     before do
       event_odd = event.markets.first.odds.first
