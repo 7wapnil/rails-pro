@@ -17,6 +17,27 @@ describe GraphQL, '#markets' do
       end
     end
 
+    context 'basic fields' do
+      let(:query) do
+        %({ markets (eventId: #{event.id}) {
+              id
+              event_id
+              name
+        } })
+      end
+
+      before do
+        create(:market, :with_odds, event: event)
+      end
+
+      it 'returns error when no event ID defined' do
+        market = result['data']['markets'][0]
+        expect(market).to have_key('id')
+        expect(market).to have_key('event_id')
+        expect(market).to have_key('name')
+      end
+    end
+
     context 'basic query' do
       let(:priority) { 0 }
       let(:query) do
