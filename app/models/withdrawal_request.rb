@@ -8,6 +8,4 @@ class WithdrawalRequest < ApplicationRecord
     approved: APPROVED = 'approved',
     rejected: REJECTED = 'rejected'
   }
-
-  enum payment_method: SafeCharge::Withdraw::AVAILABLE_WITHDRAW_MODES.keys
 end

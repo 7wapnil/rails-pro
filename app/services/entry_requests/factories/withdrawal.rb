@@ -1,7 +1,7 @@
 module EntryRequests
   module Factories
     class Withdrawal < ApplicationService
-      def initialize(wallet:, amount:, mode: EntryRequest::CASHIER, **attrs)
+      def initialize(wallet:, amount:, mode:, **attrs)
         @wallet = wallet
         @amount = amount
         @mode = mode

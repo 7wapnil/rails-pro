@@ -324,8 +324,8 @@ en:
       withdrawal:
         not_enough_money: Not enough money in wallet!
         bonus_exists: Active bonus exists!
-        invalid_payment_method: Invalid payment method
-        invalid_payload: Invalid payload
+        invalid_payment_method: "Invalid payment method: %{payment_method}"
+        invalid_payload: "Missing %{attr}"
       graphql:
         betting:
           place:

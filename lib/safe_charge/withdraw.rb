@@ -9,11 +9,6 @@ module SafeCharge
     WITHDRAW_MODE_FIELDS = {
       EntryRequest::CREDIT_CARD => [
         {
-          name: 'Amount',
-          code: :amount,
-          type: :float
-        },
-        {
           name: "Holder's full name",
           code: :full_name,
           type: :string

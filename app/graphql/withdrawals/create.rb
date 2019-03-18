@@ -7,16 +7,15 @@ module Withdrawals
     argument :amount, !types.Float
     argument :walletId, !types.ID
     argument :payment_method, !types.String
-    argument :payment_details, types[PaymentDetail]
+    argument :payment_details, types[PaymentMethodDetail]
 
     def resolve(_obj, args)
-      wallet = find_customer_wallet(args['walletId'])
-      withdrawal = create_withdrawal!(wallet, args['amount'])
-      create_withdrawal_request!(withdrawal, args) if withdrawal
-      EntryRequests::WithdrawalWorker.perform_async(withdrawal.id)
+      withdrawal_request = create_withdrawal_request!(args)
+      EntryRequests::WithdrawalWorker
+        .perform_async(withdrawal_request.entry_request.id)
 
       OpenStruct.new(
-        **withdrawal.attributes.symbolize_keys,
+        **withdrawal_request.entry_request.attributes.symbolize_keys,
         success: true,
         error_messages: nil
       )
@@ -36,18 +35,15 @@ module Withdrawals
       OpenStruct.new(success: false, error_messages: errors)
     end
 
-    def find_customer_wallet(wallet_id)
-      @current_customer.wallets.find(wallet_id)
+    def wallets
+      @current_customer.wallets
     end
 
-    def create_withdrawal!(wallet, amount)
-      EntryRequests::Factories::Withdrawal.call(wallet: wallet, amount: amount)
-    end
-
-    def create_withdrawal_request!(entry_request, args)
-      WithdrawalRequests::Create.call(entry_request: entry_request,
+    def create_withdrawal_request!(args)
+      WithdrawalRequests::Create.call(wallet: wallets.find(args['walletId']),
                                       payload: args['payment_details'],
-                                      payment_method: args['payment_method'])
+                                      payment_method: args['payment_method'],
+                                      amount: args['amount'])
     end
   end
 end
