@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_07_075445) do
+ActiveRecord::Schema.define(version: 2019_03_14_101142) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -91,8 +91,8 @@ ActiveRecord::Schema.define(version: 2019_03_07_075445) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.string "settlement_status"
     t.datetime "validation_ticket_sent_at"
+    t.string "settlement_status"
     t.bigint "customer_bonus_id"
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_bonus_id"], name: "index_bets_on_customer_bonus_id"
@@ -168,9 +168,9 @@ ActiveRecord::Schema.define(version: 2019_03_07_075445) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "expiration_reason"
     t.decimal "rollover_balance", precision: 8, scale: 2
     t.decimal "rollover_initial_value", precision: 8, scale: 2
+    t.string "expiration_reason"
     t.integer "entry_id"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["deleted_at"], name: "index_customer_bonuses_on_deleted_at"
@@ -442,6 +442,14 @@ ActiveRecord::Schema.define(version: 2019_03_07_075445) do
     t.bigint "currency_id"
     t.index ["currency_id"], name: "index_wallets_on_currency_id"
     t.index ["customer_id"], name: "index_wallets_on_customer_id"
+  end
+
+  create_table "withdrawal_requests", force: :cascade do |t|
+    t.string "status", default: "pending"
+    t.string "payment_method"
+    t.jsonb "payment_details"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "addresses", "customers"
