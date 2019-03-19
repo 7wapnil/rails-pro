@@ -3,7 +3,14 @@ module PaymentMethods
     name 'PaymentMethod'
 
     field :name, !types.String,
-          resolve: ->(obj, _args, _ctx) { obj }
+          resolve: ->(obj, _args, _ctx) do
+            I18n.t("payment_methods.#{obj}.title", default: obj.humanize)
+          end
+
+    field :payment_note, !types.String,
+          resolve: ->(obj, _args, _ctx) do
+            I18n.t("payment_methods.#{obj}.payment_note", default: obj.humanize)
+          end
 
     field :code, !types.String,
           resolve: ->(obj, _args, _ctx) { obj }
