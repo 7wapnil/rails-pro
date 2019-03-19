@@ -9,8 +9,8 @@ describe SafeCharge::WebhookHandler do
       'Status' => SafeCharge::Statuses::APPROVED,
       'advanceResponseChecksum' => webhook_checksum,
       'currency' => entry_request.currency.code,
-      'totalAmount' => entry_request.amount,
-      'productId' => entry_request.id,
+      'totalAmount' => entry_request.amount.to_s,
+      'productId' => entry_request.id.to_s,
       'payment_method' => SafeCharge::PaymentMethods::CC_CARD,
       'PPP_TransactionID' => Faker::Number.number(10).to_s
     }
