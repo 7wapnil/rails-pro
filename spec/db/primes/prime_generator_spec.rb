@@ -1,25 +1,15 @@
-require './db/prime/generator'
+require './db/prime/prime_generator'
 
 describe PrimeGenerator do
   subject do
-    counts = {
-      tournaments: enough_scopes,
-      categories: enough_scopes,
-      past_events: enough_past_events,
-      live_events: enough_live_events,
-      upcoming_events: enough_upcoming_events,
-      entries: enough_entries,
-      bets: enough_bets,
-      customers: enough_customers
-    }
-    described_class.new(counts: counts).generate
+    described_class.new.generate
   end
 
   let(:enough_scopes) { 6 }
   let(:enough_past_events) { 10 }
   let(:enough_live_events) { 5 }
   let(:enough_upcoming_events) { 10 }
-  let(:enough_entries) { 50 }
+  let(:enough_entries) { 15 }
   let(:enough_bets) { 10 }
   let(:enough_customers) { 20 }
 
