@@ -112,6 +112,7 @@ en:
     lock_reason: Lock reason
     lock_status: Lock status
     lock_until: Lock until
+    mode: Mode
     market: Market
     max_amount: Max amount
     max_deposit_match: Max amount
@@ -151,6 +152,7 @@ en:
     street_address: Street address
     text: Text
     tournament: Tournament
+    updated_at: Updated at
     username: Username
     utility_bill: Utility bill
     utility_bills: Utility bills
