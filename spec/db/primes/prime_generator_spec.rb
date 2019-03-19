@@ -8,10 +8,11 @@ describe PrimeGenerator do
       past_events: enough_past_events,
       live_events: enough_live_events,
       upcoming_events: enough_upcoming_events,
+      entries: enough_entries,
       bets: enough_bets,
       customers: enough_customers
     }
-    described_class.new.generate counts: counts
+    described_class.new(counts: counts).generate
   end
 
   let(:enough_scopes) { 6 }
@@ -46,18 +47,18 @@ describe PrimeGenerator do
   end
 
   it 'generates past events' do
-    expect(Event.past.count).to eq(enough_past_events)
+    expect(Event.past.count).to be >= enough_past_events
   end
 
   it 'generates live events' do
-    expect(Event.in_play.count).to eq(enough_live_events)
+    expect(Event.in_play.count).to be >= enough_live_events
   end
 
   it 'generates upcoming events' do
-    expect(Event.upcoming.count).to eq(enough_upcoming_events)
+    expect(Event.upcoming.count).to be >= enough_upcoming_events
   end
 
   it 'generates entries' do
-    expect(Entry.count).to eq(enough_entries)
+    expect(Entry.count).to be >= enough_entries
   end
 end

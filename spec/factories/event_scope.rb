@@ -8,7 +8,7 @@ FactoryBot.define do
     sequence(:external_id) { |n| "sr:tournament:#{n}" }
 
     trait :with_event do
-      build( :build do |event_scope|
+      before :build do |event_scope|
         create(:event, event_scopes: [event_scope])
       end
     end

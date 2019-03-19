@@ -9,7 +9,6 @@ namespace :dev do
       past_events: 10,
       live_events: 5,
       upcoming_events: 10,
-      entries: 50,
       bets: 15,
       customers: 30
     }

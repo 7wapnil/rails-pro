@@ -44,9 +44,9 @@ class PrimeGenerator
   def populate_data
     @counts.keys.each do |k|
       count = @counts[k]
-      options = factory_list_options(count)[k]
+      options = factory_bot_options[k]
       puts "Generating #{count} #{k}..."
-      list_args = options.first, count, options.drop(1)
+      list_args = [options.first, count, options.drop(1)].flatten
       FactoryBot.create_list(*list_args)
     end
   end

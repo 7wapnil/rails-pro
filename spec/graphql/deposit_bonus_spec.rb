@@ -59,15 +59,6 @@ describe GraphQL, '#deposit_bonus' do
       end
     end
 
-    describe 'when amount is not a number' do
-      let(:amount) { 'eleven' }
-      let(:code) { bonus.code }
-
-      it 'returns a human readable error' do
-        expect(error_message).to eq('Please use correct format')
-      end
-    end
-
     it 'returns the original amount along with bonus value' do
       expect(deposit_bonus['real_money']).to eq(amount)
     end
