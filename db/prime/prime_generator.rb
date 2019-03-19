@@ -2,12 +2,16 @@ class PrimeGenerator
   PRIME_MODELS = {
     tournaments: {
       target_count: 6,
-      current_count: lambda { EventScope.where(kind: EventScope::TOURNAMENT).count },
+      current_count: lambda do
+        EventScope.where(kind: EventScope::TOURNAMENT).count
+      end,
       factory_options: %i[event_scope tournament]
     },
     categories: {
       target_count: 6,
-      current_count: lambda { EventScope.where(kind: EventScope::CATEGORY).count },
+      current_count: lambda do
+        EventScope.where(kind: EventScope::CATEGORY).count
+      end,
       factory_options: %i[event_scope category]
     },
     past_events: {
@@ -40,10 +44,10 @@ class PrimeGenerator
       current_count: lambda { Wallet.pluck(:customer_id).uniq.count },
       factory_options: %i[customer ready_to_bet with_address]
     }
-  }
+  }.freeze
 
   def initialize
-    @counts = PRIME_MODELS.map { |k,v| [k, v[:target_count]] }.to_h
+    @counts = PRIME_MODELS.map { |k, v| [k, v[:target_count]] }.to_h
   end
 
   def generate
