@@ -82,27 +82,14 @@ describe GraphQL, '#transactions' do
     end
   end
 
-  # Uncomment after shared_example improvements
-  # context 'pagination' do
-  #   let(:base_query) do
-  #     %({
-  #       transactions(filter: #{EntryRequest::WITHDRAW}) {
-  #         id
-  #         customer_id
-  #         status
-  #         mode
-  #         currencyCode
-  #         amount
-  #         comment
-  #       }
-  #     })
-  #   end
-  #
-  #   it_behaves_like Base::Pagination do
-  #     let(:paginated_collection) { withdrawals.sort_by(&:created_at).reverse }
-  #     let(:pagination_query) { base_query }
-  #     let(:pagination_variables) { variables }
-  #     let(:pagination_context) { context }
-  #   end
-  # end
+  context 'pagination' do
+    let(:filter) { EntryKinds::WITHDRAW }
+
+    it_behaves_like Base::Pagination do
+      let(:paginated_collection) { withdrawals.sort_by(&:created_at).reverse }
+      let(:pagination_query) { query }
+      let(:pagination_variables) { variables }
+      let(:pagination_context) { context }
+    end
+  end
 end

@@ -42,5 +42,12 @@ describe GraphQL, '#bets' do
       expect(result['data']['bets']['pagination']['items'])
         .to eq(bets.length)
     end
+
+    it_behaves_like Base::Pagination do
+      let(:paginated_collection) { bets.sort_by(&:created_at).reverse }
+      let(:pagination_query) { query }
+      let(:pagination_variables) { variables }
+      let(:pagination_context) { context }
+    end
   end
 end
