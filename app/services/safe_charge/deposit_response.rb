@@ -44,7 +44,7 @@ module SafeCharge
 
     def validate_parameters!
       valid = true
-      valid &&= params['totalAmount'] == entry_request.amount
+      valid &&= params['totalAmount'].to_d == entry_request.amount
       valid &&= params['currency'] == entry_request.currency.code
       raise PARAMS_MISMATCH unless valid
     end
