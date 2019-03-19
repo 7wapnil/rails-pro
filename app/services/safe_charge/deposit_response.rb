@@ -2,7 +2,12 @@ module SafeCharge
   class DepositResponse < Response
     AUTHENTICATION_ERROR = DmnAuthenticationError
     TYPE_ERROR = Deposits::IncompatibleRequestStateError
-    BUSINESS_EXCEPTIONS = [AUTHENTICATION_ERROR, TYPE_ERROR].freeze
+    PARAMS_MISMATCH = CallbackDataMismatch
+    BUSINESS_EXCEPTIONS = [
+      AUTHENTICATION_ERROR,
+      TYPE_ERROR,
+      PARAMS_MISMATCH
+    ].freeze
 
     def entry_request
       @entry_request ||= EntryRequest.find(entry_request_id)
@@ -11,6 +16,7 @@ module SafeCharge
     def validate!
       validate_checksum!
       validate_entry_request_state!
+      validate_parameters!
       true
     end
 
@@ -34,6 +40,13 @@ module SafeCharge
 
     def entry_request_id
       params['productId'].to_i
+    end
+
+    def validate_parameters!
+      valid = true
+      valid &&= params['totalAmount'] == entry_request.amount
+      valid &&= params['currency'] == entry_request.currency.code
+      raise PARAMS_MISMATCH unless valid
     end
   end
 end
