@@ -25,6 +25,8 @@ module Withdrawals
 
     private
 
+    delegate :wallets, to: :current_customer, prefix: :customer
+
     def respond_with_error(error)
       errors = if error.instance_of? ActiveRecord::RecordInvalid
                  error.record.errors.full_messages
@@ -35,15 +37,12 @@ module Withdrawals
       OpenStruct.new(success: false, error_messages: errors)
     end
 
-    def wallets
-      @current_customer.wallets
-    end
-
     def create_withdrawal_request!(args)
-      WithdrawalRequests::Create.call(wallet: wallets.find(args['walletId']),
-                                      payload: args['payment_details'],
-                                      payment_method: args['payment_method'],
-                                      amount: args['amount'])
+      WithdrawalRequests::Create
+        .call(wallet: customer_wallets.find(args['walletId']),
+              payload: args['payment_details'],
+              payment_method: args['payment_method'],
+              amount: args['amount'])
     end
   end
 end

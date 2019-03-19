@@ -45,7 +45,7 @@ describe GraphQL, '#withdraw' do
 
     context 'with valid payload' do
       let(:payment_details) do
-        payload.map { |row| [row[:code], row[:value]] }.to_h
+        payload.map { |row| row.values_at(:code, :value) }.to_h
       end
 
       it 'create withdrawal request for entry request' do
