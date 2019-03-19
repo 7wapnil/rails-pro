@@ -22,7 +22,7 @@
           %td= t('attributes.customer')
           %td
             %span= customer.full_name
-            %span (#{ link_to(username, account_management_path) })
+            %span (#{link_to(username, account_management_path)})
         %tr
           %td= t('attributes.kind')
           %td= t("kinds.#{@request.kind}")
