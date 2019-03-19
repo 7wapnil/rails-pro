@@ -11,6 +11,7 @@ module Events
     field :competitors, !types[Events::EventCompetitorType] do
       resolve ->(obj, _args, _ctx) { obj.details.competitors }
     end
+    field :markets, function: MarketsQuery.new
 
     field :priority, !types.Int
     field :visible, !types.Boolean

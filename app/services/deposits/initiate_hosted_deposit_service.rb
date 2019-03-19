@@ -47,7 +47,7 @@ module Deposits
         initiator: @customer,
         customer: @customer,
         currency: @currency,
-        mode: EntryRequest::SYSTEM,
+        mode: EntryRequest::SAFECHARGE_UNKNOWN,
         kind: EntryRequest::DEPOSIT
       )
     end
@@ -60,7 +60,7 @@ module Deposits
         customer: @customer,
         currency: @currency,
         result: { message: error.message },
-        mode: EntryRequest::SYSTEM,
+        mode: EntryRequest::SAFECHARGE_UNKNOWN,
         kind: EntryRequest::DEPOSIT
       )
     end

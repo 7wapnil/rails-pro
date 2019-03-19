@@ -14,6 +14,7 @@ describe SafeCharge::CallbackHandler do
       'validate!' => true,
       'approved?' => true,
       'pending?' => false,
+      'payment_method' => ::SafeCharge::PaymentMethods::CC_CARD,
       'entry_request' => entry_request,
       'transaction_id' => transaction_id
     )
@@ -25,6 +26,7 @@ describe SafeCharge::CallbackHandler do
       'validate!' => true,
       'approved?' => false,
       'pending?' => true,
+      'payment_method' => ::SafeCharge::PaymentMethods::CC_CARD,
       'entry_request' => entry_request,
       'transaction_id' => transaction_id
     )
@@ -36,6 +38,7 @@ describe SafeCharge::CallbackHandler do
       'validate!' => true,
       'approved?' => false,
       'pending?' => false,
+      'payment_method' => ::SafeCharge::PaymentMethods::CC_CARD,
       'entry_request' => entry_request,
       'transaction_id' => transaction_id
     )
@@ -45,6 +48,7 @@ describe SafeCharge::CallbackHandler do
     allow(entry_request).to receive('succeeded!')
     allow(entry_request).to receive('failed!')
     allow(entry_request).to receive('pending!')
+    allow(EntryRequests::DepositService).to receive(:call)
   end
 
   describe '#call' do
@@ -119,8 +123,8 @@ describe SafeCharge::CallbackHandler do
     context 'with approved message, correct context' do
       let(:passed_context) { Deposits::CallbackUrl::SUCCESS }
       let(:response) { approved_response }
-      let(:entry_request_call) { 'succeeded!' }
-      let(:expected_entry_request_call_count) { 1 }
+      let(:entry_request_call) { 'failed!' }
+      let(:expected_entry_request_call_count) { 0 }
       let(:expected_outcome) { Deposits::CallbackUrl::SUCCESS }
 
       it_behaves_like 'SafeCharge callback spec'

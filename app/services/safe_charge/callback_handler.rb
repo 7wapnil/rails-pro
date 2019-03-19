@@ -1,14 +1,7 @@
 module SafeCharge
-  class CallbackHandler < ApplicationService
-    def initialize(params, context)
-      @params = params
-      @context = context.to_sym
-    end
-
+  class CallbackHandler < TransactionResponseHandler
     def call
-      save_transaction_id
-      response.validate!
-
+      super
       return success_flow if response.approved?
       return pending_flow if response.pending?
       return back_flow if cancel_context?
@@ -24,8 +17,6 @@ module SafeCharge
     end
 
     private
-
-    delegate :entry_request, to: :response, allow_nil: true
 
     def cancel_context?
       @context == Deposits::CallbackUrl::BACK
@@ -54,24 +45,14 @@ module SafeCharge
     end
 
     def success_flow
-      return Deposits::CallbackUrl::SUCCESS if entry_request.succeeded?
-
       return Deposits::CallbackUrl::SOMETHING_WENT_WRONG unless success_context?
 
-      entry_request.succeeded!
+      succeed_entry_request!
       Deposits::CallbackUrl::SUCCESS
     end
 
     def success_context?
       @context == Deposits::CallbackUrl::SUCCESS
-    end
-
-    def response
-      @response ||= SafeCharge::DepositResponse.new(@params)
-    end
-
-    def save_transaction_id
-      entry_request.update!(external_id: @response.transaction_id)
     end
   end
 end

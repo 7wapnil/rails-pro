@@ -2,6 +2,7 @@ describe SafeCharge::WebhookHandler do
   let(:webhook_checksum) { SecureRandom.hex(10) }
   let(:service_call) { described_class.call(params) }
   let!(:entry_request) { create(:entry_request) }
+  let(:entry_currency_rule) { create(:entry_currency_rule) }
   let(:params) do
     {
       'ppp_status' => SafeCharge::Statuses::OK,
@@ -15,6 +16,10 @@ describe SafeCharge::WebhookHandler do
 
   before do
     allow(Digest::SHA256).to receive(:hexdigest).and_return(webhook_checksum)
+    entry_request.currency.save!
+    allow(EntryCurrencyRule)
+      .to receive('find_by!')
+      .and_return(entry_currency_rule)
   end
 
   context 'webhook authentication' do

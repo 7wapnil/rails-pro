@@ -69,7 +69,8 @@ describe Customer, '#account_management' do
         supported_options = [
           EntryRequest::CASHIER,
           EntryRequest::SIMULATED,
-          I18n.t("kinds.#{EntryRequest::CREDIT_CARD}")
+          I18n.t("kinds.#{EntryRequest::CREDIT_CARD}"),
+          I18n.t("kinds.#{EntryRequest::SAFECHARGE_UNKNOWN}")
         ].map(&:downcase)
 
         expect(options).to match_array(supported_options)
