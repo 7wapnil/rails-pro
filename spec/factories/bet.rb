@@ -5,12 +5,12 @@ FactoryBot.define do
     amount    { Faker::Number.decimal(2, 2) }
     odd_value { odd.value }
     status    { StateMachines::BetStateMachine::INITIAL }
-    message   { Faker::Games::WorldOfWarcraft.quote }
+    message   { Faker::WorldOfWarcraft.quote }
 
-    association :odd, factory: %i[odd active], strategy: :random_or_create
-    association :currency, strategy: :random_or_create
+    association :odd, :active
     association :customer, :ready_to_bet, strategy: :random_or_create
     association :market, strategy: :random_or_create
+    association :currency, :primary, :with_bet_rule, strategy: :create
 
     trait :settled do
       status { StateMachines::BetStateMachine::SETTLED }

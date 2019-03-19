@@ -483,7 +483,10 @@ describe GraphQL, '#events' do
   end
 
   it 'context cannot be omitted even when tournament filter is present' do
-    tournament = create(:event_scope, :with_event)
+    event = FactoryBot.create(:event, :upcoming)
+    tournament = create(:event_scope)
+    event.event_scopes << tournament
+    event.save
     query = %({ events(filter: { tournamentId: #{tournament.id} }) { id } })
 
     result = ArcanebetSchema.execute(query,

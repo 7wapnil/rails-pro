@@ -2,7 +2,7 @@ Hello, my dear reader
 
 # TL;DR
 
-We now can define an initial DB state in a generic and flexible way by writing timy fragments of ruby
+We now can define an initial DB state in a generic and flexible way by writing tiny fragments of ruby
 
 # Prime
 Prime is a script filling the database with a minimal amount of data to be able to use most of the UI. Unlike seeds, prime generates randomized data and can be rune from time to time to bring the data up to date. Here is how you run it: 

@@ -21,7 +21,7 @@ FactoryBot.define do
     locked_until        { nil }
 
     email               { Faker::Internet.email }
-    username            { Faker::Internet.user_name }
+    username            { Faker::Internet.username }
 
     trait :ready_to_bet do
       after(:create) do |customer|

@@ -13,7 +13,7 @@ class PrimeGenerator
 
   def count_correction!
     @counts.keys.each do |k|
-      @counts[k] -= current_counts[k]
+      @counts[k] = [@counts[k] - current_counts[k], 0].max
     end
   end
 
@@ -27,44 +27,40 @@ class PrimeGenerator
     football_attrs = FactoryBot.attributes_for :title,
                                                name: 'Football',
                                                kind: Title::SPORTS
-    @football = Title.find_or_create_by football_attrs
+    Title.find_or_create_by football_attrs
 
     csgo_attrs = FactoryBot.attributes_for :title,
                                            name: 'CS:GO',
                                            kind: Title::ESPORTS
-    @cs_go = Title.find_or_create_by csgo_attrs
+    Title.find_or_create_by csgo_attrs
   end
 
   def producers
     puts 'Generating producers...'
-    live = FactoryBot.build :liveodds_producer, :healthy
-    live.save
-
-    prematch = FactoryBot.build :prematch_producer, :healthy
-    prematch.save
+    FactoryBot.create :liveodds_producer, :healthy
+    FactoryBot.create :prematch_producer, :healthy
   end
 
   def populate_data
     @counts.keys.each do |k|
-      next if @counts[k].negative?
-
       count = @counts[k]
       options = factory_list_options(count)[k]
       puts "Generating #{count} #{k}..."
-      FactoryBot.create_list(*options)
+      list_args = options.first, count, options.drop(1)
+      FactoryBot.create_list(*list_args)
     end
   end
 
-  def factory_list_options(count)
+  def factory_bot_options
     {
-      tournaments: [:event_scope, count, :tournament],
-      categories: [:event_scope, count, :category],
-      past_events: [:event, count, :with_odds], # past
-      live_events: [:event, count, :with_odds, :live],
-      upcoming_events: [:event, count, :with_odds, :upcoming],
-      entries: [:entry, count],
-      bets: [:bet, count, :accepted],
-      customers: [:customer, count, :ready_to_bet, :with_address]
+      tournaments: %i[event_scope tournament],
+      categories: %i[event_scope category],
+      past_events: %i[event with_odds with_event_scopes],
+      live_events: %i[event with_odds with_event_scopes live],
+      upcoming_events: %i[event with_odds with_event_scopes upcoming],
+      entries: %i[entry],
+      bets: %i[bet accepted],
+      customers: %i[customer ready_to_bet with_address]
     }
   end
 
@@ -77,7 +73,7 @@ class PrimeGenerator
       upcoming_events: Event.upcoming.count,
       entries: Entry.count,
       bets: Bet.count,
-      customers: Wallet.joins(:customer).count
+      customers: Wallet.pluck(:customer_id).uniq.count
     }
   end
 end

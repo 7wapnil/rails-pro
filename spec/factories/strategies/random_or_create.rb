@@ -8,7 +8,7 @@ class RandomOrCreateStrategy
     model ||= evaluation.object
     if model.new_record?
       model.save
-      evaluation.notify(:after_create)
+      evaluation.notify(:after_create, model)
     end
     model
   end

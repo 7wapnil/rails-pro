@@ -16,25 +16,22 @@ FactoryBot.define do
     association :title, strategy: :random_or_create
 
     name do
-      faker = if title.kind == Title::ESPORTS
-                Faker::Esport
-              else
-                Faker::Football
-              end
+      faker = title.esports? ? Faker::Esport : Faker::Football
       "#{faker.team} vs. #{faker.team}"
     end
 
     association :producer, factory: :prematch_producer
 
-    after :create do |model|
-      model.event_scopes << FactoryBot.random_or_create(:event_scope)
-      model.add_to_payload(
-        state:
-          OddsFeed::Radar::EventStatusService.new.call(
-            event_id: Faker::Number.number(3), data: nil
-          )
-      )
-      model.save!
+    trait :with_event_scopes do
+      after :build do |model|
+        model.event_scopes << FactoryBot.random_or_create(:event_scope)
+        model.add_to_payload(
+          state:
+            OddsFeed::Radar::EventStatusService.new.call(
+              event_id: Faker::Number.number(3), data: nil
+            )
+        )
+      end
     end
 
     trait :upcoming do
