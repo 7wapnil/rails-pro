@@ -1,3 +1,7 @@
+:ruby
+  customer = @request.customer
+  username = customer.username
+  account_management_path = account_management_customer_path(customer)
 .row.mt-4
   .col-6.offset-3
     = card header: t('entities.request_information'), class: 'request-info' do
@@ -12,10 +16,13 @@
           %td= t('attributes.created_at')
           %td= l(@request.created_at, format: :long)
         %tr
+          %td= t('attributes.updated_at')
+          %td= l(@request.updated_at, format: :long)
+        %tr
           %td= t('attributes.customer')
           %td
-            %span= @request.customer.full_name
-            %span (#{@request.customer.username})
+            %span= customer.full_name
+            %span (#{link_to(username, account_management_path)})
         %tr
           %td= t('attributes.kind')
           %td= t("kinds.#{@request.kind}")
@@ -36,6 +43,9 @@
         %tr
           %td= t('attributes.external_id')
           %td= @request.external_id
+        %tr
+          %td= t('attributes.mode')
+          %td= t("kinds.#{@request.mode}")
 
       %hr
       = link_back

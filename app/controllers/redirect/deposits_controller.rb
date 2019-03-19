@@ -46,13 +46,11 @@ module Redirect
     end
 
     def callback(context)
-      # TODO: Verify balances updated accordingly
       state = SafeCharge::CallbackHandler.call(params, context)
       callback_redirect_for(state)
     end
 
     def webhook
-      # TODO: Verify balances updated accordingly
       SafeCharge::WebhookHandler.call(params)
 
       head :ok

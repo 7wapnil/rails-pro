@@ -20,6 +20,10 @@ module SafeCharge
       @params['PPP_TransactionID']
     end
 
+    def payment_method
+      params['payment_method']
+    end
+
     private
 
     def status_ok?
