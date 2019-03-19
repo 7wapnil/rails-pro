@@ -42,4 +42,10 @@ SubscriptionType = GraphQL::ObjectType.define do
   field SubscriptionFields::WALLET_UPDATED,
         Wallets::WalletType,
         subscription_scope: :customer_id
+
+  field SubscriptionFields::BET_STATUS_UPDATED,
+        types.String,
+        subscription_scope: :customer_id do
+          argument :id, types.ID
+        end
 end
