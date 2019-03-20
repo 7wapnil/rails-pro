@@ -2,7 +2,10 @@
 
 module Transactions
   class TransactionsResolver < ApplicationService
-    FILTER_OPTIONS = [EntryRequest::WITHDRAW, EntryRequest::DEPOSIT].freeze
+    ALL_FILTER_OPTION = 'all'
+    FILTER_OPTIONS = [EntryRequest::WITHDRAW,
+                      EntryRequest::DEPOSIT,
+                      ALL_FILTER_OPTION].freeze
 
     def initialize(args:, current_customer:)
       @args = args
@@ -20,11 +23,21 @@ module Transactions
     attr_reader :args, :current_customer
 
     def filtered_entry_requests
-      return EntryRequest.where(kind: args[:filter]) if valid_filter?
+      invalid_filter! unless valid_filter?
 
+      return EntryRequest.all_transactions if all_filter?
+
+      EntryRequest.where(kind: args[:filter])
+    end
+
+    def invalid_filter!
       raise GraphQL::ExecutionError,
             I18n.t('errors.messages.graphql.transactions.kind.invalid',
                    kind: args[:filter])
+    end
+
+    def all_filter?
+      args[:filter] == ALL_FILTER_OPTION
     end
 
     def valid_filter?
