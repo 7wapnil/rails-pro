@@ -11,7 +11,7 @@ FactoryBot.define do
     status                 { Event::NOT_STARTED }
     payload                { {} }
 
-    external_id            { Faker::Number.number(10) }
+    sequence(:external_id) { |n| "sr:match:#{n}" }
 
     association :title, strategy: :build
 

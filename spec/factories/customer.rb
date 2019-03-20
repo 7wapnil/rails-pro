@@ -20,8 +20,8 @@ FactoryBot.define do
     lock_reason         { nil }
     locked_until        { nil }
 
-    email               { Faker::Internet.email }
-    sequence(:username) { |n| Faker::Internet.username + n.to_s }
+    sequence(:email)    { |n| "#{n}-#{Faker::Internet.email}" }
+    sequence(:username) { |n| "#{Faker::Internet.user_name}#{n}" }
 
     trait :ready_to_bet do
       after(:create) do |customer|

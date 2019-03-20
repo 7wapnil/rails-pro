@@ -11,7 +11,7 @@ FactoryBot.define do
       "sr:match:#{n}:209/setnr=2|gamenrX=#{n}|gamenrY=#{n}"
     end
 
-    association :event, strategy: :create
+    event
 
     trait :with_odds do
       after(:create) do |market|

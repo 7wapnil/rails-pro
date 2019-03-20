@@ -6,7 +6,7 @@ FactoryBot.define do
     odd_value { odd.value }
     status    { StateMachines::BetStateMachine::INITIAL }
 
-    association :odd, :active
+    association :odd, factory: %i[odd active]
     currency
     association :customer, :ready_to_bet
 
