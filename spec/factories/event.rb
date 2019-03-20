@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :event do
     visible                { true }
     active                 { true }
-    name                   { Faker::Esport.team }
+    name                   { "#{Faker::Esport.team} vs. #{Faker::Esport.team}" }
     description            { 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' } # rubocop:disable Metrics/LineLength
     start_at               { 2.hours.ago }
     end_at                 { 1.hours.ago }
