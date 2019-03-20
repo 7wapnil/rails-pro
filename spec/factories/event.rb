@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :event do
     visible                { true }
     active                 { true }
+    name                   { Faker::Esport.team }
     description            { 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' } # rubocop:disable Metrics/LineLength
     start_at               { 2.hours.ago }
     end_at                 { 1.hours.ago }
@@ -14,12 +15,6 @@ FactoryBot.define do
     sequence(:external_id) { |n| "sr:match:#{n}" }
 
     association :title, strategy: :build
-
-    name do
-      faker = title.esports? ? Faker::Esport : Faker::Football
-      "#{faker.team} vs. #{faker.team}"
-    end
-
     association :producer, factory: :prematch_producer
 
     trait :with_event_scopes do
