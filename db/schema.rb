@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_07_075445) do
+ActiveRecord::Schema.define(version: 2019_03_14_101142) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -442,6 +442,13 @@ ActiveRecord::Schema.define(version: 2019_03_07_075445) do
     t.bigint "currency_id"
     t.index ["currency_id"], name: "index_wallets_on_currency_id"
     t.index ["customer_id"], name: "index_wallets_on_customer_id"
+  end
+
+  create_table "withdrawal_requests", force: :cascade do |t|
+    t.string "status", default: "pending"
+    t.jsonb "payment_details"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   add_foreign_key "addresses", "customers"

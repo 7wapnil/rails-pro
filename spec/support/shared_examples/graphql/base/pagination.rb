@@ -21,8 +21,7 @@ shared_examples_for Base::Pagination do
   let(:full_query) do
     pagination_query
       .split('{')
-      .tap { |parts| parts[2] = "collection { #{parts[2]} }" }
-      .tap { |parts| parts[2] = "#{pagination_info_query}#{parts[2]}" }
+      .tap { |parts| add_pagination!(parts) }
       .join('{')
   end
 
@@ -39,8 +38,9 @@ shared_examples_for Base::Pagination do
       .strip
   end
 
-  let(:response) { result['data'][query_name] }
+  let(:query_class) { ArcanebetSchema.query.fields[query_name].function.class }
 
+  let(:response) { result['data'][query_name] }
   let(:response_pagination_info) do
     response['pagination']
       .symbolize_keys
@@ -64,7 +64,30 @@ shared_examples_for Base::Pagination do
   before do
     stub_const('Base::Pagination::DEFAULT_ITEMS_COUNT', 1)
     stub_const('Base::Pagination::FIRST_PAGE', 1)
+
+    allow(query_class.arguments['page'])
+      .to receive(:default_value)
+      .and_return(Base::Pagination::DEFAULT_ITEMS_COUNT)
+    allow(query_class.arguments['per_page'])
+      .to receive(:default_value)
+      .and_return(Base::Pagination::FIRST_PAGE)
+
     paginated_collection
+  end
+
+  def add_pagination!(parts)
+    return if parts[2].blank? || parts[2].include?('pagination')
+
+    parts[2] = "#{pagination_info_query}#{parts[2]}"
+  end
+
+  def append_arguments!(part, query_name, page, per_page)
+    if part.match?(/^\s*#{query_name}\s*\(/)
+      return part.gsub!(/\)\s*$/, ", page: #{page}, per_page: #{per_page})")
+    end
+
+    part.gsub!(query_name,
+               "#{query_name} (page: #{page}, per_page: #{per_page})")
   end
 
   it 'returns collection as data' do
@@ -86,8 +109,7 @@ shared_examples_for Base::Pagination do
       pagination_query
         .split('{')
         .tap { |parts| append_arguments!(parts[1], query_name, page, per_page) }
-        .tap { |parts| parts[2] = "collection { #{parts[2]} }" }
-        .tap { |parts| parts[2] = "#{pagination_info_query}#{parts[2]}" }
+        .tap { |parts| add_pagination!(parts) }
         .join('{')
     end
 
@@ -108,15 +130,6 @@ shared_examples_for Base::Pagination do
       it 'returns an error' do
         expect(result['errors'].first['message']).to eq(error_message)
       end
-    end
-
-    def append_arguments!(part, query_name, page, per_page)
-      if part.match?(/^\s*#{query_name}\s*\(/)
-        return part.gsub!(/\)\s*$/, ", page: #{page}, per_page: #{per_page})")
-      end
-
-      part.gsub!(query_name,
-                 "#{query_name} (page: #{page}, per_page: #{per_page})")
     end
   end
 end

@@ -1,5 +1,7 @@
 module Base
   class Resolver < GraphQL::Function
+    attr_reader :current_customer
+
     def auth_protected?
       true
     end

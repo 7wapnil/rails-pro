@@ -1,7 +1,21 @@
 describe GraphQL, '#withdraw' do
   let(:auth_customer) { create(:customer) }
   let(:context) { { current_customer: auth_customer } }
-  let(:variables) { { amount: 10.0, walletId: wallet.id } }
+  let(:variables) do
+    {
+      amount: amount,
+      walletId: wallet.id.to_s,
+      payment_method: payment_method,
+      payment_details: payload
+    }
+  end
+  let(:amount) { Faker::Number.within(10.0..100.0).round(2) }
+  let(:payment_method) { EntryRequest::CREDIT_CARD }
+  let(:payload) do
+    SafeCharge::Withdraw::WITHDRAW_MODE_FIELDS[payment_method]&.map do |row|
+      { code: row[:code].to_s, value: Faker::Lorem.word }
+    end
+  end
   let(:currency) { create(:currency, :with_withdrawal_rule) }
   let(:wallet) do
     create(:wallet, :brick, customer: auth_customer, currency: currency)
@@ -9,8 +23,11 @@ describe GraphQL, '#withdraw' do
   let!(:balance) { create(:balance, :real_money, wallet: wallet) }
 
   let(:query) do
-    %(mutation withdraw($amount: Float!, $walletId: ID!) {
-        withdraw(amount: $amount, walletId: $walletId) {
+    %(mutation withdraw($amount: Float!, $walletId: ID!,
+      $payment_method: String!, $payment_details: [PaymentMethodDetail]) {
+        withdraw(amount: $amount, walletId: $walletId,
+                 payment_method: $payment_method,
+                 payment_details: $payment_details) {
           error_messages
           id
           status
@@ -23,8 +40,57 @@ describe GraphQL, '#withdraw' do
                             variables: variables)['data']['withdraw']
   end
 
+  context 'payload' do
+    let(:entry_request) { EntryRequest.find_by(id: response['id']) }
+
+    context 'with valid payload' do
+      let(:payment_details) do
+        payload.map { |row| row.values_at(:code, :value) }.to_h
+      end
+
+      it 'create withdrawal request for entry request' do
+        expect(entry_request.origin).to be_instance_of(WithdrawalRequest)
+      end
+
+      it 'has withdrawal request with payload' do
+        expect(entry_request.origin.payment_details).to eq(payment_details)
+      end
+
+      it 'stores correct amount' do
+        expect(entry_request.amount).to eq(-amount)
+      end
+
+      it 'links correct wallet' do
+        expect(entry_request.customer.wallets.pluck(:id)).to include(wallet.id)
+      end
+
+      it 'links correct payment method' do
+        expect(entry_request.mode).to eq(payment_method)
+      end
+
+      it 'sets pending state' do
+        expect(entry_request.origin.status).to eq(EntryRequest::PENDING)
+      end
+    end
+
+    context 'with invalid payment method' do
+      let(:payment_method) { Faker::Lorem.word }
+
+      it 'does not create withdrawal request and entry request' do
+        expect(entry_request).to be nil
+      end
+    end
+
+    context 'with invalid payment details' do
+      let(:payload) { [{ code: Faker::Lorem.word, value: Faker::Lorem.word }] }
+
+      it 'does not create withdrawal request and entry request' do
+        expect(entry_request).to be nil
+      end
+    end
+  end
+
   context 'when successfully' do
-    let(:variables) { { amount: 10.0, walletId: wallet.id.to_s } }
     let(:entry_request) { create(:entry_request) }
 
     before do
@@ -47,6 +113,7 @@ describe GraphQL, '#withdraw' do
     it "don't return error message" do
       expect(response['error_messages']).to be_nil
     end
+
     it 'returns entry request status' do
       expect(response['status']).to eq(entry_request.status)
     end
