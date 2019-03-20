@@ -108,10 +108,10 @@ describe OddsFeed::Radar::OddsChangeHandler do
     end
     let(:service_call) { subject_api.handle }
 
-    it 'calls CompetitorLoader' do
-      expect(OddsFeed::Radar::Entities::CompetitorLoader)
+    it 'calls EventBasedCache::Writer' do
+      expect(OddsFeed::Radar::EventBasedCache::Writer)
         .to have_received(:call)
-        .with(external_id: competitor_id)
+        .with(event: event)
     end
   end
 

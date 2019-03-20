@@ -20,7 +20,7 @@ module OddsFeed
         if event
           log_on_update
           event.update_from!(api_event)
-          cache_event_competitors
+          cache_event_based_data
         else
           log_on_create
           create_event

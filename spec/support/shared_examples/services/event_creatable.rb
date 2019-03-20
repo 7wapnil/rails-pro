@@ -17,7 +17,7 @@ shared_examples 'service caches competitors and players' do
 
     allow(Rails.cache).to receive(:write)
     allow(Rails.cache).to receive(:write_multi)
-    allow(OddsFeed::Radar::Entities::CompetitorLoader)
+    allow(OddsFeed::Radar::EventBasedCache::Writer)
       .to receive(:call)
       .and_call_original
 

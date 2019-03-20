@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<competitor_profile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" generated_at="2019-03-18T08:19:10+00:00" xmlns="http://schemas.sportradar.com/sportsapi/v1/unified" xsi:schemaLocation="http://schemas.sportradar.com/sportsapi/v1/unified http://schemas.sportradar.com/bsa/unified/v1/xml/endpoints/unified/competitor_profile.xsd">
+  <competitor id="sr:competitor:1" name="Minnesota Wild" country="USA" country_code="USA" abbreviation="MIN">
+    <sport id="sr:sport:4" name="Ice Hockey"/>
+    <category id="sr:category:37" name="USA" country_code="USA"/>
+  </competitor>
+  <venue id="sr:venue:20171" name="Xcel Energy Center" capacity="18064" city_name="St. Paul" country_name="USA" country_code="USA"/>
+  <jerseys>
+    <jersey type="home" base="0e4236" sleeve="e1d6ae" number="e1d3ab" squares="false" stripes="false" horizontal_stripes="false" split="false" shirt_type="long_sleeves"/>
+    <jersey type="away" base="ffffff" sleeve="0e4236" number="a51a31" squares="false" stripes="false" horizontal_stripes="false" split="false" shirt_type="long_sleeves"/>
+    <jersey type="third" base="af2324" sleeve="0e4236" number="e1d6ae" squares="false" stripes="false" horizontal_stripes="false" split="false" shirt_type="long_sleeves"/>
+  </jerseys>
+  <manager id="sr:player:917590" name="Boudreau, Bruce" nationality="Canada" country_code="CAN"/>
+  <players>
+    <player id="sr:player:1" name="Donato, Ryan" full_name="Ryan Donato" type="F" date_of_birth="1996-04-09" nationality="USA" country_code="USA" height="183" weight="88" jersey_number="6" gender="male"/>
+    <player id="sr:player:2" name="Read, Matt" full_name="Matt Read" type="F" date_of_birth="1986-06-14" nationality="Canada" country_code="CAN" height="178" weight="84" gender="male"/>
+  </players>
+</competitor_profile>

@@ -170,6 +170,7 @@ en:
   date:
     formats:
       date_picker: "%-d %B %Y"
+      informative: "%a, %d %b %Y (%d-%m-%Y)"
       default: "%-d %B %Y"
 
   documents:
