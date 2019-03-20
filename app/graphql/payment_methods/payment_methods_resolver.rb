@@ -44,7 +44,8 @@ module PaymentMethods
 
     def mapped_payment_methods
       payment_methods.map do |method|
-        [method, available_payment_methods.include?(method)]
+        OpenStruct.new(payment_method: method,
+                       available: available_payment_methods.include?(method))
       end
     end
   end

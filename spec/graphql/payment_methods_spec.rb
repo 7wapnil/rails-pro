@@ -5,7 +5,7 @@ describe GraphQL, '#payment_methods' do
   let(:context) { { current_customer: auth_customer } }
   let(:variables) { {} }
   let(:query) do
-    %({ paymentMethods { name code type availability
+    %({ paymentMethods { name code type availability payment_note
                          fields { name code type } } })
   end
   let(:result) do
@@ -86,6 +86,11 @@ describe GraphQL, '#payment_methods' do
           .to eq(payment_method_name)
       end
 
+      it 'returns correct payment note for correct first payment method' do
+        expect(result['data']['paymentMethods'].first['payment_note'])
+          .to eq(payment_method_note)
+      end
+
       it 'returns correct payment method fields' do
         expect(result['data']['paymentMethods'].first['fields'])
           .to eq([payment_detail.stringify_keys.transform_values(&:to_s)])
@@ -95,7 +100,8 @@ describe GraphQL, '#payment_methods' do
         expect(result['data']['paymentMethods'].first)
           .to include('name' => payment_method_name,
                       'code' => payment_method,
-                      'type' => Currency::FIAT)
+                      'type' => Currency::FIAT,
+                      'payment_note' => payment_method_note)
       end
     end
 
