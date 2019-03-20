@@ -4,7 +4,7 @@ namespace :radar do
     client = OddsFeed::Radar::Client.new
 
     Rails.logger.info 'Querying upcoming events ...'
-    client.events_to_date(Date.tomorrow).each do |event_adapter|
+    client.events_for_date(Date.tomorrow).each do |event_adapter|
       Radar::LiveCoverageBookingWorker.new.perform(event_adapter.payload['id'])
     end
   end

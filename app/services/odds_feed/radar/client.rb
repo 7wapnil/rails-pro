@@ -37,7 +37,7 @@ module OddsFeed
         EventAdapter.new(payload)
       end
 
-      def events_to_date(date, cache: nil)
+      def events_for_date(date, cache: nil)
         formatted_date = date.to_s
         route = "/sports/#{@language}/schedules/#{formatted_date}/schedule.xml"
         response = request(route, cache: cache)

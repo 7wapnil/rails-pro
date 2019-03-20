@@ -17,6 +17,14 @@ describe GraphQL, '#payment_methods' do
     context 'when payment method exist' do
       let(:payment_method) { Faker::Lorem.word }
       let(:payment_detail) { { name: 'bar', code: :bar, type: :float } }
+      let(:payment_method_name) do
+        I18n.t("payment_methods.#{payment_method}.title",
+               default: payment_method.humanize)
+      end
+      let(:payment_method_note) do
+        I18n.t("payment_methods.#{payment_method}.payment_note",
+               default: payment_method.humanize)
+      end
 
       before do
         withdraw_map_model = SafeCharge::Withdraw
@@ -66,7 +74,7 @@ describe GraphQL, '#payment_methods' do
 
       it 'returns correct name for correct first payment method' do
         expect(result['data']['paymentMethods'].first['name'])
-          .to eq(payment_method)
+          .to eq(payment_method_name)
       end
 
       it 'returns correct payment method fields' do
@@ -76,7 +84,7 @@ describe GraphQL, '#payment_methods' do
 
       it 'has all required fields' do
         expect(result['data']['paymentMethods'].first)
-          .to include('name' => payment_method,
+          .to include('name' => payment_method_name,
                       'code' => payment_method,
                       'type' => Currency::FIAT)
       end

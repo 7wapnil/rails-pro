@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<competitor_profile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" generated_at="2019-03-18T09:46:56+00:00" xmlns="http://schemas.sportradar.com/sportsapi/v1/unified" xsi:schemaLocation="http://schemas.sportradar.com/sportsapi/v1/unified http://schemas.sportradar.com/bsa/unified/v1/xml/endpoints/unified/competitor_profile.xsd">
+  <competitor id="sr:competitor:3" name="Al Orouba (Oma)" country="Oman" country_code="OMN" abbreviation="ALO">
+    <sport id="sr:sport:1" name="Soccer"/>
+    <category id="sr:category:415" name="Oman" country_code="OMN"/>
+  </competitor>
+  <venue id="sr:venue:17863" name="Sur Sports Complex" capacity="8000" city_name="Sur" country_name="Oman" map_coordinates="22.527700,59.473500" country_code="OMN"/>
+  <jerseys>
+    <jersey type="home" base="ffffff" sleeve="009933" number="dd0000" squares="false" stripes="false" horizontal_stripes="false" split="false"/>
+    <jersey type="goalkeeper" base="ff99cc" sleeve="ffffff" number="ffffff" squares="false" stripes="false" horizontal_stripes="false" split="false"/>
+    <jersey type="third" base="66ff00" sleeve="66ff00" number="ffffff" squares="false" stripes="false" horizontal_stripes="false" split="false"/>
+  </jerseys>
+  <players>
+    <player id="sr:player:5" name="Saleh, Mohamed" full_name="Mohamed Saleh" type="defender" date_of_birth="1980-06-25" nationality="Oman" country_code="OMN" jersey_number="3" gender="male"/>
+    <player id="sr:player:6" name="Madhafar, Hassan" full_name="Hassan Madhafar" type="defender" date_of_birth="1980-06-26" nationality="Oman" country_code="OMN" jersey_number="6" gender="male"/>
+  </players>
+</competitor_profile>

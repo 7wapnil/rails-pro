@@ -8,6 +8,17 @@ module OddsFeed
 
         private
 
+        def collect_data
+          {
+            competitors: competitor_data,
+            players: player_names
+          }
+        end
+
+        def competitor_data
+          { entity_cache_key(external_id) => entity_name }
+        end
+
         def cache_additional_entries
           Rails.cache.write_multi(
             player_names,
@@ -16,12 +27,15 @@ module OddsFeed
         end
 
         def player_names
-          payload
-            .dig('players', 'player')
-            .to_a
+          Array
+            .wrap(players_from_payload)
             .map { |attributes| attributes.values_at('id', 'full_name') }
             .to_h
             .transform_keys { |id| entity_cache_key(id) }
+        end
+
+        def players_from_payload
+          payload.dig('players', 'player')
         end
 
         def payload
@@ -31,7 +45,12 @@ module OddsFeed
                          external_id,
                          cache: { expires_in: Client::DEFAULT_CACHE_TERM }
                        )
-                       .fetch('competitor_profile')
+                       .yield_self(&method(:read_payload))
+        end
+
+        def read_payload(converted_xml)
+          converted_xml['competitor_profile'] ||
+            converted_xml.fetch('simpleteam_profile')
         end
 
         def radar_entity_name

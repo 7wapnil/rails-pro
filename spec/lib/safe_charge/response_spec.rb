@@ -6,13 +6,12 @@ describe SafeCharge::Response do
   let(:transaction_time_at_formatted) do
     transaction_time_at.strftime('%Y-%m-%d.%T')
   end
-  let(:total_amount) { Faker::Number.decimal(2, 2) }
-  let(:currency_code) { Faker::Currency.code }
   let(:transaction_id) { Faker::Number.number(9) }
   let(:transaction_status) { SafeCharge::Statuses::APPROVED }
-  let(:product_id) do
-    "Deposit #{total_amount} to your #{currency_code} wallet on ArcaneBet."
-  end
+  let(:entry_request) { create(:entry_request) }
+  let(:total_amount) { entry_request.amount }
+  let(:currency_code) { entry_request.currency.code }
+  let(:product_id) { entry_request.id }
 
   let(:correct_checksum) do
     checksum_string = [

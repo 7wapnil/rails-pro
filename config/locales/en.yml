@@ -170,6 +170,7 @@ en:
   date:
     formats:
       date_picker: "%-d %B %Y"
+      informative: "%a, %d %b %Y (%d-%m-%Y)"
       default: "%-d %B %Y"
 
   documents:
@@ -326,6 +327,8 @@ en:
       withdrawal:
         not_enough_money: Not enough money in wallet!
         bonus_exists: Active bonus exists!
+        invalid_payment_method: "Invalid payment method: %{payment_method}"
+        invalid_payload: "Missing %{attr}"
       graphql:
         betting:
           place:
@@ -436,6 +439,11 @@ en:
     settled: Settled
     succeeded: Succeeded
     verified: Verified
+
+  payment_methods:
+    credit_card:
+      title: Credit card (Visa, MasterCard, Maestro)
+      payment_note: 'Range: 10 - 10 000€ / No service fee'
 
   time:
     formats:
