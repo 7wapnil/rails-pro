@@ -36,8 +36,8 @@ module WebSocket
     end
 
     def trigger_bet_update(bet)
-      trigger(SubscriptionFields::BET_STATUS_UPDATED,
-              bet.status,
+      trigger(SubscriptionFields::BET_UPDATED,
+              bet,
               { id: bet.id },
               bet.customer_id)
     end

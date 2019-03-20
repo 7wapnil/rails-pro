@@ -135,8 +135,8 @@ describe WebSocket::Client do
     it 'triggers wallet update subscription' do
       expect(subject)
         .to have_received(:trigger)
-        .with(SubscriptionFields::BET_STATUS_UPDATED,
-              bet.status,
+        .with(SubscriptionFields::BET_UPDATED,
+              bet,
               { id: bet.id },
               bet.customer_id)
     end

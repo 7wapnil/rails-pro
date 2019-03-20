@@ -163,14 +163,6 @@ describe Bet do
         expect(bet).not_to be_won
         expect(bet).to be_lost
       end
-
-      it 'trigger websocket event' do
-        expect(WebSocket::Client.instance)
-          .to receive(:trigger_bet_update)
-          .with(bet)
-
-        bet.settle!(settlement_status: :lost, void_factor: 0.7)
-      end
     end
   end
 

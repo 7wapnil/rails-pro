@@ -48,8 +48,6 @@ module StateMachines
         state :failed
         state :settled
 
-        after_all_transitions :emit_websocket
-
         event :send_to_internal_validation do
           transitions from: :initial,
                       to: :sent_to_internal_validation
@@ -104,10 +102,6 @@ module StateMachines
 
       def on_successfull_bet_placement
         entry.confirmed_at = Time.zone.now
-      end
-
-      def emit_websocket
-        WebSocket::Client.instance.trigger_bet_update(self)
       end
     end
   end
