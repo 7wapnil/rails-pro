@@ -15,8 +15,6 @@ class EntryRequest < ApplicationRecord
 
   default_scope { order(created_at: :desc) }
 
-  scope :all_transactions, -> { where(kind: WITHDRAW).or(where(kind: DEPOSIT)) }
-
   enum status: {
     initial:   INITIAL = 'initial',
     pending:   PENDING = 'pending',

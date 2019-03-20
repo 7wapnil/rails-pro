@@ -25,9 +25,13 @@ module Transactions
     def filtered_entry_requests
       invalid_filter! unless valid_filter?
 
-      return EntryRequest.all_transactions if all_filter?
+      EntryRequest.where(kind: kinds)
+    end
 
-      EntryRequest.where(kind: args[:filter])
+    def kinds
+      return [EntryRequest::WITHDRAW, EntryRequest::DEPOSIT] if all_filter?
+
+      args[:filter]
     end
 
     def invalid_filter!
