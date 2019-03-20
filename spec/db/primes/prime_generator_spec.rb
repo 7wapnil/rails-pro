@@ -1,6 +1,8 @@
 require './db/prime/prime_generator'
 
 describe PrimeGenerator do
+  subject { described_class.new.generate }
+
   let(:enough_scopes) { 6 }
   let(:enough_past_events) { 10 }
   let(:enough_live_events) { 5 }
@@ -9,8 +11,8 @@ describe PrimeGenerator do
   let(:enough_bets) { 10 }
   let(:enough_customers) { 20 }
 
-  before :all do # rubocop:disable RSpec/BeforeAfterAll:
-    described_class.new.generate
+  before do
+    subject
   end
 
   %w[Football CS:GO].each do |name|
