@@ -6,7 +6,7 @@ FactoryBot.define do
     min_amount { Faker::Number.decimal(1, 2) }
     max_amount { Faker::Number.decimal(4, 2) }
 
-    association :currency, strategy: :random_or_create
+    currency
 
     initialize_with do
       EntryCurrencyRule

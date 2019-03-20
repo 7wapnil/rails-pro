@@ -11,9 +11,9 @@ FactoryBot.define do
     status                 { Event::NOT_STARTED }
     payload                { {} }
 
-    sequence(:external_id) { |n| "sr:match:#{n}" }
+    external_id            { Faker::Number.number(10) }
 
-    association :title, strategy: :random_or_create
+    association :title, strategy: :build
 
     name do
       faker = title.esports? ? Faker::Esport : Faker::Football
@@ -24,6 +24,7 @@ FactoryBot.define do
 
     trait :with_event_scopes do
       after :build do |model|
+        model.title = FactoryBot.random_or_create :title
         model.event_scopes << FactoryBot.random_or_create(:event_scope)
         model.add_to_payload(
           state:
@@ -40,7 +41,7 @@ FactoryBot.define do
     end
 
     trait :live do
-      end_at      { nil }
+      end_at      {}
       traded_live { true }
     end
 

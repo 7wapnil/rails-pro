@@ -5,7 +5,7 @@ FactoryBot.define do
     name                   { Faker::Name.unique.name }
     kind                   { :esports }
 
-    external_id { "sr:sport:#{name}" }
+    sequence(:external_id) { |n| "sr:sport:#{n}" }
 
     trait :with_event do
       after(:create) do |title|

@@ -5,12 +5,10 @@ FactoryBot.define do
     amount    { Faker::Number.decimal(2, 2) }
     odd_value { odd.value }
     status    { StateMachines::BetStateMachine::INITIAL }
-    message   { nil }
 
     association :odd, :active
-    association :customer, :ready_to_bet, strategy: :random_or_create
-    association :market, strategy: :random_or_create
-    association :currency, :primary, :with_bet_rule, strategy: :create
+    currency
+    association :customer, :ready_to_bet
 
     trait :settled do
       status { StateMachines::BetStateMachine::SETTLED }
@@ -40,6 +38,12 @@ FactoryBot.define do
 
     trait :lost do
       settlement_status { :lost }
+    end
+
+    trait :with_random_market do
+      after :build do |instance|
+        instance.market = FactoryBot.random_or_create :market
+      end
     end
   end
 end

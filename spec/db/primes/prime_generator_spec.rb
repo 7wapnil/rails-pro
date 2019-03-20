@@ -1,10 +1,6 @@
 require './db/prime/prime_generator'
 
 describe PrimeGenerator do
-  subject do
-    described_class.new.generate
-  end
-
   let(:enough_scopes) { 6 }
   let(:enough_past_events) { 10 }
   let(:enough_live_events) { 5 }
@@ -13,8 +9,8 @@ describe PrimeGenerator do
   let(:enough_bets) { 10 }
   let(:enough_customers) { 20 }
 
-  before do
-    subject
+  before :all do
+    described_class.new.generate
   end
 
   %w[Football CS:GO].each do |name|

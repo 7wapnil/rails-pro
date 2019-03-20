@@ -29,20 +29,20 @@ class PrimeGenerator
       current_count: lambda { Event.upcoming.count },
       factory_options: %i[event with_odds with_event_scopes upcoming]
     },
-    entries: {
-      target_count: 15,
-      current_count: lambda { Entry.count },
-      factory_options: %i[entry]
-    },
-    bets: {
-      target_count: 10,
-      current_count: lambda { Bet.count },
-      factory_options: %i[bet accepted]
-    },
     customers: {
       target_count: 20,
       current_count: lambda { Wallet.pluck(:customer_id).uniq.count },
       factory_options: %i[customer ready_to_bet with_address]
+    },
+    entries: {
+      target_count: 15,
+      current_count: lambda { Entry.count },
+      factory_options: %i[entry with_random_wallet]
+    },
+    bets: {
+      target_count: 10,
+      current_count: lambda { Bet.count },
+      factory_options: %i[bet accepted with_random_market]
     }
   }.freeze
 

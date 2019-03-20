@@ -7,7 +7,11 @@ FactoryBot.define do
     authorized_at { nil }
     sequence(:external_id) { |n| "ID_#{n}" }
 
-    association :wallet, strategy: :random_or_create
+    wallet
+
+    trait :with_random_wallet do
+      association :wallet, strategy: :random_or_create
+    end
 
     before(:create) do |entry|
       create(:entry_currency_rule,
