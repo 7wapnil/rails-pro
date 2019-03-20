@@ -7,7 +7,7 @@ module PaymentMethods
     end
 
     def call
-      payment_methods
+      mapped_payment_methods
     end
 
     private
@@ -21,7 +21,7 @@ module PaymentMethods
                                   .succeeded
     end
 
-    def payment_methods
+    def available_payment_methods
       deposit_entry_requests
         .pluck(:mode)
         .uniq
@@ -33,6 +33,20 @@ module PaymentMethods
 
     def withdrawal_methods_for(payment_method)
       SafeCharge::Withdraw::AVAILABLE_WITHDRAW_MODES[payment_method]
+    end
+
+    def payment_methods
+      SafeCharge::Withdraw::AVAILABLE_WITHDRAW_MODES.values
+                                                    .flatten
+                                                    .compact
+                                                    .uniq
+    end
+
+    def mapped_payment_methods
+      payment_methods.map do |method|
+        OpenStruct.new(payment_method: method,
+                       available: available_payment_methods.include?(method))
+      end
     end
   end
 end
