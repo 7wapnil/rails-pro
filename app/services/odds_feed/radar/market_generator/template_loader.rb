@@ -76,7 +76,7 @@ module OddsFeed
         end
 
         def market_id
-          @stored_template.external_id
+          stored_template.external_id
         end
 
         def notify_outcome_is_empty

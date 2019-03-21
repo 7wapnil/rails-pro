@@ -46,7 +46,7 @@ module OddsFeed
         end
 
         def extract_market_data_products
-          return unless mappings_from_market_data
+          return if mappings_from_market_data.blank?
 
           Array
             .wrap(mappings_from_market_data['mapping'])
@@ -72,11 +72,13 @@ module OddsFeed
           return extract_variant_outcomes if template.variants?
           return {} if outcomes_from_market_data.blank?
 
-          { outcomes: outcomes_from_market_data }
+          { outcomes: { outcome: outcomes_from_market_data } }
         end
 
         def outcomes_from_market_data
-          @outcomes_from_market_data ||= market_data['outcomes'].to_h
+          @outcomes_from_market_data ||= Array.wrap(
+            market_data.dig('outcomes', 'outcome')
+          )
         end
 
         def extract_variant_outcomes

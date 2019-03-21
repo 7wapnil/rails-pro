@@ -2,6 +2,15 @@ describe Radar::MarketsUpdateWorker do
   let(:response) do
     XmlParser.parse(file_fixture('radar_markets_descriptions.xml').read)
   end
+
+  let(:variants_payload) do
+    XmlParser.parse(file_fixture('radar_all_market_variants.xml').read)
+  end
+
+  let(:response_markets_count) do
+    response.dig('market_descriptions', 'market').length
+  end
+
   let(:client) { OddsFeed::Radar::Client.new }
   let(:expected_payload) do
     {
@@ -18,13 +27,15 @@ describe Radar::MarketsUpdateWorker do
         ]
       },
       products: nil,
-      attributes: nil
+      attributes: nil,
+      variants: false
     }.deep_stringify_keys!
   end
 
   before do
     allow(client).to receive(:request)
     allow(client).to receive(:markets).and_return(response)
+    allow(client).to receive(:all_market_variants).and_return(variants_payload)
     allow(subject).to receive(:client).and_return(client)
   end
 
@@ -35,7 +46,7 @@ describe Radar::MarketsUpdateWorker do
 
   it 'inserts new template in db if not exists' do
     subject.perform
-    expect(MarketTemplate.count).to eq(6)
+    expect(MarketTemplate.count).to eq(response_markets_count)
   end
 
   it 'updates template in db if exists' do
@@ -55,7 +66,7 @@ describe Radar::MarketsUpdateWorker do
   it 'skips creation on invalid data without breaking execution' do
     response['market_descriptions']['market'][0]['name'] = ''
     subject.perform
-    expect(MarketTemplate.count).to eq(5)
+    expect(MarketTemplate.count).to eq(response_markets_count - 1)
   end
 
   it 'saves markets with single outcome as array' do
@@ -68,7 +79,8 @@ describe Radar::MarketsUpdateWorker do
       },
       specifiers: nil,
       products: nil,
-      attributes: nil
+      attributes: nil,
+      variants: false
     }.deep_stringify_keys!
 
     subject.perform

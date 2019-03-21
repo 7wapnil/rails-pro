@@ -68,7 +68,12 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
       end
 
       before do
-        template.update(payload: { 'outcomes' => nil })
+        template.update(
+          payload: {
+            outcomes: nil,
+            variants: true
+          }
+        )
         expect_any_instance_of(OddsFeed::Radar::Client)
           .to receive(:market_variants)
           .and_return(payload)
