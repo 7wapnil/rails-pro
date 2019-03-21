@@ -74,15 +74,9 @@ class PrimeGenerator
 
   def titles
     puts 'Generating titles...'
-    football_attrs = FactoryBot.attributes_for :title,
-                                               name: 'Football',
-                                               kind: Title::SPORTS
-    Title.find_or_create_by football_attrs
-
-    csgo_attrs = FactoryBot.attributes_for :title,
-                                           name: 'CS:GO',
-                                           kind: Title::ESPORTS
-    Title.find_or_create_by csgo_attrs
+    @football = find_title_or_create_by(name: 'Football', kind: Title::SPORTS)
+    @cs_go = find_title_or_create_by(name: 'CS:GO', kind: Title::ESPORTS)
+  
   end
 
   def producers
@@ -99,5 +93,15 @@ class PrimeGenerator
       list_args = [options.first, count, options.drop(1)].flatten
       FactoryBot.create_list(*list_args)
     end
+  end
+
+  private
+
+  def find_title_or_create_by(attributes)
+    title = Title.find_by(attributes)
+  
+    return title if title
+  
+    FactoryBot.create(:title, attributes)
   end
 end
