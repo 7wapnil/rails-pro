@@ -75,8 +75,7 @@ class PrimeGenerator
   def titles
     puts 'Generating titles...'
     @football = find_title_or_create_by(name: 'Football', kind: Title::SPORTS)
-    @cs_go = find_title_or_create_by(name: 'CS:GO', kind: Title::ESPORTS)
-  
+    @cs_go = find_title_or_create_by(name: 'CS:GO', kind: Title::ESPORTS)  
   end
 
   def producers
