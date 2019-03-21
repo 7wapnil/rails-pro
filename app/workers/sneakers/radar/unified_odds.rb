@@ -55,8 +55,11 @@ module Radar
     }.freeze
 
     def work(msg)
+      profiler = OddsFeed::MessageProfiler.new
+      profiler.profile!(:enqueued_at)
+
       match_result(scan_payload(msg))
-        .perform_async(msg, Time.now.to_f)
+        .new.perform(msg, profiler)
     end
 
     private

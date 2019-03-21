@@ -4,7 +4,7 @@ module WebSocket
   class Client
     include Singleton
 
-    def trigger_event_update(event)
+    def trigger_event_update(event, profiler = nil)
       trigger(SubscriptionFields::EVENTS_UPDATED, event)
       trigger(SubscriptionFields::EVENT_UPDATED, event, id: event.id)
 

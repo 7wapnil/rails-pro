@@ -1,6 +1,6 @@
 module OddsFeed
   class MessageHandler
-    def initialize(payload, configuration: {})
+    def initialize(payload, profiler = nil, configuration: {})
       @payload = payload
       @configuration = configuration
     end
