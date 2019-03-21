@@ -6,11 +6,18 @@ module Transactions
 
     description 'Get all transactions'
 
-    argument :filter, types.String
+    argument :filter, TransactionKindsEnum
 
     def resolve(_obj, args)
-      TransactionsResolver.call(filter: args['filter'],
-                                current_customer: @current_customer)
+      return customer_transactions unless args['filter']
+
+      customer_transactions.where(kind: args['filter'])
+    end
+
+    private
+
+    def customer_transactions
+      EntryRequest.transactions.where(customer_id: current_customer)
     end
   end
 end
