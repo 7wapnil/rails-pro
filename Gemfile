@@ -68,7 +68,7 @@ gem 'cryptocompare'
 gem 'recaptcha'
 gem 'countries'
 
-# To be moved back to development and test group
+gem 'factory_bot'
 gem 'faker', github: 'stympy/faker', branch: 'master'
 
 group :development, :test do

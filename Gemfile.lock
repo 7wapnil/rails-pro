@@ -538,6 +538,7 @@ DEPENDENCIES
   database_cleaner
   devise
   dotenv-rails
+  factory_bot
   factory_bot_rails
   faker!
   file_validators
