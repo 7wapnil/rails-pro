@@ -20,6 +20,7 @@ module OddsFeed
           template.save!
 
           log_success
+          template
         end
 
         private

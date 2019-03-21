@@ -44,9 +44,11 @@ module Radar
     end
 
     def map_variant_outcomes_row(variant)
+      outcomes = Array.wrap(variant.dig('outcomes', 'outcome'))
+
       [
         variant['id'],
-        variant.slice('outcomes')
+        { 'outcomes' => { 'outcome' => outcomes } }
       ]
     end
 

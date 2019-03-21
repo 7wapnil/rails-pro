@@ -11,7 +11,7 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
            specific_outcome_id: outcome['id'],
            specific_outcome_name: outcome['name'])
   end
-  let(:variant_id) { rand(0..5) }
+  let(:variant_id) { rand(0..5).to_s }
   let(:args)       { [template, variant_id] }
 
   let(:payload) do
@@ -60,13 +60,31 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
       it { expect(subject.odd_name(outcome['id'])).to eq(outcome['name']) }
     end
 
-    context 'payload from Radar API' do
-      let(:cache_settings) do
-        {
-          cache: { expires_in: OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
-        }
+    context 'variant payload from loaded template' do
+      let(:variant_name) { Faker::WorldOfWarcraft.hero }
+
+      before do
+        template.update(
+          payload: {
+            variants: true,
+            variant_id => {
+              outcomes: {
+                outcome: [{
+                  id: outcome['id'],
+                  name: variant_name
+                }]
+              }
+            }
+          }
+        )
       end
 
+      it 'does not call Radar API and returns valid outcome name' do
+        expect(subject.odd_name(outcome['id'])).to eq(variant_name)
+      end
+    end
+
+    context 'payload from Radar API' do
       before do
         template.update(
           payload: {

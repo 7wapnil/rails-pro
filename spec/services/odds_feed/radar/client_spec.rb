@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::Client do
   let(:headers) { { "x-access-token": 'test-api-token' } }
   let!(:api_domain) { 'https://test-api-domain' }
@@ -118,11 +120,10 @@ describe OddsFeed::Radar::Client do
       let(:node_id) { Faker::Number.number(4) }
 
       let(:expected_path) do
-        query_string = [
-          "after=#{recover_after_milliseconds_timestamp}",
-          "node_id=#{node_id}",
-          "request_id=#{request_id}"
-        ].join('&')
+        query_string = "after=#{recover_after_milliseconds_timestamp}&" \
+                       "node_id=#{node_id}&" \
+                       "request_id=#{request_id}"
+
         "/#{product_code}/recovery/initiate_request?#{query_string}"
       end
 
@@ -142,6 +143,22 @@ describe OddsFeed::Radar::Client do
         expect(subject).to have_received(:post)
           .with(expected_path).once
       end
+    end
+  end
+
+  describe '#all_market_variants' do
+    let(:route) { '/descriptions/en/variants.xml' }
+    let(:cache_arguments) { Faker::Types.complex_rb_hash }
+
+    before do
+      allow(OddsFeed::Radar::ResponseReader).to receive(:call)
+      subject.all_market_variants(cache: cache_arguments)
+    end
+
+    it 'reaches Radar API response' do
+      expect(OddsFeed::Radar::ResponseReader)
+        .to have_received(:call)
+        .with(path: route, method: :get, cache: cache_arguments)
     end
   end
 end

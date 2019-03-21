@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<market id="625" name="{!mapnr} map - player with most deaths (incl. overtime)" groups="all" includes_outcomes_of_type="sr:player">
+  <specifiers>
+    <specifier name="mapnr" type="integer"/>
+  </specifiers>
+</market>
