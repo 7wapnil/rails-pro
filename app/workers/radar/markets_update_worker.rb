@@ -7,8 +7,11 @@ module Radar
 
     def perform
       log_job_message(:debug, 'Updating BetRadar market templates')
-      templates.each do |market_data|
-        create_or_update_market!(market_data)
+      markets_data.each do |market_data|
+        OddsFeed::Radar::MarketTemplates::CreateOrUpdate.call(
+          market_data: market_data,
+          variant_outcomes_map: variant_outcomes_map
+        )
       rescue StandardError => error
         log_job_failure(error)
         Airbrake.notify(error)
@@ -16,47 +19,39 @@ module Radar
       end
     end
 
-    def templates
-      client.markets(include_mappings: true)['market_descriptions']['market']
+    private
+
+    def markets_data
+      Array.wrap(
+        client
+          .markets(include_mappings: true)
+          .dig('market_descriptions', 'market')
+      )
     end
 
-    def create_or_update_market!(market_data)
-      template = MarketTemplate
-                 .find_or_initialize_by(external_id: market_data['id'])
-      template.name = market_data['name']
-      template.groups = market_data['groups']
-      template.payload = { outcomes: prepare_outcomes(market_data),
-                           specifiers: market_data['specifiers'],
-                           attributes: market_data['attributes'],
-                           products: prepare_products(market_data) }
-      template.save!
-      log_job_message(:debug, "Market template id '#{template.id}' updated")
+    def variant_outcomes_map
+      @variant_outcomes_map ||=
+        Array
+        .wrap(variants_payload)
+        .map { |variant| map_variant_outcomes_row(variant) }
+        .to_h
+    end
+
+    def variants_payload
+      client
+        .all_market_variants
+        .dig('variant_descriptions', 'variant')
+    end
+
+    def map_variant_outcomes_row(variant)
+      [
+        variant['id'],
+        variant.slice('outcomes')
+      ]
     end
 
     def client
       @client ||= OddsFeed::Radar::Client.new
-    end
-
-    private
-
-    def prepare_outcomes(market_data)
-      return unless market_data['outcomes']
-
-      market_data['outcomes'].tap do |outcomes|
-        outcome_list = outcomes['outcome']
-        outcomes['outcome'] =
-          outcome_list.is_a?(Hash) ? [outcome_list] : outcome_list
-      end
-    end
-
-    def prepare_products(market_data)
-      mappings = market_data['mappings']
-      return unless mappings
-
-      Array
-        .wrap(mappings['mapping'])
-        .map { |mapping| mapping['product_id'] }
-        .uniq
     end
   end
 end

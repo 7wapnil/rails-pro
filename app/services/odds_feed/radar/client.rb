@@ -98,6 +98,13 @@ module OddsFeed
         request(route, cache: cache)
       end
 
+      def all_market_variants(cache: nil)
+        route = "/descriptions/#{@language}/variants.xml"
+
+        log_job_message(:info, "Loading all market templates on: #{route}")
+        request(route, cache: cache)
+      end
+
       def player_profile(player_id, cache: nil)
         route = "/sports/#{@language}/players/#{player_id}/profile.xml"
         log_job_message(:info, "Loading player profile: #{route}")

@@ -72,7 +72,7 @@ module OddsFeed
         end
 
         def variant?
-          stored_template.payload['outcomes'].nil? && variant_id.present?
+          stored_template.variants? && variant_id.present?
         end
 
         def market_id
@@ -85,8 +85,11 @@ module OddsFeed
         end
 
         def variant_odds
-          @variant_odds ||=
-            OddsFeed::Radar::Client
+          stored_template.payload[variant_id] || radar_variant_odds
+        end
+
+        def radar_variant_odds
+          OddsFeed::Radar::Client
             .new
             .market_variants(
               market_id,
