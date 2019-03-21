@@ -82,7 +82,7 @@ describe GraphQL, '#transactions' do
     end
 
     context 'all' do
-      let(:filter) { Transactions::TransactionsResolver::ALL_FILTER_OPTION }
+      let(:filter) {}
 
       it 'returns all entry request' do
         expect(result['data']['transactions']['collection'].length)

@@ -2,50 +2,40 @@
 
 module Transactions
   class TransactionsResolver < ApplicationService
-    ALL_FILTER_OPTION = 'all'
     FILTER_OPTIONS = [EntryRequest::WITHDRAW,
-                      EntryRequest::DEPOSIT,
-                      ALL_FILTER_OPTION].freeze
+                      EntryRequest::DEPOSIT].freeze
 
-    def initialize(args:, current_customer:)
-      @args = args
+    def initialize(filter:, current_customer:)
+      @filter = filter
       @current_customer = current_customer
     end
 
     def call
-      filtered_entry_requests
-        .where(customer_id: @current_customer)
-        .order(created_at: :desc)
+      invalid_filter! unless valid_filter?
+
+      EntryRequest.transactions
+                  .where(customer_id: @current_customer)
+                  .tap { |query| return apply_kind(query) }
     end
 
     private
 
-    attr_reader :args, :current_customer
-
-    def filtered_entry_requests
-      invalid_filter! unless valid_filter?
-
-      EntryRequest.where(kind: kinds)
-    end
-
-    def kinds
-      return [EntryRequest::WITHDRAW, EntryRequest::DEPOSIT] if all_filter?
-
-      args[:filter]
-    end
+    attr_reader :filter, :current_customer
 
     def invalid_filter!
       raise GraphQL::ExecutionError,
             I18n.t('errors.messages.graphql.transactions.kind.invalid',
-                   kind: args[:filter])
-    end
-
-    def all_filter?
-      args[:filter] == ALL_FILTER_OPTION
+                   kind: filter)
     end
 
     def valid_filter?
-      FILTER_OPTIONS.include?(args[:filter])
+      FILTER_OPTIONS.include?(filter) || filter.nil?
+    end
+
+    def apply_kind(query)
+      return query.where(kind: filter) if filter.present?
+
+      query
     end
   end
 end
