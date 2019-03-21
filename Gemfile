@@ -68,14 +68,13 @@ gem 'cryptocompare'
 gem 'recaptcha'
 gem 'countries'
 
-gem 'factory_bot'
-gem 'faker', github: 'stympy/faker', branch: 'master'
+gem 'faker', github: 'stympy/faker', branch: 'master', require: false
+gem 'factory_bot_rails', require: false
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]
   gem 'dotenv-rails'
   gem 'rspec-rails', '~> 3.7'
-  gem 'factory_bot_rails'
   gem 'rubocop', require: false
   gem 'brakeman', require: false
   gem 'haml_lint', require: false

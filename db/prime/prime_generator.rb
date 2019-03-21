@@ -1,3 +1,6 @@
+require 'faker'
+require 'factory_bot_rails'
+
 class PrimeGenerator
   PRIME_MODELS = {
     tournaments: {
