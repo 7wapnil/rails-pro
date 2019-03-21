@@ -124,4 +124,21 @@ describe WebSocket::Client do
               wallet.customer_id)
     end
   end
+
+  describe 'bets updates' do
+    let(:bet) { create(:bet) }
+
+    before do
+      subject.trigger_bet_update(bet)
+    end
+
+    it 'triggers wallet update subscription' do
+      expect(subject)
+        .to have_received(:trigger)
+        .with(SubscriptionFields::BET_UPDATED,
+              bet,
+              { id: bet.id },
+              bet.customer_id)
+    end
+  end
 end

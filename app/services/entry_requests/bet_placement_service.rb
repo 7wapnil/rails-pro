@@ -16,6 +16,8 @@ module EntryRequests
       bet.finish_internal_validation_successfully! do
         bet.send_to_external_validation!
       end
+
+      WebSocket::Client.instance.trigger_bet_update(bet)
     end
 
     private

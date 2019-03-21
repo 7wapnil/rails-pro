@@ -35,6 +35,13 @@ module WebSocket
               wallet.customer_id)
     end
 
+    def trigger_bet_update(bet)
+      trigger(SubscriptionFields::BET_UPDATED,
+              bet,
+              { id: bet.id },
+              bet.customer_id)
+    end
+
     private
 
     def trigger(name, object, args = {}, scope = nil)
