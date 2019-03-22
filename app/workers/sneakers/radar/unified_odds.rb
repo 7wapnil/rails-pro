@@ -58,7 +58,7 @@ module Radar
       profiler = OddsFeed::MessageProfiler.enqueue
 
       match_result(scan_payload(msg))
-        .new.perform(msg, profiler)
+        .perform_async(msg, profiler)
     end
 
     private
