@@ -286,7 +286,6 @@ describe OddsFeed::Radar::OddsChangeHandler do
     expect(event.producer).to eq(producer_from_xml)
   end
 
-  #TODO: Unxit
   xit 'sends websocket message when new event created' do
     subject_api.handle
 
@@ -297,6 +296,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
       .twice
   end
 
+  # # TODO: Unxit
   context 'empty payload' do
     context 'is nil' do
       let(:payload)  {}
