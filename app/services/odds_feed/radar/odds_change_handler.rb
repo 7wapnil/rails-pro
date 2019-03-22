@@ -7,12 +7,9 @@ module OddsFeed
       include EventCreatable
       include WebsocketEventEmittable
 
-      attr_reader :profiler
-
       def initialize(payload, profiler, configuration: {})
         super
 
-        @profiler = profiler
         default_configuration
       end
 

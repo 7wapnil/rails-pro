@@ -3,41 +3,42 @@ module OddsFeed
     include ActiveModel::Model
     include GlobalID::Identification
 
-    def id
-      to_h
-    end
-
-    def self.find(hash)
-      new(hash)
-    end
-
     PROFILED_ATTRIBUTES =
-      :enqueued_at, :event_created_at,
-        :markets_generated_at, :websocket_emitted_at
+      %i[enqueued_at event_created_at
+         markets_generated_at websocket_emitted_at].freeze
+
+    def id
+      JSON.dump(to_h)
+    end
+
+    def self.find(serialized)
+      new(JSON.load(serialized))
+    end
 
     attr_accessor *PROFILED_ATTRIBUTES
 
-    def enqueue
+    def self.enqueue
       new(enqueued_at: measure)
     end
 
     def profile!(attribute)
       raise unless PROFILED_ATTRIBUTES.include? attribute
 
-      send("#{attribute.to_s}=", measure)
+      send("#{attribute}=", measure)
+      self
     end
 
-    # TODO: Combine more optimal way
     def to_h
-      hash = {}
-      PROFILED_ATTRIBUTES.map do |attribute|
-        hash[attribute] = send(attribute)
-      end
-      hash.compact
+      Hash[PROFILED_ATTRIBUTES.map { |attribute| [attribute, send(attribute)] }]
+        .compact
     end
 
     def to_s
       to_h.to_s
+    end
+
+    def log!
+      Rails.logger.info(type: 'profiler', profile: to_h)
     end
 
     private
