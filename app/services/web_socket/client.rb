@@ -5,7 +5,9 @@ module WebSocket
     include Singleton
 
     def trigger_event_update(event, profiler = nil)
-      trigger(SubscriptionFields::EVENTS_UPDATED, event)
+      profiled_event = { data: event, profiler: profiler }
+
+      trigger(SubscriptionFields::EVENTS_UPDATED, profiled_event)
       trigger(SubscriptionFields::EVENT_UPDATED, event, id: event.id)
 
       return unless event_available?(event)
