@@ -9,7 +9,7 @@ describe GraphQL, '#withdraw' do
       payment_details: payload
     }
   end
-  let(:amount) { Faker::Number.within(10.0..100.0).round(2) }
+  let(:amount) { Faker::Number.decimal(2, 2).to_d }
   let(:payment_method) { EntryRequest::CREDIT_CARD }
   let(:payload) do
     SafeCharge::Withdraw::WITHDRAW_MODE_FIELDS[payment_method]&.map do |row|
