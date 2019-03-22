@@ -9,6 +9,10 @@ FactoryBot.define do
 
     wallet
 
+    trait :with_random_wallet do
+      association :wallet, strategy: :random_or_create
+    end
+
     before(:create) do |entry|
       create(:entry_currency_rule,
              currency: entry.currency,

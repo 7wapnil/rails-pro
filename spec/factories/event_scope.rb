@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :event_scope do
-    name                   { 'FPSThailand CS:GO Pro League Season#4' }
+    name                   { Faker::Esport.league }
     kind                   { EventScope::TOURNAMENT }
 
     sequence(:external_id) { |n| "sr:tournament:#{n}" }
@@ -19,7 +19,7 @@ FactoryBot.define do
       kind { EventScope::TOURNAMENT }
     end
 
-    factory :event_scope_category do
+    trait :category do
       kind { EventScope::CATEGORY }
       name { Faker::Address.country }
     end
