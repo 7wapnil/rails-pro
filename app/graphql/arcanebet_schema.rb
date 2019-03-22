@@ -3,7 +3,7 @@ require 'graphql/batch'
 ArcanebetSchema = GraphQL::Schema.define do
   # TODO: This patch does not work
   # use GraphQL::ArcanebetSubscriptions
-  use GraphQL::Subscriptions::ActionCableSubscriptions
+  use Graphql::ArcanebetSubscriptions
   use GraphQL::Batch
 
   mutation(MutationType)

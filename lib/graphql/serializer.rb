@@ -8,8 +8,17 @@ module Graphql
 
       def load(str)
         parsed_obj = JSON.parse(str)
-        # TODO: Parse incoming value before deliver to detect profiler passed
-        GraphQL::Subscriptions::Serialize.send(:load_value, parsed_obj)
+        loaded = GraphQL::Subscriptions::Serialize.send(:load_value, parsed_obj)
+        return load_profiled_data(loaded) if loaded&.has_key? :profiler
+
+        loaded
+      end
+
+      private
+
+      def load_profiled_data(loaded)
+        loaded[:profiler].log!
+        loaded[:data]
       end
     end
   end
