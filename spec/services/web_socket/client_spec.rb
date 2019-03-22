@@ -10,15 +10,17 @@ describe WebSocket::Client do
       event.event_scopes << create(:event_scope, kind: EventScope::CATEGORY)
       event
     end
+    let(:profiler_double) { instance_double('OddsFeed::MessageProfiler') }
+    let(:profiled_event) { { data: event, profiler: profiler_double } }
 
     before do
-      subject.trigger_event_update(event)
+      subject.trigger_event_update(event, profiler_double)
     end
 
     it 'triggers all events subscription' do
       expect(subject)
         .to have_received(:trigger)
-        .with(SubscriptionFields::EVENTS_UPDATED, event)
+        .with(SubscriptionFields::EVENTS_UPDATED, profiled_event)
     end
 
     it 'triggers single event subscription' do

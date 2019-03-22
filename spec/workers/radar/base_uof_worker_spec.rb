@@ -12,11 +12,14 @@ describe Radar::BaseUofWorker do
       instance_double('SomeFeedHandler', new: handler_instance)
     end
 
+    let(:profiler) { OddsFeed::MessageProfiler.enqueue }
+
     it { expect(described_class).to be < ApplicationWorker }
 
     context 'without worker_class defined' do
       it 'raises NotImplementedError' do
-        expect { worker.perform(xml, 0) }.to raise_error(NotImplementedError)
+        expect { worker.perform(xml, profiler) }
+          .to raise_error(NotImplementedError)
       end
     end
 
@@ -24,7 +27,7 @@ describe Radar::BaseUofWorker do
       before do
         allow(subject_worker).to receive(:worker_class).and_return(handler)
         allow(XmlParser).to receive(:parse).and_return(parsed_xml)
-        subject_worker.perform(xml, 0)
+        subject_worker.perform(xml, profiler)
       end
 
       it 'parses payload with correct parser' do
