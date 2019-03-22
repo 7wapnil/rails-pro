@@ -12,13 +12,13 @@ module OddsFeed
     end
 
     def self.find(serialized)
-      new(JSON.load(serialized))
+      new(JSON.parse(serialized))
     end
 
-    attr_accessor *PROFILED_ATTRIBUTES
+    attr_accessor(*PROFILED_ATTRIBUTES)
 
     def self.enqueue
-      new(enqueued_at: measure)
+      new.profile!(:enqueued_at)
     end
 
     def profile!(attribute)
