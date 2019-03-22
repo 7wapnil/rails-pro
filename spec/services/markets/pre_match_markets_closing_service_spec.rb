@@ -7,19 +7,19 @@ describe Markets::PreMatchMarketsClosingService do
 
   context '.call' do
     let!(:upcoming_pre_match_event) do
-      FactoryBot.create(:event_with_market, start_at: 1.minute.from_now)
+      FactoryBot.create(:event, :with_market, start_at: 1.minute.from_now)
     end
     let!(:upcoming_live_event) do
-      FactoryBot.create(:event_with_market,
+      FactoryBot.create(:event, :with_market,
                         traded_live: true,
                         start_at: 1.minute.from_now)
     end
     let!(:future_pre_match_event) do
-      FactoryBot.create(:event_with_market,
+      FactoryBot.create(:event, :with_market,
                         start_at: (delay * 2).minutes.from_now)
     end
     let!(:future_live_event) do
-      FactoryBot.create(:event_with_market,
+      FactoryBot.create(:event, :with_market,
                         traded_live: true,
                         start_at: (delay * 2).minutes.from_now)
     end
@@ -46,11 +46,11 @@ describe Markets::PreMatchMarketsClosingService do
     end
 
     it 'doesn\'t close upcoming and future live markets' do
-      expect(future_live_event_market.status).to eq(Market::INACTIVE)
+      expect(future_live_event_market.status).to eq(Market::ACTIVE)
     end
 
     it 'doesn\'t close future pre-match markets' do
-      expect(future_pre_match_event_market.status).to eq(Market::INACTIVE)
+      expect(future_pre_match_event_market.status).to eq(Market::ACTIVE)
     end
   end
 end

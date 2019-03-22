@@ -15,7 +15,7 @@ describe EntryRequests::Factories::BetPlacement do
   let(:wallet) { create(:wallet, :brick, currency: currency) }
   let(:currency) { create(:currency) }
   let(:customer_bonus) { create(:customer_bonus, :applied) }
-  let(:market) { create(:event_with_market, :upcoming).markets.sample }
+  let(:market) { create(:event, :with_market, :upcoming).markets.sample }
 
   let(:bonus_balance) { create(:balance, :bonus, wallet: wallet) }
   let(:real_money_balance) { create(:balance, wallet: wallet) }
