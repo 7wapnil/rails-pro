@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :event do
     visible                { true }
     active                 { true }
-    name                   { 'MiTH vs. Beyond eSports' }
+    name                   { "#{Faker::Esport.team} vs. #{Faker::Esport.team}" }
     description            { 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' } # rubocop:disable Metrics/LineLength
     start_at               { 2.hours.ago }
     end_at                 { 1.hours.ago }
@@ -16,6 +16,19 @@ FactoryBot.define do
 
     association :title, strategy: :build
     association :producer, factory: :prematch_producer
+
+    trait :with_event_scopes do
+      after :build do |model|
+        model.title = FactoryBot.random_or_create :title
+        model.event_scopes << FactoryBot.random_or_create(:event_scope)
+        model.add_to_payload(
+          state:
+            OddsFeed::Radar::EventStatusService.new.call(
+              event_id: Faker::Number.number(3), data: nil
+            )
+        )
+      end
+    end
 
     trait :upcoming do
       start_at { 1.hour.from_now }
@@ -45,7 +58,7 @@ FactoryBot.define do
       end
     end
 
-    factory :event_with_odds do
+    trait :with_odds do
       after(:create) do |event|
         create_list(:odd, 2, :active, market: create(:market,
                                                      event: event,

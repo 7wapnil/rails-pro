@@ -46,7 +46,7 @@ describe GraphQL, '#events' do
   end
 
   context 'with market' do
-    let(:control_event) { create(:event_with_odds, :upcoming, title: title) }
+    let(:control_event) { create(:event, :with_odds, :upcoming, title: title) }
     let(:control_market) { control_event.dashboard_markets.first }
     let(:control_odds) { control_market.odds }
 
