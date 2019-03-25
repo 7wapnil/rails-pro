@@ -14,8 +14,7 @@ module Graphql
     def deliver(subscription_id, result)
       # TODO: Decide on what to send to front-end
       payload = { result: result.to_h,
-                  more: true,
-                  trace_token: 'TO BE CONFIRMED' }
+                  more: true }
       ActionCable.server.broadcast(SUBSCRIPTION_PREFIX + subscription_id,
                                    payload)
     end
