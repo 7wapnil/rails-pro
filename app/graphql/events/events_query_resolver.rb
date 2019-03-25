@@ -121,11 +121,8 @@ module Events
     end
 
     def filter_by_market_status
-      displayed_market_statuses = [
-        Market::ACTIVE,
-        Market::SUSPENDED
-      ]
-
+      displayed_market_statuses = Market::DISPLAYED_STATUSES
+      
       query
         .joins(:markets)
         .where(markets: { status: displayed_market_statuses })

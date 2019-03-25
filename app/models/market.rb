@@ -22,6 +22,8 @@ class Market < ApplicationRecord
     handed_over: HANDED_OVER = 'handed_over'
   }.freeze
 
+  DISPLAYED_STATUSES = [STATUSES::ACTIVE, STATUSES::SUSPENDED]
+
   DEFAULT_STATUS = ACTIVE
 
   enum status: STATUSES
