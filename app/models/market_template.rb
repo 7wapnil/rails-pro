@@ -29,4 +29,8 @@ class MarketTemplate < ApplicationRecord
   }.freeze
 
   validates :external_id, :name, presence: true
+
+  def variants?
+    payload['variants'].present?
+  end
 end

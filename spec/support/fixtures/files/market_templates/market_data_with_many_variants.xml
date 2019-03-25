@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<market id="25" name="Goal range" groups="all|score|regular_play">
+  <specifiers>
+    <specifier name="variant" type="variable_text"/>
+  </specifiers>
+  <mappings>
+    <mapping product_id="1" product_ids="1|4" sport_id="sr:sport:6" market_id="8:1568" valid_for="variant=sr:point_range:62+">
+      <mapping_outcome outcome_id="sr:point_range:62+:1125" product_outcome_id="7304" product_outcome_name="&lt;47"/>
+      <mapping_outcome outcome_id="sr:point_range:62+:1126" product_outcome_id="7306" product_outcome_name="47-49"/>
+      <mapping_outcome outcome_id="sr:point_range:62+:1127" product_outcome_id="7308" product_outcome_name="50-52"/>
+      <mapping_outcome outcome_id="sr:point_range:62+:1128" product_outcome_id="7310" product_outcome_name="53-55"/>
+      <mapping_outcome outcome_id="sr:point_range:62+:1129" product_outcome_id="7312" product_outcome_name="56-58"/>
+      <mapping_outcome outcome_id="sr:point_range:62+:1130" product_outcome_id="7314" product_outcome_name="59-61"/>
+      <mapping_outcome outcome_id="sr:point_range:62+:1131" product_outcome_id="7316" product_outcome_name="&gt;61"/>
+    </mapping>
+    <mapping product_id="3" product_ids="3" sport_id="sr:sport:1" market_id="202" valid_for="variant=sr:point_range:6+">
+      <mapping_outcome outcome_id="sr:point_range:6+:1121" product_outcome_id="81" product_outcome_name="0-1 goals"/>
+      <mapping_outcome outcome_id="sr:point_range:6+:1122" product_outcome_id="82" product_outcome_name="2-3 goals"/>
+      <mapping_outcome outcome_id="sr:point_range:6+:1123" product_outcome_id="92" product_outcome_name="4-5 goals"/>
+      <mapping_outcome outcome_id="sr:point_range:6+:1124" product_outcome_id="79" product_outcome_name="6+"/>
+    </mapping>
+    <mapping product_id="3" product_ids="3" sport_id="sr:sport:1" market_id="729" valid_for="variant=sr:goal_range:7+">
+      <mapping_outcome outcome_id="sr:goal_range:7+:1342" product_outcome_id="81" product_outcome_name="0-1 goals"/>
+      <mapping_outcome outcome_id="sr:goal_range:7+:1343" product_outcome_id="82" product_outcome_name="2-3 goals"/>
+      <mapping_outcome outcome_id="sr:goal_range:7+:1344" product_outcome_id="83" product_outcome_name="4-6 goals"/>
+      <mapping_outcome outcome_id="sr:goal_range:7+:1345" product_outcome_id="84" product_outcome_name="7+ goals"/>
+    </mapping>
+    <mapping product_id="3" product_ids="3" sport_id="sr:sport:106" market_id="202" valid_for="variant=sr:point_range:6+">
+      <mapping_outcome outcome_id="sr:point_range:6+:1121" product_outcome_id="81" product_outcome_name="0-1 goals"/>
+      <mapping_outcome outcome_id="sr:point_range:6+:1122" product_outcome_id="82" product_outcome_name="2-3 goals"/>
+      <mapping_outcome outcome_id="sr:point_range:6+:1123" product_outcome_id="92" product_outcome_name="4-5 goals"/>
+      <mapping_outcome outcome_id="sr:point_range:6+:1124" product_outcome_id="79" product_outcome_name="6+"/>
+    </mapping>
+  </mappings>
+</market>

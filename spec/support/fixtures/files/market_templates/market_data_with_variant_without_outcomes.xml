@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<market id="672" name="{!inningnr} innings - {$competitor1} exact runs" groups="all">
+  <specifiers>
+    <specifier name="inningnr" type="integer"/>
+    <specifier name="variant" type="variable_text"/>
+  </specifiers>
+  <mappings>
+    <mapping product_id="5" product_ids="5" sport_id="sr:sport:21" market_id="35"/>
+  </mappings>
+</market>

@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<market id="282" name="Innings 1 to 5th top - {$competitor1} total" groups="all">
+  <outcomes>
+    <outcome id="13" name="under {total}"/>
+    <outcome id="12" name="over {total}"/>
+  </outcomes>
+  <specifiers>
+    <specifier name="total" type="decimal"/>
+  </specifiers>
+</market>

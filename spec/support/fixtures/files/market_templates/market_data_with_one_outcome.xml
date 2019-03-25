@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<market id="40" name="Anytime goalscorer" groups="all">
+  <outcomes>
+    <outcome id="1716" name="no goal"/>
+  </outcomes>
+</market>
