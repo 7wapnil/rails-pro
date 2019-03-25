@@ -18,18 +18,17 @@ module OddsFeed
 
     class << self
       def deserialize(serialized)
-
         new(JSON.parse(serialized))
       end
 
-      alias_method :find, :deserialize
+      alias find deserialize
     end
 
     def dump
       JSON.dump(to_h)
     end
 
-    alias_method :id, :dump
+    alias id dump
 
     def to_h
       Hash[PROFILER_ATTRIBUTES.map { |attribute| [attribute, send(attribute)] }]
