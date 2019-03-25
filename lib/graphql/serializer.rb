@@ -9,7 +9,7 @@ module Graphql
       def load(str)
         parsed_obj = JSON.parse(str)
         loaded = GraphQL::Subscriptions::Serialize.send(:load_value, parsed_obj)
-        return load_profiled_data(loaded) if loaded&.has_key? :profiler
+        return load_profiled_data(loaded) if loaded&.has_key? :data
 
         loaded
       end
@@ -17,7 +17,7 @@ module Graphql
       private
 
       def load_profiled_data(loaded)
-        loaded[:profiler].log!
+        loaded[:profiler]&.log_state(:emitted)
         loaded[:data]
       end
     end

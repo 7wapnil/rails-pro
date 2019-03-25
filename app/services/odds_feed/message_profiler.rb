@@ -3,33 +3,36 @@ module OddsFeed
     include ActiveModel::Model
     include GlobalID::Identification
 
-    PROFILED_ATTRIBUTES =
-      %i[enqueued_at event_created_at
-         markets_generated_at websocket_emitted_at].freeze
+    PROFILER_ATTRIBUTES =
+      %i[uuid event_external_id].freeze
 
-    def id
+
+    attr_accessor(*PROFILER_ATTRIBUTES)
+
+    def initialize(opts = {})
+      Rails.logger.info 'NEW PROFILER'
+      @uuid = opts[:uuid] || SecureRandom.uuid
+
+      super
+    end
+
+    class << self
+      def deserialize(serialized)
+
+        new(JSON.parse(serialized))
+      end
+
+      alias_method :find, :deserialize
+    end
+
+    def dump
       JSON.dump(to_h)
     end
 
-    def self.find(serialized)
-      new(JSON.parse(serialized))
-    end
-
-    attr_accessor(*PROFILED_ATTRIBUTES)
-
-    def self.enqueue
-      new.profile!(:enqueued_at)
-    end
-
-    def profile!(attribute)
-      raise unless PROFILED_ATTRIBUTES.include? attribute
-
-      send("#{attribute}=", measure)
-      self
-    end
+    alias_method :id, :dump
 
     def to_h
-      Hash[PROFILED_ATTRIBUTES.map { |attribute| [attribute, send(attribute)] }]
+      Hash[PROFILER_ATTRIBUTES.map { |attribute| [attribute, send(attribute)] }]
         .compact
     end
 
@@ -37,8 +40,16 @@ module OddsFeed
       to_h.to_s
     end
 
-    def log!
-      Rails.logger.info(type: 'profiler', profile: to_h)
+    def log_state(state_name)
+      # TODO: Remove timestamp if correlates with Kibana Timestamp
+      logger_message = {
+        type: 'profiler',
+        uuid: uuid,
+        event_external_id: event_external_id,
+        state_name: state_name,
+        timestamp: measure
+      }
+      self
     end
 
     private

@@ -7,7 +7,7 @@ module OddsFeed
       include EventCreatable
       include WebsocketEventEmittable
 
-      def initialize(payload, profiler, configuration: {})
+      def initialize(payload, profiler = nil, configuration: {})
         super
 
         default_configuration
@@ -19,11 +19,10 @@ module OddsFeed
 
         create_or_update_event!
         touch_event!
-        profiler.profile!(:event_created_at)
+        profiler&.event_external_id = event.external_id
         generate_markets
-        profiler.profile!(:markets_generated_at)
         update_event_activity
-        emit_websocket(profiler)
+        emit_websocket(profiler: profiler)
         event
       end
 

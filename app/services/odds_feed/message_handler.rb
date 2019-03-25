@@ -1,11 +1,16 @@
 module OddsFeed
   class MessageHandler
-    attr_reader :profiler
-
-    def initialize(payload, signed_profiler = nil, configuration: {})
+    def initialize(payload, profiler = nil, configuration: {})
       @payload = payload
       @configuration = configuration
-      @profiler = GlobalID::Locator.locate_signed signed_profiler
+      @profiler = profiler
+    end
+
+    def profiler
+      return @profiler if @profiler.present?
+
+      Rails.logger.warn('Profiler not present')
+      nil
     end
 
     def handle

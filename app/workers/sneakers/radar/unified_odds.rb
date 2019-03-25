@@ -55,10 +55,17 @@ module Radar
     }.freeze
 
     def work(msg)
-      profiler = OddsFeed::MessageProfiler.enqueue
+      # TODO: Export to env
+      ENV['RADAR_MESSAGES_PROFILER_ENABLED'] = 'true'
+
+      profiler = nil
+      if ENV['RADAR_MESSAGES_PROFILER_ENABLED'] == 'true'
+        profiler = OddsFeed::MessageProfiler.new
+        profiler.log_state(:uof_message_registered_at)
+      end
 
       match_result(scan_payload(msg))
-        .perform_async(msg, profiler.to_signed_global_id)
+        .perform_async(msg, profiler.dump)
     end
 
     private

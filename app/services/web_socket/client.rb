@@ -4,7 +4,7 @@ module WebSocket
   class Client
     include Singleton
 
-    def trigger_event_update(event, profiler = nil)
+    def trigger_event_update(event, profiler: nil)
       profiled_event = { data: event, profiler: profiler }
 
       trigger(SubscriptionFields::EVENTS_UPDATED, profiled_event)
@@ -12,7 +12,7 @@ module WebSocket
 
       return unless event_available?(event)
 
-      trigger_kind_event(event)
+      trigger_kind_event(profiled_event)
       trigger_sport_event(event)
       trigger_category_event(event)
       trigger_tournament_event(event)
@@ -54,12 +54,13 @@ module WebSocket
       event.active? && event.visible?
     end
 
-    def trigger_kind_event(event)
+    def trigger_kind_event(profiled_event)
+      event = profiled_event[:data]
       return warn("Event ID #{event.id} has no title") unless event.title
 
       trigger(
         SubscriptionFields::KIND_EVENT_UPDATED,
-        event,
+        profiled_event,
         kind: event.title.kind
       )
     end
