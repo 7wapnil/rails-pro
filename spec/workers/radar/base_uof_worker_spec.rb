@@ -12,13 +12,13 @@ describe Radar::BaseUofWorker do
       instance_double('SomeFeedHandler', new: handler_instance)
     end
 
-    let(:profiler) { OddsFeed::MessageProfiler.enqueue }
+    let(:profiler) { OddsFeed::MessageProfiler.new }
 
     it { expect(described_class).to be < ApplicationWorker }
 
     context 'without worker_class defined' do
       it 'raises NotImplementedError' do
-        expect { worker.perform(xml, profiler) }
+        expect { worker.perform(xml, profiler.dump) }
           .to raise_error(NotImplementedError)
       end
     end
@@ -27,15 +27,19 @@ describe Radar::BaseUofWorker do
       before do
         allow(subject_worker).to receive(:worker_class).and_return(handler)
         allow(XmlParser).to receive(:parse).and_return(parsed_xml)
-        subject_worker.perform(xml, profiler)
+        subject_worker.perform(xml, profiler.dump)
       end
 
       it 'parses payload with correct parser' do
-        expect(XmlParser).to have_received(:parse).with(xml).once
+        expect(XmlParser)
+          .to have_received(:parse)
+          .with(xml).once
       end
 
       it 'initializes worker_class with parsed data' do
-        expect(handler).to have_received(:new).with(parsed_xml).once
+        expect(handler)
+          .to have_received(:new)
+          .with(parsed_xml, anything).once
       end
 
       it 'calls handle on defined worker_class' do
@@ -56,13 +60,13 @@ describe Radar::BaseUofWorker do
           subject_worker
         ).to receive(:worker_class).and_return(broken_handler)
         allow(Rails.logger).to receive(:error)
-        subject_worker.perform(xml, 0)
+        subject_worker.perform(xml, profiler.dump)
       rescue StandardError
         StandardError
       end
 
       it 'raises an error back so that the worker fails' do
-        expect { subject_worker.perform(xml, 0) }
+        expect { subject_worker.perform(xml, profiler.dump) }
           .to raise_error(StandardError, error_message)
       end
     end

@@ -3,7 +3,7 @@
 describe OddsFeed::Radar::OddsChangeHandler do
   subject { described_class.new(payload) }
 
-  let(:profiler) { OddsFeed::MessageProfiler.enqueue }
+  let(:profiler) { OddsFeed::MessageProfiler.new }
 
   let(:subject_api) { described_class.new(payload, profiler) }
 
@@ -170,7 +170,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
           event_market.odds.sample.update(status: Odd::ACTIVE)
         end
     end
-    let(:profiler) { OddsFeed::MessageProfiler.enqueue }
+    let(:profiler) { OddsFeed::MessageProfiler.new }
 
     it 'defines event as active' do
       event_to_be_marked_as_active
