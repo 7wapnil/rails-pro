@@ -17,7 +17,7 @@ module Graphql
       private
 
       def load_profiled_data(loaded)
-        loaded[:profiler]&.log_state(:emitted)
+        loaded[:profiler]&.log_state(:action_cable_prepares_delivery_at)
         loaded[:data]
       end
     end

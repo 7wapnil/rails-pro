@@ -20,6 +20,10 @@ module OddsFeed
         create_or_update_event!
         touch_event!
         profiler&.event_external_id = event.external_id
+        profiler&.log_state(
+          :uof_message_origin_time,
+          Time.zone.at(input_data['timestamp'].to_i)
+        )
         generate_markets
         update_event_activity
         emit_websocket(profiler: profiler)
