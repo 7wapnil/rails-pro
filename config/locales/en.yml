@@ -367,8 +367,18 @@ en:
     withdraw: Withdraw
     bonus: Bonus money
     real_money: Real money
-    credit_card: Credit Card
-    safecharge_unknown: Safecharge unknown
+    payment_methods:
+      credit_card: Credit Card
+      skrill: Skrill
+      neteller: Neteller
+      paysafecard: PaySafeCard
+      sofort: Sofort
+      ideal: iDeal
+      bitcoin: Bitcoin
+      webmoney: WebMoney
+      yandex: Yandex
+      qiwi: Qiwi
+      safecharge_unknown: Safecharge unknown
 
   lock_reasons:
     closed: Closed

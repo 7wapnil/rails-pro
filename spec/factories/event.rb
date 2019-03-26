@@ -54,13 +54,15 @@ FactoryBot.define do
 
     trait :with_market do
       after(:create) do |event|
-        create(:market, event: event)
+        create(:market, event: event, status: Market::ACTIVE)
       end
     end
 
     trait :with_odds do
       after(:create) do |event|
-        create_list(:odd, 2, :active, market: create(:market, event: event))
+        create_list(:odd, 2, :active, market: create(:market,
+                                                     event: event,
+                                                     status: Market::ACTIVE))
       end
     end
   end

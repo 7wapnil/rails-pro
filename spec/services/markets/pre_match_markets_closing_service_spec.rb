@@ -49,11 +49,11 @@ describe Markets::PreMatchMarketsClosingService do
     end
 
     it 'doesn\'t close upcoming and future live markets' do
-      expect(future_live_event_market.status).to eq(Market::INACTIVE)
+      expect(future_live_event_market.status).to eq(Market::ACTIVE)
     end
 
     it 'doesn\'t close future pre-match markets' do
-      expect(future_pre_match_event_market.status).to eq(Market::INACTIVE)
+      expect(future_pre_match_event_market.status).to eq(Market::ACTIVE)
     end
   end
 end

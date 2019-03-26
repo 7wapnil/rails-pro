@@ -63,16 +63,16 @@ describe Customer, '#account_management' do
       end
     end
 
-    it 'displays select option for cashier and simulated modes only' do
+    it 'displays all available payment methods without system' do
       within '.card.customer-entry-request-form #entry_request_mode' do
         options = all('option').map(&:text).map(&:downcase)
         supported_options = [
           EntryRequest::CASHIER,
-          EntryRequest::SIMULATED,
-          I18n.t("kinds.#{EntryRequest::CREDIT_CARD}"),
-          I18n.t("kinds.#{EntryRequest::SAFECHARGE_UNKNOWN}")
+          EntryRequest::SIMULATED
         ].map(&:downcase)
 
+        supported_options +=
+          I18n.t('kinds.payment_methods').values.map(&:downcase)
         expect(options).to match_array(supported_options)
       end
     end

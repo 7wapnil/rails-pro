@@ -3,7 +3,16 @@
 module EntryRequests
   class PaymentMethodService < ApplicationService
     PAYMENT_METHOD_MAP = {
-      ::SafeCharge::PaymentMethods::CC_CARD => EntryRequest::CREDIT_CARD
+      ::SafeCharge::PaymentMethods::CC_CARD => EntryRequest::CREDIT_CARD,
+      ::SafeCharge::PaymentMethods::APMGW_MONEYBOOKERS => EntryRequest::SKRILL,
+      ::SafeCharge::PaymentMethods::APMGW_NETELLER => EntryRequest::NETELLER,
+      ::SafeCharge::PaymentMethods::APMGW_PAYSAFECARD =>
+        EntryRequest::PAYSAFECARD,
+      ::SafeCharge::PaymentMethods::APMGW_SOFORT => EntryRequest::SOFORT,
+      ::SafeCharge::PaymentMethods::APMGW_IDEAL => EntryRequest::IDEAL,
+      ::SafeCharge::PaymentMethods::APMGW_WEBMONEY => EntryRequest::WEBMONEY,
+      ::SafeCharge::PaymentMethods::APMGW_YANDEXMONEY => EntryRequest::YANDEX,
+      ::SafeCharge::PaymentMethods::APMGW_QIWI => EntryRequest::QIWI
     }.freeze
 
     def initialize(payment_method_code:, entry_request:)

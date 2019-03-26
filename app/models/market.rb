@@ -22,6 +22,8 @@ class Market < ApplicationRecord
     handed_over: HANDED_OVER = 'handed_over'
   }.freeze
 
+  DISPLAYED_STATUSES = [ACTIVE, SUSPENDED].freeze
+
   DEFAULT_STATUS = ACTIVE
 
   enum status: STATUSES
@@ -33,8 +35,6 @@ class Market < ApplicationRecord
   has_many :label_joins, as: :labelable
   has_many :labels, through: :label_joins
 
-  scope :for_displaying,
-        -> { joins(:odds).visible.group('markets.id').order(priority: :asc) }
   scope :with_category, -> { where.not(category: nil) }
 
   validates :name, :priority, :status, presence: true
@@ -50,19 +50,20 @@ class Market < ApplicationRecord
     %i[cancelled settled]
   ]
 
-  def self.for_displaying
-    joins(:active_odds)
-      .visible
-      .group('markets.id')
-      .order(priority: :asc)
-  end
-
   def specifier
     external_id
       .match(%r{\/.+$})
       &.to_s
       &.[](1..-1)
       &.gsub '|', ', '
+  end
+
+  def self.for_displaying
+    visible
+      .joins(:odds)
+      .group('markets.id')
+      .where('markets.status' => DISPLAYED_STATUSES)
+      .order(priority: :asc)
   end
 
   private

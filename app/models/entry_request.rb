@@ -31,7 +31,16 @@ class EntryRequest < ApplicationRecord
     system: SYSTEM = 'system',
     safecharge_unknown: SAFECHARGE_UNKNOWN = 'safecharge_unknown',
     simulated: SIMULATED = 'simulated',
-    credit_card: CREDIT_CARD = 'credit_card'
+    credit_card: CREDIT_CARD = 'credit_card',
+    skrill: SKRILL = 'skrill',
+    neteller: NETELLER = 'neteller',
+    paysafecard: PAYSAFECARD = 'paysafecard',
+    sofort: SOFORT = 'sofort',
+    ideal: IDEAL = 'ideal',
+    bitcoin: BITCOIN = 'bitcoin',
+    webmoney: WEBMONEY = 'webmoney',
+    yandex: YANDEX = 'yandex',
+    qiwi: QIWI = 'qiwi'
   }
 
   validates :amount,
