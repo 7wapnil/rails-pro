@@ -20,15 +20,9 @@ module OddsFeed
       def update_markets
         target_status = MarketStatus.stop_status(market_status_code)
 
-        markets = markets_to_be_changed_query
-                  .find_each(batch_size: @batch_size).to_a
         markets_to_be_changed_query.update_all(status: target_status)
-        markets.each do |market|
-          market.status = target_status
-          emit_market_update(market)
-        rescue ActiveRecord::RecordInvalid => e
-          log_job_failure(e)
-        end
+
+        emit_event_bet_stop(event, target_status)
       end
 
       def input_data
@@ -48,8 +42,8 @@ module OddsFeed
           )
       end
 
-      def emit_market_update(market)
-        WebSocket::Client.instance.trigger_market_update(market)
+      def emit_event_bet_stop(event)
+        WebSocket::Client.instance.trigger_event_bet_stop(event)
       end
     end
   end

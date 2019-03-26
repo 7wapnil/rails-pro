@@ -42,6 +42,12 @@ module WebSocket
               bet.customer_id)
     end
 
+    def trigger_event_bet_stop(event)
+      trigger(SubscriptionFields::EVENT_BET_STOP,
+              event,
+              id: event.id)
+    end
+
     private
 
     def trigger(name, object, args = {}, scope = nil)
