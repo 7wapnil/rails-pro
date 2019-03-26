@@ -166,5 +166,40 @@ describe GraphQL, '#markets' do
         expect(result['data']['markets'][0]['id']).to eq(market.id.to_s)
       end
     end
+
+    context 'status filtering' do
+      let(:priority) { 0 }
+      let(:query) do
+        %({ markets (eventId: #{event.id})
+          { id }
+        })
+      end
+
+      let!(:markets) do
+        markets = {}
+        Market::STATUSES.values.each do |status|
+          markets[status] = FactoryBot.create(:market,
+                                              :with_odds,
+                                              event: event,
+                                              status: status)
+        end
+        markets
+      end
+
+      Market::DISPLAYED_STATUSES.each do |displayed_status|
+        it "#{displayed_status} market is shown" do
+          expect(result['data']['markets'].map { |h| h['id'].to_i })
+            .to include(markets[displayed_status].id)
+        end
+      end
+
+      (Market::STATUSES.values - Market::DISPLAYED_STATUSES)
+        .each do |hidden_status|
+        it "#{hidden_status} market is now shown" do
+          expect(result['data']['markets'].map { |h| h['id'].to_i })
+            .not_to include(markets[hidden_status].id)
+        end
+      end
+    end
   end
 end
