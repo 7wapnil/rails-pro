@@ -3,11 +3,16 @@
 module OddsFeed
   module Radar
     module ScheduledEvents
+      # rubocop:disable Metrics/ClassLength
       class DateEventsLoader < ApplicationService
         include JobLogger
 
+        RECONNECTION_TIMEOUT = 15
+        MAX_RETRIES = 5
+
         def initialize(timestamp:)
           @date = Time.at(timestamp).to_date
+          @retries = 0
         end
 
         def call
@@ -23,7 +28,7 @@ module OddsFeed
 
         private
 
-        attr_reader :date, :scoped_events
+        attr_reader :date, :scoped_events, :retries
 
         def log_start
           log_job_message(
@@ -77,6 +82,14 @@ module OddsFeed
         def cache_data
           cache_collection(collected_cache_data[:competitors])
           cache_collection(collected_cache_data[:players])
+        rescue OpenSSL::SSL::SSLError => error
+          increment_retries!
+          log_connection_error
+
+          raise error if retries > MAX_RETRIES
+
+          sleep RECONNECTION_TIMEOUT
+          retry
         end
 
         def collected_cache_data
@@ -98,6 +111,18 @@ module OddsFeed
           )
         end
 
+        def log_connection_error
+          log_job_message(
+            :info,
+            "Event based data for #{humanized_date} has met connection " \
+            "error. Retrying(#{retries})..."
+          )
+        end
+
+        def increment_retries!
+          @retries += 1
+        end
+
         def log_success
           log_job_message(
             :info,
@@ -112,6 +137,7 @@ module OddsFeed
           )
         end
       end
+      # rubocop:enable Metrics/ClassLength
     end
   end
 end

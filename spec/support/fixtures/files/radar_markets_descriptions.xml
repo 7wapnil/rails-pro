@@ -1,5 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <market_descriptions response_code="OK">
+  <market id="25" name="Goal range" groups="all|score|regular_play">
+    <specifiers>
+      <specifier name="variant" type="variable_text"/>
+    </specifiers>
+    <mappings>
+      <mapping product_id="1" product_ids="1|4" sport_id="sr:sport:6" market_id="8:1568" valid_for="variant=sr:point_range:62+">
+        <mapping_outcome outcome_id="sr:point_range:62+:1125" product_outcome_id="7304" product_outcome_name="&lt;47"/>
+        <mapping_outcome outcome_id="sr:point_range:62+:1126" product_outcome_id="7306" product_outcome_name="47-49"/>
+        <mapping_outcome outcome_id="sr:point_range:62+:1127" product_outcome_id="7308" product_outcome_name="50-52"/>
+        <mapping_outcome outcome_id="sr:point_range:62+:1128" product_outcome_id="7310" product_outcome_name="53-55"/>
+        <mapping_outcome outcome_id="sr:point_range:62+:1129" product_outcome_id="7312" product_outcome_name="56-58"/>
+        <mapping_outcome outcome_id="sr:point_range:62+:1130" product_outcome_id="7314" product_outcome_name="59-61"/>
+        <mapping_outcome outcome_id="sr:point_range:62+:1131" product_outcome_id="7316" product_outcome_name="&gt;61"/>
+      </mapping>
+      <mapping product_id="3" product_ids="3" sport_id="sr:sport:1" market_id="202" valid_for="variant=sr:point_range:6+">
+        <mapping_outcome outcome_id="sr:point_range:6+:1121" product_outcome_id="81" product_outcome_name="0-1 goals"/>
+        <mapping_outcome outcome_id="sr:point_range:6+:1122" product_outcome_id="82" product_outcome_name="2-3 goals"/>
+        <mapping_outcome outcome_id="sr:point_range:6+:1123" product_outcome_id="92" product_outcome_name="4-5 goals"/>
+        <mapping_outcome outcome_id="sr:point_range:6+:1124" product_outcome_id="79" product_outcome_name="6+"/>
+      </mapping>
+      <mapping product_id="3" product_ids="3" sport_id="sr:sport:1" market_id="729" valid_for="variant=sr:goal_range:7+">
+        <mapping_outcome outcome_id="sr:goal_range:7+:1342" product_outcome_id="81" product_outcome_name="0-1 goals"/>
+        <mapping_outcome outcome_id="sr:goal_range:7+:1343" product_outcome_id="82" product_outcome_name="2-3 goals"/>
+        <mapping_outcome outcome_id="sr:goal_range:7+:1344" product_outcome_id="83" product_outcome_name="4-6 goals"/>
+        <mapping_outcome outcome_id="sr:goal_range:7+:1345" product_outcome_id="84" product_outcome_name="7+ goals"/>
+      </mapping>
+      <mapping product_id="3" product_ids="3" sport_id="sr:sport:106" market_id="202" valid_for="variant=sr:point_range:6+">
+        <mapping_outcome outcome_id="sr:point_range:6+:1121" product_outcome_id="81" product_outcome_name="0-1 goals"/>
+        <mapping_outcome outcome_id="sr:point_range:6+:1122" product_outcome_id="82" product_outcome_name="2-3 goals"/>
+        <mapping_outcome outcome_id="sr:point_range:6+:1123" product_outcome_id="92" product_outcome_name="4-5 goals"/>
+        <mapping_outcome outcome_id="sr:point_range:6+:1124" product_outcome_id="79" product_outcome_name="6+"/>
+      </mapping>
+    </mappings>
+  </market>
+  <market id="40" name="Anytime goalscorer" groups="all">
+    <outcomes>
+      <outcome id="1716" name="no goal"/>
+    </outcomes>
+  </market>
   <market id="282" name="Innings 1 to 5th top - {$competitor1} total" groups="all">
     <outcomes>
       <outcome id="13" name="under {total}"/>
@@ -7,27 +46,6 @@
     </outcomes>
     <specifiers>
       <specifier name="total" type="decimal"/>
-    </specifiers>
-  </market>
-  <market id="701" name="Any player to score {milestone}" groups="all">
-    <outcomes>
-      <outcome id="74" name="yes"/>
-      <outcome id="76" name="no"/>
-    </outcomes>
-    <specifiers>
-      <specifier name="milestone" type="integer"/>
-      <specifier name="maxovers" type="integer"/>
-    </specifiers>
-  </market>
-  <market id="625" name="{!mapnr} map - player with most deaths (incl. overtime)" groups="all" includes_outcomes_of_type="sr:player">
-    <specifiers>
-      <specifier name="mapnr" type="integer"/>
-    </specifiers>
-  </market>
-  <market id="683" name="Top batter" groups="all" includes_outcomes_of_type="sr:player">
-    <specifiers>
-      <specifier name="maxovers" type="integer"/>
-      <specifier name="type" type="string"/>
     </specifiers>
   </market>
   <market id="402" name="1st half - correct score [{score}]" groups="all">
@@ -440,9 +458,59 @@
       <attribute name="is_flex_score" description="Outcomes should be adjusted according to score specifier"/>
     </attributes>
   </market>
-  <market id="40" name="Anytime goalscorer" groups="all">
+  <market id="625" name="{!mapnr} map - player with most deaths (incl. overtime)" groups="all" includes_outcomes_of_type="sr:player">
+    <specifiers>
+      <specifier name="mapnr" type="integer"/>
+    </specifiers>
+  </market>
+  <market id="672" name="{!inningnr} innings - {$competitor1} exact runs" groups="all">
+    <specifiers>
+      <specifier name="inningnr" type="integer"/>
+      <specifier name="variant" type="variable_text"/>
+    </specifiers>
+    <mappings>
+      <mapping product_id="5" product_ids="5" sport_id="sr:sport:21" market_id="35"/>
+    </mappings>
+  </market>
+  <market id="683" name="Top batter" groups="all" includes_outcomes_of_type="sr:player">
+    <specifiers>
+      <specifier name="maxovers" type="integer"/>
+      <specifier name="type" type="string"/>
+    </specifiers>
+  </market>
+  <market id="701" name="Any player to score {milestone}" groups="all">
     <outcomes>
-      <outcome id="1716" name="no goal"/>
+      <outcome id="74" name="yes"/>
+      <outcome id="76" name="no"/>
     </outcomes>
+    <specifiers>
+      <specifier name="milestone" type="integer"/>
+      <specifier name="maxovers" type="integer"/>
+    </specifiers>
+  </market>
+  <market id="755" name="{!quarternr} quarter - point range" groups="all|score|quarter">
+    <specifiers>
+      <specifier name="quarternr" type="integer"/>
+      <specifier name="variant" type="variable_text"/>
+    </specifiers>
+    <mappings>
+      <mapping product_id="1" product_ids="1|4" sport_id="sr:sport:13" market_id="8:1656" sov_template="{quarternr}" valid_for="variant=sr:point_range:55+">
+        <mapping_outcome outcome_id="sr:point_range:55+:1236" product_outcome_id="7586" product_outcome_name="&lt;36"/>
+        <mapping_outcome outcome_id="sr:point_range:55+:1237" product_outcome_id="7588" product_outcome_name="36-40"/>
+        <mapping_outcome outcome_id="sr:point_range:55+:1238" product_outcome_id="7590" product_outcome_name="41-43"/>
+        <mapping_outcome outcome_id="sr:point_range:55+:1239" product_outcome_id="7592" product_outcome_name="44-46"/>
+        <mapping_outcome outcome_id="sr:point_range:55+:1240" product_outcome_id="7594" product_outcome_name="47-50"/>
+        <mapping_outcome outcome_id="sr:point_range:55+:1241" product_outcome_id="7596" product_outcome_name="51-54"/>
+        <mapping_outcome outcome_id="sr:point_range:55+:1242" product_outcome_id="7598" product_outcome_name="&gt;54"/>
+      </mapping>
+    </mappings>
+  </market>
+  <market id="764" name="Player rushing yards" groups="all|player_props">
+    <specifiers>
+      <specifier name="variant" type="variable_text"/>
+    </specifiers>
+    <mappings>
+      <mapping product_id="3" product_ids="3" sport_id="sr:sport:16" market_id="590"/>
+    </mappings>
   </market>
 </market_descriptions>

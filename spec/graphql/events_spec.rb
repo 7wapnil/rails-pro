@@ -46,7 +46,7 @@ describe GraphQL, '#events' do
   end
 
   context 'with market' do
-    let(:control_event) { create(:event_with_odds, :upcoming, title: title) }
+    let(:control_event) { create(:event, :with_odds, :upcoming, title: title) }
     let(:control_market) { control_event.dashboard_markets.first }
     let(:control_odds) { control_market.odds }
 
@@ -104,7 +104,7 @@ describe GraphQL, '#events' do
 
     context 'without odds' do
       let(:control_event) do
-        create(:event_with_market, :upcoming, title: title)
+        create(:event, :with_market, :upcoming, title: title)
       end
 
       it 'is not returned' do
@@ -171,7 +171,7 @@ describe GraphQL, '#events' do
 
   context 'prioritizes market by priority' do
     let(:control_event) do
-      create(:event_with_market, :upcoming, title: title)
+      create(:event, :with_market, :upcoming, title: title)
     end
     let(:control_market) do
       create(:market, :with_odds,

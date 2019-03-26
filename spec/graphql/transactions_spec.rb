@@ -80,6 +80,37 @@ describe GraphQL, '#transactions' do
           .to eq(deposits.length)
       end
     end
+
+    context 'all' do
+      let(:filter) { 'null' }
+
+      it 'returns all entry request' do
+        expect(result['data']['transactions']['collection'].length)
+          .to eq(withdrawals.length + deposits.length)
+      end
+
+      it 'includes pagination param - items' do
+        expect(result['data']['transactions']['pagination']['items'])
+          .to eq(withdrawals.length + deposits.length)
+      end
+    end
+
+    context 'query with no arguments' do
+      let(:query) do
+        %({
+            transactions {
+              collection {
+                id
+              }
+            }
+          })
+      end
+
+      it 'returns all entry request' do
+        expect(result['data']['transactions']['collection'].length)
+          .to eq(withdrawals.length + deposits.length)
+      end
+    end
   end
 
   context 'pagination' do
