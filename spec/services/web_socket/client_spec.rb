@@ -10,7 +10,9 @@ describe WebSocket::Client do
       event.event_scopes << create(:event_scope, kind: EventScope::CATEGORY)
       event
     end
-    let(:profiler_double) { instance_double('OddsFeed::MessageProfiler') }
+    let(:profiler_double) do
+      instance_double('OddsFeed::MessageProfiler', log_state: true)
+    end
     let(:profiled_event) { { data: event, profiler: profiler_double } }
 
     before do
