@@ -7,6 +7,7 @@ describe Markets::PreMatchMarketsClosingService do
 
   context '.call' do
     let!(:upcoming_pre_match_event) do
+      FactoryBot.create(:event, :with_market, start_at: 1.minute.from_now)
     end
     let!(:upcoming_live_event) do
       FactoryBot.create(:event,

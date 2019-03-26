@@ -92,7 +92,9 @@ describe GraphQL, '#events' do
       end
 
       it 'returns valid markets count' do
-        expect(result_event.markets_count).to eq(control_count)
+        # it is still grouped
+        grouped_markets = Event.find(result_event.id).dashboard_markets.count
+        expect(result_event.markets_count).to eq(grouped_markets.count)
       end
     end
 
@@ -658,25 +660,6 @@ describe GraphQL, '#events' do
 
     it 'ignores live events' do
       expect(result_event_ids).not_to include(*live_events.map(&:id))
-    end
-  end
-
-  context 'market status filtering with' do
-    let(:query) do
-      %({
-        events (context: #{upcoming_ctx}) {
-          id
-        }
-      })
-    end
-    let(:control_event) { create(:event, :with_market, :upcoming) }
-    let(:status) {}
-
-    context 'cancelled market' do
-      it 'returns no event' do
-        Market.update_all(status: Market::CANCELLED)
-        expect(result_event_ids).to be_empty
-      end
     end
   end
 end

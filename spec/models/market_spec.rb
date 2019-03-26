@@ -85,4 +85,19 @@ describe Market do
       expect(market.errors[:status]).to be_blank
     end
   end
+
+  describe '#for_displaying' do
+    before do
+      Market::STATUSES.values.each do |status|
+        FactoryBot.create(:market, :with_odds, status: status)
+      end
+    end
+
+    it 'only returns markets with visible statuses' do
+      expected_to_be_displayed = described_class
+                                 .where(status: Market::DISPLAYED_STATUSES)
+      expect(described_class.for_displaying)
+        .to match_array(expected_to_be_displayed)
+    end
+  end
 end

@@ -6,7 +6,7 @@ module OddsFeed
       class TemplateLoader
         include JobLogger
 
-        PLAYER_REGEX = /.*:player:.*/
+        PLAYER_REGEX = /.*:player:.*/.freeze
 
         attr_reader :stored_template
 

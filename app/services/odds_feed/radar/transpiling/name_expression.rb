@@ -2,9 +2,9 @@ module OddsFeed
   module Radar
     module Transpiling
       class NameExpression < BaseExpression
-        PLAYER_REGEX     = /%player/
-        COMPETITOR_REGEX = /%competitor|%server/
-        VENUE_REGEX      = /%venue/
+        PLAYER_REGEX     = /%player/.freeze
+        COMPETITOR_REGEX = /%competitor|%server/.freeze
+        VENUE_REGEX      = /%venue/.freeze
         NAME_SIGN        = '%'.freeze
 
         def value(token)

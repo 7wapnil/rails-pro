@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength
 module Events
   class EventsQueryResolver
     LIVE = 'live'
@@ -21,7 +20,6 @@ module Events
       @query = filter_by_title_id
       @query = filter_by_title_kind
       @query = filter_by_event_scopes
-      @query = filter_by_market_status
       filter_by_context!
       query
     end
@@ -120,17 +118,8 @@ module Events
         .where(event_scopes: { id: event_scope_ids })
     end
 
-    def filter_by_market_status
-      displayed_market_statuses = Market::DISPLAYED_STATUSES
-      
-      query
-        .joins(:markets)
-        .where(markets: { status: displayed_market_statuses })
-    end
-
     def event_scope_ids
       @event_scope_ids ||= [filter.category_id, filter.tournament_id].compact
     end
   end
 end
-# rubocop:enable Metrics/ClassLength

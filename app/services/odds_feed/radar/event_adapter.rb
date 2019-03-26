@@ -3,7 +3,7 @@ module OddsFeed
     class EventAdapter < BaseAdapter
       include JobLogger
 
-      MATCH_TYPE_REGEXP = /:match:/
+      MATCH_TYPE_REGEXP = /:match:/.freeze
 
       def result
         return Event.new unless fixture
