@@ -10,7 +10,6 @@ module OddsFeed
     attr_accessor(*PROFILER_ATTRIBUTES)
 
     def initialize(opts = {})
-      Rails.logger.info 'NEW PROFILER'
       @uuid = opts[:uuid] || SecureRandom.uuid
 
       super
