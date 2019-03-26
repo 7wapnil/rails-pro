@@ -34,7 +34,7 @@ describe OddsFeed::Radar::BetStopHandler do
       allow(WebSocket::Client).to receive(:instance) { ws_double }
       allow(ws_double).to receive(:trigger_event_update)
 
-      described_class.new(base_payload).handle
+      described_class.new(base_payload, {}).handle
 
       markets.each(&:reload)
       other_markets.each(&:reload)
