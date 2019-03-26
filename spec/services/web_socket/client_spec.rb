@@ -14,7 +14,7 @@ describe WebSocket::Client do
     let(:profiled_event) { { data: event, profiler: profiler_double } }
 
     before do
-      subject.trigger_event_update(event, profiler_double)
+      subject.trigger_event_update(event, profiler: profiler_double)
     end
 
     it 'triggers all events subscription' do
@@ -34,7 +34,7 @@ describe WebSocket::Client do
         .to have_received(:trigger)
         .with(
           SubscriptionFields::KIND_EVENT_UPDATED,
-          event,
+          profiled_event,
           kind: event.title.kind
         )
     end

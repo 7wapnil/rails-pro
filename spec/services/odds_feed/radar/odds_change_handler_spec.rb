@@ -286,17 +286,16 @@ describe OddsFeed::Radar::OddsChangeHandler do
     expect(event.producer).to eq(producer_from_xml)
   end
 
-  xit 'sends websocket message when new event created' do
+  it 'sends websocket message when new event created' do
     subject_api.handle
 
     created_event = Event.find_by!(external_id: event_id)
     expect(WebSocket::Client.instance)
       .to have_received(:trigger_event_update)
       .with(created_event)
-      .twice
+      .once
   end
 
-  # # TODO: Unxit
   context 'empty payload' do
     context 'is nil' do
       let(:payload)  {}
