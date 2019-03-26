@@ -15,7 +15,7 @@ describe GraphQL, '#events' do
   let(:control_count) { rand(1..4) }
   let(:control_event) {}
   let(:control_events) do
-    create_list(:event, control_count, :with_market, :upcoming, title: title)
+    create_list(:event, control_count, :upcoming, title: title)
   end
 
   let(:result_events) { result['data']['events'] }
@@ -33,7 +33,7 @@ describe GraphQL, '#events' do
 
   context 'basic query' do
     let(:control_events) do
-      create_list(:event, control_count, :with_market, :upcoming, title: title)
+      create_list(:event, control_count, :upcoming, title: title)
     end
 
     let(:query) { %({ events(context: #{upcoming_ctx}) { id } }) }
@@ -72,7 +72,7 @@ describe GraphQL, '#events' do
       let(:control_count) { rand(2..5) }
       let(:control_events) {}
       let(:control_event) do
-        create(:event, :with_market, :upcoming, title: title)
+        create(:event, :upcoming, title: title)
       end
 
       let(:query) do
@@ -85,16 +85,14 @@ describe GraphQL, '#events' do
         create_list(:market, control_count, :with_odds, event: control_event,
                                                         status: Market::ACTIVE)
         create_list(:market, rand(1..3), :with_inactive_odds,
-                    event: control_event, status: Market::ACTIVE)
+                    event: control_event, status: Market::INACTIVE)
         create_list(:market, rand(1..3), :with_odds, visible: false,
                                                      event: control_event,
-                                                     status: Market::ACTIVE)
+                                                     status: Market::INACTIVE)
       end
 
       it 'returns valid markets count' do
-        # it is still grouped
-        grouped_markets = Event.find(result_event.id).dashboard_markets.count
-        expect(result_event.markets_count).to eq(grouped_markets.count)
+        expect(result_event.markets_count).to eq(control_count)
       end
     end
 
