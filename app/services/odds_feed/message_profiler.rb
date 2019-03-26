@@ -7,10 +7,10 @@ module OddsFeed
       %i[uuid event_external_id].freeze
 
     LOGGABLE_STATES = %i[
-      uof_message_origin_time
       uof_message_registered_at
       worker_started_at
       web_socket_emit_initiated_at
+      worker_ended_at
       action_cable_prepares_delivery_at
     ].freeze
 
@@ -24,7 +24,7 @@ module OddsFeed
 
     class << self
       def deserialize(serialized)
-        new(JSON.parse(serialized))
+        new(JSON.parse(serialized.to_s))
       end
 
       alias find deserialize
@@ -45,26 +45,16 @@ module OddsFeed
       to_h.to_s
     end
 
-    # TODO: normalize time_to_log format
-    def log_state(state_name, time_to_log = nil)
+    def log_state(state_name)
       # TODO: TBC Restrict states to avoid mess in Kibana
-      # TODO: TBC Remove timestamp if correlates with Kibana Timestamp
       logger_message = {
         type: 'profiler',
         uuid: uuid,
         event_external_id: event_external_id,
-        state_name: state_name,
-        timestamp: time_to_log || measure
+        state_name: state_name
       }
       Rails.logger.info(logger_message)
       self
-    end
-
-    private
-
-    # TODO: TBC Best format to log time
-    def measure
-      Time.current.to_f.to_s
     end
   end
 end
