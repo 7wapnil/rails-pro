@@ -35,13 +35,6 @@ class Market < ApplicationRecord
   has_many :label_joins, as: :labelable
   has_many :labels, through: :label_joins
 
-  scope :for_displaying, -> do
-    visible
-      .joins(:odds)
-      .group('markets.id')
-      .where(status: DISPLAYED_STATUSES)
-      .order(priority: :asc)
-  end
   scope :with_category, -> { where.not(category: nil) }
 
   validates :name, :priority, :status, presence: true
@@ -63,6 +56,14 @@ class Market < ApplicationRecord
       &.to_s
       &.[](1..-1)
       &.gsub '|', ', '
+  end
+
+  def self.for_displaying
+    visible
+      .joins(:odds)
+      .group('markets.id')
+      .where('markets.status' => DISPLAYED_STATUSES)
+      .order(priority: :asc)
   end
 
   private
