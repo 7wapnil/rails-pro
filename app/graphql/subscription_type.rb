@@ -11,7 +11,8 @@ SubscriptionType = GraphQL::ObjectType.define do
     argument :id, types.ID
   end
 
-  field SubscriptionFields::EVENT_BET_STOP, Events::EventType do
+  field SubscriptionFields::EVENTS_BET_STOPPED, Events::BetStopType
+  field SubscriptionFields::EVENT_BET_STOPPED, Events::BetStopType do
     argument :id, types.ID
   end
 

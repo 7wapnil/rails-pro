@@ -1,36 +1,43 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     class BetStopHandler < RadarMessageHandler
-      include WebsocketEventEmittable
-
-      attr_accessor :batch_size
-
-      def initialize(payload)
-        super(payload)
-        @batch_size = 20
-      end
-
       def handle
+        emit_event_bet_stopped
         update_markets
-        emit_websocket
       end
 
       private
 
-      def update_markets
-        target_status = MarketStatus.stop_status(market_status_code)
+      def emit_event_bet_stopped
+        WebSocket::Client
+          .instance
+          .trigger_event_bet_stop(event, market_status)
+      end
 
-        markets_to_be_changed_query.update_all(status: target_status)
+      def event
+        @event ||= Event.find_by(external_id: event_id)
+      end
 
-        emit_event_bet_stop(event, target_status)
+      def event_id
+        input_data['event_id']
       end
 
       def input_data
-        @payload['bet_stop']
+        payload['bet_stop']
+      end
+
+      def market_status
+        @market_status ||= MarketStatus.stop_status(market_status_code)
       end
 
       def market_status_code
         input_data['market_status']
+      end
+
+      def update_markets
+        markets_to_be_changed_query.update_all(status: market_status)
       end
 
       def markets_to_be_changed_query
@@ -40,10 +47,6 @@ module OddsFeed
             status: Market::ACTIVE,
             events: { external_id: event_id }
           )
-      end
-
-      def emit_event_bet_stop(event)
-        WebSocket::Client.instance.trigger_event_bet_stop(event)
       end
     end
   end

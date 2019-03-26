@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transactions
-  TransactionKindsEnum = GraphQL::EnumType.define do
+  KindEnum = GraphQL::EnumType.define do
     name 'TransactionKind'
 
     value EntryRequest::DEPOSIT, 'deposit'
