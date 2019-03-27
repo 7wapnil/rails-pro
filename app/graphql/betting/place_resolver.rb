@@ -9,7 +9,6 @@ module Betting
     end
 
     def call
-
       bet_payloads.map { |payload| collect_bet(payload) }
     end
 
