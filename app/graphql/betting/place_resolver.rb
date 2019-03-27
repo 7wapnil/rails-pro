@@ -9,6 +9,7 @@ module Betting
     end
 
     def call
+
       bet_payloads.map { |payload| collect_bet(payload) }
     end
 
@@ -20,7 +21,7 @@ module Betting
       bet = create_bet!(bet_payload)
       entry_request = create_entry_request!(bet)
 
-      ::EntryRequests::BetPlacementWorker.perform_async(entry_request.id)
+      ::EntryRequests::BetPlacementWorker.perform_in(3.second, entry_request.id)
 
       OpenStruct.new(id: bet_payload[:oddId],
                      message: nil,
