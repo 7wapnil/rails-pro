@@ -60,7 +60,8 @@ module WebSocket
     end
 
     def trigger_kind_event(profiled_event)
-      event = profiled_event[:data] if profiled_event&.has_key?(:data)
+      event =
+        profiled_event.is_a?(Hash) ? profiled_event[:data] : profiled_event
       return warn("Event ID #{event.id} has no title") unless event.title
 
       trigger(

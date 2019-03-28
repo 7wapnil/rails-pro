@@ -16,7 +16,9 @@ describe WebSocket::Client do
     let(:profiled_event) { { data: event, profiler: profiler_double } }
 
     before do
-      subject.trigger_event_update(event, profiler: profiler_double)
+      allow_any_instance_of(OddsFeed::FlowProfiler)
+        .to receive(:flow_profiler){ profiler_double }
+      subject.trigger_event_update(event)
     end
 
     it 'triggers all events subscription' do

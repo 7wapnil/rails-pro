@@ -39,7 +39,7 @@ describe Radar::BaseUofWorker do
       it 'initializes worker_class with parsed data' do
         expect(handler)
           .to have_received(:new)
-          .with(parsed_xml, anything).once
+          .with(parsed_xml).once
       end
 
       it 'calls handle on defined worker_class' do

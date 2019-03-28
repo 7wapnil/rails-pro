@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
-  subject { described_class.new(payload, {}) }
+  subject { described_class.new(payload) }
 
   let(:payload) do
     XmlParser.parse(

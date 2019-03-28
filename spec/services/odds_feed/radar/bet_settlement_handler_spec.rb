@@ -1,7 +1,7 @@
 describe OddsFeed::Radar::BetSettlementHandler do
-  subject { described_class.new(payload, {}) }
+  subject { described_class.new(payload) }
 
-  let(:subject_with_input) { described_class.new(payload, {}) }
+  let(:subject_with_input) { described_class.new(payload) }
   let(:payload) do
     XmlParser.parse(
       '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\

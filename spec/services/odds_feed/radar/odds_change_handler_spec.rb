@@ -3,9 +3,7 @@
 describe OddsFeed::Radar::OddsChangeHandler do
   subject { described_class.new(payload) }
 
-  let(:profiler) { OddsFeed::MessageProfiler.new }
-
-  let(:subject_api) { described_class.new(payload, profiler) }
+  let(:subject_api) { described_class.new(payload) }
 
   let!(:producer_from_xml) { create(:producer, id: 2) }
   let(:payload) do
@@ -171,11 +169,10 @@ describe OddsFeed::Radar::OddsChangeHandler do
           event_market.odds.sample.update(status: Odd::ACTIVE)
         end
     end
-    let(:profiler) { OddsFeed::MessageProfiler.new }
 
     it 'defines event as active' do
       event_to_be_marked_as_active
-      described_class.new(payload, profiler).handle
+      described_class.new(payload).handle
       event = Event.find_by(external_id: event_id)
       expect(event.active).to be_truthy
     end
@@ -186,7 +183,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
              status: Event::NOT_STARTED,
              active: true)
 
-      described_class.new(payload_inactive_outcomes, profiler).handle
+      described_class.new(payload_inactive_outcomes).handle
       event = Event.find_by(external_id: event_id)
       expect(event.active).to be_falsy
     end
@@ -200,7 +197,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
                status: Event::NOT_STARTED,
                active: true)
 
-        described_class.new(payload, profiler).handle
+        described_class.new(payload).handle
         event = Event.find_by(external_id: event_id)
         expect(event.active).to be_falsy
       end
@@ -294,7 +291,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
     expect(WebSocket::Client.instance)
       .to have_received(:trigger_event_update)
       .with(created_event)
-      .once
+      .twice
   end
 
   context 'empty payload' do
