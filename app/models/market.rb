@@ -63,7 +63,7 @@ class Market < ApplicationRecord
       .joins(:odds)
       .group('markets.id')
       .where('markets.status' => DISPLAYED_STATUSES)
-      .order(priority: :asc)
+      .order(priority: :asc, id: :asc)
   end
 
   private
