@@ -23,9 +23,7 @@ module OddsFeed
             )
           end
 
-          WebSocket::Client
-            .instance
-            .trigger_event_update(event)
+          WebSocket::Client.instance.trigger_event_update(event)
         end
 
         def input_data
