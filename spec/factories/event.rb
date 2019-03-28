@@ -12,7 +12,7 @@ FactoryBot.define do
     status                 { Event::NOT_STARTED }
     payload                { {} }
 
-    sequence(:external_id) { |n| "sr:match:#{n}" }
+    external_id { "sr:match:#{DateTime.now.strftime('%Q')}" }
 
     association :title, strategy: :build
     association :producer, factory: :prematch_producer
