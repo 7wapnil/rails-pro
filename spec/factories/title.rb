@@ -2,10 +2,9 @@
 
 FactoryBot.define do
   factory :title do
-    name                   { Faker::Name.unique.name }
-    kind                   { :esports }
-
-    sequence(:external_id) { |n| "sr:sport:#{DateTime.now.strftime('%Q')}" }
+    name        { Faker::Name.unique.name }
+    kind        { :esports }
+    external_id { "sr:sport:#{DateTime.now.strftime('%Q')}" }
 
     trait :with_event do
       after(:create) do |title|
