@@ -11,7 +11,10 @@ describe WebSocket::Client do
       event
     end
     let(:profiler_double) do
-      instance_double('OddsFeed::MessageProfiler', log_state: true)
+      instance_double(
+        'OddsFeed::MessageProfiler',
+        trace_profiler_event: true
+      )
     end
     let(:profiled_event) { { data: event, profiler: profiler_double } }
 
