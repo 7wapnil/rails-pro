@@ -17,7 +17,7 @@ describe WebSocket::Client do
 
     before do
       allow_any_instance_of(OddsFeed::FlowProfiler)
-        .to receive(:flow_profiler){ profiler_double }
+        .to receive(:flow_profiler) { profiler_double }
       subject.trigger_event_update(event)
     end
 
