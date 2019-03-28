@@ -5,8 +5,8 @@ module OddsFeed
 
       attr_accessor :batch_size
 
-      def initialize(payload, profiler_dump)
-        super(payload, profiler_dump)
+      def initialize(payload)
+        super(payload)
         @batch_size = 20
       end
 

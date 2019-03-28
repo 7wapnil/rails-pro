@@ -4,7 +4,7 @@ module OddsFeed
     include GlobalID::Identification
 
     PROFILER_ATTRIBUTES =
-      %i[uuid event_external_id].freeze
+      %i[uuid event_external_id uof_message_registered_at].freeze
 
     LOGGABLE_STATES = %i[
       uof_message_registered_at
@@ -14,10 +14,12 @@ module OddsFeed
       action_cable_prepares_delivery_at
     ].freeze
 
+    PROFILER_MESSAGE_TYPE_IDENTIFIER = 'profiler'.freeze
+
     attr_accessor(*PROFILER_ATTRIBUTES)
 
     def initialize(opts = {})
-      @uuid = opts[:uuid] || SecureRandom.uuid
+      @uuid = (opts && opts[:uuid]) || SecureRandom.uuid
 
       super
     end
@@ -45,16 +47,33 @@ module OddsFeed
       to_h.to_s
     end
 
-    def log_state(state_name)
+    def store_properties(properties = {})
+      properties.each do |key, value|
+        instance_variable_set("@#{key}", value)
+      end
+      self
+    end
+
+    def trace_profiler_event(state_name)
       # TODO: TBC Restrict states to avoid mess in Kibana
       logger_message = {
-        type: 'profiler',
+        type: PROFILER_MESSAGE_TYPE_IDENTIFIER,
         uuid: uuid,
         event_external_id: event_external_id,
         state_name: state_name
       }
-      Rails.logger.info(logger_message)
+      # TODO: Make it switchable
+      logger_message[:duration] = message_duration_calculation
+      Rails.logger.info(logger_message.compact)
       self
+    end
+
+    private
+
+    def message_duration_calculation
+      return nil unless uof_message_registered_at
+
+      (Time.current.to_f * 1000).round - uof_message_registered_at
     end
   end
 end

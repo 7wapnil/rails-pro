@@ -3,10 +3,14 @@
 module WebSocket
   class Client
     include Singleton
+    include OddsFeed::FlowProfiler
 
-    def trigger_event_update(event, profiler: nil)
-      profiler&.log_state(:web_socket_emit_initiated_at)
-      profiled_event = { data: event, profiler: profiler }
+    def trigger_event_update(event)
+      flow_profiler
+        .trace_profiler_event(:web_socket_emit_initiated_at)
+      is_profiler_empty = flow_profiler.is_a? OddsFeed::EmptyMessageProfiler
+      profiled_event =
+        is_profiler_empty ? event : { data: event, profiler: flow_profiler }
 
       trigger(SubscriptionFields::EVENTS_UPDATED, profiled_event)
       trigger(SubscriptionFields::EVENT_UPDATED, event, id: event.id)

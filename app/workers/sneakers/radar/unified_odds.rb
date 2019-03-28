@@ -1,6 +1,7 @@
 module Radar
   class UnifiedOdds
     include Sneakers::Worker
+    include OddsFeed::FlowProfiler
 
     def self.routing_key(node_id: nil, listen_all: nil)
       listen_all = ENV['RADAR_MQ_LISTEN_ALL'] != 'false' if listen_all.nil?
@@ -55,16 +56,14 @@ module Radar
     }.freeze
 
     def work(msg)
-      profiler_enabled = ENV['RADAR_MESSAGES_PROFILER_ENABLED'] == 'true'
-
-      profiler = nil
-      if profiler_enabled
-        profiler = OddsFeed::MessageProfiler.new
-        profiler.log_state(:uof_message_registered_at)
-      end
+      create_flow_profiler if ENV['RADAR_MESSAGES_PROFILER_ENABLED'] == 'true'
+      update_flow_profiler_property(
+        uof_message_registered_at: (Time.current.to_f * 1000).round
+      )
+      flow_profiler.trace_profiler_event(:uof_message_registered_at)
 
       match_result(scan_payload(msg))
-        .perform_async(msg, profiler&.dump)
+        .perform_async(msg, flow_profiler.dump)
     end
 
     private

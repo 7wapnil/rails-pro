@@ -14,7 +14,7 @@ module OddsFeed
           @event ||= Event.find_by(external_id: event_id)
         end
 
-        def emit_websocket(profiler: nil)
+        def emit_websocket
           unless event
             return log_job_message(
               :warn,
@@ -25,7 +25,7 @@ module OddsFeed
 
           WebSocket::Client
             .instance
-            .trigger_event_update(event, profiler: profiler)
+            .trigger_event_update(event)
         end
 
         def input_data

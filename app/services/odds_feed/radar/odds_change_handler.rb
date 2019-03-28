@@ -6,8 +6,9 @@ module OddsFeed
     class OddsChangeHandler < RadarMessageHandler
       include EventCreatable
       include WebsocketEventEmittable
+      include OddsFeed::FlowProfiler
 
-      def initialize(payload, profiler = nil, configuration: {})
+      def initialize(payload, configuration: {})
         super
 
         default_configuration
@@ -19,11 +20,11 @@ module OddsFeed
 
         create_or_update_event!
         touch_event!
-        profiler&.event_external_id = event.external_id
+        update_flow_profiler_property(event_external_id: event.external_id)
         generate_markets
         update_event_activity
-        emit_websocket(profiler: profiler)
-        profiler&.log_state(:worker_ended_at)
+        emit_websocket
+        flow_profiler.trace_profiler_event(:worker_ended_at)
         event
       end
 

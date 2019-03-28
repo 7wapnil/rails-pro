@@ -1,9 +1,8 @@
 module OddsFeed
   class MessageHandler
-    def initialize(payload, profiler = nil, configuration: {})
+    def initialize(payload, configuration: {})
       @payload = payload
       @configuration = configuration
-      @profiler = profiler
     end
 
     def profiler

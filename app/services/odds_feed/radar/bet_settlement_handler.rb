@@ -4,8 +4,8 @@ module OddsFeed
     class BetSettlementHandler < RadarMessageHandler
       include WebsocketEventEmittable
 
-      def initialize(payload, profiler_dump)
-        super(payload, profiler_dump)
+      def initialize(payload)
+        super(payload)
         @market_external_ids = []
       end
 
