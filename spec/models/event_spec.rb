@@ -8,6 +8,7 @@ describe Event do
   it { is_expected.to have_many(:markets) }
   it { is_expected.to have_many(:scoped_events) }
   it { is_expected.to have_many(:event_scopes).through(:scoped_events) }
+  it { is_expected.to have_many(:competitors) }
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to allow_value(true, false).for(:active) }
