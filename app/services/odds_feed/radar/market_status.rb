@@ -24,7 +24,7 @@ module OddsFeed
       attr_reader :code
 
       def self.stop_status(code)
-        new(code).market_status || Market::SUSPENDED
+        new(code).market_status || SUSPENDED
       end
 
       def initialize(code)
