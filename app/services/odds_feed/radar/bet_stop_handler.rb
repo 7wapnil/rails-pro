@@ -17,7 +17,9 @@ module OddsFeed
       end
 
       def event
-        @event ||= Event.find_by(external_id: event_id)
+        @event ||= Event.find_by!(external_id: event_id)
+      rescue ActiveRecord::RecordNotFound
+        raise I18n.t('errors.messages.nonexistent_event', id: event_id)
       end
 
       def event_id
