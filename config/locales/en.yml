@@ -138,6 +138,8 @@ en:
     promotional_agreement: Promotional agreement
     result: Result
     rollover_multiplier: Bonus rollover
+    rollover_balance: Bonus rollover balance
+    rollover_initial_balance: Bonus rollover initial balance
     scope_kind: Scope type
     scope_name: Scope name
     selection: Selection
@@ -240,6 +242,7 @@ en:
       zero: No documents
       one: 1 document
       other: "%{count} documents"
+    entry: Entry
     entry_request: Entry request
     entry_requests: Entry requests
     entry_request_count:
