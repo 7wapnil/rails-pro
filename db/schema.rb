@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_03_29_071026) do
+ActiveRecord::Schema.define(version: 2019_03_29_084054) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -377,6 +377,15 @@ ActiveRecord::Schema.define(version: 2019_03_29_071026) do
     t.string "status"
     t.index ["external_id"], name: "index_odds_on_external_id", unique: true
     t.index ["market_id"], name: "index_odds_on_market_id"
+  end
+
+  create_table "players", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "external_id", null: false
+    t.string "full_name"
+    t.jsonb "details"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "radar_providers", force: :cascade do |t|
