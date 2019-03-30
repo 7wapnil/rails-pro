@@ -6,10 +6,10 @@
       %th= sort_link(filter.search, :created_at, t('attributes.requested_at'), default_order: :asc)
       %th= t('attributes.completed_at')
       %th= t('attributes.status')
-      %th= sort_link(filter.search, :kind, t('attributes.type'), default_order: :desc)
+      %th= t('attributes.type')
       %th= t('attributes.username')
       %th= t('attributes.payment_method')
-      %th= t('attributes.amount')
+      %th= sort_link(filter.search, :amount, t('attributes.amount'), default_order: :desc)
   %tbody
     - if filter.requests.any?
       - filter.requests.each do |request|
