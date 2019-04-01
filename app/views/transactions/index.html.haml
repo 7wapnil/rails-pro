@@ -1,0 +1,3 @@
+%h1.display-4= t('entities.transactions')
+= render 'table', filter: @filter
+= paginate @filter.requests
