@@ -1,4 +1,4 @@
-%table.table
+%table.table.entities
   %thead
     %tr
       %th= t('attributes.id')
@@ -14,7 +14,7 @@
     - if filter.requests.any?
       - filter.requests.each do |request|
         %tr{ id: "entry-request-#{request.id}" }
-          %td= request.id
+          %td.id= request.id
           %td= request.external_id
           %td
             = link_to l(request.created_at, format: :long), request
