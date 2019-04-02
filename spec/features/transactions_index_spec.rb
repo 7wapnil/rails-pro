@@ -22,7 +22,7 @@ describe 'Transaction', '#index' do
     it 'shows transactions list' do
       within 'table.table.entities' do
         EntryRequest.transactions.limit(per_page_count).each do |entry_request|
-          expect(page).to have_css('td.id', text: entry_request.id)
+          expect(page).to have_css('td.id > a', text: entry_request.id)
         end
       end
     end
@@ -49,7 +49,7 @@ describe 'Transaction', '#index' do
         end
 
         within 'table.entities > tbody' do
-          expect(page).to have_css('td.id', text: the_transaction.id)
+          expect(page).to have_css('td.id > a', text: the_transaction.id)
         end
       end
 
@@ -62,7 +62,7 @@ describe 'Transaction', '#index' do
         end
 
         within 'table.entities > tbody' do
-          expect(page).not_to have_css('td.id', text: the_transaction.id)
+          expect(page).not_to have_css('td.id > a', text: the_transaction.id)
         end
       end
     end
@@ -77,7 +77,7 @@ describe 'Transaction', '#index' do
         end
 
         within 'table.entities > tbody' do
-          expect(page).to have_css('td.id', text: the_transaction.id)
+          expect(page).to have_css('td.id > a', text: the_transaction.id)
         end
       end
 
@@ -90,7 +90,7 @@ describe 'Transaction', '#index' do
         end
 
         within 'table.entities > tbody' do
-          expect(page).not_to have_css('td.id', text: the_transaction.id)
+          expect(page).not_to have_css('td.id > a', text: the_transaction.id)
         end
       end
     end
@@ -106,7 +106,7 @@ describe 'Transaction', '#index' do
         end
 
         within 'table.entities > tbody' do
-          expect(page).to have_css('td.id', text: the_transaction.id)
+          expect(page).to have_css('td.id > a', text: the_transaction.id)
         end
       end
 
@@ -120,7 +120,7 @@ describe 'Transaction', '#index' do
         end
 
         within 'table.entities > tbody' do
-          expect(page).not_to have_css('td.id', text: the_transaction.id)
+          expect(page).not_to have_css('td.id > a', text: the_transaction.id)
         end
       end
     end
@@ -136,7 +136,7 @@ describe 'Transaction', '#index' do
         end
 
         within 'table.entities > tbody' do
-          expect(page).to have_css('td.id', text: the_transaction.id)
+          expect(page).to have_css('td.id > a', text: the_transaction.id)
         end
       end
 
@@ -150,7 +150,7 @@ describe 'Transaction', '#index' do
         end
 
         within 'table.entities > tbody' do
-          expect(page).not_to have_css('td.id', text: the_transaction.id)
+          expect(page).not_to have_css('td.id > a', text: the_transaction.id)
         end
       end
     end
