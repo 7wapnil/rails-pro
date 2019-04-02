@@ -2,11 +2,11 @@ module EventsManager
   module Entities
     class SimpleEntity < BaseEntity
       def id
-        @payload['id']
+        attribute!(@payload, 'id')
       end
 
       def name
-        @payload['name']
+        attribute!(@payload, 'name')
       end
     end
   end

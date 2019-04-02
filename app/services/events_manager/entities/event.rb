@@ -4,7 +4,7 @@ module EventsManager
       BOOKED_FIXTURE_STATUS = 'booked'.freeze
 
       def id
-        fixture['id']
+        attribute!(fixture, 'id')
       end
 
       def name
@@ -26,31 +26,40 @@ module EventsManager
       end
 
       def competitors
-        @competitors ||= fixture.dig('competitors', 'competitor').map do |data|
+        competitors = attribute(fixture, 'competitors', 'competitor')
+        @competitors ||= competitors.map do |data|
           SimpleEntity.new(data)
         end
       end
 
       def sport
-        @sport ||= SimpleEntity.new(fixture.dig('tournament', 'sport'))
+        @sport ||= SimpleEntity.new(
+          attribute(fixture, 'tournament', 'sport')
+        )
       end
 
       def category
-        @category ||= SimpleEntity.new(fixture.dig('tournament', 'category'))
+        @category ||= SimpleEntity.new(
+          attribute(fixture, 'tournament', 'category')
+        )
       end
 
       def tournament
-        @tournament ||= SimpleEntity.new(fixture['tournament'])
+        @tournament ||= SimpleEntity.new(
+          attribute(fixture, 'tournament')
+        )
       end
 
       def season
-        @season ||= SimpleEntity.new(fixture['season'])
+        @season ||= SimpleEntity.new(
+          attribute(fixture, 'season')
+        )
       end
 
       private
 
       def fixture
-        @payload.dig('fixtures_fixture', 'fixture')
+        attribute!(@payload, 'fixtures_fixture', 'fixture')
       end
 
       def replay_mode?
@@ -74,11 +83,12 @@ module EventsManager
       end
 
       def start_time_field
-        fixture['start_time'] || fixture['scheduled']
+        attribute(fixture, 'start_time') ||
+          attribute(fixture, 'scheduled')
       end
 
       def live_odds
-        fixture['liveodds']
+        attribute(fixture, 'liveodds')
       end
     end
   end

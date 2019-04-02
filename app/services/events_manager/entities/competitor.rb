@@ -22,11 +22,11 @@ module EventsManager
       private
 
       def profile
-        @payload.dig('competitor_profile')
+        attribute!(@payload, 'competitor_profile')
       end
 
       def fixture
-        profile.dig('competitor')
+        attribute!(profile, 'competitor')
       end
     end
   end

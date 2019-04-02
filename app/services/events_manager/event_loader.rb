@@ -1,8 +1,15 @@
 module EventsManager
   class EventLoader < BaseEntityLoader
-    def call
-      check_existence!
+    MATCH_TYPE_REGEXP = /:match:/
 
+    def call
+      validate!
+      load_event
+    end
+
+    private
+
+    def load_event
       event = ::Event.create!(external_id: event_data.id,
                               start_at: event_data.start_at,
                               name: event_data.name,
@@ -16,7 +23,16 @@ module EventsManager
       event
     end
 
-    private
+    def validate!
+      check_support!
+      check_existence!
+    end
+
+    def check_support!
+      is_matching = @external_id.to_s.match?(MATCH_TYPE_REGEXP)
+      err_msg = "Event ID '#{@external_id}' is not supported"
+      raise NotImplementedError, err_msg unless is_matching
+    end
 
     def check_existence!
       msg = "Event with ID '#{event_data.id}' already exists"

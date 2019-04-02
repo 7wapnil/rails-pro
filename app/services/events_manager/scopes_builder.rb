@@ -21,6 +21,11 @@ module EventsManager
     private
 
     def find_or_create_scope!(entity, kind, parent_scope = nil)
+      if entity.nil?
+        Rails.logger.warn "Scope '#{kind}' fixture is empty"
+        return nil
+      end
+
       Rails.logger.debug "Scope data: #{entity}, kind: #{kind}"
 
       scope = ::EventScope.new(external_id: entity.id,
