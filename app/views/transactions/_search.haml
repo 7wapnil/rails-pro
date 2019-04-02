@@ -35,7 +35,7 @@
             = f.search_field :created_at_gteq,
                               class: 'form-control form_date',
                               placeholder: t(:search, subject: t('from')),
-                              value: search_date_for(:created_at_gteq, :entry_requests)
+                              value: params[:entry_requests]&.[](:created_at_gteq)
         %th
           .filter_title
             #{t(:search, subject: t('to'))}:
@@ -44,7 +44,7 @@
             = f.search_field :created_at_lteq,
                               class: 'form-control form_date',
                               placeholder: t(:search, subject: t('to')),
-                              value: search_date_for(:created_at_lteq, :entry_requests)
+                              value: params[:entry_requests]&.[](:created_at_lteq)
         %th
           .filter_title
             #{t('attributes.status')}:

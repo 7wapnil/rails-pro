@@ -22,7 +22,7 @@ describe 'Transaction', '#index' do
     it 'shows transactions list' do
       within 'table.table.entities' do
         EntryRequest.transactions.limit(per_page_count).each do |entry_request|
-          expect(page).to have_css('td.id', text: entry_request.id)
+          expect(page).to have_css('td.id > a', text: entry_request.id)
         end
       end
     end
@@ -42,27 +42,23 @@ describe 'Transaction', '#index' do
     context 'searches by payment method' do
       it 'is found' do
         within 'table.search' do
-          fill_in :entry_requests_created_at_gteq, with: nil
-          fill_in :entry_requests_created_at_lteq, with: nil
           select EntryRequest::BITCOIN, from: :entry_requests_mode_eq
           click_submit
         end
 
         within 'table.entities > tbody' do
-          expect(page).to have_css('td.id', text: the_transaction.id)
+          expect(page).to have_css('td.id > a', text: the_transaction.id)
         end
       end
 
       it 'is not found' do
         within 'table.search' do
-          fill_in :entry_requests_created_at_gteq, with: nil
-          fill_in :entry_requests_created_at_lteq, with: nil
           select EntryRequest::CASHIER, from: :entry_requests_mode_eq
           click_submit
         end
 
         within 'table.entities > tbody' do
-          expect(page).not_to have_css('td.id', text: the_transaction.id)
+          expect(page).not_to have_css('td.id > a', text: the_transaction.id)
         end
       end
     end
@@ -70,27 +66,23 @@ describe 'Transaction', '#index' do
     context 'searches by status' do
       it 'is found' do
         within 'table.search' do
-          fill_in :entry_requests_created_at_gteq, with: nil
-          fill_in :entry_requests_created_at_lteq, with: nil
           select EntryRequest::SUCCEEDED, from: :entry_requests_status_eq
           click_submit
         end
 
         within 'table.entities > tbody' do
-          expect(page).to have_css('td.id', text: the_transaction.id)
+          expect(page).to have_css('td.id > a', text: the_transaction.id)
         end
       end
 
       it 'is not found' do
         within 'table.search' do
-          fill_in :entry_requests_created_at_gteq, with: nil
-          fill_in :entry_requests_created_at_lteq, with: nil
           select EntryRequest::INITIAL, from: :entry_requests_status_eq
           click_submit
         end
 
         within 'table.entities > tbody' do
-          expect(page).not_to have_css('td.id', text: the_transaction.id)
+          expect(page).not_to have_css('td.id > a', text: the_transaction.id)
         end
       end
     end
@@ -98,29 +90,25 @@ describe 'Transaction', '#index' do
     context 'searches by type' do
       it 'is found' do
         within 'table.search' do
-          fill_in :entry_requests_created_at_gteq, with: nil
-          fill_in :entry_requests_created_at_lteq, with: nil
           select EntryRequest::DEPOSIT.capitalize,
                  from: :entry_requests_kind_eq
           click_submit
         end
 
         within 'table.entities > tbody' do
-          expect(page).to have_css('td.id', text: the_transaction.id)
+          expect(page).to have_css('td.id > a', text: the_transaction.id)
         end
       end
 
       it 'is not found' do
         within 'table.search' do
-          fill_in :entry_requests_created_at_gteq, with: nil
-          fill_in :entry_requests_created_at_lteq, with: nil
           select EntryRequest::WITHDRAW.capitalize,
                  from: :entry_requests_kind_eq
           click_submit
         end
 
         within 'table.entities > tbody' do
-          expect(page).not_to have_css('td.id', text: the_transaction.id)
+          expect(page).not_to have_css('td.id > a', text: the_transaction.id)
         end
       end
     end
@@ -136,7 +124,7 @@ describe 'Transaction', '#index' do
         end
 
         within 'table.entities > tbody' do
-          expect(page).to have_css('td.id', text: the_transaction.id)
+          expect(page).to have_css('td.id > a', text: the_transaction.id)
         end
       end
 
@@ -150,7 +138,7 @@ describe 'Transaction', '#index' do
         end
 
         within 'table.entities > tbody' do
-          expect(page).not_to have_css('td.id', text: the_transaction.id)
+          expect(page).not_to have_css('td.id > a', text: the_transaction.id)
         end
       end
     end

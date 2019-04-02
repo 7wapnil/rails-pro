@@ -14,10 +14,9 @@
     - if filter.requests.any?
       - filter.requests.each do |request|
         %tr{ id: "entry-request-#{request.id}" }
-          %td.id= request.id
+          %td.id= link_to request.id, request
           %td= request.external_id
-          %td
-            = link_to l(request.created_at, format: :long), request
+          %td= l(request.created_at, format: :long)
           %td= l(request.entries.first.created_at, format: :long) if request.entries.first
           %td= status_badge(request.status)
           %td
