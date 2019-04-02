@@ -6,7 +6,7 @@ module Transactions
 
     description 'Get all transactions'
 
-    argument :filter, TransactionKindsEnum
+    argument :filter, Transactions::KindEnum
 
     def resolve(_obj, args)
       return customer_transactions unless args['filter']

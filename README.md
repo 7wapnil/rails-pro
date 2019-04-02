@@ -73,7 +73,7 @@ Initial data for all environments (i.e. backoffice users) (is automatically exec
 $ rake db:seed
 ```
 
-Development fixture data that simulates production (i.e. events and markets, customers, etc.)
+Development fixture data that simulates production (i.e. events and markets, customers, etc.). More on prime and how it works [here](prime.md).
 
 ```
 $ rake dev:prime

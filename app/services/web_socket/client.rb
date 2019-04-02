@@ -49,6 +49,13 @@ module WebSocket
               bet.customer_id)
     end
 
+    def trigger_event_bet_stop(event, market_status)
+      message = OpenStruct.new(event_id: event.id, market_status: market_status)
+
+      trigger(SubscriptionFields::EVENTS_BET_STOPPED, message)
+      trigger(SubscriptionFields::EVENT_BET_STOPPED, message, id: event.id)
+    end
+
     private
 
     def trigger(name, object, args = {}, scope = nil)

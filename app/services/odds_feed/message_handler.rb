@@ -8,5 +8,9 @@ module OddsFeed
     def handle
       raise NotImplementedError
     end
+
+    protected
+
+    attr_reader :payload, :configuration
   end
 end

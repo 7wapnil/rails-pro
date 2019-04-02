@@ -19,7 +19,7 @@ describe OddsFeed::Radar::MarketStatus do
       let(:code) { nil }
 
       it 'converts to Market status suspended' do
-        expect(stop_status).to eq(Market::SUSPENDED)
+        expect(stop_status).to eq(described_class::SUSPENDED)
       end
     end
 
