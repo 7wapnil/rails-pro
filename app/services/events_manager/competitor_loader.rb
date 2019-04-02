@@ -1,11 +1,12 @@
 module EventsManager
   class CompetitorLoader < BaseEntityLoader
     def call
-      ::Competitor
-        .create_with(name: competitor_data.name,
-                     details: competitor_data.details,
-                     players: players)
-        .find_or_create_by(external_id: competitor_data.id)
+      competitor = ::Competitor.new(external_id: competitor_data.id,
+                                    name: competitor_data.name,
+                                    details: competitor_data.details)
+      build_players(competitor)
+      ::Competitor.create_or_update_on_duplicate(competitor)
+      competitor
     end
 
     private
@@ -18,12 +19,13 @@ module EventsManager
       api_client.competitor_profile(@external_id)
     end
 
-    def players
+    def build_players(competitor)
       competitor_data.players.map do |player_data|
-        ::Player
-          .create_with(name: player_data.name,
-                       full_name: player_data.full_name)
-          .find_or_create_by(external_id: player_data.id)
+        player = ::Player.new(external_id: player_data.id,
+                              name: player_data.name,
+                              full_name: player_data.full_name)
+        ::Player.create_or_update_on_duplicate(player)
+        competitor.competitor_players.build(player: player)
       end
     end
   end

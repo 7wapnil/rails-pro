@@ -3,29 +3,39 @@ module EventsManager
     MATCH_TYPE_REGEXP = /:match:/
 
     def call
-      validate!
+      validate! unless @options[:skip_validation]
       load_event
     end
 
     private
 
-    def load_event
-      event = ::Event.create!(external_id: event_data.id,
-                              start_at: event_data.start_at,
-                              name: event_data.name,
-                              description: event_data.name,
-                              traded_live: event_data.traded_live?,
-                              payload: event_data.payload,
-                              title: title,
-                              competitors: competitors)
-
-      event.event_scopes << ScopesBuilder.new(event, event_data).build
-      event
-    end
-
     def validate!
       check_support!
       check_existence!
+    end
+
+    def load_event
+      event = ::Event.new(external_id: event_data.id,
+                          start_at: event_data.start_at,
+                          name: event_data.name,
+                          description: event_data.name,
+                          traded_live: event_data.traded_live?,
+                          payload: event_data.payload,
+                          title: title)
+
+      build_associations(event)
+      Event.create_or_update_on_duplicate(event)
+      event
+    end
+
+    def build_associations(event)
+      ScopesBuilder.new(event, event_data).build.each do |scope|
+        event.scoped_events.build(event_scope: scope)
+      end
+
+      competitors.each do |competitor|
+        event.event_competitors.build(competitor: competitor)
+      end
     end
 
     def check_support!
