@@ -12,6 +12,7 @@ describe Entry do
 
   it { is_expected.to belong_to(:wallet) }
   it { is_expected.to belong_to(:origin) }
+  it { is_expected.to belong_to(:entry_request) }
   it { is_expected.to have_one(:currency) }
   it { is_expected.to have_many(:balance_entries) }
 

@@ -30,6 +30,7 @@ module WalletEntry
       @entry = Entry.create!(
         wallet_id: @wallet.id,
         origin: @request.origin,
+        entry_request: @request,
         kind: @request.kind,
         amount: @amount,
         authorized_at: Time.zone.now
