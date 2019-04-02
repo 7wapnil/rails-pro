@@ -36,7 +36,7 @@ describe Deposits::InitiateHostedDepositService do
     it 'returns entry request with correct attributes' do
       expect(subject).to have_attributes(
         status: EntryRequest::INITIAL,
-        amount: amount.to_d,
+        amount: (amount + amount / 100 * bonus.percentage).to_d,
         initiator: customer,
         customer: customer,
         currency: currency,

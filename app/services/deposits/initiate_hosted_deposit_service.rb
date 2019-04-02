@@ -17,6 +17,7 @@ module Deposits
     def call
       validate_ambiguous_input!
       validate_business_rules!
+      apply_bonus_code!
 
       initial_entry_request
     rescue *BUSINESS_ERRORS => e
@@ -25,6 +26,18 @@ module Deposits
     end
 
     private
+
+    def apply_bonus_code!
+      Bonuses::ActivationService.call(wallet, bonus, @amount)
+    end
+
+    def wallet
+      Wallet.find_or_create_by!(customer: @customer, currency: @currency)
+    end
+
+    def bonus
+      Bonus.find_by_code(@bonus_code)
+    end
 
     def validate_ambiguous_input!
       raise AMOUNT_TYPE_ERROR unless @amount.is_a? Numeric
@@ -41,14 +54,10 @@ module Deposits
     end
 
     def initial_entry_request
-      EntryRequest.new(
-        status: EntryRequest::INITIAL,
+      EntryRequests::Factories::Deposit.call(
+        wallet: wallet,
         amount: @amount,
-        initiator: @customer,
-        customer: @customer,
-        currency: @currency,
-        mode: EntryRequest::SAFECHARGE_UNKNOWN,
-        kind: EntryRequest::DEPOSIT
+        mode: EntryRequest::SAFECHARGE_UNKNOWN
       )
     end
 
