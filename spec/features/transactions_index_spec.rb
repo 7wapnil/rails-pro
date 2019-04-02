@@ -42,8 +42,6 @@ describe 'Transaction', '#index' do
     context 'searches by payment method' do
       it 'is found' do
         within 'table.search' do
-          fill_in :entry_requests_created_at_gteq, with: nil
-          fill_in :entry_requests_created_at_lteq, with: nil
           select EntryRequest::BITCOIN, from: :entry_requests_mode_eq
           click_submit
         end
@@ -55,8 +53,6 @@ describe 'Transaction', '#index' do
 
       it 'is not found' do
         within 'table.search' do
-          fill_in :entry_requests_created_at_gteq, with: nil
-          fill_in :entry_requests_created_at_lteq, with: nil
           select EntryRequest::CASHIER, from: :entry_requests_mode_eq
           click_submit
         end
@@ -70,8 +66,6 @@ describe 'Transaction', '#index' do
     context 'searches by status' do
       it 'is found' do
         within 'table.search' do
-          fill_in :entry_requests_created_at_gteq, with: nil
-          fill_in :entry_requests_created_at_lteq, with: nil
           select EntryRequest::SUCCEEDED, from: :entry_requests_status_eq
           click_submit
         end
@@ -83,8 +77,6 @@ describe 'Transaction', '#index' do
 
       it 'is not found' do
         within 'table.search' do
-          fill_in :entry_requests_created_at_gteq, with: nil
-          fill_in :entry_requests_created_at_lteq, with: nil
           select EntryRequest::INITIAL, from: :entry_requests_status_eq
           click_submit
         end
@@ -98,8 +90,6 @@ describe 'Transaction', '#index' do
     context 'searches by type' do
       it 'is found' do
         within 'table.search' do
-          fill_in :entry_requests_created_at_gteq, with: nil
-          fill_in :entry_requests_created_at_lteq, with: nil
           select EntryRequest::DEPOSIT.capitalize,
                  from: :entry_requests_kind_eq
           click_submit
@@ -112,8 +102,6 @@ describe 'Transaction', '#index' do
 
       it 'is not found' do
         within 'table.search' do
-          fill_in :entry_requests_created_at_gteq, with: nil
-          fill_in :entry_requests_created_at_lteq, with: nil
           select EntryRequest::WITHDRAW.capitalize,
                  from: :entry_requests_kind_eq
           click_submit
