@@ -19,6 +19,7 @@ describe EventsManager::EventLoader do
   context 'attributes building' do
     it 'raises error if event exists in database' do
       create(:event, external_id: external_id)
+      subject.options = { check_existence: true }
       expect { subject.call }.to raise_error(StandardError)
     end
 

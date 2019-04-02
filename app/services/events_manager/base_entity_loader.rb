@@ -1,5 +1,7 @@
 module EventsManager
   class BaseEntityLoader < ApplicationService
+    attr_writer :options
+
     def initialize(external_id, options = {})
       @external_id = external_id
       @options = options

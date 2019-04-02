@@ -11,7 +11,7 @@ module EventsManager
 
     def validate!
       check_support!
-      check_existence!
+      check_existence! if @options[:check_existence]
     end
 
     def load_event
