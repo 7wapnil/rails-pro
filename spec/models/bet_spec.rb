@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Bet do
+describe Bet, type: :model do
   subject { build(:bet) }
 
   it { is_expected.to belong_to(:customer) }
@@ -257,6 +257,30 @@ describe Bet do
 
     it 'wager calculations' do
       expect(Event.with_wager.find(event.id).wager).to eq(35)
+    end
+  end
+
+  describe '.pending' do
+    let!(:included_bets) do
+      [
+        create_list(:bet, rand(1..3), :sent_to_internal_validation),
+        create_list(:bet, rand(1..3), :validated_internally),
+        create_list(:bet, rand(1..3), :sent_to_external_validation),
+        create_list(:bet, rand(1..3), :accepted)
+      ].flatten
+    end
+
+    let!(:excluded_bets) do
+      [
+        create_list(:bet, rand(1..3)),
+        create_list(:bet, rand(1..3), :cancelled),
+        create_list(:bet, rand(1..3), :rejected),
+        create_list(:bet, rand(1..3), :failed)
+      ].flatten
+    end
+
+    it 'works' do
+      expect(described_class.pending).to match_array(included_bets)
     end
   end
 end

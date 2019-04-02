@@ -1,0 +1,47 @@
+= card header: t('customers.statistics.profit_and_revenue.title'), class: 'profit-and-revenue' do
+  %table.table.vertical-with-labels
+    %tr.total_gross_gaming_revenue
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:total_gross_gaming_revenue)
+      %td
+        = number_with_precision stats.gross_gaming_revenue(Customers::Statistic::TOTAL),
+                                precision: 2
+        &#8364;
+
+    %tr.prematch_gross_gaming_revenue
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:prematch_gross_gaming_revenue)
+      %td
+        = number_with_precision stats.gross_gaming_revenue(Customers::Statistic::PREMATCH),
+                                precision: 2
+        &#8364;
+
+    %tr.live_gross_gaming_revenue
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:live_gross_gaming_revenue)
+      %td
+        = number_with_precision stats.gross_gaming_revenue(Customers::Statistic::LIVE),
+                                precision: 2
+        &#8364;
+
+  %table.table.vertical-with-labels
+    %tr.total_margin
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:total_margin)
+      %td
+        = number_with_precision stats.margin(Customers::Statistic::TOTAL), precision: 2
+        &#8364;
+
+    %tr.prematch_margin
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:prematch_margin)
+      %td
+        = number_with_precision stats.margin(Customers::Statistic::PREMATCH), precision: 2
+        &#8364;
+
+    %tr.live_margin
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:live_margin)
+      %td
+        = number_with_precision stats.margin(Customers::Statistic::LIVE), precision: 2
+        &#8364;

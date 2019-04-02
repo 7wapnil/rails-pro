@@ -2,40 +2,44 @@
   = link_to t('navigation.customer.account'),
             customer,
             class: 'list-group-item list-group-item-action',
-            'data-target-action': :show
+            'data-target-action': 'customers#show'
   = link_to t('navigation.customer.account_management'),
             account_management_customer_path(customer),
             class: 'list-group-item list-group-item-action',
-            'data-target-action': :account_management
+            'data-target-action': 'customers#account_management'
   = link_to t('navigation.customer.activity'),
             activity_customer_path(customer),
             class: 'list-group-item list-group-item-action',
-            'data-target-action': :activity
+            'data-target-action': 'customers#activity'
   = link_to t('navigation.customer.bonuses'),
             bonuses_customer_path(customer),
             class: 'list-group-item list-group-item-action',
-            'data-target-action': :bonuses
+            'data-target-action': 'customers#bonuses'
   = link_to t('navigation.customer.notes'),
             notes_customer_path(customer),
             class: 'list-group-item list-group-item-action',
-            'data-target-action': :notes
+            'data-target-action': 'customers#notes'
   = link_to t('navigation.customer.documents'),
             documents_customer_path(customer),
             class: 'list-group-item list-group-item-action',
-            'data-target-action': :documents
+            'data-target-action': 'customers#documents'
   = link_to t('navigation.customer.bets'),
             bets_customer_path(customer),
             class: 'list-group-item list-group-item-action',
-            'data-target-action': :bets
+            'data-target-action': 'customers#bets'
   = link_to t('navigation.customer.betting_limits'),
             betting_limits_customer_path(customer),
             class: 'list-group-item list-group-item-action',
-            'data-target-action': :betting_limits
+            'data-target-action': 'customers#betting_limits'
   = link_to t('navigation.customer.deposit_limit'),
             deposit_limit_customer_path(customer),
             class: 'list-group-item list-group-item-action',
-            'data-target-action': :deposit_limit
+            'data-target-action': 'customers#deposit_limit'
   = link_to t('entities.transactions'),
             transactions_customer_path(customer),
             class: 'list-group-item list-group-item-action',
-            'data-target-action': :transactions
+            'data-target-action': 'customers#transactions'
+  = link_to t('navigation.customer.statistic'),
+            customer_statistics_path(customer),
+            class: 'list-group-item list-group-item-action',
+            'data-target-action': 'statistics#show'

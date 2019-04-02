@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 class ApplicationController < ActionController::Base
+  include Findable
+
   before_action :authenticate_user!
 
   helper_method :query_params

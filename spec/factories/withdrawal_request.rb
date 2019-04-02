@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :withdrawal_request do
-    association :entry_request, :withdraw, :with_entry
+    association :entry_request, :withdraw, :with_entry, strategy: :build
     status { WithdrawalRequest::PENDING }
 
     trait :rejected do

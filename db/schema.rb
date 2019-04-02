@@ -205,6 +205,27 @@ ActiveRecord::Schema.define(version: 2019_04_05_075146) do
     t.index ["user_id"], name: "index_customer_notes_on_user_id"
   end
 
+  create_table "customer_statistics", force: :cascade do |t|
+    t.integer "deposit_count", default: 0
+    t.decimal "deposit_value", precision: 8, scale: 2, default: "0.0"
+    t.integer "withdrawal_count", default: 0
+    t.decimal "withdrawal_value", precision: 8, scale: 2, default: "0.0"
+    t.decimal "theoretical_bonus_cost", precision: 8, scale: 2, default: "0.0"
+    t.decimal "potential_bonus_cost", precision: 8, scale: 2, default: "0.0"
+    t.decimal "actual_bonus_cost", precision: 8, scale: 2, default: "0.0"
+    t.integer "prematch_bet_count", default: 0
+    t.decimal "prematch_wager", precision: 8, scale: 2, default: "0.0"
+    t.decimal "prematch_payout", precision: 8, scale: 2, default: "0.0"
+    t.integer "live_bet_count", default: 0
+    t.decimal "live_sports_wager", precision: 8, scale: 2, default: "0.0"
+    t.decimal "live_sports_payout", precision: 8, scale: 2, default: "0.0"
+    t.decimal "total_pending_bet_sum", precision: 8, scale: 2, default: "0.0"
+    t.bigint "customer_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_customer_statistics_on_customer_id"
+  end
+
   create_table "customers", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -506,6 +527,7 @@ ActiveRecord::Schema.define(version: 2019_04_05_075146) do
   add_foreign_key "competitor_players", "players"
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
+  add_foreign_key "customer_statistics", "customers"
   add_foreign_key "deposit_limits", "currencies"
   add_foreign_key "deposit_limits", "customers"
   add_foreign_key "entries", "entry_requests"

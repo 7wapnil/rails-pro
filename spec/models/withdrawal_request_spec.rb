@@ -1,10 +1,16 @@
+# frozen_string_literal: true
+
 describe WithdrawalRequest, type: :model do
+  subject { build(:withdrawal_request) }
+
   let(:user) { create(:admin_user) }
   let(:error_message) do
     I18n.t('errors.messages.withdrawal_requests.not_actionable')
   end
 
   it { is_expected.to belong_to(:actioned_by) }
+  it { is_expected.to have_many(:entry_requests) }
+  it { is_expected.to have_one(:entry_request) }
 
   context '#confirm!' do
     subject { withdrawal_request.confirm!(user) }

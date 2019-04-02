@@ -1,0 +1,33 @@
+= card header: t('customers.statistics.deposit_and_withdrawal.title'),
+       class: 'deposit-and-withdrawal mb-3' do
+  %table.table.vertical-with-labels
+    %tr.deposit_count
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:deposit_count)
+      %td= stats.deposit_count
+
+    %tr.deposit_value
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:deposit_value)
+      %td
+        = number_with_precision stats.deposit_value, precision: 2
+        &#8364;
+
+    %tr.withdrawal_count
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:withdrawal_count)
+      %td= stats.withdrawal_count
+
+    %tr.withdrawal_value
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:withdrawal_value)
+      %td
+        = number_with_precision stats.withdrawal_value, precision: 2
+        &#8364;
+
+    %tr.hold_value
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:hold_value)
+      %td
+        = number_with_precision stats.hold_value, precision: 2
+        &#8364;

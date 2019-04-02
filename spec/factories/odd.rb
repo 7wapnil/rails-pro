@@ -11,7 +11,7 @@ FactoryBot.define do
       "sr:match:#{n}:#{rand(0..10_000)}/hcp=0.5:#{n}"
     end
 
-    market
+    association :market, strategy: :build
 
     trait :active do
       status { Odd::ACTIVE }
