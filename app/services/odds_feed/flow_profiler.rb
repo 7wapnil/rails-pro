@@ -37,11 +37,9 @@ module OddsFeed
     end
 
     def flow_profiler
-      if profiler_attributes_storage
-        return OddsFeed::MessageProfiler.new(profiler_attributes_storage)
-      end
+      return empty_profiler unless profiler_attributes_storage
 
-      empty_profiler
+      OddsFeed::MessageProfiler.new(profiler_attributes_storage)
     end
 
     private

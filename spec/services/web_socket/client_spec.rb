@@ -12,7 +12,7 @@ describe WebSocket::Client do
     end
     let(:profiler_double) do
       instance_double(
-        'OddsFeed::MessageProfiler',
+        OddsFeed::MessageProfiler,
         trace_profiler_event: true
       )
     end

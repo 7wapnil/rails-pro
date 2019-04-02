@@ -71,7 +71,7 @@ module OddsFeed
     private
 
     def message_duration_calculation
-      return nil unless uof_message_registered_at
+      return unless uof_message_registered_at
 
       (Time.current.to_f * 1000).round - uof_message_registered_at
     end
