@@ -10,7 +10,7 @@ module GraphqlExtensions
           object = JSON.parse(json_string)
 
           return load_open_struct(object) if open_struct_loaded?(object)
-          return load_profiled_hash(object) if profiled_hash_loaded?(object)
+          return load_profiled_hash(json_string) if profiled_hash_loaded?(object)
 
           GraphQL::Subscriptions::Serialize.load(json_string)
         end
@@ -34,8 +34,9 @@ module GraphqlExtensions
         end
 
         def load_profiled_hash(parsed_object)
-          handle_profiled_data(parsed_object[:profiler])
-          parsed_object[:data]
+          loaded_object = GraphQL::Subscriptions::Serialize.load(parsed_object)
+          handle_profiled_data(loaded_object[:profiler])
+          loaded_object[:data]
         end
 
         def load_open_struct(parsed_object)
