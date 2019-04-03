@@ -282,6 +282,7 @@ en:
       zero: No scopes
       one: 1 scope
       other: "%{count} scopes"
+    titles: Titles
     wallet: Wallet
     wallets: Wallets
     wallet_count:
