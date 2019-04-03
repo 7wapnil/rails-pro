@@ -22,6 +22,14 @@ module EventsManager
 
         result
       end
+
+      protected
+
+      def ensure_array(value)
+        return [] unless value
+
+        Array[value].compact.flatten
+      end
     end
   end
 end

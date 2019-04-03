@@ -5,13 +5,6 @@ describe EventsManager::Entities::Event do
   let(:event_data) do
     ::XmlParser.parse(fixture)
   end
-  let(:is_replay) { false }
-
-  before do
-    allow(ENV).to receive(:[])
-      .with('RADAR_MQ_IS_REPLAY')
-      .and_return(is_replay)
-  end
 
   it 'return external id' do
     expect(subject.id).to eq('sr:match:8696826')
@@ -25,12 +18,24 @@ describe EventsManager::Entities::Event do
     expect(subject).not_to be_traded_live
   end
 
-  it 'returns start time from response' do
-    expect(subject.start_at).to eq('2016-10-31T18:00:00+00:00')
+  context 'replay model OFF' do
+    before do
+      allow(ENV).to receive(:[])
+        .with('RADAR_MQ_IS_REPLAY')
+        .and_return('false')
+    end
+
+    it 'returns start time from response' do
+      expect(subject.start_at).to eq('2016-10-31T18:00:00+00:00')
+    end
   end
 
   context 'replay mode ON' do
-    let(:is_replay) { true }
+    before do
+      allow(ENV).to receive(:[])
+        .with('RADAR_MQ_IS_REPLAY')
+        .and_return('true')
+    end
 
     it 'returns start time in the future' do
       expect(subject.start_at).to be > DateTime.now

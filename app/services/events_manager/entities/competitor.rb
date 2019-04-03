@@ -14,12 +14,16 @@ module EventsManager
       end
 
       def players
-        @players ||= profile['players']['player'].map do |payload|
+        @players ||= ensure_players.map do |payload|
           EventsManager::Entities::Player.new(payload)
         end
       end
 
       private
+
+      def ensure_players
+        ensure_array(attribute(profile, 'players', 'player'))
+      end
 
       def profile
         attribute!(@payload, 'competitor_profile')
