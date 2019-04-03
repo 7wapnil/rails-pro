@@ -39,14 +39,15 @@ module EventsManager
     end
 
     def check_support!
-      is_matching = @external_id.to_s.match?(MATCH_TYPE_REGEXP)
-      err_msg = "Event ID '#{@external_id}' is not supported"
-      raise NotImplementedError, err_msg unless is_matching
+      return if @external_id.to_s.match?(MATCH_TYPE_REGEXP)
+
+      raise NotImplementedError, "Event ID '#{@external_id}' is not supported"
     end
 
     def check_existence!
-      msg = "Event with ID '#{event_data.id}' already exists"
-      raise StandardError, msg if ::Event.find_by(external_id: event_data.id)
+      return unless ::Event.exists?(external_id: event_data.id)
+
+      raise StandardError, "Event with ID '#{event_data.id}' already exists"
     end
 
     def event_data

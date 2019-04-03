@@ -53,14 +53,14 @@ describe EventsManager::ScopesBuilder do
 
   context 'exceptions' do
     before do
-      allow(event_entity).to receive(:category).and_return(nil)
-      allow(event_entity).to receive(:tournament).and_return(nil)
-      allow(event_entity).to receive(:season).and_return(nil)
+      allow(event_entity).to receive(:category)
+      allow(event_entity).to receive(:tournament)
+      allow(event_entity).to receive(:season)
     end
 
     it 'skips scope creation on empty fixture' do
       subject.build
-      expect(EventScope.count).to eq(0)
+      expect(EventScope.count).to be_zero
     end
   end
 end

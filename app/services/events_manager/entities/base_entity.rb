@@ -14,7 +14,7 @@ module EventsManager
       end
 
       def attribute!(source, *args)
-        raise StandardError, 'Source is malformed' if source.nil?
+        raise StandardError, 'Source is malformed' unless source
 
         result = attribute(source, *args)
         err_msg = "Payload is malformed, searching: #{args.join(', ')}"

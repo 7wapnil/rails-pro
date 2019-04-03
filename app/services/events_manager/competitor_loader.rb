@@ -21,12 +21,16 @@ module EventsManager
 
     def build_players(competitor)
       competitor_data.players.map do |player_data|
-        player = ::Player.new(external_id: player_data.id,
-                              name: player_data.name,
-                              full_name: player_data.full_name)
-        ::Player.create_or_update_on_duplicate(player)
-        competitor.competitor_players.build(player: player)
+        build_player(competitor, player_data)
       end
+    end
+
+    def build_player(competitor, player_data)
+      player = ::Player.new(external_id: player_data.id,
+                            name: player_data.name,
+                            full_name: player_data.full_name)
+      ::Player.create_or_update_on_duplicate(player)
+      competitor.competitor_players.build(player: player)
     end
   end
 end
