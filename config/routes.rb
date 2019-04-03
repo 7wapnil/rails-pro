@@ -65,6 +65,7 @@ Rails.application.routes.draw do
 
   resources :entry_requests, only: %i[index show create]
   resources :entries, only: :show
+  resources :transactions, only: %i[index]
 
   resources :bets, only: %i[index show]
 

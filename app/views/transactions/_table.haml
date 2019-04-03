@@ -1,0 +1,31 @@
+%table.table.entities
+  %thead
+    %tr
+      %th= t('attributes.id')
+      %th= t('attributes.external_id')
+      %th= sort_link(filter.search, :created_at, t('attributes.requested_at'), default_order: :asc)
+      %th= t('attributes.completed_at')
+      %th= t('attributes.status')
+      %th= t('attributes.type')
+      %th= t('attributes.username')
+      %th= t('attributes.payment_method')
+      %th= sort_link(filter.search, :amount, t('attributes.amount'), default_order: :desc)
+  %tbody
+    - if filter.requests.any?
+      - filter.requests.each do |request|
+        %tr{ id: "entry-request-#{request.id}" }
+          %td.id= link_to request.id, request
+          %td= request.external_id
+          %td= l(request.created_at, format: :long)
+          %td= l(request.entries.first.created_at, format: :long) if request.entries.first
+          %td= status_badge(request.status)
+          %td
+            %b= t("kinds.#{request.kind}")
+          %td= link_to request.customer.username, request.customer
+          %td= request.mode
+          %td
+            = number_with_precision request.amount, precision: 2
+            = request.currency.code
+    - else
+      %tr
+        %td{ colspan: 9 }= t(:not_found, instance: t('entities.entry_requests'))

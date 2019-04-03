@@ -1,3 +1,8 @@
+:ruby
+  entry = @customer_bonus.entry
+  customer = @customer_bonus.customer
+  entry_link = entry ? link_to(t('entities.entry'), entry_path(entry)) : 'n/a'
+
 .row.mt-4
   .col
     = card header: @customer_bonus.code, class: 'bonus-details' do
@@ -7,7 +12,7 @@
             %table.table
               %tr
                 %td= t('attributes.customer_name')
-                %td= @customer_bonus.customer.full_name
+                %td= link_to(customer.full_name, customer_path(customer))
               %tr
                 %td= t('attributes.rollover_multiplier')
                 %td= @customer_bonus.rollover_multiplier
@@ -47,6 +52,20 @@
                   %td= t('attributes.expires_at')
                   %td= l @customer_bonus.expires_at
 
+      %hr
+      .row
+        .col-6
+          = card(header: t(:activated, instance: t('entities.bonus'))) do
+            %table.table
+              %tr
+                %td= t('entities.entry_information')
+                %td= entry_link
+              %tr
+                %td= t('attributes.rollover_balance')
+                %td= @customer_bonus.rollover_balance
+              %tr
+                %td= t('attributes.rollover_initial_balance')
+                %td= @customer_bonus.rollover_initial_value
 
       %hr
       = link_back bonuses_customer_path(@customer_bonus.customer)

@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require 'graphql/batch'
 
 ArcanebetSchema = GraphQL::Schema.define do
-  use GraphQL::Subscriptions::ActionCableSubscriptions
   use GraphQL::Batch
+  use GraphQL::Subscriptions::ActionCableSubscriptions,
+      serializer: GraphqlExtensions::Subscriptions::Serializer
 
   mutation(MutationType)
   query(QueryType)

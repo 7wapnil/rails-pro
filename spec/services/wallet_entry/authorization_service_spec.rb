@@ -99,7 +99,10 @@ describe WalletEntry::AuthorizationService do
       end
 
       it 'returns the created entry' do
-        expect(described_class.call(request)).to be_an Entry
+        described_class.call(request)
+
+        expect(entry).to be_an Entry
+        expect(entry.entry_request).to eq request
       end
     end
 
