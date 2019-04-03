@@ -67,7 +67,6 @@ describe GraphQL, '#withdraw' do
       let(:password) { 'wrong-password' }
 
       it 'returns invalid password error' do
-        expect(response['errors']).not_to be_nil
         error = response['errors'].detect { |e| e['path'][0] == :password }
         expect(error).not_to be_nil
       end
