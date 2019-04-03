@@ -13,7 +13,7 @@ describe EventsManager::EventLoader do
 
     allow_any_instance_of(EventsManager::CompetitorLoader)
       .to receive(:call)
-      .and_return(create(:competitor))
+      .and_return(create(:competitor, external_id: 'sr:competitor:1'))
   end
 
   context 'attributes building' do
@@ -45,7 +45,7 @@ describe EventsManager::EventLoader do
   context 'competitors' do
     it 'creates competitors and associates with event' do
       event = subject.call
-      expect(event.competitors.count).to eq(2)
+      expect(event.competitors.count).to eq(1)
     end
   end
 
@@ -53,6 +53,35 @@ describe EventsManager::EventLoader do
     it 'creates competitors and associates with event' do
       event = subject.call
       expect(event.event_scopes.count).to eq(3)
+    end
+  end
+
+  context 'duplicated' do
+    let(:event) { create(:event, external_id: external_id) }
+
+    before do
+      event.event_scopes << create(:event_scope,
+                                   kind: EventScope::CATEGORY,
+                                   external_id: 'sr:category:9')
+      event.event_scopes << create(:event_scope,
+                                   kind: EventScope::TOURNAMENT,
+                                   external_id: 'sr:tournament:68')
+      event.event_scopes << create(:event_scope,
+                                   kind: EventScope::SEASON,
+                                   external_id: 'sr:season:12346')
+
+      event.competitors << create(:competitor,
+                                  external_id: 'sr:competitor:1860')
+      event.competitors << create(:competitor,
+                                  external_id: 'sr:competitor:22356')
+    end
+
+    it 'not duplicates scopes associations' do
+      expect(subject.call.event_scopes.count).to eq(3)
+    end
+
+    it 'not duplicates competitors associations' do
+      expect(subject.call.event_competitors.count).to eq(3)
     end
   end
 end

@@ -22,20 +22,32 @@ module EventsManager
                           traded_live: event_data.traded_live?,
                           payload: event_data.payload,
                           title: title)
-
-      build_associations(event)
       Event.create_or_update_on_duplicate(event)
+      update_associations(event)
+
       event
     end
 
-    def build_associations(event)
+    def update_associations(event)
       ScopesBuilder.new(event, event_data).build.each do |scope|
-        event.scoped_events.build(event_scope: scope)
+        update_scope(event, scope)
       end
 
       competitors.each do |competitor|
-        event.event_competitors.build(competitor: competitor)
+        update_competitor(event, competitor)
       end
+    end
+
+    def update_scope(event, scope)
+      return if event.event_scopes.exists?(scope.id)
+
+      event.event_scopes << scope
+    end
+
+    def update_competitor(event, competitor)
+      return if event.competitors.exists?(competitor.id)
+
+      event.competitors << competitor
     end
 
     def check_support!

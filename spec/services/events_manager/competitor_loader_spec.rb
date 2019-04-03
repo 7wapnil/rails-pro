@@ -13,22 +13,36 @@ describe EventsManager::CompetitorLoader do
       .and_return(competitor_response)
   end
 
-  context 'attributes building' do
-    it 'stores external id from response' do
-      competitor = subject.call
-      expect(competitor.external_id).to eq(external_id)
-    end
-
-    it 'stores name id from response' do
-      competitor = subject.call
-      expect(competitor.name).to eq('IK Oddevold')
-    end
+  it 'stores external id from response' do
+    competitor = subject.call
+    expect(competitor.external_id).to eq(external_id)
   end
 
-  context 'players' do
-    it 'loads players to database' do
-      competitor = subject.call
-      expect(competitor.players.count).to eq(3)
+  it 'stores name id from response' do
+    competitor = subject.call
+    expect(competitor.name).to eq('IK Oddevold')
+  end
+
+  it 'loads players to database' do
+    competitor = subject.call
+    expect(competitor.players.count).to eq(3)
+  end
+
+  context 'duplicated' do
+    let(:competitor) { create(:competitor, external_id: external_id) }
+
+    before do
+      competitor.players << create(:player, external_id: 'sr:player:276289')
+      competitor.players << create(:player, external_id: 'sr:player:541260')
+      competitor.players << create(:player, external_id: 'sr:player:582508')
+    end
+
+    it 'not creates new competitor' do
+      expect(subject.call.id).to eq(competitor.id)
+    end
+
+    it 'not duplicates players associations' do
+      expect(subject.call.players.count).to eq(3)
     end
   end
 end
