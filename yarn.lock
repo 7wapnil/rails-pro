@@ -5920,6 +5920,10 @@ sort-keys@^1.0.0:
   dependencies:
     is-plain-obj "^1.0.0"
 
+sortablejs@^1.8.4:
+  version "1.8.4"
+  resolved "https://registry.yarnpkg.com/sortablejs/-/sortablejs-1.8.4.tgz#1bbfeafa96d399b83f28e25d8e49d4fbfd867f30"
+
 source-list-map@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/source-list-map/-/source-list-map-2.0.0.tgz#aaa47403f7b245a92fbc97ea08f250d6087ed085"
