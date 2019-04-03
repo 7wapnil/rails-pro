@@ -3,40 +3,27 @@ describe Mts::ValidationMessagePublisherWorker do
 
   describe '.perform' do
     it 'raises on unprocessable input' do
-      expect { subject.perform([1, 2]) }.to raise_error(NotImplementedError)
+      expect { subject.perform([1, 2]) } .to raise_error(NotImplementedError)
     end
 
     context 'with processable input' do
-      let(:bet) { create(:bet) }
-      let(:ticket_id) { Faker::Alphanumeric.alphanumeric 10 }
-
-      it 'publishes using correct publisher and message' do
-        expect(Mts::Messages::ValidationRequest)
-          .to receive(:new).with([bet])
-                           .and_return(OpenStruct.new(ticket_id: ticket_id))
-        expect(Mts::MessagePublisher).to receive('publish!').and_return(true)
-        subject.perform([bet.id])
+      before do
+        allow(Mts::Publishers::BetValidation)
+          .to receive('publish!')
       end
 
-      context 'with correct response from server' do
-        before do
-          allow(Mts::Messages::ValidationRequest)
-            .to receive(:new).with([bet])
-                             .and_return(OpenStruct.new(ticket_id: ticket_id))
-          allow(Mts::MessagePublisher)
-            .to receive('publish!').and_return(true)
+      let(:bet) { create(:bet) }
 
-          subject.perform([bet.id])
-        end
+      it 'publishes with correct publisher' do
+        expect(Mts::Publishers::BetValidation).to receive('publish!')
+          .and_return(true)
 
-        it 'sets validation ticket ID to bet' do
-          expect(bet.reload.validation_ticket_id).to eq(ticket_id)
-        end
+        subject.perform([bet])
       end
 
       context 'with unexpected response from server' do
         before do
-          allow(Mts::MessagePublisher)
+          allow(Mts::Publishers::BetValidation)
             .to receive('publish!').and_return(false)
         end
 

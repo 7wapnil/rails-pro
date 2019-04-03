@@ -46,7 +46,7 @@ module Mts
       def root_attributes
         {
           version: MESSAGE_VERSION,
-          timestamp_utc: now_in_millisecons_epoch,
+          timestamp_utc: now_in_milliseconds_epoch,
           ticket_id: ticket_id,
           test_source: !Mts::Mode.production?,
           odds_change: DEFAULT_ODDS_CHANGE_BEHAVIOUR
@@ -125,7 +125,7 @@ module Mts
         }
       end
 
-      def now_in_millisecons_epoch
+      def now_in_milliseconds_epoch
         (Time.now.to_f * 1000).to_i
       end
 
@@ -134,7 +134,7 @@ module Mts
       end
 
       def created_at
-        @created_at ||= now_in_millisecons_epoch
+        @created_at ||= now_in_milliseconds_epoch
       end
 
       def bets_currency
