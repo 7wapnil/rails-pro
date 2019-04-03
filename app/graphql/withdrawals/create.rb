@@ -20,7 +20,7 @@ module Withdrawals
     def validate_password!(password)
       return if current_customer.valid_password?(password)
 
-      raise ResolvingError, password: I18n.t('devise.errors.messages.password')
+      raise ResolvingError, password: I18n.t('errors.messages.password_invalid')
     end
 
     def create_withdrawal_request!(args)
