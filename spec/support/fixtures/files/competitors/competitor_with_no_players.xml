@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<competitor_profile xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" generated_at="2019-03-29T08:41:33+00:00" xmlns="http://schemas.sportradar.com/sportsapi/v1/unified" xsi:schemaLocation="http://schemas.sportradar.com/sportsapi/v1/unified http://schemas.sportradar.com/bsa-staging/unified/v1/xml/endpoints/unified/competitor_profile.xsd">
+  <competitor id="sr:competitor:1860" name="IK Oddevold" country="Sweden" country_code="SWE" abbreviation="ODD">
+    <sport id="sr:sport:1" name="Soccer"/>
+    <category id="sr:category:9" name="Sweden" country_code="SWE"/>
+  </competitor>
+  <jerseys>
+    <jersey type="third" base="0000ff" sleeve="000000" number="ffffff" squares="false" stripes="false" horizontal_stripes="false" split="false"/>
+  </jerseys>
+  <manager id="sr:player:362588" name="Lien, Jan-Erik" nationality="Sweden" country_code="SWE"/>
+</competitor_profile>
