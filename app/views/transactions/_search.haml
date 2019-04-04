@@ -1,0 +1,58 @@
+- content_for :css do
+  = stylesheet_pack_tag 'flatpickr', media: :all, 'data-turbolinks-track': 'reload'
+
+- content_for :js do
+  = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
+
+= search_form_for filter.search, url: search_path, as: :entry_requests do |f|
+  %table.table.search
+    %thead
+      %tr
+        %th
+          .filter_title
+            #{t('attributes.payment_method')}:
+          .filter_field
+            = f.label :payment_method, class: 'sr-only'
+            = f.select :mode_eq,
+                       EntryRequest.transactions.pluck('mode').uniq,
+                       { include_blank: true },
+                       class: 'form-control'
+
+        %th
+          .filter_title
+            #{t('attributes.type')}:
+          .filter_field
+            = f.label :kind, class: 'sr-only'
+            = f.select :kind_eq,
+                       EntryRequest.transactions.pluck(:kind).uniq.map { |k| [t("kinds.#{k}"), k] },
+                       { include_blank: true },
+                       class: 'form-control'
+        %th
+          .filter_title
+            #{t(:search, subject: t('from'))}:
+          .filter_field
+            = f.label :created_at_gteq, class: 'sr-only'
+            = f.search_field :created_at_gteq,
+                              class: 'form-control form_date',
+                              placeholder: t(:search, subject: t('from')),
+                              value: params[:entry_requests]&.[](:created_at_gteq)
+        %th
+          .filter_title
+            #{t(:search, subject: t('to'))}:
+          .filter_field
+            = f.label :created_at_lteq, class: 'sr-only'
+            = f.search_field :created_at_lteq,
+                              class: 'form-control form_date',
+                              placeholder: t(:search, subject: t('to')),
+                              value: params[:entry_requests]&.[](:created_at_lteq)
+        %th
+          .filter_title
+            #{t('attributes.status')}:
+          .filter_field
+            = f.label :status, class: 'sr-only'
+            = f.select :status_eq,
+                       EntryRequest.transactions.pluck('status').uniq,
+                       { include_blank: true },
+                       class: 'form-control'
+        %th
+          = f.submit class: 'btn btn-outline-dark btn-block'

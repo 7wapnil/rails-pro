@@ -13,4 +13,6 @@ module SubscriptionFields
   CATEGORY_MARKET_UPDATED = :category_market_updated
   WALLET_UPDATED = :wallet_updated
   BET_UPDATED = :bet_updated
+  EVENT_BET_STOPPED = :event_bet_stopped
+  EVENTS_BET_STOPPED = :events_bet_stopped
 end

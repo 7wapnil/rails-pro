@@ -1,42 +1,45 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     class BetStopHandler < RadarMessageHandler
-      include WebsocketEventEmittable
-
-      attr_accessor :batch_size
-
-      def initialize(payload)
-        super(payload)
-        @batch_size = 20
-      end
-
       def handle
+        emit_event_bet_stopped
         update_markets
-        emit_websocket
       end
 
       private
 
-      def update_markets
-        target_status = MarketStatus.stop_status(market_status_code)
+      def emit_event_bet_stopped
+        WebSocket::Client
+          .instance
+          .trigger_event_bet_stop(event, market_status)
+      end
 
-        markets = markets_to_be_changed_query
-                  .find_each(batch_size: @batch_size).to_a
-        markets_to_be_changed_query.update_all(status: target_status)
-        markets.each do |market|
-          market.status = target_status
-          emit_market_update(market)
-        rescue ActiveRecord::RecordInvalid => e
-          log_job_failure(e)
-        end
+      def event
+        @event ||= Event.find_by!(external_id: event_id)
+      rescue ActiveRecord::RecordNotFound
+        raise I18n.t('errors.messages.nonexistent_event', id: event_id)
+      end
+
+      def event_id
+        input_data['event_id']
       end
 
       def input_data
-        @payload['bet_stop']
+        payload['bet_stop']
+      end
+
+      def market_status
+        @market_status ||= MarketStatus.stop_status(market_status_code)
       end
 
       def market_status_code
         input_data['market_status']
+      end
+
+      def update_markets
+        markets_to_be_changed_query.update_all(status: market_status)
       end
 
       def markets_to_be_changed_query
@@ -46,10 +49,6 @@ module OddsFeed
             status: Market::ACTIVE,
             events: { external_id: event_id }
           )
-      end
-
-      def emit_market_update(market)
-        WebSocket::Client.instance.trigger_market_update(market)
       end
     end
   end

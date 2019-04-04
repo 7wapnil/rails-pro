@@ -11,7 +11,9 @@ describe EntryRequests::DepositService do
     create(:wallet, customer: customer, currency: currency, amount: 0.0)
   end
   let(:entry_request) do
-    EntryRequests::Factories::Deposit.call(wallet: wallet, amount: amount)
+    EntryRequests::Factories::Deposit.call(
+      wallet: wallet, amount: amount, mode: EntryRequest::SKRILL
+    )
   end
   let(:service_call) { described_class.call(entry_request: entry_request) }
 

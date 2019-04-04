@@ -13,10 +13,12 @@ class EntryRequest < ApplicationRecord
   has_one :bonus_balance_entry_request, -> { bonus },
           class_name: BalanceEntryRequest.name
 
+  has_many :entries
+
   default_scope { order(created_at: :desc) }
 
   scope :transactions, -> {
-    where(kind: [DEPOSIT, WITHDRAW]).order(created_at: :desc)
+    where(kind: [DEPOSIT, WITHDRAW, REFUND]).order(created_at: :desc)
   }
 
   enum status: {

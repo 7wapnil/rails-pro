@@ -8,7 +8,7 @@ module EntryRequests
       def initialize(wallet:, amount:, **attributes)
         @wallet = wallet
         @amount = amount
-        @mode = attributes[:mode] || EntryRequest::CASHIER
+        @mode = attributes[:mode]
         @passed_initiator = attributes[:initiator]
         @passed_comment = attributes[:comment]
         @customer_bonus = wallet.customer.customer_bonus
@@ -33,6 +33,7 @@ module EntryRequests
 
       def entry_request_attributes
         wallet_attributes.merge(
+          status: EntryRequest::INITIAL,
           amount: amount_value,
           mode: mode,
           kind: EntryRequest::DEPOSIT,
@@ -77,7 +78,9 @@ module EntryRequests
       end
 
       def default_comment
-        "Deposit #{amount_value} #{wallet.currency} " \
+        "Deposit #{calculations[:real_money]} #{wallet.currency} real money " \
+        "and #{calculations[:bonus] || 0} #{wallet.currency} bonus money " \
+        "(#{wallet.customer&.customer_bonus&.code || 'no'} bonus code) " \
         "for #{wallet.customer}#{initiator_comment_suffix}"
       end
 

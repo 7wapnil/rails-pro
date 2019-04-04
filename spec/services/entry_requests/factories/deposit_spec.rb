@@ -12,7 +12,11 @@ describe EntryRequests::Factories::Deposit do
   end
 
   let(:service_call) do
-    described_class.call(wallet: wallet, amount: amount)
+    described_class.call(
+      wallet: wallet,
+      amount: amount,
+      mode: EntryRequest::SKRILL
+    )
   end
 
   let!(:customer_bonus) do
@@ -127,11 +131,19 @@ describe EntryRequests::Factories::Deposit do
   context 'with initiator and without passed comment' do
     let(:admin) { create(:user) }
     let(:service_call) do
-      described_class.call(wallet: wallet, amount: amount, initiator: admin)
+      described_class.call(
+        wallet: wallet,
+        amount: amount,
+        initiator: admin,
+        mode: EntryRequest::SKRILL
+      )
     end
 
     let(:message) do
-      "Deposit #{amount} #{currency} for #{customer} by #{admin}"
+      "Deposit #{amount} #{currency} real money " \
+      "and 0 #{customer.customer_bonus.wallet.currency.code} bonus money " \
+      "(#{customer.customer_bonus.code} bonus code) " \
+      "for #{customer} by #{admin}"
     end
 
     before do
@@ -148,7 +160,10 @@ describe EntryRequests::Factories::Deposit do
   context 'without impersonated person and passed comment' do
     let(:impersonated_by) {}
     let(:message) do
-      "Deposit #{amount} #{currency} for #{customer}"
+      "Deposit #{amount} #{currency} real money " \
+      "and 0 #{customer.customer_bonus.wallet.currency.code} bonus money " \
+      "(#{customer.customer_bonus.code} bonus code) " \
+      "for #{customer}"
     end
 
     before do
@@ -168,7 +183,7 @@ describe EntryRequests::Factories::Deposit do
 
   context 'without mode' do
     it 'sets mode as CASHIER' do
-      expect(service_call.mode).to eq(EntryRequest::CASHIER)
+      expect(service_call.mode).to eq(EntryRequest::SKRILL)
     end
   end
 

@@ -244,6 +244,8 @@ ActiveRecord::Schema.define(version: 2019_04_03_185155) do
     t.datetime "authorized_at"
     t.datetime "confirmed_at"
     t.string "external_id"
+    t.bigint "entry_request_id"
+    t.index ["entry_request_id"], name: "index_entries_on_entry_request_id"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
   end
@@ -466,6 +468,7 @@ ActiveRecord::Schema.define(version: 2019_04_03_185155) do
   add_foreign_key "customer_notes", "users"
   add_foreign_key "deposit_limits", "currencies"
   add_foreign_key "deposit_limits", "customers"
+  add_foreign_key "entries", "entry_requests"
   add_foreign_key "entries", "wallets"
   add_foreign_key "entry_currency_rules", "currencies"
   add_foreign_key "entry_requests", "currencies"
