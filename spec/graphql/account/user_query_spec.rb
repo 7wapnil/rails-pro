@@ -29,20 +29,12 @@ describe GraphQL, '#user' do
       expect(result['data']['user']).not_to be_nil
     end
 
-    it 'returns user id' do
-      expect(result['data']['user']['id']).to eq(customer.id.to_s)
-    end
-
-    it 'returns user verified status' do
-      expect(result['data']['user']['verified']).to eq(false)
-    end
-
-    it 'returns user regularity' do
-      expect(result['data']['user']['regular']).to eq(true)
-    end
-
-    it 'returns user available withdraw methods list' do
-      expect(result['data']['user']['available_withdraw_methods']).to eq([])
+    it 'returns requested attributes' do
+      expect(result['data']['user'])
+        .to include('id' => customer.id.to_s,
+                    'verified' => false,
+                    'regular' => true,
+                    'available_withdraw_methods' => [])
     end
   end
 end
