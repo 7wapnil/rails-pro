@@ -40,7 +40,7 @@ describe GraphQL, '#titles' do
       create_list(:title, control_count, :with_event, kind: Title::ESPORTS)
     end
 
-    let(:control_title_ids) { control_titles.sort_by(&:name).map(&:id) }
+    let(:control_title_ids) { control_titles.sort_by(&:position).map(&:id) }
 
     before { create_list(:title, 5, :with_event, kind: Title::SPORTS) }
 
