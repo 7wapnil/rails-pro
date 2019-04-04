@@ -35,7 +35,8 @@
                 method: :post,
                 class: 'btn btn-success'
           %td
-            = form_for :rejection, url: reject_withdrawal_request_path(withdrawal_request), method: :post do |f|
+            = rejection_path = reject_withdrawal_request_path(withdrawal_request)
+            = form_for :rejection, url: rejection_path, method: :post do |f|
               .form-row
                 .col
                   = f.text_field :comment,

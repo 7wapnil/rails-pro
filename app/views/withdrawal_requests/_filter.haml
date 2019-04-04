@@ -1,4 +1,5 @@
-= search_form_for filter.search, url: withdrawal_requests_path, as: :withdrawal_requests do |f|
+= search_form_for filter.search, url: withdrawal_requests_path,
+                                 as: :withdrawal_requests do |f|
   %table.table.search
     %thead
       %tr
@@ -15,8 +16,9 @@
           .filter_title #{t('attributes.status')}:
           .filter_field
             = f.label :status_eq, class: 'sr-only'
+            = selected_status = query_params(:withdrawal_requests)['status_eq']
             = f.select :status_eq,
-                  options_for_select(filter.statuses, query_params(:withdrawal_requests)['status_eq']),
+                  options_for_select(filter.statuses, selected_status),
                   { include_blank: true },
                   class: 'form-control'
 
@@ -63,8 +65,9 @@
             #{t('attributes.payment_menthod')}:
           .filter_field
             = f.label :entry_request_mode_eq, class: 'sr-only'
+            = selected_method = query_params(:withdrawal_requests)['entry_request_mode_eq']
             = f.select :entry_request_mode_eq,
-                       options_for_select(filter.payment_methods, query_params(:withdrawal_requests)['entry_request_mode_eq']),
+                       options_for_select(filter.payment_methods, selected_method),
                        placeholder: t('attributes.payment_method'),
                        include_blank: true
         %th
