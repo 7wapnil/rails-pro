@@ -1,0 +1,50 @@
+%table.table
+  %thead
+    %tr
+      %th= t('attributes.id')
+      %th= t('attributes.customer')
+      %th= sort_link filter.search, :created_at, t('attributes.created_at')
+      %th= sort_link filter.search, :entry_request_amount, t('attributes.amount')
+      %th= t('attributes.currency')
+      %th= t('attributes.payment_method')
+      %th= t('attributes.status')
+      %th= t('attributes.actions')
+  %tbody
+    - if filter.withdrawal_requests.any?
+      - filter.withdrawal_requests.each do |withdrawal_request|
+        - id = "withdrawal_request-#{withdrawal_request.id}"
+        - entry_request = withdrawal_request.entry_request
+        %tr{ id: id }
+          // id
+          %td= id
+          // customer
+          %td= link_to entry_request.customer.username, customer_path(entry_request.customer)
+          // created_at
+          %td= withdrawal_request.created_at
+          // amount
+          %td= entry_request.amount
+          // currency
+          %td= entry_request.currency.name
+          // payment_method
+          %td= entry_request.mode
+          // status
+          %td= withdrawal_request.status
+          // actions
+          %td= link_to t('confirm'),
+                confirm_withdrawal_request_path(withdrawal_request),
+                method: :post,
+                class: 'btn btn-success'
+          %td
+            = form_for :rejection, url: reject_withdrawal_request_path(withdrawal_request), method: :post do |f|
+              .form-row
+                .col
+                  = f.text_field :comment,
+                    placeholder: t('attributes.comment'),
+                    class: 'form-control'
+                .col
+                  = f.submit t('reject'),
+                    data: { confirm: t('confirm_sure') },
+                    class: 'btn btn-danger'
+    - else
+      %tr
+        %td{ colspan: 6 }= t(:not_found, instance: t('entities.withdrawal_requests'))
