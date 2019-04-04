@@ -17,7 +17,7 @@
           %td.id= link_to request.id, request
           %td= request.external_id
           %td= l(request.created_at, format: :long)
-          %td= l(request.entries.first.created_at, format: :long) if request.entries.first
+          %td= l(request.entry.created_at, format: :long) if request.entry
           %td= status_badge(request.status)
           %td
             %b= t("kinds.#{request.kind}")

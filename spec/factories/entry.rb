@@ -20,7 +20,6 @@ FactoryBot.define do
              kind: entry.kind,
              min_amount: -entry.amount.abs * 2,
              max_amount: entry.amount.abs * 2)
-      
     end
   end
 end

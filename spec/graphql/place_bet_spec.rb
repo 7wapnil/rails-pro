@@ -154,7 +154,7 @@ describe GraphQL, '#place_bet' do
     it 'places bet with system mode' do
       execute_query
 
-      expect(EntryRequest.pluck(:mode).uniq).to eq([EntryRequest::SYSTEM])
+      expect(auth_customer.entry_requests.last.mode).to eq(EntryRequest::SYSTEM)
     end
   end
 

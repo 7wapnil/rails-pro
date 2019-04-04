@@ -1,7 +1,9 @@
 describe 'Withdrawals index page' do
   context 'signed in' do
     let(:per_page_count) { 10 }
-    let(:passing_validator) { double('amount validator') }
+    let(:passing_validator) do
+      double('amount validator') # rubocop:disable RSpec/VerifiedDoubles
+    end
 
     before do
       login_as create(:admin_user), scope: :user
@@ -10,7 +12,8 @@ describe 'Withdrawals index page' do
     end
 
     it 'displays not found message' do
-      not_found = I18n.t(:not_found, instance: I18n.t('entities.withdrawal_requests'))
+      instance = I18n.t('entities.withdrawal_requests')
+      not_found = I18n.t(:not_found, instance: instance)
       visit withdrawal_requests_path
 
       expect(page).to have_content(not_found)
@@ -25,7 +28,8 @@ describe 'Withdrawals index page' do
       end
 
       it 'customer' do
-        expect(page).to have_content(withdrawal_request.entry_request.customer.username)
+        username = withdrawal_request.entry_request.customer.username
+        expect(page).to have_content(username)
       end
 
       it 'created_at timestamp' do
@@ -37,7 +41,8 @@ describe 'Withdrawals index page' do
       end
 
       it 'currency' do
-        expect(page).to have_content(withdrawal_request.entry_request.currency.name)
+        currency_name = withdrawal_request.entry_request.currency.name
+        expect(page).to have_content(currency_name)
       end
 
       it 'payment method' do
