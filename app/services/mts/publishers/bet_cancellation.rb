@@ -22,7 +22,7 @@ module Mts
         @message ||= {
           'timestampUtc': timestamp,
           'ticketId': bet.validation_ticket_id,
-          sender: { 'bookmakerId' => DEFAULT_SENDER_ID },
+          sender: { 'bookmakerId': DEFAULT_SENDER_ID },
           code: TIMEOUT_CODE,
           version: MESSAGE_VERSION
         }

@@ -11,7 +11,7 @@ module Mts
 
       def log_message
         log_job_message(
-          :info, "MTS Validation requested for bets #{message.bets.map(&:id)}"
+          :info, "MTS Validation requested for bets #{bet.id}"
         )
       end
 

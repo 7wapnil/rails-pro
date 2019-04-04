@@ -7,10 +7,7 @@ describe Mts::ValidationMessagePublisherWorker do
     end
 
     context 'with processable input' do
-      before do
-        allow(Mts::Publishers::BetValidation)
-          .to receive('publish!')
-      end
+      before { allow(Mts::Publishers::BetValidation).to receive('publish!') }
 
       let(:bet) { create(:bet) }
 

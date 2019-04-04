@@ -16,7 +16,7 @@ module Mts
       def publish!
         log_message
 
-        raise unless send_message!
+        raise 'No MTS connection.' unless send_message!
 
         update_bet
       end
