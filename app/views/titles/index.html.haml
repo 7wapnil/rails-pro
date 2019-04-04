@@ -1,0 +1,10 @@
+= javascript_pack_tag 'titles/sortable'
+= stylesheet_pack_tag 'css/titles'
+
+#overlay
+%h1.display-4= t('entities.titles')
+%table.table
+  %tbody
+  %tr
+    - @titles_hash.each_pair do |kind, titles|
+      %td= render 'table', titles: titles, kind: kind
