@@ -7,7 +7,7 @@ namespace :mts do
     task create: :environment do
       raise 'No queue name provided' unless ENV['MTS_MQ_QUEUE_CONFIRM']
 
-      routing_key = ENV['MTS_MQ_TICKET_CONFIRMATION'] || 'ticket.confirm.dev'
+      routing_key = ENV['MTS_MQ_TICKET_CONFIRMATION_RK'] || 'ticket.confirm.dev'
 
       channel = ::Mts::SingleSession
                 .instance
@@ -31,7 +31,7 @@ namespace :mts do
     task create: :environment do
       raise 'No queue name provided' unless ENV['MTS_MQ_QUEUE_REPLY']
 
-      routing_key = ENV['MTS_MQ_TICKET_CANCELLATION'] || 'cancel.confirm.dev'
+      routing_key = ENV['MTS_MQ_TICKET_CANCELLATION_RK'] || 'cancel.confirm.dev'
 
       channel = ::Mts::SingleSession
                 .instance

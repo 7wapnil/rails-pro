@@ -4,9 +4,8 @@ module Mts
   module Publishers
     class BetCancellation < MessagePublisher
       EXCHANGE_NAME = 'arcanebet_arcanebet-Control'
-      ROUTING_KEY = ENV['MTS_MQ_TICKET_CANCELLATION']
+      ROUTING_KEY = ENV['MTS_MQ_TICKET_CANCELLATION_RK']
       MESSAGE_VERSION = '2.1'
-      DEFAULT_SENDER_ID = 25_238
       TIMEOUT_CODE = 102
       EXCHANGE_TYPE = :topic
 
@@ -22,7 +21,7 @@ module Mts
         @message ||= {
           'timestampUtc': timestamp,
           'ticketId': bet.validation_ticket_id,
-          sender: { 'bookmakerId': DEFAULT_SENDER_ID },
+          sender: { 'bookmakerId': ENV['MTS_BOOKMAKER_ID'] },
           code: TIMEOUT_CODE,
           version: MESSAGE_VERSION
         }

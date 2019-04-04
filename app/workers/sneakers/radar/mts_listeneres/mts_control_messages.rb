@@ -16,7 +16,7 @@ module Radar
                  },
                  queue_options: {
                    durable: true,
-                   routing_key: ENV['MTS_MQ_TICKET_CANCELLATION']
+                   routing_key: ENV['MTS_MQ_TICKET_CANCELLATION_RK']
                  },
                  ack: true,
                  heartbeat: 30,

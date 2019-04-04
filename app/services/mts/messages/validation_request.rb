@@ -7,7 +7,6 @@ module Mts
       SUPPORTED_BETS_PER_REQUEST = 1
       MESSAGE_VERSION = '2.1'.freeze
       DEFAULT_STAKE_TYPE = 'total'.freeze
-      DEFAULT_SENDER_ID = 25_238
       CUSTOMER_DEFAULT_LANGUAGE = 'EN'.freeze
       DEFAULT_ODDS_CHANGE_BEHAVIOUR = 'none'.freeze
 
@@ -62,7 +61,7 @@ module Mts
         {
           currency: bets_currency,
           channel: distribution_channel.channel,
-          bookmaker_id: DEFAULT_SENDER_ID,
+          bookmaker_id: ENV['MTS_BOOKMAKER_ID'].to_i,
           end_customer: end_customer,
           limit_id: Mts::Limit.some
         }

@@ -4,7 +4,7 @@ module Mts
   module Publishers
     class BetValidation < MessagePublisher
       EXCHANGE_NAME = 'arcanebet_arcanebet-Submit'
-      ROUTING_KEY = ENV['MTS_MQ_TICKET_CONFIRMATION']
+      ROUTING_KEY = ENV['MTS_MQ_TICKET_CONFIRMATION_RK']
       EXCHANGE_TYPE = :fanout
 
       protected

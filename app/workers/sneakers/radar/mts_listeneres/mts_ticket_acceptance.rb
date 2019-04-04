@@ -16,7 +16,7 @@ module Radar
                  },
                  queue_options: {
                    durable: true,
-                   routing_key: ENV['MTS_MQ_TICKET_CONFIRMATION']
+                   routing_key: ENV['MTS_MQ_TICKET_CONFIRMATION_RK']
                  },
                  ack: true,
                  heartbeat: 30,
@@ -24,7 +24,9 @@ module Radar
 
       def work(deserialized_msg)
         Rails.logger.debug deserialized_msg
-        ::Mts::ValidationResponseHandler.call(deserialized_msg)
+
+        ::Mts::ValidationResponseWorker.perform_async(deserialized_msg)
+
         ack!
       end
     end
