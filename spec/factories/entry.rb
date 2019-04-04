@@ -8,6 +8,7 @@ FactoryBot.define do
     sequence(:external_id) { |n| "ID_#{n}" }
 
     wallet
+    entry_request
 
     trait :with_random_wallet do
       association :wallet, strategy: :random_or_create
@@ -19,6 +20,7 @@ FactoryBot.define do
              kind: entry.kind,
              min_amount: -entry.amount.abs * 2,
              max_amount: entry.amount.abs * 2)
+      
     end
   end
 end

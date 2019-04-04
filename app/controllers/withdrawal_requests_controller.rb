@@ -11,6 +11,7 @@ class WithdrawalRequestsController < ApplicationController
   end
 
   def confirm
+    @withdrawal_request.entry_request.entry.update!(confirmed_at: Time.now.utc)
     @withdrawal_request.update!(status: WithdrawalRequest::APPROVED)
 
     flash[:notice] = I18n.t('messages.withdrawal_confirmed')
@@ -19,8 +20,8 @@ class WithdrawalRequestsController < ApplicationController
 
   def reject
     reason = rejection_params[:comment]
-    # Withdrawals::WithdrawalRejectionService.call(@withdrawal_request.entry_request.entry_id,
-    #                                              comment: reason)
+    Withdrawals::WithdrawalRejectionService.call(@withdrawal_request.entry_request.entry.id,
+                                                 comment: reason)
     @withdrawal_request.update!(status: WithdrawalRequest::REJECTED)
     flash[:notice] = I18n.t('messages.withdrawal_rejected')
     redirect_back fallback_location: withdrawal_requests_path

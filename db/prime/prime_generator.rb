@@ -50,8 +50,8 @@ class PrimeGenerator
     withdrawal_requests: {
       target_count: 10,
       current_count: lambda do
-        interval = Time.now.beginning_of_month..Time.now.end_of_month
-        WithdrawalRequest.where(created_at: interval).count
+        interval = Time.now.beginning_of_day..Time.now.end_of_day
+        WithdrawalRequest.count
       end,
       factory_options: %i[withdrawal_request]
     }
@@ -62,6 +62,7 @@ class PrimeGenerator
   end
 
   def generate
+    WithdrawalRequest.delete_all
     count_correction!
     hardcoded_prerequisites
     populate_data

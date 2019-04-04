@@ -15,7 +15,7 @@ FactoryBot.define do
     association :initiator, factory: :customer
 
     trait :with_entry do
-      after(:create) do |entry_request|
+      after(:build) do |entry_request|
         create(
           :entry_currency_rule,
           currency:   entry_request.currency,
@@ -33,7 +33,8 @@ FactoryBot.define do
           wallet: wallet,
           kind:   entry_request.kind,
           amount: entry_request.amount,
-          external_id: entry_request.external_id
+          external_id: entry_request.external_id,
+          entry_request: entry_request
         )
       end
     end

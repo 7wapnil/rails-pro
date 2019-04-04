@@ -7,7 +7,7 @@ FactoryBot.define do
     value                  { Faker::Number.decimal(1, 2) }
     status                 { Odd::INACTIVE }
 
-    sequence(:external_id) { |n| "sr:match:#{n}:280/hcp=0.5:#{n}" }
+    sequence(:external_id) { |n| "sr:match:#{n}:#{rand(0..10_000)}/hcp=0.5:#{n}" }
 
     market
 

@@ -13,7 +13,7 @@ class EntryRequest < ApplicationRecord
   has_one :bonus_balance_entry_request, -> { bonus },
           class_name: BalanceEntryRequest.name
 
-  has_many :entries
+  has_one :entry, inverse_of: :entry_request
 
   default_scope { order(created_at: :desc) }
 
