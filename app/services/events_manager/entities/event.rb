@@ -73,7 +73,7 @@ module EventsManager
       def patched_start_time
         start_at_field = start_time_field
         original_start_time = DateTime.parse(start_at_field)
-        today = Date.tomorrow
+        today = Date.current.tomorrow
 
         original_start_time.change(
           year: today.year,

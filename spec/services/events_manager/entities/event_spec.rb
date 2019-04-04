@@ -38,7 +38,7 @@ describe EventsManager::Entities::Event do
     end
 
     it 'returns start time in the future' do
-      expect(subject.start_at).to be > DateTime.now
+      expect(subject.start_at).to be > Time.zone.now
     end
   end
 end

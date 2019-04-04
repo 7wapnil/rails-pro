@@ -22,7 +22,7 @@ module EventsManager
       private
 
       def ensure_players
-        ensure_array(attribute(profile, 'players', 'player'))
+        Array.wrap(attribute(profile, 'players', 'player'))
       end
 
       def profile

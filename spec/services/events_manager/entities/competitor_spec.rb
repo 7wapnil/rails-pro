@@ -39,7 +39,7 @@ describe EventsManager::Entities::Competitor do
     end
 
     it 'returns a list of player entities' do
-      expect(subject.players.length).to eq(0)
+      expect(subject.players.length).to be_zero
     end
   end
 end
