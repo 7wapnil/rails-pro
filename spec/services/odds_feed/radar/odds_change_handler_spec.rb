@@ -68,12 +68,13 @@ describe OddsFeed::Radar::OddsChangeHandler do
     create(:market_template, external_id: '188',
                              name: 'Template name')
 
+    allow(subject_api).to receive(:create_event!).and_return(event)
+
     allow(WebSocket::Client.instance).to receive(:trigger_event_update)
     allow(WebSocket::Client.instance).to receive(:trigger_market_update)
 
     allow(subject_api).to receive(:call_markets_generator).and_return(timestamp)
     allow(subject_api).to receive(:timestamp).and_return(timestamp)
-    allow(subject_api).to receive(:api_event).and_return(event)
     allow(OddsFeed::Radar::Entities::PlayerLoader)
       .to receive(:call)
       .and_return(Faker::Name.name)
@@ -81,14 +82,13 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
   it 'requests event data from API if not found in db' do
     subject_api.handle
-    expect(subject_api).to have_received(:api_event)
+    expect(subject_api).to have_received(:create_event!)
   end
 
   it 'does not request API if event exists in db' do
     create(:event, external_id: event_id)
-    allow(subject_api).to receive(:create_event)
     subject_api.handle
-    expect(subject_api).not_to have_received(:create_event)
+    expect(subject_api).not_to have_received(:create_event!)
   end
 
   it 'updates event status from message' do
@@ -96,61 +96,6 @@ describe OddsFeed::Radar::OddsChangeHandler do
     subject_api.handle
     event = Event.find_by(external_id: event_id)
     expect(event.status).to eq(Event::STARTED)
-  end
-
-  it_behaves_like 'service caches competitors and players' do
-    let(:event_payload) do
-      {
-        competitors: {
-          competitor: [event_competitor_payload]
-        }
-      }.deep_stringify_keys
-    end
-    let(:service_call) { subject_api.handle }
-
-    it 'calls EventBasedCache::Writer' do
-      expect(OddsFeed::Radar::EventBasedCache::Writer)
-        .to have_received(:call)
-        .with(event: event)
-    end
-  end
-
-  context 'events are updating simultaneously' do
-    context 'and have same event scopes' do
-      let(:control_count) { rand(2..4) }
-      let(:event_scopes)  { create_list(:event_scope, control_count) }
-      let(:scoped_events) do
-        event_scopes.map { |scope| ScopedEvent.new(event_scope: scope) }
-      end
-
-      let(:event) do
-        build(:event, title:         build(:title),
-                      external_id:   event_id,
-                      scoped_events: scoped_events)
-      end
-
-      before do
-        create(:event, title:        build(:title),
-                       external_id:  event_id,
-                       event_scopes: event_scopes)
-
-        allow(Event).to receive(:find_by).with(external_id: event_id)
-      end
-
-      it "don't cause ActiveRecord::RecordNotUnique error" do
-        expect(scoped_events)
-          .to all(
-            receive(:update!).and_raise(ActiveRecord::RecordNotUnique)
-          )
-
-        subject_api.handle
-      end
-
-      it "don't produce duplicates" do
-        subject_api.handle
-        expect(event.scoped_events.count).to eq(control_count)
-      end
-    end
   end
 
   context 'event activity' do
@@ -471,7 +416,6 @@ describe OddsFeed::Radar::OddsChangeHandler do
       before { payload['odds_change']['event_id'] = 'sr:season:1234' }
 
       it 'does nothing' do
-        expect_any_instance_of(Event).not_to receive(:save!)
         subject_api.handle
       end
     end

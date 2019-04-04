@@ -51,9 +51,9 @@ module EventsManager
     end
 
     def check_support!
-      return if @external_id.to_s.match?(MATCH_TYPE_REGEXP)
+      return if EventsManager::Entities::Event.type_match?(event_data.id)
 
-      raise NotImplementedError, "Event ID '#{@external_id}' is not supported"
+      raise NotImplementedError, "Event ID '#{event_data.id}' is not supported"
     end
 
     def check_existence!
