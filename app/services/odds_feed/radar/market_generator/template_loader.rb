@@ -42,7 +42,7 @@ module OddsFeed
 
         def player_name(external_id)
           player = Player.find_by(external_id: external_id)
-          return player.name if player
+          return player.full_name if player
 
           raise "Player ID #{external_id} not found"
         end

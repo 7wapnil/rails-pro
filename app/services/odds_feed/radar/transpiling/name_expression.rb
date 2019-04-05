@@ -8,18 +8,14 @@ module OddsFeed
         NAME_SIGN        = '%'.freeze
 
         def value(token)
-          loader_class(token).call(external_id: external_id(token))
-        end
-
-        private
-
-        def loader_class(token)
-          return Radar::Entities::PlayerLoader     if player?(token)
-          return Radar::Entities::CompetitorLoader if competitor?(token)
-          return Radar::Entities::VenueLoader      if venue?(token)
+          return player_name(token)     if player?(token)
+          return competitor_name(token) if competitor?(token)
+          return venue_name(token)      if venue?(token)
 
           raise "Name transpiler can't read variable: `#{token}`"
         end
+
+        private
 
         def player?(token)
           token.match?(PLAYER_REGEX)
@@ -31,6 +27,18 @@ module OddsFeed
 
         def venue?(token)
           token.match?(VENUE_REGEX)
+        end
+
+        def player_name(token)
+          ::Player.find_by!(external_id: external_id(token)).full_name
+        end
+
+        def competitor_name(token)
+          ::Competitor.find_by!(external_id: external_id(token)).name
+        end
+
+        def venue_name(token)
+          Radar::Entities::VenueLoader.call(external_id: external_id(token))
         end
 
         def external_id(token)

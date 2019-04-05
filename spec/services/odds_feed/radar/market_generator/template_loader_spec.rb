@@ -42,7 +42,8 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
       end
 
       it do
-        expect(subject_with_template.odd_name(player_id)).to eq(player.name)
+        expect(subject_with_template.odd_name(player_id))
+          .to eq(player.full_name)
       end
     end
 
