@@ -333,6 +333,7 @@ en:
       unsupported_payment_method: "Payment method '%{code}' is not implemented"
       nonexistent_event: "Event with id '%{id}' does not exist"
       password_invalid: Password is invalid
+      unsupported_withdraw_method: "Payment method %{name} is not supported"
 
       withdrawal:
         not_enough_money: Not enough money in wallet!
