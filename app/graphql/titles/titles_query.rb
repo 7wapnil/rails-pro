@@ -17,7 +17,7 @@ module Titles
     def resolve(_obj, args)
       query = Title
               .with_active_events(limit_start_at: limit_start_at(args))
-              .order(name: :asc)
+              .order(:position)
 
       query = query.where(id: args[:id]) if args[:id]
       query = query.where(kind: args[:kind]) if args[:kind]

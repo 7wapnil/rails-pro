@@ -140,6 +140,15 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
       .count
   end
 
+  def available_withdraw_methods
+    entry_requests
+      .deposit
+      .succeeded
+      .order(created_at: :desc)
+      .pluck(:mode)
+      .uniq
+  end
+
   private
 
   def log_account_transition
