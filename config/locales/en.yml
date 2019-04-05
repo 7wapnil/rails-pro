@@ -282,6 +282,7 @@ en:
       zero: No scopes
       one: 1 scope
       other: "%{count} scopes"
+    titles: Titles
     transaction: Transaction
     transactions: Transactions
     transactions_count:

@@ -1,0 +1,8 @@
+%table.table
+  %thead
+    %tr
+      %th= kind
+  %tbody.sortable{ data: { kind: kind } }
+    - titles.each do |title|
+      %tr
+        %td{ data: { id: title.id } }= title.name
