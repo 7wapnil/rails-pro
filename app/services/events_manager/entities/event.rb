@@ -1,7 +1,12 @@
 module EventsManager
   module Entities
     class Event < BaseEntity
+      MATCH_TYPE_REGEXP = /:match:/
       BOOKED_FIXTURE_STATUS = 'booked'.freeze
+
+      def self.type_match?(id)
+        id.to_s.match?(MATCH_TYPE_REGEXP)
+      end
 
       def id
         attribute!(fixture, 'id')

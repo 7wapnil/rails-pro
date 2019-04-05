@@ -10,15 +10,15 @@ namespace :dev do
     desc 'Deletes all odds feed produced data'
     task clear: :environment do
       puts 'Destroying odds ...'
-      Odd.destroy_all
+      Odd.delete_all
       puts 'Done!'
 
       puts 'Destroying markets ...'
-      Market.destroy_all
+      Market.delete_all
       puts 'Done!'
 
       puts 'Destroying events ...'
-      Event.destroy_all
+      Event.delete_all
       puts 'Done!'
     end
   end
