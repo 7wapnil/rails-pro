@@ -25,5 +25,6 @@ class EventScope < ApplicationRecord
       .merge(Event.active.visible.upcoming)
       .or(joins(:events).merge(Event.active.visible.in_play))
       .distinct
+      .order('event_scopes.kind, event_scopes.position')
   end
 end
