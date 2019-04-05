@@ -37,4 +37,10 @@ context 'Customers#show navigation' do
       expect(page).to have_current_path(bets_customer_path(customer))
     end
   end
+  it 'navigates to customers#transactions' do
+    within 'ul.navigation' do
+      click_link I18n.t('entities.transactions')
+      expect(page).to have_current_path(transactions_customer_path(customer))
+    end
+  end
 end

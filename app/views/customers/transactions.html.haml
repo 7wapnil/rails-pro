@@ -1,0 +1,14 @@
+- content_for :page_content do
+  = render 'transactions/search',
+           filter: @filter,
+           search_path: transactions_customer_path(@customer)
+  = render 'transactions_table', filter: @filter
+  = paginate @filter.requests
+
+- content_for :js do
+  = javascript_pack_tag 'customers/navigation_links'
+
+= render 'customers/base_template',
+         customer: @customer,
+         note: nil,
+         customer_notes_widget: nil

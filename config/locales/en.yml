@@ -282,6 +282,12 @@ en:
       zero: No scopes
       one: 1 scope
       other: "%{count} scopes"
+    transaction: Transaction
+    transactions: Transactions
+    transactions_count:
+      zero: No transactions
+      one: 1 transaction
+      other: "%{count} transactions"
     wallet: Wallet
     wallets: Wallets
     wallet_count:
