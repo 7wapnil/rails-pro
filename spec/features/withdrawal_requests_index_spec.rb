@@ -19,7 +19,7 @@ describe 'Withdrawals index page' do
       expect(page).to have_content(not_found)
     end
 
-    context 'withdrawals table displays' do
+    context 'with pending withdrawal request table displays' do
       let(:withdrawal_request) { WithdrawalRequest.last }
 
       before do

@@ -8,7 +8,6 @@
       %th= t('attributes.currency')
       %th= t('attributes.payment_method')
       %th= t('attributes.status')
-      %th= t('attributes.actions')
   %tbody
     - if filter.withdrawal_requests.any?
       - filter.withdrawal_requests.each do |withdrawal_request|
@@ -30,22 +29,26 @@
           // status
           %td= withdrawal_request.status
           // actions
-          %td= link_to t('confirm'),
-                confirm_withdrawal_request_path(withdrawal_request),
-                method: :post,
-                class: 'btn btn-success'
-          %td
-            = rejection_path = reject_withdrawal_request_path(withdrawal_request)
-            = form_for :rejection, url: rejection_path, method: :post do |f|
-              .form-row
-                .col
-                  = f.text_field :comment,
-                    placeholder: t('attributes.comment'),
-                    class: 'form-control'
-                .col
-                  = f.submit t('reject'),
-                    data: { confirm: t('confirm_sure') },
-                    class: 'btn btn-danger'
+
+          - if withdrawal_request.pending?
+            %td= link_to t('confirm'),
+              confirm_withdrawal_request_path(withdrawal_request),
+              method: :post,
+              class: 'btn btn-success'
+            %td
+              - rejection_path = reject_withdrawal_request_path(withdrawal_request)
+              = form_for :rejection, url: rejection_path, method: :post do |f|
+                .form-row
+                  .col
+                    = f.text_field :comment,
+                      placeholder: t('attributes.comment'),
+                      class: 'form-control'
+                  .col
+                    = f.submit t('reject'),
+                      data: { confirm: t('confirm_sure') },
+                      class: 'btn btn-danger'
+          - else
+            %td "#{t('attributes.actioned_by')} #{withdrawal_request.actioned_by.email}"
     - else
       %tr
         %td{ colspan: 6 }= t(:not_found, instance: t('entities.withdrawal_requests'))

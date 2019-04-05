@@ -8,7 +8,7 @@ FactoryBot.define do
     password   { 'iamverysecure' }
 
     factory :admin_user do
-      email      { 'admin@email.com' }
+      email      { Faker::Internet.email }
       first_name { 'Super' }
       last_name  { 'Admin' }
       password   { 'iamadminuser' }

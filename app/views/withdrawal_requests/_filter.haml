@@ -16,7 +16,7 @@
           .filter_title #{t('attributes.status')}:
           .filter_field
             = f.label :status_eq, class: 'sr-only'
-            = selected_status = query_params(:withdrawal_requests)['status_eq']
+            - selected_status = query_params(:withdrawal_requests)['status_eq']
             = f.select :status_eq,
                   options_for_select(filter.statuses, selected_status),
                   { include_blank: true },
@@ -43,7 +43,7 @@
 
         %th
           .filter_title
-            #{t('attributes.email')}:
+            #{t('attributes.actioned_by')}:
           .filter_field
             = f.label :actioned_by_email_cont, class: 'sr-only'
             = f.search_field :actioned_by_email_cont,
@@ -65,7 +65,7 @@
             #{t('attributes.payment_menthod')}:
           .filter_field
             = f.label :entry_request_mode_eq, class: 'sr-only'
-            = selected_method = query_params(:withdrawal_requests)['entry_request_mode_eq']
+            - selected_method = query_params(:withdrawal_requests)['entry_request_mode_eq']
             = f.select :entry_request_mode_eq,
                        options_for_select(filter.payment_methods, selected_method),
                        placeholder: t('attributes.payment_method'),

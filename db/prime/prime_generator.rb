@@ -50,7 +50,7 @@ class PrimeGenerator
     withdrawal_requests: {
       target_count: 10,
       current_count: lambda do
-        interval = Time.now.beginning_of_day..Time.now.end_of_day
+        interval = Time.zone.now.beginning_of_day..Time.zone.now.end_of_day
         WithdrawalRequest.where(created_at: interval).count
       end,
       factory_options: %i[withdrawal_request]
