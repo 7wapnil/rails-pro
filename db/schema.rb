@@ -142,6 +142,22 @@ ActiveRecord::Schema.define(version: 2019_04_03_075755) do
     t.index ["user_id"], name: "index_comments_on_user_id"
   end
 
+  create_table "competitor_players", id: false, force: :cascade do |t|
+    t.bigint "competitor_id"
+    t.bigint "player_id"
+    t.index ["competitor_id"], name: "index_competitor_players_on_competitor_id"
+    t.index ["player_id"], name: "index_competitor_players_on_player_id"
+  end
+
+  create_table "competitors", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "external_id", null: false
+    t.jsonb "details"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_competitors_on_external_id", unique: true
+  end
+
   create_table "currencies", force: :cascade do |t|
     t.string "name"
     t.string "code"
@@ -281,6 +297,13 @@ ActiveRecord::Schema.define(version: 2019_04_03_075755) do
     t.index ["origin_type", "origin_id"], name: "index_entry_requests_on_origin_type_and_origin_id"
   end
 
+  create_table "event_competitors", id: false, force: :cascade do |t|
+    t.bigint "event_id"
+    t.bigint "competitor_id"
+    t.index ["competitor_id"], name: "index_event_competitors_on_competitor_id"
+    t.index ["event_id"], name: "index_event_competitors_on_event_id"
+  end
+
   create_table "event_scopes", force: :cascade do |t|
     t.bigint "title_id"
     t.bigint "event_scope_id"
@@ -371,6 +394,16 @@ ActiveRecord::Schema.define(version: 2019_04_03_075755) do
     t.string "status"
     t.index ["external_id"], name: "index_odds_on_external_id", unique: true
     t.index ["market_id"], name: "index_odds_on_market_id"
+  end
+
+  create_table "players", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "external_id", null: false
+    t.string "full_name"
+    t.jsonb "details"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_players_on_external_id", unique: true
   end
 
   create_table "radar_providers", force: :cascade do |t|
@@ -464,6 +497,8 @@ ActiveRecord::Schema.define(version: 2019_04_03_075755) do
   add_foreign_key "bets", "odds", on_delete: :cascade
   add_foreign_key "betting_limits", "customers"
   add_foreign_key "betting_limits", "titles"
+  add_foreign_key "competitor_players", "competitors"
+  add_foreign_key "competitor_players", "players"
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "deposit_limits", "currencies"
@@ -473,6 +508,8 @@ ActiveRecord::Schema.define(version: 2019_04_03_075755) do
   add_foreign_key "entry_currency_rules", "currencies"
   add_foreign_key "entry_requests", "currencies"
   add_foreign_key "entry_requests", "customers"
+  add_foreign_key "event_competitors", "competitors"
+  add_foreign_key "event_competitors", "events"
   add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "event_scopes", "titles"
   add_foreign_key "events", "radar_providers", column: "producer_id"

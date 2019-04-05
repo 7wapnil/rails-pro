@@ -37,6 +37,15 @@ module OddsFeed
         EventAdapter.new(payload)
       end
 
+      def event_raw(id, cache: nil)
+        unless supported_external_id?(id)
+          raise StandardError, "Event ID '#{id}' is not supported"
+        end
+
+        route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"
+        request(route, cache: cache)
+      end
+
       def events_for_date(date, cache: nil)
         formatted_date = date.to_s
         route = "/sports/#{@language}/schedules/#{formatted_date}/schedule.xml"
