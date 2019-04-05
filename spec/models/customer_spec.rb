@@ -211,4 +211,54 @@ describe Customer do
       expect(customer.deposit_attempts).to eq(expected_count)
     end
   end
+
+  describe 'available withdraw methods' do
+    let(:customer) { create(:customer) }
+
+    before do
+      create(:entry_request,
+             customer: customer,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::CREDIT_CARD,
+             created_at: Time.new - 7.days)
+      create(:entry_request,
+             customer: customer,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::SKRILL,
+             created_at: Time.new - 6.days)
+      create(:entry_request,
+             customer: customer,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::PAYSAFECARD,
+             created_at: Time.new - 5.days)
+      create(:entry_request,
+             customer: customer,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::CREDIT_CARD,
+             created_at: Time.new - 4.days)
+      create(:entry_request,
+             customer: customer,
+             status: EntryRequest::FAILED,
+             mode: EntryRequest::CREDIT_CARD,
+             created_at: Time.new - 3.days)
+      create(:entry_request,
+             customer: customer,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::NETELLER,
+             created_at: Time.new - 2.days)
+      create(:entry_request,
+             customer: customer,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::CREDIT_CARD,
+             created_at: Time.new - 1.days)
+    end
+
+    it 'returns a list withdraw methods available for customer' do
+      available_methods = [EntryRequest::CREDIT_CARD,
+                           EntryRequest::NETELLER,
+                           EntryRequest::PAYSAFECARD,
+                           EntryRequest::SKRILL]
+      expect(customer.available_withdraw_methods).to eq(available_methods)
+    end
+  end
 end

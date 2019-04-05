@@ -52,7 +52,7 @@ describe GraphQL do
     end
 
     it 'returns collection of validation errors' do
-      expect(result['errors'][0]['path']).to eq(:email)
+      expect(result['errors'][0]['path'][0]).to eq(:email)
       expect(result['errors'][0]['message']).to eq('Email is invalid')
     end
   end

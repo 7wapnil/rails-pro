@@ -20,5 +20,6 @@ module Account
     field :regular, types.Boolean do
       resolve ->(obj, _args, _ctx) { obj.regular? }
     end
+    field :available_withdraw_methods, types[types.String]
   end
 end
