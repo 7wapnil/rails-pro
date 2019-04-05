@@ -198,7 +198,7 @@ class CustomersController < ApplicationController
     filter_source = EntryRequest
                     .transactions
                     .where(customer: customer)
-                    .includes(:entries)
+                    .includes(:entry)
 
     @filter = EntryRequestsFilter.new(
       source: filter_source,
