@@ -35,15 +35,15 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
 
     context 'player odd payload' do
       let(:subject_with_template) { described_class.new(*args) }
+      let!(:player) { create(:player, external_id: player_id) }
 
       before do
-        expect(OddsFeed::Radar::Entities::PlayerLoader)
-          .to receive(:call).with(external_id: player_id).and_return(name)
-
         allow(subject_with_template).to receive(:find_odd_template)
       end
 
-      it { expect(subject_with_template.odd_name(player_id)).to eq(name) }
+      it do
+        expect(subject_with_template.odd_name(player_id)).to eq(player.name)
+      end
     end
 
     context 'payload from loaded template' do

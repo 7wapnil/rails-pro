@@ -41,12 +41,10 @@ module OddsFeed
         end
 
         def player_name(external_id)
-          player_name = Radar::Entities::PlayerLoader.call(
-            external_id: external_id
-          )
-          return player_name if player_name
+          player = Player.find_by(external_id: external_id)
+          return player.name if player
 
-          raise "Player template ID #{external_id} not found"
+          raise "Player ID #{external_id} not found"
         end
 
         def find_odd_template(external_id)
