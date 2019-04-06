@@ -2,10 +2,11 @@
 
 FactoryBot.define do
   factory :market do
-    visible  { true }
-    name     { 'Winner Map (Train)' }
-    priority { 2 }
-    status   { Market::ACTIVE }
+    visible         { true }
+    name            { 'Winner Map (Train)' }
+    priority        { 2 }
+    status          { StateMachines::MarketStateMachine::ACTIVE }
+    previous_status { StateMachines::MarketStateMachine::ACTIVE }
 
     sequence :external_id do |n|
       "sr:match:#{n}:#{rand(0..10_000)}/setnr=2|gamenrX=#{n}|gamenrY=#{n}"
@@ -27,6 +28,10 @@ FactoryBot.define do
 
     trait :suspended do
       status { Market::SUSPENDED }
+    end
+
+    trait :settled do
+      status { StateMachines::MarketStateMachine::SETTLED }
     end
   end
 end

@@ -15,7 +15,9 @@ describe OddsFeed::Radar::BetStopHandler do
     let(:market_status_class) { OddsFeed::Radar::MarketStatus }
 
     let(:initial_state) { Market::ACTIVE }
-    let(:not_active_states) { Market::STATUSES.except(:active) }
+    let(:not_active_states) do
+      StateMachines::MarketStateMachine::STATUSES.except(:active)
+    end
     let(:target_state) { not_active_states[not_active_states.keys.sample] }
 
     let!(:markets) do

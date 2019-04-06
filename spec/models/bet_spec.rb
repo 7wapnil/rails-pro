@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Bet do
   subject { build(:bet) }
 
@@ -8,6 +10,10 @@ describe Bet do
 
   it { is_expected.to have_one(:entry) }
   it { is_expected.to have_one(:entry_request) }
+  it { is_expected.to have_one(:recent_win_entry) }
+
+  it { is_expected.to have_many(:entry_requests) }
+  it { is_expected.to have_many(:entries) }
 
   it do
     expect(subject).to validate_numericality_of(:odd_value)

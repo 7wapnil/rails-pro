@@ -2,6 +2,7 @@
 
 class Market < ApplicationRecord
   include Visible
+  include StateMachines::MarketStateMachine
 
   before_validation :define_priority, if: :name_changed?
 
@@ -13,21 +14,6 @@ class Market < ApplicationRecord
   PRIORITIES = [0, 1, 2].freeze
   DEFAULT_PRIORITY = 1
 
-  STATUSES = {
-    inactive:    INACTIVE    = 'inactive',
-    active:      ACTIVE      = 'active',
-    suspended:   SUSPENDED   = 'suspended',
-    cancelled:   CANCELLED   = 'cancelled',
-    settled:     SETTLED     = 'settled',
-    handed_over: HANDED_OVER = 'handed_over'
-  }.freeze
-
-  DISPLAYED_STATUSES = [ACTIVE, SUSPENDED].freeze
-
-  DEFAULT_STATUS = ACTIVE
-
-  enum status: STATUSES
-
   belongs_to :event
   has_many :odds, -> { order(id: :asc) }, dependent: :delete_all
   has_many :active_odds, -> { active.order(id: :asc) }, class_name: Odd.name
@@ -37,18 +23,7 @@ class Market < ApplicationRecord
 
   scope :with_category, -> { where.not(category: nil) }
 
-  validates :name, :priority, :status, presence: true
-  validates_with MarketStateValidator, restrictions: [
-    %i[active cancelled],
-    %i[inactive cancelled],
-    %i[settled active],
-    %i[settled inactive],
-    %i[settled suspended],
-    %i[cancelled active],
-    %i[cancelled inactive],
-    %i[cancelled suspended],
-    %i[cancelled settled]
-  ]
+  validates :name, :priority, presence: true
 
   def specifier
     external_id

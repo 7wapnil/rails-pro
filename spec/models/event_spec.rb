@@ -1,5 +1,7 @@
+# frozen_string_literal: true
+
 describe Event do
-  subject(:event) { described_class.new }
+  subject(:event) { build(:event) }
 
   let(:stubbed_subject) { described_class.new }
 
@@ -318,6 +320,12 @@ describe Event do
       let(:event) { build(:event, :live) }
 
       it { expect(event).to be_alive }
+    end
+  end
+
+  describe '#to_s' do
+    it 'works' do
+      expect(event.to_s).to eq(event.name)
     end
   end
 end

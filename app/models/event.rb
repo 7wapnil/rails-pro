@@ -144,6 +144,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     where(start_at: [Date.today.beginning_of_day..Date.today.end_of_day])
   end
 
+  def to_s
+    name
+  end
+
   def categories
     categorized_markets.group_by(&:category).map do |category, markets|
       OpenStruct.new(id: "#{id}:#{category}",

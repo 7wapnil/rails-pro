@@ -36,7 +36,8 @@ module OddsFeed
         end
 
         def status
-          status_map[@payload['status']] || Market::DEFAULT_STATUS
+          status_map[@payload['status']] ||
+            StateMachines::MarketStateMachine::DEFAULT_STATUS
         end
 
         def outcome

@@ -20,8 +20,8 @@ FactoryBot.define do
           :entry_currency_rule,
           currency:   entry_request.currency,
           kind:       entry_request.kind,
-          min_amount: 0,
-          max_amount: entry_request.amount
+          min_amount: -entry_request.amount.abs,
+          max_amount: entry_request.amount.abs
         )
         wallet = create(
           :wallet,
@@ -34,7 +34,8 @@ FactoryBot.define do
           kind:   entry_request.kind,
           amount: entry_request.amount,
           external_id: entry_request.external_id,
-          entry_request: entry_request
+          entry_request: entry_request,
+          origin: entry_request.origin
         )
       end
     end
@@ -58,6 +59,14 @@ FactoryBot.define do
 
     trait :bet do
       kind { EntryRequest::BET }
+    end
+
+    trait :win do
+      kind { EntryKinds::WIN }
+    end
+
+    trait :system do
+      mode { EntryRequest::SYSTEM }
     end
   end
 end

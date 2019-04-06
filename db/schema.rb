@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_03_185155) do
+ActiveRecord::Schema.define(version: 2019_04_05_075146) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -379,6 +379,7 @@ ActiveRecord::Schema.define(version: 2019_04_03_185155) do
     t.string "status"
     t.boolean "visible", default: true
     t.string "category"
+    t.string "previous_status"
     t.index ["event_id"], name: "index_markets_on_event_id"
     t.index ["external_id"], name: "index_markets_on_external_id", unique: true
   end

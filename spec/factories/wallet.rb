@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :wallet do
-    amount { Faker::Number.decimal(3, 2) }
+    amount { Faker::Number.decimal(5, 2) }
 
     customer
     currency

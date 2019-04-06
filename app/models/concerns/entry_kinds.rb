@@ -8,16 +8,14 @@ module EntryKinds
     win:      WIN      = 'win',
     withdraw: WITHDRAW = 'withdraw',
     bet:      BET      = 'bet',
-    refund:   REFUND   = 'refund'
+    refund:   REFUND   = 'refund',
+    rollback: ROLLBACK = 'rollback'
   }.freeze
 
   FUND_KINDS = KINDS.slice(:deposit, :withdraw)
-
   TRADING_KINDS = KINDS.slice(:win, :bet, :refund)
-
   DEBIT_KINDS = KINDS.slice(:deposit, :win, :refund)
-
-  CREDIT_KINDS = KINDS.slice(:withdraw, :bet)
+  CREDIT_KINDS = KINDS.slice(:withdraw, :bet, :rollback)
 
   included do
     enum kind: KINDS

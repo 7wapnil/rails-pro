@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include StateMachines::BetStateMachine
 
@@ -19,6 +21,13 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_one :event, through: :market
   has_one :title, through: :event
 
+  has_one :recent_win_entry,
+          -> { win },
+          class_name: Entry.name,
+          as: :origin
+
+  has_many :entry_requests, as: :origin
+  has_many :entries, as: :origin
   has_many :tournaments,
            -> { where(kind: EventScope::TOURNAMENT) },
            through: :event,
@@ -45,7 +54,6 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   delegate :market, to: :odd
 
   scope :sort_by_winning_asc, -> { with_winnings.order('winning') }
-
   scope :sort_by_winning_desc, -> { with_winnings.order('winning DESC') }
 
   class << self
