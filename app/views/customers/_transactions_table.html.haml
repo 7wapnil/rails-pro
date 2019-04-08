@@ -7,7 +7,6 @@
       %th= t('attributes.completed_at')
       %th= t('attributes.status')
       %th= t('attributes.type')
-      %th= t('attributes.username')
       %th= t('attributes.payment_method')
       %th= sort_link(filter.search, :amount, t('attributes.amount'), default_order: :desc)
   %tbody
@@ -21,7 +20,6 @@
           %td= status_badge(request.status)
           %td
             %b= t("kinds.#{request.kind}")
-          %td= link_to request.customer.username, request.customer
           %td= request.mode
           %td
             = number_with_precision request.amount, precision: 2
