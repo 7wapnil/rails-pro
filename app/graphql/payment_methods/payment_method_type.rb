@@ -5,17 +5,17 @@ module PaymentMethods
     field :name, !types.String,
           resolve: ->(obj, _args, _ctx) do
             I18n.t("payment_methods.#{obj}.title",
-                   default: obj.payment_method.humanize)
+                   default: obj.humanize)
           end
 
     field :note, !types.String,
           resolve: ->(obj, _args, _ctx) do
             I18n.t("payment_methods.#{obj}.note",
-                   default: obj.payment_method.humanize)
+                   default: obj.humanize)
           end
 
     field :code, !types.String,
-          resolve: ->(obj, _args, _ctx) { obj.payment_method }
+          resolve: ->(obj, _args, _ctx) { obj }
 
     field :kind, !types.String,
           resolve: ->(_obj, _args, _ctx) { Currency::FIAT }

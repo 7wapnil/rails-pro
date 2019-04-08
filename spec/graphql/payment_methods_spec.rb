@@ -98,15 +98,5 @@ describe GraphQL, '#payment_methods' do
                       'note' => payment_method_note)
       end
     end
-
-    context 'when there is no payment method' do
-      let(:availabilities) do
-        result['data']['paymentMethods'].map { |detail| detail['availability'] }
-      end
-
-      it 'returns list of payment methods with no availability' do
-        expect(availabilities).not_to include('true')
-      end
-    end
   end
 end
