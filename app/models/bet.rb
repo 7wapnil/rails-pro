@@ -10,6 +10,12 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
     validated_internally
   ].freeze
 
+  CANCELLED_STATUS_MASK = %w[
+    pending_cancellation
+    pending_manual_cancellation
+    cancelled
+  ].freeze
+
   belongs_to :customer
   belongs_to :odd
   belongs_to :currency
@@ -137,6 +143,8 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   def display_status
     if PENDING_STATUSES_MASK.include? status
       'pending'
+    elsif CANCELLED_STATUS_MASK.include? status
+      'cancelled'
     else
       status
     end

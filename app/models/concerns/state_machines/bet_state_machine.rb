@@ -10,6 +10,7 @@ module StateMachines
     SENT_TO_EXTERNAL_VALIDATION = 'sent_to_external_validation'
     ACCEPTED = 'accepted'
     PENDING_CANCELLATION = 'pending_cancellation'
+    PENDING_MANUAL_CANCELLATION = 'pending_manual_cancellation'
     CANCELLED = 'cancelled'
     SETTLED = 'settled'
     REJECTED = 'rejected'
@@ -22,6 +23,7 @@ module StateMachines
       sent_to_external_validation: SENT_TO_EXTERNAL_VALIDATION,
       accepted: ACCEPTED,
       pending_cancellation: PENDING_CANCELLATION,
+      pending_manual_cancellation: PENDING_MANUAL_CANCELLATION,
       cancelled: CANCELLED,
       settled: SETTLED,
       rejected: REJECTED,
@@ -47,6 +49,7 @@ module StateMachines
         state :accepted
         state :rejected
         state :pending_cancellation
+        state :pending_manual_cancellation
         state :cancelled
         state :failed
         state :settled
@@ -81,6 +84,16 @@ module StateMachines
         event :timed_out_external_validation do
           transitions from: :sent_to_external_validation,
                       to: :pending_cancellation
+        end
+
+        event :finish_external_cancellation_with_rejection do
+          transitions from: :pending_cancellation,
+                      to: :pending_manual_cancellation
+        end
+
+        event :finish_external_cancellation_with_acceptance do
+          transitions from: :pending_cancellation,
+                      to: :cancelled
         end
 
         event :register_failure do
