@@ -18,9 +18,9 @@ module OddsFeed
       end
 
       def update_event
-        event = load_event
-        update_event_producer!(event, producer)
-        update_event_payload!(event)
+        @event = load_event
+        update_event_producer!
+        update_event_payload!
       end
 
       private
@@ -42,10 +42,9 @@ module OddsFeed
       end
 
       def load_event
-        event = EventsManager::EventLoader.call(event_id,
-                                                check_existence: false)
         log_on_update
-        event
+        EventsManager::EventLoader.call(event_id,
+                                        check_existence: false)
       end
 
       def event_exists?
@@ -77,19 +76,17 @@ module OddsFeed
         CHANGE_TYPES[payload['change_type']]
       end
 
-      def update_event_producer!(event, new_producer)
-        return if new_producer == event.producer
+      def update_event_producer!
+        return if producer == @event.producer
 
         log_job_message(:info, "Updating producer for event ID #{event_id}")
-        event.update(producer: new_producer)
+        @event.update(producer: producer)
       end
 
-      def update_event_payload!(event)
+      def update_event_payload!
         log_job_message(:info, "Updating payload for event ID #{event_id}")
-
-        event.active = false if change_type == :cancelled
-
-        event.save!
+        @event.active = false if change_type == :cancelled
+        @event.save!
       end
     end
   end
