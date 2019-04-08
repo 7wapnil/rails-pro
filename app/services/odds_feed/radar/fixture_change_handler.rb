@@ -3,8 +3,6 @@
 module OddsFeed
   module Radar
     class FixtureChangeHandler < RadarMessageHandler
-      include EventCreatable
-
       CHANGE_TYPES = {
         '1' => :new,
         '2' => :datetime,
@@ -14,25 +12,44 @@ module OddsFeed
       }.freeze
 
       def handle
-        return invalid_event_type unless valid_event_type?
-        return if event.blank? && producer.live?
+        return unless valid?
 
-        if event
-          log_on_update
-          event.update_from!(api_event)
-          cache_event_based_data
-        else
-          log_on_create
-          create_event
-        end
-        update_event_producer!(producer)
-        update_event_payload!
+        update_event
+      end
+
+      def update_event
+        event = load_event
+        update_event_producer!(event, producer)
+        update_event_payload!(event)
       end
 
       private
 
-      def event
-        @event ||= Event.find_by(external_id: event_id)
+      def valid?
+        return false unless type_valid?
+        return false if event_exists? == false && producer.live?
+
+        true
+      end
+
+      def type_valid?
+        return true if EventsManager::Entities::Event.type_match?(event_id)
+
+        log_job_failure(
+          "Event with external ID #{event_id} could not be processed yet"
+        )
+        false
+      end
+
+      def load_event
+        event = EventsManager::EventLoader.call(event_id,
+                                                check_existence: false)
+        log_on_update
+        event
+      end
+
+      def event_exists?
+        Event.exists?(external_id: event_id)
       end
 
       def event_id
@@ -60,18 +77,14 @@ module OddsFeed
         CHANGE_TYPES[payload['change_type']]
       end
 
-      def log_on_create
-        log_job_message(:info, "Creating event with external ID #{event_id}")
-      end
-
-      def update_event_producer!(new_producer)
+      def update_event_producer!(event, new_producer)
         return if new_producer == event.producer
 
         log_job_message(:info, "Updating producer for event ID #{event_id}")
         event.update(producer: new_producer)
       end
 
-      def update_event_payload!
+      def update_event_payload!(event)
         log_job_message(:info, "Updating payload for event ID #{event_id}")
 
         event.active = false if change_type == :cancelled
