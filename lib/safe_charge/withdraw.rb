@@ -23,7 +23,7 @@ module SafeCharge
       EntryRequest::CREDIT_CARD => [
         {
           name: "Holder's full name",
-          code: :full_name,
+          code: :holder_name,
           type: :string
         },
         {
