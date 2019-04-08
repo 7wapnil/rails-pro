@@ -81,13 +81,8 @@ describe OddsFeed::Radar::Transpiling::Interpreter do
       venue_id      = 'sr:venue:1234'
 
       before do
-        allow(OddsFeed::Radar::Entities::PlayerLoader)
-          .to receive(:call).with(external_id: player_id).and_return('Player')
-
-        allow(OddsFeed::Radar::Entities::CompetitorLoader)
-          .to receive(:call)
-          .with(external_id: competitor_id)
-          .and_return('Competitor')
+        create(:player, external_id: player_id, full_name: 'Player')
+        create(:competitor, external_id: competitor_id, name: 'Competitor')
 
         allow(OddsFeed::Radar::Entities::VenueLoader)
           .to receive(:call).with(external_id: venue_id).and_return('Venue')
