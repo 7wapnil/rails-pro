@@ -16,13 +16,8 @@ module Mts
     private
 
     def publish_single_bet_validation(id)
-      bet = Bet.find(id)
-      message = Mts::Messages::ValidationRequest.new([bet])
-      response = Mts::MessagePublisher.publish!(message)
-      raise if response == false
-
-      bet.update(validation_ticket_id: message.ticket_id,
-                 validation_ticket_sent_at: Time.zone.now)
+      response = Publishers::BetValidation.publish!(bet: Bet.find_by(id: id))
+      raise unless response
     end
   end
 end

@@ -7,7 +7,6 @@ module Mts
       SUPPORTED_BETS_PER_REQUEST = 1
       MESSAGE_VERSION = '2.1'.freeze
       DEFAULT_STAKE_TYPE = 'total'.freeze
-      DEFAULT_SENDER_ID = 25_238
       CUSTOMER_DEFAULT_LANGUAGE = 'EN'.freeze
       DEFAULT_ODDS_CHANGE_BEHAVIOUR = 'none'.freeze
 
@@ -46,7 +45,7 @@ module Mts
       def root_attributes
         {
           version: MESSAGE_VERSION,
-          timestamp_utc: now_in_millisecons_epoch,
+          timestamp_utc: created_at,
           ticket_id: ticket_id,
           test_source: !Mts::Mode.production?,
           odds_change: DEFAULT_ODDS_CHANGE_BEHAVIOUR
@@ -62,7 +61,7 @@ module Mts
         {
           currency: bets_currency,
           channel: distribution_channel.channel,
-          bookmaker_id: DEFAULT_SENDER_ID,
+          bookmaker_id: ENV['MTS_BOOKMAKER_ID'].to_i,
           end_customer: end_customer,
           limit_id: Mts::Limit.some
         }
@@ -125,16 +124,12 @@ module Mts
         }
       end
 
-      def now_in_millisecons_epoch
-        (Time.now.to_f * 1000).to_i
+      def created_at
+        @created_at ||= (Time.now.to_f * 1000).to_i
       end
 
       def customer
         @customer ||= @bets.first.customer
-      end
-
-      def created_at
-        @created_at ||= now_in_millisecons_epoch
       end
 
       def bets_currency
