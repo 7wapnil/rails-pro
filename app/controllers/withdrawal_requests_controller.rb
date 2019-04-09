@@ -4,7 +4,7 @@ class WithdrawalRequestsController < ApplicationController
 
   def index
     query_params = query_params(:withdrawal_requests)
-    query_params.merge!(status_eq: WithdrawalRequest::PENDING)
+    query_params[:status_eq] = WithdrawalRequest::PENDING)
     @filter = WithdrawalRequestFilter.new source: WithdrawalRequest,
                                           query_params: query_params,
                                           page: params[:page]
