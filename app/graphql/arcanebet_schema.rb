@@ -19,7 +19,7 @@ GraphQL::Errors.configure(ArcanebetSchema) do
       error.path = [key]
       ctx.add_error(error)
     end
-    raise GraphQL::ExecutionError, 'Resolving error'
+    GraphQL::ExecutionError.new('Resolving error')
   end
 
   rescue_from ActiveRecord::RecordNotFound do |exception|
@@ -34,7 +34,7 @@ GraphQL::Errors.configure(ArcanebetSchema) do
       error.path = [attribute]
       ctx.add_error(error)
     end
-    raise GraphQL::ExecutionError, 'Invalid record'
+    GraphQL::ExecutionError.new('Invalid record')
   end
 
   rescue_from ActiveModel::ValidationError do |exception, _obj, _args, ctx|
@@ -42,10 +42,10 @@ GraphQL::Errors.configure(ArcanebetSchema) do
       error = GraphQL::ExecutionError.new(
         exception.model.errors.full_messages_for(attribute).first
       )
-      error.path = attribute
+      error.path = [attribute]
       ctx.add_error(error)
     end
-    raise GraphQL::ExecutionError, 'Invalid record'
+    GraphQL::ExecutionError.new('Invalid record')
   end
 
   rescue_from StandardError do |exception|
