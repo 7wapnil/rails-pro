@@ -28,6 +28,8 @@ module Deposits
     private
 
     def apply_bonus_code!
+      return unless bonus
+
       Bonuses::ActivationService.call(wallet, bonus, @amount)
     end
 
@@ -36,7 +38,7 @@ module Deposits
     end
 
     def bonus
-      Bonus.find_by_code(@bonus_code)
+      @bonus ||= Bonus.find_by_code(@bonus_code)
     end
 
     def validate_ambiguous_input!
