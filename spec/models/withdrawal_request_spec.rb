@@ -12,9 +12,7 @@ describe WithdrawalRequest, type: :model do
     context 'on pending request' do
       let(:withdrawal_request) { create(:withdrawal_request) }
 
-      before do
-        subject
-      end
+      before { subject }
 
       it 'sets the actioned_by reference' do
         expect(withdrawal_request.actioned_by).to eq user
@@ -48,9 +46,7 @@ describe WithdrawalRequest, type: :model do
     context 'on pending request' do
       let(:withdrawal_request) { create(:withdrawal_request) }
 
-      before do
-        subject
-      end
+      before { subject }
 
       it 'sets the actioned_by reference' do
         expect(withdrawal_request.actioned_by).to eq user

@@ -29,7 +29,7 @@ class WithdrawalRequest < ApplicationRecord
 
   def review!(user, new_status)
     error_message = I18n.t('errors.messages.withdrawal_requests.not_actionable')
-    raise error_message unless status == PENDING
+    raise error_message unless pending?
 
     update!(actioned_by: user, status: new_status)
   end

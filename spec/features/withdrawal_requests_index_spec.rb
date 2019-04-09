@@ -55,8 +55,6 @@ describe 'Withdrawals index page' do
     end
 
     context 'withdrawal confirmation' do
-      let(:withdrawal_request) { WithdrawalRequest.last }
-
       before do
         create(:withdrawal_request)
         visit withdrawal_requests_path
