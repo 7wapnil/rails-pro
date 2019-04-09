@@ -16,6 +16,10 @@ module Mts
       timestamp = Time.zone.now
       update_session_failed_at(timestamp)
       log_job_message(:warn, "Mts session failed at: #{timestamp}")
+
+      update_mts_connection_state
+
+      false
     end
 
     private
@@ -30,6 +34,21 @@ module Mts
 
     def clear_session_failed_at
       Rails.cache.delete(MTS_SESSION_FAILURE_KEY)
+    end
+
+    def update_mts_connection_state
+      ApplicationState
+        .find_or_create_by(type: MtsConnection.name)
+        .update(status: MtsConnection::RECOVERING)
+
+      emit_application_state
+    end
+
+    def emit_application_state
+      WebSocket::Client.instance
+                       .trigger_application_state_update(
+                         MtsConnection.instance.status
+                       )
     end
   end
 end

@@ -69,3 +69,8 @@
     class: Radar::ScheduledEvents::EventScheduleLoadingWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Queries events that will start in the future and stores them in local database"
+
+  mts_connection_establish:
+    every: <%= ENV.fetch('MTS_RECONNECTION_INTERVAL', '30s') %>
+    class: Mts::ReconnectionWorker
+    enabled: <%= ENV['MTS_MODE'] == 'prod' %>
