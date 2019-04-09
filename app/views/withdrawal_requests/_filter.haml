@@ -17,7 +17,7 @@
           .filter_field
             = f.label :status_eq, class: 'sr-only'
             = f.select :status_eq,
-                  withdrawal_request_status_options(filter),
+                  withdrawal_request_statuses(filter),
                   class: 'form-control'
 
         %th
@@ -64,7 +64,7 @@
           .filter_field
             = f.label :entry_request_mode_eq, class: 'sr-only'
             = f.select :entry_request_mode_eq,
-                       withdrawal_request_payment_method_options(filter),
+                       withdrawal_request_payment_methods(filter),
                        placeholder: t('attributes.payment_method'),
                        include_blank: true
         %th
