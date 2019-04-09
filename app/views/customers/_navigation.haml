@@ -35,3 +35,7 @@
             deposit_limit_customer_path(customer),
             class: 'list-group-item list-group-item-action',
             'data-target-action': :deposit_limit
+  = link_to t('entities.transactions'),
+            transactions_customer_path(customer),
+            class: 'list-group-item list-group-item-action',
+            'data-target-action': :transactions

@@ -16,7 +16,7 @@ module EventDetails
       end
 
       event_competitors.map do |item|
-        Competitor.new(id: item['id'], name: item['name'])
+        EventDetails::Competitor.new(id: item['id'], name: item['name'])
       end
     end
 

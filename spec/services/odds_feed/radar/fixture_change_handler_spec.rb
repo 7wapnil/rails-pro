@@ -1,261 +1,85 @@
 # frozen_string_literal: true
 
 describe OddsFeed::Radar::FixtureChangeHandler do
-  let(:subject_api) { described_class.new(payload) }
+  subject { described_class.new(payload) }
 
-  let(:liveodds_producer) { create(:liveodds_producer) }
-  let(:prematch_producer) { create(:prematch_producer) }
+  let!(:liveodds_producer) { create(:liveodds_producer) }
+  let!(:prematch_producer) { create(:prematch_producer) }
 
   let(:external_event_id) { 'sr:match:1234' }
+  let(:producer_id) { prematch_producer.id.to_s }
+  let(:change_type) { '4' }
 
   let(:payload) do
     {
       'fixture_change' => {
         'event_id' => external_event_id,
-        'change_type' => '4',
-        'product' => prematch_producer.id.to_s
+        'change_type' => change_type,
+        'product' => producer_id
       }
     }
   end
 
-  let(:event_id) { payload['fixture_change']['event_id'] }
-
-  let(:competitor_payload) do
-    XmlParser
-      .parse(file_fixture('radar_team_sport_competitor_profile.xml').read)
-  end
-
-  let(:competitor_id) do
-    competitor_payload.dig('competitor_profile', 'competitor', 'id')
-  end
-
-  let(:competitor_name) do
-    competitor_payload.dig('competitor_profile', 'competitor', 'name')
-  end
-
-  let(:event_competitor_payload) do
-    {
-      id: competitor_id,
-      name: competitor_name
-    }.stringify_keys
-  end
-
-  let(:event_payload) {}
-  let(:api_event) do
-    build(:event, producer: liveodds_producer, payload: event_payload)
-  end
-
-  let(:payload_update) { { producer: { origin: :radar, id: '1' } } }
-
   before do
-    allow(subject_api).to receive(:api_event) { api_event }
+    allow_any_instance_of(EventsManager::EventLoader).to receive(:call)
   end
 
-  context 'new event' do
-    it_behaves_like 'service caches competitors and players' do
-      let(:event_payload) do
-        {
-          competitors: {
-            competitor: [event_competitor_payload]
-          }
-        }.deep_stringify_keys
-      end
-      let(:service_call) { subject_api.handle }
-
-      it 'calls EventBasedCache::Writer' do
-        expect(OddsFeed::Radar::EventBasedCache::Writer)
-          .to have_received(:call)
-          .with(event: api_event)
-      end
-    end
-
-    it 'logs event create message' do
-      expect(subject_api).to receive(:log_on_create)
-
-      subject_api.handle
-    end
-
-    it 'sets producer' do
-      expect(subject_api)
-        .to receive(:update_event_producer!)
-        .with(prematch_producer)
-
-      subject_api.handle
-    end
-
-    it 'creates event' do
-      expect { subject_api.handle }.to change(Event, :count).by(1)
-    end
-
-    context 'with liveodds producer' do
-      let(:payload) do
-        {
-          'fixture_change' => {
-            'event_id' => external_event_id,
-            'change_type' => '4',
-            'product' => liveodds_producer.id.to_s
-          }
-        }
-      end
-
-      it 'does not create event' do
-        expect { subject_api.handle }.not_to change(Event, :count)
-      end
-    end
-  end
-
-  context 'returns empty event from Radar API' do
-    let(:api_event) { Event.new }
-
-    it 'and raises an error' do
-      expect { subject_api.handle }
-        .to raise_error(ActiveRecord::RecordInvalid)
-    end
-  end
-
-  context 'events are updating simultaneously' do
-    context 'and have same event scopes' do
-      let(:control_count) { rand(2..4) }
-      let(:event_scopes)  { create_list(:event_scope, control_count) }
-      let(:scoped_events) do
-        event_scopes.map { |scope| ScopedEvent.new(event_scope: scope) }
-      end
-
-      let(:api_event) do
-        build(:event, title:         build(:title),
-                      external_id:   event_id,
-                      scoped_events: scoped_events)
-      end
-
-      before do
-        create(:event, title:        build(:title),
-                       external_id:  event_id,
-                       event_scopes: event_scopes)
-
-        allow(Event).to receive(:find_by).with(external_id: event_id)
-      end
-
-      it "don't cause ActiveRecord::RecordNotUnique error" do
-        expect(scoped_events)
-          .to all(
-            receive(:update!).and_raise(ActiveRecord::RecordNotUnique)
-          )
-
-        subject_api.handle
-      end
-
-      it "don't produce duplicates" do
-        subject_api.handle
-        expect(api_event.scoped_events.count).to eq(control_count)
-      end
-    end
-  end
-
-  context 'existing event' do
-    let(:event) do
-      create(:event,
-             external_id: event_id,
-             active: true,
-             payload: event_payload)
-    end
+  describe 'validation' do
+    let(:subject_stub) { described_class.new(payload) }
 
     before do
-      allow(subject_api).to receive(:event) { event }
+      allow(subject_stub).to receive(:update_event)
     end
 
-    after { subject_api.handle }
+    context 'invalid event type' do
+      let(:external_event_id) { 'sr:unknown:1234' }
 
-    it_behaves_like 'service caches competitors and players' do
-      let(:event_payload) do
-        {
-          competitors: {
-            competitor: [event_competitor_payload]
-          }
-        }.deep_stringify_keys
-      end
-      let(:service_call) { subject_api.handle }
-
-      it 'calls EventBasedCache::Writer' do
-        expect(OddsFeed::Radar::EventBasedCache::Writer)
-          .to have_received(:call)
-          .with(event: event)
+      it 'rejects unknown event type handling' do
+        subject_stub.handle
+        expect(subject_stub).not_to have_received(:update_event)
       end
     end
 
-    it 'calls #update_from! on found event' do
-      expect(event).to receive(:update_from!).with(api_event)
-    end
+    context 'live producer for non-exists event' do
+      let(:producer_id) { liveodds_producer.id.to_s }
 
-    it 'logs event update message' do
-      expect(subject_api).to receive(:log_on_update)
-    end
-
-    it 'updates producer info' do
-      expect(subject_api)
-        .to receive(:update_event_producer!).with(prematch_producer)
-    end
-
-    context 'cancelled event' do
-      let(:payload) do
-        {
-          'fixture_change' => {
-            'event_id' => external_event_id,
-            'change_type' => '3',
-            'product' => prematch_producer.id.to_s
-          }
-        }
-      end
-
-      it 'sets event activity status to inactive' do
-        subject_api.handle
-        expect(Event.find_by!(external_id: external_event_id).active)
-          .to be_falsy
+      it 'rejects event update' do
+        subject_stub.handle
+        expect(subject_stub).not_to have_received(:update_event)
       end
     end
+  end
 
-    context 'producer change' do
-      let(:payload) do
-        {
-          'fixture_change' => {
-            'event_id' => external_event_id,
-            'change_type' => '3',
-            'product' => prematch_producer.id.to_s
-          }
-        }
-      end
+  describe 'update event data' do
+    before do
+      event = create(:event,
+                     external_id: external_event_id,
+                     active: true,
+                     producer: liveodds_producer)
 
-      it 'updates producer info' do
-        expect(subject_api)
-          .to receive(:update_event_producer!).with(prematch_producer)
-      end
+      allow_any_instance_of(EventsManager::EventLoader)
+        .to receive(:call)
+        .and_return(event)
     end
 
-    context 'cancelled event' do
-      let(:payload) do
-        {
-          'fixture_change' => {
-            'event_id' => external_event_id,
-            'change_type' => '3',
-            'product' => prematch_producer.id.to_s
-          }
-        }
-      end
-
-      it 'sets event activity status to inactive' do
-        subject_api.handle
-        expect(Event.find_by!(external_id: external_event_id).active)
-          .to be_falsy
-      end
+    it 'updates event data via events manager' do
+      subject.handle
+      expect(Event.where(external_id: external_event_id)).to be_exists
     end
 
-    context 'on unsupported external id' do
-      subject { described_class.new(payload) }
+    it 'updates event producer if changed' do
+      subject.handle
+      event = Event.find_by!(external_id: external_event_id)
+      expect(event.producer_id).to eq(prematch_producer.id)
+    end
 
-      before { payload['fixture_change']['event_id'] = 'sr:season:1234' }
+    context 'cancelled message type' do
+      let(:change_type) { '3' }
 
-      it 'does nothing' do
-        expect_any_instance_of(Event).not_to receive(:save!)
-        subject_api.handle
+      it 'deactivates event' do
+        subject.handle
+        event = Event.find_by!(external_id: external_event_id)
+        expect(event.active).to be_falsy
       end
     end
   end

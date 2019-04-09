@@ -11,6 +11,7 @@ class CustomersController < ApplicationController
     deposit_limit
     show
   ]
+
   before_action :new_note, only: %i[
     account_management
     activity
@@ -21,6 +22,7 @@ class CustomersController < ApplicationController
     notes
     show
   ]
+
   before_action :customer_notes_widget, only: %i[
     account_management
     activity
@@ -190,6 +192,20 @@ class CustomersController < ApplicationController
       )
     end
     redirect_to customer_path(customer)
+  end
+
+  def transactions
+    filter_source = EntryRequest
+                    .transactions
+                    .where(customer: customer)
+                    .includes(:entry)
+
+    @filter = EntryRequestsFilter.new(
+      source: filter_source,
+      query_params: query_params(:entry_requests),
+      page: params[:page],
+      per_page: 20
+    )
   end
 
   private

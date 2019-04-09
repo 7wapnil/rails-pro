@@ -3,9 +3,10 @@ describe GraphQL, '#withdraw' do
   let(:amount) { Faker::Number.decimal(2, 2).to_d }
   let(:payment_method) { EntryRequest::CREDIT_CARD }
   let(:payload) do
-    SafeCharge::Withdraw::WITHDRAW_MODE_FIELDS[payment_method]&.map do |row|
-      { code: row[:code].to_s, value: Faker::Lorem.word }
-    end
+    [
+      { code: 'holder_name', value: Faker::Lorem.characters(25) },
+      { code: 'last_four_digits', value: 1234.to_s }
+    ]
   end
   let(:currency) { create(:currency, :with_withdrawal_rule) }
   let(:wallet) do

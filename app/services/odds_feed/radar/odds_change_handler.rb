@@ -4,7 +4,6 @@ module OddsFeed
   module Radar
     # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
-      include EventCreatable
       include WebsocketEventEmittable
       include OddsFeed::FlowProfiler
 
@@ -16,7 +15,7 @@ module OddsFeed
 
       def handle
         return unless input_data
-        return invalid_event_type unless valid_event_type?
+        return unless type_valid?
 
         create_or_update_event!
         touch_event!
@@ -32,6 +31,15 @@ module OddsFeed
 
       def default_configuration
         @configuration[:cached_market_templates] ||= true
+      end
+
+      def type_valid?
+        return true if EventsManager::Entities::Event.type_match?(event_id)
+
+        log_job_failure(
+          "Event with external ID #{event_id} could not be processed yet"
+        )
+        false
       end
 
       def market_templates_cache
@@ -61,7 +69,12 @@ module OddsFeed
           "[LOG-FILTER-1] Event with external ID #{event_id} not found. " \
           'Creating new.'
         )
-        create_event
+
+        @event = create_event!
+      end
+
+      def create_event!
+        EventsManager::EventLoader.call(event_id)
       end
 
       def touch_event!
