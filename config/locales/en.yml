@@ -340,6 +340,7 @@ en:
       deposit_request_failed: Deposit request failed
       unsupported_payment_method: "Payment method '%{code}' is not implemented"
       nonexistent_event: "Event with id '%{id}' does not exist"
+      nonexistent_bet: "Bet with validation ticket id '%{id}' does not exist"
       password_invalid: Password is invalid
       unsupported_withdraw_method: "Payment method %{name} is not supported"
 

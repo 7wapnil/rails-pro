@@ -145,13 +145,10 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def display_status
-    if PENDING_STATUSES_MASK.include? status
-      'pending'
-    elsif CANCELLED_STATUS_MASK.include? status
-      'cancelled'
-    else
-      status
-    end
+    return 'pending' if PENDING_STATUSES_MASK.include?(status)
+    return 'cancelled' if CANCELLED_STATUS_MASK.include?(status)
+
+    status
   end
 
   def potential_win

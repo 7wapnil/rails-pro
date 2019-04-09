@@ -5,7 +5,7 @@ describe Mts::CancellationResponseHandler do
   let!(:bet) do
     create(:bet, :sent_to_external_validation, validation_ticket_id: ticket_id)
   end
-  let(:ticket_id) { "MTS_Test_#{Faker::Number.number(13)}" }
+  let!(:ticket_id) { "MTS_Test_#{Faker::Number.number(13)}" }
   let(:message) do
     <<-EXAMPLE_JSON
       {"result": {
@@ -70,6 +70,21 @@ describe Mts::CancellationResponseHandler do
         expect(EntryRequests::RefundWorker).to receive(:perform_async)
 
         subject_call
+      end
+    end
+
+    context 'with nonexistent bet' do
+      let(:status_code) { Mts::CancellationResponseHandler::SUCCESSFUL_CODE }
+      let!(:bet) do
+        create(:bet,
+               :sent_to_external_validation,
+               validation_ticket_id: "MTS_Test_#{Faker::Number.number(13)}")
+      end
+
+      it 'raise error' do
+        expect { subject_call }
+          .to raise_error(I18n.t('errors.messages.nonexistent_bet',
+                                 id: ticket_id))
       end
     end
   end
