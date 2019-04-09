@@ -14,8 +14,7 @@ module PaymentMethods
                    default: obj.humanize)
           end
 
-    field :code, !types.String,
-          resolve: ->(obj, _args, _ctx) { obj }
+    field :code, !types.String
 
     field :kind, !types.String,
           resolve: ->(_obj, _args, _ctx) { Currency::FIAT }
