@@ -79,8 +79,8 @@ describe OddsFeed::Radar::MarketGenerator::OddBuilder do
     before { odd_data['odds'] = nil }
 
     context 'and odd with such external id does not exist' do
-      it 'builds new odd with zero value' do
-        expect(subject.value).to be_zero
+      it 'builds new odd without value' do
+        expect(subject.value).to be_nil
       end
     end
 
@@ -89,9 +89,9 @@ describe OddsFeed::Radar::MarketGenerator::OddBuilder do
 
       it 'gives found odd but changes only its status' do
         expect(subject).to have_attributes(
-          id: odd.id,
+          id: nil,
           status: Odd::ACTIVE,
-          value: odd.value
+          value: nil
         )
       end
     end
@@ -102,7 +102,7 @@ describe OddsFeed::Radar::MarketGenerator::OddBuilder do
 
     context 'and odd with such external id does not exist' do
       it 'builds new odd with zero value' do
-        expect(subject.value).to be_zero
+        expect(subject.value).to be_nil
       end
     end
 
@@ -111,9 +111,9 @@ describe OddsFeed::Radar::MarketGenerator::OddBuilder do
 
       it 'gives found odd but changes only its status' do
         expect(subject).to have_attributes(
-          id: odd.id,
+          id: nil,
           status: Odd::ACTIVE,
-          value: odd.value
+          value: nil
         )
       end
     end

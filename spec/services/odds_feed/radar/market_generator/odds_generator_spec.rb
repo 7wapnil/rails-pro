@@ -41,16 +41,6 @@ describe OddsFeed::Radar::MarketGenerator::OddsGenerator do
       it { expect(subject).to be_empty }
     end
 
-    context 'ignore odds with zero value' do
-      before do
-        invalid_odds_count
-          .times
-          .each { |offset| payload.dig('outcome', offset).delete('odds') }
-      end
-
-      it { expect(subject.length).to eq(valid_odds_count) }
-    end
-
     context 'ignore invalid odds' do
       let(:invalid_names) { Array.new(invalid_odds_count) }
       let(:valid_names) do
