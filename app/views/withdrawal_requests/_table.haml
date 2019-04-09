@@ -11,11 +11,10 @@
   %tbody
     - if filter.withdrawal_requests.any?
       - filter.withdrawal_requests.each do |withdrawal_request|
-        - id = "withdrawal_request-#{withdrawal_request.id}"
         - entry_request = withdrawal_request.entry_request
-        %tr{ id: id }
+        %tr{ id: "withdrawal_request-#{withdrawal_request.id}" }
           // id
-          %td= id
+          %td= "withdrawal_request-#{withdrawal_request.id}"
           // customer
           %td= link_to entry_request.customer.username, customer_path(entry_request.customer)
           // created_at
