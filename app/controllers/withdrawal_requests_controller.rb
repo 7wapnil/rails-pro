@@ -11,22 +11,21 @@ class WithdrawalRequestsController < ApplicationController
   end
 
   def confirm
-    WithdrawalRequests::Review.call(withdrawal_request: withdrawal_request,
-                                    user: current_user,
-                                    action: :confirm)
-
+    @withdrawal_request.confirm!(current_user)
     flash[:notice] = I18n.t('messages.withdrawal_confirmed')
+  rescue StandardError => e
+    flash[:error] = e.message
+  ensure
     redirect_back fallback_location: withdrawal_requests_path
   end
 
   def reject
     comment = rejection_params[:comment]
-    WithdrawalRequests::Review.call(withdrawal_request: withdrawal_request,
-                                    user: current_user,
-                                    action: :reject,
-                                    comment: comment)
-
+    @withdrawal_request.reject!(current_user, comment)
     flash[:notice] = I18n.t('messages.withdrawal_rejected')
+  rescue StandardError => e
+    flash[:error] = e.message
+  ensure
     redirect_back fallback_location: withdrawal_requests_path
   end
 
@@ -34,10 +33,6 @@ class WithdrawalRequestsController < ApplicationController
 
   def withdrawal_request
     @withdrawal_request ||= WithdrawalRequest.find(params[:id])
-  end
-
-  def entry
-    withdrawal_request.entry_request.entry
   end
 
   def rejection_params
@@ -48,7 +43,7 @@ class WithdrawalRequestsController < ApplicationController
     event = "withdrawal_request_#{action_name}".to_s
     Audit::Service.call(event: event,
                         user: current_user,
-                        customer: withdrawal_request.entry_request.customer,
+                        customer: withdrawal_request.entry.customer,
                         context: withdrawal_request)
   end
 end

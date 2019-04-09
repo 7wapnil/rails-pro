@@ -19,7 +19,6 @@
             - selected_status = query_params(:withdrawal_requests)['status_eq']
             = f.select :status_eq,
                   options_for_select(filter.statuses, selected_status),
-                  { include_blank: true },
                   class: 'form-control'
 
         %th
