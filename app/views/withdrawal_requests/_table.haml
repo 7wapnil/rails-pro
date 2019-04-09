@@ -14,7 +14,7 @@
         - entry_request = withdrawal_request.entry_request
         %tr{ id: "withdrawal_request-#{withdrawal_request.id}" }
           // id
-          %td= "withdrawal_request-#{withdrawal_request.id}"
+          %td "withdrawal_request-#{withdrawal_request.id}"
           // customer
           %td= link_to entry_request.customer.username, customer_path(entry_request.customer)
           // created_at
