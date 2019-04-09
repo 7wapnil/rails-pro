@@ -30,11 +30,11 @@ module OddsFeed
         end
 
         def player_name(token)
-          ::Player.find_by!(external_id: external_id(token)).full_name
+          event.players.find_by!(external_id: external_id(token)).full_name
         end
 
         def competitor_name(token)
-          ::Competitor.find_by!(external_id: external_id(token)).name
+          event.competitors.find_by!(external_id: external_id(token)).name
         end
 
         def venue_name(token)
