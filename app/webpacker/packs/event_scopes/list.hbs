@@ -1,0 +1,11 @@
+<td class="event-scope-td">
+  <ul class="sortable list-group">
+  {{#each event_scopes}}
+    {{#if has_children}}
+    <li data-id="{{id}}" class="list-group-item expand-event-scope">{{name}} ▶</li>
+    {{else}}
+    <li data-id="{{id}}" class="list-group-item">{{name}}</li>
+    {{/if}}
+  {{/each}}
+  </ul>
+</td>

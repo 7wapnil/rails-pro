@@ -261,6 +261,7 @@ en:
       zero: No events
       one: 1 event
       other: "%{count} events"
+    event_scopes: Event Scopes
     global_betting_limit: Global betting limit
     global_betting_limits: Global betting limits
     label: Label
@@ -389,6 +390,9 @@ en:
     withdraw: Withdraw
     bonus: Bonus money
     real_money: Real money
+    category: Category
+    tournament: Tournament
+    season: Season
     payment_methods:
       credit_card: Credit Card
       skrill: Skrill

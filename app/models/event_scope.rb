@@ -10,6 +10,7 @@ class EventScope < ApplicationRecord
   belongs_to :event_scope, optional: true
   has_many :scoped_events
   has_many :events, through: :scoped_events
+  has_many :event_scopes
 
   enum kind: {
     tournament: TOURNAMENT = 'tournament',

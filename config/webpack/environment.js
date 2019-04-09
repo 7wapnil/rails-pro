@@ -4,9 +4,11 @@ const webpack = require('webpack')
 
 const erb = require('./loaders/erb')
 const vue = require('./loaders/vue')
+const handlebars = require('./loaders/handlebars')
 
 environment.loaders.append('vue', vue)
 environment.loaders.append('erb', erb)
+environment.loaders.append('handlebars', handlebars)
 
 environment.loaders.get('sass').use.splice(-1, 0, {
   loader: 'resolve-url-loader',
