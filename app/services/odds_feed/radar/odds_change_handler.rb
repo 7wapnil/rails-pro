@@ -70,7 +70,7 @@ module OddsFeed
           'Creating new.'
         )
 
-        @event = create_event!
+        @event = ::Event.find_by!(external_id: event_id)
       end
 
       def create_event!

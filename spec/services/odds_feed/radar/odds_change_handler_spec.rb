@@ -39,10 +39,10 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
   let(:event_payload) {}
   let(:event) do
-    build(:event,
-          title: build(:title),
-          external_id: event_id,
-          payload: event_payload)
+    create(:event,
+           title: build(:title),
+           external_id: event_id,
+           payload: event_payload)
   end
   let!(:timestamp) { Time.now + 60 }
 
@@ -80,80 +80,23 @@ describe OddsFeed::Radar::OddsChangeHandler do
       .and_return(Faker::Name.name)
   end
 
-  it 'requests event data from API if not found in db' do
-    subject_api.handle
-    expect(subject_api).to have_received(:create_event!)
-  end
-
   it 'does not request API if event exists in db' do
-    create(:event, external_id: event_id)
     subject_api.handle
     expect(subject_api).not_to have_received(:create_event!)
   end
 
   it 'updates event status from message' do
-    create(:event, external_id: event_id, status: Event::NOT_STARTED)
+    event.update(status: Event::NOT_STARTED)
     subject_api.handle
-    event = Event.find_by(external_id: event_id)
+    event.reload
     expect(event.status).to eq(Event::STARTED)
   end
 
-  context 'event activity' do
-    let(:positive_status) { Event::NOT_STARTED }
-    let(:event_to_be_marked_as_active) do
-      create(
-        :event,
-        :with_odds,
-        external_id: event_id,
-        status: positive_status,
-        active: false
-      )
-        .tap do |event|
-          event_market = event.markets.sample
-          event_market.update(status: Market::ACTIVE)
-          event_market.odds.sample.update(status: Odd::ACTIVE)
-        end
-    end
-
-    it 'defines event as active' do
-      event_to_be_marked_as_active
-      described_class.new(payload).handle
-      event = Event.find_by(external_id: event_id)
-      expect(event.active).to be_truthy
-    end
-
-    it 'defines event as inactive when no active outcomes' do
-      create(:event,
-             external_id: event_id,
-             status: Event::NOT_STARTED,
-             active: true)
-
-      described_class.new(payload_inactive_outcomes).handle
-      event = Event.find_by(external_id: event_id)
-      expect(event.active).to be_falsy
-    end
-
-    %w[3 4 5 9].each do |radar_status|
-      it "defines event as inactive when receive status '#{radar_status}'" do
-        payload['odds_change']['sport_event_status']['status'] = radar_status
-
-        create(:event,
-               external_id: event_id,
-               status: Event::NOT_STARTED,
-               active: true)
-
-        described_class.new(payload).handle
-        event = Event.find_by(external_id: event_id)
-        expect(event.active).to be_falsy
-      end
-    end
-  end
-
   it 'updates event end at time on "ended" status' do
-    create(:event, external_id: event_id, status: Event::NOT_STARTED)
+    event.update(status: Event::NOT_STARTED)
     allow(subject_api).to receive(:event_status).and_return(Event::ENDED)
     subject_api.handle
-    event = Event.find_by(external_id: event_id)
+    event.reload
     expect(event.status).to eq(Event::ENDED)
     expect(event.end_at).not_to be_nil
   end
@@ -221,12 +164,6 @@ describe OddsFeed::Radar::OddsChangeHandler do
           .not_to have_received(:call)
       end
     end
-  end
-
-  it 'changes event producer' do
-    subject_api.handle
-
-    expect(event.producer).to eq(producer_from_xml)
   end
 
   it 'sends websocket message when new event created' do
@@ -396,17 +333,6 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
       it 'does not generate markets' do
         expect(subject_api).not_to have_received(:call_markets_generator)
-      end
-    end
-
-    context 'empty event returns from Radar API' do
-      subject { described_class.new(payload) }
-
-      let(:event) { Event.new }
-
-      it 'and raise an error' do
-        expect { subject_api.handle }
-          .to raise_error(ActiveRecord::RecordInvalid)
       end
     end
 
