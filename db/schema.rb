@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_03_075755) do
+ActiveRecord::Schema.define(version: 2019_04_03_185155) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -486,6 +486,8 @@ ActiveRecord::Schema.define(version: 2019_04_03_075755) do
     t.jsonb "payment_details"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "actioned_by_id"
+    t.index ["actioned_by_id"], name: "index_withdrawal_requests_on_actioned_by_id"
   end
 
   add_foreign_key "addresses", "customers"
@@ -522,4 +524,5 @@ ActiveRecord::Schema.define(version: 2019_04_03_075755) do
   add_foreign_key "verification_documents", "customers"
   add_foreign_key "wallets", "currencies"
   add_foreign_key "wallets", "customers"
+  add_foreign_key "withdrawal_requests", "users", column: "actioned_by_id"
 end

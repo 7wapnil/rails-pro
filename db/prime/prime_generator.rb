@@ -44,8 +44,16 @@ class PrimeGenerator
     },
     bets: {
       target_count: 10,
-      current_count: lambda { Bet.count },
+      current_count: -> { Bet.count },
       factory_options: %i[bet accepted with_random_market]
+    },
+    withdrawal_requests: {
+      target_count: 10,
+      current_count: lambda do
+        interval = Time.zone.now.beginning_of_day..Time.zone.now.end_of_day
+        WithdrawalRequest.where(created_at: interval).count
+      end,
+      factory_options: %i[withdrawal_request]
     }
   }.freeze
 

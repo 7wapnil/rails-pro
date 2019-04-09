@@ -93,7 +93,7 @@ Rails.application.routes.draw do
 
   resources :market_templates, only: %i[index update]
 
-  resources :withdrawals, only: :index do
+  resources :withdrawal_requests, only: :index do
     member do
       post :confirm
       post :reject

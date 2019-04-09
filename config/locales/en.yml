@@ -56,6 +56,7 @@ en:
     account_lock: Account lock
     account_kind: Account type
     action: Action
+    actioned_by: Actioned by
     actions: Actions
     activated_at: Activated at
     actual_payout: Actual payout
@@ -301,6 +302,7 @@ en:
     balance_entries: Balance entries
     balance_entry_requests: Balance entry requests
     withdrawals: Withdrawals
+    withdrawal_requests: Withdrawal requests
 
   errors:
     messages:
@@ -346,6 +348,8 @@ en:
         bonus_exists: Active bonus exists!
         invalid_payment_method: "Invalid payment method: %{payment_method}"
         invalid_payload: "Missing %{attr}"
+      withdrawal_requests:
+        not_actionable: Withdrawal request has already been reviewed
       graphql:
         betting:
           place:

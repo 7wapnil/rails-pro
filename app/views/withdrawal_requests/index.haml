@@ -1,0 +1,6 @@
+= render 'filter',
+         filter: @filter,
+         search_path: customers_path
+%h1.display-4= t('entities.withdrawal_requests')
+= render 'table', filter: @filter
+= paginate @filter.withdrawal_requests

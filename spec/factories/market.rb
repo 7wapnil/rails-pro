@@ -8,7 +8,7 @@ FactoryBot.define do
     status   { Market::ACTIVE }
 
     sequence :external_id do |n|
-      "sr:match:#{n}:209/setnr=2|gamenrX=#{n}|gamenrY=#{n}"
+      "sr:match:#{n}:#{rand(0..10_000)}/setnr=2|gamenrX=#{n}|gamenrY=#{n}"
     end
 
     event

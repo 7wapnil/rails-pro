@@ -1,0 +1,71 @@
+= search_form_for filter.search, url: withdrawal_requests_path,
+                                 as: :withdrawal_requests do |f|
+  %table.table.search
+    %thead
+      %tr
+        %th
+          .filter_field
+            #{t('attributes.id')}:
+          .filter_field
+            = f.label :id_eq, class: 'sr-only'
+            = f.search_field :id_eq,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: t('attributes.id')),
+                              autocomplete: :off
+        %th
+          .filter_title #{t('attributes.status')}:
+          .filter_field
+            = f.label :status_eq, class: 'sr-only'
+            = f.select :status_eq,
+                  withdrawal_request_statuses(filter),
+                  class: 'form-control'
+
+        %th
+          .filter_title
+            #{t(:search, subject: t('from'))}:
+          .filter_field
+            = f.label :created_at_gteq, class: 'sr-only'
+            = f.search_field :created_at_gteq,
+                              class: 'form-control form_date',
+                              placeholder: t(:search, subject: t('from')),
+                              value: search_date_for(:created_at_gteq, :withdrawal_requests)
+        %th
+          .filter_title
+            #{t(:search, subject: t('to'))}:
+          .filter_field
+            = f.label :created_at_lteq, class: 'sr-only'
+            = f.search_field :created_at_lteq,
+                              class: 'form-control form_date',
+                              placeholder: t(:search, subject: t('to')),
+                              value: search_date_for(:created_at_lteq, :withdrawal_requests)
+
+        %th
+          .filter_title
+            #{t('attributes.actioned_by')}:
+          .filter_field
+            = f.label :actioned_by_email_cont, class: 'sr-only'
+            = f.search_field :actioned_by_email_cont,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: t('attributes.email')),
+                              autocomplete: :off
+
+        %th
+          .filter_title
+            #{t('attributes.customer_name')}:
+          .filter_field
+            = f.label :entry_request_customer_username_cont, class: 'sr-only'
+            = f.search_field :entry_request_customer_username_cont,
+                             placeholder: t(:search, subject: t('attributes.customer_name')),
+                             autocomplete: :off
+
+        %th
+          .filter_title
+            #{t('attributes.payment_method')}:
+          .filter_field
+            = f.label :entry_request_mode_eq, class: 'sr-only'
+            = f.select :entry_request_mode_eq,
+                       withdrawal_request_payment_methods(filter),
+                       placeholder: t('attributes.payment_method'),
+                       include_blank: true
+        %th
+          = f.submit class: 'btn btn-outline-dark btn-block'
