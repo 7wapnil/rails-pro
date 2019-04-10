@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Market do
   subject(:market) { described_class.new }
 
@@ -20,6 +22,28 @@ describe Market do
       allow(subject).to receive(:define_priority)
       subject.validate
       expect(subject).not_to have_received(:define_priority)
+    end
+
+    describe '#snapshot_status!' do
+      subject(:market) { create(:market) }
+
+      before { market }
+
+      it 'is not called' do
+        expect(Markets::StatusTransition).not_to receive(:call)
+        market.save
+      end
+
+      it 'is called on change status' do
+        market.status = StateMachines::MarketStateMachine::SUSPENDED
+        expect(Markets::StatusTransition)
+          .to receive(:call)
+          .with(
+            market: market,
+            status: StateMachines::MarketStateMachine::SUSPENDED
+          )
+        market.save
+      end
     end
   end
 
@@ -88,16 +112,45 @@ describe Market do
 
   describe '#for_displaying' do
     before do
-      Market::STATUSES.values.each do |status|
+      StateMachines::MarketStateMachine::STATUSES.values.each do |status|
         FactoryBot.create(:market, :with_odds, status: status)
       end
     end
 
     it 'only returns markets with visible statuses' do
-      expected_to_be_displayed = described_class
-                                 .where(status: Market::DISPLAYED_STATUSES)
+      expected_to_be_displayed =
+        described_class
+        .where(status: StateMachines::MarketStateMachine::DISPLAYED_STATUSES)
       expect(described_class.for_displaying)
         .to match_array(expected_to_be_displayed)
+    end
+  end
+
+  describe '#rollback_status!' do
+    subject(:market) { build(:market) }
+
+    it 'works with default args' do
+      expect(Markets::StatusTransition)
+        .to receive(:call)
+        .with(market: market, persist: true)
+
+      market.rollback_status!
+    end
+
+    it 'works without persisting' do
+      expect(Markets::StatusTransition)
+        .to receive(:call)
+        .with(market: market, persist: false)
+
+      market.rollback_status!(persist: false)
+    end
+
+    it 'works with persisting' do
+      expect(Markets::StatusTransition)
+        .to receive(:call)
+        .with(market: market, persist: true)
+
+      market.rollback_status!(persist: true)
     end
   end
 end

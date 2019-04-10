@@ -6,9 +6,9 @@ class EntryRequest < ApplicationRecord
 
   belongs_to :customer
   belongs_to :currency
-  belongs_to :initiator, polymorphic: true
+  belongs_to :initiator, polymorphic: true, optional: true
   belongs_to :origin, polymorphic: true, optional: true
-  has_many :balance_entry_requests
+  has_many :balance_entry_requests, dependent: :destroy
 
   has_one :bonus_balance_entry_request, -> { bonus },
           class_name: BalanceEntryRequest.name

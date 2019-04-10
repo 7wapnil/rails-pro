@@ -166,7 +166,7 @@ en:
     visibility: Visibility
     visible: Visible
     wager: Wager
-    winnings: Winnings
+    winning_amount: Winnings
     zip_code: ZIP
     percentage: Percentage
     confirmed_at: Confirmed at

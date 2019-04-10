@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Radar::UnifiedOdds do
   let(:minimal_valid_odds_change_xml) do
     '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
@@ -31,6 +33,11 @@ describe Radar::UnifiedOdds do
                       change_type="1"
                       product="1" />
     XML
+  end
+
+  let(:minimal_rollback_bet_settlement) do
+    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
+    '<rollback_bet_settlement/>'
   end
 
   describe 'work' do
@@ -74,6 +81,13 @@ describe Radar::UnifiedOdds do
         .to receive(:perform_async)
         .with(minimal_valid_fixture_change_xml, anything)
       subject.work(minimal_valid_fixture_change_xml)
+    end
+
+    it 'routes alive to Radar::RollbackBetSettlementWorker' do
+      expect(Radar::RollbackBetSettlementWorker)
+        .to receive(:perform_async)
+        .with(minimal_rollback_bet_settlement, anything)
+      subject.work(minimal_rollback_bet_settlement)
     end
 
     it 'raises NotImplementedError on any unknown input' do

@@ -177,7 +177,7 @@ describe GraphQL, '#markets' do
 
       let!(:markets) do
         markets = {}
-        Market::STATUSES.values.each do |status|
+        StateMachines::MarketStateMachine::STATUSES.values.each do |status|
           markets[status] = FactoryBot.create(:market,
                                               :with_odds,
                                               event: event,
@@ -186,20 +186,21 @@ describe GraphQL, '#markets' do
         markets
       end
 
-      Market::DISPLAYED_STATUSES.each do |displayed_status|
+      displayed_statuses = StateMachines::MarketStateMachine::DISPLAYED_STATUSES
+      displayed_statuses.each do |displayed_status|
         it "#{displayed_status} market is shown" do
           expect(result['data']['markets'].map { |h| h['id'].to_i })
             .to include(markets[displayed_status].id)
         end
       end
 
-      (Market::STATUSES.values - Market::DISPLAYED_STATUSES)
+      (StateMachines::MarketStateMachine::STATUSES.values - displayed_statuses)
         .each do |hidden_status|
-        it "#{hidden_status} market is now shown" do
-          expect(result['data']['markets'].map { |h| h['id'].to_i })
-            .not_to include(markets[hidden_status].id)
+          it "#{hidden_status} market is now shown" do
+            expect(result['data']['markets'].map { |h| h['id'].to_i })
+              .not_to include(markets[hidden_status].id)
+          end
         end
-      end
     end
   end
 end

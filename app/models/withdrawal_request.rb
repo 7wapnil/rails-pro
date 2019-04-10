@@ -1,8 +1,15 @@
 # frozen_string_literal: true
 
 class WithdrawalRequest < ApplicationRecord
-  has_one :entry_request, as: :origin
-  has_one :entry, through: :entry_request, required: false, as: :origin
+  has_one :entry_request,
+          -> { unscoped.order(:created_at) },
+          as: :origin
+  has_one :entry,
+          -> { unscoped.order(:created_at) },
+          through: :entry_request,
+          required: false,
+          as: :origin
+
   belongs_to :actioned_by, class_name: User.name, optional: true
 
   enum status: {

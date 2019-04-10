@@ -4,33 +4,33 @@ module StateMachines
   module BetStateMachine
     extend ActiveSupport::Concern
 
-    INITIAL                     = 'initial'
+    INITIAL = 'initial'
     SENT_TO_INTERNAL_VALIDATION = 'sent_to_internal_validation'
-    VALIDATED_INTERNALLY        = 'validated_internally'
+    VALIDATED_INTERNALLY = 'validated_internally'
     SENT_TO_EXTERNAL_VALIDATION = 'sent_to_external_validation'
-    ACCEPTED                    = 'accepted'
-    PENDING_CANCELLATION        = 'pending_cancellation'
-    CANCELLED                   = 'cancelled'
-    SETTLED                     = 'settled'
-    REJECTED                    = 'rejected'
-    FAILED                      = 'failed'
+    ACCEPTED = 'accepted'
+    PENDING_CANCELLATION = 'pending_cancellation'
+    CANCELLED = 'cancelled'
+    SETTLED = 'settled'
+    REJECTED = 'rejected'
+    FAILED = 'failed'
 
     BET_STATUSES = {
-      initial:                     INITIAL,
+      initial: INITIAL,
       sent_to_internal_validation: SENT_TO_INTERNAL_VALIDATION,
-      validated_internally:        VALIDATED_INTERNALLY,
+      validated_internally: VALIDATED_INTERNALLY,
       sent_to_external_validation: SENT_TO_EXTERNAL_VALIDATION,
-      accepted:                    ACCEPTED,
-      pending_cancellation:        PENDING_CANCELLATION,
-      cancelled:                   CANCELLED,
-      settled:                     SETTLED,
-      rejected:                    REJECTED,
-      failed:                      FAILED
+      accepted: ACCEPTED,
+      pending_cancellation: PENDING_CANCELLATION,
+      cancelled: CANCELLED,
+      settled: SETTLED,
+      rejected: REJECTED,
+      failed: FAILED
     }.freeze
 
     BET_SETTLEMENT_STATUSES = {
       lost: LOST = 'lost',
-      won:  WON  = 'won'
+      won: WON = 'won'
     }.freeze
 
     included do

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Radar
   class UnifiedOdds
     include Sneakers::Worker
@@ -52,6 +54,10 @@ module Radar
       snapshot_complete: {
         matchers: %w[<snapshot_complete].freeze,
         klass: SnapshotCompleteWorker
+      },
+      rollback_bet_settlement: {
+        matchers: %w[<rollback_bet_settlement].freeze,
+        klass: RollbackBetSettlementWorker
       }
     }.freeze
 

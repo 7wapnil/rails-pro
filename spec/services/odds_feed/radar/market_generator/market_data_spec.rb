@@ -93,7 +93,10 @@ describe OddsFeed::Radar::MarketGenerator::MarketData do
     context 'returns default status' do
       before { payload.delete('status') }
 
-      it { expect(subject.status).to eq(Market::DEFAULT_STATUS) }
+      it do
+        expect(subject.status)
+          .to eq(StateMachines::MarketStateMachine::DEFAULT_STATUS)
+      end
     end
   end
 

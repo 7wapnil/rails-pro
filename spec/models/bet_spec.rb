@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Bet do
   subject { build(:bet) }
 
@@ -8,6 +10,10 @@ describe Bet do
 
   it { is_expected.to have_one(:entry) }
   it { is_expected.to have_one(:entry_request) }
+  it { is_expected.to have_one(:winning) }
+
+  it { is_expected.to have_many(:entry_requests) }
+  it { is_expected.to have_many(:entries) }
 
   it do
     expect(subject).to validate_numericality_of(:odd_value)
@@ -115,31 +121,31 @@ describe Bet do
     end
   end
 
-  describe 'with_winnings' do
-    it 'finds bets with calculated winnings' do
+  describe 'with_winning_ammount' do
+    it 'finds bets with calculated winning amounts' do
       FactoryBot.create(:bet)
-      result = described_class.with_winnings.first
-      expect(result.winning).to eq(result.amount * result.odd_value)
+      result = described_class.with_winning_amount.first
+      expect(result.winning_amount).to eq(result.amount * result.odd_value)
     end
   end
 
-  describe 'sort_by_winning_asc' do
-    it 'finds bets with calculated winnings sorted asc' do
+  describe 'sort_by_winning_amount_asc' do
+    it 'finds bets with calculated winning amounts sorted asc' do
       create_list(:bet, 2)
-      result = described_class.sort_by_winning_asc
+      result = described_class.sort_by_winning_amount_asc
       first = result.first
       last = result.last
-      expect(first.winning <= last.winning).to be_truthy
+      expect(first.winning_amount <= last.winning_amount).to be_truthy
     end
   end
 
-  describe 'sort_by_winning_desc' do
-    it 'finds bets with calculated winnings sorted desc' do
+  describe 'sort_by_winning_amount_desc' do
+    it 'finds bets with calculated winning amounts sorted desc' do
       create_list(:bet, 2)
-      result = described_class.sort_by_winning_desc
+      result = described_class.sort_by_winning_amount_desc
       first = result.first
       last = result.last
-      expect(first.winning >= last.winning).to be_truthy
+      expect(first.winning_amount >= last.winning_amount).to be_truthy
     end
   end
 

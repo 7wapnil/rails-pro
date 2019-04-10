@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include StateMachines::BetStateMachine
 
@@ -19,6 +21,10 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_one :event, through: :market
   has_one :title, through: :event
 
+  has_one :winning, -> { win }, class_name: Entry.name, as: :origin
+
+  has_many :entry_requests, as: :origin
+  has_many :entries, as: :origin
   has_many :tournaments,
            -> { where(kind: EventScope::TOURNAMENT) },
            through: :event,
@@ -44,9 +50,10 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   delegate :market, to: :odd
 
-  scope :sort_by_winning_asc, -> { with_winnings.order('winning') }
-
-  scope :sort_by_winning_desc, -> { with_winnings.order('winning DESC') }
+  scope :sort_by_winning_amount_asc,
+        -> { with_winning_amount.order('winning_amount') }
+  scope :sort_by_winning_amount_desc,
+        -> { with_winning_amount.order('winning_amount DESC') }
 
   class << self
     def from_regular_customers
@@ -93,16 +100,17 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
       select(sql)
     end
 
-    def with_winnings
-      select('bets.*, (bets.amount * bets.odd_value) AS winning')
+    def with_winning_amount
+      select('bets.*, (bets.amount * bets.odd_value) AS winning_amount')
     end
 
     def ransackable_scopes(_auth_object = nil)
-      %w[with_winnings]
+      %w[with_winning_amount]
     end
 
     def ransortable_attributes(auth_object = nil)
-      super(auth_object) + %i[sort_by_winning_asc sort_by_winning_desc]
+      super(auth_object) +
+        %i[sort_by_winning_amount_asc sort_by_winning_amount_desc]
     end
 
     def expired_live

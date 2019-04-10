@@ -13,7 +13,8 @@ entry_currency_rule_ranges = {
   internal:         { min:  -1_000, max:  1_000  },
   withdraw:         { min: -1_000,  max: -10     },
   bet:              { min: -1_000,  max: -1      },
-  refund:           { min: 0,       max: 10_000  }
+  refund:           { min: 0,       max: 10_000  },
+  rollback:         { min: -10_000, max: 10_000  }
 }
 
 currency_mapping.each do |payload|
