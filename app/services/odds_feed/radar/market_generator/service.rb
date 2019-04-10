@@ -6,12 +6,11 @@ module OddsFeed
       class Service < ::ApplicationService
         include JobLogger
 
-        def initialize(event, markets_data, cache = {})
+        def initialize(event, markets_data)
           @event = event
           @markets_data = markets_data
           @markets = []
           @odds = []
-          @cache = cache
         end
 
         def call
@@ -44,7 +43,7 @@ module OddsFeed
 
         def build_market_model(data_object)
           Market.new(external_id: data_object.external_id,
-                     event_id: @event.id,
+                     event: @event,
                      name: data_object.name,
                      status: data_object.status,
                      category: data_object.category)
@@ -61,9 +60,9 @@ module OddsFeed
         end
 
         def market_template_from_cache(external_id)
-          return nil unless @cache && @cache[:market_templates_cache]
-
-          @cache[:market_templates_cache][external_id.to_i]
+          cached_templates.detect do |template|
+            template.external_id == external_id
+          end
         end
 
         def valid?(market)
@@ -102,6 +101,16 @@ module OddsFeed
                        conflict_target: %i[external_id],
                        columns: %i[status value]
                      })
+        end
+
+        def cached_templates
+          market_template_ids =
+            @markets_data.map { |market| market['id'] }
+
+          @market_templates_cache ||=
+            MarketTemplate
+              .where(external_id: market_template_ids)
+              .order(:external_id)
         end
       end
     end

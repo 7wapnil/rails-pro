@@ -10,7 +10,8 @@ module OddsFeed
 
         attr_reader :stored_template
 
-        def initialize(stored_template, variant_id = nil)
+        def initialize(event, stored_template, variant_id = nil)
+          @event = event
           @stored_template = stored_template
           @variant_id = variant_id
         end
@@ -34,14 +35,14 @@ module OddsFeed
 
         private
 
-        attr_reader :variant_id
+        attr_reader :variant_id, :event
 
         def player?(external_id)
           external_id.match?(PLAYER_REGEX)
         end
 
         def player_name(external_id)
-          player = Player.find_by(external_id: external_id)
+          player = event.players.detect { |p| p.external_id == external_id }
           return player.full_name if player
 
           raise "Player ID #{external_id} not found"

@@ -45,7 +45,7 @@ module OddsFeed
 
         def template
           @template ||=
-            TemplateLoader.new(market_template, tokens['variant'])
+            TemplateLoader.new(@event, market_template, tokens['variant'])
         end
 
         private

@@ -6,18 +6,12 @@ module WebSocket
     include OddsFeed::FlowProfiler
 
     def trigger_event_update(event)
-      flow_profiler
-        .trace_profiler_event(:web_socket_emit_initiated_at)
-      is_profiler_empty = flow_profiler.is_a? OddsFeed::EmptyMessageProfiler
-      profiled_event =
-        is_profiler_empty ? event : { data: event, profiler: flow_profiler }
-
-      trigger(SubscriptionFields::EVENTS_UPDATED, profiled_event)
+      trigger(SubscriptionFields::EVENTS_UPDATED, event)
       trigger(SubscriptionFields::EVENT_UPDATED, event, id: event.id)
 
       return unless event_available?(event)
 
-      trigger_kind_event(profiled_event)
+      trigger_kind_event(event)
       trigger_sport_event(event)
       trigger_category_event(event)
       trigger_tournament_event(event)
