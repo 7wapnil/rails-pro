@@ -46,9 +46,7 @@ module Mts
 
     def emit_application_state
       WebSocket::Client.instance
-                       .trigger_application_state_update(
-                         MtsConnection.instance.status
-                       )
+                       .trigger_application_state_update(MtsConnection.instance)
     end
   end
 end

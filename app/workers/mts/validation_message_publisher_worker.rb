@@ -1,7 +1,5 @@
 module Mts
   class ValidationMessagePublisherWorker < ApplicationWorker
-    sidekiq_options retry: 3
-
     def perform(ids)
       @ids = ids
 

@@ -73,4 +73,4 @@
   mts_connection_establish:
     every: <%= ENV.fetch('MTS_RECONNECTION_INTERVAL', '30s') %>
     class: Mts::ReconnectionWorker
-    enabled: <%= ENV['MTS_MODE'] == 'prod' %>
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
