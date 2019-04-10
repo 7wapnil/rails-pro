@@ -89,6 +89,7 @@ class EntryRequest < ApplicationRecord
 
   def adjust_amount_value
     return unless amount && kind
+    return if CREDIT_KINDS.key?(kind.to_sym) && DEBIT_KINDS.key?(kind.to_sym)
 
     new_value = amount.abs
     new_value = -new_value if CREDIT_KINDS.key?(kind.to_sym)

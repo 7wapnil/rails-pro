@@ -22,8 +22,6 @@ module StateMachines
 
       validates :status, presence: true
       validates_with MarketStateValidator, restrictions: [
-        %i[active cancelled],
-        %i[inactive cancelled],
         %i[settled active],
         %i[settled inactive],
         %i[settled suspended],
