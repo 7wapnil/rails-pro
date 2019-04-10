@@ -10,24 +10,15 @@ describe WebSocket::Client do
       event.event_scopes << create(:event_scope, kind: EventScope::CATEGORY)
       event
     end
-    let(:profiler_double) do
-      instance_double(
-        OddsFeed::MessageProfiler,
-        trace_profiler_event: true
-      )
-    end
-    let(:profiled_event) { { data: event, profiler: profiler_double } }
 
     before do
-      allow_any_instance_of(OddsFeed::FlowProfiler)
-        .to receive(:flow_profiler) { profiler_double }
       subject.trigger_event_update(event)
     end
 
     it 'triggers all events subscription' do
       expect(subject)
         .to have_received(:trigger)
-        .with(SubscriptionFields::EVENTS_UPDATED, profiled_event)
+        .with(SubscriptionFields::EVENTS_UPDATED, event)
     end
 
     it 'triggers single event subscription' do
@@ -41,7 +32,7 @@ describe WebSocket::Client do
         .to have_received(:trigger)
         .with(
           SubscriptionFields::KIND_EVENT_UPDATED,
-          profiled_event,
+          event,
           kind: event.title.kind
         )
     end

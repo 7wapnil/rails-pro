@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module WebSocket
-  class Client # rubocop:disable Metrics/ClassLength
+  class Client
     include Singleton
     include OddsFeed::FlowProfiler
 

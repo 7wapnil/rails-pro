@@ -50,9 +50,9 @@ module OddsFeed
         end
 
         def market_template_find_by!(external_id:)
-          market_template_from_cache(external_id) ||
-            MarketTemplate.find_by!(external_id: external_id)
-        rescue ActiveRecord::RecordNotFound
+          template = market_template_from_cache(external_id)
+          return template if template
+
           raise(
             ActiveRecord::RecordNotFound,
             "MarketTemplate with external id #{external_id} not found."
@@ -107,10 +107,10 @@ module OddsFeed
           market_template_ids =
             @markets_data.map { |market| market['id'] }
 
-          @market_templates_cache ||=
+          @cached_templates ||=
             MarketTemplate
-              .where(external_id: market_template_ids)
-              .order(:external_id)
+            .where(external_id: market_template_ids)
+            .order(:external_id)
         end
       end
     end

@@ -19,7 +19,6 @@ module OddsFeed
       def validate!
         validate_payload!
         validate_type!
-        validate_message_time!
       end
 
       def validate_payload!
@@ -33,24 +32,14 @@ module OddsFeed
         raise OddsFeed::InvalidMessageError, type_err unless is_valid
       end
 
-      def validate_message_time!
-        return unless event.remote_updated_at
-
-        last_update = event.remote_updated_at.utc
-        return if event.remote_updated_at.utc <= timestamp
-
-        msg = "Message came at #{timestamp}, but last update was #{last_update}"
-        raise OddsFeed::InvalidMessageError, msg
-      end
-
       def event_id
         input_data['event_id']
       end
 
       def event
         @event ||= Event
-                     .includes(:competitors, :players, :event_scopes, :title)
-                     .find_by!(external_id: event_id)
+                   .includes(:competitors, :players, :event_scopes, :title)
+                   .find_by!(external_id: event_id)
       end
 
       def update_event!
@@ -68,10 +57,10 @@ module OddsFeed
 
       def update_event_attributes
         updates = { remote_updated_at: timestamp,
-                   status: event_status,
-                   end_at: event_end_time,
-                   active: event_active?,
-                   producer: ::Radar::Producer.find(input_data['product']) }
+                    status: event_status,
+                    end_at: event_end_time,
+                    active: event_active?,
+                    producer: ::Radar::Producer.find(input_data['product']) }
 
         event.assign_attributes(updates)
         log_updates!(updates)

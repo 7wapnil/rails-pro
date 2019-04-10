@@ -30,11 +30,11 @@ describe OddsFeed::Radar::OddsChangeHandler do
       let(:payload) { {} }
 
       it do
-        expect{ subject.handle }
+        expect { subject.handle }
           .to raise_error(
-                OddsFeed::InvalidMessageError,
-                'Odds change payload is malformed: {}'
-              )
+            OddsFeed::InvalidMessageError,
+            'Odds change payload is malformed: {}'
+          )
       end
     end
 
@@ -46,37 +46,23 @@ describe OddsFeed::Radar::OddsChangeHandler do
       end
 
       it do
-        expect{ subject.handle }
+        expect { subject.handle }
           .to raise_error(
-                OddsFeed::InvalidMessageError,
-                "Event type with external ID #{external_id} is not supported"
-              )
-      end
-    end
-
-    context 'outdated message' do
-      before do
-        event.update(remote_updated_at: Time.now.utc)
-      end
-
-      it do
-        expect{ subject.handle }
-          .to raise_error(
-                OddsFeed::InvalidMessageError,
-                /^Message came at/
-              )
+            OddsFeed::InvalidMessageError,
+            "Event type with external ID #{external_id} is not supported"
+          )
       end
     end
 
     context 'database not prepared' do
       it 'raises error if no producer found' do
         payload['odds_change']['product'] = '1000'
-        expect{ subject.handle }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { subject.handle }.to raise_error(ActiveRecord::RecordNotFound)
       end
 
       it 'raises error if no event found' do
         payload['odds_change']['event_id'] = '1000'
-        expect{ subject.handle }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { subject.handle }.to raise_error(ActiveRecord::RecordNotFound)
       end
     end
   end
