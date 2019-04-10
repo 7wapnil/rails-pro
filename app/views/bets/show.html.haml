@@ -37,7 +37,7 @@
         %tr
           %td= t('attributes.possible_payout')
           %td
-            = number_with_precision @bet.winning, precision: 2
+            = number_with_precision @bet.winning_amount, precision: 2
             = @bet.currency.code
         %tr
           %td= t('attributes.actual_payout')

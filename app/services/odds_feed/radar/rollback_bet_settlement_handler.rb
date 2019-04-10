@@ -51,7 +51,7 @@ module OddsFeed
         @bets ||=
           Bet
           .joins(:market)
-          .includes(:currency, :customer, :event, :recent_win_entry)
+          .includes(:currency, :customer, :event, :winning)
           .where(markets: { external_id: markets_ids })
       end
 

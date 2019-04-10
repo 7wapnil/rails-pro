@@ -25,7 +25,7 @@ module EntryRequests
         {
           kind: EntryKinds::ROLLBACK,
           mode: EntryRequest::SYSTEM,
-          amount: -rollbacked_entry.amount,
+          amount: -winning_entry.amount,
           comment: comment,
           customer_id: bet.customer_id,
           currency_id: bet.currency_id,
@@ -33,12 +33,12 @@ module EntryRequests
         }
       end
 
-      def rollbacked_entry
-        @rollbacked_entry ||= bet.recent_win_entry
+      def winning_entry
+        @winning_entry ||= bet.winning
       end
 
       def comment
-        "Rollback won amount #{rollbacked_entry.amount} #{bet.customer} " \
+        "Rollback won amount #{winning_entry.amount} #{bet.customer} " \
         "for #{bet.currency} on #{bet.event}."
       end
     end

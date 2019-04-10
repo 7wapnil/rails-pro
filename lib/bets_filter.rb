@@ -28,7 +28,7 @@ class BetsFilter
 
   def search
     @source.includes(:market)
-           .with_winnings
+           .with_winning_amount
            .with_sport
            .with_tournament
            .with_category

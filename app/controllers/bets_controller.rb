@@ -8,7 +8,7 @@ class BetsController < ApplicationController
   def show
     @bet = Bet
            .includes(%i[currency customer odd])
-           .with_winnings
+           .with_winning_amount
            .find(params[:id])
   end
 end
