@@ -118,15 +118,13 @@ describe 'Withdrawals index page' do
   end
 
   context 'filtering' do
-    let(:input) { page.find(selector) }
-
     context 'By withdrawal request ID' do
-      let(:selector) { '#withdrawal_requests_id_eq' }
+      let(:id_field) { 'withdrawal_requests_id_eq' }
 
       it 'found' do
         withdrawal_request = create(:withdrawal_request)
         visit withdrawal_requests_path
-        input.fill_in(with: withdrawal_request.id)
+        fill_in(id_field, with: withdrawal_request.id)
         click_on('Search')
 
         within 'table.table tbody' do
@@ -137,7 +135,7 @@ describe 'Withdrawals index page' do
 
       it 'not found' do
         visit withdrawal_requests_path
-        input.fill_in(with: -1)
+        fill_in(id_field, with: -1)
         click_on('Search')
 
         within 'table.table tbody' do
@@ -149,12 +147,12 @@ describe 'Withdrawals index page' do
     end
 
     context 'By status' do
-      let(:selector) { '#withdrawal_requests_status_eq' }
+      let(:status_drop_down) { 'withdrawal_requests_status_eq' }
 
       it 'found' do
         withdrawal_request = create(:withdrawal_request)
         visit withdrawal_requests_path
-        input.select WithdrawalRequest::PENDING
+        select WithdrawalRequest::PENDING, from: status_drop_down
         click_on('Search')
 
         within 'table.table tbody' do
@@ -165,7 +163,7 @@ describe 'Withdrawals index page' do
 
       it 'not found' do
         visit withdrawal_requests_path
-        input.select WithdrawalRequest::REJECTED
+        select WithdrawalRequest::REJECTED, from: status_drop_down
         click_on('Search')
 
         within 'table.table tbody' do
@@ -177,17 +175,14 @@ describe 'Withdrawals index page' do
     end
 
     context 'By creation timestamp' do
-      let(:selector_gt) { '#withdrawal_requests_created_at_gteq' }
-      let(:selector_lt) { '#withdrawal_requests_created_at_lteq' }
-
-      let(:input_gt) { page.find(selector_gt) }
-      let(:input_lt) { page.find(selector_lt) }
+      let(:created_after) { 'withdrawal_requests_created_at_gteq' }
+      let(:created_before) { 'withdrawal_requests_created_at_lteq' }
 
       it 'found by lower bound' do
         withdrawal_request = create(:withdrawal_request)
         visit withdrawal_requests_path
         lower_bound = withdrawal_request.created_at - 1.day
-        input_gt.fill_in(with: lower_bound)
+        fill_in(created_after, with: lower_bound)
         click_on('Search')
 
         within 'table.table tbody' do
@@ -200,7 +195,7 @@ describe 'Withdrawals index page' do
         withdrawal_request = create(:withdrawal_request)
         visit withdrawal_requests_path
         upper_bound = withdrawal_request.created_at + 1.day
-        input_lt.fill_in(with: upper_bound)
+        fill_in(created_before, with: upper_bound)
         click_on('Search')
 
         within 'table.table tbody' do
@@ -213,7 +208,7 @@ describe 'Withdrawals index page' do
         withdrawal_request = create(:withdrawal_request)
         visit withdrawal_requests_path
         lower_bound = withdrawal_request.created_at + 1.day
-        input_gt.fill_in(with: lower_bound)
+        fill_in(created_after, with: lower_bound)
         click_on('Search')
 
         within 'table.table tbody' do
@@ -225,13 +220,14 @@ describe 'Withdrawals index page' do
     end
 
     context 'By user actioned' do
-      let(:selector) { '#withdrawal_requests_actioned_by_email_cont' }
+      let(:actor_email) { 'withdrawal_requests_actioned_by_email_cont' }
+      let(:status_drop_down) { 'withdrawal_requests_status_eq' }
 
       it 'found' do
         withdrawal_request = create(:withdrawal_request, :approved)
         visit withdrawal_requests_path
-        page.find('#withdrawal_requests_status_eq').select('approved')
-        input.fill_in(with: withdrawal_request.actioned_by.email)
+        select WithdrawalRequest::APPROVED, from: status_drop_down
+        fill_in(actor_email, with: withdrawal_request.actioned_by.email)
         click_on('Search')
 
         within 'table.table tbody' do
@@ -242,7 +238,7 @@ describe 'Withdrawals index page' do
 
       it 'not found' do
         visit withdrawal_requests_path
-        input.fill_in(with: Faker::Internet.email)
+        fill_in(actor_email, with: Faker::Internet.email)
         click_on('Search')
 
         within 'table.table tbody' do
@@ -254,14 +250,15 @@ describe 'Withdrawals index page' do
     end
 
     context 'By customer name' do
-      let(:selector) do
-        '#withdrawal_requests_entry_request_customer_username_cont'
+      let(:customer_name) do
+        'withdrawal_requests_entry_request_customer_username_cont'
       end
 
       it 'found' do
         withdrawal_request = create(:withdrawal_request)
         visit withdrawal_requests_path
-        input.fill_in(with: withdrawal_request.entry_request.customer.username)
+        username = withdrawal_request.entry_request.customer.username
+        fill_in(customer_name, with: username)
         click_on('Search')
 
         within 'table.table tbody' do
@@ -272,7 +269,7 @@ describe 'Withdrawals index page' do
 
       it 'not found' do
         visit withdrawal_requests_path
-        input.fill_in(with: Faker::Lorem.word)
+        fill_in(customer_name, with: Faker::Lorem.word)
         click_on('Search')
 
         within 'table.table tbody' do
@@ -284,12 +281,12 @@ describe 'Withdrawals index page' do
     end
 
     context 'By payment method' do
-      let(:selector) { '#withdrawal_requests_entry_request_mode_eq' }
+      let(:payment_types) { 'withdrawal_requests_entry_request_mode_eq' }
 
       it 'found by payment method' do
         withdrawal_request = create(:withdrawal_request)
         visit withdrawal_requests_path
-        input.select(withdrawal_request.entry_request.mode)
+        select(withdrawal_request.entry_request.mode, from: payment_types)
         click_on('Search')
 
         within 'table.table tbody' do
@@ -300,7 +297,7 @@ describe 'Withdrawals index page' do
 
       it 'not found by payment method' do
         visit withdrawal_requests_path
-        input.select(EntryRequest::BITCOIN)
+        select EntryRequest::BITCOIN, from: payment_types
         click_on('Search')
 
         within 'table.table tbody' do
