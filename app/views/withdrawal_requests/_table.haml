@@ -19,10 +19,10 @@
           %td= l(withdrawal_request.created_at, format: :long)
           %td= entry_request.amount
           %td= entry_request.currency.name
-          %td 
+          %td
             %label.col-form-label
               %b= entry_request.mode
-          %td 
+          %td
             %label.col-form-label
               %b= withdrawal_request.status
 
@@ -45,7 +45,8 @@
                       data: { confirm: t('confirm_sure') },
                       class: 'btn btn-danger'
           - else
-            %td{ colspan: 2}= "#{t('attributes.actioned_by')} #{withdrawal_request.actioned_by.email}"
+            %td{ colspan: 2 }
+              = actioned_by(withdrawal_request.actioned_by)
     - else
       %tr
         %td{ colspan: 7 }= t(:not_found, instance: t('entities.withdrawal_requests'))

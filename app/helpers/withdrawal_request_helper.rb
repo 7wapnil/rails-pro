@@ -10,4 +10,8 @@ module WithdrawalRequestHelper
     selected_method = params['entry_request_mode_eq']
     options_for_select(filter.payment_methods, selected_method)
   end
+
+  def actioned_by(user)
+    "#{t('attributes.actioned_by')} #{user.email}"
+  end
 end
