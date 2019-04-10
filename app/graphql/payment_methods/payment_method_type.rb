@@ -5,29 +5,19 @@ module PaymentMethods
     field :name, !types.String,
           resolve: ->(obj, _args, _ctx) do
             I18n.t("payment_methods.#{obj}.title",
-                   default: obj.payment_method.humanize)
+                   default: obj.humanize)
           end
 
-    field :availability, !types.Boolean,
-          resolve: ->(obj, _args, _ctx) { obj.available }
-
-    field :payment_note, !types.String,
+    field :note, !types.String,
           resolve: ->(obj, _args, _ctx) do
-            I18n.t("payment_methods.#{obj}.payment_note",
-                   default: obj.payment_method.humanize)
+            I18n.t("payment_methods.#{obj}.note",
+                   default: obj.humanize)
           end
 
     field :code, !types.String,
-          resolve: ->(obj, _args, _ctx) { obj.payment_method }
+          resolve: ->(obj, _args, _ctx) { obj }
 
-    field :type, !types.String,
+    field :kind, !types.String,
           resolve: ->(_obj, _args, _ctx) { Currency::FIAT }
-
-    field :fields, !types[PaymentDetailsType],
-          resolve: ->(obj, _args, _ctx) do
-            return {} unless obj.available
-
-            SafeCharge::Withdraw::WITHDRAW_MODE_FIELDS[obj.payment_method]
-          end
   end
 end

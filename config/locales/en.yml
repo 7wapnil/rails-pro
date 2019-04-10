@@ -474,7 +474,7 @@ en:
   payment_methods:
     credit_card:
       title: Credit card (Visa, MasterCard, Maestro)
-      payment_note: 'Range: 10 - 10 000€ / No service fee'
+      note: 'Range: 10 - 10 000€ / No service fee'
 
   time:
     formats:

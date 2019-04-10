@@ -5,7 +5,10 @@ module PaymentMethods
     type !types[PaymentMethodType]
 
     def resolve(_obj, _args)
-      PaymentMethodsResolver.call(current_customer: @current_customer)
+      SafeCharge::Withdraw::AVAILABLE_WITHDRAW_MODES.values
+                                                    .flatten
+                                                    .compact
+                                                    .uniq
     end
   end
 end

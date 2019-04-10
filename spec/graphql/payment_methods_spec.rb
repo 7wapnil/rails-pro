@@ -5,8 +5,7 @@ describe GraphQL, '#payment_methods' do
   let(:context) { { current_customer: auth_customer } }
   let(:variables) { {} }
   let(:query) do
-    %({ paymentMethods { name code type availability payment_note
-                         fields { name code type } } })
+    %({ paymentMethods { name code kind note } })
   end
   let(:result) do
     ArcanebetSchema.execute(query,
@@ -23,7 +22,7 @@ describe GraphQL, '#payment_methods' do
                default: payment_method.humanize)
       end
       let(:payment_method_note) do
-        I18n.t("payment_methods.#{payment_method}.payment_note",
+        I18n.t("payment_methods.#{payment_method}.note",
                default: payment_method.humanize)
       end
       let(:payment_method_count) do
@@ -87,35 +86,16 @@ describe GraphQL, '#payment_methods' do
       end
 
       it 'returns correct payment note for correct first payment method' do
-        expect(result['data']['paymentMethods'].first['payment_note'])
+        expect(result['data']['paymentMethods'].first['note'])
           .to eq(payment_method_note)
-      end
-
-      it 'returns correct payment method fields' do
-        expect(result['data']['paymentMethods'].first['fields'])
-          .to eq([payment_detail.stringify_keys.transform_values(&:to_s)])
       end
 
       it 'has all required fields' do
         expect(result['data']['paymentMethods'].first)
           .to include('name' => payment_method_name,
                       'code' => payment_method,
-                      'type' => Currency::FIAT,
-                      'payment_note' => payment_method_note)
-      end
-    end
-
-    context 'when there is no payment method' do
-      let(:availabilities) do
-        result['data']['paymentMethods'].map { |detail| detail['availability'] }
-      end
-
-      it 'returns list of payment methods with no availability' do
-        expect(availabilities).not_to include('true')
-      end
-
-      it 'return empty details for unavailable payment method' do
-        expect(result['data']['paymentMethods'].first['fields']).to be_empty
+                      'kind' => Currency::FIAT,
+                      'note' => payment_method_note)
       end
     end
   end
