@@ -8,26 +8,23 @@
       %th= t('attributes.currency')
       %th= t('attributes.payment_method')
       %th= t('attributes.status')
+      %th
   %tbody
     - if filter.withdrawal_requests.any?
       - filter.withdrawal_requests.each do |withdrawal_request|
         - entry_request = withdrawal_request.entry_request
-        %tr{ id: "withdrawal_request-#{withdrawal_request.id}" }
-          // id
-          %td "withdrawal_request-#{withdrawal_request.id}"
-          // customer
+        %tr{ id: "withdrawalrequest-#{withdrawal_request.id}" }
+          %td= withdrawal_request.id
           %td= link_to entry_request.customer.username, customer_path(entry_request.customer)
-          // created_at
-          %td= withdrawal_request.created_at
-          // amount
+          %td= l(withdrawal_request.created_at, format: :long)
           %td= entry_request.amount
-          // currency
           %td= entry_request.currency.name
-          // payment_method
-          %td= entry_request.mode
-          // status
-          %td= withdrawal_request.status
-          // actions
+          %td 
+            %label.col-form-label
+              %b= entry_request.mode
+          %td 
+            %label.col-form-label
+              %b= withdrawal_request.status
 
           - if withdrawal_request.pending?
             %td= link_to t('confirm'),
@@ -41,13 +38,14 @@
                   .col
                     = f.text_field :comment,
                       placeholder: t('attributes.comment'),
-                      class: 'form-control'
+                      class: 'form-control',
+                      required: true
                   .col
                     = f.submit t('reject'),
                       data: { confirm: t('confirm_sure') },
                       class: 'btn btn-danger'
           - else
-            %td "#{t('attributes.actioned_by')} #{withdrawal_request.actioned_by.email}"
+            %td{ colspan: 2}= "#{t('attributes.actioned_by')} #{withdrawal_request.actioned_by.email}"
     - else
       %tr
-        %td{ colspan: 6 }= t(:not_found, instance: t('entities.withdrawal_requests'))
+        %td{ colspan: 7 }= t(:not_found, instance: t('entities.withdrawal_requests'))

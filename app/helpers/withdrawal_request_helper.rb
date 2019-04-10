@@ -1,6 +1,7 @@
 module WithdrawalRequestHelper
   def withdrawal_request_statuses(filter)
     selected_status = query_params(:withdrawal_requests)['status_eq']
+    selected_status ||= WithdrawalRequest::PENDING
     options_for_select(filter.statuses, selected_status)
   end
 
