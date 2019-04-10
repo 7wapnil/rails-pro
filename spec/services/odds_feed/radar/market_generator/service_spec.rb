@@ -31,28 +31,12 @@ describe OddsFeed::Radar::MarketGenerator::Service do
   describe 'market attributes' do
     subject { described_class.new(event, markets_data) }
 
-    before do
-      allow(OddsFeed::Radar::Entities::PlayerLoader)
-        .to receive(:call)
-        .and_return(Faker::Name.name)
-    end
-
     it 'assigns market template category' do
-      market_templates = markets_data.map do |payload|
-        create(:market_template,
-               :with_outcome_data,
-               external_id: payload['id'],
-               category: MarketTemplate.categories.keys.sample)
-      end
-
-      subject.send(:build)
-
-      markets = subject.instance_variable_get(:@markets)
-
-      markets.each_with_index do |market, index|
-        market_template = market_templates[index]
-        expect(market.category).to eq(market_template.category)
-      end
+      MarketTemplate.find_by!(external_id: '188')
+                    .update(category: MarketTemplate::PLAYERS)
+      subject.call
+      expect(Market.find_by!(external_id: 'sr:match:1234:188').category)
+        .to eq(MarketTemplate::PLAYERS)
     end
   end
 
@@ -153,31 +137,8 @@ describe OddsFeed::Radar::MarketGenerator::Service do
       end
     end
 
-    context 'when market templates cache is empty' do
-      subject { described_class.call(event, markets_data) }
-
-      before do
-        allow(MarketTemplate).to receive('find_by!').and_call_original
-        subject
-      end
-
-      it 'creates correct number of markets' do
-        expect(Market.count).to eq markets_data_count
-      end
-
-      it 'sets correct market template based market' do
-        expect(market_created_from_template.name).to eq source_template.name
-      end
-
-      it 'takes market template from db' do
-        expect(MarketTemplate)
-          .to have_received('find_by!')
-          .exactly(markets_data_count).times
-      end
-    end
-
     context 'with market templates cache' do
-      subject { described_class.call(event, markets_data, cache) }
+      subject { described_class.call(event, markets_data) }
 
       before do
         allow(MarketTemplate).to receive('find_by!').and_call_original
@@ -191,23 +152,8 @@ describe OddsFeed::Radar::MarketGenerator::Service do
           .tap { |template| template.update(name: mutated_name) }
       end
 
-      let(:cache) do
-        { market_templates_cache:
-            { market_data_id => mutated_template } }
-      end
-
       it 'creates correct number of markets' do
         expect(Market.count).to eq markets_data_count
-      end
-
-      it 'sets correct market template based market' do
-        expect(market_created_from_template.name).to eq mutated_name
-      end
-
-      it 'takes other market templates from db' do
-        expect(MarketTemplate)
-          .to have_received('find_by!')
-          .exactly(markets_data_count - 1).times
       end
     end
   end

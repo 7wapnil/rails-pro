@@ -5,6 +5,7 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
 
   let(:empty_cache) { {} }
 
+  let(:event) { create(:event) }
   let!(:template) do
     create(:market_template,
            :with_outcome_data,
@@ -12,7 +13,7 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
            specific_outcome_name: outcome['name'])
   end
   let(:variant_id) { rand(0..5).to_s }
-  let(:args)       { [template, variant_id] }
+  let(:args)       { [event, template, variant_id] }
 
   let(:payload) do
     XmlParser.parse(
@@ -35,7 +36,13 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
 
     context 'player odd payload' do
       let(:subject_with_template) { described_class.new(*args) }
-      let!(:player) { create(:player, external_id: player_id) }
+      let!(:player) do
+        player = create(:player, external_id: player_id)
+        competitor = create(:competitor)
+        competitor.players << player
+        event.competitors << competitor
+        player
+      end
 
       before do
         allow(subject_with_template).to receive(:find_odd_template)

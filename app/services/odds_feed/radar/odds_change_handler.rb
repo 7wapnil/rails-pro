@@ -4,96 +4,66 @@ module OddsFeed
   module Radar
     # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
-      include WebsocketEventEmittable
-      include OddsFeed::FlowProfiler
-
-      def initialize(payload, configuration: {})
-        super
-
-        default_configuration
-      end
-
       def handle
-        return unless input_data
-        return unless type_valid?
+        validate!
 
-        create_or_update_event!
-        touch_event!
-        update_flow_profiler_property(event_external_id: event.external_id)
-        generate_markets
-        update_event_activity
+        update_event!
+        update_odds
         emit_websocket
-        flow_profiler.trace_profiler_event(:worker_ended_at)
+
         event
       end
 
       private
 
-      def default_configuration
-        @configuration[:cached_market_templates] ||= true
+      def validate!
+        validate_payload!
+        validate_type!
       end
 
-      def type_valid?
-        return true if EventsManager::Entities::Event.type_match?(event_id)
-
-        log_job_failure(
-          "Event with external ID #{event_id} could not be processed yet"
-        )
-        false
+      def validate_payload!
+        payload_err = "Odds change payload is malformed: #{@payload}"
+        raise OddsFeed::InvalidMessageError, payload_err unless input_data
       end
 
-      def market_templates_cache
-        return unless @configuration[:cached_market_templates]
-        return @market_templates_cache if @market_templates_cache
-
-        market_template_ids =
-          markets_data.map { |market| market['id'] }
-        @market_templates_cache ||=
-          MarketTemplate
-          .where(external_id: market_template_ids)
-          .order(:external_id)
-          .to_a
-          .index_by(&:external_id)
-          .transform_keys!(&:to_i)
+      def validate_type!
+        is_valid = EventsManager::Entities::Event.type_match?(event_id)
+        type_err = "Event type with external ID #{event_id} is not supported"
+        raise OddsFeed::InvalidMessageError, type_err unless is_valid
       end
 
-      def cached_data
-        { market_templates_cache: market_templates_cache }
+      def event_id
+        input_data['event_id']
       end
 
-      def create_or_update_event!
-        return check_message_time if event
-
-        log_job_message(
-          :warn,
-          "[LOG-FILTER-1] Event with external ID #{event_id} not found. " \
-          'Creating new.'
-        )
-
-        @event = create_event!
+      def event
+        @event ||= Event
+                   .includes(:competitors, :players, :event_scopes, :title)
+                   .find_by!(external_id: event_id)
       end
 
-      def create_event!
-        EventsManager::EventLoader.call(event_id)
+      def update_event!
+        update_event_payload
+        update_event_attributes
+        event.save!
       end
 
-      def touch_event!
-        event.producer = ::Radar::Producer.find(input_data['product'])
+      def update_event_payload
         new_state = OddsFeed::Radar::EventStatusService.new.call(
-          event_id: event.id, data: input_data['sport_event_status']
+          event_id: event.id, data: event_status_payload
         )
         event.add_to_payload(state: new_state)
-        process_updates!
-        event.save!
-        event.emit_state_updated
       end
 
-      def process_updates!
+      def update_event_attributes
         updates = { remote_updated_at: timestamp,
                     status: event_status,
-                    end_at: event_end_time }
-        log_updates!(updates)
+                    end_at: event_end_time,
+                    active: event_active?,
+                    producer: ::Radar::Producer.find(input_data['product']) }
+
         event.assign_attributes(updates)
+        log_updates!(updates)
       end
 
       def event_active?
@@ -134,19 +104,11 @@ module OddsFeed
         log_job_message(:info, msg)
       end
 
-      def generate_markets
+      def update_odds
         return if markets_data.empty?
 
-        call_markets_generator
-      end
-
-      def update_event_activity
-        event.update_attributes!(active: event_active?)
-      end
-
-      def call_markets_generator
         ::OddsFeed::Radar::MarketGenerator::Service
-          .call(event, markets_data, cached_data)
+          .call(event, markets_data)
       end
 
       def markets_data
@@ -169,19 +131,8 @@ module OddsFeed
         @odds_payload ||= input_data['odds']
       end
 
-      def log_missing_payload
-        log_job_message(
-          :info, "Odds payload is missing for Event #{event_id}"
-        )
-      end
-
       def input_data
-        @payload.fetch('odds_change')
-      rescue KeyError, NoMethodError
-        log_job_failure(
-          "Not enough payload data to process Event. Payload: #{@payload}."
-        )
-        nil
+        @payload['odds_change']
       end
 
       def event_status
@@ -225,14 +176,8 @@ module OddsFeed
         Time.at(input_data['timestamp'].to_i / 1000).utc
       end
 
-      def check_message_time
-        return unless event.remote_updated_at
-
-        last_update = event.remote_updated_at.utc
-        return if event.remote_updated_at.utc <= timestamp
-
-        msg = "Message came at #{timestamp}, but last update was #{last_update}"
-        log_job_message(:warn, msg)
+      def emit_websocket
+        WebSocket::Client.instance.trigger_event_update(event)
       end
     end
     # rubocop:enable Metrics/ClassLength

@@ -197,10 +197,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     EventState.new(payload['state'])
   end
 
-  def emit_state_updated
-    WebSocket::Client.instance.trigger_event_update(self)
-  end
-
   def bookable?
     payload && payload['liveodds'] == BOOKABLE
   end
