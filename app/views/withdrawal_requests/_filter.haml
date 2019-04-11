@@ -36,7 +36,8 @@
             = f.search_field :created_at_gteq,
                               as: :date_picker,
                               class: 'form-control form_date',
-                              placeholder: t(:search, subject: t('from'))
+                              placeholder: t(:search, subject: t('from')),
+                              value: filter.query_params[:created_at_gteq]
         %th
           .filter_title
             #{t(:search, subject: t('to'))}:
@@ -45,7 +46,8 @@
             = f.search_field :created_at_lteq,
                               as: :date_picker,
                               class: 'form-control form_date',
-                              placeholder: t(:search, subject: t('to'))
+                              placeholder: t(:search, subject: t('to')),
+                              value: filter.query_params[:created_at_lteq]
       %tr
         %th
           .filter_title

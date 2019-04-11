@@ -7,6 +7,7 @@
       %th= sort_link filter.search, :entry_request_amount, t('attributes.amount')
       %th= t('attributes.currency')
       %th= t('attributes.payment_method')
+      %th= t('entities.entry_request')
       %th= t('attributes.status')
       %th
   %tbody
@@ -22,6 +23,9 @@
           %td
             %label.col-form-label
               %b= entry_request.mode
+
+          %td= link_to 'Entry request', entry_request_path(entry_request)
+
           %td
             %label.col-form-label
               %b= withdrawal_request.status
