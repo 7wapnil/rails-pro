@@ -28,6 +28,9 @@ class WithdrawalRequest < ApplicationRecord
   end
 
   def reject!(user, comment)
+    comment_error = I18n.t('errors.messages.withdrawal_requests.empty_comment')
+    raise comment_error if comment.empty?
+
     review!(user, REJECTED)
     Withdrawals::WithdrawalRejectionService.call(entry.id, comment: comment)
   end

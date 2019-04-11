@@ -350,6 +350,7 @@ en:
         invalid_payload: "Missing %{attr}"
       withdrawal_requests:
         not_actionable: Withdrawal request has already been reviewed
+        empty_comment: Rejection comment is required
       graphql:
         betting:
           place:
