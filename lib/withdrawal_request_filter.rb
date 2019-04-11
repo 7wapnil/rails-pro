@@ -1,5 +1,5 @@
 class WithdrawalRequestFilter
-  attr_reader :source, :query_params 
+  attr_reader :source, :query_params
 
   def initialize(source:, query_params: {}, page: nil)
     @source = source
