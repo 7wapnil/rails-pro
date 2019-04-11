@@ -3,7 +3,7 @@
 module Mts
   class ReconnectionWorker < ApplicationWorker
     def perform
-      return if MtsConnection.instance.status == MtsConnection::HEALTHY
+      return if MtsConnection.instance.healthy?
 
       MtsConnection.instance.healthy! if successful_reconnection?
 
@@ -13,12 +13,12 @@ module Mts
     private
 
     def successful_reconnection?
-      ::Mts::SingleSession.instance.session.opened_connection
+      ::Mts::SingleSession.instance.session.opened_connection.present?
     end
 
     def emit_application_state
       WebSocket::Client.instance
-                       .trigger_application_state_update(
+                       .trigger_mts_connection_status_update(
                          MtsConnection.instance
                        )
     end

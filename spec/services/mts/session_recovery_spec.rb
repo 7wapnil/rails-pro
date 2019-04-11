@@ -51,7 +51,7 @@ describe Mts::SessionRecovery do
 
       it 'triggers application state update' do
         expect(WebSocket::Client.instance)
-          .to receive(:trigger_application_state_update)
+          .to receive(:trigger_mts_connection_status_update)
 
         subject.register_failure!
       end

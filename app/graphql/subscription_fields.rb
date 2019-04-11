@@ -15,5 +15,5 @@ module SubscriptionFields
   BET_UPDATED = :bet_updated
   EVENT_BET_STOPPED = :event_bet_stopped
   EVENTS_BET_STOPPED = :events_bet_stopped
-  APPLICATION_STATUS_UPDATED = :application_status_updated
+  MTS_CONNECTION_STATUS_UPDATED = :mts_connection_status_updated
 end

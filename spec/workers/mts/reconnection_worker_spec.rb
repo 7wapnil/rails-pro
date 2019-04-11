@@ -18,7 +18,7 @@ describe Mts::ReconnectionWorker do
           .to receive(:opened_connection).and_return(true)
 
         expect(WebSocket::Client.instance)
-          .to receive(:trigger_application_state_update)
+          .to receive(:trigger_mts_connection_status_update)
 
         subject.perform
       end

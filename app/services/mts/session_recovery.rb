@@ -39,14 +39,16 @@ module Mts
     def update_mts_connection_state
       ApplicationState
         .find_or_create_by(type: MtsConnection.name)
-        .update(status: MtsConnection::RECOVERING)
+        .recovering!
 
       emit_application_state
     end
 
     def emit_application_state
       WebSocket::Client.instance
-                       .trigger_application_state_update(MtsConnection.instance)
+                       .trigger_mts_connection_status_update(
+                         MtsConnection.instance
+                       )
     end
   end
 end
