@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe WalletEntry::AuthorizationService do
   let(:currency) { create(:currency) }
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
@@ -195,8 +197,7 @@ describe WalletEntry::AuthorizationService do
       end
 
       it 'fails to update wallet amount to negative' do
-        error_message = I18n.t('errors.messages.with_instance.not_negative',
-                               instance: I18n.t('entities.wallet'))
+        error_message = I18n.t('errors.messages.not_negative')
 
         request.amount = -60
 
@@ -209,8 +210,7 @@ describe WalletEntry::AuthorizationService do
       end
 
       it 'fails to update balance amount to negative' do
-        error_message = I18n.t('errors.messages.with_instance.not_negative',
-                               instance: I18n.t('entities.balance'))
+        error_message = I18n.t('errors.messages.not_negative')
 
         balance.update_attributes!(amount: 30)
         request.amount = -40

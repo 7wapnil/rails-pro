@@ -37,9 +37,13 @@ module Markets
     end
 
     def build_rollback_attributes!
-      raise 'There is no status snapshot!' unless market.previous_status
+      return snapshot_not_exists! unless market.previous_status
 
       { previous_status: nil, status: market.previous_status }
+    end
+
+    def snapshot_not_exists!
+      raise "There is no status snapshot for market #{market.external_id}!"
     end
   end
 end

@@ -18,6 +18,8 @@ module EntryKinds
   DEBIT_KINDS = KINDS.slice(:deposit, :win, :refund, :system_bet_cancel)
   CREDIT_KINDS = KINDS.slice(:withdraw, :bet, :rollback, :system_bet_cancel)
 
+  SYSTEM_KINDS = [ROLLBACK, SYSTEM_BET_CANCEL].freeze
+
   included do
     enum kind: KINDS
   end

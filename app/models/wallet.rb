@@ -7,18 +7,11 @@ class Wallet < ApplicationRecord
   has_many :entries
   has_one :customer_bonus
 
-  delegate :name,
-           :code,
-           to: :currency, prefix: true
-
-  validates :amount,
-            numericality: {
-              greater_than_or_equal_to: 0,
-              message: I18n.t('errors.messages.with_instance.not_negative',
-                              instance: I18n.t('entities.wallet'))
-            }
+  validates :amount, numericality: true
 
   scope :primary, -> { joins(:currency).where(currencies: { primary: true }) }
+
+  delegate :name, :code, to: :currency, prefix: true
 
   def self.build_default
     new(amount: 0, currency: Currency.build_default)
