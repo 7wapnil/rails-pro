@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module StateMachines
-  module BetStateMachine
+  module BetStateMachine # rubocop:disable Metrics/ModuleLength
     extend ActiveSupport::Concern
 
     INITIAL = 'initial'
