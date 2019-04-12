@@ -312,8 +312,10 @@ ActiveRecord::Schema.define(version: 2019_04_05_075146) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "external_id"
+    t.integer "position", default: 9999, null: false
     t.index ["event_scope_id"], name: "index_event_scopes_on_event_scope_id"
     t.index ["external_id"], name: "index_event_scopes_on_external_id", unique: true
+    t.index ["position"], name: "index_event_scopes_on_position"
     t.index ["title_id"], name: "index_event_scopes_on_title_id"
   end
 

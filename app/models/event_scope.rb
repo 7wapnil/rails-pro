@@ -10,6 +10,7 @@ class EventScope < ApplicationRecord
   belongs_to :event_scope, optional: true
   has_many :scoped_events
   has_many :events, through: :scoped_events
+  has_many :event_scopes
 
   enum kind: {
     tournament: TOURNAMENT = 'tournament',
@@ -24,5 +25,6 @@ class EventScope < ApplicationRecord
       .merge(Event.active.visible.upcoming)
       .or(joins(:events).merge(Event.active.visible.in_play))
       .distinct
+      .order('event_scopes.kind, event_scopes.position')
   end
 end

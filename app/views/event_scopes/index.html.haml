@@ -1,0 +1,8 @@
+= javascript_pack_tag 'event_scopes/components'
+= stylesheet_pack_tag 'css/event_scopes'
+
+#overlay
+%h1.display-4= t('entities.event_scopes') + ' for ' + @title.name
+%table.table
+  %tbody
+    %tr#event-scopes-tr{ data: { title_id: @title.id } }

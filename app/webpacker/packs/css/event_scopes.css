@@ -8,3 +8,7 @@
   height: 100%;
   display: none;
 }
+
+.selected {
+  background-color: rgba(192, 192, 192, 1);
+}

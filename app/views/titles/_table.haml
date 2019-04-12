@@ -1,8 +1,10 @@
 %table.table
   %thead
     %tr
-      %th= kind
+      %th{ colspan: 2 }= kind
   %tbody.sortable{ data: { kind: kind } }
     - titles.each do |title|
-      %tr
-        %td{ data: { id: title.id } }= title.name
+      %tr{ data: { id: title.id } }
+        %td= title.name
+        %td= link_to t('entities.event_scopes'),
+                      event_scopes_path(title_id: title.id)
