@@ -28,7 +28,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_one :title, through: :event
 
   has_one :winning, -> { win }, class_name: Entry.name, as: :origin
-  has_one :recent_refund_entry_request,
+  has_one :refund_request,
           -> { refund },
           class_name: EntryRequest.name,
           as: :origin

@@ -22,7 +22,7 @@ describe Mts::CancellationResponseHandler do
   end
 
   describe '.call' do
-    let(:refund_entry_request) { bet.recent_refund_entry_request }
+    let(:refund_entry_request) { bet.refund_request }
 
     context 'successful cancellation' do
       let(:status_code) { Mts::CancellationResponseHandler::SUCCESSFUL_CODE }

@@ -33,7 +33,7 @@ module Mts
     def call
       successful_status_code? ? successful_bet_cancel : unsuccessful_bet_cancel
 
-      entry_refund!
+      refund!
     end
 
     private
@@ -63,7 +63,7 @@ module Mts
       bet.cancelled!
     end
 
-    def entry_refund!
+    def refund!
       refund = EntryRequests::Factories::Refund.call(entry: bet.entry)
 
       EntryRequests::RefundWorker.perform_async(refund.id)
