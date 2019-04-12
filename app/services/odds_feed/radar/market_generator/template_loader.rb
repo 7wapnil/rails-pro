@@ -8,7 +8,7 @@ module OddsFeed
 
         PLAYER_REGEX = /.*:player:.*/
 
-        attr_reader :stored_template
+        attr_reader :stored_template, :template
 
         def initialize(event, stored_template, variant_id = nil)
           @event = event
@@ -25,8 +25,7 @@ module OddsFeed
         end
 
         def odd_name(external_id)
-          template = find_odd_template(external_id)
-          return template['name'].to_s if template
+          return template['name'].to_s if find_odd_template(external_id)
 
           return player_name(external_id) if player?(external_id)
 
@@ -49,13 +48,12 @@ module OddsFeed
         end
 
         def find_odd_template(external_id)
-          outcomes.find { |outcome| outcome['id'] == external_id.to_s }
+          @template =
+            outcomes&.find { |outcome| outcome['id'] == external_id.to_s }
         end
 
         def outcomes
-          notify_outcome_is_empty if outcome_empty?
-
-          Array.wrap(outcome_list)
+          Array.wrap(outcome_list) unless outcome_empty?
         end
 
         def outcome_empty?
@@ -76,11 +74,6 @@ module OddsFeed
 
         def market_id
           stored_template.external_id
-        end
-
-        def notify_outcome_is_empty
-          log_job_message(:warn, "Outcome data is empty for MarketTemplate
-                                  with external_id '#{market_id}'")
         end
 
         def variant_odds
