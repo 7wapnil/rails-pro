@@ -12,7 +12,7 @@ module OddsFeed
 
         def call
           log_start
-          EventsManager::EventLoader.call(@external_id)
+          EventsManager::EventLoader.call(external_id)
           log_success
         rescue StandardError => error
           log_failure
@@ -21,24 +21,26 @@ module OddsFeed
 
         private
 
+        attr_reader :external_id
+
         def log_start
           log_job_message(
             :info,
-            "Starting loading Event##{@external_id}"
+            "Starting loading Event##{external_id}"
           )
         end
 
         def log_success
           log_job_message(
             :info,
-            "Loaded Event##{@external_id} successfully."
+            "Loaded Event##{external_id} successfully."
           )
         end
 
         def log_failure
           log_job_message(
             :fatal,
-            "Failed to load Event##{@external_id}."
+            "Failed to load Event##{external_id}."
           )
         end
       end
