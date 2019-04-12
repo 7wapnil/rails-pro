@@ -6,8 +6,8 @@ function collectSortedArrays() {
   $('.sortable').each((_0, element) => {
     const kind = $(element).data('kind');
     sortedHash[kind] = [];
-    $('td', element).each((_1, td) => {
-      sortedHash[kind].push($(td).data('id'));
+    $('tr', element).each((_1, tr) => {
+      sortedHash[kind].push($(tr).data('id'));
     });
   });
   return sortedHash;

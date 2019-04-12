@@ -5,4 +5,5 @@ Types::ScopeType = GraphQL::ObjectType.define do
   field :name, !types.String
   field :kind, !types.String
   field :event_scope_id, types.ID
+  field :position, types.Int
 end
