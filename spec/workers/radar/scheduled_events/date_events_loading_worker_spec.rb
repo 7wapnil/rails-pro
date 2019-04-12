@@ -14,10 +14,6 @@ describe Radar::ScheduledEvents::DateEventsLoadingWorker do
 
   before { allow(Rails.cache).to receive(:write_multi) }
 
-  it 'imports events' do
-    expect { perform_job }.to change(Event, :count).by(2)
-  end
-
   it 'imports event scopes' do
     expect { perform_job }.to change(EventScope, :count).by(6)
   end

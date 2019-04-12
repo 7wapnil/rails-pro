@@ -42,7 +42,8 @@ describe OddsFeed::Radar::ScheduledEvents::DateEventsLoader do
 
   before do
     allow(Rails.cache).to receive(:write_multi)
-    allow(Event).to receive(:import)
+    allow(::Radar::ScheduledEvents::IdEventLoadingWorker)
+      .to receive(:perform_async)
     allow(ScopedEvent).to receive(:import)
     allow(service_object).to receive(:log_job_message)
 
@@ -71,7 +72,7 @@ describe OddsFeed::Radar::ScheduledEvents::DateEventsLoader do
       .to receive(:log_job_message)
       .with(
         :info,
-        "Event based data for #{humanized_date} was cached successfully."
+        "Event based data caching for #{humanized_date} was scheduled."
       )
 
     subject
@@ -80,10 +81,11 @@ describe OddsFeed::Radar::ScheduledEvents::DateEventsLoader do
   context 'import' do
     before { subject }
 
-    it 'imports events' do
-      expect(Event)
-        .to have_received(:import)
-        .with(events, hash_including(validate: false))
+    it 'schedules a loading worker for each event' do
+      expect(::Radar::ScheduledEvents::IdEventLoadingWorker)
+        .to have_received(:perform_async)
+        .exactly(events.size)
+        .times
     end
 
     it 'imports event scopes' do

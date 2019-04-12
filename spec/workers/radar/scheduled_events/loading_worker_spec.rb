@@ -9,14 +9,14 @@ describe Radar::ScheduledEvents::LoadingWorker do
 
   before do
     allow(::Radar::ScheduledEvents::DateEventsLoadingWorker)
-      .to receive(:perform_in)
+      .to receive(:perform_async)
 
     subject.perform
   end
 
   it 'creates jobs to preload scheduled events for 4 days' do
     expect(::Radar::ScheduledEvents::DateEventsLoadingWorker)
-      .to have_received(:perform_in)
+      .to have_received(:perform_async)
       .exactly(loaded_days_count)
       .times
   end
