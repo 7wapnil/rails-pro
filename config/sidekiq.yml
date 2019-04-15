@@ -40,18 +40,13 @@
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Checks if any Radar producers connection status expired and sends recovery requests"
 
-  pre_match_markets_closing:
-    every: <%= ENV.fetch('PRE_MATCH_MARKETS_CLOSING_TIMEOUT', '5m') %>
-    class: PreMatchMarketsClosingWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Suspends all markets of events that are not traded live, but started some time ago"
-
   radar_market_templates_update:
     every: <%= ENV.fetch('RADAR_MARKET_TEMPLATES_UPDATE_INTERVAL', '1w') %>
     class: Radar::MarketsUpdateWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Updates a list of market templates in database"
 
+# Merge
   unpopular_live_events_clean_up:
     every: <%= ENV.fetch('UNPOPULAR_LIVE_EVENTS_CLEAN_UP_INTERVAL', '1h') %>
     class: UnpopularLiveEventsCleanUpWorker
@@ -76,6 +71,7 @@
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Creates every event data copies in archivation database"
 
+# Rename all this shit
   cache_event_based_data:
     every: <%= ENV.fetch('CACHE_EVENT_BASED_DATA_INTERVAL', '1d') %>
     class: Radar::ScheduledEvents::LoadingWorker
