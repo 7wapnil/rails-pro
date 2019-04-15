@@ -51,14 +51,14 @@ module OddsFeed
         end
 
         def import_events
-          Event.import(
-            events,
-            validate: false,
-            on_duplicate_key_update: {
-              conflict_target: %i[external_id],
-              columns: %i[name status traded_live payload]
-            }
-          )
+          events.each do |event_payload|
+            external_id = event_payload[:id]
+            event = Event.find_by external_id: external_id
+            next if event
+
+            ::Radar::ScheduledEvents::IdEventLoadingWorker
+              .perform_async(external_id)
+          end
         end
 
         def import_scoped_events
@@ -126,7 +126,7 @@ module OddsFeed
         def log_success
           log_job_message(
             :info,
-            "Event based data for #{humanized_date} was cached successfully."
+            "Event based data caching for #{humanized_date} was scheduled."
           )
         end
 
