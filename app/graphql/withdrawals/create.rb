@@ -11,7 +11,6 @@ module Withdrawals
       withdrawal_data[:customer] = current_customer
       Forms::WithdrawRequest.new(withdrawal_data).validate!
 
-      validate_password!(input['password'])
       withdrawal_request = create_withdrawal_request!(input)
       EntryRequests::WithdrawalWorker
         .perform_async(withdrawal_request.entry_request.id)
@@ -20,12 +19,6 @@ module Withdrawals
     end
 
     private
-
-    def validate_password!(password)
-      return if current_customer.valid_password?(password)
-
-      raise ResolvingError, password: I18n.t('errors.messages.password_invalid')
-    end
 
     def create_withdrawal_request!(args)
       wallet = current_customer.wallets.find(args['walletId'])

@@ -28,6 +28,7 @@ module Forms
                 )
               }
     validate :validate_customer_status
+    validate :validate_customer_password
     validate :validate_payment_details
 
     def validate_payment_details
@@ -44,17 +45,23 @@ module Forms
     end
 
     def validate_customer_status
-      valid = customer.verified
-      return if valid
+      return if customer.nil? || customer.verified
 
-      errors.add(:customer,
-                 I18n.t('errors.messages.withdrawal.customer_not_verified'))
+      raise ResolvingError,
+            customer: I18n.t('errors.messages.withdrawal.customer_not_verified')
     end
 
     def payment_details_map
       Array.wrap(payment_details).reduce({}) do |result, item|
         result.merge(item[:code] => item[:value])
       end
+    end
+
+    def validate_customer_password
+      return if customer.nil? || customer.valid_password?(password)
+
+      raise ResolvingError,
+            password: I18n.t('errors.messages.password_invalid')
     end
   end
 end

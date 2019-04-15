@@ -20,7 +20,11 @@ describe Forms::WithdrawRequest do
   end
 
   context 'credit card' do
-    subject { described_class.new(payment_method: 'credit_card') }
+    subject do
+      described_class.new(payment_method: 'credit_card',
+                          password: 'iamverysecure',
+                          customer: create(:customer))
+    end
 
     it 'validates presence of holder name and cvv' do
       subject.valid?
@@ -67,7 +71,7 @@ describe Forms::WithdrawRequest do
       subject.payment_details = [
         { code: 'last_four_digits', value: 1234 }
       ]
-
+      
       subject.valid?
       expect(subject.errors).not_to include(:last_four_digits)
     end
