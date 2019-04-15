@@ -39,7 +39,7 @@ module OddsFeed
 
         def log_failure
           log_job_message(
-            :fatal,
+            :error,
             "Failed to load Event##{external_id}."
           )
         end

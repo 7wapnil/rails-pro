@@ -70,7 +70,7 @@ describe OddsFeed::Radar::ScheduledEvents::IdEventLoader do
     rescue StandardError
       expect(service_object)
         .to have_received(:log_job_message)
-        .with(:fatal, "Failed to load Event##{event_id}.")
+        .with(:error, "Failed to load Event##{event_id}.")
         .once
     end
   end
