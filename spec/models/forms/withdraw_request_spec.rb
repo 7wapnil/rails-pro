@@ -71,7 +71,7 @@ describe Forms::WithdrawRequest do
       subject.payment_details = [
         { code: 'last_four_digits', value: 1234 }
       ]
-      
+
       subject.valid?
       expect(subject.errors).not_to include(:last_four_digits)
     end
