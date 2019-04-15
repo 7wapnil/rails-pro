@@ -6,7 +6,9 @@
 .row
   .col-md-3.customer-navigation-column
     .mt-4= render 'customers/navigation', customer: customer
-  - if note && customer_notes_widget
+    = yield :navigation_content
+
+  - if local_assigns[:note] && local_assigns[:customer_notes_widget]
     .col-md-6.customer-content-column
       = yield :page_content
     .col-md-3.customer-widget-column

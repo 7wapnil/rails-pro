@@ -7,7 +7,8 @@ class Entry < ApplicationRecord
 
   belongs_to :wallet
   belongs_to :origin, polymorphic: true, optional: true
-  belongs_to :entry_request
+  belongs_to :withdrawal_request, foreign_key: :origin_id, optional: true
+  belongs_to :entry_request, optional: true
   has_one :currency, through: :wallet
   has_many :balance_entries, dependent: :destroy
   has_one :customer, through: :wallet

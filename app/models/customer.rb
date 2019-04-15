@@ -51,13 +51,19 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_many :currencies, through: :wallets
   has_many :entries, through: :wallets
   has_many :entry_requests
-  has_many :initiated_entry_requests, as: :initiator, class_name: 'EntryRequest'
-  has_one :address, autosave: true, dependent: :destroy
+  has_many :initiated_entry_requests,
+           as: :initiator,
+           class_name: EntryRequest.name
   has_many :label_joins, as: :labelable
   has_many :labels, through: :label_joins
   has_many :verification_documents
   has_many :betting_limits
   has_many :bets
+  has_many :statistics,
+           class_name: Customers::Statistic.name,
+           inverse_of: :customer
+
+  has_one :address, autosave: true, dependent: :destroy
   has_one :customer_bonus, dependent: :destroy
 
   delegate :street_address,

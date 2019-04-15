@@ -1,0 +1,21 @@
+= card header: t('customers.statistics.bonus.title'), class: 'bonus mb-3' do
+  %table.table.vertical-with-labels
+    %tr.total_bonus_value
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:total_bonus_value)
+      %td -
+
+    %tr.theoretical_bonus_cost
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:theoretical_bonus_cost)
+      %td -
+
+    %tr.potential_bonus_cost
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:potential_bonus_cost)
+      %td -
+
+    %tr.actual_bonus_cost
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:actual_bonus_cost)
+      %td -

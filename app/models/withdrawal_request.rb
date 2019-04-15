@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class WithdrawalRequest < ApplicationRecord
+  has_many :entry_requests, as: :origin
   has_one :entry_request,
           -> { unscoped.order(:created_at) },
           as: :origin

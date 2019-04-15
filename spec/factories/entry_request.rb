@@ -14,6 +14,11 @@ FactoryBot.define do
                            strategy: :build
     association :initiator, factory: :customer
 
+    trait :succeeded do
+      status { EntryRequest::SUCCEEDED }
+      sequence(:external_id) { |n| "ID_#{n}" }
+    end
+
     trait :with_entry do
       after(:build) do |entry_request|
         create(
@@ -40,25 +45,16 @@ FactoryBot.define do
       end
     end
 
-    trait :succeeded do
-      status { EntryRequest::SUCCEEDED }
-      sequence(:external_id) { |n| "ID_#{n}" }
+    EntryRequest.statuses.keys.each do |status|
+      trait(status.to_sym) do
+        status { status }
+      end
     end
 
-    trait :deposit do
-      kind { EntryRequest::DEPOSIT }
-    end
-
-    trait :withdraw do
-      kind { EntryRequest::WITHDRAW }
-    end
-
-    trait :refund do
-      kind { EntryRequest::REFUND }
-    end
-
-    trait :bet do
-      kind { EntryRequest::BET }
+    EntryKinds::KINDS.keys.each do |kind|
+      trait(kind.to_sym) do
+        kind { kind }
+      end
     end
 
     trait :win do

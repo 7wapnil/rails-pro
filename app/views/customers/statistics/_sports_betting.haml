@@ -1,0 +1,91 @@
+= card header: t('customers.statistics.sports_betting.title'), class: 'sports-betting h-100' do
+  %table.table.vertical-with-labels
+    %tr.total_bet_count
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:total_bet_count)
+      %td= stats.total_bet_count
+
+    %tr.total_wager
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:total_wager)
+      %td
+        = number_with_precision stats.total_wager, precision: 2
+        &#8364;
+
+    %tr.total_payout
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:total_payout)
+      %td
+        = number_with_precision stats.total_payout, precision: 2
+        &#8364;
+
+  %table.table.vertical-with-labels
+    %tr.prematch_bet_count
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:prematch_bet_count)
+      %td= stats.prematch_bet_count
+
+    %tr.prematch_wager
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:prematch_wager)
+      %td
+        = number_with_precision stats.prematch_wager, precision: 2
+        &#8364;
+
+    %tr.prematch_payout
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:prematch_payout)
+      %td
+        = number_with_precision stats.prematch_payout, precision: 2
+        &#8364;
+
+  %table.table.vertical-with-labels
+    %tr.live_bet_count
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:live_bet_count)
+      %td= stats.live_bet_count
+
+    %tr.live_sports_wager
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:live_sports_wager)
+      %td
+        = number_with_precision stats.live_sports_wager, precision: 2
+        &#8364;
+
+    %tr.live_sports_payout
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:live_sports_payout)
+      %td
+        = number_with_precision stats.live_sports_payout, precision: 2
+        &#8364;
+
+  %table.table.vertical-with-labels
+    %tr.average_total_bet_value
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:average_total_bet_value)
+      %td
+        = number_with_precision stats.average_bet_value(Customers::Statistic::TOTAL), precision: 2
+        &#8364;
+
+    %tr.average_prematch_bet_value
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:average_prematch_bet_value)
+      %td
+        = number_with_precision stats.average_bet_value(Customers::Statistic::PREMATCH),
+                                precision: 2
+        &#8364;
+
+    %tr.average_live_bet_value
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:average_live_bet_value)
+      %td
+        = number_with_precision stats.average_bet_value(Customers::Statistic::LIVE), precision: 2
+        &#8364;
+
+  %table.table.vertical-with-labels
+    %tr.total_pending_bet_sum
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:total_pending_bet_sum)
+      %td
+        = number_with_precision stats.total_pending_bet_sum, precision: 2
+        &#8364;

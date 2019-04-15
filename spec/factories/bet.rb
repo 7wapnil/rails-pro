@@ -10,18 +10,6 @@ FactoryBot.define do
     currency
     association :customer, :ready_to_bet
 
-    trait :settled do
-      status { StateMachines::BetStateMachine::SETTLED }
-    end
-
-    trait :accepted do
-      status { StateMachines::BetStateMachine::ACCEPTED }
-    end
-
-    trait :sent_to_internal_validation do
-      status { StateMachines::BetStateMachine::SENT_TO_INTERNAL_VALIDATION }
-    end
-
     trait :sent_to_external_validation do
       status { StateMachines::BetStateMachine::SENT_TO_EXTERNAL_VALIDATION }
 
@@ -43,6 +31,18 @@ FactoryBot.define do
     trait :with_random_market do
       after :build do |instance|
         instance.market = FactoryBot.random_or_create :market
+      end
+    end
+
+    StateMachines::BetStateMachine::BET_SETTLEMENT_STATUSES.keys.each do |state|
+      trait state do
+        settlement_status { state.to_s }
+      end
+    end
+
+    StateMachines::BetStateMachine::BET_STATUSES.keys.each do |status|
+      trait status do
+        status { status.to_s }
       end
     end
   end

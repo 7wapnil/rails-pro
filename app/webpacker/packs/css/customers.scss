@@ -21,3 +21,19 @@
     }
   }
 }
+
+.profit-and-revenue table {
+  margin-top: 80px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.sports-betting table {
+  margin-top: 106px;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}

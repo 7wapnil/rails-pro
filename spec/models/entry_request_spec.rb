@@ -1,4 +1,6 @@
-describe EntryRequest do
+# frozen_string_literal: true
+
+describe EntryRequest, type: :model do
   subject(:entry_request) { described_class.new }
 
   it { is_expected.to belong_to(:customer) }

@@ -21,5 +21,11 @@ FactoryBot.define do
              min_amount: -entry.amount.abs * 2,
              max_amount: entry.amount.abs * 2)
     end
+
+    EntryKinds::KINDS.keys.each do |kind|
+      trait(kind.to_sym) do
+        kind { kind }
+      end
+    end
   end
 end

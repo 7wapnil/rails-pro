@@ -1,8 +1,10 @@
 function highlightCurrent() {
   const actionName = $('body').data('action')
+  const controllerName = $('body').data('controller')
+  const action = `${controllerName}#${actionName}`
 
   $('.list-group-item.list-group-item-action').removeClass('active')
-  $(`.list-group-item.list-group-item-action[data-target-action='${actionName}']`)
+  $(`.list-group-item.list-group-item-action[data-target-action='${action}']`)
     .addClass('active')
 }
 

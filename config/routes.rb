@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sidekiq_unique_jobs/web'
 require 'sidekiq-scheduler/web'
 
@@ -51,6 +53,11 @@ Rails.application.routes.draw do
       end
     end
   end
+
+  resources :customers, only: [], module: :customers do
+    resource :statistics, only: :show, path: 'stats'
+  end
+
   resources :customer_bonuses, only: %i[create show destroy]
 
   resources :betting_limits, only: %i[create update]
