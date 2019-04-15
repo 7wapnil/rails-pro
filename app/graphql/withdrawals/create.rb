@@ -7,7 +7,9 @@ module Withdrawals
 
     def resolve(_obj, args)
       input = args['input']
-      Forms::WithdrawRequest.new(input.to_h).validate!
+      withdrawal_data = input.to_h
+      withdrawal_data[:customer_verified] = current_customer.verified
+      Forms::WithdrawRequest.new(withdrawal_data).validate!
 
       validate_password!(input['password'])
       withdrawal_request = create_withdrawal_request!(input)

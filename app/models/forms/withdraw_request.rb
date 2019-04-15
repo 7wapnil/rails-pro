@@ -10,7 +10,8 @@ module Forms
                   :password,
                   :wallet_id,
                   :payment_method,
-                  :payment_details
+                  :payment_details,
+                  :customer_verified
 
     validates :password,
               :amount,
@@ -22,7 +23,16 @@ module Forms
     validates :payment_method,
               inclusion: {
                 in: SafeCharge::Withdraw::AVAILABLE_WITHDRAW_MODES.keys,
-                message: 'Withdraw method is not supported'
+                message: I18n.t(
+                  'errors.messages.withdrawal.method_not_supported'
+                )
+              }
+    validates :customer_verified,
+              inclusion: {
+                in: [true],
+                message: I18n.t(
+                  'errors.messages.withdrawal.customer_not_verified'
+                )
               }
     validate :validate_payment_details
 

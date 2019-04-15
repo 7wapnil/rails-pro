@@ -349,6 +349,8 @@ en:
         bonus_exists: Active bonus exists!
         invalid_payment_method: "Invalid payment method: %{payment_method}"
         invalid_payload: "Missing %{attr}"
+        method_not_supported: Withdraw method is not supported
+        customer_not_verified: Withdrawals are not available to non-verified customers
       withdrawal_requests:
         not_actionable: Withdrawal request has already been reviewed
         empty_comment: Rejection comment is required
