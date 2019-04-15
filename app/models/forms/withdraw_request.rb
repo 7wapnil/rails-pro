@@ -11,7 +11,7 @@ module Forms
                   :wallet_id,
                   :payment_method,
                   :payment_details,
-                  :customer_verified
+                  :customer
 
     validates :password,
               :amount,
@@ -27,13 +27,7 @@ module Forms
                   'errors.messages.withdrawal.method_not_supported'
                 )
               }
-    validates :customer_verified,
-              inclusion: {
-                in: [true],
-                message: I18n.t(
-                  'errors.messages.withdrawal.customer_not_verified'
-                )
-              }
+    validate :validate_customer_status
     validate :validate_payment_details
 
     def validate_payment_details
@@ -47,6 +41,13 @@ module Forms
       method_model.errors.each do |attr, error|
         errors.add(attr, error)
       end
+    end
+
+    def validate_customer_status
+      valid = customer.verified
+      errors.add(:customer, I18n.t(
+        'errors.messages.withdrawal.customer_not_verified'
+      ))
     end
 
     def payment_details_map
