@@ -81,21 +81,9 @@ module EntryRequests
       end
 
       def validate_entry_request!
-        check_if_odd_active! && check_if_market_not_suspended!
-      end
-
-      def check_if_odd_active!
-        return true if odd.active?
-
-        entry_request
-          .register_failure!(I18n.t('errors.messages.bet_odd_inactive'))
-      end
-
-      def check_if_market_not_suspended!
-        return true unless market.suspended?
-
-        entry_request
-          .register_failure!(I18n.t('errors.messages.market_suspended'))
+        ::Bets::PlacementForm.new(subject: bet).validate!
+      rescue Bets::PlacementError => error
+        entry_request.register_failure!(error)
       end
 
       def create_balance_request!
