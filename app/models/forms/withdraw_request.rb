@@ -45,9 +45,10 @@ module Forms
 
     def validate_customer_status
       valid = customer.verified
-      errors.add(:customer, I18n.t(
-        'errors.messages.withdrawal.customer_not_verified'
-      ))
+      return if valid
+
+      errors.add(:customer,
+                 I18n.t('errors.messages.withdrawal.customer_not_verified'))
     end
 
     def payment_details_map
