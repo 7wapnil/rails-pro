@@ -5,8 +5,6 @@
   - expired_prematch
   - radar_odds_feed_high
   - radar_odds_feed_low
-  - radar_event_scopes_creating
-  - radar_event_scopes_loading
   - radar_live_coverage_booking
   - radar_markets_update
   - radar_missing_heartbeat
@@ -47,12 +45,6 @@
     class: PreMatchMarketsClosingWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Suspends all markets of events that are not traded live, but started some time ago"
-
-  radar_event_scopes_loading:
-    every: <%= ENV.fetch('RADAR_EVENT_SCOPES_LOADING_INTERVAL', '1w') %>
-    class: Radar::EventScopesLoadingWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Queries a list of tournaments from Radar API and creates workers to store every tournament to database"
 
   radar_market_templates_update:
     every: <%= ENV.fetch('RADAR_MARKET_TEMPLATES_UPDATE_INTERVAL', '1w') %>
