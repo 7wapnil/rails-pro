@@ -49,19 +49,13 @@ module OddsFeed
 
         def find_odd_template(external_id)
           @template =
-            outcomes&.find { |outcome| outcome['id'] == external_id.to_s }
+            outcomes.find { |outcome| outcome['id'] == external_id.to_s }
         end
 
         def outcomes
-          Array.wrap(outcome_list) unless outcome_empty?
-        end
-
-        def outcome_empty?
-          collection['outcomes'].nil? || outcome_list.nil?
-        end
-
-        def outcome_list
-          @outcome_list ||= collection.dig('outcomes', 'outcome')
+          Array.wrap(
+            collection.dig('outcomes', 'outcome')
+          )
         end
 
         def collection
