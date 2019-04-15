@@ -52,7 +52,7 @@ module OddsFeed
 
         def import_events
           events.each do |event_payload|
-            external_id = event_payload[:id]
+            external_id = event_payload[:external_id]
             event = Event.find_by external_id: external_id
             next if event
 
