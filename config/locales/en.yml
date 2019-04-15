@@ -502,6 +502,7 @@ en:
     settled: Settled
     succeeded: Succeeded
     verified: Verified
+    cancelled_by_system: Cancelled
 
   payment_methods:
     credit_card:

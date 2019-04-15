@@ -21,6 +21,10 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_one :event, through: :market
   has_one :title, through: :event
 
+  has_one :placement_entry,
+          -> { unscoped.bet.order(:created_at) },
+          class_name: Entry.name,
+          as: :origin
   has_one :winning, -> { win }, class_name: Entry.name, as: :origin
 
   has_many :entry_requests, as: :origin

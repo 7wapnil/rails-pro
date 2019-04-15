@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 module StatusHelper
   STATUS_MAPPING = {
     'accepted' => 'success',
     'active' => 'success',
     'cancelled' => 'danger',
+    'cancelled_by_system' => 'danger',
     'expired' => 'danger',
     'failed' => 'danger',
     'initial' => 'secondary',

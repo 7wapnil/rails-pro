@@ -8,13 +8,14 @@ currency_mapping = [
 ]
 
 entry_currency_rule_ranges = {
-  deposit:          { min:  10,     max:  1_000  },
-  win:              { min:  1,      max:  10_000 },
-  internal:         { min:  -1_000, max:  1_000  },
-  withdraw:         { min: -1_000,  max: -10     },
-  bet:              { min: -1_000,  max: -1      },
-  refund:           { min: 0,       max: 10_000  },
-  rollback:         { min: -10_000, max: 10_000  }
+  deposit:           { min:  10,     max:  1_000  },
+  win:               { min:  1,      max:  10_000 },
+  internal:          { min:  -1_000, max:  1_000  },
+  withdraw:          { min: -1_000,  max: -10     },
+  bet:               { min: -1_000,  max: -1      },
+  refund:            { min: 0,       max: 10_000  },
+  rollback:          { min: -10_000, max: 10_000  },
+  system_bet_cancel: { min: -10_000, max: 10_000  }
 }
 
 currency_mapping.each do |payload|

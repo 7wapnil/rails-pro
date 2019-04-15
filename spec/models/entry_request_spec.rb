@@ -29,7 +29,9 @@ describe EntryRequest, type: :model do
   end
 
   context '#adjust_amount_value' do
-    EntryKinds::DEBIT_KINDS.each do |kind, _i|
+    only_debit_kinds =
+      EntryKinds::DEBIT_KINDS.keys - EntryKinds::CREDIT_KINDS.keys
+    only_debit_kinds.each do |kind|
       it "assigns positive amount on #{kind} kinds" do
         entry_request.kind = kind
         entry_request.amount = -100
@@ -40,7 +42,9 @@ describe EntryRequest, type: :model do
       end
     end
 
-    EntryKinds::CREDIT_KINDS.each do |kind, _i|
+    only_credit_kinds =
+      EntryKinds::CREDIT_KINDS.keys - EntryKinds::DEBIT_KINDS.keys
+    only_credit_kinds.each do |kind|
       it "assigns negative amount on #{kind} kinds" do
         entry_request.kind = kind
         entry_request.amount = 100

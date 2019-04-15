@@ -64,8 +64,6 @@ describe Market do
   end
 
   [
-    %i[active cancelled],
-    %i[inactive cancelled],
     %i[settled active],
     %i[settled inactive],
     %i[settled suspended],
@@ -86,6 +84,8 @@ describe Market do
   end
 
   [
+    %i[active cancelled],
+    %i[inactive cancelled],
     %i[suspended settled],
     %i[suspended cancelled],
     %i[active settled],

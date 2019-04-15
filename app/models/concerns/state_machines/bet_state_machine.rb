@@ -11,6 +11,7 @@ module StateMachines
     ACCEPTED = 'accepted'
     PENDING_CANCELLATION = 'pending_cancellation'
     CANCELLED = 'cancelled'
+    CANCELLED_BY_SYSTEM = 'cancelled_by_system'
     SETTLED = 'settled'
     REJECTED = 'rejected'
     FAILED = 'failed'
@@ -23,6 +24,7 @@ module StateMachines
       accepted: ACCEPTED,
       pending_cancellation: PENDING_CANCELLATION,
       cancelled: CANCELLED,
+      cancelled_by_system: CANCELLED_BY_SYSTEM,
       settled: SETTLED,
       rejected: REJECTED,
       failed: FAILED
@@ -48,6 +50,7 @@ module StateMachines
         state :rejected
         state :pending_cancellation
         state :cancelled
+        state :cancelled_by_system
         state :failed
         state :settled
 
