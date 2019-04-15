@@ -4,8 +4,7 @@ module OddsFeed
   module Radar
     module ScheduledEvents
       class Loader < ApplicationService
-        OFFSET_BETWEEN_BATCHES = 1.hour
-        DEFAULT_RANGE = 3.days
+        DEFAULT_RANGE = 7.days
 
         def initialize(from_date: Date.current, offset: DEFAULT_RANGE)
           @from_date = from_date.to_date
