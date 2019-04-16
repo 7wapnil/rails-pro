@@ -4,6 +4,7 @@ class Wallet < ApplicationRecord
   belongs_to :customer
   belongs_to :currency
   has_many :balances
+  has_many :balance_entries, through: :balances
   has_many :entries
   has_one :customer_bonus
 
