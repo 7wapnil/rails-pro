@@ -13,8 +13,10 @@ FactoryBot.define do
 
     association :market, strategy: :build
 
-    trait :active do
-      status { Odd::ACTIVE }
+    Odd.statuses.keys.each do |status|
+      trait(status.to_sym) do
+        status { status }
+      end
     end
   end
 end

@@ -20,6 +20,8 @@ module Betting
       bet = create_bet!(bet_payload)
       entry_request = create_entry_request!(bet)
 
+      raise entry_request.result['message'] if entry_request.failed?
+
       ::EntryRequests::BetPlacementWorker.perform_in(3.second, entry_request.id)
 
       OpenStruct.new(id: bet_payload[:oddId],
@@ -39,7 +41,7 @@ module Betting
     end
 
     def create_entry_request!(bet)
-      @entry_request = ::EntryRequests::Factories::BetPlacement.call(
+      ::EntryRequests::Factories::BetPlacement.call(
         bet: bet,
         initiator: impersonated_by
       )

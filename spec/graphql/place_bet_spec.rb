@@ -132,7 +132,8 @@ describe GraphQL, '#place_bet' do
   end
 
   context 'multiple bets handling' do
-    let(:odd) { create(:odd, :active, value: 8.87) }
+    let(:market) { create(:market) }
+    let(:odd) { create(:odd, :active, value: 8.87, market: market) }
 
     let(:valid_bet_attrs) do
       {
@@ -194,6 +195,24 @@ describe GraphQL, '#place_bet' do
 
       it 'recognizes it as success for GraphQL response' do
         expect(succeeded_bets_response.count).to eq(1)
+      end
+    end
+
+    context 'with suspended market' do
+      let(:market) { create(:market, :suspended) }
+      let(:variables) { { bets: [valid_bet_attrs] } }
+
+      it 'recognizes it as failure for GraphQL response' do
+        expect(failed_bets_response.count).to eq(1)
+      end
+    end
+
+    context 'with inactive odd' do
+      let(:odd) { create(:odd, :inactive, value: 8.87) }
+      let(:variables) { { bets: [valid_bet_attrs] } }
+
+      it 'recognizes it as failure for GraphQL response' do
+        expect(failed_bets_response.count).to eq(1)
       end
     end
   end
