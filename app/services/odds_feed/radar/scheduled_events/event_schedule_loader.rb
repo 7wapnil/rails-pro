@@ -30,7 +30,6 @@ module OddsFeed
           log_start
           collect_nested_associations
           schedule_import
-          cache_data
           log_success
         rescue StandardError => error
           log_failure(error)
@@ -83,38 +82,6 @@ module OddsFeed
                       .new
                       .events_for_date(date)
                       .map(&:result)
-        end
-
-        def cache_data
-          cache_collection(collected_cache_data[:competitors])
-          cache_collection(collected_cache_data[:players])
-        rescue OpenSSL::SSL::SSLError => error
-          increment_retries!
-          log_connection_error
-
-          raise error if retries > MAX_RETRIES
-
-          sleep RECONNECTION_TIMEOUT
-          retry
-        end
-
-        def collected_cache_data
-          @collected_cache_data ||=
-            events
-            .reduce({}) { |data, event| collect_cache_data(data, event) }
-        end
-
-        def collect_cache_data(data, event)
-          data.deep_merge(
-            EventBasedCache::Collector.call(event: event)
-          )
-        end
-
-        def cache_collection(cache_data)
-          Rails.cache.write_multi(
-            cache_data,
-            cache: { expires_in: Entities::BaseLoader::CACHE_TERM }
-          )
         end
 
         def log_connection_error

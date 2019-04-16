@@ -43,7 +43,6 @@ describe OddsFeed::Radar::ScheduledEvents::EventScheduleLoader do
   end
 
   before do
-    allow(Rails.cache).to receive(:write_multi)
     allow(::Radar::ScheduledEvents::EventLoadingWorker)
       .to receive(:perform_async)
     allow(ScopedEvent).to receive(:import)
@@ -59,10 +58,6 @@ describe OddsFeed::Radar::ScheduledEvents::EventScheduleLoader do
         .with(:external_id)
         .and_return(adapter.external_id)
     end
-
-    allow(OddsFeed::Radar::EventBasedCache::Collector)
-      .to receive(:call)
-      .and_return(*events_cache_data)
   end
 
   it 'logs start of the process' do
@@ -110,46 +105,6 @@ describe OddsFeed::Radar::ScheduledEvents::EventScheduleLoader do
       expect(ScopedEvent)
         .to have_received(:import)
         .with(scoped_events, hash_including(validate: false))
-    end
-  end
-
-  context 'with players' do
-    let(:players) do
-      events_cache_data
-        .reduce({}) { |hash, data| hash.deep_merge(data[:players]) }
-    end
-
-    before { subject }
-
-    it 'caches them' do
-      expect(Rails.cache)
-        .to have_received(:write_multi)
-        .with(
-          players,
-          cache: {
-            expires_in: OddsFeed::Radar::Entities::BaseLoader::CACHE_TERM
-          }
-        )
-    end
-  end
-
-  context 'with competitors' do
-    let(:competitors) do
-      events_cache_data
-        .reduce({}) { |hash, data| hash.deep_merge(data[:competitors]) }
-    end
-
-    before { subject }
-
-    it 'caches them' do
-      expect(Rails.cache)
-        .to have_received(:write_multi)
-        .with(
-          competitors,
-          cache: {
-            expires_in: OddsFeed::Radar::Entities::BaseLoader::CACHE_TERM
-          }
-        )
     end
   end
 
