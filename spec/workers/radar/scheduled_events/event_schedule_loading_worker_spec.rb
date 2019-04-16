@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Radar::ScheduledEvents::DateEventsLoadingWorker do
+describe Radar::ScheduledEvents::EventScheduleLoadingWorker do
   subject { described_class.new }
 
   let(:date) { Date.current }
@@ -12,10 +12,14 @@ describe Radar::ScheduledEvents::DateEventsLoadingWorker do
     let(:mocked_date) { date }
   end
 
-  before { allow(Rails.cache).to receive(:write_multi) }
+  before do
+    allow(Rails.cache).to receive(:write_multi)
+    allow(EventScope).to receive(:import)
+  end
 
   it 'imports event scopes' do
-    expect { perform_job }.to change(EventScope, :count).by(6)
+    perform_job
+    expect(EventScope).to have_received(:import).exactly(6).times
   end
 
   context 'with players' do
@@ -67,16 +71,6 @@ describe Radar::ScheduledEvents::DateEventsLoadingWorker do
         )
 
       perform_job
-    end
-  end
-
-  context 'on error' do
-    let(:error) { PG::ConnectionBad.new(Faker::WorldOfWarcraft.quote) }
-
-    before { allow(ScopedEvent).to receive(:import).and_raise(error) }
-
-    it 'raises original error' do
-      expect { perform_job }.to raise_error(error)
     end
   end
 end

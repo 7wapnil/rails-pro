@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
-describe OddsFeed::Radar::ScheduledEvents::DateEventsLoader do
+describe OddsFeed::Radar::ScheduledEvents::EventScheduleLoader do
   subject { service_object.call }
 
-  let(:service_object) { described_class.new(timestamp: timestamp) }
+  let(:service_object) { described_class.new(timestamp: timestamp, range: 0.days) }
 
   let(:date) { Date.current }
   let(:timestamp) { date.to_datetime.to_i }
@@ -42,7 +42,7 @@ describe OddsFeed::Radar::ScheduledEvents::DateEventsLoader do
 
   before do
     allow(Rails.cache).to receive(:write_multi)
-    allow(::Radar::ScheduledEvents::IdEventLoadingWorker)
+    allow(::Radar::ScheduledEvents::EventLoadingWorker)
       .to receive(:perform_async)
     allow(ScopedEvent).to receive(:import)
     allow(service_object).to receive(:log_job_message)
@@ -89,7 +89,7 @@ describe OddsFeed::Radar::ScheduledEvents::DateEventsLoader do
     before { subject }
 
     it 'schedules a loading worker for each event' do
-      expect(::Radar::ScheduledEvents::IdEventLoadingWorker)
+      expect(::Radar::ScheduledEvents::EventLoadingWorker)
         .to have_received(:perform_async)
         .exactly(events.size)
         .times
@@ -155,10 +155,6 @@ describe OddsFeed::Radar::ScheduledEvents::DateEventsLoader do
     let(:error) { PG::ConnectionBad.new(Faker::WorldOfWarcraft.quote) }
 
     before { allow(ScopedEvent).to receive(:import).and_raise(error) }
-
-    it 'raises original error' do
-      expect { subject }.to raise_error(error)
-    end
 
     it 'logs an exception' do
       allow(service_object).to receive(:raise)

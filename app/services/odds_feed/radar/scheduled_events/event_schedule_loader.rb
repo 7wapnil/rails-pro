@@ -4,31 +4,37 @@ module OddsFeed
   module Radar
     module ScheduledEvents
       # rubocop:disable Metrics/ClassLength
-      class DateEventsLoader < ApplicationService
+      class EventScheduleLoader < ApplicationService
         include JobLogger
 
         RECONNECTION_TIMEOUT = 15
         MAX_RETRIES = 5
+        DEFAULT_RANGE = 7.days
 
-        def initialize(timestamp:)
-          @date = Time.at(timestamp).to_date
+        def initialize(timestamp:, range: DEFAULT_RANGE)
+          @date_from = Time.at(timestamp).to_date
+          @date_to = date_from + range
           @retries = 0
         end
 
         def call
-          log_start
-          collect_nested_associations
-          import
-          cache_data
-          log_success
-        rescue StandardError => error
-          log_failure
-          raise(error)
+          (date_from..date_to).each { |day| process day }
         end
 
         private
 
-        attr_reader :date, :scoped_events, :retries
+        attr_reader :date, :date_from, :date_to, :scoped_events, :retries
+
+        def process(schedule_date)
+          @date = schedule_date
+          log_start
+          collect_nested_associations
+          schedule_import
+          cache_data
+          log_success
+        rescue StandardError => error
+          log_failure
+        end
 
         def log_start
           log_job_message(
@@ -45,7 +51,7 @@ module OddsFeed
           @scoped_events = events.flat_map(&:scoped_events)
         end
 
-        def import
+        def schedule_import
           import_events
           import_scoped_events
         end
@@ -56,7 +62,7 @@ module OddsFeed
             event = Event.find_by external_id: external_id
             next if event
 
-            ::Radar::ScheduledEvents::IdEventLoadingWorker
+            ::Radar::ScheduledEvents::EventLoadingWorker
               .perform_async(external_id)
           end
         end

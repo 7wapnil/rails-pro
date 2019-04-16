@@ -2,11 +2,11 @@
 
 module Radar
   module ScheduledEvents
-    class DateEventsLoadingWorker < ApplicationWorker
+    class EventScheduleLoadingWorker < ApplicationWorker
       sidekiq_options queue: 'scheduled_events_caching'
 
       def perform(timestamp)
-        OddsFeed::Radar::ScheduledEvents::DateEventsLoader
+        OddsFeed::Radar::ScheduledEvents::EventScheduleLoader
           .call(timestamp: timestamp)
       end
     end
