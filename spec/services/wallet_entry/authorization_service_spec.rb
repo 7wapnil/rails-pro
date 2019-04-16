@@ -70,8 +70,11 @@ describe WalletEntry::AuthorizationService do
                         .where(entry: { wallets: { customer: customer } })
                         .first
 
+        balance_amount = balance_entry.balance.amount
+
         expect(balance_entry).to be_present
         expect(balance_entry.amount).to eq request.amount
+        expect(balance_entry.balance_amount_after).to eq balance_amount
       end
 
       it 'adds entry amount into wallet' do
