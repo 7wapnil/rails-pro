@@ -3,7 +3,9 @@
 describe OddsFeed::Radar::ScheduledEvents::EventScheduleLoader do
   subject { service_object.call }
 
-  let(:service_object) { described_class.new(timestamp: timestamp, range: 0.days) }
+  let(:service_object) do
+    described_class.new(timestamp: timestamp, range: 0.days)
+  end
 
   let(:date) { Date.current }
   let(:timestamp) { date.to_datetime.to_i }
@@ -156,11 +158,18 @@ describe OddsFeed::Radar::ScheduledEvents::EventScheduleLoader do
 
     before { allow(ScopedEvent).to receive(:import).and_raise(error) }
 
-    it 'logs an exception' do
-      allow(service_object).to receive(:raise)
+    it 'logs an exception info' do
       expect(service_object)
         .to receive(:log_job_message)
-        .with(:fatal, "Event based data for #{humanized_date} was not cached.")
+        .with(:info, "Event based data for #{humanized_date} was not cached.")
+
+      subject
+    end
+
+    it 'logs exception message' do
+      expect(service_object)
+        .to receive(:log_job_message)
+        .with(:error, error.message)
 
       subject
     end

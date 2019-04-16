@@ -33,7 +33,7 @@ module OddsFeed
           cache_data
           log_success
         rescue StandardError => error
-          log_failure
+          log_failure(error)
         end
 
         def log_start
@@ -136,11 +136,13 @@ module OddsFeed
           )
         end
 
-        def log_failure
+        def log_failure(error)
           log_job_message(
-            :fatal,
+            :info,
             "Event based data for #{humanized_date} was not cached."
           )
+
+          log_job_message(:error, error.message)
         end
       end
       # rubocop:enable Metrics/ClassLength
