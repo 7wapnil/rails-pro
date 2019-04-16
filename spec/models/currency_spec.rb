@@ -3,6 +3,7 @@ describe Currency do
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to validate_presence_of(:code) }
+  it { is_expected.to validate_numericality_of(:exchange_rate).allow_nil }
 
   describe '.primary' do
     context 'with existing primary currency' do
@@ -35,7 +36,7 @@ describe Currency do
 
     it 'flush cache on commit' do
       described_class.cached_all
-      currency.update(code: Faker::Currency.code)
+      currency.update(code: Currency::EUR)
       described_class.cached_all
       expect(described_class).to have_received(:all).twice
     end

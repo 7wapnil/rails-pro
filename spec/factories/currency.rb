@@ -2,10 +2,11 @@
 
 FactoryBot.define do
   factory :currency do
-    name    { Faker::Currency.name }
-    code    { Currency.available_currency_codes.sample }
-    primary { false }
-    kind    { Currency::FIAT }
+    name          { Faker::Currency.name }
+    code          { Currency.available_currency_codes.sample }
+    primary       { false }
+    kind          { Currency::FIAT }
+    exchange_rate { nil }
 
     trait :primary do
       primary { true }
