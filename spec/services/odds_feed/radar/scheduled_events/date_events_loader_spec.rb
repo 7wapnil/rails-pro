@@ -51,6 +51,13 @@ describe OddsFeed::Radar::ScheduledEvents::DateEventsLoader do
       .to receive(:events_for_date)
       .and_return(event_adapters)
 
+    event_adapters.each do |adapter|
+      allow(adapter.result)
+        .to receive(:[])
+        .with(:external_id)
+        .and_return(adapter.external_id)
+    end
+
     allow(OddsFeed::Radar::EventBasedCache::Collector)
       .to receive(:call)
       .and_return(*events_cache_data)
@@ -86,6 +93,15 @@ describe OddsFeed::Radar::ScheduledEvents::DateEventsLoader do
         .to have_received(:perform_async)
         .exactly(events.size)
         .times
+    end
+
+    it 'gets external_id from events' do
+      event_adapters.each do |event|
+        expect(event.result)
+          .to have_received(:[])
+          .with(:external_id)
+          .once
+      end
     end
 
     it 'imports event scopes' do
