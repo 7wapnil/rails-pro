@@ -3,7 +3,6 @@
 module OddsFeed
   module Radar
     module ScheduledEvents
-      # rubocop:disable Metrics/ClassLength
       class EventScheduleLoader < ApplicationService
         include JobLogger
 
@@ -112,7 +111,6 @@ module OddsFeed
           log_job_message(:error, error.message)
         end
       end
-      # rubocop:enable Metrics/ClassLength
     end
   end
 end
