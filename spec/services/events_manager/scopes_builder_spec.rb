@@ -51,16 +51,32 @@ describe EventsManager::ScopesBuilder do
     end
   end
 
-  context 'exceptions' do
-    before do
-      allow(event_entity).to receive(:category)
-      allow(event_entity).to receive(:tournament)
-      allow(event_entity).to receive(:season)
+  context 'partial scopes fixture' do
+    let(:event_payload) do
+      ::XmlParser.parse(
+        file_fixture('radar_event_fixture_no_scopes.xml').read
+      )
     end
 
-    it 'skips scope creation on empty fixture' do
+    it 'skips scope creation' do
       subject.build
-      expect(EventScope.count).to be_zero
+      expect(EventScope.count).to be < 3
+    end
+
+    it 'returns partial collection' do
+      expect(subject.build.count).to be < 3
+    end
+  end
+
+  context 'no tournament found' do
+    let(:event_payload) do
+      ::XmlParser.parse(
+        file_fixture('radar_event_fixture_no_tournament.xml').read
+      )
+    end
+
+    it do
+      expect { subject.build }.to raise_error(StandardError)
     end
   end
 end
