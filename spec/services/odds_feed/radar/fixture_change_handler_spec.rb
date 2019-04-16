@@ -21,6 +21,8 @@ describe OddsFeed::Radar::FixtureChangeHandler do
   end
 
   before do
+    allow(::Radar::ScheduledEvents::IdEventLoadingWorker)
+      .to receive(:perform_async)
     allow_any_instance_of(EventsManager::EventLoader).to receive(:call)
   end
 
