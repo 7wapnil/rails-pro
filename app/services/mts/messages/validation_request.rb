@@ -63,7 +63,7 @@ module Mts
           channel: distribution_channel.channel,
           bookmaker_id: ENV['MTS_BOOKMAKER_ID'].to_i,
           end_customer: end_customer,
-          limit_id: Mts::Limit.some
+          limit_id: ENV['MTS_LIMIT_ID']
         }
       end
 
