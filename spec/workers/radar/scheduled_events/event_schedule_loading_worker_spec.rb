@@ -3,14 +3,7 @@
 describe Radar::ScheduledEvents::EventScheduleLoadingWorker do
   subject { described_class.new }
 
-  let(:date) { Date.current }
-  let(:timestamp) { date.to_datetime.to_i }
-
-  let(:perform_job) { subject.perform(timestamp) }
-
-  include_context 'events for specific date' do
-    let(:mocked_date) { date }
-  end
+  let(:perform_job) { subject.perform }
 
   before do
     allow(Rails.cache).to receive(:write_multi)
