@@ -6,6 +6,9 @@ module Forms
       EntryRequest::CREDIT_CARD => Forms::PaymentMethods::CreditCard
     }.freeze
 
+    MIN_AMOUNT = 0
+    MAX_AMOUNT = 10_000
+
     attr_accessor :amount,
                   :password,
                   :wallet_id,
@@ -18,7 +21,9 @@ module Forms
               :wallet_id,
               :payment_method, presence: true
     validates :amount,
-              numericality: { greater_than: 0 },
+              numericality: {
+                greater_than: MIN_AMOUNT, less_than: MAX_AMOUNT
+              },
               format: { with: /\A\d{1,12}(\.\d{0,2})?\z/ }
     validates :payment_method,
               inclusion: {

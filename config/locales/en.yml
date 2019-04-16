@@ -51,6 +51,18 @@ en:
     reset_password: Reset password
     verify: Verify
 
+  activemodel:
+    errors:
+      models:
+        forms/withdraw_request:
+          attributes:
+            amount:
+              less_than: exceeds maximum individual withdrawal
+              greater_than: must be non-zero value
+    attributes:
+      forms/withdraw_request:
+        last_four_digits: ''
+
   activerecord:
     attributes:
       customers/statistic:
@@ -368,7 +380,7 @@ en:
       unsupported_payment_method: "Payment method '%{code}' is not implemented"
       nonexistent_event: "Event with id '%{id}' does not exist"
       nonexistent_bet: "Bet with validation ticket id '%{id}' does not exist"
-      password_invalid: Password is invalid
+      password_invalid: Incorrect password
       unsupported_withdraw_method: "Payment method %{name} is not supported"
 
       mts:
@@ -382,10 +394,11 @@ en:
         generic_exception: "Generic exception code for bet with id '%{bet_id}'"
 
       withdrawal:
-        not_enough_money: Not enough money in wallet!
-        bonus_exists: Active bonus exists!
+        not_enough_money: Please check your available balance
+        bonus_exists: If you continue please be aware your active bonus will be cancelled, do you still wish to continue
         invalid_payment_method: "Invalid payment method: %{payment_method}"
         invalid_payload: "Missing %{attr}"
+        last_four_digits: Please confirm the last four digits of your card are entered correctly
         method_not_supported: Withdraw method is not supported
         customer_not_verified: Customer should be verified to withdraw funds
       withdrawal_requests:

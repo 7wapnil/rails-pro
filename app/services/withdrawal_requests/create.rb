@@ -29,7 +29,7 @@ module WithdrawalRequests
     end
 
     def fail_entry_request!
-      raise Withdrawals::WithdrawalError
+      raise Withdrawals::WithdrawalError, withdrawal.result['message']
     end
 
     def validate_payload
