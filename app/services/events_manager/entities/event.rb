@@ -38,30 +38,32 @@ module EventsManager
       end
 
       def sport
-        @sport ||= SimpleEntity.new(
+        @sport ||= create_entity(
           attribute(fixture, 'tournament', 'sport')
         )
       end
 
       def category
-        @category ||= SimpleEntity.new(
+        @category ||= create_entity(
           attribute(fixture, 'tournament', 'category')
         )
       end
 
       def tournament
-        @tournament ||= SimpleEntity.new(
-          attribute(fixture, 'tournament')
-        )
+        @tournament ||= create_entity(attribute!(fixture, 'tournament'))
       end
 
       def season
-        @season ||= SimpleEntity.new(
-          attribute(fixture, 'season')
-        )
+        @season ||= create_entity(attribute(fixture, 'season'))
       end
 
       private
+
+      def create_entity(data)
+        return nil unless data
+
+        SimpleEntity.new(data)
+      end
 
       def fixture
         attribute!(@payload, 'fixtures_fixture', 'fixture')
