@@ -2,11 +2,11 @@
 
 module Radar
   module ScheduledEvents
-    class IdEventLoadingWorker < ApplicationWorker
+    class EventLoadingWorker < ApplicationWorker
       sidekiq_options queue: 'scheduled_events_caching'
 
       def perform(external_id)
-        OddsFeed::Radar::ScheduledEvents::IdEventLoader
+        OddsFeed::Radar::ScheduledEvents::EventLoader
           .call(external_id)
       end
     end

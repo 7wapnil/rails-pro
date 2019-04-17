@@ -66,6 +66,6 @@
 
   radar_events_preloading:
     every: <%= ENV.fetch('RADAR_EVENTS_PROLOADER_INTERVAL', '1d') %>
-    class: Radar::ScheduledEvents::LoadingWorker
+    class: Radar::ScheduledEvents::EventScheduleLoadingWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Queries events that will start in the future and stores them in local database"

@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
-require 'sidekiq-scheduler'
-
 module Radar
   module ScheduledEvents
-    class LoadingWorker < ApplicationWorker
+    class EventScheduleLoadingWorker < ApplicationWorker
       sidekiq_options queue: 'radar_events_preloading'
 
       def perform
-        OddsFeed::Radar::ScheduledEvents::Loader.call
+        OddsFeed::Radar::ScheduledEvents::EventScheduleLoader
+          .call(timestamp: Time.zone.now)
       end
     end
   end

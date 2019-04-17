@@ -32,7 +32,7 @@ describe GraphQL, '#user' do
     it 'returns requested attributes' do
       expect(result['data']['user'])
         .to include('id' => customer.id.to_s,
-                    'verified' => false,
+                    'verified' => true,
                     'regular' => true,
                     'available_withdraw_methods' => [])
     end
