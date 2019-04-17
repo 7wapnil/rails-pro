@@ -1,0 +1,66 @@
+- content_for :css do
+  = stylesheet_pack_tag 'flatpickr', media: :all, 'data-turbolinks-track': 'reload'
+
+- content_for :js do
+  = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
+
+= search_form_for filter.search, url: search_path, as: :entries do |f|
+  %table.table.search
+    %thead
+      %tr
+        %th
+          .filter_title
+            #{t('attributes.wallet')}:
+          .filter_field
+            = f.label :balance_wallet, class: 'sr-only'
+            = f.select :balance_wallet_id_eq,
+                       customer_wallets_options(customer),
+                       { include_blank: 'All' },
+                       class: 'form-control'
+
+        %th
+          .filter_title
+            #{t('attributes.balance_kind')}:
+          .filter_field
+            = f.label :balance_kind, class: 'sr-only'
+            = f.select :balance_kind_eq,
+                       balance_kinds_options,
+                       { include_blank: 'All' },
+                       class: 'form-control'
+
+        %th
+          .filter_title
+            #{t('attributes.entry_kind')}:
+          .filter_field
+            = f.label :entry_kind, class: 'sr-only'
+            = f.select :entry_kind_eq,
+                       entry_kinds_options,
+                       { include_blank: 'All' },
+                       class: 'form-control'
+
+        %th
+      %tr
+        %th
+
+        %th
+          .filter_title
+            #{t(:search, subject: t('from'))}:
+          .filter_field
+            = f.label :created_at_gteq, class: 'sr-only'
+            = f.search_field :created_at_gteq,
+                              class: 'form-control form_date',
+                              placeholder: t(:search, subject: t('from')),
+                              value: params[:entries]&.[](:created_at_gteq)
+
+        %th
+          .filter_title
+            #{t(:search, subject: t('to'))}:
+          .filter_field
+            = f.label :created_at_lteq, class: 'sr-only'
+            = f.search_field :created_at_lteq,
+                              class: 'form-control form_date',
+                              placeholder: t(:search, subject: t('to')),
+                              value: params[:entries]&.[](:created_at_lteq)
+
+        %th
+          = f.submit class: 'btn btn-outline-dark btn-block'

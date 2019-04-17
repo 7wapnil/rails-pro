@@ -199,7 +199,7 @@ en:
     percentage: Percentage
     confirmed_at: Confirmed at
     balance_id: Balance ID
-    balance_kind: Balance kind
+    balance_kind: Balance type
 
   customers:
     statistics:
@@ -276,6 +276,7 @@ en:
       zero: No customer notes
       one: 1 customer note
       other: "%{count} customer notes"
+    debit_credit_history: Debit/Credit history
     deposit_limit: Deposit limit
     deposit_limits: Deposit limits
     document: Document
