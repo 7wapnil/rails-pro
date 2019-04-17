@@ -12,7 +12,10 @@ module Exchanger
 
       def call
         log(:info, 'Requesting new currencies rates')
-        parse(request.parsed_response)
+        response = request.parsed_response
+        return [] unless response
+
+        parse(response)
       rescue HTTParty::ResponseError => e
         log(:error, e.message)
 

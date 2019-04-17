@@ -2,9 +2,7 @@ module Exchanger
   module Apis
     class CoinApi < BaseApi
       base_uri 'https://rest.coinapi.io/v1'
-      headers 'X-CoinAPI-Key': 'C76A9AE4-036D-4410-9AF3-8CFEA6B2FE2F'
-
-      # ENV['COIN_API_KEY']
+      headers 'X-CoinAPI-Key': ENV['COIN_API_KEY']
 
       protected
 
@@ -15,7 +13,7 @@ module Exchanger
       end
 
       def parse(formatted_response)
-        formatted_response['rates'].map do |item|
+        (formatted_response['rates'] || []).map do |item|
           Rate.new(item['asset_id_quote'], item['rate'])
         end
       end
