@@ -49,11 +49,6 @@ module OddsFeed
         end
 
         def schedule_import(date)
-          import_events(date)
-          import_scoped_events
-        end
-
-        def import_events(date)
           external_ids = events(date).map { |payload| payload[:external_id] }
           external_ids -= Event.where(external_id: external_ids)
                                .pluck(:external_id)
@@ -61,17 +56,6 @@ module OddsFeed
             ::Radar::ScheduledEvents::EventLoadingWorker
               .perform_async(external_id)
           end
-        end
-
-        def import_scoped_events
-          ScopedEvent.import(
-            scoped_events,
-            validate: false,
-            on_duplicate_key_update: {
-              conflict_target: %i[event_id event_scope_id],
-              columns: %i[updated_at]
-            }
-          )
         end
 
         def events(date)
