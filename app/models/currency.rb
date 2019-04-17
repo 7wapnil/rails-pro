@@ -2,6 +2,8 @@
 
 class Currency < ApplicationRecord
   PRIMARY_CODE = 'EUR'
+  PRIMARY_RATE = 1
+
   CACHED_ALL_KEY = 'cache/currencies/cached_all'
 
   include Loggable
@@ -51,6 +53,10 @@ class Currency < ApplicationRecord
 
   def to_s
     code
+  end
+
+  def primary?
+    code == PRIMARY_CODE
   end
 
   def loggable_attributes
