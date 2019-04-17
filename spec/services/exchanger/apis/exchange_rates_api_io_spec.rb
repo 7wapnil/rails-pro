@@ -2,7 +2,7 @@ describe Exchanger::Apis::ExchangeRatesApiIo do
   subject { described_class.new('EUR', %w[USD GBP]) }
 
   let(:expected_route) do
-    "https://api.exchangeratesapi.io/latest?base=EUR&symbols=USD,GBP"
+    'https://api.exchangeratesapi.io/latest?base=EUR&symbols=USD,GBP'
   end
   let(:expected_response) do
     { rates: {
@@ -20,8 +20,8 @@ describe Exchanger::Apis::ExchangeRatesApiIo do
   it 'requests rates from service' do
     stub_request(:get, expected_route)
       .to_return(status: 200, body: expected_response, headers: {
-        'content-type': 'application/json'
-      })
+                   'content-type': 'application/json'
+                 })
 
     expect(subject.call.count).to eq(2)
   end
@@ -29,8 +29,8 @@ describe Exchanger::Apis::ExchangeRatesApiIo do
   it 'returns empty list on empty response' do
     stub_request(:get, expected_route)
       .to_return(status: 200, body: '', headers: {
-        'content-type': 'application/json'
-      })
+                   'content-type': 'application/json'
+                 })
 
     expect(subject.call.count).to be_zero
   end
@@ -38,8 +38,8 @@ describe Exchanger::Apis::ExchangeRatesApiIo do
   it 'returns empty list on error response' do
     stub_request(:get, expected_route)
       .to_return(status: 550, body: '', headers: {
-        'content-type': 'application/json'
-      })
+                   'content-type': 'application/json'
+                 })
 
     expect(subject.call.count).to be_zero
   end
