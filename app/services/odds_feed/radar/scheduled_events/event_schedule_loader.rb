@@ -54,11 +54,10 @@ module OddsFeed
         end
 
         def import_events(date)
-          events(date).each do |event_payload|
-            external_id = event_payload[:external_id]
-            event = Event.find_by external_id: external_id
-            next if event
-
+          external_ids = events(date).map { |payload| payload[:external_id] }
+          external_ids -= Event.where(external_id: external_ids)
+                               .pluck(:external_id)
+          external_ids.each do |external_id|
             ::Radar::ScheduledEvents::EventLoadingWorker
               .perform_async(external_id)
           end
