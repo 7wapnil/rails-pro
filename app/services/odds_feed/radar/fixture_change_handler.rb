@@ -41,7 +41,7 @@ module OddsFeed
       def validate_event_presence!
         return true if Event.exists?(external_id: event_id)
 
-        ::Radar::ScheduledEvents::IdEventLoadingWorker.perform_async(event_id)
+        ::Radar::ScheduledEvents::EventLoadingWorker.perform_async(event_id)
 
         raise ActiveRecord::RecordNotFound,
               I18n.t('errors.messages.nonexistent_event', id: event_id)
