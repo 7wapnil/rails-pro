@@ -6,8 +6,6 @@ module OddsFeed
       class EventScheduleLoader < ApplicationService
         include JobLogger
 
-        RECONNECTION_TIMEOUT = 15
-        MAX_RETRIES = 5
         DEFAULT_RANGE = 7.days
 
         def initialize(timestamp:, range: DEFAULT_RANGE)
@@ -21,11 +19,10 @@ module OddsFeed
 
         private
 
-        attr_reader :date_from, :date_to, :scoped_events
+        attr_reader :date_from, :date_to
 
         def process(date)
           log_start date
-          collect_nested_associations date
           schedule_import date
           log_success date
         rescue StandardError => error
@@ -43,10 +40,6 @@ module OddsFeed
           I18n.l(date, format: :informative)
         end
 
-        def collect_nested_associations(date)
-          @scoped_events = events(date).flat_map(&:scoped_events)
-        end
-
         def schedule_import(date)
           external_ids = events(date).map { |payload| payload[:external_id] }
           external_ids -= Event.where(external_id: external_ids)
@@ -58,10 +51,10 @@ module OddsFeed
         end
 
         def events(date)
-          @events ||= OddsFeed::Radar::Client
-                      .new
-                      .events_for_date(date)
-                      .map(&:result)
+          OddsFeed::Radar::Client
+            .new
+            .events_for_date(date)
+            .map(&:result)
         end
 
         def log_success(date)
