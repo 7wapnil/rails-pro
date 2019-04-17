@@ -80,5 +80,24 @@ describe GraphQL, '#withdraw' do
         expect(response['errors']).not_to be_nil
       end
     end
+
+    context 'verification' do
+      before do
+        allow(EntryRequests::WithdrawalWorker).to receive(:perform_async)
+      end
+
+      let(:auth_customer) { create(:customer, verified: false) }
+
+      it 'returns a customer verification error' do
+        expect(response['errors']).not_to be_nil
+      end
+
+      it 'does not call the withdrawal worker' do
+        response
+
+        expect(EntryRequests::WithdrawalWorker)
+          .not_to have_received(:perform_async)
+      end
+    end
   end
 end

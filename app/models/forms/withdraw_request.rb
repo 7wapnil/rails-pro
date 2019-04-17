@@ -10,7 +10,8 @@ module Forms
                   :password,
                   :wallet_id,
                   :payment_method,
-                  :payment_details
+                  :payment_details,
+                  :customer
 
     validates :password,
               :amount,
@@ -22,8 +23,12 @@ module Forms
     validates :payment_method,
               inclusion: {
                 in: SafeCharge::Withdraw::AVAILABLE_WITHDRAW_MODES.keys,
-                message: 'Withdraw method is not supported'
+                message: I18n.t(
+                  'errors.messages.withdrawal.method_not_supported'
+                )
               }
+    validate :validate_customer_status
+    validate :validate_customer_password
     validate :validate_payment_details
 
     def validate_payment_details
@@ -39,10 +44,24 @@ module Forms
       end
     end
 
+    def validate_customer_status
+      return if customer.nil? || customer.verified
+
+      raise ResolvingError,
+            customer: I18n.t('errors.messages.withdrawal.customer_not_verified')
+    end
+
     def payment_details_map
       Array.wrap(payment_details).reduce({}) do |result, item|
         result.merge(item[:code] => item[:value])
       end
+    end
+
+    def validate_customer_password
+      return if customer.nil? || customer.valid_password?(password)
+
+      raise ResolvingError,
+            password: I18n.t('errors.messages.password_invalid')
     end
   end
 end
