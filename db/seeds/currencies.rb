@@ -2,9 +2,15 @@ puts 'Checking currencies ...'
 
 currency_mapping = [
   { name: 'Euro', code: 'EUR', primary: true, kind: Currency::FIAT },
+  { name: 'US dollar', code: 'USD', kind: Currency::FIAT },
+  { name: 'Pound sterling', code: 'GBP', kind: Currency::FIAT },
+  { name: 'Australian dollar', code: 'AUD', kind: Currency::FIAT },
+  { name: 'Norwegian krone', code: 'NOK', kind: Currency::FIAT },
+  { name: 'Danish krone', code: 'DKK', kind: Currency::FIAT },
   { name: 'Swedish Kronor', code: 'SEK', kind: Currency::FIAT },
-  { name: 'BitCoin', code: 'mBTC', kind: Currency::CRYPTO },
-  { name: 'Ethereum', code: 'ETH', kind: Currency::CRYPTO }
+  { name: 'Canadian dollar', code: 'CAD', kind: Currency::FIAT },
+  { name: 'Russian rouble', code: 'RUB', kind: Currency::FIAT },
+  { name: 'BitCoin', code: 'BTC', kind: Currency::CRYPTO },
 ]
 
 entry_currency_rule_ranges = {

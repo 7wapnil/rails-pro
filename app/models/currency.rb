@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class Currency < ApplicationRecord
+  PRIMARY_CODE = 'EUR'
   CACHED_ALL_KEY = 'cache/currencies/cached_all'
 
   include Loggable
@@ -10,20 +11,13 @@ class Currency < ApplicationRecord
   has_many :entry_currency_rules
   has_many :wallets
 
-  SUPPORTED_CODES = {
-    euro: EUR = 'EUR',
-    btc: BTC = 'BTC',
-    usd: USD = 'USD',
-    inr: INR = 'INR',
-    ZAR: ZAR = 'ZAR'
-  }.freeze
+  scope :fiat, -> { where(kind: FIAT) }
+  scope :crypto, -> { where(kind: CRYPTO) }
 
   enum kind: {
     fiat:   FIAT   = 'fiat',
     crypto: CRYPTO = 'crypto'
   }
-
-  enum supported_code: SUPPORTED_CODES
 
   accepts_nested_attributes_for :entry_currency_rules
 
@@ -32,7 +26,7 @@ class Currency < ApplicationRecord
   validates_associated :entry_currency_rules
 
   def self.available_currency_codes
-    SUPPORTED_CODES.values
+    Currency.all.pluck(:code)
   end
 
   def self.build_default
