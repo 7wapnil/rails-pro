@@ -77,3 +77,8 @@
     every: <%= ENV.fetch('CACHE_EVENT_BASED_DATA_INTERVAL', '1d') %>
     class: Radar::ScheduledEvents::LoadingWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+
+  exchange_rates_update:
+    every: <%= ENV.fetch('EXCHANGE_RATES_UPDATE_INTERVAL', '1h') %>
+    class: Scheduled::ExchangeRatesWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
