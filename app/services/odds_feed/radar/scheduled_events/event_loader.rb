@@ -3,7 +3,7 @@
 module OddsFeed
   module Radar
     module ScheduledEvents
-      class IdEventLoader < ApplicationService
+      class EventLoader < ApplicationService
         include JobLogger
 
         def initialize(external_id)

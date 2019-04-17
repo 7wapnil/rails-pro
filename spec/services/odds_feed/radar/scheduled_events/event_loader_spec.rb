@@ -1,4 +1,4 @@
-describe OddsFeed::Radar::ScheduledEvents::IdEventLoader do
+describe OddsFeed::Radar::ScheduledEvents::EventLoader do
   subject { service_object.call }
 
   let(:event_id) { 'sr:match:64600' }

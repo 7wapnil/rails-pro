@@ -1,9 +1,11 @@
 # frozen_string_literal: true
 
-describe OddsFeed::Radar::ScheduledEvents::DateEventsLoader do
+describe OddsFeed::Radar::ScheduledEvents::EventScheduleLoader do
   subject { service_object.call }
 
-  let(:service_object) { described_class.new(timestamp: timestamp) }
+  let(:service_object) do
+    described_class.new(timestamp: timestamp, range: 0.days)
+  end
 
   let(:date) { Date.current }
   let(:timestamp) { date.to_datetime.to_i }
@@ -41,8 +43,7 @@ describe OddsFeed::Radar::ScheduledEvents::DateEventsLoader do
   end
 
   before do
-    allow(Rails.cache).to receive(:write_multi)
-    allow(::Radar::ScheduledEvents::IdEventLoadingWorker)
+    allow(::Radar::ScheduledEvents::EventLoadingWorker)
       .to receive(:perform_async)
     allow(ScopedEvent).to receive(:import)
     allow(service_object).to receive(:log_job_message)
@@ -51,9 +52,12 @@ describe OddsFeed::Radar::ScheduledEvents::DateEventsLoader do
       .to receive(:events_for_date)
       .and_return(event_adapters)
 
-    allow(OddsFeed::Radar::EventBasedCache::Collector)
-      .to receive(:call)
-      .and_return(*events_cache_data)
+    event_adapters.each do |adapter|
+      allow(adapter.result)
+        .to receive(:[])
+        .with(:external_id)
+        .and_return(adapter.external_id)
+    end
   end
 
   it 'logs start of the process' do
@@ -82,75 +86,19 @@ describe OddsFeed::Radar::ScheduledEvents::DateEventsLoader do
     before { subject }
 
     it 'schedules a loading worker for each event' do
-      expect(::Radar::ScheduledEvents::IdEventLoadingWorker)
+      expect(::Radar::ScheduledEvents::EventLoadingWorker)
         .to have_received(:perform_async)
         .exactly(events.size)
         .times
     end
 
-    it 'imports event scopes' do
-      expect(ScopedEvent)
-        .to have_received(:import)
-        .with(scoped_events, hash_including(validate: false))
-    end
-  end
-
-  context 'with players' do
-    let(:players) do
-      events_cache_data
-        .reduce({}) { |hash, data| hash.deep_merge(data[:players]) }
-    end
-
-    before { subject }
-
-    it 'caches them' do
-      expect(Rails.cache)
-        .to have_received(:write_multi)
-        .with(
-          players,
-          cache: {
-            expires_in: OddsFeed::Radar::Entities::BaseLoader::CACHE_TERM
-          }
-        )
-    end
-  end
-
-  context 'with competitors' do
-    let(:competitors) do
-      events_cache_data
-        .reduce({}) { |hash, data| hash.deep_merge(data[:competitors]) }
-    end
-
-    before { subject }
-
-    it 'caches them' do
-      expect(Rails.cache)
-        .to have_received(:write_multi)
-        .with(
-          competitors,
-          cache: {
-            expires_in: OddsFeed::Radar::Entities::BaseLoader::CACHE_TERM
-          }
-        )
-    end
-  end
-
-  context 'on error' do
-    let(:error) { PG::ConnectionBad.new(Faker::WorldOfWarcraft.quote) }
-
-    before { allow(ScopedEvent).to receive(:import).and_raise(error) }
-
-    it 'raises original error' do
-      expect { subject }.to raise_error(error)
-    end
-
-    it 'logs an exception' do
-      allow(service_object).to receive(:raise)
-      expect(service_object)
-        .to receive(:log_job_message)
-        .with(:fatal, "Event based data for #{humanized_date} was not cached.")
-
-      subject
+    it 'gets external_id from events' do
+      event_adapters.each do |event|
+        expect(event.result)
+          .to have_received(:[])
+          .with(:external_id)
+          .once
+      end
     end
   end
 end
