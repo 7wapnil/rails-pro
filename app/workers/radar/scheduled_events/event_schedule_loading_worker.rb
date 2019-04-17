@@ -3,7 +3,7 @@
 module Radar
   module ScheduledEvents
     class EventScheduleLoadingWorker < ApplicationWorker
-      sidekiq_options queue: 'scheduled_events_caching'
+      sidekiq_options queue: 'radar_events_preloading'
 
       def perform
         OddsFeed::Radar::ScheduledEvents::EventScheduleLoader

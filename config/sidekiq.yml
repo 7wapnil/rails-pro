@@ -5,12 +5,10 @@
   - expired_prematch
   - radar_odds_feed_high
   - radar_odds_feed_low
-  - radar_event_scopes_creating
-  - radar_event_scopes_loading
   - radar_live_coverage_booking
   - radar_markets_update
   - radar_missing_heartbeat
-  - scheduled_events_caching
+  - radar_events_preloading
   - mq
 
 :schedule:
@@ -19,61 +17,55 @@
     class: Scheduled::ExpiringBonusesWorker
     queue: expired_bonuses
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Closes expired bonuses. Bonus expiration defined by deleted state or and time which must less then current time"
 
   mts_live_validation:
     every: <%= "#{ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10)}s" %>
     class: Scheduled::ExpiringLiveWorker
     queue: expired_live
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Sends cancellation message to MTS for all LIVE bets that reached timeout waiting for MTS status update"
 
   mts_prematch_validation:
     every: <%= "#{ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT_SECONDS', 3)}s" %>
     class: Scheduled::ExpiringPrematchWorker
     queue: expired_prematch
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Sends cancellation message to MTS for all PRE-MATCH bets that reached timeout waiting for MTS status update"
 
   missing_heartbeat_check:
     include_metadata: true
     every: <%= ENV.fetch('MISSING_HEARTBEAT_CHECK_INTERVAL', '20s') %>
     class: Radar::MissingHeartbeatWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-
-  pre_match_markets_closing:
-    every: <%= ENV.fetch('PRE_MATCH_MARKETS_CLOSING_TIMEOUT', '5m') %>
-    class: PreMatchMarketsClosingWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-
-  radar_event_scopes_loading:
-    every: <%= ENV.fetch('RADAR_EVENT_SCOPES_LOADING_INTERVAL', '1w') %>
-    class: Radar::EventScopesLoadingWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Checks if any Radar producers connection status expired and sends recovery requests"
 
   radar_market_templates_update:
     every: <%= ENV.fetch('RADAR_MARKET_TEMPLATES_UPDATE_INTERVAL', '1w') %>
     class: Radar::MarketsUpdateWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Updates a list of market templates in database"
 
-  unpopular_live_events_clean_up:
-    every: <%= ENV.fetch('UNPOPULAR_LIVE_EVENTS_CLEAN_UP_INTERVAL', '1h') %>
-    class: UnpopularLiveEventsCleanUpWorker
+  unpopular_events_clean_up:
+    every: <%= ENV.fetch('UNPOPULAR_EVENTS_CLEAN_UP_INTERVAL', '1h') %>
+    class: UnpopularEventsCleanUpWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-
-  unpopular_pre_live_events_clean_up:
-    every: <%= ENV.fetch('UNPOPULAR_PRE_LIVE_EVENTS_CLEAN_UP_INTERVAL', '1h') %>
-    class: UnpopularPreLiveEventsCleanUpWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Deletes all events that were finished, but have no bets placed"
 
   customer_lock_table_clean_up:
     every: <%= ENV.fetch('CUSTOMER_LOCK_TABLE_CLEAN_UP_INTERVAL', '1d') %>
     class: CustomerLockTableCleanupWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Checks for customer lock expiration and unlocks if needed"
 
   event_archivation:
     every: <%= ENV.fetch('EVENT_ARCHIVATION_INTERVAL', '1d') %>
     class: EventArchivationWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Creates every event data copies in archivation database"
 
-  cache_event_based_data:
-    every: <%= ENV.fetch('CACHE_EVENT_BASED_DATA_INTERVAL', '1d') %>
+  radar_events_preloading:
+    every: <%= ENV.fetch('RADAR_EVENTS_PROLOADER_INTERVAL', '1d') %>
     class: Radar::ScheduledEvents::EventScheduleLoadingWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Queries events that will start in the future and stores them in local database"
