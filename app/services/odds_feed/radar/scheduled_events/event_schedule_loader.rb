@@ -13,7 +13,6 @@ module OddsFeed
         def initialize(timestamp:, range: DEFAULT_RANGE)
           @date_from = Time.at(timestamp).to_date
           @date_to = date_from + range
-          @retries = 0
         end
 
         def call
@@ -22,7 +21,7 @@ module OddsFeed
 
         private
 
-        attr_reader :date_from, :date_to, :scoped_events, :retries
+        attr_reader :date_from, :date_to, :scoped_events
 
         def process(date)
           log_start date
@@ -63,18 +62,6 @@ module OddsFeed
                       .new
                       .events_for_date(date)
                       .map(&:result)
-        end
-
-        def log_connection_error(date)
-          log_job_message(
-            :info,
-            "Event based data for #{humanize date} has met connection " \
-            "error. Retrying(#{retries})..."
-          )
-        end
-
-        def increment_retries!
-          @retries += 1
         end
 
         def log_success(date)
