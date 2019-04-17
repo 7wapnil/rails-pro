@@ -100,33 +100,5 @@ describe OddsFeed::Radar::ScheduledEvents::EventScheduleLoader do
           .once
       end
     end
-
-    it 'imports event scopes' do
-      expect(ScopedEvent)
-        .to have_received(:import)
-        .with(scoped_events, hash_including(validate: false))
-    end
-  end
-
-  context 'on error' do
-    let(:error) { PG::ConnectionBad.new(Faker::WorldOfWarcraft.quote) }
-
-    before { allow(ScopedEvent).to receive(:import).and_raise(error) }
-
-    it 'logs an exception info' do
-      expect(service_object)
-        .to receive(:log_job_message)
-        .with(:info, "Event based data for #{humanized_date} was not cached.")
-
-      subject
-    end
-
-    it 'logs exception message' do
-      expect(service_object)
-        .to receive(:log_job_message)
-        .with(:error, error.message)
-
-      subject
-    end
   end
 end
