@@ -8,9 +8,7 @@ module Events
     field :name, !types.String
     field :description, !types.String
     field :status, !types.String
-    field :competitors, !types[Events::EventCompetitorType] do
-      resolve ->(obj, _args, _ctx) { obj.details.competitors }
-    end
+    field :competitors, !types[Events::EventCompetitorType]
     field :markets, function: MarketsQuery.new
 
     field :priority, !types.Int
