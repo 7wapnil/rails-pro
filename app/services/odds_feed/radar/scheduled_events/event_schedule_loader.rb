@@ -50,7 +50,7 @@ module OddsFeed
 
         def schedule_import(date)
           import_events(date)
-          import_scoped_events(date)
+          import_scoped_events
         end
 
         def import_events(date)
