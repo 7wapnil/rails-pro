@@ -17,45 +17,44 @@ module OddsFeed
         end
 
         def call
-          (date_from..date_to).each { |day| process day }
+          (date_from..date_to).each { |date| process date }
         end
 
         private
 
-        attr_reader :date, :date_from, :date_to, :scoped_events, :retries
+        attr_reader :date_from, :date_to, :scoped_events, :retries
 
-        def process(schedule_date)
-          @date = schedule_date
-          log_start
-          collect_nested_associations
-          schedule_import
-          log_success
+        def process(date)
+          log_start date
+          collect_nested_associations date
+          schedule_import date
+          log_success date
         rescue StandardError => error
-          log_failure(error)
+          log_failure date, error
         end
 
-        def log_start
+        def log_start(date)
           log_job_message(
             :info,
-            "Event based data for #{humanized_date} was received from response."
+            "Event based data for #{humanize date} was received from response."
           )
         end
 
-        def humanized_date
+        def humanize(date)
           I18n.l(date, format: :informative)
         end
 
-        def collect_nested_associations
-          @scoped_events = events.flat_map(&:scoped_events)
+        def collect_nested_associations(date)
+          @scoped_events = events(date).flat_map(&:scoped_events)
         end
 
-        def schedule_import
-          import_events
-          import_scoped_events
+        def schedule_import(date)
+          import_events(date)
+          import_scoped_events(date)
         end
 
-        def import_events
-          events.each do |event_payload|
+        def import_events(date)
+          events(date).each do |event_payload|
             external_id = event_payload[:external_id]
             event = Event.find_by external_id: external_id
             next if event
@@ -76,17 +75,17 @@ module OddsFeed
           )
         end
 
-        def events
+        def events(date)
           @events ||= OddsFeed::Radar::Client
                       .new
                       .events_for_date(date)
                       .map(&:result)
         end
 
-        def log_connection_error
+        def log_connection_error(date)
           log_job_message(
             :info,
-            "Event based data for #{humanized_date} has met connection " \
+            "Event based data for #{humanize date} has met connection " \
             "error. Retrying(#{retries})..."
           )
         end
@@ -95,17 +94,17 @@ module OddsFeed
           @retries += 1
         end
 
-        def log_success
+        def log_success(date)
           log_job_message(
             :info,
-            "Event based data caching for #{humanized_date} was scheduled."
+            "Event based data caching for #{humanize date} was scheduled."
           )
         end
 
-        def log_failure(error)
+        def log_failure(date, error)
           log_job_message(
             :info,
-            "Event based data for #{humanized_date} was not cached."
+            "Event based data for #{humanize date} was not cached."
           )
 
           log_job_message(:error, error.message)
