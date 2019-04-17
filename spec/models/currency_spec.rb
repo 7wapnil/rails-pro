@@ -36,7 +36,7 @@ describe Currency do
 
     it 'flush cache on commit' do
       described_class.cached_all
-      currency.update(code: Currency::EUR)
+      currency.update(code: 'EUR')
       described_class.cached_all
       expect(described_class).to have_received(:all).twice
     end

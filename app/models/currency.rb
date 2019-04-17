@@ -26,11 +26,11 @@ class Currency < ApplicationRecord
   validates_associated :entry_currency_rules
 
   def self.available_currency_codes
-    Currency.all.pluck(:code)
+    %w[EUR BTC USD INR ZAR]
   end
 
   def self.build_default
-    new(code: EUR, name: 'Euro', primary: true)
+    new(code: PRIMARY_CODE, name: 'Euro', primary: true)
   end
 
   def self.primary

@@ -10,7 +10,7 @@ currency_mapping = [
   { name: 'Swedish Kronor', code: 'SEK', kind: Currency::FIAT },
   { name: 'Canadian dollar', code: 'CAD', kind: Currency::FIAT },
   { name: 'Russian rouble', code: 'RUB', kind: Currency::FIAT },
-  { name: 'BitCoin', code: 'BTC', kind: Currency::CRYPTO },
+  { name: 'BitCoin', code: 'BTC', kind: Currency::CRYPTO }
 ]
 
 entry_currency_rule_ranges = {
