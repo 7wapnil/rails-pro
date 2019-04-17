@@ -20,10 +20,6 @@ describe Event do
 
   it_behaves_like 'updatable on duplicate'
 
-  it 'returns details adapter' do
-    expect(subject.details).to be_a(EventDetails::Base)
-  end
-
   it 'updates on duplicate key' do
     event = create(:event, external_id: :test_external_id)
     event.name = 'New event name'

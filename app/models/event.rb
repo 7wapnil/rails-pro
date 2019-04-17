@@ -191,10 +191,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     self.payload = addition unless payload
   end
 
-  def details
-    @details ||= EventDetails::Factory.build(self)
-  end
-
   def state
     return unless payload['state']
 
