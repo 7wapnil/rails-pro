@@ -35,6 +35,7 @@ Rails.application.routes.draw do
       get :deposit_limit
       get :bets
       get :transactions
+      get :balance_entries
       get :impersonate
       post :update_promotional_subscription
       patch :update_status

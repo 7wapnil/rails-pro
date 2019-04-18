@@ -61,7 +61,8 @@ module WalletEntry
       balance_entry = BalanceEntry.create!(
         balance_id: balance.id,
         entry_id: @entry.id,
-        amount: balance_request.amount
+        amount: balance_request.amount,
+        balance_amount_after: result_amount
       )
       balance_request.update_attributes!(balance_entry_id: balance_entry.id)
     end

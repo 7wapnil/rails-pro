@@ -1,0 +1,15 @@
+- content_for :page_content do
+  = render 'balance_entries/search',
+           filter: @filter,
+           customer: @customer,
+           search_path: balance_entries_customer_path(@customer)
+  = render 'balance_entries/table', filter: @filter
+  = paginate @filter.balance_entries
+
+- content_for :js do
+  = javascript_pack_tag 'customers/navigation_links'
+
+= render 'customers/base_template',
+         customer: @customer,
+         note: nil,
+         customer_notes_widget: nil

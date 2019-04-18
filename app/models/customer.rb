@@ -50,6 +50,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_many :wallets
   has_many :currencies, through: :wallets
   has_many :entries, through: :wallets
+  has_many :balance_entries, through: :wallets
   has_many :entry_requests
   has_many :initiated_entry_requests,
            as: :initiator,

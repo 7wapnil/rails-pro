@@ -28,4 +28,29 @@ module CustomersHelper
               success_message: t('messages.reset_password_success'),
               error_message: t('messages.reset_password_error') } }
   end
+
+  def balance_kinds_options
+    Balance.kinds.map { |k, _| [t("kinds.#{k}"), k] }
+  end
+
+  def entry_kinds_options
+    Entry.kinds.map { |k, _| [t("kinds.#{k}"), k] }
+  end
+
+  def customer_wallets_options(customer)
+    customer.wallets.includes(:currency).map do |wallet|
+      [
+        "#{wallet.currency_code} : #{wallet.amount}",
+        wallet.id
+      ]
+    end
+  end
+
+  def entry_kind_link_name(balance_entry)
+    "#{t('kinds.' + balance_entry.entry.kind)} ##{balance_entry.entry.id}"
+  end
+
+  def balance_change_badge_class(balance_entry)
+    "badge badge-#{balance_entry.amount.positive? ? 'success' : 'danger'}"
+  end
 end
