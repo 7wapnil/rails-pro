@@ -37,6 +37,15 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
           class_name: EntryRequest.name,
           as: :origin
 
+  has_one :placement_rollback_entry,
+          -> { system_bet_cancel.where('entries.amount >= 0') },
+          class_name: Entry.name,
+          as: :origin
+  has_one :winning_rollback_entry,
+          -> { system_bet_cancel.where('entries.amount < 0') },
+          class_name: Entry.name,
+          as: :origin
+
   has_many :entry_requests, as: :origin
   has_many :entries, as: :origin
   has_many :tournaments,

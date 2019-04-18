@@ -70,9 +70,12 @@ describe Markets::StatusTransition do
 
     context 'without previous status' do
       let(:market) { create(:market, :settled, previous_status: nil) }
+      let(:error_message) do
+        "There is no status snapshot for market #{market.external_id}!"
+      end
 
       it 'raises an error' do
-        expect { subject }.to raise_error('There is no status snapshot!')
+        expect { subject }.to raise_error(error_message)
       end
     end
   end

@@ -9,12 +9,7 @@ describe Wallet do
   it { is_expected.to delegate_method(:name).to(:currency).with_prefix }
   it { is_expected.to delegate_method(:code).to(:currency).with_prefix }
 
-  it do
-    expect(wallet).to validate_numericality_of(:amount)
-      .is_greater_than_or_equal_to(0)
-      .with_message(I18n.t('errors.messages.with_instance.not_negative',
-                           instance: I18n.t('entities.wallet')))
-  end
+  it { expect(wallet).to validate_numericality_of(:amount) }
 
   describe '.primary' do
     let!(:currency) { create(:currency) }

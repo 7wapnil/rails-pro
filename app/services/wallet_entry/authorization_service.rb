@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WalletEntry
   class AuthorizationService < ApplicationService
     def initialize(request)
@@ -9,7 +11,7 @@ module WalletEntry
       @request.validate!
       update_database!
       handle_success
-    rescue ActiveRecord::RecordInvalid => e
+    rescue ActiveRecord::RecordInvalid, ActiveModel::ValidationError => e
       handle_failure e
     end
 
@@ -43,16 +45,18 @@ module WalletEntry
         currency: @request.currency
       )
       total_amount = @request.balance_entry_requests.sum(:amount)
-      @wallet.update_attributes!(amount: @wallet.amount + total_amount)
+      ::Forms::AmountChange
+        .new(@wallet, amount: @wallet.amount + total_amount, request: @request)
+        .save!
     end
 
     def update_balance!(balance_request)
-      balance = Balance.find_or_create_by!(
-        wallet_id: @wallet.id,
-        kind: balance_request.kind
-      )
+      balance = Balance.find_or_create_by!(wallet_id: @wallet.id,
+                                           kind: balance_request.kind)
       result_amount = balance.amount + balance_request.amount
-      balance.update_attributes!(amount: result_amount)
+      ::Forms::AmountChange
+        .new(balance, amount: result_amount, request: @request)
+        .save!
 
       balance_entry = BalanceEntry.create!(
         balance_id: balance.id,

@@ -58,6 +58,10 @@ module Radar
       rollback_bet_settlement: {
         matchers: %w[<rollback_bet_settlement].freeze,
         klass: RollbackBetSettlementWorker
+      },
+      rollback_bet_cancel: {
+        matchers: %w[<rollback_bet_cancel].freeze,
+        klass: RollbackBetCancelWorker
       }
     }.freeze
 
