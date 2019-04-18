@@ -3,6 +3,10 @@
 SubscriptionType = GraphQL::ObjectType.define do
   name 'Subscription'
 
+  # Application status
+  field SubscriptionFields::MTS_CONNECTION_STATUS_UPDATED,
+        Mts::ConnectionStatusType
+
   # Radar Providers fields
   field SubscriptionFields::PROVIDER_UPDATED, Providers::ProviderType
 

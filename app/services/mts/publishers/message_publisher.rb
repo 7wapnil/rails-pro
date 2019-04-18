@@ -44,6 +44,8 @@ module Mts
 
       def send_message!
         ::Mts::SingleSession.instance.session.within_connection do |conn|
+          break unless conn
+
           create_exchange(conn)
             .publish(
               formatted_message,

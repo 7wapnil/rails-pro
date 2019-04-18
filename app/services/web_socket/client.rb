@@ -50,6 +50,11 @@ module WebSocket
       trigger(SubscriptionFields::EVENT_BET_STOPPED, message, id: event.id)
     end
 
+    def trigger_mts_connection_status_update(application_status)
+      trigger(SubscriptionFields::MTS_CONNECTION_STATUS_UPDATED,
+              application_status)
+    end
+
     private
 
     def trigger(name, object, args = {}, scope = nil)
