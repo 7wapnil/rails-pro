@@ -1,5 +1,10 @@
+# frozen_string_literal: true
+
 class Currency < ApplicationRecord
-  CACHED_ALL_KEY = 'cache/currencies/cached_all'.freeze
+  PRIMARY_CODE = 'EUR'
+  PRIMARY_RATE = 1
+
+  CACHED_ALL_KEY = 'cache/currencies/cached_all'
 
   include Loggable
 
@@ -9,13 +14,14 @@ class Currency < ApplicationRecord
   has_many :wallets
 
   enum kind: {
-    fiat:   FIAT   = 'fiat'.freeze,
-    crypto: CRYPTO = 'crypto'.freeze
+    fiat:   FIAT   = 'fiat',
+    crypto: CRYPTO = 'crypto'
   }
 
   accepts_nested_attributes_for :entry_currency_rules
 
   validates :name, :code, presence: true
+  validates :exchange_rate, numericality: { allow_nil: true }
   validates_associated :entry_currency_rules
 
   def self.available_currency_codes
@@ -23,7 +29,7 @@ class Currency < ApplicationRecord
   end
 
   def self.build_default
-    new(code: 'EUR', name: 'Euro', primary: true)
+    new(code: PRIMARY_CODE, name: 'Euro', primary: true)
   end
 
   def self.primary
@@ -44,6 +50,10 @@ class Currency < ApplicationRecord
 
   def to_s
     code
+  end
+
+  def primary?
+    code == PRIMARY_CODE
   end
 
   def loggable_attributes

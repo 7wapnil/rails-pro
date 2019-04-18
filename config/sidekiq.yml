@@ -68,4 +68,9 @@
     every: <%= ENV.fetch('RADAR_EVENTS_PROLOADER_INTERVAL', '1d') %>
     class: Radar::ScheduledEvents::EventScheduleLoadingWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+
+  exchange_rates_update:
+    every: <%= ENV.fetch('EXCHANGE_RATES_UPDATE_INTERVAL', '1h') %>
+    class: Scheduled::ExchangeRatesWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Queries events that will start in the future and stores them in local database"
