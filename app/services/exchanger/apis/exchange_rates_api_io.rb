@@ -11,7 +11,7 @@ module Exchanger
       end
 
       def parse(formatted_response)
-        (formatted_response['rates'] || []).map do |code, value|
+        formatted_response['rates'].to_a.map do |code, value|
           Rate.new(code, value)
         end
       end

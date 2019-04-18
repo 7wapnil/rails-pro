@@ -27,24 +27,28 @@ module Exchanger
 
     def origin_currency
       @origin_currency ||= ::Currency.find_by!(code: @origin_code)
+    rescue ActiveRecord::RecordNotFound
+      raise ActiveRecord::RecordNotFound, "Currency #{@origin_code} not found"
     end
 
     def target_currency
       @target_currency ||= ::Currency.find_by!(code: @target_code)
+    rescue ActiveRecord::RecordNotFound
+      raise ActiveRecord::RecordNotFound, "Currency #{@target_code} not found"
     end
 
     def currency_rate(currency)
       return ::Currency::PRIMARY_RATE if currency.primary?
 
       rate = currency.exchange_rate
-      return rate.to_f unless rate.nil?
+      return rate.to_f if rate
 
       raise StandardError, "Currency '#{currency.code}' has no updated rate"
     end
 
     def validate_rate!(currency)
       return if currency.code == ::Currency::PRIMARY_CODE
-      return unless currency.exchange_rate.nil?
+      return if currency.exchange_rate
 
       err_msg = "Currency '#{currency.code}' has no updated exchange rate"
       raise StandardError, err_msg

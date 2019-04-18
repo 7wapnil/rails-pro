@@ -13,9 +13,6 @@ class Currency < ApplicationRecord
   has_many :entry_currency_rules
   has_many :wallets
 
-  scope :fiat, -> { where(kind: FIAT) }
-  scope :crypto, -> { where(kind: CRYPTO) }
-
   enum kind: {
     fiat:   FIAT   = 'fiat',
     crypto: CRYPTO = 'crypto'
