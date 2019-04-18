@@ -16,6 +16,7 @@ FactoryBot.define do
     verified            { true }
     activated           { false }
     activation_token    { Faker::Internet.password }
+    email_verification_token { Faker::Internet.password }
     locked              { false }
     lock_reason         { nil }
     locked_until        { nil }

@@ -127,6 +127,11 @@ describe Customer do
     expect(customer.activation_token).not_to be_nil
   end
 
+  it 'generates email verification token on create' do
+    customer = create(:customer)
+    expect(customer.email_verification_token).not_to be_nil
+  end
+
   context 'documents' do
     subject { create(:customer) }
 
