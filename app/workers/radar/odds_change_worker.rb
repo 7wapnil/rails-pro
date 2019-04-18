@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Radar
   class OddsChangeWorker < BaseUofWorker
     sidekiq_options queue: :radar_odds_feed_high

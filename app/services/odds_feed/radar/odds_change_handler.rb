@@ -40,6 +40,11 @@ module OddsFeed
         @event ||= Event
                    .includes(:competitors, :players, :event_scopes, :title)
                    .find_by!(external_id: event_id)
+      rescue ActiveRecord::RecordNotFound
+        ::Radar::ScheduledEvents::EventLoadingWorker.perform_async(event_id)
+
+        raise ActiveRecord::RecordNotFound,
+              I18n.t('errors.messages.nonexistent_event', id: event_id)
       end
 
       def update_event!
