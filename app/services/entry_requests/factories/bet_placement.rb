@@ -83,7 +83,7 @@ module EntryRequests
       def validate_entry_request!
         ::Bets::PlacementForm.new(subject: bet).validate!
       rescue Bets::PlacementError => error
-        entry_request.register_failure!(error)
+        entry_request.register_failure!(error.message)
       end
 
       def create_balance_request!
