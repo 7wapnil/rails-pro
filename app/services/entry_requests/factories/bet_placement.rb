@@ -3,7 +3,7 @@
 module EntryRequests
   module Factories
     class BetPlacement < ApplicationService
-      delegate :customer_bonus, to: :bet
+      delegate :customer_bonus, :odd, :market, to: :bet
       delegate :applied?, to: :customer_bonus, allow_nil: true, prefix: true
 
       def initialize(bet:, initiator: nil)
@@ -13,6 +13,7 @@ module EntryRequests
 
       def call
         create_entry_request!
+        validate_entry_request!
         create_balance_request!
 
         entry_request
@@ -77,6 +78,12 @@ module EntryRequests
 
       def initiator_comment_suffix
         " by #{passed_initiator}" if passed_initiator
+      end
+
+      def validate_entry_request!
+        ::Bets::PlacementForm.new(subject: bet).validate!
+      rescue Bets::PlacementError => error
+        entry_request.register_failure!(error)
       end
 
       def create_balance_request!

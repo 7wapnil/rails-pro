@@ -97,7 +97,7 @@ describe EntryRequests::BetPlacementService do
     end
 
     context 'on unsuccessful entry request' do
-      let(:entry_request) { build(:entry_request, origin: bet) }
+      let(:entry_request) { create(:entry_request, origin: bet) }
 
       before { subject }
 

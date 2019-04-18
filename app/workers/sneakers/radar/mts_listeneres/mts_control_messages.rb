@@ -23,8 +23,10 @@ module Radar
                  amqp_heartbeat: 30
 
       def work(deserialized_msg)
-        # Listener should be implemented
         Rails.logger.debug deserialized_msg
+
+        ::Mts::CancellationResponseWorker.perform_async(deserialized_msg)
+
         ack!
       end
     end

@@ -10,9 +10,14 @@ describe Mts::Messages::ValidationRequest do
       allow(ENV).to receive(:[])
         .with('MTS_MODE')
         .and_return('test')
+
+      allow(ENV).to receive(:[])
+        .with('MTS_LIMIT_ID')
+        .and_return(limit_id)
     end
 
     let(:bookmaker_id) { Faker::Number.number(5).to_i }
+    let(:limit_id) { Faker::Number.number(4).to_i }
 
     let(:example_json) do
       <<-EXAMPLE_JSON
@@ -22,7 +27,7 @@ describe Mts::Messages::ValidationRequest do
        "channel": "internet", "bookmakerId": #{bookmaker_id},
        "endCustomer": {"ip": "202.12.22.4", "languageId": "EN",
        "id": "12345678" },
-       "limitId": 1355 }, "oddsChange": "none", "selections":
+       "limitId": #{limit_id} }, "oddsChange": "none", "selections":
       [{"eventId":  "sr:match:11050343",
         "id": "uof:3/sr:sport:110/186/4?setnr=1&gamenr=2",
         "odds": 28700 }],

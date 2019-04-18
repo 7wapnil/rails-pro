@@ -31,7 +31,7 @@ module Events
     def base_query
       Event
         .joins(:title)
-        .preload(:tournament, :dashboard_markets)
+        .preload(:tournament, :dashboard_markets, :competitors)
         .visible
         .active
         .order(:priority, :start_at)

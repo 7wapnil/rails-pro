@@ -284,19 +284,21 @@ describe GraphQL, '#events' do
   end
 
   context 'with competitors in payload' do
+    let(:control_event) { create(:event, :with_market, :upcoming) }
+    let!(:tournament) { create(:event_scope) }
     let(:competitors) do
       [
-        { id: 'sr:competitor:405125', name: 'Melichar N / Peschke K' },
-        { id: 'sr:competitor:169832', name: 'Mertens E / Schuurs D' }
+        create(:competitor, external_id: 'sr:competitor:405125',
+                            name: 'Melichar N / Peschke K'),
+        create(:competitor, external_id: 'sr:competitor:169832',
+                            name: 'Mertens E / Schuurs D')
       ]
     end
-    let(:payload) do
-      { competitors: { competitor: competitors } }
+    let!(:event_competitors) do
+      competitors.map do |competitor|
+        create(:event_competitor, competitor: competitor, event: control_event)
+      end
     end
-    let(:control_event) do
-      create(:event, :with_market, :upcoming, payload: payload)
-    end
-    let!(:tournament) { create(:event_scope) }
 
     let(:query) do
       %({

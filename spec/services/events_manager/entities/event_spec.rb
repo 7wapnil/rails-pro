@@ -18,6 +18,20 @@ describe EventsManager::Entities::Event do
     expect(subject).not_to be_traded_live
   end
 
+  context 'empty scopes' do
+    let(:fixture) do
+      file_fixture('radar_event_fixture_no_scopes.xml').read
+    end
+
+    it 'returns nil on empty season' do
+      expect(subject.season).to be_nil
+    end
+
+    it 'returns nil on empty category' do
+      expect(subject.category).to be_nil
+    end
+  end
+
   context 'replay model OFF' do
     before do
       allow(ENV).to receive(:[])
