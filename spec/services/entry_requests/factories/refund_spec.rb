@@ -25,7 +25,7 @@ describe EntryRequests::Factories::Refund do
         currency: entry.currency,
         customer: entry.customer,
         kind: EntryRequest::REFUND,
-        origin: entry
+        origin: entry.origin
       }
 
       expect(created_request).to have_attributes(assigned_attributes)

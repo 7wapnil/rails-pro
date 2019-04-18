@@ -25,7 +25,7 @@ module EntryRequests
           amount: entry.amount,
           kind: EntryRequest::REFUND,
           customer: entry.customer,
-          origin: entry,
+          origin: entry.origin,
           comment: comment,
           mode: mode,
           currency: entry.currency,
