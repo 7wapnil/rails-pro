@@ -19,6 +19,12 @@ describe Forms::WithdrawRequest do
       .is_greater_than(0)
   end
 
+  it do
+    expect(subject)
+      .to validate_numericality_of(:amount)
+      .is_less_than(10_000)
+  end
+
   context 'credit card' do
     subject do
       described_class.new(payment_method: 'credit_card',

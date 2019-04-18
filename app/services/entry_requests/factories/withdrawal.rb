@@ -17,6 +17,7 @@ module EntryRequests
         entry_request
       rescue Withdrawals::WithdrawalError => e
         entry_request.register_failure!(e.message)
+        entry_request
       end
 
       private
