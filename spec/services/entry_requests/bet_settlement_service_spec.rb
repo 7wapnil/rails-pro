@@ -3,9 +3,9 @@
 describe EntryRequests::BetSettlementService do
   subject { described_class.call(entry_request: entry_request) }
 
-  let(:entry_request) { create(:entry_request, origin: bet) }
-  let(:customer_bonus) do
-    create(:customer_bonus, :applied, customer: entry_request.customer)
+  let(:customer_bonus) { create(:customer_bonus, :applied) }
+  let(:entry_request) do
+    create(:entry_request, origin: bet, customer: customer_bonus.customer)
   end
 
   before do
