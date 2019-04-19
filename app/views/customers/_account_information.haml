@@ -29,6 +29,11 @@
       %td= check_box_tag 'customer[email_verified]', nil,
                           customer.email_verified
     %tr
+      %td= t('attributes.verification_sent')
+      = hidden_field_tag 'customer[verification_sent]', false
+      %td= check_box_tag 'customer[verification_sent]', nil,
+                          customer.verification_sent
+    %tr
       %td= t('attributes.promotional')
       = hidden_field_tag 'customer[agreed_with_promotional]', false
       %td= check_box_tag 'customer[agreed_with_promotional]', nil,

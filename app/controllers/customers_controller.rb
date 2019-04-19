@@ -212,6 +212,7 @@ class CustomersController < ApplicationController
   def account_params
     params.require(:customer).permit(:agreed_with_promotional,
                                      :email_verified,
+                                     :verification_sent,
                                      :account_kind)
   end
 

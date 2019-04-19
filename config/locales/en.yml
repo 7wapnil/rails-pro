@@ -168,6 +168,7 @@ en:
     promotional: Receive promotional content
     promotional_agreement: Promotional agreement
     email_verified: Verified email
+    verification_sent: User notified about verification
     requested_at: Requested at
     result: Result
     rollover_multiplier: Bonus rollover
