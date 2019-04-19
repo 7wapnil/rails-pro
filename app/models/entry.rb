@@ -9,9 +9,16 @@ class Entry < ApplicationRecord
   belongs_to :origin, polymorphic: true, optional: true
   belongs_to :withdrawal_request, foreign_key: :origin_id, optional: true
   belongs_to :entry_request, optional: true
-  has_one :currency, through: :wallet
+
   has_many :balance_entries, dependent: :destroy
+
+  has_one :currency, through: :wallet
   has_one :customer, through: :wallet
+
+  has_one :bonus_balance_entry, -> { bonus }, class_name: BalanceEntry.name
+  has_one :real_money_balance_entry,
+          -> { real_money },
+          class_name: BalanceEntry.name
 
   delegate :code, to: :currency, prefix: true
 

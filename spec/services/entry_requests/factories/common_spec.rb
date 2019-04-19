@@ -4,14 +4,32 @@ describe EntryRequests::Factories::Common do
   subject { described_class.call(origin: bet, **attributes) }
 
   let(:bet) { create(:bet) }
-  let(:amount) { rand(1..100) }
+  let(:winning) { rand(100..500).to_f }
+  let(:amount) { rand(10..100).to_f }
+  let(:ratio) { 0.75 }
+
+  let(:placement_entry) { create(:entry, :bet, amount: amount, origin: bet) }
+  let!(:real_money_balance_entry) do
+    create(:balance_entry, amount: amount * ratio,
+                           entry: placement_entry,
+                           balance: create(:balance, :real_money))
+  end
+  let!(:bonus_balance_entry) do
+    create(:balance_entry, amount: amount * (1 - ratio),
+                           entry: placement_entry,
+                           balance: create(:balance, :bonus))
+  end
+
   let(:attributes) do
     {
       kind: EntryRequest::WIN,
       mode: EntryRequest::SYSTEM,
-      amount: rand(1..100)
+      amount: winning
     }
   end
+
+  let(:real_money_winning) { (winning * ratio).round(2) }
+  let(:bonus_winning) { (winning * (1 - ratio)).round(2) }
 
   context 'with valid attributes' do
     let(:origin_attributes) do
@@ -27,12 +45,26 @@ describe EntryRequests::Factories::Common do
       expect { subject }.to change(EntryRequest, :count).by(1)
     end
 
+    it 'creates balance entry requests' do
+      expect { subject }.to change(BalanceEntryRequest, :count).by(2)
+    end
+
     it 'assigns passed attributes' do
       expect(subject).to have_attributes(attributes)
     end
 
     it 'fullfills entry request with origin attributes' do
       expect(subject).to have_attributes(origin_attributes)
+    end
+
+    it 'creates valid real money balance entry request' do
+      expect(subject.real_money_balance_entry_request)
+        .to have_attributes(amount: real_money_winning)
+    end
+
+    it 'creates valid bonus balance entry request' do
+      expect(subject.bonus_balance_entry_request)
+        .to have_attributes(amount: bonus_winning)
     end
   end
 

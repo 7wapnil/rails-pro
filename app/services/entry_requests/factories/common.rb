@@ -9,12 +9,19 @@ module EntryRequests
       end
 
       def call
-        EntryRequest.create!(entry_request_attributes)
+        create_entry_request!
+        create_balance_requests!
+
+        entry_request
       end
 
       private
 
-      attr_reader :origin, :attributes
+      attr_reader :entry_request, :origin, :attributes
+
+      def create_entry_request!
+        @entry_request = EntryRequest.create!(entry_request_attributes)
+      end
 
       def entry_request_attributes
         attributes.merge(origin_attributes)
@@ -29,6 +36,14 @@ module EntryRequests
           customer: origin.customer,
           origin: origin
         }
+      end
+
+      def create_balance_requests!
+        BalanceRequestBuilders::Common.call(entry_request, amount_calculations)
+      end
+
+      def amount_calculations
+        BalanceCalculations::BetCompensation.call(entry_request: entry_request)
       end
     end
   end

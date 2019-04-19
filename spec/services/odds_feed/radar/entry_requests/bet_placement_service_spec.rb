@@ -27,7 +27,7 @@ describe EntryRequests::BetPlacementService do
 
     allow(EntryCurrencyRule).to receive(:find_by!).and_return(rule)
 
-    allow_any_instance_of(Wallet).to receive(:ratio_with_bonus).and_return(0.75)
+    allow_any_instance_of(RatioCalculator).to receive(:call).and_return(0.75)
   end
 
   it 'valid' do
