@@ -356,6 +356,7 @@ en:
       bonus_activation_failed: Bonus activation failed, please try later
       customer_account_kind_transit: Can't transit customer account kind
       customer_activated: Customer already activated
+      email_verified: Email already verified
       deposit_limits: Deposit limit reached, please try again later
       document_type_not_supported: Document type not supported
       entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
