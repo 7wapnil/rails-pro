@@ -2,6 +2,6 @@
 
 class ApplicationState < ApplicationRecord
   def self.instance
-    first
+    first || create(type: name)
   end
 end
