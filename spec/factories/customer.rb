@@ -14,8 +14,10 @@ FactoryBot.define do
     last_sign_in_ip     { Faker::Internet.ip_v4_address }
     password            { 'iamverysecure' }
     verified            { true }
+    verification_sent   { true }
     activated           { false }
     activation_token    { Faker::Internet.password }
+    email_verified      { true }
     email_verification_token { Faker::Internet.password }
     locked              { false }
     lock_reason         { nil }

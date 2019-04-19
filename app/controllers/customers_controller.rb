@@ -120,12 +120,7 @@ class CustomersController < ApplicationController
   end
 
   def update_status
-    customer.update!(status_params)
-    current_user.log_event(
-      customer.verified ? :customer_verified : :customer_verification_revoked,
-      nil,
-      customer
-    )
+    Customers::VerificationService.call(current_user, customer, status_params)
     redirect_to documents_customer_path(customer)
   end
 
