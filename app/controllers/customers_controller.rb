@@ -215,7 +215,9 @@ class CustomersController < ApplicationController
   end
 
   def account_params
-    params.require(:customer).permit(:agreed_with_promotional, :account_kind)
+    params.require(:customer).permit(:agreed_with_promotional,
+                                     :email_verified,
+                                     :account_kind)
   end
 
   def status_params
