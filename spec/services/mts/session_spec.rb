@@ -35,31 +35,23 @@ describe Mts::Session do
     end
   end
 
-  describe '.connection' do
-    it 'calls Bunny service with specific config' do
-      expect(Bunny).to receive(:new).with(example_config)
-      described_class.new(example_config).connection
-    end
-    it 'calls Bunny service only once' do
-      expect(Bunny).to receive(:new).and_return({})
-        .once.with(example_config)
-      conn = described_class.new(example_config)
-      2.times do
-        conn.connection
-      end
-    end
-  end
-
   describe '#opened_connection' do
     context 'connection is already open' do
-      it 'returns existing connection for opened connection' do
-        connection_double = double
+      let(:connection_double) { double }
+
+      before do
+        allow(subject).to receive(:connection_open?)
+          .and_return(true)
+
         allow(subject).to receive(:connection).and_return(connection_double)
+      end
 
-        allow(connection_double).to receive(:open?).and_return(true)
-
-        expect(subject.connection).not_to receive(:start_connection)
+      it 'returns existing connection for opened connection' do
         expect(subject.opened_connection).to eq(connection_double)
+      end
+
+      it 'does not call start_connection' do
+        expect(subject.opened_connection).not_to receive(:start_connection)
       end
     end
 
@@ -67,46 +59,48 @@ describe Mts::Session do
       let(:connection_double) { double }
 
       before do
-        allow(connection_double).to receive(:open?).and_return(false)
-        allow(subject).to receive(:connection).and_return connection_double
+        allow(subject).to receive(:connection_open?)
+          .and_return(false)
+
+        allow(subject).to receive(:connection).and_return(connection_double)
       end
 
       it 'calls #start_connection' do
         expect(subject).to receive(:start_connection)
         subject.opened_connection
       end
-
-      it 'calls connection recovery' do
-        allow(connection_double).to receive(:start).and_return(:nice)
-
-        expect_any_instance_of(Mts::SessionRecovery)
-          .to receive(:recover_from_network_failure!)
-        subject.opened_connection
-      end
-
-      [
-        Bunny::NetworkFailure.new('Boom!', '1'),
-        Bunny::TCPConnectionFailed.new('Boom!', '2'),
-        Bunny::TCPConnectionFailedForAllHosts.new,
-        Bunny::PossibleAuthenticationFailureError.new('Boom', '3', '4')
-      ].each do |exception|
-        it "catches #{exception.class.name}" do
-          allow(connection_double).to receive(:start).and_raise(exception)
-          allow(subject).to receive(:connection).and_return connection_double
-
-          expect_any_instance_of(Mts::SessionRecovery)
-            .to receive(:register_failure!)
-          subject.opened_connection
-        end
-      end
     end
-  end
 
-  describe '.within_connection' do
-    it 'passes control with opened_connection argument' do
-      allow(subject).to receive(:opened_connection).and_return(:connection)
-      expect { |b| subject.within_connection(&b) }
-        .to yield_with_args(:connection)
+    context 'no MTS connection' do
+      let(:connection_double) { double }
+      let(:error) { Bunny::TCPConnectionFailedForAllHosts }
+
+      before do
+        allow(subject).to receive(:connection_open?)
+          .and_return(false)
+
+        allow(subject).to receive(:connection).and_return(connection_double)
+
+        allow(connection_double).to receive(:start).and_raise(error)
+      end
+
+      it 'raises error' do
+        expect { subject.opened_connection }.to raise_error(error)
+      end
+
+      it 'updates Application State' do
+        allow(subject).to receive(:opened_connection)
+        subject.opened_connection
+      rescue error
+        expect(subject).to have_received(:update_mts_connection_state)
+      end
+
+      it 'emits Application State' do
+        allow(subject).to receive(:opened_connection)
+        subject.opened_connection
+      rescue error
+        expect(subject).to have_received(:emit_application_state)
+      end
     end
   end
 end

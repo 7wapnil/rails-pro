@@ -22,15 +22,5 @@ describe Mts::Publishers::BetValidation do
         expect(bet.validation_ticket_id).not_to be_nil
       end
     end
-
-    context 'no MTS connection' do
-      before do
-        allow(subject).to receive(:send_message!).and_return(false)
-      end
-
-      it 'raise connection error' do
-        expect { subject_call }.to raise_error('No MTS connection.')
-      end
-    end
   end
 end

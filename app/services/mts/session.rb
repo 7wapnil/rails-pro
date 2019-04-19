@@ -1,7 +1,5 @@
 module Mts
   class Session
-    include JobLogger
-
     MTS_MQ_CONNECTION_PORT = 5671
 
     BUNNY_CONNECTION_EXCEPTIONS = [
@@ -12,35 +10,29 @@ module Mts
     ].freeze
 
     def initialize(config = nil)
-      # TODO: Validate config format for custom input
       @config = config || default_config
+    end
+
+    def opened_connection
+      return connection if connection_open?
+
+      start_connection
     end
 
     def connection
       @connection ||= Bunny.new(@config)
     end
 
-    def opened_connection
-      connection.open? ? connection : start_connection
-    end
-
-    def within_connection
-      yield(opened_connection)
-    end
-
     private
+
+    delegate :open?, to: :connection, prefix: true, allow_nil: true
 
     def start_connection
       connection.start
-      SessionRecovery.new.recover_from_network_failure!
-      connection
-    rescue *BUNNY_CONNECTION_EXCEPTIONS => e
-      exception_msg = {
-        message: "Mts connection lost with exception: #{e.class}",
-        config: @config
-      }
-      log_job_failure(exception_msg)
-      SessionRecovery.new.register_failure!
+    rescue *BUNNY_CONNECTION_EXCEPTIONS => error
+      update_mts_connection_state
+
+      raise error.class
     end
 
     def default_config
@@ -56,6 +48,21 @@ module Mts
         allow_self_signed: false,
         network_recovery_interval: 20
       }
+    end
+
+    def update_mts_connection_state
+      ApplicationState
+        .find_or_create_by(type: MtsConnection.name)
+        .recovering!
+
+      emit_application_state
+    end
+
+    def emit_application_state
+      WebSocket::Client.instance
+                       .trigger_mts_connection_status_update(
+                         MtsConnection.instance
+                       )
     end
   end
 end
