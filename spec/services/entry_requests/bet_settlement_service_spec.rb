@@ -4,6 +4,9 @@ describe EntryRequests::BetSettlementService do
   subject { described_class.call(entry_request: entry_request) }
 
   let(:entry_request) { create(:entry_request, origin: bet) }
+  let(:customer_bonus) do
+    create(:customer_bonus, :applied, customer: entry_request.customer)
+  end
 
   before do
     allow(::WalletEntry::AuthorizationService).to receive(:call)
@@ -45,6 +48,78 @@ describe EntryRequests::BetSettlementService do
 
     it "doesn't proceed" do
       expect(WalletEntry::AuthorizationService).not_to receive(:call)
+    end
+  end
+
+  context 'with won bet' do
+    let(:bet) do
+      create(:bet, :settled, :won, customer: customer_bonus.customer)
+    end
+
+    context 'with bet that fits into bonus conditions' do
+      before do
+        customer_bonus.update(
+          min_odds_per_bet: 1.001
+        )
+      end
+
+      it 'decreases rollover balance by settled bet win amount' do
+        expect { subject }
+          .to change(customer_bonus, :rollover_balance)
+          .by(-bet.amount)
+      end
+    end
+
+    context 'with bet that don\'t fit into bonus conditions' do
+      before do
+        customer_bonus.update(
+          min_odds_per_bet: 1000
+        )
+      end
+
+      it 'does not change the rollover_balance' do
+        expect { subject }
+          .not_to change(customer_bonus, :rollover_balance)
+      end
+    end
+  end
+
+  context 'with lost bet' do
+    let(:bet) do
+      create(:bet, :settled, :lost, customer: customer_bonus.customer)
+    end
+
+    context 'with bet that fits into bonus conditions' do
+      before do
+        customer_bonus.update(
+          min_odds_per_bet: 1.001
+        )
+      end
+
+      it 'decreases rollover balance by settled bet win amount' do
+        expect { subject }
+          .to change(customer_bonus, :rollover_balance)
+          .by(-bet.amount)
+      end
+    end
+  end
+
+  context 'with void bet' do
+    let(:bet) do
+      create(:bet, :settled, :void, customer: customer_bonus.customer)
+    end
+
+    context 'with bet that fits into bonus conditions' do
+      before do
+        customer_bonus.update(
+          min_odds_per_bet: 1.001
+        )
+      end
+
+      it 'decreases rollover balance by settled bet win amount' do
+        expect { subject }
+          .not_to change(customer_bonus, :rollover_balance)
+      end
     end
   end
 end

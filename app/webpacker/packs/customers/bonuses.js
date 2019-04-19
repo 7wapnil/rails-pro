@@ -15,7 +15,9 @@ document.addEventListener('turbolinks:load', () => {
       'min_odds_per_bet',
       'min_deposit',
       'valid_for_days',
-      'percentage'
+      'percentage',
+      'rollover_balance',
+      'rollover_initial_value'
     ].map(key => $(`#customer_bonus_${key}`).val(bonus[key]));
     bonusDetailsWrapper.removeClass('d-none').show();
   }

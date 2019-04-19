@@ -55,4 +55,11 @@ class CustomerBonus < ApplicationRecord
   def activated?
     entry_id.present?
   end
+
+  def affecting_bets
+    result = customer.bets
+    result = result.where('created_at > ?', created_at)
+    result = result.where('odd_value >= ?', min_odds_per_bet)
+    result
+  end
 end

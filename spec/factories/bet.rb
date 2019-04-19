@@ -28,6 +28,11 @@ FactoryBot.define do
       settlement_status { :lost }
     end
 
+    trait :void do
+      settlement_status { nil }
+      void_factor { 1.0 }
+    end
+
     trait :with_random_market do
       after :build do |instance|
         instance.market = FactoryBot.random_or_create :market
