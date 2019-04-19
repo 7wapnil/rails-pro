@@ -7,6 +7,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   after_update :log_account_transition
 
   has_secure_token :activation_token
+  has_secure_token :email_verification_token
   acts_as_paranoid
 
   enum gender: {

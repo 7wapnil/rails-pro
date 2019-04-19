@@ -121,12 +121,7 @@ class CustomersController < ApplicationController
   end
 
   def update_status
-    customer.update!(status_params)
-    current_user.log_event(
-      customer.verified ? :customer_verified : :customer_verification_revoked,
-      nil,
-      customer
-    )
+    Customers::VerificationService.call(current_user, customer, status_params)
     redirect_to documents_customer_path(customer)
   end
 
@@ -227,7 +222,10 @@ class CustomersController < ApplicationController
   end
 
   def account_params
-    params.require(:customer).permit(:agreed_with_promotional, :account_kind)
+    params.require(:customer).permit(:agreed_with_promotional,
+                                     :email_verified,
+                                     :verification_sent,
+                                     :account_kind)
   end
 
   def status_params
