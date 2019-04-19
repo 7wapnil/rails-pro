@@ -470,6 +470,8 @@ en:
     arcanebet_mailer:
       suspicious_login:
         subject: Suspicious login attempt
+      verification_mail:
+        subject: Account verified
 
   messages:
     deposit_limits:

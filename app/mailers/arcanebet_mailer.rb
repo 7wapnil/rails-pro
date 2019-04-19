@@ -21,6 +21,14 @@ class ArcanebetMailer < ApplicationMailer
     )
   end
 
+  def account_verification_mail
+    @customer = params[:customer]
+    mail(
+      to:      @customer.email,
+      subject: I18n.t('mailers.arcanebet_mailer.verification_mail.subject')
+    )
+  end
+
   private
 
   def find_person(login)
