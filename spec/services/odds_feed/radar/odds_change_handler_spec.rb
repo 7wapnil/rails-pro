@@ -64,7 +64,10 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
       it 'raises error if no event found' do
         payload['odds_change']['event_id'] = '1000'
-        expect { subject.handle }.to raise_error(ActiveRecord::RecordNotFound)
+        expect { subject.handle }.to raise_error(
+          SilentRetryJobError,
+          I18n.t('errors.messages.nonexistent_event', id: '1000')
+        )
       end
     end
   end

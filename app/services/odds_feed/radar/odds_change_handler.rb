@@ -43,7 +43,11 @@ module OddsFeed
       rescue ActiveRecord::RecordNotFound
         ::Radar::ScheduledEvents::EventLoadingWorker.perform_async(event_id)
 
-        raise ActiveRecord::RecordNotFound,
+        log_job_failure(
+          I18n.t('errors.messages.nonexistent_event', id: event_id)
+        )
+
+        raise SilentRetryJobError,
               I18n.t('errors.messages.nonexistent_event', id: event_id)
       end
 
