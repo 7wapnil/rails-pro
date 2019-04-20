@@ -9,9 +9,11 @@ end
 
 runtime_error_message_pattern =
   %r{middleware/debug_exceptions\.rb|ActionController::RoutingError}
+ignored_errors = %w[SilentRetryJobError]
 
 filter = lambda do |error|
   error[:message].to_s.strip.blank? ||
+    ignored_errors.include?(error[:type]) ||
     (error[:type] == 'RuntimeError' &&
      error[:message].match?(runtime_error_message_pattern)) ||
     (error[:type] == 'SignalException' && error[:message] == 'SIGTERM')
