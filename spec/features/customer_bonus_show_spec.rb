@@ -4,8 +4,8 @@ describe CustomerBonus, '#show' do
   context 'displaying a bonus' do
     subject do
       create(:customer_bonus,
-        rollover_balance: Faker::Number.decimal(2, 2),
-        rollover_initial_value: Faker::Number.decimal(2, 2))
+             rollover_balance: Faker::Number.decimal(2, 2),
+             rollover_initial_value: Faker::Number.decimal(2, 2))
     end
 
     before do
