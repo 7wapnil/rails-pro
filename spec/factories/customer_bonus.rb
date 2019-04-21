@@ -23,8 +23,8 @@ FactoryBot.define do
     trait :applied do
       deleted_at {}
       valid_for_days { rand(1..20) }
-      rollover_initial_value { 1000.00 }
-      rollover_balance { rollover_initial_value }
+      rollover_balance { Faker::Number.decimal(2, 2).to_f }
+      rollover_initial_value { rollover_balance }
     end
   end
 end
