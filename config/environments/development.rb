@@ -83,9 +83,4 @@ Rails.application.configure do
                                         &.sub(/\.(\d{1,3})$/, '.0/16')
 
   config.middleware.insert(0, Rack::Deflater)
-
-  config.after_initialize do
-    ::Bullet.enable = true
-    ::Bullet.rails_logger = true
-  end
 end
