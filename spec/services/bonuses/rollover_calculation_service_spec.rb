@@ -9,7 +9,7 @@ describe Bonuses::RolloverCalculationService do
 
   context 'with settled bet' do
     let(:bet) do
-      create(:bet, 
+      create(:bet,
              :won,
              odd: odd,
              amount: bet_amount,
