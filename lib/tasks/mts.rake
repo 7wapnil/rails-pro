@@ -9,9 +9,8 @@ namespace :mts do
 
       routing_key = ENV['MTS_MQ_TICKET_CONFIRMATION_RK'] || 'ticket.confirm.dev'
 
-      channel = ::Mts::SingleSession
+      channel = ::Mts::Session
                 .instance
-                .session
                 .opened_connection
                 .create_channel
 
@@ -33,9 +32,8 @@ namespace :mts do
 
       routing_key = ENV['MTS_MQ_TICKET_CANCELLATION_RK'] || 'cancel.confirm.dev'
 
-      channel = ::Mts::SingleSession
+      channel = ::Mts::Session
                 .instance
-                .session
                 .opened_connection
                 .create_channel
 

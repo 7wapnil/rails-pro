@@ -1,41 +1,11 @@
 describe Mts::Session do
   let(:example_config) { { Faker::Lorem.word => Faker::Lorem.word } }
 
-  describe 'class methods' do
-    subject { described_class }
-
-    describe '#initialize' do
-      context 'config passed' do
-        it 'sets config based on argument' do
-          connection = subject.new(example_config)
-          expect(connection.instance_variable_get(:@config))
-            .to eq example_config
-        end
-      end
-
-      context 'config not passed' do
-        let(:connection) { subject.new }
-
-        before do
-          allow_any_instance_of(subject)
-            .to receive(:default_config)
-            .and_return(example_config)
-        end
-
-        it 'calls default_config' do
-          expect(connection)
-            .to have_received(:default_config)
-        end
-
-        it 'sets config based on default_config' do
-          expect(connection.instance_variable_get(:@config))
-            .to eq example_config
-        end
-      end
-    end
-  end
+  before { create(:mts_connection) }
 
   describe '#opened_connection' do
+    let(:subject) { described_class.instance }
+
     context 'connection is already open' do
       let(:connection_double) { double }
 

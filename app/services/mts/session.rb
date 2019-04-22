@@ -1,5 +1,7 @@
 module Mts
   class Session
+    include Singleton
+
     MTS_MQ_CONNECTION_PORT = 5671
 
     BUNNY_CONNECTION_EXCEPTIONS = [
@@ -9,10 +11,6 @@ module Mts
       Bunny::PossibleAuthenticationFailureError
     ].freeze
 
-    def initialize(config = nil)
-      @config = config || default_config
-    end
-
     def opened_connection
       return connection if connection_open?
 
@@ -20,7 +18,7 @@ module Mts
     end
 
     def connection
-      @connection ||= Bunny.new(@config)
+      @connection ||= Bunny.new(default_config)
     end
 
     private
@@ -51,9 +49,7 @@ module Mts
     end
 
     def update_mts_connection_state
-      ApplicationState
-        .find_or_create_by(type: MtsConnection.name)
-        .recovering!
+      MtsConnection.instance.recovering!
 
       emit_application_state
     end

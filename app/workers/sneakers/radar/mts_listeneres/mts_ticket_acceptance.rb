@@ -8,7 +8,7 @@ module Radar
       EXCHANGE_NAME = 'arcanebet_arcanebet-Confirm'
 
       from_queue ENV['MTS_MQ_QUEUE_CONFIRM'],
-                 connection: Mts::SingleSession.instance.session.connection,
+                 connection: Mts::Session.session.connection,
                  exchange: EXCHANGE_NAME,
                  exchange_options: {
                    type: :topic,

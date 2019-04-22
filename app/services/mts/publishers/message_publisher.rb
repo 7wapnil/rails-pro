@@ -43,7 +43,7 @@ module Mts
       private
 
       def send_message!
-        create_exchange(::Mts::SingleSession.instance.session.opened_connection)
+        create_exchange(::Mts::Session.session.opened_connection)
           .publish(
             formatted_message,
             content_type: 'application/json',
