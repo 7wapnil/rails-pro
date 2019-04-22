@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_18_101857) do
+ActiveRecord::Schema.define(version: 2019_04_22_074513) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -536,8 +536,8 @@ ActiveRecord::Schema.define(version: 2019_04_18_101857) do
   add_foreign_key "bets", "odds", on_delete: :cascade
   add_foreign_key "betting_limits", "customers"
   add_foreign_key "betting_limits", "titles"
-  add_foreign_key "competitor_players", "competitors"
-  add_foreign_key "competitor_players", "players"
+  add_foreign_key "competitor_players", "competitors", on_delete: :cascade
+  add_foreign_key "competitor_players", "players", on_delete: :cascade
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "customer_statistics", "customers"
@@ -548,8 +548,8 @@ ActiveRecord::Schema.define(version: 2019_04_18_101857) do
   add_foreign_key "entry_currency_rules", "currencies"
   add_foreign_key "entry_requests", "currencies"
   add_foreign_key "entry_requests", "customers"
-  add_foreign_key "event_competitors", "competitors"
-  add_foreign_key "event_competitors", "events"
+  add_foreign_key "event_competitors", "competitors", on_delete: :cascade
+  add_foreign_key "event_competitors", "events", on_delete: :cascade
   add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "event_scopes", "titles"
   add_foreign_key "events", "radar_providers", column: "producer_id"
