@@ -14,23 +14,14 @@ module EntryRequests
       return handle_unexpected_bet! unless bet.settled?
 
       ::WalletEntry::AuthorizationService.call(entry_request)
-      update_customer_bonus
+      ::Bonuses::RolloverCalculationService.call(
+        customer_bonus: bet.customer.customer_bonus
+      )
     end
 
     private
 
     attr_reader :entry_request, :bet
-
-    def update_customer_bonus
-      bonus = bet.customer.customer_bonus
-      return unless bonus
-
-      return if bet.void_factor
-
-      balance = bonus.rollover_initial_value
-      balance -= bonus.affecting_bets.map(&:amount).compact.sum
-      bonus.update!(rollover_balance: balance)
-    end
 
     def handle_unexpected_bet!
       message = I18n.t('errors.messages.entry_request_for_settled_bet',
