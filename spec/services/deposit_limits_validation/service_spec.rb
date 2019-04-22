@@ -3,6 +3,10 @@ describe DepositLimitsValidation::Service do
 
   let!(:entry_request) { build(:entry_request) }
 
+  before do
+    create(:currency, :primary)
+  end
+
   it_behaves_like 'callable service'
 
   describe '.call' do
