@@ -49,6 +49,33 @@ describe EventsManager::EventLoader do
     end
   end
 
+  describe 'scopes' do
+    context 'valid' do
+      it 'creates competitors and associates with event' do
+        event = subject.call
+        expect(event.event_scopes.count).to eq(3)
+      end
+    end
+
+    context 'invalid' do
+      let(:event_response) do
+        ::XmlParser.parse(
+          file_fixture('radar_event_fixture_no_tournament.xml').read
+        )
+      end
+
+      # How it is possible to test in a single expectation???
+      #
+      # rubocop:disable RSpec/MultipleExpectations
+      it 'rollbacks event storing' do
+        expect { subject.call }.to raise_error(StandardError) do
+          expect(Event.count).to be_zero
+        end
+      end
+      # rubocop:enable RSpec/MultipleExpectations
+    end
+  end
+
   context 'scopes' do
     it 'creates competitors and associates with event' do
       event = subject.call

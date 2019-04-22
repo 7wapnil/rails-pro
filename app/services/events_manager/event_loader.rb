@@ -4,7 +4,10 @@ module EventsManager
 
     def call
       validate! unless @options[:skip_validation]
-      load_event
+
+      ActiveRecord::Base.transaction do
+        load_event
+      end
     end
 
     private
@@ -22,6 +25,7 @@ module EventsManager
                           traded_live: event_data.traded_live?,
                           payload: event_data.payload,
                           title: title)
+
       Event.create_or_update_on_duplicate(event)
       update_associations(event)
 
