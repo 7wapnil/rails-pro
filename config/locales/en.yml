@@ -443,6 +443,9 @@ en:
     internal_debit: Internal debit
     win: Win
     withdraw: Withdraw
+    refund: Refund
+    rollback: Rollback
+    system_bet_cancel: System bet cancel
     bonus: Bonus money
     real_money: Real money
     category: Category
