@@ -22,6 +22,7 @@ module Bonuses
       balance = customer_bonus.rollover_initial_value
       bets = customer_bonus
              .bets
+             .settled
              .where(void_factor: nil)
              .where('odd_value > ?', customer_bonus.min_odds_per_bet)
 
