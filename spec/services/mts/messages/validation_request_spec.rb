@@ -33,13 +33,14 @@ describe Mts::Messages::ValidationRequest do
         "odds": 28700 }],
       "bets": [{"id": "MTS_Test_1486541079460000_0",
       "selectionRefs": [{"selectionIndex": 0, "banker": false }],
-      "selectedSystems": [1], "stake": {"value": 10000, "type": "total"} }] }
+      "selectedSystems": [1], "stake": {"value": #{base_currency_amount * 10_000}, "type": "total"} }] }
       EXAMPLE_JSON
     end
 
     let(:customer) do
       create(:customer, id: 123_456_78, last_sign_in_ip: '202.12.22.4')
     end
+    let(:base_currency_amount) { Faker::Number.decimal(2, 2).to_d }
     let(:euro) { create(:currency, code: 'EUR') }
     let(:title) { create(:title, external_id: 'sr:sport:110') }
     let(:event) do
@@ -56,8 +57,11 @@ describe Mts::Messages::ValidationRequest do
              external_id: 'sr:match:11050343:186/setnr=1|gamenr=2:4')
     end
     let(:bet) do
-      create(:bet, amount: 1, odd_value: odd.value,
-                   currency: euro, customer: customer, odd: odd)
+      create(:bet, amount: 1, base_currency_amount: base_currency_amount,
+                   odd_value: odd.value,
+                   currency: euro,
+                   customer: customer,
+                   odd: odd)
     end
 
     let(:experiment_time) { Time.strptime('1486541079460', '%s') }

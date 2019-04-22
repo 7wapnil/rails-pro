@@ -102,6 +102,7 @@ ActiveRecord::Schema.define(version: 2019_04_22_074513) do
     t.string "settlement_status"
     t.datetime "validation_ticket_sent_at"
     t.bigint "customer_bonus_id"
+    t.decimal "base_currency_amount"
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_bonus_id"], name: "index_bets_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"

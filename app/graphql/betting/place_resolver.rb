@@ -55,11 +55,13 @@ module Betting
     def bet_attributes(bet_payload)
       currency = Currency.find_by!(code: bet_payload[:currencyCode])
       amount = bet_payload[:amount]
+      base_currency_amount = Exchanger::Converter.call(amount, currency.code)
       {
         customer: customer,
         odd: find_odd(bet_payload),
         currency: currency,
         amount: amount,
+        base_currency_amount: base_currency_amount,
         odd_value: bet_payload[:oddValue],
         status: Bet::INITIAL,
         customer_bonus: customer.active_bonus

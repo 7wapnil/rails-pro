@@ -9,6 +9,7 @@ module Mts
       DEFAULT_STAKE_TYPE = 'total'.freeze
       CUSTOMER_DEFAULT_LANGUAGE = 'EN'.freeze
       DEFAULT_ODDS_CHANGE_BEHAVIOUR = 'none'.freeze
+      STAKE_MULTIPLIER = 10_000
 
       attr_reader :bets
 
@@ -59,7 +60,7 @@ module Mts
         end
 
         {
-          currency: bets_currency,
+          currency: Currency::PRIMARY_CODE,
           channel: distribution_channel.channel,
           bookmaker_id: ENV['MTS_BOOKMAKER_ID'].to_i,
           end_customer: end_customer,
@@ -91,7 +92,7 @@ module Mts
             id: [ticket_id, index].join('_'),
             selected_systems: single_bet_selected_systems,
             stake: {
-              value: Mts::MtsDecimal.from_number(bet.amount),
+              value: (bet.base_currency_amount * STAKE_MULTIPLIER).to_i,
               type: DEFAULT_STAKE_TYPE
             }
           }.merge(selection_refs(bet))
