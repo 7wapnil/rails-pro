@@ -1,7 +1,7 @@
 class ArcanebetMailerPreview < ActionMailer::Preview
-  def account_activation_mail
+  def email_verification_mail
     ArcanebetMailer
       .with(customer: FactoryBot.create(:customer))
-      .account_activation_mail
+      .email_verification_mail
   end
 end

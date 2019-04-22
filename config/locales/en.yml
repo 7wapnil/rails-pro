@@ -475,6 +475,8 @@ en:
         subject: Suspicious login attempt
       verification_mail:
         subject: Account verified
+      email_verification:
+        subject: Verify your email address
 
   messages:
     deposit_limits:

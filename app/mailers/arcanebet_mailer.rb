@@ -29,6 +29,18 @@ class ArcanebetMailer < ApplicationMailer
     )
   end
 
+  def email_verification_mail
+    domain = ENV['FRONTEND_URL']
+    @customer = params[:customer]
+    @verification_url =
+      "#{domain}/email_verification/#{@customer.email_verification_token}"
+
+    mail(
+      to:      @customer.email,
+      subject: I18n.t('mailers.arcanebet_mailer.email_verification.subject')
+    )
+  end
+
   private
 
   def find_person(login)
