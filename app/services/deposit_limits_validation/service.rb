@@ -10,7 +10,7 @@ module DepositLimitsValidation
       return unless @deposit_limit
 
       @limit_currency = @deposit_limit.currency
-      @money_converter = MoneyConverter::Service.new
+      @money_converter = ::Exchanger::Converter
       apply_deposit_limit!
     end
 
@@ -19,7 +19,7 @@ module DepositLimitsValidation
     def apply_deposit_limit!
       sum = initial_value
       entries.each do |entry|
-        sum += @money_converter.convert(
+        sum += @money_converter.call(
           entry.amount,
           entry.wallet.currency.code,
           @limit_currency.code
@@ -29,7 +29,7 @@ module DepositLimitsValidation
     end
 
     def initial_value
-      @money_converter.convert(
+      @money_converter.call(
         @entry_request.amount,
         @entry_request.currency.code,
         @limit_currency.code

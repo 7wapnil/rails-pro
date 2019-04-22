@@ -75,11 +75,11 @@ module Customers
       end
 
       def convert_money(record)
-        money_converter.convert(record.amount, record.currency.code)
+        money_converter.call(record.amount, record.currency.code)
       end
 
       def money_converter
-        @money_converter ||= MoneyConverter::Service.new
+        @money_converter ||= ::Exchanger::Converter
       end
 
       def withdrawal_value

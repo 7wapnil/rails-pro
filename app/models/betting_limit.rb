@@ -7,7 +7,7 @@ class BettingLimit < ApplicationRecord
 
   def validate!(bet)
     @bet = bet
-    @money_converter = MoneyConverter::Service.new
+    @money_converter = ::Exchanger::Converter
     validate_user_max_bet!
     validate_max_win!
     validate_max_loss!
@@ -19,7 +19,7 @@ class BettingLimit < ApplicationRecord
 
   def validate_user_max_bet!
     value = @money_converter
-            .convert(@bet.amount, @bet.currency.code)
+            .call(@bet.amount, @bet.currency.code)
     return if user_max_bet.nil? || user_max_bet > value
 
     @bet.errors.add(:amount, :user_max_bet)
@@ -27,7 +27,7 @@ class BettingLimit < ApplicationRecord
 
   def validate_max_win!
     value = @money_converter
-            .convert(@bet.potential_win, @bet.currency.code)
+            .call(@bet.potential_win, @bet.currency.code)
     return if max_win.nil? || max_win > value
 
     @bet.errors.add(:amount, :max_win)
@@ -35,7 +35,7 @@ class BettingLimit < ApplicationRecord
 
   def validate_max_loss!
     value = @money_converter
-            .convert(@bet.potential_loss, @bet.currency.code)
+            .call(@bet.potential_loss, @bet.currency.code)
     return if max_loss.nil? || max_loss > value
 
     @bet.errors.add(:amount, :max_loss)
