@@ -2,6 +2,7 @@ describe CustomerBonus do
   it { is_expected.to belong_to(:customer) }
   it { is_expected.to belong_to(:wallet) }
   it { is_expected.to belong_to(:original_bonus) }
+  it { is_expected.to have_many(:bets) }
 
   context 'instance methods' do
     let(:wallet) { create(:wallet) }

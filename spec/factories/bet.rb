@@ -21,11 +21,17 @@ FactoryBot.define do
     end
 
     trait :won do
+      status            { StateMachines::BetStateMachine::SETTLED }
       settlement_status { :won }
     end
 
     trait :lost do
+      status            { StateMachines::BetStateMachine::SETTLED }
       settlement_status { :lost }
+    end
+
+    trait :void do
+      void_factor { 1.0 }
     end
 
     trait :with_random_market do
