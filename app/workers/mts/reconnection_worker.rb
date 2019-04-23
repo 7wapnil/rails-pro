@@ -13,7 +13,7 @@ module Mts
     private
 
     def successful_reconnection?
-      ::Mts::SingleSession.instance.session.opened_connection.present?
+      ::Mts::Session.instance.opened_connection.present?
     end
 
     def emit_application_state
