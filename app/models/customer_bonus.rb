@@ -59,7 +59,7 @@ class CustomerBonus < ApplicationRecord
   private
 
   def customer_has_no_active_bonus
-    valid = customer.active_bonus.nil?
+    valid = customer.active_bonus.present? || customer.active_bonus.new_record?
     message_key = 'errors.messages.customer_has_active_bonus'
     errors.add(:customer, I18n.t(message_key)) unless valid
   end
