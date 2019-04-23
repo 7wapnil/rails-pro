@@ -26,10 +26,7 @@ module OddsFeed
       private
 
       def valid?
-        return false unless type_valid?
-        return false if event_exists? == false && producer.live?
-
-        true
+        type_valid? && !producer.live? && validate_event_presence!
       end
 
       def type_valid?
@@ -39,6 +36,19 @@ module OddsFeed
           "Event with external ID #{event_id} could not be processed yet"
         )
         false
+      end
+
+      def validate_event_presence!
+        return true if Event.exists?(external_id: event_id)
+
+        ::Radar::ScheduledEvents::EventLoadingWorker.perform_async(event_id)
+
+        log_job_failure(
+          I18n.t('errors.messages.nonexistent_event', id: event_id)
+        )
+
+        raise SilentRetryJobError,
+              I18n.t('errors.messages.nonexistent_event', id: event_id)
       end
 
       def load_event

@@ -2,14 +2,6 @@ class ArcanebetMailer < ApplicationMailer
   default from: 'noreply@arcanebet.com',
           subject: 'ArcaneBet'
 
-  def account_activation_mail
-    domain          = ENV['FRONTEND_URL']
-    @customer       = params[:customer]
-    @activation_url = "#{domain}/activation/#{@customer.activation_token}"
-
-    mail(to: @customer.email, subject: 'Activate you account')
-  end
-
   def suspicious_login(login)
     @person = find_person(login)
 
@@ -18,6 +10,26 @@ class ArcanebetMailer < ApplicationMailer
     mail(
       to:      @person.email,
       subject: I18n.t('mailers.arcanebet_mailer.suspicious_login.subject')
+    )
+  end
+
+  def account_verification_mail
+    @customer = params[:customer]
+    mail(
+      to:      @customer.email,
+      subject: I18n.t('mailers.arcanebet_mailer.verification_mail.subject')
+    )
+  end
+
+  def email_verification_mail
+    domain = ENV['FRONTEND_URL']
+    @customer = params[:customer]
+    @verification_url =
+      "#{domain}/email_verification/#{@customer.email_verification_token}"
+
+    mail(
+      to:      @customer.email,
+      subject: I18n.t('mailers.arcanebet_mailer.email_verification.subject')
     )
   end
 

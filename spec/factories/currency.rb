@@ -6,9 +6,10 @@ FactoryBot.define do
     code          { Currency.available_currency_codes.sample }
     primary       { false }
     kind          { Currency::FIAT }
-    exchange_rate { nil }
+    exchange_rate { 1 }
 
     trait :primary do
+      code { ::Currency::PRIMARY_CODE }
       primary { true }
     end
 

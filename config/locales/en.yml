@@ -167,6 +167,8 @@ en:
     profit_loss: Profit/Loss
     promotional: Receive promotional content
     promotional_agreement: Promotional agreement
+    email_verified: Verified email
+    verification_sent: User notified about verification
     requested_at: Requested at
     result: Result
     rollover_multiplier: Bonus rollover
@@ -356,6 +358,7 @@ en:
       bonus_activation_failed: Bonus activation failed, please try later
       customer_account_kind_transit: Can't transit customer account kind
       customer_activated: Customer already activated
+      email_verified: Email already verified
       deposit_limits: Deposit limit reached, please try again later
       document_type_not_supported: Document type not supported
       entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
@@ -440,6 +443,9 @@ en:
     internal_debit: Internal debit
     win: Win
     withdraw: Withdraw
+    refund: Refund
+    rollback: Rollback
+    system_bet_cancel: System bet cancel
     bonus: Bonus money
     real_money: Real money
     category: Category
@@ -470,6 +476,10 @@ en:
     arcanebet_mailer:
       suspicious_login:
         subject: Suspicious login attempt
+      verification_mail:
+        subject: Account verified
+      email_verification:
+        subject: Verify your email address
 
   messages:
     deposit_limits:

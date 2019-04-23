@@ -31,8 +31,8 @@ describe Customers::RegistrationService do
 
   it 'sends activation email' do
     subject = described_class.new(valid_input)
-    allow(subject).to receive(:send_activation_email)
+    allow(subject).to receive(:send_email_verification_email)
     subject.call
-    expect(subject).to have_received(:send_activation_email)
+    expect(subject).to have_received(:send_email_verification_email)
   end
 end

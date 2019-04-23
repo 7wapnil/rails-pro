@@ -18,11 +18,7 @@ module Betting
 
     def collect_bet(bet_payload)
       bet = create_bet!(bet_payload)
-      entry_request = create_entry_request!(bet)
-
-      raise entry_request.result['message'] if entry_request.failed?
-
-      ::EntryRequests::BetPlacementWorker.perform_in(3.second, entry_request.id)
+      request_for_bet!(bet)
 
       OpenStruct.new(id: bet_payload[:oddId],
                      message: nil,
@@ -33,7 +29,16 @@ module Betting
 
       OpenStruct.new(id: bet_payload[:oddId],
                      message: failure_message,
-                     success: false)
+                     success: false,
+                     bet: bet)
+    end
+
+    def request_for_bet!(bet)
+      entry_request = create_entry_request!(bet)
+
+      raise entry_request.result['message'] if entry_request.failed?
+
+      ::EntryRequests::BetPlacementWorker.perform_in(3.second, entry_request.id)
     end
 
     def create_bet!(bet_payload)

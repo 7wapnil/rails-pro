@@ -20,7 +20,7 @@ module Forms
 
     def save!
       validate!
-      subject.update(amount: amount)
+      subject.with_lock { subject.update(amount: amount) }
     end
 
     private

@@ -45,4 +45,20 @@ describe EventsManager::CompetitorLoader do
       expect(subject.call.players.count).to eq(3)
     end
   end
+
+  context 'invalid player data' do
+    let(:competitor_response) do
+      fixture = file_fixture('competitors/invalid_players.xml').read
+      ::XmlParser.parse(fixture)
+    end
+
+    it 'not breaking competitor creation' do
+      subject.call
+      expect(::Competitor.count).to eq(1)
+    end
+
+    it 'skips invalid player' do
+      expect(subject.call.players.count).to eq(2)
+    end
+  end
 end

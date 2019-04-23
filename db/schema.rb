@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_16_120952) do
+ActiveRecord::Schema.define(version: 2019_04_22_074513) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -264,8 +264,12 @@ ActiveRecord::Schema.define(version: 2019_04_16_120952) do
     t.string "lock_reason"
     t.string "account_kind", default: "regular"
     t.integer "failed_attempts", default: 0, null: false
+    t.boolean "email_verified", default: false, null: false
+    t.boolean "verification_sent", default: false, null: false
+    t.string "email_verification_token"
     t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
+    t.index ["email_verification_token"], name: "index_customers_on_email_verification_token", unique: true
     t.index ["reset_password_token"], name: "index_customers_on_reset_password_token", unique: true
     t.index ["username"], name: "index_customers_on_username", unique: true
   end
@@ -532,8 +536,8 @@ ActiveRecord::Schema.define(version: 2019_04_16_120952) do
   add_foreign_key "bets", "odds", on_delete: :cascade
   add_foreign_key "betting_limits", "customers"
   add_foreign_key "betting_limits", "titles"
-  add_foreign_key "competitor_players", "competitors"
-  add_foreign_key "competitor_players", "players"
+  add_foreign_key "competitor_players", "competitors", on_delete: :cascade
+  add_foreign_key "competitor_players", "players", on_delete: :cascade
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "customer_statistics", "customers"
@@ -544,8 +548,8 @@ ActiveRecord::Schema.define(version: 2019_04_16_120952) do
   add_foreign_key "entry_currency_rules", "currencies"
   add_foreign_key "entry_requests", "currencies"
   add_foreign_key "entry_requests", "customers"
-  add_foreign_key "event_competitors", "competitors"
-  add_foreign_key "event_competitors", "events"
+  add_foreign_key "event_competitors", "competitors", on_delete: :cascade
+  add_foreign_key "event_competitors", "events", on_delete: :cascade
   add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "event_scopes", "titles"
   add_foreign_key "events", "radar_providers", column: "producer_id"

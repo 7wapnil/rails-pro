@@ -47,6 +47,8 @@ describe EntryRequests::BetPlacementService do
   let!(:live_producer) { create(:liveodds_producer) }
 
   before do
+    create(:currency, :primary)
+
     allow_any_instance_of(Mts::ValidationMessagePublisherWorker)
       .to receive(:perform)
     prematch_producer.healthy!

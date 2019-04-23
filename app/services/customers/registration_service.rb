@@ -8,7 +8,7 @@ module Customers
     def call
       customer = Customer.create!(prepared_attributes(@customer_data))
       track_registration(customer)
-      send_activation_email(customer)
+      send_email_verification_email(customer)
       customer
     end
 
@@ -21,11 +21,11 @@ module Customers
       customer.update_tracked_fields!(@request)
     end
 
-    def send_activation_email(customer)
+    def send_email_verification_email(customer)
       ArcanebetMailer
         .with(customer: customer)
-        .account_activation_mail
-        .deliver_now
+        .email_verification_mail
+        .deliver_later
     end
 
     def prepared_attributes(attrs)
