@@ -2,7 +2,8 @@
 
 FactoryBot.define do
   factory :bet do
-    amount    { Faker::Number.decimal(2, 2) }
+    amount { Faker::Number.decimal(2, 2) }
+    base_currency_amount { amount * Faker::Number.decimal(2, 2).to_f }
     odd_value { odd.value }
     status    { StateMachines::BetStateMachine::INITIAL }
 

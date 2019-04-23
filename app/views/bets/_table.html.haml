@@ -31,6 +31,9 @@
           %td
             = number_with_precision bet.amount, precision: 2
             = bet.currency.code
+            \/
+            = number_with_precision bet.base_currency_amount, precision: 2
+            = Currency::PRIMARY_CODE
           %td
             = number_with_precision bet.winning_amount, precision: 2
             = bet.currency.code
