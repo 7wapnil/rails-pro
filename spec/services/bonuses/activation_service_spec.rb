@@ -11,10 +11,10 @@ describe Bonuses::ActivationService do
       it 'creates new activated bonus' do
         excluded = %i[created_at deleted_at updated_at id valid_for_days]
         transmitted_attrs = CustomerBonus.column_names & Bonus.column_names
-  
+
         original_bonus_attrs = transmitted_attrs.map(&:to_sym) - excluded
         customer_bonus = described_class.call(wallet, bonus, amount)
-  
+
         expect(customer_bonus).to be_instance_of(CustomerBonus)
         expect(customer_bonus.customer_id).to eq(wallet.customer_id)
         expect(customer_bonus.original_bonus_id).to eq(bonus.id)
@@ -26,21 +26,23 @@ describe Bonuses::ActivationService do
 
     context 'when customer has an active bonus' do
       subject { described_class.call(wallet, bonus, amount) }
-      
+
       before do
         CustomerBonus.create(original_bonus: bonus,
-          customer: wallet.customer,
-          wallet: wallet)
+                             customer: wallet.customer,
+                             wallet: wallet)
 
         allow(CustomerBonus).to receive(:create!)
       end
 
       it 'retains previous customer bonus' do
-        expect { subject }.not_to change { wallet.customer.customer_bonus }
+        expect { subject }
+          .not_to change(wallet.customer, :customer_bonus)
       end
 
       it 'does not create a new customer bonus' do
-        expect { subject }.not_to change { CustomerBonus.count }
+        expect { subject }
+          .not_to change(CustomerBonus, :count)
       end
     end
 
