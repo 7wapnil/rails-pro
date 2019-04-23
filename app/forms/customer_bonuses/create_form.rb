@@ -13,10 +13,14 @@ module CustomerBonuses
     private
 
     def ensure_no_active_bonus
-      existing_bonus = Customer.find(customer.id).active_bonus
-      valid = existing_bonus.nil?
-      message_key = 'errors.messages.customer_has_active_bonus'
-      raise CustomerBonuses::ActivationError, I18n.t(message_key) unless valid
+      return true unless find_existing_bonus
+
+      raise CustomerBonuses::ActivationError,
+            I18n.t('errors.messages.customer_has_active_bonus')
+    end
+
+    def find_existing_bonus
+      Customer.find_by(id: customer.id)&.active_bonus
     end
   end
 end

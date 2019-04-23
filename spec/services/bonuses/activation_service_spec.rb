@@ -10,9 +10,7 @@ describe Bonuses::ActivationService do
   let(:wallet) { create(:wallet, customer: customer) }
 
   context 'when customer has no active bonus' do
-    before do
-      subject
-    end
+    before { subject }
 
     it 'creates new activated bonus' do
       expect(customer.reload.customer_bonus).not_to be_nil
@@ -20,7 +18,7 @@ describe Bonuses::ActivationService do
 
     it 'sets rollover_initial_value correctly' do
       expect(customer.reload.customer_bonus.rollover_initial_value)
-        .to eq(5 * 100)
+        .to eq(amount * rollover_multiplier)
     end
   end
 

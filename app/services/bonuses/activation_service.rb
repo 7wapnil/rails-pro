@@ -11,8 +11,7 @@ module Bonuses
       customer_bonus = CustomerBonus.new(bonus_activation_attributes)
       form = CustomerBonuses::CreateForm.new(subject: customer_bonus)
       form.validate!
-      customer_bonus.save!
-      customer_bonus
+      customer_bonus.tap(&:save!)
     end
 
     private
