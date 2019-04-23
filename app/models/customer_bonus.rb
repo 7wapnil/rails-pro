@@ -15,8 +15,6 @@ class CustomerBonus < ApplicationRecord
     converted: CONVERTED = 'converted'
   }
 
-  validate :customer_has_no_active_bonus, on: :create
-
   acts_as_paranoid
 
   def close!(deactivation_service, options = {})
@@ -54,13 +52,5 @@ class CustomerBonus < ApplicationRecord
 
   def activated?
     entry_id.present?
-  end
-
-  private
-
-  def customer_has_no_active_bonus
-    valid = customer.active_bonus.nil? || customer.active_bonus.new_record?
-    message_key = 'errors.messages.customer_has_active_bonus'
-    errors.add(:customer, I18n.t(message_key)) unless valid
   end
 end

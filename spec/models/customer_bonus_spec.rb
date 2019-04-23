@@ -121,16 +121,4 @@ describe CustomerBonus do
       end
     end
   end
-
-  context 'when creating a CustomerBonus for a customer with active bonus' do
-    subject { build(:customer_bonus, customer: old_bonus.customer) }
-
-    let(:old_bonus) do
-      create(:customer_bonus, :applied, :activated)
-    end
-
-    it 'adds a corresponding error message' do
-      expect { subject.save }.to raise_error(ActiveRecord::RecordInvalid)
-    end
-  end
 end

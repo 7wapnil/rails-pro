@@ -8,7 +8,10 @@ module Bonuses
     end
 
     def call
-      CustomerBonus.create!(bonus_activation_attributes)
+      customer_bonus = CustomerBonus.new(bonus_activation_attributes)
+      form = CustomerBonuses::CreateForm.new(subject: customer_bonus)
+      form.validate!
+      customer_bonus.save!
     end
 
     private
