@@ -6,7 +6,9 @@ module EventsManager
       validate! unless @options[:skip_validation]
 
       ActiveRecord::Base.transaction do
-        load_event
+        event = create_event!
+        update_associations(event)
+        event
       end
     end
 
@@ -17,7 +19,7 @@ module EventsManager
       check_existence! if @options[:check_existence]
     end
 
-    def load_event
+    def create_event!
       event = ::Event.new(external_id: event_data.id,
                           start_at: event_data.start_at,
                           name: event_data.name,
@@ -27,8 +29,6 @@ module EventsManager
                           title: title)
 
       Event.create_or_update_on_duplicate(event)
-      update_associations(event)
-
       event
     end
 
@@ -37,7 +37,7 @@ module EventsManager
         update_scope(event, scope)
       end
 
-      competitors.each do |competitor|
+      competitors.compact.each do |competitor|
         update_competitor(event, competitor)
       end
     end

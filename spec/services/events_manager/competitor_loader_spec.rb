@@ -45,4 +45,15 @@ describe EventsManager::CompetitorLoader do
       expect(subject.call.players.count).to eq(3)
     end
   end
+
+  context 'invalid identifier' do
+    let(:competitor_response) do
+      fixture = file_fixture('competitors/unknown_competitor.xml').read
+      ::XmlParser.parse(fixture)
+    end
+
+    it 'not duplicates players associations' do
+      expect(subject.call).to be_nil
+    end
+  end
 end
