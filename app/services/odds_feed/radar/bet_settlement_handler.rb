@@ -45,7 +45,7 @@ module OddsFeed
       def update_markets
         Market
           .where(external_id: @market_external_ids)
-          .update_all(status: Market::SETTLED)
+          .each(&:settled!)
       end
 
       def invalid_bet_ids
