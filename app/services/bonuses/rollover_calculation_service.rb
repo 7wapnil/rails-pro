@@ -17,8 +17,6 @@ module Bonuses
     private
 
     def recalculate_rollover!
-      return unless customer_bonus
-
       balance = customer_bonus.rollover_initial_value
       bets = customer_bonus
              .bets
