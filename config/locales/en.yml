@@ -356,6 +356,7 @@ en:
       betting_limits: Betting limits validation failed
       bet_odd_inactive: Odd for bet became inactive
       bonus_activation_failed: Bonus activation failed, please try later
+      customer_has_active_bonus: There is already an active bonus for this customer
       customer_account_kind_transit: Can't transit customer account kind
       customer_activated: Customer already activated
       email_verified: Email already verified

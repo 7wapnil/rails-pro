@@ -11,11 +11,11 @@ class CustomerBonus < ApplicationRecord
 
   enum expiration_reason: {
     manual_cancel: MANUAL_CANCEL = 'manual_cancel',
-    expired_by_new_activation:
-      EXPIRED_BY_NEW_ACTIVATION = 'expired_by_new_activation',
     expired_by_date: EXPIRED_BY_DATE = 'expired_by_date',
     converted: CONVERTED = 'converted'
   }
+
+  validate :customer_has_no_active_bonus, on: :create
 
   acts_as_paranoid
 
@@ -54,5 +54,13 @@ class CustomerBonus < ApplicationRecord
 
   def activated?
     entry_id.present?
+  end
+
+  private
+
+  def customer_has_no_active_bonus
+    valid = customer.active_bonus.nil?
+    message_key = 'errors.messages.customer_has_active_bonus'
+    errors.add(:customer, I18n.t(message_key)) unless valid
   end
 end

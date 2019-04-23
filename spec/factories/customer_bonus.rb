@@ -25,5 +25,9 @@ FactoryBot.define do
       valid_for_days { rand(1..20) }
       rollover_balance { Faker::Number.decimal(2, 2).to_f }
     end
+
+    trait :activated do
+      entry { create(:entry) }
+    end
   end
 end
