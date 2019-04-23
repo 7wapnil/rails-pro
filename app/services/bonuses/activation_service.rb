@@ -12,6 +12,7 @@ module Bonuses
       form = CustomerBonuses::CreateForm.new(subject: customer_bonus)
       form.validate!
       customer_bonus.save!
+      customer_bonus
     end
 
     private
