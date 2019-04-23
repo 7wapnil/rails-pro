@@ -36,7 +36,7 @@ describe Bonuses::ActivationService do
     it 'retains previous customer bonus' do
       expect do
         subject
-      rescue
+      rescue StandardError # rubocop:disable Lint/HandleExceptions
       end.not_to change(customer, :active_bonus)
     end
 
@@ -47,7 +47,7 @@ describe Bonuses::ActivationService do
     it 'does not create new customer bonus' do
       expect do
         subject
-      rescue
+      rescue StandardError # rubocop:disable Lint/HandleExceptions
       end.not_to change(CustomerBonus, :count)
     end
   end

@@ -1,6 +1,7 @@
 describe CustomerBonuses::CreateForm do
   context '#validate!' do
     subject { described_class.new(subject: customer_bonus) }
+
     let(:customer_bonus) do
       build(:customer_bonus, :applied, :activated, customer: customer)
     end
