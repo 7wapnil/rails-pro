@@ -16,7 +16,7 @@ describe BetExternalValidation::Service do
 
         it 'perform dummy validation' do
           expect(Mts::ValidationMessagePublisherStubWorker)
-              .to have_enqueued_sidekiq_job([bet.id])
+            .to have_enqueued_sidekiq_job([bet.id])
         end
       end
     end
