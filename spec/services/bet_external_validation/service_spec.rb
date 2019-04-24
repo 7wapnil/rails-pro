@@ -13,15 +13,11 @@ describe BetExternalValidation::Service do
           expect(Mts::ValidationMessagePublisherWorker)
             .not_to have_enqueued_sidekiq_job([bet.id])
         end
-      end
 
-      it 'perform dummy validation' do
-        allow(Mts::Mode).to receive(:stubbed?).and_return(true)
-
-        expect(BetExternalValidation::PublisherStub)
-          .to receive(:perform_async).with([bet.id])
-
-        described_class.call(bet)
+        it 'perform dummy validation' do
+          expect(Mts::ValidationMessagePublisherStubWorker)
+              .to have_enqueued_sidekiq_job([bet.id])
+        end
       end
     end
 
