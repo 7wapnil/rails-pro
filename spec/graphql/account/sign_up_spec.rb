@@ -74,7 +74,8 @@ describe GraphQL do
         zip_code: '123',
         street_address: 'Street Addr',
         phone: '37258383943',
-        agreed_with_promotional: true
+        agreed_with_promotional: true,
+        b_tag: 'AFFILIATE_ID'
       } }
     end
 
@@ -84,10 +85,24 @@ describe GraphQL do
       expect(result['data']['signUp']['token']).not_to be_nil
     end
 
+    it 'creates new customer record' do
+      result
+      expect(Customer.find_by(email: 'test@email.com')).not_to be_nil
+    end
+
     it 'logs audit event on sign up' do
       allow(Audit::Service).to receive(:call)
       expect(result['errors']).to be_nil
       expect(Audit::Service).to have_received(:call)
+    end
+
+    it 'stores received data for custom' do
+      result
+      expect(Customer.find_by(email: 'test@email.com'))
+        .to have_attributes(username: 'test',
+                            first_name: 'Test',
+                            last_name: 'User',
+                            b_tag: 'AFFILIATE_ID')
     end
   end
 end
