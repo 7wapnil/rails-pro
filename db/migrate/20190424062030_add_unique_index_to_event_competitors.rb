@@ -11,14 +11,8 @@ class AddUniqueIndexToEventCompetitors < ActiveRecord::Migration[5.2]
 
   private
 
+  # Avoid non-unique errors
   def delete_duplicates
-    sql = <<~SQL
-DELETE FROM event_competitors a USING event_competitors b
-WHERE
-    a.event_id < b.event_id
-    AND a.competitor_id = b.competitor_id
-SQL
-
-    execute(sql)
+    EventCompetitor.delete_all
   end
 end

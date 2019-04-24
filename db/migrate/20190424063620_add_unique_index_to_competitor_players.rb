@@ -11,14 +11,8 @@ class AddUniqueIndexToCompetitorPlayers < ActiveRecord::Migration[5.2]
 
   private
 
+  # Avoid non-unique errors
   def delete_duplicates
-    sql = <<~SQL
-DELETE FROM competitor_players a USING competitor_players b
-WHERE
-    a.competitor_id < b.competitor_id
-    AND a.player_id = b.player_id
-    SQL
-
-    execute(sql)
+    CompetitorPlayer.delete_all
   end
 end
