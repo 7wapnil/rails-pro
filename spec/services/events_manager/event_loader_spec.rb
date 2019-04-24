@@ -26,6 +26,17 @@ describe EventsManager::EventLoader do
         .not_to have_received(:call)
     end
 
+    it 'returns event from database with associations' do
+      allow(::Event).to receive(:includes).and_call_original
+
+      subject.options = { includes: %i[competitors players] }
+      subject.call
+
+      expect(::Event)
+        .to have_received(:includes)
+        .with(%i[competitors players])
+    end
+
     it 'returns crawled event when forced' do
       subject.options = { force: true }
       subject.call

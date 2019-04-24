@@ -9,11 +9,21 @@ module EventsManager
     def local_event
       return nil if crawling_forced?
 
-      event = ::Event.find_by(external_id: @external_id)
+      event = find_event
       return event if event
 
       log :debug, "Event '#{@external_id}' not found"
       nil
+    end
+
+    def find_event
+      query = Event
+      query.includes(includes) if includes.any?
+      query.find_by(external_id: @external_id)
+    end
+
+    def includes
+      @options[:includes].to_a
     end
 
     def crawled_event
