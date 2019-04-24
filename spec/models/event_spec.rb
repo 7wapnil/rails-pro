@@ -15,7 +15,6 @@ describe Event do
 
   it { is_expected.to validate_presence_of(:name) }
   it { is_expected.to allow_value(true, false).for(:active) }
-  it { is_expected.to allow_value(true, false).for(:corrupted) }
 
   it { is_expected.to delegate_method(:name).to(:title).with_prefix }
 
