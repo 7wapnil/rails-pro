@@ -12,7 +12,7 @@ module EventsManager
       event = ::Event.find_by(external_id: @external_id)
       return event if event
 
-      Rails.logger.debug "Event '#{@external_id}' not found"
+      log :debug, "Event '#{@external_id}' not found"
       nil
     end
 
@@ -23,7 +23,7 @@ module EventsManager
     def crawling_forced?
       return false unless crawling_force_enabled?
 
-      Rails.logger.debug 'Forced mode enabled, event will be updated from API'
+      log :debug, 'Forced mode enabled, will be updated from API'
       true
     end
 

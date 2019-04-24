@@ -23,6 +23,7 @@ module EventsManager
                           title: title)
       Event.create_or_update_on_duplicate(event)
       update_associations(event)
+      log :info, "Updated event '#{@external_id}'"
 
       event
     end

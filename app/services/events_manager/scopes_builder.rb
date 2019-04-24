@@ -1,5 +1,7 @@
 module EventsManager
   class ScopesBuilder < ApplicationService
+    include EventsManager::Logger
+
     def initialize(event, event_entity)
       @event = event
       @event_entity = event_entity
@@ -35,7 +37,7 @@ module EventsManager
     end
 
     def create_scope!(entity, kind, parent_scope = nil)
-      Rails.logger.debug "Scope data: #{entity}, kind: #{kind}"
+      log :debug, "Scope data: #{entity}, kind: #{kind}"
 
       scope = ::EventScope.new(external_id: entity.id,
                                name: entity.name,
