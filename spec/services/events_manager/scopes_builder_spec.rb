@@ -11,7 +11,7 @@ describe EventsManager::ScopesBuilder do
 
   context 'build' do
     it 'creates all scopes' do
-      subject.build
+      subject.call
       expect(EventScope.count).to eq(3)
     end
 
@@ -28,7 +28,7 @@ describe EventsManager::ScopesBuilder do
              external_id: 'sr:category:9',
              kind: EventScope::CATEGORY)
 
-      subject.build
+      subject.call
       expect(EventScope.count).to eq(3)
     end
 
@@ -39,13 +39,13 @@ describe EventsManager::ScopesBuilder do
     end
 
     it 'binds tournament to category' do
-      subject.build
+      subject.call
       scope = EventScope.find_by!(kind: EventScope::TOURNAMENT)
       expect(scope.event_scope.external_id).to eq('sr:category:9')
     end
 
     it 'binds season to tournament' do
-      subject.build
+      subject.call
       scope = EventScope.find_by!(kind: EventScope::SEASON)
       expect(scope.event_scope.external_id).to eq('sr:tournament:68')
     end
@@ -59,12 +59,8 @@ describe EventsManager::ScopesBuilder do
     end
 
     it 'skips scope creation' do
-      subject.build
+      subject.call
       expect(EventScope.count).to be < 3
-    end
-
-    it 'returns partial collection' do
-      expect(subject.build.count).to be < 3
     end
   end
 
@@ -76,7 +72,7 @@ describe EventsManager::ScopesBuilder do
     end
 
     it do
-      expect { subject.build }.to raise_error(StandardError)
+      expect { subject.call }.to raise_error(StandardError)
     end
   end
 end
