@@ -18,7 +18,7 @@ module Bonuses
       validate!
 
       deactivate_bonus!
-      take_bonus_money_away! if positive_bonus_balance?
+      confiscate_bonus_money! if positive_bonus_balance?
 
       log_deactivation
     end
@@ -40,7 +40,7 @@ module Bonuses
       end
     end
 
-    def take_bonus_money_away!
+    def confiscate_bonus_money!
       request = EntryRequests::Factories::Confiscation
                 .call(wallet: wallet, amount: bonus_balance.amount)
       EntryRequests::ConfiscationWorker.perform_async(request.id)
