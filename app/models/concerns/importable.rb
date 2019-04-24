@@ -21,6 +21,12 @@ module Importable
              })
     end
 
+    def create_or_ignore_on_duplicate(record, validate: true)
+      import([record],
+             validate: validate,
+             on_duplicate_key_ignore: true)
+    end
+
     def conflict_updatable(*columns)
       self.conflict_updatable_cols = columns
     end

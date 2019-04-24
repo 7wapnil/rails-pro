@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_22_074513) do
+ActiveRecord::Schema.define(version: 2019_04_24_063620) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -154,6 +154,7 @@ ActiveRecord::Schema.define(version: 2019_04_22_074513) do
   create_table "competitor_players", id: false, force: :cascade do |t|
     t.bigint "competitor_id"
     t.bigint "player_id"
+    t.index ["competitor_id", "player_id"], name: "index_competitor_players_on_competitor_id_and_player_id", unique: true
     t.index ["competitor_id"], name: "index_competitor_players_on_competitor_id"
     t.index ["player_id"], name: "index_competitor_players_on_player_id"
   end
@@ -268,6 +269,7 @@ ActiveRecord::Schema.define(version: 2019_04_22_074513) do
     t.boolean "email_verified", default: false, null: false
     t.boolean "verification_sent", default: false, null: false
     t.string "email_verification_token"
+    t.string "b_tag"
     t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
     t.index ["email_verification_token"], name: "index_customers_on_email_verification_token", unique: true
@@ -336,6 +338,7 @@ ActiveRecord::Schema.define(version: 2019_04_22_074513) do
     t.bigint "event_id"
     t.bigint "competitor_id"
     t.index ["competitor_id"], name: "index_event_competitors_on_competitor_id"
+    t.index ["event_id", "competitor_id"], name: "index_event_competitors_on_event_id_and_competitor_id", unique: true
     t.index ["event_id"], name: "index_event_competitors_on_event_id"
   end
 
