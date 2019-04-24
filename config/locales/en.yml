@@ -385,6 +385,10 @@ en:
       nonexistent_bet: "Bet with validation ticket id '%{id}' does not exist"
       password_invalid: Incorrect password
       unsupported_withdraw_method: "Payment method %{name} is not supported"
+      reset_password_empty_token: Empty reset token
+      reset_password_token_not_found: No user found for password reset token
+      reset_password_token_expired: Reset password token expired
+      reset_password_confirmation_mismatch: Confirmation does not match password
 
       mts:
         ticket_not_found: "Ticket not found for bet with id '%{bet_id}'"
@@ -480,6 +484,8 @@ en:
         subject: Account verified
       email_verification:
         subject: Verify your email address
+      reset_password_mail:
+        subject: Reset your password
 
   messages:
     deposit_limits:
