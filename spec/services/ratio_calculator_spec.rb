@@ -18,6 +18,69 @@ describe RatioCalculator do
     expect(subject).to eq(ratio)
   end
 
+  context 'when same real and bonus money are passed' do
+    let(:bonus_amount) { 50 }
+    let(:real_money_amount) { 50 }
+
+    it 'returns current ratio' do
+      expect(subject).to eq(0.5)
+    end
+  end
+
+  context 'when half bonus money are passed' do
+    let(:bonus_amount) { 25 }
+    let(:real_money_amount) { 50 }
+
+    it 'returns current ratio' do
+      expect(subject).to eq(0.66667)
+    end
+  end
+
+  context 'when half real money are passed' do
+    let(:bonus_amount) { 50 }
+    let(:real_money_amount) { 25 }
+
+    it 'returns current ratio' do
+      expect(subject).to eq(0.33333)
+    end
+  end
+
+  context 'when 1/3 real money are passed' do
+    let(:bonus_amount) { 75 }
+    let(:real_money_amount) { 25 }
+
+    it 'returns current ratio' do
+      expect(subject).to eq(0.25)
+    end
+  end
+
+  context 'when 1/3 bonus money are passed' do
+    let(:bonus_amount) { 25 }
+    let(:real_money_amount) { 75 }
+
+    it 'returns current ratio' do
+      expect(subject).to eq(0.75)
+    end
+  end
+
+  context 'when bonus money are not passed' do
+    let(:bonus_amount) {}
+    let(:real_money_amount) { 50 }
+
+    it 'returns current ratio' do
+      expect(subject).to eq(1.0)
+    end
+  end
+
+  context 'when real money are not passed' do
+    let(:bonus_amount) { 50 }
+    let(:real_money_amount) {}
+
+    it 'returns current ratio' do
+      expect(subject).to be_zero
+    end
+  end
+
   context 'with zero bonus amount' do
     let(:bonus_amount) { 0.0 }
 

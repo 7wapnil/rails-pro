@@ -15,7 +15,9 @@ class Entry < ApplicationRecord
   has_one :currency, through: :wallet
   has_one :customer, through: :wallet
 
-  has_one :bonus_balance_entry, -> { bonus }, class_name: BalanceEntry.name
+  has_one :bonus_balance_entry,
+          -> { bonus },
+          class_name: BalanceEntry.name
   has_one :real_money_balance_entry,
           -> { real_money },
           class_name: BalanceEntry.name
