@@ -55,21 +55,6 @@ describe OddsFeed::Radar::OddsChangeHandler do
           )
       end
     end
-
-    context 'database not prepared' do
-      it 'raises error if no producer found' do
-        payload['odds_change']['product'] = '1000'
-        expect { subject.handle }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it 'raises error if no event found' do
-        payload['odds_change']['event_id'] = '1000'
-        expect { subject.handle }.to raise_error(
-          SilentRetryJobError,
-          I18n.t('errors.messages.nonexistent_event', id: '1000')
-        )
-      end
-    end
   end
 
   # Update event attributes in DB
