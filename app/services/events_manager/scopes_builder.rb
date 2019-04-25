@@ -1,32 +1,35 @@
 module EventsManager
-  class ScopesBuilder
+  class ScopesBuilder < ApplicationService
+    include EventsManager::Logger
+
     def initialize(event, event_entity)
       @event = event
       @event_entity = event_entity
     end
 
-    def build
-      create_scopes.compact
+    def call
+      create_scopes
     end
 
     private
 
     def create_scopes
-      category = find_or_create_scope(@event_entity.category,
-                                      ::EventScope::CATEGORY)
+      parent_scope = nil
 
-      tournament = find_or_create_scope(@event_entity.tournament,
-                                        ::EventScope::TOURNAMENT,
-                                        category)
-
-      season = find_or_create_scope(@event_entity.season,
-                                    ::EventScope::SEASON,
-                                    tournament)
-
-      [category, tournament, season]
+      scopes_data.each do |scope_data|
+        parent_scope = create_scope_and_associate(scope_data[:data],
+                                                  scope_data[:kind],
+                                                  parent_scope)
+      end
     end
 
-    def find_or_create_scope(entity, kind, parent_scope = nil)
+    def scopes_data
+      [{ data: @event_entity.category, kind: ::EventScope::CATEGORY },
+       { data: @event_entity.tournament, kind: ::EventScope::TOURNAMENT },
+       { data: @event_entity.season, kind: ::EventScope::SEASON }]
+    end
+
+    def create_scope_and_associate(entity, kind, parent_scope = nil)
       if entity.nil?
         Rails.logger.info "Scope '#{kind}' fixture not found or empty"
         return nil
@@ -36,16 +39,24 @@ module EventsManager
     end
 
     def create_scope!(entity, kind, parent_scope = nil)
-      Rails.logger.debug "Scope data: #{entity}, kind: #{kind}"
+      log :debug, "Scope data: #{entity}, kind: #{kind}"
 
       scope = ::EventScope.new(external_id: entity.id,
                                name: entity.name,
                                kind: kind,
                                event_scope: parent_scope,
                                title: @event.title)
+
       ::EventScope.create_or_update_on_duplicate(scope)
+      associate_scope(scope)
 
       scope
+    end
+
+    def associate_scope(scope)
+      ::ScopedEvent.create_or_update_on_duplicate(
+        ::ScopedEvent.new(event: @event, event_scope: scope)
+      )
     end
   end
 end

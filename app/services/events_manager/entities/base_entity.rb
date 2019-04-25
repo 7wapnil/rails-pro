@@ -1,6 +1,8 @@
 module EventsManager
   module Entities
     class BaseEntity
+      include EventsManager::Logger
+
       def initialize(payload)
         @payload = payload
       end
