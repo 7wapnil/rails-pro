@@ -8,10 +8,10 @@ module Bonuses
     end
 
     def call
-      service = BonusExpiration::Expired
-      reason = :expired_by_new_activation
-      customer.customer_bonus&.close!(service, reason: reason)
-      CustomerBonus.create!(bonus_activation_attributes)
+      customer_bonus = CustomerBonus.new(bonus_activation_attributes)
+      form = CustomerBonuses::CreateForm.new(subject: customer_bonus)
+      form.validate!
+      customer_bonus.tap(&:save!)
     end
 
     private

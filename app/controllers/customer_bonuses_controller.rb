@@ -5,12 +5,11 @@ class CustomerBonusesController < ApplicationController
     amount = payload_params[:amount].to_f
     customer_bonus = Bonuses::ActivationService.call(wallet, bonus, amount)
     customer = wallet.customer
-    if customer_bonus.nil?
-      flash[:error] = t('errors.messages.bonus_activation_failed')
-    else
-      flash[:success] = t(:activated, instance: t('entities.bonus'))
-      bonus_activated(customer_bonus, customer)
-    end
+    flash[:success] = t(:activated, instance: t('entities.bonus'))
+    bonus_activated(customer_bonus, customer)
+  rescue CustomerBonuses::ActivationError => error
+    flash[:error] = error.message
+  ensure
     redirect_to bonuses_customer_path(customer)
   end
 
