@@ -17,5 +17,11 @@ FactoryBot.define do
           )
         end
     end
+
+    EntryKinds::KINDS.keys.each do |kind|
+      trait(kind.to_sym) do
+        kind { kind }
+      end
+    end
   end
 end

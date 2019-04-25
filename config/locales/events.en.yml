@@ -25,6 +25,7 @@ en:
     customer_unlocked: "Customer (%{customer_name}) unlocked by %{user_name}"
     impersonate_customer: "Customer (%{customer_name}) impersonated by (%{user_name})"
     account_kind_transition: "Customer (%{customer_name}) account kind was changed"
+    bonus_activation: "%{user_name} tried to activate bonus '%{code}' for %{customer_name}"
     bonus_activated: "Bonus '%{code}' for %{customer_name} activated by %{user_name}"
     deposit_limit_created: "Deposit limit (%{value} %{currency_code} per %{range}) for %{customer_name} created by %{user_name}"
     deposit_limit_updated: "Deposit limit (%{value} %{currency_code} per %{range}) for %{customer_name} updated by %{user_name}"

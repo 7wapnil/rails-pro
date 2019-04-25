@@ -1,16 +1,25 @@
+# frozen_string_literal: true
+
 class CustomerBonusesController < ApplicationController
+  find :wallet, by: %i[customer_bonus wallet_id], strict: false, only: :create
+  find :original_bonus,
+       by: %i[customer_bonus original_bonus_id],
+       class: Bonus.name,
+       strict: false,
+       only: :create
+
   def create
-    wallet = Wallet.find(payload_params[:wallet_id])
-    bonus = Bonus.find(payload_params[:original_bonus_id])
-    amount = payload_params[:amount].to_f
-    customer_bonus = Bonuses::ActivationService.call(wallet, bonus, amount)
-    customer = wallet.customer
-    flash[:success] = t(:activated, instance: t('entities.bonus'))
-    bonus_activated(customer_bonus, customer)
+    @customer_bonus = CustomerBonuses::Create.call(
+      wallet: @wallet,
+      original_bonus: @original_bonus,
+      amount: payload_params[:amount],
+      user: current_user
+    )
+
+    redirect_to bonuses_customer_path(@customer_bonus.customer),
+                notice: t(:activated, instance: t('entities.bonus'))
   rescue CustomerBonuses::ActivationError => error
-    flash[:error] = error.message
-  ensure
-    redirect_to bonuses_customer_path(customer)
+    redirect_to bonuses_customer_path(@wallet.customer), alert: error.message
   end
 
   def show
@@ -38,10 +47,5 @@ class CustomerBonusesController < ApplicationController
         :wallet_id,
         :amount
       )
-  end
-
-  def bonus_activated(customer_bonus, customer)
-    current_user.log_event :bonus_activated, customer_bonus, customer
-    customer_bonus.add_funds(payload_params[:amount].to_i)
   end
 end

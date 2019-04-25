@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CustomerBonuses
   class CreateForm
     include ActiveModel::Model
@@ -6,11 +8,16 @@ module CustomerBonuses
 
     delegate :customer, to: :subject
 
-    def validate!
-      ensure_no_active_bonus
+    def submit!
+      validate!
+      subject.save!
     end
 
     private
+
+    def validate!
+      ensure_no_active_bonus
+    end
 
     def ensure_no_active_bonus
       return true unless find_existing_bonus
