@@ -16,15 +16,17 @@ module EventsManager
     def create_scopes
       parent_scope = nil
 
-      [
-        { data: @event_entity.category, kind: ::EventScope::CATEGORY },
-        { data: @event_entity.tournament, kind: ::EventScope::TOURNAMENT },
-        { data: @event_entity.season, kind: ::EventScope::SEASON }
-      ].each do |scope_data|
+      scopes_data.each do |scope_data|
         parent_scope = create_scope_and_associate(scope_data[:data],
                                                   scope_data[:kind],
                                                   parent_scope)
       end
+    end
+
+    def scopes_data
+      [{ data: @event_entity.category, kind: ::EventScope::CATEGORY },
+       { data: @event_entity.tournament, kind: ::EventScope::TOURNAMENT },
+       { data: @event_entity.season, kind: ::EventScope::SEASON }]
     end
 
     def create_scope_and_associate(entity, kind, parent_scope = nil)

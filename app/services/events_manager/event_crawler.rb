@@ -9,10 +9,6 @@ module EventsManager
 
     private
 
-    def validate!
-      check_support!
-    end
-
     def load_event
       event = ::Event.new(external_id: event_data.id,
                           start_at: event_data.start_at,

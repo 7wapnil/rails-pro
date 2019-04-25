@@ -40,7 +40,7 @@ module EventsManager
     # Temporary solution to keep current usage compatible
     # @todo Keep :force option usage only after integration
     def crawling_force_enabled?
-      @options[:force] || @options[:check_existence] == false
+      @options[:force].present? || @options[:check_existence] == false
     end
   end
 end
