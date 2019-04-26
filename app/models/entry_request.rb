@@ -10,6 +10,8 @@ class EntryRequest < ApplicationRecord
   belongs_to :origin, polymorphic: true, optional: true
   has_many :balance_entry_requests, dependent: :destroy
 
+  has_one :real_money_balance_entry_request, -> { real_money },
+          class_name: BalanceEntryRequest.name
   has_one :bonus_balance_entry_request, -> { bonus },
           class_name: BalanceEntryRequest.name
 
