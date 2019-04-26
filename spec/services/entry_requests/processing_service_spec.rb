@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe EntryRequests::RefundService do
+describe EntryRequests::ProcessingService do
   subject(:service) { described_class.new(entry_request: refund_request) }
 
   let(:currency) { create(:currency, :with_refund_rule) }

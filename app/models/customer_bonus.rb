@@ -1,22 +1,22 @@
 # frozen_string_literal: true
 
 class CustomerBonus < ApplicationRecord
-  enum kind: Bonus.kinds
+  acts_as_paranoid
+
   belongs_to :customer
   belongs_to :wallet
   belongs_to :original_bonus, class_name: 'Bonus', optional: true
   belongs_to :entry, optional: true
   has_many :bets
 
-  attr_reader :amount
-
+  enum kind: Bonus.kinds
   enum expiration_reason: {
     manual_cancel: MANUAL_CANCEL = 'manual_cancel',
     expired_by_date: EXPIRED_BY_DATE = 'expired_by_date',
     converted: CONVERTED = 'converted'
   }
 
-  acts_as_paranoid
+  attr_reader :amount
 
   def close!(deactivation_service, options = {})
     deactivation_service.call(self, options)
@@ -36,10 +36,6 @@ class CustomerBonus < ApplicationRecord
 
   def status
     expired? ? 'expired' : 'active'
-  end
-
-  def add_funds(_amount)
-    # TODO: Implementation needed
   end
 
   def loggable_attributes

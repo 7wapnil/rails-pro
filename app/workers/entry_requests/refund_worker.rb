@@ -5,7 +5,7 @@ module EntryRequests
     private
 
     def processing_service
-      EntryRequests::RefundService
+      EntryRequests::ProcessingService
     end
   end
 end

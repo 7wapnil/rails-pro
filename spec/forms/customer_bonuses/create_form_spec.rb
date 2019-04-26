@@ -1,15 +1,19 @@
-describe CustomerBonuses::CreateForm do
-  context '#validate!' do
-    subject { described_class.new(subject: customer_bonus) }
+# frozen_string_literal: true
 
+describe CustomerBonuses::CreateForm do
+  context '#submit!' do
+    subject { described_class.new(subject: customer_bonus).submit! }
+
+    let(:customer) { create(:customer) }
     let(:customer_bonus) do
       build(:customer_bonus, :applied, :activated, customer: customer)
     end
-    let(:customer) { create(:customer) }
 
     context 'without an active bonus' do
-      it 'does not raise any errors' do
-        expect { subject }.not_to raise_error
+      before { subject }
+
+      it 'creates bonus' do
+        expect(customer_bonus).to be_persisted
       end
     end
 
@@ -18,8 +22,14 @@ describe CustomerBonuses::CreateForm do
         create(:customer_bonus, :applied, :activated, customer: customer)
       end
 
+      it 'does not create bonus' do
+        subject
+      rescue CustomerBonuses::ActivationError
+        expect(customer_bonus).not_to be_persisted
+      end
+
       it 'raises an error' do
-        expect { subject }.not_to raise_error(CustomerBonuses::ActivationError)
+        expect { subject }.to raise_error(CustomerBonuses::ActivationError)
       end
     end
   end
