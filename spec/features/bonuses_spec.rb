@@ -25,7 +25,6 @@ describe Bonus do
         # the value is returned with an extra space
         # between the date and the time
         expect(page).to have_content(I18n.l(subject.expires_at).squish)
-        expect(page).to have_content(I18n.t('attributes.repeatable'))
       end
     end
   end
