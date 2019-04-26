@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Deposits
+  # rubocop:disable Metrics/ClassLength
   class GetPaymentPageUrl < ApplicationService
     API_VERSION = '4.0.0'
 
@@ -60,9 +61,9 @@ module Deposits
         user_token_id: customer_id,
         item_name_1: extra_query_params.fetch(:item_name_1) { item_name },
         item_number_1: entry_request.id,
-        item_amount_1: entry_request.amount,
+        item_amount_1: amount,
         item_quantity_1: ITEM_QUANTITY,
-        total_amount: entry_request.amount,
+        total_amount: amount,
         first_name: customer_first_name,
         last_name: customer_last_name,
         email: customer_email,
@@ -76,6 +77,13 @@ module Deposits
         isNative: extra_query_params.fetch(:isNative, 1),
         **url_parameters
       }
+    end
+
+    def amount
+      @amount ||= BalanceEntryRequest
+                  .real_money
+                  .find_by!(entry_request_id: entry_request)
+                  .amount
     end
 
     def url_parameters
@@ -100,7 +108,7 @@ module Deposits
     end
 
     def item_name
-      "Deposit #{entry_request.amount} to your #{currency.code} wallet " \
+      "Deposit #{amount} to your #{currency.code} wallet " \
       'on ArcaneBet.'
     end
 
@@ -128,4 +136,5 @@ module Deposits
       ].map(&:to_s).join
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end
