@@ -21,7 +21,6 @@ describe Bonus do
     it { is_expected.to validate_numericality_of(:min_deposit).is_greater_than(0) }
     it { is_expected.to validate_numericality_of(:valid_for_days).is_greater_than(0) }
     it { is_expected.to validate_numericality_of(:percentage).is_greater_than_or_equal_to(0) }
-    it { is_expected.to allow_value(true, false).for(:repeatable) }
     # rubocop:enable Metrics/LineLength
   end
 
