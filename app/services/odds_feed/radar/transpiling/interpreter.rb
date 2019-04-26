@@ -57,9 +57,9 @@ module OddsFeed
           match = MATCHERS.detect { |rule| token =~ rule[:regex] }
           expression_class = match.nil? ? SimpleExpression : match[:expression]
           result = expression_class
-                    .new(self)
-                    .value(token)
-                    .to_s
+                   .new(self)
+                   .value(token)
+                   .to_s
 
           log_job_message(
             :debug, "'#{token}' transpiled into '#{result}'"
