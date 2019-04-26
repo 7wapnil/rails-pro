@@ -11,11 +11,22 @@ describe GraphQL, '#events' do
   end
 
   let(:title) { create(:title, name: 'Counter-Strike') }
+  let(:tournament) { create(:event_scope, kind: EventScope::TOURNAMENT) }
 
   let(:control_count) { rand(1..4) }
-  let(:control_event) {}
+  let(:control_event_scopes) { [tournament] }
+  let(:control_event_markets) { [] }
+  let(:control_event_traits) { [:upcoming] }
+  let(:control_event) do
+    create :event,
+           *control_event_traits,
+           title: title,
+           event_scopes: control_event_scopes,
+           markets: control_event_markets
+  end
   let(:control_events) do
-    create_list(:event, control_count, :upcoming, title: title)
+    create_list(:event, control_count, :upcoming,
+                title: title, event_scopes: [tournament])
   end
 
   let(:result_events) { result['data']['events'] }
@@ -32,10 +43,7 @@ describe GraphQL, '#events' do
   end
 
   context 'basic query' do
-    let(:control_events) do
-      create_list(:event, control_count, :upcoming, title: title)
-    end
-
+    let(:control_event) {}
     let(:query) { %({ events(context: #{upcoming_ctx}) { id } }) }
 
     before { create_list(:event, 3, :upcoming, visible: false, title: title) }
@@ -46,7 +54,7 @@ describe GraphQL, '#events' do
   end
 
   context 'with market' do
-    let(:control_event) { create(:event, :with_odds, :upcoming, title: title) }
+    let(:control_event_traits) { %i[with_odds upcoming] }
     let(:control_market) { control_event.dashboard_markets.first }
     let(:control_odds) { control_market.odds }
 
@@ -71,9 +79,7 @@ describe GraphQL, '#events' do
     context 'with markets_count' do
       let(:control_count) { rand(2..5) }
       let(:control_events) {}
-      let(:control_event) do
-        create(:event, :upcoming, title: title)
-      end
+      let(:control_event_traits) { [:upcoming] }
 
       let(:query) do
         %({ events(context: #{upcoming_ctx}) { id markets_count } })
@@ -107,9 +113,7 @@ describe GraphQL, '#events' do
     end
 
     context 'without odds' do
-      let(:control_event) do
-        create(:event, :with_market, :upcoming, title: title)
-      end
+      let(:control_event_traits) { %i[with_market upcoming] }
 
       it 'is not returned' do
         expect(result_event.dashboard_market).to be_nil
@@ -120,9 +124,8 @@ describe GraphQL, '#events' do
       let(:control_market) do
         create(:market, visible: false, status: Market::ACTIVE)
       end
-      let(:control_event) do
-        create(:event, :upcoming, title: title, markets: [control_market])
-      end
+      let(:control_event_traits) { [:upcoming] }
+      let(:control_event_markets) { [control_market] }
 
       it 'is not returned' do
         expect(result_event.dashboard_market).to be_nil
@@ -179,9 +182,7 @@ describe GraphQL, '#events' do
   end
 
   context 'prioritizes market by priority' do
-    let(:control_event) do
-      create(:event, :with_market, :upcoming, title: title)
-    end
+    let(:control_event_traits) { %i[with_market upcoming] }
     let(:control_market) do
       create(:market, :with_odds, priority: Market::PRIORITIES.first,
                                   event: control_event,
@@ -217,14 +218,18 @@ describe GraphQL, '#events' do
   end
 
   context 'ordered by priority' do
+    let(:control_event) {}
     let(:control_events) do
       [
         create(:event, :with_market, :upcoming,
-               priority: Event::PRIORITIES.second),
+               priority: Event::PRIORITIES.second,
+               event_scopes: [tournament]),
         create(:event, :with_market, :upcoming,
-               priority: Event::PRIORITIES.first),
+               priority: Event::PRIORITIES.first,
+               event_scopes: [tournament]),
         create(:event, :with_market, :upcoming,
-               priority: Event::PRIORITIES.third)
+               priority: Event::PRIORITIES.third,
+               event_scopes: [tournament])
       ]
     end
 
@@ -238,6 +243,7 @@ describe GraphQL, '#events' do
   end
 
   context 'with title' do
+    let(:control_event) {}
     let(:other_title) { create(:title) }
     let(:query) do
       %({
@@ -249,7 +255,8 @@ describe GraphQL, '#events' do
     end
 
     before do
-      create_list(:event, 3, :with_market, :upcoming, title: other_title)
+      create_list(:event, 3, :with_market, :upcoming,
+                  title: other_title, event_scopes: [tournament])
     end
 
     it 'returns events by title ID' do
@@ -259,12 +266,7 @@ describe GraphQL, '#events' do
   end
 
   context 'tournament' do
-    let(:tournament) { create(:event_scope, kind: EventScope::TOURNAMENT) }
-    let(:control_events) do
-      create_list(:event, control_count, :with_market, :upcoming,
-                  title: title, event_scopes: [tournament])
-    end
-
+    let(:control_event) {}
     let(:query) do
       %({
           events (
@@ -284,7 +286,7 @@ describe GraphQL, '#events' do
   end
 
   context 'with competitors in payload' do
-    let(:control_event) { create(:event, :with_market, :upcoming) }
+    let(:control_event_traits) { %i[with_market upcoming] }
     let!(:tournament) { create(:event_scope) }
     let(:competitors) do
       [
@@ -333,16 +335,11 @@ describe GraphQL, '#events' do
 
     before do
       other_title = create(:title)
-      create_list(:event, 5, :with_market, :upcoming, title: other_title)
+      create_list(:event, 5, :with_market, :upcoming,
+                  title: other_title, event_scopes: [tournament])
 
-      events = create_list(
-        :event, 5, :with_market, :upcoming,
-        title: category.title
-      )
-
-      events.each do |event|
-        event.event_scopes << category
-      end
+      create_list(:event, 5, :with_market, :upcoming,
+                  title: category.title, event_scopes: [category, tournament])
     end
 
     it 'returns events by category ID' do
@@ -356,9 +353,7 @@ describe GraphQL, '#events' do
     let(:ctx) { 'live' }
 
     context 'with SUSPENDED status' do
-      let(:control_event) do
-        create(:event, :with_market, :live)
-      end
+      let(:control_event_traits) { %i[with_market live] }
 
       it 'value is LIVE' do
         expect(result_event.start_status).to eq Event::LIVE
@@ -366,7 +361,7 @@ describe GraphQL, '#events' do
     end
 
     context 'in play' do
-      let(:control_event) { create(:event, :with_market, :live) }
+      let(:control_event_traits) { %i[with_market live] }
 
       it 'value is LIVE' do
         expect(result_event.start_status).to eq Event::LIVE
@@ -374,8 +369,10 @@ describe GraphQL, '#events' do
     end
 
     context 'without TRADED_LIVE' do
-      let(:control_event) do
-        create(:event, :with_market, status: Event::SUSPENDED)
+      let(:control_event_traits) { %i[with_market] }
+
+      before do
+        control_event.status = Event::SUSPENDED
       end
 
       it 'value is nil' do
@@ -385,7 +382,7 @@ describe GraphQL, '#events' do
 
     context 'when upcoming' do
       let(:ctx) { 'upcoming_unlimited' }
-      let(:control_event) { create(:event, :with_market, :upcoming) }
+      let(:control_event_traits) { %i[with_market upcoming] }
 
       it 'value is UPCOMING' do
         expect(result_event.start_status).to eq Event::UPCOMING
@@ -395,7 +392,6 @@ describe GraphQL, '#events' do
 
   context 'with state' do
     let(:control_id) { Faker::Number.number(5) }
-    let!(:tournament) { create(:event_scope) }
     let(:payload) do
       {
         state: { 'id' => control_id },
@@ -406,9 +402,7 @@ describe GraphQL, '#events' do
       }
     end
 
-    let(:control_event) do
-      create(:event, :with_market, :upcoming, payload: payload)
-    end
+    let(:control_event_traits) { %i[with_market upcoming] }
 
     let(:result_state) { OpenStruct.new(result_event.state) }
 
@@ -425,6 +419,11 @@ describe GraphQL, '#events' do
             }
           }
       })
+    end
+
+    before do
+      control_event.payload = payload
+      control_event.save!
     end
 
     it 'returns valid state' do
@@ -444,9 +443,7 @@ describe GraphQL, '#events' do
       }
     end
 
-    let(:control_event) do
-      create(:event, :with_market, payload: payload)
-    end
+    let(:control_event_traits) { [:with_market] }
 
     let(:query) do
       %({
@@ -458,6 +455,10 @@ describe GraphQL, '#events' do
             }
           }
       })
+    end
+
+    before do
+      control_event.payload = payload
     end
 
     it "doesn't return state" do
@@ -515,7 +516,8 @@ describe GraphQL, '#events' do
       %({ events(context: #{live_ctx}) { id } })
     end
     let!(:live_events) do
-      create_list(:event, rand(1..3), :with_market, :live, title: title)
+      create_list(:event, rand(1..3), :with_market, :live,
+                  title: title, event_scopes: [tournament])
     end
 
     it_behaves_like 'takes only active and visible events' do
@@ -539,10 +541,12 @@ describe GraphQL, '#events' do
     let!(:future_events) do
       create_list(:event, rand(1..3), :with_market, :upcoming,
                   start_at: limit.hours.from_now + 1.minute,
-                  title: title)
+                  title: title,
+                  event_scopes: [tournament])
     end
     let!(:live_events) do
-      create_list(:event, rand(1..3), :live, title: title)
+      create_list(:event, rand(1..3), :live,
+                  title: title, event_scopes: [tournament])
     end
 
     include_context 'frozen_time' do
@@ -567,6 +571,7 @@ describe GraphQL, '#events' do
   end
 
   context "with 'upcoming_limited' context" do
+    let(:control_event) {}
     let(:limit) { Events::EventsQueryResolver::UPCOMING_LIMIT }
     let(:query) do
       %({ events(context: #{upcoming_limited_ctx}) { id } })
@@ -575,19 +580,19 @@ describe GraphQL, '#events' do
     let(:first_tournament) { create(:event_scope, :tournament) }
     let!(:first_tournament_events) do
       create_list(:event, limit + rand(2..4), :with_market, :upcoming,
-                  tournament: first_tournament)
+                  event_scopes: [first_tournament])
     end
 
     let(:second_tournament) { create(:event_scope, :tournament) }
     let!(:second_tournament_events) do
       create_list(:event, limit + rand(1..4), :with_market, :upcoming,
-                  tournament: second_tournament)
+                  event_scopes: [second_tournament])
     end
 
     let(:live_tournament) { create(:event_scope, :tournament) }
     let!(:live_events) do
       create_list(:event, rand(1..4), :with_market, :live,
-                  tournament: live_tournament)
+                  event_scopes: [live_tournament])
     end
 
     let(:tournament_event_ids) do
@@ -598,6 +603,13 @@ describe GraphQL, '#events' do
 
     let(:included_event_ids) { tournament_event_ids.take(limit) }
     let(:truncated_event_ids) { tournament_event_ids.drop(limit) }
+
+    before do
+      control_events.each do |event|
+        event.event_scopes = []
+        event.save!
+      end
+    end
 
     it_behaves_like 'takes only active and visible events' do
       let(:valid_events) { first_tournament_events }
@@ -621,13 +633,13 @@ describe GraphQL, '#events' do
   end
 
   context "with 'upcoming_unlimited' context" do
+    let(:control_event) {}
     let(:limit) { Events::EventsQueryResolver::UPCOMING_LIMIT }
     let(:duration_limit) { Events::EventsQueryResolver::UPCOMING_DURATION }
     let(:query) do
       %({ events(context: #{upcoming_unlimited_ctx}) { id } })
     end
 
-    let(:tournament) { create(:event_scope, :tournament) }
     let!(:tournament_events) do
       create_list(:event, limit + rand(3..5), :with_market, :upcoming,
                   tournament: tournament)
@@ -643,7 +655,7 @@ describe GraphQL, '#events' do
     end
 
     let(:upcoming_events) do
-      [control_events, tournament_events, future_events].flatten
+      [control_events, tournament_events].flatten
     end
 
     include_context 'frozen_time' do
