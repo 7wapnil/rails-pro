@@ -29,6 +29,8 @@ class Bonus < ApplicationRecord
             :valid_for_days,
             numericality: { greater_than: 0 }
 
+  validates :repeatable, inclusion: { in: [true, false] }
+
   acts_as_paranoid
 
   has_many :customer_bonuses, foreign_key: :original_bonus_id
