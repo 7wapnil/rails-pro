@@ -30,6 +30,7 @@
           %td= bonus.valid_for_days
           %td= l(bonus.expires_at)
           %td= number_to_percentage(bonus.percentage, precision: 0)
-          %td= t('attributes.repeatable') if bonus.repeatable
+          %td
+            = t('attributes.repeatable') if bonus.repeatable
 
 = paginate @bonuses
