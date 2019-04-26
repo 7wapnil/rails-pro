@@ -4,10 +4,10 @@ module CustomerBonuses
 
     attr_accessor :subject
 
-    delegate :customer, to: :subject
+    delegate :customer, :original_bonus, to: :subject
 
     def validate!
-      ensure_no_active_bonus
+      ensure_no_active_bonus && validate_repeated_activation
     end
 
     private
@@ -17,6 +17,16 @@ module CustomerBonuses
 
       raise CustomerBonuses::ActivationError,
             I18n.t('errors.messages.customer_has_active_bonus')
+    end
+
+    def validate_repeated_activation
+      duplicate = CustomerBonus.find_by(customer: customer,
+                                        original_bonus: original_bonus)
+      return true unless duplicate
+      return true if original_bonus.repeatable
+
+      raise CustomerBonuses::ActivationError,
+            I18n.t('errors.messages.repeated_bonus_activation')
     end
 
     def find_existing_bonus
