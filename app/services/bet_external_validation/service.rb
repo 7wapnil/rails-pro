@@ -39,7 +39,7 @@ module BetExternalValidation
     end
 
     def publisher
-      return Mts::ValidationMessagePublisherStubWorker if Mts::Mode.stubbed?
+      return BetExternalValidation::PublisherStub if Mts::Mode.stubbed?
 
       Mts::ValidationMessagePublisherWorker
     end
