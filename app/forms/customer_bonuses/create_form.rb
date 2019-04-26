@@ -8,7 +8,6 @@ module CustomerBonuses
 
     delegate :customer, :original_bonus, to: :subject
 
-
     def submit!
       validate!
       subject.save!
