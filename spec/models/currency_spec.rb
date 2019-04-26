@@ -5,6 +5,11 @@ describe Currency do
   it { is_expected.to validate_presence_of(:code) }
   it { is_expected.to validate_numericality_of(:exchange_rate).allow_nil }
 
+  it 'upcases the code' do
+    currency = create(:currency, code: 'mBtC')
+    expect(currency.code).to eq('MBTC')
+  end
+
   describe '.primary' do
     context 'with existing primary currency' do
       let!(:currency) { create(:currency, :primary) }
