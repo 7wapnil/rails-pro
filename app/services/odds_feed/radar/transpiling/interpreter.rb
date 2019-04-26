@@ -46,16 +46,25 @@ module OddsFeed
           rescue StandardError => e
             log_job_message(:warn, e.message)
           end
+
+          log_job_message(
+            :info, "'#{template}' transpiled into '#{result}'"
+          )
           result
         end
 
         def token_value(token)
           match = MATCHERS.detect { |rule| token =~ rule[:regex] }
           expression_class = match.nil? ? SimpleExpression : match[:expression]
-          expression_class
-            .new(self)
-            .value(token)
-            .to_s
+          result = expression_class
+                    .new(self)
+                    .value(token)
+                    .to_s
+
+          log_job_message(
+            :debug, "'#{token}' transpiled into '#{result}'"
+          )
+          result
         end
       end
     end
