@@ -227,11 +227,13 @@ describe OddsFeed::Radar::BetSettlementHandler do
         allow(Bets::Settlement::Proceed).to receive(:call)
       end
 
-      it 'sets market status to settled' do
+      it 'updates to SETTLED and creates snapshot' do
         subject_with_input.handle
 
-        expect(Market.find_by(external_id: market_id).status)
-          .to eq(Market::SETTLED)
+        expect(Market.find_by(external_id: market_id)).to have_attributes(
+          status: StateMachines::MarketStateMachine::SETTLED,
+          previous_status: StateMachines::MarketStateMachine::ACTIVE
+        )
       end
 
       it 'updates bets even when market not found' do

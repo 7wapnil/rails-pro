@@ -1,8 +1,10 @@
+# frozen_string_literal: true
+
 describe CustomerBonusesController, type: :controller do
   describe '#create' do
     let!(:wallet) { create(:wallet) }
     let!(:original_bonus) { create(:bonus) }
-    let(:amount) { 100 }
+    let(:amount) { rand(1..1000).to_s }
     let!(:payload_params) do
       {
         customer_bonus: {
@@ -16,43 +18,57 @@ describe CustomerBonusesController, type: :controller do
     let(:current_user) { create(:admin_user) }
     let(:customer_bonus) { create(:customer_bonus) }
 
-    context 'when admin user adds bonus to customer' do
-      before do
-        sign_in current_user
-        allow(Bonuses::ActivationService)
-          .to receive(:call).and_return(customer_bonus)
-        allow(customer_bonus).to receive(:add_funds)
-        allow(AuditLog).to receive(:create!)
-        create_bonus
+    before do
+      allow(CustomerBonuses::Create)
+        .to receive(:call)
+        .and_return(customer_bonus)
+
+      sign_in current_user
+    end
+
+    context 'on success' do
+      before { create_bonus }
+
+      it 'calls CustomerBonuses::Create with wallet and bonus' do
+        expect(CustomerBonuses::Create)
+          .to have_received(:call)
+          .with(wallet: wallet,
+                original_bonus: original_bonus,
+                amount: amount,
+                user: current_user)
       end
 
-      it 'calls Bonuses::ActivationService with wallet and bonus' do
-        expect(Bonuses::ActivationService)
-          .to have_received(:call).with(wallet,
-                                        original_bonus,
-                                        amount)
+      it 'redirects to customer bonuses page' do
+        expect(create_bonus)
+          .to redirect_to(bonuses_customer_path(customer_bonus.customer))
       end
 
-      it 'calls CustomerBonus::add_funds with amount' do
-        expect(customer_bonus)
-          .to have_received(:add_funds).with(amount)
-      end
-
-      it 'calls AuditLog::create! with wallet and bonus' do
-        expect(AuditLog)
-          .to have_received(:create!).with(
-            event: :bonus_activated,
-            user_id: current_user.id,
-            customer_id: wallet.customer_id,
-            context: { code: customer_bonus.code }
+      it 'sets success message' do
+        expect(controller)
+          .to set_flash[:notice].to(
+            I18n.t(:activated, instance: I18n.t('entities.bonus'))
           )
       end
     end
 
-    it 'redirects to customer bonuses page' do
-      sign_in current_user
-      expect(create_bonus)
-        .to redirect_to(bonuses_customer_path(wallet.customer_id))
+    context 'on failure' do
+      let(:error_message) { Faker::WorldOfWarcraft.quote }
+
+      before do
+        allow(CustomerBonuses::Create)
+          .to receive(:call)
+          .and_raise(CustomerBonuses::ActivationError, error_message)
+        create_bonus
+      end
+
+      it 'redirects to customer bonuses page' do
+        expect(create_bonus)
+          .to redirect_to(bonuses_customer_path(wallet.customer))
+      end
+
+      it 'sets error message' do
+        expect(controller).to set_flash[:alert].to(error_message)
+      end
     end
   end
 end

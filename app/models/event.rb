@@ -55,7 +55,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
              class_name: Radar::Producer.name,
              inverse_of: :events,
              optional: true
-  has_many :markets, dependent: :delete_all
+  has_many :markets, dependent: :destroy
   has_many :categorized_markets, -> { with_category }, class_name: Market.name
   has_many :bets, through: :markets
   has_many :scoped_events, dependent: :delete_all

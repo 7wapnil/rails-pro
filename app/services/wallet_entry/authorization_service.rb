@@ -44,25 +44,25 @@ module WalletEntry
         customer: @request.customer,
         currency: @request.currency
       )
-      total_amount = @request.balance_entry_requests.sum(:amount)
+      amount_increment = @request.balance_entry_requests.sum(:amount)
       ::Forms::AmountChange
-        .new(@wallet, amount: @wallet.amount + total_amount, request: @request)
+        .new(@wallet, amount_increment: amount_increment, request: @request)
         .save!
     end
 
     def update_balance!(balance_request)
       balance = Balance.find_or_create_by!(wallet_id: @wallet.id,
                                            kind: balance_request.kind)
-      result_amount = balance.amount + balance_request.amount
+      amount_increment = balance_request.amount
       ::Forms::AmountChange
-        .new(balance, amount: result_amount, request: @request)
+        .new(balance, amount_increment: amount_increment, request: @request)
         .save!
 
       balance_entry = BalanceEntry.create!(
         balance_id: balance.id,
         entry_id: @entry.id,
         amount: balance_request.amount,
-        balance_amount_after: result_amount
+        balance_amount_after: balance.amount
       )
       balance_request.update_attributes!(balance_entry_id: balance_entry.id)
     end

@@ -10,15 +10,23 @@ module EntryKinds
     bet: BET = 'bet',
     refund: REFUND = 'refund',
     rollback: ROLLBACK = 'rollback',
-    system_bet_cancel: SYSTEM_BET_CANCEL = 'system_bet_cancel'
+    system_bet_cancel: SYSTEM_BET_CANCEL = 'system_bet_cancel',
+    confiscation: CONFISCATION = 'confiscation',
+    bonus_change: BONUS_CHANGE = 'bonus_change'
   }.freeze
 
-  FUND_KINDS = KINDS.slice(:deposit, :withdraw)
-  TRADING_KINDS = KINDS.slice(:win, :bet, :refund)
-  DEBIT_KINDS = KINDS.slice(:deposit, :win, :refund, :system_bet_cancel)
-  CREDIT_KINDS = KINDS.slice(:withdraw, :bet, :rollback, :system_bet_cancel)
-
-  SYSTEM_KINDS = [ROLLBACK, SYSTEM_BET_CANCEL].freeze
+  FUND_KINDS = [DEPOSIT, WITHDRAW].freeze
+  TRADING_KINDS = [WIN, BET, REFUND].freeze
+  DEBIT_KINDS = [DEPOSIT, WIN, REFUND, SYSTEM_BET_CANCEL, BONUS_CHANGE].freeze
+  CREDIT_KINDS = [
+    WITHDRAW,
+    BET,
+    ROLLBACK,
+    SYSTEM_BET_CANCEL,
+    BONUS_CHANGE,
+    CONFISCATION
+  ].freeze
+  SYSTEM_KINDS = [ROLLBACK, SYSTEM_BET_CANCEL, CONFISCATION].freeze
 
   included do
     enum kind: KINDS

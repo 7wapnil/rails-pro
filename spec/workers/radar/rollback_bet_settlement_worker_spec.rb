@@ -31,19 +31,22 @@ describe Radar::RollbackBetSettlementWorker do
       create(:bet, :settled,
              customer: build(:customer),
              odd: build(:odd, market: control_markets.first)),
-      create(:bet, :won, :settled,
+      create(:bet, :settled, :won,
              customer: build(:customer),
              odd: build(:odd, market: control_markets.second))
     ]
   end
-  let!(:bets) do
+  let(:excluded_bets) do
     [
-      *control_bets,
-      create(:bet, :won, :settled,
-             customer: build(:customer),
-             odd: build(:odd, market: markets.last))
+      create(:bet, :won, :settled, customer: build(:customer),
+                                   odd: build(:odd, market: markets.last)),
+      create(:bet, :rejected, customer: build(:customer),
+                              odd: build(:odd, market: control_markets.first)),
+      create(:bet, :cancelled, customer: build(:customer),
+                               odd: build(:odd, market: control_markets.first))
     ]
   end
+  let!(:bets) { [*control_bets, *excluded_bets] }
   let!(:wallets) do
     bets.map do |bet|
       create(:wallet, customer: bet.customer, currency: bet.currency)
@@ -146,8 +149,8 @@ describe Radar::RollbackBetSettlementWorker do
 
     context 'entry requests' do
       let(:comment) do
-        "Rollback won amount #{win_entry_request.amount} #{win_bet.customer}" \
-        " for #{win_bet.currency} on #{win_bet.event}."
+        "Rollback won amount #{win_entry_request.amount} #{win_bet.currency}" \
+        " for #{win_bet.customer} on #{win_bet.event}."
       end
 
       let(:found_rollback_entry_request) do
@@ -213,10 +216,8 @@ describe Radar::RollbackBetSettlementWorker do
     end
 
     it 'are not updated for another bets' do
-      expect(bets.last.reload).to have_attributes(
-        status: StateMachines::BetStateMachine::SETTLED,
-        settlement_status: Bet::WON
-      )
+      expect(excluded_bets.sample.reload.status)
+        .not_to eq(StateMachines::BetStateMachine::ACCEPTED)
     end
   end
 end

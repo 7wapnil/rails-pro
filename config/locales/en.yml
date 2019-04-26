@@ -59,6 +59,12 @@ en:
             amount:
               less_than: exceeds maximum individual withdrawal
               greater_than: must be non-zero value
+        forms/payment_methods/credit_card:
+          attributes:
+            last_four_digits:
+              blank: Card last four digits can't be blank
+              not_a_umber: Card last four digits can\'t be blank
+              wrong_length: Please confirm the last four digits of your card are entered correctly
     attributes:
       forms/withdraw_request:
         last_four_digits: ''
@@ -408,7 +414,6 @@ en:
         bonus_exists: If you continue please be aware your active bonus will be cancelled, do you still wish to continue
         invalid_payment_method: "Invalid payment method: %{payment_method}"
         invalid_payload: "Missing %{attr}"
-        last_four_digits: Please confirm the last four digits of your card are entered correctly
         method_not_supported: Withdraw method is not supported
         customer_not_verified: Customer should be verified to withdraw funds
       withdrawal_requests:
@@ -451,7 +456,7 @@ en:
     win: Win
     withdraw: Withdraw
     refund: Refund
-    rollback: Rollback
+    rollback: Rollback settlement by Radar
     system_bet_cancel: Cancellation by Radar
     bonus: Bonus money
     real_money: Real money

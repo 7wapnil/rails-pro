@@ -52,6 +52,7 @@ module OddsFeed
           Bet
           .joins(:market)
           .includes(:currency, :customer, :event, :winning)
+          .settled
           .where(markets: { external_id: markets_ids })
       end
 

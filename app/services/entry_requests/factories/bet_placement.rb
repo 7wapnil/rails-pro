@@ -3,8 +3,7 @@
 module EntryRequests
   module Factories
     class BetPlacement < ApplicationService
-      delegate :customer_bonus, :odd, :market, to: :bet
-      delegate :applied?, to: :customer_bonus, allow_nil: true, prefix: true
+      delegate :odd, :market, to: :bet
 
       def initialize(bet:, initiator: nil)
         @bet = bet
@@ -14,7 +13,7 @@ module EntryRequests
       def call
         create_entry_request!
         validate_entry_request!
-        create_balance_request!
+        create_balance_requests!
 
         entry_request
       end
@@ -22,28 +21,6 @@ module EntryRequests
       private
 
       attr_reader :bet, :passed_initiator, :entry_request
-
-      def real_amount
-        @real_amount ||= amount_calculations[:real_money]
-      end
-
-      def amount_calculations
-        @amount_calculations ||= BalanceCalculations::BetWithBonus
-                                 .call(bet, ratio)
-      end
-
-      def ratio
-        return 1.0 unless customer_bonus_applied?
-
-        wallet.ratio_with_bonus
-      end
-
-      def wallet
-        @wallet ||= Wallet.find_or_create_by(
-          customer_id: bet.customer_id,
-          currency_id: bet.currency_id
-        )
-      end
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
@@ -72,7 +49,7 @@ module EntryRequests
       end
 
       def comment
-        "Withdrawal #{bet.amount} #{wallet.currency} " \
+        "Withdrawal #{bet.amount} #{bet.currency} " \
         "for #{bet.customer}#{initiator_comment_suffix}"
       end
 
@@ -86,8 +63,12 @@ module EntryRequests
         entry_request.register_failure!(error.message)
       end
 
-      def create_balance_request!
+      def create_balance_requests!
         BalanceRequestBuilders::Bet.call(entry_request, amount_calculations)
+      end
+
+      def amount_calculations
+        BalanceCalculations::Bet.call(bet: bet)
       end
     end
   end

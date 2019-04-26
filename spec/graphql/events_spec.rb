@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe GraphQL, '#events' do
   let(:context) { {} }
   let(:variables) { {} }
@@ -165,16 +167,16 @@ describe GraphQL, '#events' do
 
     it 'returns a list of categories with count' do
       event = result['data']['events'][0]
-      categories = event['categories']
+      categories = event['categories'].sort_by { |category| category['name'] }
       expect(categories.length).to eq(2)
 
       expect(categories[0]['id'])
-        .to eq("#{event['id']}:#{MarketTemplate::POPULAR}")
-      expect(categories[0]['count']).to eq(3)
+        .to eq("#{event['id']}:#{MarketTemplate::PLAYERS}")
+      expect(categories[0]['count']).to eq(2)
 
       expect(categories[1]['id'])
-        .to eq("#{event['id']}:#{MarketTemplate::PLAYERS}")
-      expect(categories[1]['count']).to eq(2)
+        .to eq("#{event['id']}:#{MarketTemplate::POPULAR}")
+      expect(categories[1]['count']).to eq(3)
     end
   end
 
