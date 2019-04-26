@@ -37,7 +37,7 @@ module EventsManager
         update_scope(event, scope)
       end
 
-      competitors.compact.each do |competitor|
+      competitors.each do |competitor|
         update_competitor(event, competitor)
       end
     end
@@ -81,9 +81,10 @@ module EventsManager
     end
 
     def competitors
-      event_data.competitors.map do |entity|
-        CompetitorLoader.call(entity.id)
-      end
+      event_data
+        .competitors
+        .map { |entity| CompetitorLoader.call(entity.id) }
+        .compact
     end
   end
 end
