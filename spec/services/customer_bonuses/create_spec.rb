@@ -133,4 +133,39 @@ describe CustomerBonuses::Create do
       expect(customer_bonus.rollover_balance).to eq(rollover)
     end
   end
+
+  context 'activating a repeatable bonus after it expires' do
+    before do
+      create(:customer_bonus,
+             customer: customer,
+             original_bonus: bonus,
+             expires_at: 1.day.ago)
+    end
+
+    it 'raises an error' do
+      expect { subject }.not_to raise_error
+    end
+
+    it 'activates a bonus' do
+      expect(customer.reload.customer_bonus).not_to be_nil
+    end
+  end
+
+  context 'activating a non-repeatable bonus after it expires' do
+    before do
+      bonus.update(repeatable: false)
+      create(:customer_bonus,
+             customer: customer,
+             original_bonus: bonus,
+             expires_at: 1.day.ago)
+    end
+
+    it 'raises an error' do
+      expected_message = I18n.t(
+        'errors.messages.repeated_bonus_activation'
+      )
+      expect { subject }
+        .to raise_error(CustomerBonuses::ActivationError, expected_message)
+    end
+  end
 end
