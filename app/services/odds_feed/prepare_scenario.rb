@@ -9,12 +9,6 @@ module OddsFeed
     ].freeze
     DEFAULT_SCENARIOS = [FIRST, SECOND, THIRD].freeze
 
-    SERVICES_MAP = {
-      FIRST => OddsFeed::Scenarios::First,
-      SECOND => OddsFeed::Scenarios::Second,
-      THIRD => OddsFeed::Scenarios::Third
-    }.freeze
-
     def initialize(scenario_id: DEFAULT_SCENARIOS)
       @scenario_ids = Array.wrap(scenario_id).uniq.compact.map(&:to_s)
     end
@@ -38,11 +32,19 @@ module OddsFeed
     end
 
     def clean_up_database!
-      OddsFeed::Scenarios::PrepareDatabase.call
+      ::OddsFeed::Scenarios::PrepareDatabase.call
     end
 
     def perform_scenarios
-      scenario_ids.each { |scenario_id| SERVICES_MAP[scenario_id].call }
+      scenario_ids.each { |scenario_id| scenario_class(scenario_id).call }
+    end
+
+    def scenario_class(scenario_id)
+      case scenario_id
+      when FIRST then ::OddsFeed::Scenarios::First
+      when SECOND then ::OddsFeed::Scenarios::Second
+      when THIRD then ::OddsFeed::Scenarios::Third
+      end
     end
   end
 end
