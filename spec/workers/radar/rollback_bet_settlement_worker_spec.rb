@@ -149,8 +149,8 @@ describe Radar::RollbackBetSettlementWorker do
 
     context 'entry requests' do
       let(:comment) do
-        "Rollback won amount #{win_entry_request.amount} #{win_bet.customer}" \
-        " for #{win_bet.currency} on #{win_bet.event}."
+        "Rollback won amount #{win_entry_request.amount} #{win_bet.currency}" \
+        " for #{win_bet.customer} on #{win_bet.event}."
       end
 
       let(:found_rollback_entry_request) do

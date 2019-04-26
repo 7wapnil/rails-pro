@@ -30,5 +30,9 @@ FactoryBot.define do
     trait :activated do
       entry { create(:entry) }
     end
+
+    trait :expired do
+      created_at { (valid_for_days + 1).days.ago }
+    end
   end
 end

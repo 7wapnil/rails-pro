@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class CustomerBonusesController < ApplicationController
+  find :customer_bonus, only: :destroy
   find :wallet, by: %i[customer_bonus wallet_id], strict: false, only: :create
   find :original_bonus,
        by: %i[customer_bonus original_bonus_id],
@@ -30,11 +31,12 @@ class CustomerBonusesController < ApplicationController
   end
 
   def destroy
-    bonus = CustomerBonus.find(params[:id])
-    bonus.close!(BonusExpiration::Expired,
-                 reason: :manual_cancel,
-                 user: current_user)
-    redirect_to bonuses_customer_path(bonus.customer)
+    Bonuses::Cancel.call(
+      bonus: @customer_bonus,
+      reason: CustomerBonus::MANUAL_CANCEL,
+      user: current_user
+    )
+    redirect_to bonuses_customer_path(@customer_bonus.customer)
   end
 
   private

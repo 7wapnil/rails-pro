@@ -18,10 +18,6 @@ class CustomerBonus < ApplicationRecord
 
   attr_reader :amount
 
-  def close!(deactivation_service, options = {})
-    deactivation_service.call(self, options)
-  end
-
   def ended_at
     created_at + valid_for_days.days
   end
@@ -43,8 +39,7 @@ class CustomerBonus < ApplicationRecord
   end
 
   def self.customer_history(customer)
-    with_deleted
-      .where(customer: customer)
+    with_deleted.where(customer: customer)
   end
 
   def activated?

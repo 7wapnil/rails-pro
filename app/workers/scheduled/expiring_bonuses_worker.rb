@@ -1,17 +1,11 @@
+# frozen_string_literal: true
+
 module Scheduled
   class ExpiringBonusesWorker < ApplicationWorker
-    sidekiq_options queue: 'expired_bonuses',
-                    lock: :until_executed
+    sidekiq_options queue: 'expired_bonuses', lock: :until_executed
 
     def perform
-      CustomerBonus
-        .where(expiration_reason: nil)
-        .select(&:expired?)
-        .each do |bonus|
-          service = BonusExpiration::Expired
-          reason = :expired_by_date
-          bonus.close!(service, reason: reason)
-        end
+      Bonuses::ExpiringBonusesHandler.call
     end
   end
 end
