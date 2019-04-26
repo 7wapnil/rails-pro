@@ -38,7 +38,7 @@ module Betting
 
       raise entry_request.result['message'] if entry_request.failed?
 
-      ::EntryRequests::BetPlacementWorker.perform_async(entry_request.id)
+      ::EntryRequests::BetPlacementWorker.perform_in(3.second, entry_request.id)
     end
 
     def create_bet!(bet_payload)
