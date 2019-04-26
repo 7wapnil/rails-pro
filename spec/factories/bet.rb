@@ -2,7 +2,8 @@
 
 FactoryBot.define do
   factory :bet do
-    amount    { Faker::Number.decimal(2, 2) }
+    amount { Faker::Number.decimal(2, 2) }
+    base_currency_amount { amount * Faker::Number.decimal(2, 2).to_f }
     odd_value { odd.value }
     status    { StateMachines::BetStateMachine::INITIAL }
 
@@ -21,11 +22,17 @@ FactoryBot.define do
     end
 
     trait :won do
+      status            { StateMachines::BetStateMachine::SETTLED }
       settlement_status { :won }
     end
 
     trait :lost do
+      status            { StateMachines::BetStateMachine::SETTLED }
       settlement_status { :lost }
+    end
+
+    trait :void do
+      void_factor { 1.0 }
     end
 
     trait :with_random_market do

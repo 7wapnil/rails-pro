@@ -94,9 +94,9 @@ describe EntryRequests::Factories::BetPlacement do
     end
 
     it 'calls calculation service with default ratio' do
-      expect(BalanceCalculations::BetWithBonus)
+      expect(BalanceCalculations::Bet)
         .to receive(:call)
-        .with(bet, 1.0)
+        .with(bet: bet)
         .and_call_original
 
       subject
@@ -104,13 +104,7 @@ describe EntryRequests::Factories::BetPlacement do
   end
 
   context 'if wallet not found' do
-    before do
-      allow_any_instance_of(Wallet)
-        .to receive(:ratio_with_bonus)
-        .and_return(0)
-
-      wallet.update(customer: create(:customer))
-    end
+    before { wallet.update(customer: create(:customer)) }
 
     it 'creates new wallet' do
       expect { subject }.to change(Wallet, :count).by(1)

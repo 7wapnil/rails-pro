@@ -10,6 +10,8 @@
   - radar_missing_heartbeat
   - radar_events_preloading
   - mq
+  - mailers
+  - exchange_rates
 
 :schedule:
   expiring_bonuses:

@@ -14,7 +14,7 @@ describe Mts::ReconnectionWorker do
       before { create(:mts_connection, status: MtsConnection::RECOVERING) }
 
       it 'trigger front end update' do
-        allow(::Mts::SingleSession.instance.session)
+        allow(::Mts::Session.instance)
           .to receive(:opened_connection).and_return(true)
 
         expect(WebSocket::Client.instance)

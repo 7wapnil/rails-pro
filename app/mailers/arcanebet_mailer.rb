@@ -14,9 +14,9 @@ class ArcanebetMailer < ApplicationMailer
   end
 
   def account_verification_mail
-    @customer = params[:customer]
+    @person = params[:customer]
     mail(
-      to:      @customer.email,
+      to:      @person.email,
       subject: I18n.t('mailers.arcanebet_mailer.verification_mail.subject')
     )
   end
@@ -30,6 +30,18 @@ class ArcanebetMailer < ApplicationMailer
     mail(
       to:      @customer.email,
       subject: I18n.t('mailers.arcanebet_mailer.email_verification.subject')
+    )
+  end
+
+  def reset_password_mail
+    domain = ENV['FRONTEND_URL']
+    @person = params[:customer]
+    @reset_password_url =
+      "#{domain}/reset_password/#{@person.reset_password_token}"
+
+    mail(
+      to: @person.email,
+      subject: I18n.t('mailers.arcanebet_mailer.reset_password_mail.subject')
     )
   end
 

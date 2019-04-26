@@ -16,7 +16,7 @@ module Mts
       def publish!
         log_message
 
-        raise 'No MTS connection.' unless send_message!
+        send_message!
 
         update_bet
       end
@@ -43,18 +43,14 @@ module Mts
       private
 
       def send_message!
-        ::Mts::SingleSession.instance.session.within_connection do |conn|
-          break unless conn
-
-          create_exchange(conn)
-            .publish(
-              formatted_message,
-              content_type: 'application/json',
-              routing_key: 'cancel',
-              persistent: false,
-              headers: { 'replyRoutingKey': self.class::ROUTING_KEY }
-            )
-        end
+        create_exchange(::Mts::Session.instance.opened_connection)
+          .publish(
+            formatted_message,
+            content_type: 'application/json',
+            routing_key: 'cancel',
+            persistent: false,
+            headers: { 'replyRoutingKey': self.class::ROUTING_KEY }
+          )
       end
 
       def create_exchange(conn)

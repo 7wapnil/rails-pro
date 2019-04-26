@@ -13,20 +13,15 @@ module OddsFeed
 
       def handle
         return unless valid?
+        return preload_event_and_retry! unless event_exists?
 
         update_event
-      end
-
-      def update_event
-        @event = load_event
-        update_event_producer!
-        update_event_payload!
       end
 
       private
 
       def valid?
-        type_valid? && !producer.live? && validate_event_presence!
+        type_valid? && (!producer.live? || producer.live? && event_exists?)
       end
 
       def type_valid?
@@ -38,9 +33,23 @@ module OddsFeed
         false
       end
 
-      def validate_event_presence!
-        return true if Event.exists?(external_id: event_id)
+      def event_id
+        payload['event_id']
+      end
 
+      def payload
+        @payload['fixture_change']
+      end
+
+      def producer
+        @producer ||= ::Radar::Producer.find(payload['product'])
+      end
+
+      def event_exists?
+        @event_exists ||= Event.exists?(external_id: event_id)
+      end
+
+      def preload_event_and_retry!
         ::Radar::ScheduledEvents::EventLoadingWorker.perform_async(event_id)
 
         log_job_failure(
@@ -51,26 +60,15 @@ module OddsFeed
               I18n.t('errors.messages.nonexistent_event', id: event_id)
       end
 
+      def update_event
+        @event = load_event
+        update_event_producer!
+        update_event_payload!
+      end
+
       def load_event
         log_on_update
-        EventsManager::EventLoader.call(event_id,
-                                        check_existence: false)
-      end
-
-      def event_exists?
-        Event.exists?(external_id: event_id)
-      end
-
-      def event_id
-        payload['event_id']
-      end
-
-      def payload
-        @payload['fixture_change']
-      end
-
-      def producer
-        ::Radar::Producer.find(payload['product'])
+        EventsManager::EventLoader.call(event_id, check_existence: false)
       end
 
       def log_on_update

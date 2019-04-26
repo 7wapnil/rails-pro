@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_22_074513) do
+ActiveRecord::Schema.define(version: 2019_04_23_101158) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -102,6 +102,7 @@ ActiveRecord::Schema.define(version: 2019_04_22_074513) do
     t.string "settlement_status"
     t.datetime "validation_ticket_sent_at"
     t.bigint "customer_bonus_id"
+    t.decimal "base_currency_amount"
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_bonus_id"], name: "index_bets_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
@@ -267,6 +268,7 @@ ActiveRecord::Schema.define(version: 2019_04_22_074513) do
     t.boolean "email_verified", default: false, null: false
     t.boolean "verification_sent", default: false, null: false
     t.string "email_verification_token"
+    t.string "b_tag"
     t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
     t.index ["email_verification_token"], name: "index_customers_on_email_verification_token", unique: true

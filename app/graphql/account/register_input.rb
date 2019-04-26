@@ -17,5 +17,6 @@ module Account
     argument :gender, !types.String
     argument :phone, !types.String
     argument :agreed_with_promotional, !types.Boolean
+    argument :b_tag, types.String
   end
 end
