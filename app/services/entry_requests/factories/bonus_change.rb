@@ -28,7 +28,7 @@ module EntryRequests
         {
           status: EntryRequest::INITIAL,
           amount: amount,
-          mode: EntryRequest::SYSTEM,
+          mode: EntryRequest::INTERNAL,
           kind: EntryRequest::BONUS_CHANGE,
           initiator: initiator,
           comment: comment,

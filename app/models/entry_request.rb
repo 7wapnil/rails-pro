@@ -32,7 +32,7 @@ class EntryRequest < ApplicationRecord
 
   enum mode: {
     cashier: CASHIER = 'cashier',
-    system: SYSTEM = 'system',
+    internal: INTERNAL = 'internal',
     safecharge_unknown: SAFECHARGE_UNKNOWN = 'safecharge_unknown',
     simulated: SIMULATED = 'simulated',
     credit_card: CREDIT_CARD = 'credit_card',

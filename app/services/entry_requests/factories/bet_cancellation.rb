@@ -28,7 +28,7 @@ module EntryRequests
       def bet_cancel_request_attributes
         {
           kind: EntryKinds::SYSTEM_BET_CANCEL,
-          mode: EntryRequest::SYSTEM,
+          mode: EntryRequest::INTERNAL,
           amount: placement_entry.amount.abs,
           comment: bet_cancel_comment,
           customer_id: bet.customer_id,
@@ -50,7 +50,7 @@ module EntryRequests
       def win_cancel_request_attributes
         {
           kind: EntryKinds::SYSTEM_BET_CANCEL,
-          mode: EntryRequest::SYSTEM,
+          mode: EntryRequest::INTERNAL,
           amount: -winning_entry.amount,
           comment: win_cancel_comment,
           customer_id: bet.customer_id,

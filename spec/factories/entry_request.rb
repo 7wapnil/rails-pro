@@ -62,7 +62,7 @@ FactoryBot.define do
     end
 
     trait :system do
-      mode { EntryRequest::SYSTEM }
+      mode { EntryRequest::INTERNAL }
     end
   end
 end

@@ -63,7 +63,7 @@ describe CustomerBonuses::Create do
       expect(found_entry_request).to have_attributes(
         status: EntryRequest::SUCCEEDED,
         amount: amount,
-        mode: EntryRequest::SYSTEM,
+        mode: EntryRequest::INTERNAL,
         initiator: initiator,
         comment: comment,
         origin: wallet,

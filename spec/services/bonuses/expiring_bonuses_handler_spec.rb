@@ -56,7 +56,7 @@ describe Bonuses::ExpiringBonusesHandler do
   it 'creates valid confiscation entry request' do
     subject
     expect(control_entry_request).to have_attributes(
-      mode: EntryRequest::SYSTEM,
+      mode: EntryRequest::INTERNAL,
       amount: -control_balance.amount,
       comment: comment,
       customer: control_wallet.customer,

@@ -80,7 +80,7 @@ describe Customer, '#bonuses' do
 
     it 'creates confiscation entry request' do
       expect(found_entry_request).to have_attributes(
-        mode: EntryRequest::SYSTEM,
+        mode: EntryRequest::INTERNAL,
         amount: -bonus_balance.amount,
         customer: wallet.customer,
         currency: wallet.currency
