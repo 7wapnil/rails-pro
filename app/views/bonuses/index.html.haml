@@ -15,7 +15,7 @@
         %th= t('attributes.valid_for_days')
         %th= sort_link @search, :expires_at, t('attributes.expires_at')
         %th= t('attributes.percentage')
-        %th= t('attributes.repeatable')
+        %th
       = render 'search', f: f
 
     %tbody
@@ -30,6 +30,6 @@
           %td= bonus.valid_for_days
           %td= l(bonus.expires_at)
           %td= number_to_percentage(bonus.percentage, precision: 0)
-          %td= '✔' if bonus.repeatable
+          %td= 'repeatable' if bonus.repeatable
 
 = paginate @bonuses
