@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 puts 'Checking currencies ...'
 
 currency_mapping = [
@@ -14,16 +16,15 @@ currency_mapping = [
 ]
 
 entry_currency_rule_ranges = {
-  deposit:           { min:  10,     max:  1_000  },
-  win:               { min:  1,      max:  10_000 },
-  internal:          { min:  -1_000, max:  1_000  },
-  withdraw:          { min: -1_000,  max: -10     },
-  bet:               { min: -1_000,  max: -1      },
-  refund:            { min: 0,       max: 10_000  },
-  rollback:          { min: -10_000, max: 10_000  },
-  system_bet_cancel: { min: -10_000, max: 10_000  },
-  bonus_change:      { min: -10_000, max: 10_000  }
-}
+  EntryKinds::DEPOSIT => { min: 10, max: 1_000 },
+  EntryKinds::WIN => { min: 1, max: 10_000 },
+  EntryKinds::WITHDRAW => { min: -1_000, max: -10 },
+  EntryKinds::BET => { min: -1_000, max: -1 },
+  EntryKinds::REFUND => { min: 0, max: 10_000 },
+  EntryKinds::ROLLBACK => { min: -10_000, max: 10_000 },
+  EntryKinds::SYSTEM_BET_CANCEL => { min: -10_000, max: 10_000 },
+  EntryKinds::BONUS_CHANGE => { min: -10_000, max: 10_000 }
+}.symbolize_keys
 
 currency_mapping.each do |payload|
   Currency.find_or_create_by(name: payload[:name]) do |currency|
@@ -36,8 +37,8 @@ end
 Currency.select(:id).find_each(batch_size: 10) do |currency|
   EntryKinds::KINDS.keys.each do |kind|
     EntryCurrencyRule.find_or_create_by(currency: currency, kind: kind) do |r|
-      r.min_amount = entry_currency_rule_ranges[kind][:min] || 0
-      r.max_amount = entry_currency_rule_ranges[kind][:max] || 0
+      r.min_amount = entry_currency_rule_ranges.dig(kind, :min) || 0
+      r.max_amount = entry_currency_rule_ranges.dig(kind, :max) || 0
     end
   end
 end

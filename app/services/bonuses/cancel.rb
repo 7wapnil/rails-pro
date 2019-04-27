@@ -41,9 +41,9 @@ module Bonuses
     end
 
     def confiscate_bonus_money!
-      request = EntryRequests::Factories::Confiscation
-                .call(wallet: wallet, amount: bonus_balance.amount)
-      EntryRequests::ConfiscationWorker.perform_async(request.id)
+      request = EntryRequests::Factories::BonusChange
+                .call(wallet: wallet, amount: -bonus_balance.amount)
+      EntryRequests::BonusChangeWorker.perform_async(request.id)
     end
 
     def positive_bonus_balance?

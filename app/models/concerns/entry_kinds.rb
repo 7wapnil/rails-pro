@@ -11,7 +11,6 @@ module EntryKinds
     refund: REFUND = 'refund',
     rollback: ROLLBACK = 'rollback',
     system_bet_cancel: SYSTEM_BET_CANCEL = 'system_bet_cancel',
-    confiscation: CONFISCATION = 'confiscation',
     bonus_change: BONUS_CHANGE = 'bonus_change'
   }.freeze
 
@@ -23,10 +22,9 @@ module EntryKinds
     BET,
     ROLLBACK,
     SYSTEM_BET_CANCEL,
-    BONUS_CHANGE,
-    CONFISCATION
+    BONUS_CHANGE
   ].freeze
-  SYSTEM_KINDS = [ROLLBACK, SYSTEM_BET_CANCEL, CONFISCATION].freeze
+  SYSTEM_KINDS = [ROLLBACK, SYSTEM_BET_CANCEL, BONUS_CHANGE].freeze
 
   included do
     enum kind: KINDS
