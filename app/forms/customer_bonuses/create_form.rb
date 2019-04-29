@@ -6,6 +6,9 @@ module CustomerBonuses
 
     attr_accessor :subject
 
+    validate :ensure_no_active_bonus
+    validate :validate_repeated_activation
+
     delegate :customer, :original_bonus, to: :subject
 
     def submit!
@@ -16,22 +19,25 @@ module CustomerBonuses
     private
 
     def validate!
-      ensure_no_active_bonus && validate_repeated_activation
+      return if valid?
+
+      error_message = errors.full_messages.join("\n")
+      raise CustomerBonuses::ActivationError, error_message
     end
 
     def ensure_no_active_bonus
-      return true unless find_existing_bonus
+      return unless find_existing_bonus
 
       raise CustomerBonuses::ActivationError,
             I18n.t('errors.messages.customer_has_active_bonus')
     end
 
     def validate_repeated_activation
-      return true if original_bonus.repeatable
+      return if original_bonus.repeatable
 
       duplicate = CustomerBonus.find_by(customer: customer,
                                         original_bonus: original_bonus)
-      return true unless duplicate
+      return unless duplicate
 
       raise CustomerBonuses::ActivationError,
             I18n.t('errors.messages.repeated_bonus_activation')
