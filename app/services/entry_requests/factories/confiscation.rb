@@ -28,7 +28,7 @@ module EntryRequests
       def entry_request_attributes
         {
           kind: EntryKinds::CONFISCATION,
-          mode: EntryRequest::SYSTEM,
+          mode: EntryRequest::INTERNAL,
           amount: -amount,
           comment: comment,
           customer: customer,

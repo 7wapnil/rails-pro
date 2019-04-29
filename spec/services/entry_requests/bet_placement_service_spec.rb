@@ -36,7 +36,7 @@ describe EntryRequests::BetPlacementService do
       amount: -bet.amount,
       currency: bet.currency,
       kind: EntryRequest::BET,
-      mode: EntryRequest::SYSTEM,
+      mode: EntryRequest::INTERNAL,
       initiator: bet.customer,
       customer: bet.customer,
       origin: bet

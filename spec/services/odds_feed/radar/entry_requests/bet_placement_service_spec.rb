@@ -14,7 +14,7 @@ describe EntryRequests::BetPlacementService do
            amount: bet.amount,
            currency: bet.currency,
            kind: EntryRequest::BET,
-           mode: EntryRequest::SYSTEM)
+           mode: EntryRequest::INTERNAL)
   end
 
   let!(:live_producer) { create(:liveodds_producer) }

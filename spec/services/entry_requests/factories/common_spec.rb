@@ -23,7 +23,7 @@ describe EntryRequests::Factories::Common do
   let(:attributes) do
     {
       kind: EntryRequest::WIN,
-      mode: EntryRequest::SYSTEM,
+      mode: EntryRequest::INTERNAL,
       amount: winning
     }
   end

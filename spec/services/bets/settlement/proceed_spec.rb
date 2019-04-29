@@ -15,7 +15,7 @@ describe Bets::Settlement::Proceed do
       {
         currency: bet.currency,
         kind: EntryKinds::WIN,
-        mode: EntryRequest::SYSTEM,
+        mode: EntryRequest::INTERNAL,
         initiator: bet.customer,
         customer: bet.customer,
         origin: bet
@@ -50,7 +50,7 @@ describe Bets::Settlement::Proceed do
       {
         currency: bet.currency,
         kind: EntryKinds::WIN,
-        mode: EntryRequest::SYSTEM,
+        mode: EntryRequest::INTERNAL,
         initiator: bet.customer,
         customer: bet.customer,
         origin: bet
@@ -86,7 +86,7 @@ describe Bets::Settlement::Proceed do
       {
         currency: bet.currency,
         kind: 'refund',
-        mode: EntryRequest::SYSTEM,
+        mode: EntryRequest::INTERNAL,
         initiator: bet.customer,
         customer: bet.customer,
         origin: bet

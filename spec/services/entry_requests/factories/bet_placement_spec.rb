@@ -25,7 +25,7 @@ describe EntryRequests::Factories::BetPlacement do
       amount: -bet.amount,
       currency: bet.currency,
       kind: EntryRequest::BET,
-      mode: EntryRequest::SYSTEM,
+      mode: EntryRequest::INTERNAL,
       initiator: impersonated_by,
       customer: bet.customer,
       origin: bet
