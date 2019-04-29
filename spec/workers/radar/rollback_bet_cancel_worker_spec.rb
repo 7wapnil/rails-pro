@@ -74,7 +74,7 @@ describe Radar::RollbackBetCancelWorker do
 
   let(:win_entry_requests) do
     won_bets.map do |bet|
-      create(:entry_request, :system_bet_cancel, :system,
+      create(:entry_request, :system_bet_cancel, :internal,
              amount: -bet.amount,
              origin: bet,
              initiator: bet.customer,
@@ -84,7 +84,7 @@ describe Radar::RollbackBetCancelWorker do
   end
   let(:placement_entry_requests) do
     [*won_bets, *common_bets].map do |bet|
-      create(:entry_request, :system_bet_cancel, :system,
+      create(:entry_request, :system_bet_cancel, :internal,
              amount: bet.amount,
              origin: bet,
              initiator: bet.customer,
@@ -94,13 +94,13 @@ describe Radar::RollbackBetCancelWorker do
   end
   let(:excluded_entry_requests) do
     [
-      create(:entry_request, :system_bet_cancel, :system,
+      create(:entry_request, :system_bet_cancel, :internal,
              amount: -excluded_win_bet.amount,
              origin: excluded_win_bet,
              initiator: excluded_win_bet.customer,
              customer: excluded_win_bet.customer,
              currency: excluded_win_bet.currency),
-      create(:entry_request, :system_bet_cancel, :system,
+      create(:entry_request, :system_bet_cancel, :internal,
              amount: excluded_placement_bet.amount,
              origin: excluded_placement_bet,
              initiator: excluded_placement_bet.customer,

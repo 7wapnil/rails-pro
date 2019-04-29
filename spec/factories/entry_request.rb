@@ -61,7 +61,7 @@ FactoryBot.define do
       kind { EntryKinds::WIN }
     end
 
-    trait :system do
+    trait :internal do
       mode { EntryRequest::INTERNAL }
     end
   end
