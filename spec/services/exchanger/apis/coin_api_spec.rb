@@ -16,7 +16,7 @@ describe Exchanger::Apis::CoinApi do
     create(:currency, :primary, code: Currency::PRIMARY_CODE)
     create(:currency, code: 'BTC', kind: Currency::CRYPTO)
     create(:currency, code: 'ETH', kind: Currency::CRYPTO)
-    create(:currency, code: 'MBTC', kind: Currency::CRYPTO)
+    create(:currency, code: 'mBTC', kind: Currency::CRYPTO)
   end
 
   it 'requests rates from service' do
@@ -46,13 +46,13 @@ describe Exchanger::Apis::CoinApi do
     expect(subject.call.count).to be_zero
   end
 
-  it 'returns MBTC as calculated based on BTC' do
+  it 'returns mBTC as calculated based on BTC' do
     stub_request(:get, expected_route)
       .to_return(status: 200, body: expected_response, headers: {
                    'content-type': 'application/json'
                  })
 
-    mbtc = subject.call.detect { |rate| rate.code == 'MBTC' }
+    mbtc = subject.call.detect { |rate| rate.code == 'mBTC' }
     expect(mbtc.value).to eq(1130)
   end
 end

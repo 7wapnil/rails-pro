@@ -24,8 +24,6 @@ class Currency < ApplicationRecord
   validates :exchange_rate, numericality: { allow_nil: true }
   validates_associated :entry_currency_rules
 
-  before_save { code.upcase! }
-
   def self.available_currency_codes
     %w[EUR BTC USD INR ZAR]
   end

@@ -2,7 +2,7 @@ module Exchanger
   module Apis
     class CoinApi < BaseApi
       BTC = 'BTC'.freeze
-      MBTC = 'MBTC'.freeze
+      MBTC = 'mBTC'.freeze
 
       base_uri 'https://rest.coinapi.io/v1'
       headers 'X-CoinAPI-Key': ENV['COIN_API_KEY']
