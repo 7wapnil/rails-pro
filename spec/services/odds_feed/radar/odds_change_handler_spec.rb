@@ -17,8 +17,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
   end
 
   before do
-    allow(::Radar::ScheduledEvents::EventLoadingWorker)
-      .to receive(:perform_async)
+    allow(::EventsManager::EventLoader).to receive(:call).and_return(event)
     allow(::OddsFeed::Radar::MarketGenerator::Service).to receive(:call)
     allow(WebSocket::Client.instance).to receive(:trigger_event_update)
     allow(EventsManager::Entities::Event)
