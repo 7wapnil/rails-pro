@@ -28,7 +28,7 @@ module CustomerBonuses
 
     def validate_repeated_activation
       return true if original_bonus.repeatable
-      
+
       duplicate = CustomerBonus.find_by(customer: customer,
                                         original_bonus: original_bonus)
       return true unless duplicate
