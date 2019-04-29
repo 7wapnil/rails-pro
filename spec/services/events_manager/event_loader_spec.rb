@@ -4,13 +4,13 @@ describe EventsManager::EventLoader do
   let(:external_id) { 'sr:match:8696826' }
 
   before do
-    allow(EventsManager::EventCrawler).to receive(:call)
+    allow(EventsManager::EventFetcher).to receive(:call)
   end
 
   it 'returns crawled event' do
     subject.call
 
-    expect(EventsManager::EventCrawler)
+    expect(EventsManager::EventFetcher)
       .to have_received(:call)
       .with(external_id)
   end
@@ -22,7 +22,7 @@ describe EventsManager::EventLoader do
 
     it 'returns event from local database' do
       subject.call
-      expect(EventsManager::EventCrawler)
+      expect(EventsManager::EventFetcher)
         .not_to have_received(:call)
     end
 
@@ -41,7 +41,7 @@ describe EventsManager::EventLoader do
       subject.options = { force: true }
       subject.call
 
-      expect(EventsManager::EventCrawler)
+      expect(EventsManager::EventFetcher)
         .to have_received(:call)
         .with(external_id)
     end

@@ -28,7 +28,9 @@ module EventsManager
       competitor_data.players.map do |player_entity|
         update_player(competitor, create_player(player_entity))
       rescue ActiveRecord::RecordInvalid
-        log :warn, "Player data is invalid: #{player_entity}"
+        log :warn,
+            message: 'Player data is invalid',
+            player: player_entity
       end
     end
 

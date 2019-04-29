@@ -27,7 +27,7 @@ module EventsManager
     end
 
     def crawled_event
-      ::EventsManager::EventCrawler.call(@external_id)
+      ::EventsManager::EventFetcher.call(@external_id)
     end
 
     def crawling_forced?
