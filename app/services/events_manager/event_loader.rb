@@ -40,12 +40,6 @@ module EventsManager
       end
     end
 
-    def update_scope(event, scope)
-      return if event.event_scopes.exists?(scope.id)
-
-      event.event_scopes << scope
-    end
-
     def update_competitor(event, competitor)
       return if event.competitors.exists?(competitor.id)
 

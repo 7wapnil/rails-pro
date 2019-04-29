@@ -37,18 +37,11 @@ module OddsFeed
       end
 
       def event
-        @event ||= Event
-                   .includes(:competitors, :players, :event_scopes, :title)
-                   .find_by!(external_id: event_id)
-      rescue ActiveRecord::RecordNotFound
-        ::Radar::ScheduledEvents::EventLoadingWorker.perform_async(event_id)
-
-        log_job_failure(
-          I18n.t('errors.messages.nonexistent_event', id: event_id)
-        )
-
-        raise SilentRetryJobError,
-              I18n.t('errors.messages.nonexistent_event', id: event_id)
+        @event ||= ::EventsManager::EventLoader.call(event_id,
+                                                     includes: %i[competitors
+                                                                  players
+                                                                  event_scopes
+                                                                  title])
       end
 
       def update_event!
