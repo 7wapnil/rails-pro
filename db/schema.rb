@@ -155,6 +155,7 @@ ActiveRecord::Schema.define(version: 2019_04_25_115832) do
   create_table "competitor_players", id: false, force: :cascade do |t|
     t.bigint "competitor_id"
     t.bigint "player_id"
+    t.index ["competitor_id", "player_id"], name: "index_competitor_players_on_competitor_id_and_player_id", unique: true
     t.index ["competitor_id"], name: "index_competitor_players_on_competitor_id"
     t.index ["player_id"], name: "index_competitor_players_on_player_id"
   end
@@ -338,6 +339,7 @@ ActiveRecord::Schema.define(version: 2019_04_25_115832) do
     t.bigint "event_id"
     t.bigint "competitor_id"
     t.index ["competitor_id"], name: "index_event_competitors_on_competitor_id"
+    t.index ["event_id", "competitor_id"], name: "index_event_competitors_on_event_id_and_competitor_id", unique: true
     t.index ["event_id"], name: "index_event_competitors_on_event_id"
   end
 
