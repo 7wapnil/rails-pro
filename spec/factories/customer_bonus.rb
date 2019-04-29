@@ -26,5 +26,13 @@ FactoryBot.define do
       rollover_balance { Faker::Number.decimal(2, 2).to_f }
       rollover_initial_value { rollover_balance }
     end
+
+    trait :activated do
+      entry { create(:entry) }
+    end
+
+    trait :expired do
+      created_at { (valid_for_days + 1).days.ago }
+    end
   end
 end

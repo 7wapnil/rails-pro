@@ -26,6 +26,8 @@ module Exchanger
     def update_rate(rate)
       currency = ::Currency.find_by!(code: rate.code)
       currency.update_attributes(exchange_rate: rate.value)
+
+      Rails.logger.info "Rate for '#{rate.code}' updated to #{rate.value}"
     rescue ActiveRecord::RecordNotFound
       Rails.logger.error "Currency '#{rate.code}' not found"
     rescue StandardError => e

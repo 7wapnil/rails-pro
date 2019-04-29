@@ -49,9 +49,17 @@ describe Customer, '#bonuses' do
   end
 
   context 'bonus deactivation' do
-    let(:bonus) { create(:customer_bonus, customer: customer, wallet: wallet) }
+    let!(:bonus) do
+      create(:customer_bonus, customer: customer, wallet: wallet)
+    end
+    let!(:bonus_balance) { create(:balance, :bonus, wallet: wallet) }
+
+    let(:found_entry_request) do
+      EntryRequest.confiscation.find_by(origin: wallet)
+    end
 
     before do
+      allow(EntryRequests::ConfiscationWorker).to receive(:perform_async)
       visit customer_bonus_path(bonus)
       click_link 'Expire'
     end
@@ -68,6 +76,21 @@ describe Customer, '#bonuses' do
       bonus.reload
 
       expect(bonus).to be_expired
+    end
+
+    it 'creates confiscation entry request' do
+      expect(found_entry_request).to have_attributes(
+        mode: EntryRequest::SYSTEM,
+        amount: -bonus_balance.amount,
+        customer: wallet.customer,
+        currency: wallet.currency
+      )
+    end
+
+    it 'schedules job for updating wallet' do
+      expect(EntryRequests::ConfiscationWorker)
+        .to have_received(:perform_async)
+        .with(found_entry_request.id)
     end
   end
 end

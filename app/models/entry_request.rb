@@ -10,10 +10,12 @@ class EntryRequest < ApplicationRecord
   belongs_to :origin, polymorphic: true, optional: true
   has_many :balance_entry_requests, dependent: :destroy
 
+  has_one :real_money_balance_entry_request, -> { real_money },
+          class_name: BalanceEntryRequest.name
   has_one :bonus_balance_entry_request, -> { bonus },
           class_name: BalanceEntryRequest.name
 
-  has_one :entry, inverse_of: :entry_request
+  has_one :entry, inverse_of: :entry_request, dependent: :nullify
 
   default_scope { order(created_at: :desc) }
 
@@ -89,10 +91,10 @@ class EntryRequest < ApplicationRecord
 
   def adjust_amount_value
     return unless amount && kind
-    return if CREDIT_KINDS.key?(kind.to_sym) && DEBIT_KINDS.key?(kind.to_sym)
+    return if CREDIT_KINDS.include?(kind) && DEBIT_KINDS.include?(kind)
 
     new_value = amount.abs
-    new_value = -new_value if CREDIT_KINDS.key?(kind.to_sym)
+    new_value = -new_value if CREDIT_KINDS.include?(kind)
 
     self.amount = new_value
   end
