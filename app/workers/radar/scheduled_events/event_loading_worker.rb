@@ -9,8 +9,10 @@ module Radar
                       unique_args: ->(args) { [args.first] }
 
       def perform(external_id)
-        OddsFeed::Radar::ScheduledEvents::EventLoader
-          .call(external_id)
+        OddsFeed::Radar::ScheduledEvents::EventLoader.call(external_id)
+      rescue StandardError => e
+        log_failure e
+        raise e
       end
     end
   end

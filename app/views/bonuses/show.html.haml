@@ -20,6 +20,9 @@
               %tr
                 %td= t('attributes.percentage')
                 %td= number_to_percentage(@bonus.percentage, precision: 0)
+              %tr
+                %td= t('attributes.repeatable')
+                %td= @bonus.repeatable
         .col-6
           = card do
             %table.table

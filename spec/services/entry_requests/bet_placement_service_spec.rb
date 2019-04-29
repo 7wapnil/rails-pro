@@ -170,7 +170,7 @@ describe EntryRequests::BetPlacementService do
     before do
       allow(bet).to receive(:register_failure).with(error_message)
 
-      allow(BalanceCalculations::BetWithBonus)
+      allow(BalanceCalculations::Bet)
         .to receive(:call).and_raise(StandardError, error_message)
     end
 

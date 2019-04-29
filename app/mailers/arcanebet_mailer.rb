@@ -33,6 +33,18 @@ class ArcanebetMailer < ApplicationMailer
     )
   end
 
+  def reset_password_mail
+    domain = ENV['FRONTEND_URL']
+    @person = params[:customer]
+    @reset_password_url =
+      "#{domain}/reset_password/#{@person.reset_password_token}"
+
+    mail(
+      to: @person.email,
+      subject: I18n.t('mailers.arcanebet_mailer.reset_password_mail.subject')
+    )
+  end
+
   private
 
   def find_person(login)

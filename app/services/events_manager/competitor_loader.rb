@@ -1,14 +1,21 @@
 module EventsManager
   class CompetitorLoader < BaseEntityLoader
     def call
+      load_competitor
+    rescue StandardError => e
+      Rails.logger.error("Unable to create competitor: #{e.message}")
+      nil
+    end
+
+    private
+
+    def load_competitor
       competitor = ::Competitor.new(attributes)
       ::Competitor.create_or_update_on_duplicate(competitor)
       update_players(competitor)
 
       competitor
     end
-
-    private
 
     def attributes
       { external_id: competitor_data.id,
@@ -28,7 +35,9 @@ module EventsManager
       competitor_data.players.map do |player_entity|
         update_player(competitor, create_player(player_entity))
       rescue ActiveRecord::RecordInvalid
-        log :warn, "Player data is invalid: #{player_entity}"
+        log :warn,
+            message: 'Player data is invalid',
+            player: player_entity
       end
     end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module EntryRequests
-  class RefundService < ApplicationService
+  class ProcessingService < ApplicationService
     def initialize(entry_request:)
       @entry_request = entry_request
     end

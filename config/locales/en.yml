@@ -59,6 +59,12 @@ en:
             amount:
               less_than: exceeds maximum individual withdrawal
               greater_than: must be non-zero value
+        forms/payment_methods/credit_card:
+          attributes:
+            last_four_digits:
+              blank: Card last four digits can't be blank
+              not_a_umber: Card last four digits can\'t be blank
+              wrong_length: Please confirm the last four digits of your card are entered correctly
     attributes:
       forms/withdraw_request:
         last_four_digits: ''
@@ -169,6 +175,7 @@ en:
     promotional_agreement: Promotional agreement
     email_verified: Verified email
     verification_sent: User notified about verification
+    repeatable: Repeatable
     requested_at: Requested at
     result: Result
     rollover_multiplier: Bonus rollover
@@ -356,6 +363,8 @@ en:
       betting_limits: Betting limits validation failed
       bet_odd_inactive: Odd for bet became inactive
       bonus_activation_failed: Bonus activation failed, please try later
+      customer_has_active_bonus: There is already an active bonus for this customer
+      repeated_bonus_activation: This bonus has already beed activated for this customer
       customer_account_kind_transit: Can't transit customer account kind
       customer_activated: Customer already activated
       email_verified: Email already verified
@@ -385,6 +394,10 @@ en:
       nonexistent_bet: "Bet with validation ticket id '%{id}' does not exist"
       password_invalid: Incorrect password
       unsupported_withdraw_method: "Payment method %{name} is not supported"
+      reset_password_empty_token: Empty reset token
+      reset_password_token_not_found: No user found for password reset token
+      reset_password_token_expired: Reset password token expired
+      reset_password_confirmation_mismatch: Confirmation does not match password
 
       mts:
         ticket_not_found: "Ticket not found for bet with id '%{bet_id}'"
@@ -401,7 +414,6 @@ en:
         bonus_exists: If you continue please be aware your active bonus will be cancelled, do you still wish to continue
         invalid_payment_method: "Invalid payment method: %{payment_method}"
         invalid_payload: "Missing %{attr}"
-        last_four_digits: Please confirm the last four digits of your card are entered correctly
         method_not_supported: Withdraw method is not supported
         customer_not_verified: Customer should be verified to withdraw funds
       withdrawal_requests:
@@ -444,7 +456,7 @@ en:
     win: Win
     withdraw: Withdraw
     refund: Refund
-    rollback: Rollback
+    rollback: Rollback settlement by Radar
     system_bet_cancel: Cancellation by Radar
     bonus: Bonus money
     real_money: Real money
@@ -480,6 +492,8 @@ en:
         subject: Account verified
       email_verification:
         subject: Verify your email address
+      reset_password_mail:
+        subject: Reset your password
 
   messages:
     deposit_limits:

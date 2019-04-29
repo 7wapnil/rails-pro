@@ -30,7 +30,11 @@ module Deposits
     def apply_bonus_code!
       return unless bonus
 
-      Bonuses::ActivationService.call(wallet, bonus, @amount)
+      CustomerBonuses::Create.call(
+        wallet: wallet,
+        original_bonus: bonus,
+        amount: @amount
+      )
     end
 
     def wallet

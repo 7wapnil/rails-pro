@@ -46,8 +46,8 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
           class_name: Entry.name,
           as: :origin
 
-  has_many :entry_requests, as: :origin
-  has_many :entries, as: :origin
+  has_many :entry_requests, as: :origin, dependent: :nullify
+  has_many :entries, as: :origin, dependent: :nullify
   has_many :tournaments,
            -> { where(kind: EventScope::TOURNAMENT) },
            through: :event,

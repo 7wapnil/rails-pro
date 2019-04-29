@@ -1,5 +1,5 @@
 module EventsManager
-  class EventCrawler < BaseEntityLoader
+  class EventFetcher < BaseEntityLoader
     MATCH_TYPE_REGEXP = /:match:/
 
     def call

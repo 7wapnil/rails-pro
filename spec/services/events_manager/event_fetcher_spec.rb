@@ -1,4 +1,4 @@
-describe EventsManager::EventCrawler do
+describe EventsManager::EventFetcher do
   subject { described_class.new(external_id) }
 
   let(:external_id) { 'sr:match:8696826' }

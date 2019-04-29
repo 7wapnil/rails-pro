@@ -106,8 +106,8 @@ module EntryRequests
       def check_bonus_expiration!
         return true unless customer_bonus_expired?
 
-        customer_bonus.close!(BonusExpiration::Expired,
-                              reason: :expired_by_date)
+        Bonuses::Cancel.call(bonus: customer_bonus,
+                             reason: CustomerBonus::EXPIRED_BY_DATE)
         entry_request
           .register_failure!(I18n.t('errors.messages.bonus_expired'))
       end

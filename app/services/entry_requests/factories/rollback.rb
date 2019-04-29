@@ -38,8 +38,8 @@ module EntryRequests
       end
 
       def comment
-        "Rollback won amount #{winning_entry.amount} #{bet.customer} " \
-        "for #{bet.currency} on #{bet.event}."
+        "Rollback won amount #{winning_entry.amount} #{bet.currency} " \
+        "for #{bet.customer} on #{bet.event}."
       end
     end
   end
