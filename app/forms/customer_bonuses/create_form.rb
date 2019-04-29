@@ -27,10 +27,11 @@ module CustomerBonuses
     end
 
     def validate_repeated_activation
+      return true if original_bonus.repeatable
+      
       duplicate = CustomerBonus.find_by(customer: customer,
                                         original_bonus: original_bonus)
       return true unless duplicate
-      return true if original_bonus.repeatable
 
       raise CustomerBonuses::ActivationError,
             I18n.t('errors.messages.repeated_bonus_activation')
