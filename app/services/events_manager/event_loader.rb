@@ -18,7 +18,7 @@ module EventsManager
 
     def find_event
       query = Event
-      query.includes(includes) if includes.any?
+      query = query.includes(includes) if includes.any?
       query.find_by(external_id: @external_id)
     end
 
@@ -38,7 +38,7 @@ module EventsManager
     end
 
     # Temporary solution to keep current usage compatible
-    # @todo Keep :force option usage only after integration
+    # TODO Keep :force option usage only after integration
     def crawling_force_enabled?
       @options[:force].present? || @options[:check_existence] == false
     end
