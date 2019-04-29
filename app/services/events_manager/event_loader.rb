@@ -4,7 +4,12 @@ module EventsManager
 
     def call
       validate! unless @options[:skip_validation]
-      load_event
+
+      ActiveRecord::Base.transaction do
+        event = create_event!
+        update_associations(event)
+        event
+      end
     end
 
     private
@@ -14,7 +19,7 @@ module EventsManager
       check_existence! if @options[:check_existence]
     end
 
-    def load_event
+    def create_event!
       event = ::Event.new(external_id: event_data.id,
                           start_at: event_data.start_at,
                           name: event_data.name,
@@ -22,9 +27,8 @@ module EventsManager
                           traded_live: event_data.traded_live?,
                           payload: event_data.payload,
                           title: title)
-      Event.create_or_update_on_duplicate(event)
-      update_associations(event)
 
+      Event.create_or_update_on_duplicate(event)
       event
     end
 
@@ -77,9 +81,10 @@ module EventsManager
     end
 
     def competitors
-      event_data.competitors.map do |entity|
-        CompetitorLoader.call(entity.id)
-      end
+      event_data
+        .competitors
+        .map { |entity| CompetitorLoader.call(entity.id) }
+        .compact
     end
   end
 end

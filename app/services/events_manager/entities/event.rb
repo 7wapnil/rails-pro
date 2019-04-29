@@ -39,7 +39,7 @@ module EventsManager
 
       def sport
         @sport ||= create_entity(
-          attribute(fixture, 'tournament', 'sport')
+          attribute!(fixture, 'tournament', 'sport')
         )
       end
 
