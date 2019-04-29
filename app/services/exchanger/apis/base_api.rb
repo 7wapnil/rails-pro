@@ -7,7 +7,7 @@ module Exchanger
 
       def initialize(base, currencies)
         @base = base
-        @currencies = currencies
+        @currencies = currencies.reject { |code| code == base }
       end
 
       def call
@@ -32,10 +32,6 @@ module Exchanger
         raise NotImplementedError, 'Must be implemented by child classes'
       end
 
-      def currencies_list_param
-        @currencies.reject { |code| code == ::Currency::PRIMARY_CODE }.join(',')
-      end
-
       private
 
       def log(level, message)
@@ -44,7 +40,7 @@ module Exchanger
           message:              message,
           api:                  self.class.name,
           base_currency:        @base,
-          currencies_to_update: currencies_list_param
+          currencies_to_update: @currencies
         )
       end
     end

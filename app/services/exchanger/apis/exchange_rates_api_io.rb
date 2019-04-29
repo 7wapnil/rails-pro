@@ -7,7 +7,7 @@ module Exchanger
 
       def request
         self.class.get('/latest', query: { base: @base,
-                                           symbols: currencies_list_param })
+                                           symbols: @currencies.join(',') })
       end
 
       def parse(formatted_response)
