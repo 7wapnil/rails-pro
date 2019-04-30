@@ -24,8 +24,7 @@ module EntryRequests
     def remove_bonus!
       Bonuses::Cancel.call(
         bonus: customer_bonus,
-        reason: CustomerBonus::WITHDRAWAL,
-        user: customer
+        reason: CustomerBonus::WITHDRAWAL
       )
     end
 

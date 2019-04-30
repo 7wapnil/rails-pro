@@ -1,7 +1,6 @@
 module Withdrawals
   class WithdrawalVerification < ApplicationService
     NOT_ENOUGH_MONEY = I18n.t('errors.messages.withdrawal.not_enough_money')
-    ACTIVE_BONUS_EXISTS = I18n.t('errors.messages.withdrawal.bonus_exists')
 
     def initialize(wallet, amount)
       @wallet = wallet
@@ -25,10 +24,6 @@ module Withdrawals
 
       register_failure! NOT_ENOUGH_MONEY
     end
-
-    # def verify_bonus_existence!
-    #   register_failure! ACTIVE_BONUS_EXISTS if wallet.customer.active_bonus
-    # end
 
     def register_failure!(msg)
       raise WithdrawalError, msg
