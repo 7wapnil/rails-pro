@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Events
-  class EventsQueryResolver
+  class EventsQueryResolver # rubocop:disable Metrics/ClassLength
     LIVE = 'live'
     UPCOMING_CONTEXTS =
       %w[upcoming_for_time upcoming_limited upcoming_unlimited].freeze
@@ -31,10 +31,21 @@ module Events
     def base_query
       Event
         .joins(:title)
-        .preload(:tournament, :dashboard_markets, :competitors)
+        .joins(join_events_to_tournaments_sql)
+        .preload(:dashboard_markets, :competitors)
         .visible
         .active
         .order(:priority, :start_at)
+    end
+
+    def join_events_to_tournaments_sql
+      <<~SQL
+        INNER JOIN "scoped_events" "t_scoped_events"
+        ON "t_scoped_events"."event_id" = "events"."id"
+        INNER JOIN "event_scopes" "t_event_scopes"
+        ON "t_event_scopes"."id" = "t_scoped_events"."event_scope_id"
+          AND "t_event_scopes"."kind" = 'tournament'
+      SQL
     end
 
     # It tries to call:
