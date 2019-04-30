@@ -117,12 +117,79 @@ describe Market do
       end
     end
 
-    it 'only returns markets with visible statuses' do
-      expected_to_be_displayed =
-        described_class
-        .where(status: StateMachines::MarketStateMachine::DISPLAYED_STATUSES)
-      expect(described_class.for_displaying)
-        .to match_array(expected_to_be_displayed)
+    let(:extra_market) do
+      create(:market, :with_odds,
+             status: extra_market_status,
+             priority: extra_market_priority)
+    end
+
+    context 'with priority 0 inactive market' do
+      let(:extra_market_priority) { 0 }
+      let(:extra_market_status) do
+        StateMachines::MarketStateMachine::INACTIVE
+      end
+
+      it 'returns markets with visible statuses and inactive priority 0' do
+        expected_to_be_displayed =
+          [extra_market] +
+          described_class.where(
+            status: StateMachines::MarketStateMachine::DISPLAYED_STATUSES
+          )
+
+        expect(described_class.for_displaying)
+          .to match_array(expected_to_be_displayed)
+      end
+    end
+
+    context 'with priority 1 inactive market' do
+      let(:extra_market_priority) { 1 }
+      let(:extra_market_status) do
+        StateMachines::MarketStateMachine::INACTIVE
+      end
+
+      it 'returns only markets with visible statuses' do
+        expected_to_be_displayed =
+          described_class.where(
+            status: StateMachines::MarketStateMachine::DISPLAYED_STATUSES
+          )
+
+        expect(described_class.for_displaying)
+          .to match_array(expected_to_be_displayed)
+      end
+    end
+
+    context 'with priority 0 active market' do
+      let(:extra_market_priority) { 0 }
+      let(:extra_market_status) do
+        StateMachines::MarketStateMachine::ACTIVE
+      end
+
+      it 'returns only markets with visible statuses' do
+        expected_to_be_displayed =
+          described_class.where(
+            status: StateMachines::MarketStateMachine::DISPLAYED_STATUSES
+          )
+
+        expect(described_class.for_displaying)
+          .to match_array(expected_to_be_displayed)
+      end
+    end
+
+    context 'with priority 1 active market' do
+      let(:extra_market_priority) { 1 }
+      let(:extra_market_status) do
+        StateMachines::MarketStateMachine::ACTIVE
+      end
+
+      it 'returns only markets with visible statuses' do
+        expected_to_be_displayed =
+          described_class.where(
+            status: StateMachines::MarketStateMachine::DISPLAYED_STATUSES
+          )
+
+        expect(described_class.for_displaying)
+          .to match_array(expected_to_be_displayed)
+      end
     end
   end
 
