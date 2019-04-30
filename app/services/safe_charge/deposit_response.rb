@@ -9,6 +9,9 @@ module SafeCharge
       PARAMS_MISMATCH
     ].freeze
 
+    delegate :real_money_balance_entry_request, to: :entry_request
+    delegate :amount, to: :real_money_balance_entry_request, allow_nil: true
+
     def entry_request
       @entry_request ||= EntryRequest.find(entry_request_id)
     end
@@ -44,7 +47,7 @@ module SafeCharge
 
     def validate_parameters!
       valid = true
-      valid &&= params['totalAmount'].to_d == entry_request.amount
+      valid &&= params['totalAmount'].to_d == amount
       valid &&= params['currency'] == entry_request.currency.code
       raise PARAMS_MISMATCH unless valid
     end

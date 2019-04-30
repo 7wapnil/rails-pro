@@ -7,6 +7,7 @@ module CustomerBonuses
     attr_accessor :subject
 
     delegate :customer, :original_bonus, to: :subject
+    delegate :active_bonus, to: :reloaded_customer, allow_nil: true
 
     def submit!
       validate!
@@ -20,7 +21,7 @@ module CustomerBonuses
     end
 
     def ensure_no_active_bonus
-      return true unless find_existing_bonus
+      return true unless active_bonus
 
       raise CustomerBonuses::ActivationError,
             I18n.t('errors.messages.customer_has_active_bonus')
@@ -36,8 +37,8 @@ module CustomerBonuses
             I18n.t('errors.messages.repeated_bonus_activation')
     end
 
-    def find_existing_bonus
-      Customer.find_by(id: customer.id)&.active_bonus
+    def reloaded_customer
+      customer&.reload
     end
   end
 end

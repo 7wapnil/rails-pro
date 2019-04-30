@@ -1,7 +1,13 @@
 describe SafeCharge::WebhookHandler do
   let(:webhook_checksum) { SecureRandom.hex(10) }
   let(:service_call) { described_class.call(params) }
-  let!(:entry_request) { create(:entry_request) }
+  let(:entry_request) { create(:entry_request) }
+  let(:ratio) { 0.75 }
+  let!(:real_money_balance_entry_request) do
+    create(:balance_entry_request, kind: Balance::REAL_MONEY,
+                                   amount: entry_request.amount * ratio,
+                                   entry_request: entry_request)
+  end
   let(:entry_currency_rule) { create(:entry_currency_rule) }
   let(:params) do
     {
@@ -9,7 +15,7 @@ describe SafeCharge::WebhookHandler do
       'Status' => SafeCharge::Statuses::APPROVED,
       'advanceResponseChecksum' => webhook_checksum,
       'currency' => entry_request.currency.code,
-      'totalAmount' => entry_request.amount.to_s,
+      'totalAmount' => real_money_balance_entry_request.amount.to_s,
       'productId' => entry_request.id.to_s,
       'payment_method' => SafeCharge::PaymentMethods::CC_CARD,
       'PPP_TransactionID' => Faker::Number.number(10).to_s
@@ -30,11 +36,11 @@ describe SafeCharge::WebhookHandler do
     it 'raises DmnAuthenticationError when checksum do not match' do
       allow(Digest::SHA256).to receive(:hexdigest).and_return('checksum')
 
-      expect { service_call }.to raise_error auth_error
+      expect { service_call }.to raise_error(auth_error)
     end
 
     it 'do not raise error when checksum match' do
-      expect { service_call }.not_to raise_error auth_error
+      expect { service_call }.not_to raise_error
     end
   end
 
