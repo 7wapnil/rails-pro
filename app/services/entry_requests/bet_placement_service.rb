@@ -11,13 +11,12 @@ module EntryRequests
 
     def call
       bet.send_to_internal_validation!
+
       return unless validate
 
       bet.finish_internal_validation_successfully! do
         bet.send_to_external_validation!
       end
-
-      WebSocket::Client.instance.trigger_bet_update(bet)
     end
 
     private

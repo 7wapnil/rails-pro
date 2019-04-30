@@ -1,41 +1,39 @@
+# frozen_string_literal: true
+
 module BetExternalValidation
   class Service < ApplicationService
+    delegate :customer, :producer, to: :bet
+
     def initialize(bet)
       @bet = bet
     end
 
     def call
-      delay = live_bet_delay if @bet.odd.market.event.producer&.live?
-      return publisher.perform_async([@bet.id]) unless delay
+      return publisher.perform_async(bet.id) unless live_bet_delay
 
-      publisher.perform_in(delay.seconds, [@bet.id])
+      publisher.perform_in(live_bet_delay.seconds, bet.id)
     end
 
     private
 
-    def fetch_global_limit
-      BettingLimit
-        .find_by(
-          customer: @customer,
-          title: nil
-        )
-    end
-
-    def fetch_limit_by_title
-      BettingLimit
-        .find_by(
-          customer: @customer,
-          title: @bet.odd.market.event.title
-        )
-    end
+    attr_reader :bet
 
     def live_bet_delay
-      delays = [
-        fetch_global_limit&.live_bet_delay,
-        fetch_limit_by_title&.live_bet_delay
-      ].compact
+      return @live_bet_delay unless producer&.live?
 
-      delays&.max
+      @live_bet_delay ||= [global_live_bet_delay, title_live_bet_delay].max
+    end
+
+    def global_live_bet_delay
+      BettingLimit
+        .find_by(customer: customer, title: nil)
+        &.live_bet_delay
+    end
+
+    def title_live_bet_delay
+      BettingLimit
+        .find_by(customer: customer, title: bet.odd.market.event.title)
+        &.live_bet_delay
     end
 
     def publisher

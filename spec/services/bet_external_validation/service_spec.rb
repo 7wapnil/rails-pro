@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe BetExternalValidation::Service do
   describe '.call' do
     let(:bet) { create(:bet, :sent_to_external_validation) }
@@ -11,12 +13,12 @@ describe BetExternalValidation::Service do
 
         it 'avoids external validation by publishing ticket to MTS' do
           expect(Mts::ValidationMessagePublisherWorker)
-            .not_to have_enqueued_sidekiq_job([bet.id])
+            .not_to have_enqueued_sidekiq_job(bet.id)
         end
 
         it 'perform dummy validation' do
           expect(Mts::ValidationMessagePublisherStubWorker)
-            .to have_enqueued_sidekiq_job([bet.id])
+            .to have_enqueued_sidekiq_job(bet.id)
         end
       end
     end
@@ -29,7 +31,7 @@ describe BetExternalValidation::Service do
 
       it 'performs external validation by publishing ticket to MTS' do
         expect(Mts::ValidationMessagePublisherWorker)
-          .to have_enqueued_sidekiq_job([bet.id])
+          .to have_enqueued_sidekiq_job(bet.id)
       end
     end
   end

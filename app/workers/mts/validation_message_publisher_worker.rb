@@ -1,21 +1,27 @@
+# frozen_string_literal: true
+
 module Mts
   class ValidationMessagePublisherWorker < ApplicationWorker
-    def perform(ids)
-      @ids = ids
+    def perform(bet_id)
+      bet = find_bet(bet_id)
+      response = Publishers::BetValidation.publish!(bet: bet)
 
-      unless ids.length == 1
-        log_job_failure NotImplementedError
-        raise NotImplementedError
-      end
+      raise unless response
 
-      publish_single_bet_validation(ids.first)
+      notify_betslip(bet)
     end
 
     private
 
-    def publish_single_bet_validation(id)
-      response = Publishers::BetValidation.publish!(bet: Bet.find_by(id: id))
-      raise unless response
+    def find_bet(bet_id)
+      Bet.find(bet_id)
+    rescue ActiveRecord::RecordNotFound
+      raise ActiveRecord::RecordNotFound,
+            I18n.t('errors.messages.nonexistent_bet', id: bet_id)
+    end
+
+    def notify_betslip(bet)
+      WebSocket::Client.instance.trigger_bet_update(bet)
     end
   end
 end
