@@ -5,7 +5,11 @@ describe Deposits::GetPaymentPageUrl do
 
   let(:customer) { create(:customer, :with_address) }
   let(:entry_request) { create(:entry_request, customer: customer) }
+  let!(:balance_entry_request) do
+    create(:balance_entry_request, entry_request: entry_request)
+  end
   let(:extra_query_params) { {} }
+  let(:amount) { balance_entry_request.amount }
 
   let(:payment_url) { Faker::Internet.url }
   let(:merchant_id) { Faker::Bank.account_number }
@@ -93,7 +97,7 @@ describe Deposits::GetPaymentPageUrl do
     end
 
     let(:item_name) do
-      "Deposit #{entry_request.amount} to your #{currency.code} " \
+      "Deposit #{balance_entry_request.amount} to your #{currency.code} " \
       'wallet on ArcaneBet.'
     end
 
@@ -110,9 +114,9 @@ describe Deposits::GetPaymentPageUrl do
           user_token_id: customer.id.to_s,
           item_name_1: item_name,
           item_number_1: entry_request.id.to_s,
-          item_amount_1: entry_request.amount.to_s,
+          item_amount_1: amount.to_s,
           item_quantity_1: described_class::ITEM_QUANTITY.to_s,
-          total_amount: entry_request.amount.to_s
+          total_amount: amount.to_s
         )
     end
   end
