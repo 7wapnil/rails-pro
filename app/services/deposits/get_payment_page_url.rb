@@ -82,7 +82,7 @@ module Deposits
     def amount
       @amount ||= BalanceEntryRequest
                   .real_money
-                  .find_by!(entry_request_id: entry_request)
+                  .find_by!(entry_request: entry_request)
                   .amount
     end
 
