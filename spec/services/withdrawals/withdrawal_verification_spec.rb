@@ -34,11 +34,5 @@ describe Withdrawals::WithdrawalVerification do
 
       expect { service.call }.to raise_error(error_class, not_enough_money_msg)
     end
-
-    it 'raises error when customer has active bonus' do
-      allow(customer).to receive(:active_bonus).and_return(bonus)
-
-      expect { service.call }.to raise_error(error_class, bonus_exists_msg)
-    end
   end
 end

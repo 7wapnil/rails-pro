@@ -17,7 +17,6 @@ module Withdrawals
     attr_reader :wallet, :amount
 
     def verify_business_rules!
-      verify_bonus_existence!
       verify_amount!
     end
 
@@ -27,9 +26,9 @@ module Withdrawals
       register_failure! NOT_ENOUGH_MONEY
     end
 
-    def verify_bonus_existence!
-      register_failure! ACTIVE_BONUS_EXISTS if wallet.customer.active_bonus
-    end
+    # def verify_bonus_existence!
+    #   register_failure! ACTIVE_BONUS_EXISTS if wallet.customer.active_bonus
+    # end
 
     def register_failure!(msg)
       raise WithdrawalError, msg
