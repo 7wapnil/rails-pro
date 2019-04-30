@@ -5,6 +5,7 @@
       %th= t('attributes.email')
       %th= t('attributes.ip_address')
       %th= t('attributes.id')
+      %th= t('attributes.b_tag')
       %th= t('attributes.balance')
 
   %tbody
@@ -18,4 +19,5 @@
         %td= customer.email
         %td= customer.last_sign_in_ip
         %td= customer.id
+        %td= customer.b_tag
         %td= wallet_balances_for(customer)
