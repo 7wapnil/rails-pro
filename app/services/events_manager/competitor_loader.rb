@@ -3,7 +3,11 @@ module EventsManager
     def call
       load_competitor
     rescue StandardError => e
-      Rails.logger.error("Unable to create competitor: #{e.message}")
+      log :warn,
+          message: 'Unable to create competitor',
+          error: e.message,
+          external_id: @external_id,
+          competitor_data: competitor_data.to_s
       nil
     end
 
@@ -41,7 +45,7 @@ module EventsManager
       rescue ActiveRecord::RecordInvalid
         log :warn,
             message: 'Player data is invalid',
-            player: player_entity
+            player: player_entity.to_s
       end
     end
 
