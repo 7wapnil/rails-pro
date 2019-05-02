@@ -87,13 +87,6 @@ describe EntryRequests::BetPlacementService do
           message: nil
         )
     end
-
-    it 'emits bet update websocket event' do
-      expect(WebSocket::Client.instance)
-        .to receive(:trigger_bet_update)
-
-      subject.call
-    end
   end
 
   context 'with disconnected provider' do

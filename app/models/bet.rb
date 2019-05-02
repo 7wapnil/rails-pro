@@ -25,6 +25,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_one :entry_request, as: :origin
   has_one :market, through: :odd
   has_one :event, through: :market
+  has_one :producer, through: :event
   has_one :title, through: :event
 
   has_one :placement_entry,
