@@ -8,13 +8,14 @@ module CustomerBonuses
       @wallet = wallet
       @bonus = original_bonus
       @amount = params[:amount].to_f
+      @update_wallet = params.fetch(:update_wallet, false)
       @initiator = params[:user]
     end
 
     def call
       log_activation_attempt if initiator
       create_customer_bonus!
-      add_bonus_money
+      add_bonus_money if update_wallet?
       log_successful_activation if initiator
 
       customer_bonus
@@ -22,7 +23,7 @@ module CustomerBonuses
 
     private
 
-    attr_accessor :wallet, :bonus, :amount, :initiator
+    attr_accessor :wallet, :bonus, :amount, :update_wallet, :initiator
 
     def log_activation_attempt
       initiator.log_event(:bonus_activation, customer_bonus, customer)
@@ -71,6 +72,10 @@ module CustomerBonuses
                 .call(wallet: wallet, amount: amount, initiator: initiator)
 
       EntryRequests::BonusChangeWorker.perform_async(request.id)
+    end
+
+    def update_wallet?
+      update_wallet.present?
     end
 
     def log_successful_activation

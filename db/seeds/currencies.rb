@@ -21,7 +21,8 @@ entry_currency_rule_ranges = {
   bet:               { min: -1_000,  max: -1      },
   refund:            { min: 0,       max: 10_000  },
   rollback:          { min: -10_000, max: 10_000  },
-  system_bet_cancel: { min: -10_000, max: 10_000  }
+  system_bet_cancel: { min: -10_000, max: 10_000  },
+  bonus_change:      { min: -10_000, max: 10_000  }
 }
 
 currency_mapping.each do |payload|
@@ -35,8 +36,8 @@ end
 Currency.select(:id).find_each(batch_size: 10) do |currency|
   EntryKinds::KINDS.keys.each do |kind|
     EntryCurrencyRule.find_or_create_by(currency: currency, kind: kind) do |r|
-      r.min_amount = entry_currency_rule_ranges[kind][:min]
-      r.max_amount = entry_currency_rule_ranges[kind][:max]
+      r.min_amount = entry_currency_rule_ranges[kind][:min] || 0
+      r.max_amount = entry_currency_rule_ranges[kind][:max] || 0
     end
   end
 end
