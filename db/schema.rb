@@ -368,7 +368,6 @@ ActiveRecord::Schema.define(version: 2019_05_10_134839) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "external_id"
-    t.json "payload"
     t.datetime "remote_updated_at"
     t.boolean "traded_live", default: false
     t.string "status", default: "not_started"
