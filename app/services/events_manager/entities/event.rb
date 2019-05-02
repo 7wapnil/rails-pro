@@ -23,11 +23,11 @@ module EventsManager
       end
 
       def traded_live?
-        live_odds == BOOKED_FIXTURE_STATUS
+        liveodds == BOOKED_FIXTURE_STATUS
       end
 
-      def payload
-        { liveodds: live_odds }
+      def liveodds
+        attribute(fixture, 'liveodds')
       end
 
       def competitors
@@ -92,10 +92,6 @@ module EventsManager
       def start_time_field
         attribute(fixture, 'start_time') ||
           attribute(fixture, 'scheduled')
-      end
-
-      def live_odds
-        attribute(fixture, 'liveodds')
       end
     end
   end

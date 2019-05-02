@@ -11,13 +11,7 @@ module EventsManager
     private
 
     def load_event
-      event = ::Event.new(external_id: event_data.id,
-                          start_at: event_data.start_at,
-                          name: event_data.name,
-                          description: event_data.name,
-                          traded_live: event_data.traded_live?,
-                          payload: event_data.payload,
-                          title: title)
+      event = ::Event.new(event_attributes)
       Event.create_or_update_on_duplicate(event)
       log :info, message: 'Updated event', event_id: @external_id
 
@@ -71,6 +65,18 @@ module EventsManager
       event_data.competitors.map do |entity|
         CompetitorLoader.call(entity.id)
       end
+    end
+
+    def event_attributes
+      {
+        external_id: event_data.id,
+        start_at: event_data.start_at,
+        name: event_data.name,
+        description: event_data.name,
+        traded_live: event_data.traded_live?,
+        liveodds: event_data.liveodds,
+        title: title
+      }
     end
   end
 end

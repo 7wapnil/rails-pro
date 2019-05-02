@@ -8,6 +8,9 @@ module Events
     field :name, !types.String
     field :description, !types.String
     field :status, !types.String
+    field :display_status, !types.String
+    field :score, !types.String
+    field :time_in_seconds, !types.Int
     field :competitors, !types[Events::EventCompetitorType]
     field :markets, function: MarketsQuery.new
 
