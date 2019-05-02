@@ -6,6 +6,5 @@ Types::EventStateType = GraphQL::ObjectType.define do
   field :status, types.String
   field :score, types.String
   field :time, types.String
-  field :period_scores, types[Types::PeriodScoreType]
   field :finished, types.Boolean
 end

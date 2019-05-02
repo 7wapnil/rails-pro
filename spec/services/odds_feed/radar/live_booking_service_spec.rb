@@ -25,7 +25,7 @@ describe OddsFeed::Radar::LiveBookingService do
   end
 
   it 'skips operation if event liveodds is not bookable' do
-    event.update_attributes!(payload: {})
+    event.update_attributes!(bookable: false)
 
     subject.call
 
