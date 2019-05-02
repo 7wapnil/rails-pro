@@ -6,13 +6,16 @@ class Market < ApplicationRecord
 
   before_validation :define_priority, if: :name_changed?
 
-  PRIORITIES_MAP = [
-    { pattern: /^Winner$/, priority: 0 },
-    { pattern: /^1x2$/, priority: 0 }
+  PRIORITIES = [
+    HIGH_PRIORITY = 0,
+    DEFAULT_PRIORITY = 1,
+    LOW_PRIORITY = 2
   ].freeze
 
-  PRIORITIES = [0, 1, 2].freeze
-  DEFAULT_PRIORITY = 1
+  PRIORITIES_MAP = [
+    { pattern: /^Winner$/, priority: HIGH_PRIORITY },
+    { pattern: /^1x2$/, priority: HIGH_PRIORITY }
+  ].freeze
 
   belongs_to :event
   has_many :odds, -> { order(id: :asc) }, dependent: :destroy
@@ -37,7 +40,7 @@ class Market < ApplicationRecord
     visible
       .where(markets: { status: DISPLAYED_STATUSES })
       .or(
-        where(markets: { priority: 0, status: INACTIVE })
+        where(markets: { priority: HIGH_PRIORITY, status: INACTIVE })
       )
       .joins(:odds)
       .group('markets.id')
