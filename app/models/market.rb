@@ -35,12 +35,9 @@ class Market < ApplicationRecord
 
   def self.for_displaying
     visible
-      .where('markets.status' => DISPLAYED_STATUSES)
+      .where(markets: { status: DISPLAYED_STATUSES })
       .or(
-        where(
-          'markets.priority' => 0,
-          'markets.status' => INACTIVE
-        )
+        where(markets: { priority: 0, status: INACTIVE })
       )
       .joins(:odds)
       .group('markets.id')
