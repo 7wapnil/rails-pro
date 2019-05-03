@@ -26,21 +26,24 @@ module OddsFeed
         def log_start
           log_job_message(
             :info,
-            "Starting loading Event##{external_id}"
+            message: 'Starting loading event',
+            event_id: external_id
           )
         end
 
         def log_success
           log_job_message(
             :info,
-            "Loaded Event##{external_id} successfully."
+            message: 'Loaded event successfully',
+            event_id: external_id
           )
         end
 
         def log_failure
           log_job_message(
             :error,
-            "Failed to load Event##{external_id}."
+            message: 'Failed to load event',
+            event_id: external_id
           )
         end
       end

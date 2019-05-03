@@ -15,8 +15,10 @@ module OddsFeed
       def call
         return api_call unless cached_data?
 
-        log_job_message(:info, "Cached data loaded for `#{path}`")
-        log_job_message(:debug, "Loaded data: #{cached_response}")
+        log_job_message(:info, message: 'Cached data loaded',
+                               path: path)
+        log_job_message(:debug, message: 'Loaded data',
+                                response: cached_response)
         cached_response
       end
 
@@ -37,8 +39,10 @@ module OddsFeed
       end
 
       def api_call
-        log_job_message(:debug, "Requesting Radar API endpoint: #{path}")
-        log_job_message(:debug, "Radar API response: #{response.body}")
+        log_job_message(:debug, message: 'Requesting Radar API endpoint',
+                                path: path)
+        log_job_message(:debug, message: 'Radar API response',
+                                response: response.body)
 
         Rails.cache.write(cache_key, parsed_response, cache_settings) if cache
 

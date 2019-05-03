@@ -14,12 +14,19 @@ module OddsFeed
         return update_event       if replay?
         return book_live_coverage if event.reload.bookable?
 
-        log_job_message(:info, unbookable_message)
+        log_job_message(
+          :info,
+          message: "'liveodd' for event is not '#{Event::BOOKABLE}'",
+          event_id: event.external_id
+        )
       end
 
       def update_event
-        msg = "Updating traded live flag for #{event.external_id}"
-        log_job_message(:debug, msg)
+        log_job_message(
+          :debug,
+          message: 'Updating traded live flag for event',
+          event_id: event.external_id
+        )
 
         event.update_attributes!(traded_live: true)
       end
@@ -45,10 +52,6 @@ module OddsFeed
 
       def api_client
         @api_client ||= OddsFeed::Radar::Client.new
-      end
-
-      def unbookable_message
-        "'liveodd' for event #{event.external_id} is not '#{Event::BOOKABLE}'"
       end
 
       def replay?

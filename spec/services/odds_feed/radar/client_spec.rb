@@ -105,9 +105,9 @@ describe OddsFeed::Radar::Client do
       end
 
       it 'logs job message' do
-        log_message = "Calling subscription recovery on #{expected_path}"
+        log_message = "Calling subscription recovery"
         expect(subject).to have_received(:log_job_message)
-          .with(:info, log_message).once
+          .with(:info, message: log_message, route: expected_path).once
       end
       it 'post to correct path' do
         expect(subject).to have_received(:post)
@@ -135,9 +135,12 @@ describe OddsFeed::Radar::Client do
       end
 
       it 'logs job message' do
-        log_message = "Calling subscription recovery on #{expected_path}"
         expect(subject).to have_received(:log_job_message)
-          .with(:info, log_message).once
+          .with(
+            :info,
+            message: 'Calling subscription recovery',
+            route: expected_path
+          ).once
       end
       it 'post to correct path' do
         expect(subject).to have_received(:post)

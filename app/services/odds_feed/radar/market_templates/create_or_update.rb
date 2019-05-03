@@ -105,7 +105,11 @@ module OddsFeed
         end
 
         def log_success
-          log_job_message(:debug, "Market template id '#{template.id}' updated")
+          log_job_message(
+            :debug,
+            message: 'Market template updated',
+            market_template_id: template.id
+          )
         end
       end
     end

@@ -11,7 +11,12 @@ module OddsFeed
         end
 
         def call
-          log_job_message(:debug, "Build odd ID #{external_id}, #{odd_data}")
+          log_job_message(
+            :debug,
+            message: 'Building odd',
+            event_id: external_id,
+            odd_data: odd_name
+          )
           build_odd
         end
 
