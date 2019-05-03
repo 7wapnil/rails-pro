@@ -105,7 +105,7 @@ describe OddsFeed::Radar::Client do
       end
 
       it 'logs job message' do
-        log_message = "Calling subscription recovery"
+        log_message = 'Calling subscription recovery'
         expect(subject).to have_received(:log_job_message)
           .with(:info, message: log_message, route: expected_path).once
       end
