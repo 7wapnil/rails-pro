@@ -87,7 +87,7 @@ module OddsFeed
       end
 
       def process_outcomes_for(market_data)
-        market_data['outcome'].each do |outcome|
+        Array.wrap(market_data['outcome']).each do |outcome|
           generator = ExternalId.new(event_id: event_id,
                                      market_id: market_data['id'],
                                      specs: market_data['specifiers'],
