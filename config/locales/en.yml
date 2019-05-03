@@ -398,6 +398,7 @@ en:
       reset_password_token_not_found: No user found for password reset token
       reset_password_token_expired: Reset password token expired
       reset_password_confirmation_mismatch: Confirmation does not match password
+      nonexistent_producer: "Producer with id: '%{id}' not found."
 
       mts:
         ticket_not_found: "Ticket not found for bet with id '%{bet_id}'"
