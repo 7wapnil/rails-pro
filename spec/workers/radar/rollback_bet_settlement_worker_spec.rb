@@ -60,12 +60,12 @@ describe Radar::RollbackBetSettlementWorker do
 
   let(:control_entry_requests) do
     [
-      create(:entry_request, :win, :system,
+      create(:entry_request, :win, :internal,
              origin: bets.first,
              initiator: bets.first.customer,
              customer: bets.first.customer,
              currency: bets.first.currency),
-      create(:entry_request, :win, :system,
+      create(:entry_request, :win, :internal,
              origin: bets.third,
              initiator: bets.third.customer,
              customer: bets.third.customer,
@@ -75,12 +75,12 @@ describe Radar::RollbackBetSettlementWorker do
   let!(:entry_requests) do
     [
       *control_entry_requests,
-      create(:entry_request, :bet, :system,
+      create(:entry_request, :bet, :internal,
              origin: bets.second,
              initiator: bets.second.customer,
              customer: bets.second.customer,
              currency: bets.second.currency),
-      create(:entry_request, :win, :system,
+      create(:entry_request, :win, :internal,
              origin: bets.last,
              initiator: bets.last.customer,
              customer: bets.last.customer,

@@ -1,19 +1,15 @@
 # frozen_string_literal: true
 
-describe Mts::ValidationMessagePublisherWorker do
-  let(:bet) { create(:bet) }
+describe Mts::ValidationMessagePublisherStubWorker do
+  let(:bet) { create(:bet, :sent_to_external_validation) }
 
-  before do
-    allow(Mts::Publishers::BetValidation)
-      .to receive('publish!')
-      .and_return(true)
-  end
+  before { allow_any_instance_of(described_class).to receive(:sleep) }
 
   it { is_expected.to be_processed_in :default }
 
-  it 'publishes with correct publisher' do
-    expect(Mts::Publishers::BetValidation).to receive('publish!')
+  it 'accepts bet' do
     subject.perform(bet.id)
+    expect(bet.reload.status).to eq(StateMachines::BetStateMachine::ACCEPTED)
   end
 
   it 'notifies betslip' do
@@ -22,14 +18,6 @@ describe Mts::ValidationMessagePublisherWorker do
       .with(bet)
 
     subject.perform(bet.id)
-  end
-
-  context 'with unexpected response from server' do
-    before { allow(Mts::Publishers::BetValidation).to receive('publish!') }
-
-    it 'raises an error' do
-      expect { subject.perform(bet.id) }.to raise_error StandardError
-    end
   end
 
   context 'with bet not found' do

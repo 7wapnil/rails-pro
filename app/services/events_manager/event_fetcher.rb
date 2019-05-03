@@ -18,14 +18,15 @@ module EventsManager
                           payload: event_data.payload,
                           title: title)
       Event.create_or_update_on_duplicate(event)
+      log :info, message: 'Updated event', event_id: @external_id
       update_associations(event)
-      log :info, "Updated event '#{@external_id}'"
 
       event
     end
 
     def update_associations(event)
       ScopesBuilder.call(event, event_data)
+      log :info, message: 'Event scopes updated', event_id: @external_id
 
       competitors.each do |competitor|
         event_competitor = ::EventCompetitor.new(event: event,

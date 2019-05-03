@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
 module Mts
-  class ValidationMessagePublisherWorker < ApplicationWorker
+  class ValidationMessagePublisherStubWorker < ApplicationWorker
+    DELAY_IN_SECONDS = 2
+
     def perform(bet_id)
+      sleep(DELAY_IN_SECONDS)
+
       bet = find_bet(bet_id)
-      response = Publishers::BetValidation.publish!(bet: bet)
-
-      raise unless response
-
+      bet.finish_external_validation_with_acceptance!
       notify_betslip(bet)
     end
 

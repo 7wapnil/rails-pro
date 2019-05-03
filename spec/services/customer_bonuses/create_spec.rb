@@ -8,18 +8,20 @@ describe CustomerBonuses::Create do
       wallet: wallet,
       original_bonus: bonus,
       amount: amount,
+      update_wallet: update_wallet,
       user: initiator
     }
   end
 
+  let(:customer) { create(:customer) }
+  let(:wallet) { create(:wallet, customer: customer) }
+  let(:bonus) { create(:bonus, rollover_multiplier: rollover_multiplier) }
   let(:amount) { 100 }
+  let(:update_wallet) { true }
+  let(:initiator) { create(:user) }
   let(:rollover_multiplier) { 5 }
   let(:bonus_value) { 50 }
   let(:calculations) { { bonus: bonus_value, real_money: 100 } }
-  let(:bonus) { create(:bonus, rollover_multiplier: rollover_multiplier) }
-  let(:customer) { create(:customer) }
-  let(:wallet) { create(:wallet, customer: customer) }
-  let(:initiator) { create(:user) }
 
   context 'when customer has no active bonus' do
     before { subject }
@@ -63,7 +65,7 @@ describe CustomerBonuses::Create do
       expect(found_entry_request).to have_attributes(
         status: EntryRequest::SUCCEEDED,
         amount: amount,
-        mode: EntryRequest::SYSTEM,
+        mode: EntryRequest::INTERNAL,
         initiator: initiator,
         comment: comment,
         origin: wallet,
@@ -86,6 +88,18 @@ describe CustomerBonuses::Create do
     end
   end
 
+  context 'when update wallet is not passed' do
+    let(:update_wallet) {}
+
+    it 'does not create entry request' do
+      expect { subject }.not_to change(EntryRequest, :count)
+    end
+
+    it 'does not create entry' do
+      expect { subject }.not_to change(Entry, :count)
+    end
+  end
+
   context 'when customer has an active bonus' do
     before do
       create(:customer_bonus, :applied, :activated,
@@ -95,7 +109,7 @@ describe CustomerBonuses::Create do
     it 'retains previous customer bonus' do
       expect do
         subject
-      rescue StandardError # rubocop:disable Lint/HandleExceptions
+      rescue StandardError
       end.not_to change(customer, :active_bonus)
     end
 
@@ -109,7 +123,7 @@ describe CustomerBonuses::Create do
     it 'does not create new customer bonus' do
       expect do
         subject
-      rescue StandardError # rubocop:disable Lint/HandleExceptions
+      rescue StandardError
       end.not_to change(CustomerBonus, :count)
     end
   end

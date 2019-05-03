@@ -20,15 +20,15 @@ describe Bonuses::Cancel do
     let(:wallet) { customer_bonus.wallet }
 
     let(:found_entry_request) do
-      EntryRequest.confiscation.find_by(origin: wallet)
+      EntryRequest.bonus_change.find_by(origin: wallet)
     end
     let(:comment) do
-      "Confiscation of #{bonus_balance.amount} #{wallet.currency} from " \
-      "#{wallet.customer} bonus balance."
+      "Bonus transaction: #{-bonus_balance.amount} #{wallet.currency} " \
+      "for #{wallet.customer}."
     end
 
     before do
-      allow(EntryRequests::ConfiscationWorker).to receive(:perform_async)
+      allow(EntryRequests::BonusChangeWorker).to receive(:perform_async)
       described_class.call(bonus: customer_bonus, reason: expiration_reason)
     end
 
@@ -40,9 +40,9 @@ describe Bonuses::Cancel do
       expect(customer_bonus.deleted_at).not_to be_nil
     end
 
-    it 'creates confiscation entry request' do
+    it 'creates bonus change entry request' do
       expect(found_entry_request).to have_attributes(
-        mode: EntryRequest::SYSTEM,
+        mode: EntryRequest::INTERNAL,
         amount: -bonus_balance.amount,
         comment: comment,
         customer: wallet.customer,
@@ -51,7 +51,7 @@ describe Bonuses::Cancel do
     end
 
     it 'schedules job for updating wallet' do
-      expect(EntryRequests::ConfiscationWorker)
+      expect(EntryRequests::BonusChangeWorker)
         .to have_received(:perform_async)
         .with(found_entry_request.id)
     end

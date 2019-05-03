@@ -36,7 +36,7 @@ describe EntryRequests::BetPlacementService do
       amount: -bet.amount,
       currency: bet.currency,
       kind: EntryRequest::BET,
-      mode: EntryRequest::SYSTEM,
+      mode: EntryRequest::INTERNAL,
       initiator: bet.customer,
       customer: bet.customer,
       origin: bet
@@ -86,13 +86,6 @@ describe EntryRequests::BetPlacementService do
           status: StateMachines::BetStateMachine::SENT_TO_EXTERNAL_VALIDATION,
           message: nil
         )
-    end
-
-    it 'emits bet update websocket event' do
-      expect(WebSocket::Client.instance)
-        .to receive(:trigger_bet_update)
-
-      subject.call
     end
   end
 

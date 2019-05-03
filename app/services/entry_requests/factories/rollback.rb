@@ -24,7 +24,7 @@ module EntryRequests
       def entry_request_attributes
         {
           kind: EntryKinds::ROLLBACK,
-          mode: EntryRequest::SYSTEM,
+          mode: EntryRequest::INTERNAL,
           amount: -winning_entry.amount,
           comment: comment,
           customer_id: bet.customer_id,

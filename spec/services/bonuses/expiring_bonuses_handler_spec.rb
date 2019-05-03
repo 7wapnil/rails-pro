@@ -26,20 +26,20 @@ describe Bonuses::ExpiringBonusesHandler do
              currency: bonus.wallet.currency,
              min_amount: -1_000,
              max_amount: 0,
-             kind: EntryKinds::CONFISCATION)
+             kind: EntryKinds::BONUS_CHANGE)
     end
   end
 
   let(:control_balance) { expired_bonus_balances.sample }
   let(:control_wallet) { control_balance.wallet }
   let(:control_entry_request) do
-    EntryRequest.confiscation.find_by(origin: control_wallet)
+    EntryRequest.bonus_change.find_by(origin: control_wallet)
   end
-  let(:control_entry) { Entry.confiscation.find_by(origin: control_wallet) }
+  let(:control_entry) { Entry.bonus_change.find_by(origin: control_wallet) }
 
   let(:comment) do
-    "Confiscation of #{control_balance.amount} #{control_wallet.currency} " \
-    "from #{control_wallet.customer} bonus balance."
+    "Bonus transaction: #{-control_balance.amount} " \
+    "#{control_wallet.currency} for #{control_wallet.customer}."
   end
 
   include_context 'asynchronous to synchronous'
@@ -53,10 +53,10 @@ describe Bonuses::ExpiringBonusesHandler do
     expect { subject }.to change(EntryRequest, :count).by(control_count - 2)
   end
 
-  it 'creates valid confiscation entry request' do
+  it 'creates valid bonus change entry request' do
     subject
     expect(control_entry_request).to have_attributes(
-      mode: EntryRequest::SYSTEM,
+      mode: EntryRequest::INTERNAL,
       amount: -control_balance.amount,
       comment: comment,
       customer: control_wallet.customer,
@@ -68,7 +68,7 @@ describe Bonuses::ExpiringBonusesHandler do
     expect { subject }.to change(Entry, :count).by(control_count - 2)
   end
 
-  it 'creates valid confiscation entry' do
+  it 'creates valid bonus change entry' do
     subject
     expect(control_entry).to have_attributes(
       amount: -control_balance.amount,
@@ -76,12 +76,12 @@ describe Bonuses::ExpiringBonusesHandler do
     )
   end
 
-  it 'creates only one confiscation balance entry' do
+  it 'creates only one bonus change balance entry' do
     subject
     expect(control_entry.balance_entries.count).to eq(1)
   end
 
-  it 'create bonus confiscation balance entry' do
+  it 'create bonus change balance entry' do
     subject
     expect(control_entry.balance_entries.first).to have_attributes(
       balance_id: control_balance.id,

@@ -87,7 +87,7 @@ describe Radar::BetCancelWorker do
 
   let(:win_entry_requests) do
     won_bets_in_range.map do |bet|
-      create(:entry_request, :win, :system,
+      create(:entry_request, :win, :internal,
              origin: bet,
              initiator: bet.customer,
              customer: bet.customer,
@@ -96,7 +96,7 @@ describe Radar::BetCancelWorker do
   end
   let!(:placement_entry_requests) do
     control_bets.map do |bet|
-      create(:entry_request, :bet, :system,
+      create(:entry_request, :bet, :internal,
              origin: bet,
              initiator: bet.customer,
              customer: bet.customer,

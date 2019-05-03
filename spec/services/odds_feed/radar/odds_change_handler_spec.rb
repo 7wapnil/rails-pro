@@ -17,8 +17,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
   end
 
   before do
-    allow(::Radar::ScheduledEvents::EventLoadingWorker)
-      .to receive(:perform_async)
+    allow(::EventsManager::EventLoader).to receive(:call).and_return(event)
     allow(::OddsFeed::Radar::MarketGenerator::Service).to receive(:call)
     allow(WebSocket::Client.instance).to receive(:trigger_event_update)
     allow(EventsManager::Entities::Event)
@@ -53,21 +52,6 @@ describe OddsFeed::Radar::OddsChangeHandler do
             OddsFeed::InvalidMessageError,
             "Event type with external ID #{external_id} is not supported"
           )
-      end
-    end
-
-    context 'database not prepared' do
-      it 'raises error if no producer found' do
-        payload['odds_change']['product'] = '1000'
-        expect { subject.handle }.to raise_error(ActiveRecord::RecordNotFound)
-      end
-
-      it 'raises error if no event found' do
-        payload['odds_change']['event_id'] = '1000'
-        expect { subject.handle }.to raise_error(
-          SilentRetryJobError,
-          I18n.t('errors.messages.nonexistent_event', id: '1000')
-        )
       end
     end
   end

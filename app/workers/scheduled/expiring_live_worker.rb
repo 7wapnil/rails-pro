@@ -5,7 +5,7 @@ module Scheduled
 
     def perform
       Bet.transaction do
-        Bet.expired_live.in_batches do |bet|
+        Bet.expired_live.each do |bet|
           Mts::Publishers::BetCancellation.publish!(bet: bet)
         end
       end

@@ -35,6 +35,7 @@ module Deposits
         original_bonus: bonus,
         amount: @amount
       )
+    rescue CustomerBonuses::ActivationError, ActiveRecord::RecordInvalid
     end
 
     def wallet

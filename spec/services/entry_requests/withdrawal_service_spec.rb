@@ -43,6 +43,29 @@ describe EntryRequests::WithdrawalService do
     end
   end
 
+  context 'remove customer bonus' do
+    before do
+      create(:customer_bonus, customer: customer, wallet: wallet)
+      create(:balance, :bonus, amount: balance_amount, wallet: wallet)
+    end
+
+    it 'calls Bonus Cancel service' do
+      expect(Bonuses::Cancel).to receive(:call).with(
+        bonus: customer.customer_bonus,
+        reason: CustomerBonus::WITHDRAWAL
+      )
+
+      subject.call
+    end
+
+    it 'removes customer bonus' do
+      subject.call
+      customer.reload
+
+      expect(customer.customer_bonus).to be_nil
+    end
+  end
+
   it 'subtract withdrawal amount from customer balance amount' do
     service.call
 
