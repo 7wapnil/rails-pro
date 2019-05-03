@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Customer, '#bonuses' do
   let(:customer) { create(:customer) }
   let(:primary_currency) { create(:currency, :primary) }
@@ -55,11 +57,11 @@ describe Customer, '#bonuses' do
     let!(:bonus_balance) { create(:balance, :bonus, wallet: wallet) }
 
     let(:found_entry_request) do
-      EntryRequest.confiscation.find_by(origin: wallet)
+      EntryRequest.bonus_change.find_by(origin: wallet)
     end
 
     before do
-      allow(EntryRequests::ConfiscationWorker).to receive(:perform_async)
+      allow(EntryRequests::BonusChangeWorker).to receive(:perform_async)
       visit customer_bonus_path(bonus)
       click_link 'Expire'
     end
@@ -78,7 +80,7 @@ describe Customer, '#bonuses' do
       expect(bonus).to be_expired
     end
 
-    it 'creates confiscation entry request' do
+    it 'creates bonus change entry request' do
       expect(found_entry_request).to have_attributes(
         mode: EntryRequest::INTERNAL,
         amount: -bonus_balance.amount,
@@ -88,7 +90,7 @@ describe Customer, '#bonuses' do
     end
 
     it 'schedules job for updating wallet' do
-      expect(EntryRequests::ConfiscationWorker)
+      expect(EntryRequests::BonusChangeWorker)
         .to have_received(:perform_async)
         .with(found_entry_request.id)
     end
