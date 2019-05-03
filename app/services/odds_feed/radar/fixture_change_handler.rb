@@ -41,6 +41,11 @@ module OddsFeed
 
         log_job_message(:info, "Updating producer for event ID #{event_id}")
         event.update(producer: producer)
+      rescue ActiveRecord::RecordNotFound => e
+        log_job_message(
+          :warn,
+          I18n.t('errors.messages.nonexistent_producer', id: e.id)
+        )
       end
 
       def update_event_payload!

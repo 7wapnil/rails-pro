@@ -38,9 +38,8 @@ describe OddsFeed::Radar::FixtureChangeHandler do
   end
 
   describe 'update event data' do
-    before { subject.handle }
-
     it 'updates event producer if changed' do
+      subject.handle
       expect(event.reload.producer_id).to eq(prematch_producer.id)
     end
 
@@ -48,7 +47,25 @@ describe OddsFeed::Radar::FixtureChangeHandler do
       let(:change_type) { '3' }
 
       it 'deactivates event' do
+        subject.handle
         expect(event.reload.active).to be_falsy
+      end
+    end
+
+    context 'invalid producer' do
+      let(:producer_id) { rand(10..100) }
+      let(:message) do
+        I18n.t('errors.messages.nonexistent_producer', id: producer_id)
+      end
+
+      it 'does not raise error' do
+        expect { subject.handle }.not_to raise_error
+      end
+
+      it 'log message' do
+        expect(Rails.logger).to receive(:warn).with(message)
+
+        subject.handle
       end
     end
   end
