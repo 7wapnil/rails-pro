@@ -46,12 +46,18 @@ describe OddsFeed::Radar::OddsChangeHandler do
           .and_return(false)
       end
 
+      let(:message) do
+        {
+          event_id: external_id,
+          message: I18n.t('errors.messages.unsupported_event_type',
+                          event_id: external_id)
+        }
+      end
+
       it do
-        expect { subject.handle }
-          .to raise_error(
-            OddsFeed::InvalidMessageError,
-            "Event type with external ID #{external_id} is not supported"
-          )
+        expect(Rails.logger).to receive(:warn).with(message)
+
+        subject.handle
       end
     end
   end
