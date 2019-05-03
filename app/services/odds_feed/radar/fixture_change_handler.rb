@@ -72,12 +72,11 @@ module OddsFeed
       end
 
       def log_on_update
-        msg = <<-MESSAGE
-          Updating event with external ID #{event_id} \
-          on change type '#{change_type}'
-        MESSAGE
-
-        log_job_message(:info, msg.squish)
+        log_job_message(
+          :info,
+          message: "Updating event on change type '#{change_type}'",
+          event_id: event_id
+        )
       end
 
       def change_type
@@ -87,12 +86,17 @@ module OddsFeed
       def update_event_producer!
         return if producer == @event.producer
 
-        log_job_message(:info, "Updating producer for event ID #{event_id}")
+        log_job_message(
+          :info,
+          message: 'Updating producer for event',
+          event_id: event_id
+        )
         @event.update(producer: producer)
       end
 
       def update_event_payload!
-        log_job_message(:info, "Updating payload for event ID #{event_id}")
+        log_job_message(:info, message: 'Updating payload for event',
+                               event_id: event_id)
         @event.active = false if change_type == :cancelled
         @event.save!
       end

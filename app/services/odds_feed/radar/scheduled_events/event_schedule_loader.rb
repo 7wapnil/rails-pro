@@ -32,7 +32,8 @@ module OddsFeed
         def log_start(date)
           log_job_message(
             :info,
-            "Event based data for #{humanize date} was received from response."
+            message: 'Event based data was received from response.',
+            date: humanize(date)
           )
         end
 
@@ -60,14 +61,16 @@ module OddsFeed
         def log_success(date)
           log_job_message(
             :info,
-            "Event based data caching for #{humanize date} was scheduled."
+            message: 'Event based data caching scheduled',
+            date: humanize(date)
           )
         end
 
         def log_failure(date, error)
           log_job_message(
             :info,
-            "Event based data for #{humanize date} was not cached."
+            message: 'Event based data caching was not scheduled',
+            date: humanize(date)
           )
 
           log_job_message(:error, error.message)

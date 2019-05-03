@@ -51,12 +51,12 @@ module OddsFeed
         def handle_scoped_event(scoped_event)
           scoped_event.update!(event_id: event.id)
         rescue ActiveRecord::RecordInvalid, ActiveRecord::RecordNotUnique
-          message = <<-MESSAGE
-            Event #{event_id} has duplicated EventScope \
-            #{scoped_event.event_scope.external_id}
-          MESSAGE
+          message = 'Event has duplicated EventScope'
+          scope_id = scoped_event.event_scope.external_id
 
-          log_job_message(:warn, message.squish)
+          log_job_message(:warn, message: message,
+                                 event_id: event_id,
+                                 scope_external_id: scope_id)
         end
       end
     end

@@ -106,11 +106,13 @@ module OddsFeed
       end
 
       def log_updates!(updates)
-        msg = <<-MESSAGE
-            Updating event with ID #{event_id}, \
-            product ID #{input_data['product']}, attributes #{updates}
-        MESSAGE
-        log_job_message(:info, msg)
+        log_job_message(
+          :info,
+          message: 'Updating event',
+          event_id: event_id,
+          product_id: input_data['product'],
+          attributes: updates
+        )
       end
 
       def update_odds
@@ -151,7 +153,9 @@ module OddsFeed
         event_statuses_map[status] || Event::NOT_STARTED
       rescue KeyError
         log_job_message(
-          :warn, "Event status missing in payload for Event #{event_id}"
+          :warn,
+          message: 'Event status missing in payload for Event',
+          event_id: event_id
         )
         Event::NOT_STARTED
       end
