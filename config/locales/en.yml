@@ -399,6 +399,7 @@ en:
       reset_password_token_expired: Reset password token expired
       reset_password_confirmation_mismatch: Confirmation does not match password
       nonexistent_producer: "Producer with id: '%{id}' not found."
+      unsupported_event_type: "Event type with external ID %{event_id} is not supported"
 
       mts:
         ticket_not_found: "Ticket not found for bet with id '%{bet_id}'"

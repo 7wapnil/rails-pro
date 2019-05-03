@@ -3,7 +3,8 @@ module EventsManager
     MATCH_TYPE_REGEXP = /:match:/
 
     def call
-      check_support!
+      return unless type_supported?
+
       load_event
     end
 
@@ -35,10 +36,15 @@ module EventsManager
       end
     end
 
-    def check_support!
-      return if EventsManager::Entities::Event.type_match?(event_data.id)
+    def type_supported?
+      return true if EventsManager::Entities::Event.type_match?(event_data.id)
 
-      raise NotImplementedError, "Event ID '#{event_data.id}' is not supported"
+      error_message = I18n.t('errors.messages.unsupported_event_type',
+                             event_id: event_data.id)
+
+      log_job_message(:warn, message: error_message, event_id: event_data.id)
+
+      false
     end
 
     def event_data
