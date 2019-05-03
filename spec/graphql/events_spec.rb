@@ -31,11 +31,11 @@ describe GraphQL, '#events' do
                 title: title, event_scopes: [tournament])
   end
 
-  let(:result_events) { result['data']['events'] }
+  let(:result_events) { result&.dig('data', 'events') }
   let(:result_event_ids) { result_events.map { |event| event['id'].to_i } }
   let(:result_event) do
     OpenStruct.new(
-      result_events.find { |event| event['id'].to_i == control_event.id }
+      result_events&.find { |event| event['id'].to_i == control_event.id }
     )
   end
 
@@ -394,15 +394,8 @@ describe GraphQL, '#events' do
 
   context 'with state' do
     let(:control_id) { Faker::Number.number(5) }
-    let(:payload) do
-      {
-        state: { 'id' => control_id },
-        producer: {
-          origin: 'radar',
-          id: '3'
-        }
-      }
-    end
+    let(:state) { OpenStruct.new(id: control_id) }
+    let(:producer_id) { 3 }
 
     let(:control_event_traits) { %i[with_market upcoming] }
 
@@ -417,14 +410,14 @@ describe GraphQL, '#events' do
             id
             state {
               id
-              period_scores { id }
             }
           }
       })
     end
 
     before do
-      control_event.payload = payload
+      control_event.producer_id = producer_id
+      control_event.state = state.to_h
       control_event.save!
     end
 
@@ -436,14 +429,7 @@ describe GraphQL, '#events' do
   end
 
   context 'without state' do
-    let(:payload) do
-      {
-        producer: {
-          origin: 'radar',
-          id: '3'
-        }
-      }
-    end
+    let(:producer_id) { 3 }
 
     let(:control_event_traits) { [:with_market] }
 
@@ -460,7 +446,7 @@ describe GraphQL, '#events' do
     end
 
     before do
-      control_event.payload = payload
+      control_event.producer_id = producer_id
     end
 
     it "doesn't return state" do
