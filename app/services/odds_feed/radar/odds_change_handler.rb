@@ -5,7 +5,8 @@ module OddsFeed
     # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
       def handle
-        validate!
+        validate_payload!
+        return unless valid_type?
 
         update_event!
         update_odds
@@ -16,20 +17,20 @@ module OddsFeed
 
       private
 
-      def validate!
-        validate_payload!
-        validate_type!
-      end
-
       def validate_payload!
         payload_err = "Odds change payload is malformed: #{@payload}"
         raise OddsFeed::InvalidMessageError, payload_err unless input_data
       end
 
-      def validate_type!
-        is_valid = EventsManager::Entities::Event.type_match?(event_id)
-        type_err = "Event type with external ID #{event_id} is not supported"
-        raise OddsFeed::InvalidMessageError, type_err unless is_valid
+      def valid_type?
+        return true if EventsManager::Entities::Event.type_match?(event_id)
+
+        error_message = I18n.t('errors.messages.unsupported_event_type',
+                               event_id: event_id)
+
+        log_job_message(:warn, message: error_message, event_id: event_id)
+
+        false
       end
 
       def event_id
