@@ -13,7 +13,7 @@ module EntryKinds
     system_bet_cancel: SYSTEM_BET_CANCEL = 'system_bet_cancel',
     # TODO: remove this kind from code and DB
     confiscation: CONFISCATION = 'confiscation',
-    bonus_change: BONUS_CHANGE = 'bonus_change',
+    bonus_change: BONUS_CHANGE = 'bonus_change'
   }.freeze
 
   FUND_KINDS = [DEPOSIT, WITHDRAW].freeze
