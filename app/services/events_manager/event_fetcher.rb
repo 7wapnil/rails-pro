@@ -22,7 +22,7 @@ module EventsManager
       log :info, message: 'Updated event', event_id: @external_id
       update_associations(event)
 
-      event
+      event&.reload
     end
 
     def update_associations(event)
