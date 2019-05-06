@@ -53,7 +53,7 @@ describe OddsFeed::Radar::MarketGenerator::OddsGenerator do
         id_to_names.each do |id, name|
           allow(market_data)
             .to receive(:odd_name).with(id)
-            .and_return(name)
+                                  .and_return(name)
         end
       end
 
