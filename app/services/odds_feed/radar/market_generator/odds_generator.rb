@@ -40,7 +40,7 @@ module OddsFeed
         end
 
         def odd_data_is_not_payload(odd_data)
-          log_job_message(:warn, message: "Odd data should be a payload",
+          log_job_message(:warn, message: 'Odd data should be a payload',
                                  odd_data: odd_data)
         end
 
