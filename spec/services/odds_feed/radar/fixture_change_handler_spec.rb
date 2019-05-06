@@ -63,7 +63,7 @@ describe OddsFeed::Radar::FixtureChangeHandler do
       end
 
       it 'log message' do
-        expect(Rails.logger).to receive(:warn).with(message: message, 
+        expect(Rails.logger).to receive(:warn).with(message: message,
                                                     id: producer_id)
 
         subject.handle
