@@ -98,12 +98,7 @@ describe OddsFeed::Radar::EventAdapter do
     end
 
     describe 'return value' do
-      let(:expected_payload) do
-        {
-          'competitors': payload['competitors'],
-          'liveodds':    payload['liveodds']
-        }.stringify_keys
-      end
+      let(:expected_liveodds) { payload['liveodds'] }
 
       it('returns correct object') { expect(result).to be_a(Event) }
 
@@ -113,7 +108,7 @@ describe OddsFeed::Radar::EventAdapter do
           name: 'IK Oddevold VS Tvaakers IF',
           description: 'IK Oddevold VS Tvaakers IF',
           traded_live: false,
-          payload: expected_payload
+          liveodds: expected_liveodds
         )
       end
 
@@ -129,7 +124,7 @@ describe OddsFeed::Radar::EventAdapter do
             name: 'IK Oddevold VS Tvaakers IF',
             description: 'IK Oddevold VS Tvaakers IF',
             traded_live: true,
-            payload: expected_payload
+            liveodds: expected_liveodds
           )
         end
       end
