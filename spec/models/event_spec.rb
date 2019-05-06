@@ -263,38 +263,6 @@ describe Event do
         expect(subject_event.send(name)).to eq value
       end
     end
-
-    it 'calls #add_to_payload' do
-      expect(subject_event).to receive(:add_to_payload)
-      subject_event.update_from!(other)
-    end
-  end
-
-  describe '#add_to_payload' do
-    let(:initial_payload) { { 'competitors' => %w[Foo Bar] } }
-    let(:other_payload) { { 'competitors' => %w[Bar Baz] } }
-
-    let(:event) { create(:event, payload: initial_payload) }
-    let(:other) { build(:event, payload: other_payload) }
-
-    it 'updates existing payload' do
-      event.update_from!(other)
-      expect(event.payload).to eq other_payload
-    end
-
-    it 'assigns payload' do
-      event = create(:event, payload: nil)
-      event.update_from!(other)
-
-      expect(event.payload).to eq other_payload
-    end
-
-    it 'doesn\'t overwrite payload with nil' do
-      other = build(:event, payload: nil)
-      event.update_from!(other)
-
-      expect(event.payload).to eq initial_payload
-    end
   end
 
   describe '#alive?' do
