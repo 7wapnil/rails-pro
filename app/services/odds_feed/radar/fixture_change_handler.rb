@@ -30,7 +30,8 @@ module OddsFeed
       end
 
       def update_event
-        log_job_message(:info, message: 'Updating event',
+        log_job_message(:info, message: 'Updating event change type',
+                               event_id: event_id,
                                change_type: change_type)
 
         update_event_producer!
@@ -40,7 +41,7 @@ module OddsFeed
       def update_event_producer!
         return if producer == event.producer
 
-        log_job_message(:info, message: 'Updating producer for event',
+        log_job_message(:info, message: 'Updating producer',
                                event_id: event_id)
         event.update(producer: producer)
       rescue ActiveRecord::RecordNotFound => e
@@ -52,14 +53,29 @@ module OddsFeed
       end
 
       def update_event_payload!
-        log_job_message(:info, message: 'Updating payload for event',
-                               event_id: event_id)
+        log_job_message(:info, message: 'Updating payload', event_id: event_id)
 
         event.update!(active: false) if change_type == :cancelled
       end
 
+      def event_id
+        payload['event_id']
+      end
+
+      def payload
+        @payload['fixture_change']
+      end
+
       def change_type
         CHANGE_TYPES[payload['change_type']]
+      end
+
+      def producer
+        @producer ||= ::Radar::Producer.find(payload['product'])
+      end
+
+      def event
+        @event ||= ::EventsManager::EventLoader.call(event_id)
       end
     end
   end
