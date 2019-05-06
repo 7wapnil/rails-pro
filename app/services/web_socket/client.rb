@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module WebSocket
+  # rubocop:disable Metrics/ClassLength
   class Client
     include Singleton
     include OddsFeed::FlowProfiler
@@ -11,10 +12,13 @@ module WebSocket
 
       return unless event_available?(event)
 
-      trigger_kind_event(event)
-      trigger_sport_event(event)
-      trigger_category_event(event)
       trigger_tournament_event(event)
+
+      return unless need_update?(event)
+
+      trigger_category_event(event)
+      trigger_sport_event(event)
+      trigger_kind_event(event)
     end
 
     def trigger_market_update(market)
@@ -126,5 +130,10 @@ module WebSocket
     def warn(msg)
       Rails.logger.warn(msg)
     end
+
+    def need_update?(event)
+      event.alive? || event.upcoming_for_time?
+    end
   end
+  # rubocop:enable Metrics/ClassLength
 end

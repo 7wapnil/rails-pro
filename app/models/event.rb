@@ -13,6 +13,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   # 4 hours ago is a temporary workaround to reduce amount of live events
   # Will be removed when proper event ending logic is implemented
   START_AT_OFFSET_IN_HOURS = 4
+  UPCOMING_OFFSET = 6
 
   PRIORITIES = [0, 1, 2].freeze
 
@@ -164,6 +165,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   def upcoming?
     start_at > Time.zone.now && !end_at
+  end
+
+  def upcoming_for_time?
+    upcoming? && start_at < UPCOMING_OFFSET.hours.from_now
   end
 
   def in_play?(limited: false)
