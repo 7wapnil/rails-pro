@@ -176,7 +176,7 @@ module OddsFeed
       end
 
       def event_display_status
-        MatchStatusMappingService.call(
+        MatchStatusMappingService.new.call(
           event_status_payload.fetch('match_status')
         )
       end
@@ -190,6 +190,8 @@ module OddsFeed
       end
 
       def event_time_in_seconds
+        return unless event_status_payload.key?('match_time')
+
         match_time = event_status_payload.fetch('match_time')
         minutes = match_time.to_i
         seconds = match_time.split(':').second.to_i
