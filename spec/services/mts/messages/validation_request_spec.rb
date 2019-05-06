@@ -14,6 +14,8 @@ describe Mts::Messages::ValidationRequest do
       allow(ENV).to receive(:[])
         .with('MTS_LIMIT_ID')
         .and_return(limit_id)
+
+      Radar::Producer.find_or_create_by!(id: 3)
     end
 
     let(:bookmaker_id) { Faker::Number.number(5).to_i }
@@ -46,7 +48,7 @@ describe Mts::Messages::ValidationRequest do
     let(:event) do
       create(:event,
              title: title,
-             payload: { "producer": { "origin": 'radar', "id": '3' } },
+             producer_id: 3,
              external_id: 'sr:match:11050343')
     end
     let(:market) { create(:market, event: event) }
