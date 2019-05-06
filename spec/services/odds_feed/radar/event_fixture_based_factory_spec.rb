@@ -8,12 +8,7 @@ describe OddsFeed::Radar::EventFixtureBasedFactory do
   let(:event_name) { 'IK Oddevold VS Tvaakers IF' }
   let(:event_description) { event_name }
   let(:start_at) { '2016-10-31T18:00:00+00:00'.to_time }
-  let(:expected_payload) do
-    {
-      'competitors': payload['competitors'],
-      'liveodds':    payload['liveodds']
-    }.stringify_keys
-  end
+  let(:expected_liveodds) { payload['liveodds'] }
 
   describe '#event' do
     subject(:result) { described_class.new(fixture: payload).event }
@@ -26,7 +21,7 @@ describe OddsFeed::Radar::EventFixtureBasedFactory do
         name: event_name,
         description: event_description,
         traded_live: false,
-        payload: expected_payload
+        liveodds: expected_liveodds
       )
     end
 
@@ -42,7 +37,7 @@ describe OddsFeed::Radar::EventFixtureBasedFactory do
           name: event_name,
           description: event_description,
           traded_live: true,
-          payload: expected_payload
+          liveodds: expected_liveodds
         )
       end
     end
