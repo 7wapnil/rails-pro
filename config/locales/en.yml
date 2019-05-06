@@ -398,13 +398,8 @@ en:
       reset_password_token_not_found: No user found for password reset token
       reset_password_token_expired: Reset password token expired
       reset_password_confirmation_mismatch: Confirmation does not match password
-<<<<<<< HEAD
-      unsupported_event_type: "Event type with external ID %{event_id} is not supported"
-      nonexistent_producer: "Producer not found."
-=======
       nonexistent_producer: Producer not found.
       unsupported_event_type: Event type is not supported
->>>>>>> origin/1273-tailor-log-messages-to-not-contain-ids-in-body
 
       mts:
         ticket_not_found: "Ticket not found for bet with id '%{bet_id}'"
