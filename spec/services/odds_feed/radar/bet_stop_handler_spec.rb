@@ -30,6 +30,8 @@ describe OddsFeed::Radar::BetStopHandler do
     end
 
     before do
+      allow(::EventsManager::EventLoader).to receive(:call).and_return(event)
+
       allow(market_status_class).to receive(:stop_status) { target_state }
       allow(WebSocket::Client).to receive(:instance) { ws_double }
       allow(ws_double).to receive(:trigger_event_bet_stop)
