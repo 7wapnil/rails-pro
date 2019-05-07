@@ -7,12 +7,20 @@ describe EventsManager::EventLoader do
     allow(EventsManager::EventFetcher).to receive(:call)
   end
 
-  it 'returns crawled event' do
-    subject.call
+  context 'new event' do
+    it 'returns crawled event' do
+      subject.call
 
-    expect(EventsManager::EventFetcher)
-      .to have_received(:call)
-      .with(external_id)
+      expect(EventsManager::EventFetcher)
+        .to have_received(:call)
+        .with(external_id)
+    end
+
+    it 'loads event from db after creation' do
+      allow(Event).to receive(:find_by).and_call_original
+      subject.call
+      expect(Event).to have_received(:find_by).twice
+    end
   end
 
   context 'existing event' do
@@ -24,6 +32,18 @@ describe EventsManager::EventLoader do
       subject.call
       expect(EventsManager::EventFetcher)
         .not_to have_received(:call)
+    end
+
+    it 'returns event with associations pre-loaded' do
+      allow(Event).to receive(:includes).and_call_original
+
+      includes = %i[title event_scopes]
+      subject.options = { includes: includes }
+      subject.call
+
+      expect(Event)
+        .to have_received(:includes)
+        .with(includes)
     end
 
     it 'returns crawled event when forced' do
