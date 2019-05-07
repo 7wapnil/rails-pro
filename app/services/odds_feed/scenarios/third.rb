@@ -3,8 +3,6 @@
 module OddsFeed
   module Scenarios
     class Third < Base
-      private
-
       # rubocop:disable Metrics/MethodLength
       def event_ids
         %w[
