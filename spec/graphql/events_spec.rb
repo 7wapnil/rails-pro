@@ -536,7 +536,7 @@ describe GraphQL, '#events' do
   end
 
   context "with 'upcoming_for_time' context" do
-    let(:limit) { Events::EventsQueryResolver::UPCOMING_DURATION }
+    let(:limit) { Event::UPCOMING_DURATION }
     let(:query) do
       %({ events(context: #{upcoming_ctx}) { id } })
     end
@@ -574,7 +574,7 @@ describe GraphQL, '#events' do
 
   context "with 'upcoming_limited' context" do
     let(:control_event) {}
-    let(:limit) { Events::EventsQueryResolver::UPCOMING_LIMIT }
+    let(:limit) { Event::UPCOMING_LIMIT }
     let(:query) do
       %({ events(context: #{upcoming_limited_ctx}) { id } })
     end
@@ -636,8 +636,8 @@ describe GraphQL, '#events' do
 
   context "with 'upcoming_unlimited' context" do
     let(:control_event) {}
-    let(:limit) { Events::EventsQueryResolver::UPCOMING_LIMIT }
-    let(:duration_limit) { Events::EventsQueryResolver::UPCOMING_DURATION }
+    let(:limit) { Event::UPCOMING_LIMIT }
+    let(:duration_limit) { Event::UPCOMING_DURATION }
     let(:query) do
       %({ events(context: #{upcoming_unlimited_ctx}) { id } })
     end

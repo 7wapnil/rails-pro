@@ -53,6 +53,15 @@ describe WebSocket::Client do
             title: event.title_id
           )
       end
+    end
+
+    context 'upcoming limited' do
+      let(:event) do
+        event = create(:event)
+        event.event_scopes << create(:event_scope, kind: EventScope::TOURNAMENT)
+        event.event_scopes << create(:event_scope, kind: EventScope::CATEGORY)
+        event
+      end
 
       it 'triggers category events subscription' do
         expect(subject)
@@ -91,16 +100,6 @@ describe WebSocket::Client do
             title: event.title_id
           )
       end
-
-      it 'triggers category events subscription' do
-        expect(subject)
-          .not_to have_received(:trigger)
-          .with(
-            SubscriptionFields::CATEGORY_EVENT_UPDATED,
-            event,
-            category: event.category.id
-          )
-      end
     end
 
     context 'event live' do
@@ -127,16 +126,6 @@ describe WebSocket::Client do
             SubscriptionFields::SPORT_EVENT_UPDATED,
             event,
             title: event.title_id
-          )
-      end
-
-      it 'triggers category events subscription' do
-        expect(subject)
-          .to have_received(:trigger)
-          .with(
-            SubscriptionFields::CATEGORY_EVENT_UPDATED,
-            event,
-            category: event.category.id
           )
       end
     end

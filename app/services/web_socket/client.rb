@@ -13,9 +13,6 @@ module WebSocket
       return unless event_available?(event)
 
       trigger_tournament_event(event)
-
-      return unless need_update?(event)
-
       trigger_category_event(event)
       trigger_sport_event(event)
       trigger_kind_event(event)
@@ -74,6 +71,8 @@ module WebSocket
         profiled_event.is_a?(Hash) ? profiled_event[:data] : profiled_event
       return warn("Event ID #{event.id} has no title") unless event.title
 
+      return unless event.upcoming_for_time? || event.alive?
+
       trigger(
         SubscriptionFields::KIND_EVENT_UPDATED,
         profiled_event,
@@ -82,7 +81,7 @@ module WebSocket
     end
 
     def trigger_sport_event(event)
-      return unless event.title_id
+      return unless event.title_id && (event.upcoming_for_time? || event.alive?)
 
       trigger(
         SubscriptionFields::SPORT_EVENT_UPDATED,
@@ -92,7 +91,7 @@ module WebSocket
     end
 
     def trigger_category_event(event)
-      return unless event.category
+      return unless event.category && category_updatable?(event)
 
       trigger(
         SubscriptionFields::CATEGORY_EVENT_UPDATED,
@@ -131,8 +130,17 @@ module WebSocket
       Rails.logger.warn(msg)
     end
 
-    def need_update?(event)
-      event.alive? || event.upcoming_for_time?
+    def category_updatable?(event)
+      return unless event.tournament
+
+      tournament_events(event).exists?(id: event.id)
+    end
+
+    def tournament_events(event)
+      event.tournament
+           .events
+           .order(:priority, :start_at)
+           .limit(Event::UPCOMING_LIMIT)
     end
   end
   # rubocop:enable Metrics/ClassLength
