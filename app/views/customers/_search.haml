@@ -38,5 +38,15 @@
                               class: 'form-control',
                               placeholder: t(:search, subject: t('attributes.id')),
                               autocomplete: :off
+
+        %th
+          .filter_field
+            #{t('attributes.b_tag')}:
+          .filter_field
+            = f.label :b_tag_cont, class: 'sr-only'
+            = f.search_field :b_tag_cont,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: t('attributes.b_tag')),
+                              autocomplete: :off
         %th
           = f.submit class: 'btn btn-outline-dark btn-block'

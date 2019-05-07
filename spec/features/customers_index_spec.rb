@@ -15,6 +15,7 @@ describe Customer, '#index' do
           expect(page).to have_content(customer.username)
           expect(page).to have_content(customer.email)
           expect(page).to have_content(customer.last_sign_in_ip)
+          expect(page).to have_content(customer.b_tag)
           expect(page).to have_content(customer.id)
         end
       end
@@ -45,7 +46,10 @@ describe Customer, '#index' do
 
     context 'search' do
       let!(:john) do
-        create(:customer, username: 'john_doe', email: 'john_doe@email.com')
+        create(:customer,
+               username: 'john_doe',
+               email: 'john_doe@email.com',
+               b_tag: 'AFFTAGTEST')
       end
 
       it 'searches by username contains' do
@@ -67,6 +71,17 @@ describe Customer, '#index' do
 
         within 'table.entities > tbody' do
           expect(page).to have_content(john.email)
+        end
+      end
+
+      it 'searches by Btag contains' do
+        within 'table.search' do
+          fill_in :customers_b_tag_cont, with: 'afftag'
+          click_submit
+        end
+
+        within 'table.entities > tbody' do
+          expect(page).to have_content(john.b_tag)
         end
       end
 

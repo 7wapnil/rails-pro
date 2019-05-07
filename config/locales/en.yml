@@ -101,6 +101,7 @@ en:
     bank_statements: Bank statements
     bet_id: Bet ID
     bet_placement_time: Bet placement time
+    b_tag: Affiliate tag
     category: Category
     city: City
     code: Code
