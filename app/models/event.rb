@@ -213,10 +213,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     "#{home_score.to_i}:#{away_score.to_i}"
   end
 
-  def state
-    @state ||= OpenStruct.new(read_attribute('state'))
-  end
-
   def bookable?
     liveodds == BOOKABLE
   end

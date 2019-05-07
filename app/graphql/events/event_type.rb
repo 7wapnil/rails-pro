@@ -45,7 +45,6 @@ module Events
         EventMarketsLoader.for(Market).load(obj.id)
       end
     end
-    field :state, Types::EventStateType
 
     field :categories, !types[Events::MarketCategoryType]
   end

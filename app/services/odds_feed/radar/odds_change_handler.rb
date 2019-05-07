@@ -47,16 +47,8 @@ module OddsFeed
       end
 
       def update_event!
-        update_event_payload
         update_event_attributes
         event.save!
-      end
-
-      def update_event_payload
-        new_state = OddsFeed::Radar::EventStatusService.new.call(
-          event_id: event.id, data: event_status_payload
-        )
-        event.state = new_state
       end
 
       def update_event_attributes

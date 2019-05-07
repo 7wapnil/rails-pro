@@ -392,68 +392,6 @@ describe GraphQL, '#events' do
     end
   end
 
-  context 'with state' do
-    let(:control_id) { Faker::Number.number(5) }
-    let(:state) { OpenStruct.new(id: control_id) }
-    let(:producer_id) { 3 }
-
-    let(:control_event_traits) { %i[with_market upcoming] }
-
-    let(:result_state) { OpenStruct.new(result_event.state) }
-
-    let(:query) do
-      %({
-          events(
-            filter: { tournamentId: #{tournament.id} },
-            context: #{upcoming_unlimited_ctx}
-          ) {
-            id
-            state {
-              id
-            }
-          }
-      })
-    end
-
-    before do
-      control_event.producer_id = producer_id
-      control_event.state = state.to_h
-      control_event.save!
-    end
-
-    it 'returns valid state' do
-      ScopedEvent.create(event: control_event, event_scope: tournament)
-
-      expect(result_state.id).to eq(control_id)
-    end
-  end
-
-  context 'without state' do
-    let(:producer_id) { 3 }
-
-    let(:control_event_traits) { [:with_market] }
-
-    let(:query) do
-      %({
-          events(context: #{upcoming_ctx}) {
-            id
-            state {
-              id
-              period_scores { id }
-            }
-          }
-      })
-    end
-
-    before do
-      control_event.producer_id = producer_id
-    end
-
-    it "doesn't return state" do
-      expect(result_event.state).to be_nil
-    end
-  end
-
   context 'with invalid context' do
     let(:query) do
       %({ events(context: abcd) {
