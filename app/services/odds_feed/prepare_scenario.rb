@@ -32,11 +32,19 @@ module OddsFeed
     end
 
     def clean_up_database!
-      ::OddsFeed::Scenarios::PrepareDatabase.call
+      puts '== Cleaning up database =='
+      OddsFeed::Clear.call
+      puts '== Cleaning up database finished =='
     end
 
     def perform_scenarios
-      scenario_ids.each { |scenario_id| scenario_class(scenario_id).call }
+      scenario_ids.each(&method(:perform_scenario))
+    end
+
+    def perform_scenario(scenario_id)
+      puts "== Events loading for scenario ##{scenario_id} =="
+      scenario_class(scenario_id).call
+      puts "== Events loading for scenario ##{scenario_id} scheduled =="
     end
 
     def scenario_class(scenario_id)
