@@ -68,11 +68,12 @@ module OddsFeed
         def valid?(market)
           return true if market.valid?
 
-          msg = <<-MESSAGE
-            Market '#{market.external_id}' is invalid: \
-            #{market.errors.full_messages.join("\n")}
-          MESSAGE
-          log_job_message(:warn, msg.squish)
+          log_job_message(
+            :warn,
+            message: 'Market is invalid',
+            market_id: market.external_id,
+            errors: market.errors.full_messages.join("\n")
+          )
           false
         end
 

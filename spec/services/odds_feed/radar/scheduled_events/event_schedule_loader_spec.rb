@@ -65,7 +65,8 @@ describe OddsFeed::Radar::ScheduledEvents::EventScheduleLoader do
       .to receive(:log_job_message)
       .with(
         :info,
-        "Event based data for #{humanized_date} was received from response."
+        message: 'Event based data was received from response.',
+        date: humanized_date
       )
 
     subject
@@ -76,7 +77,8 @@ describe OddsFeed::Radar::ScheduledEvents::EventScheduleLoader do
       .to receive(:log_job_message)
       .with(
         :info,
-        "Event based data caching for #{humanized_date} was scheduled."
+        message: 'Event based data caching scheduled',
+        date: humanized_date
       )
 
     subject

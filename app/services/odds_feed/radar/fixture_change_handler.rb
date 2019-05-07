@@ -22,8 +22,7 @@ module OddsFeed
       def valid?
         return true if EventsManager::Entities::Event.type_match?(event_id)
 
-        error_message = I18n.t('errors.messages.unsupported_event_type',
-                               event_id: event_id)
+        error_message = I18n.t('errors.messages.unsupported_event_type')
 
         log_job_message(:warn, message: error_message, event_id: event_id)
 
@@ -31,8 +30,9 @@ module OddsFeed
       end
 
       def update_event
-        msg = "Updating event ID #{event_id}, change type '#{change_type}'"
-        log_job_message(:info, msg)
+        log_job_message(:info, message: 'Updating event change type',
+                               event_id: event_id,
+                               change_type: change_type)
 
         update_event_producer!
         update_event_payload!
@@ -41,17 +41,19 @@ module OddsFeed
       def update_event_producer!
         return if producer == event.producer
 
-        log_job_message(:info, "Updating producer for event ID #{event_id}")
+        log_job_message(:info, message: 'Updating producer',
+                               event_id: event_id)
         event.update(producer: producer)
       rescue ActiveRecord::RecordNotFound => e
         log_job_message(
           :warn,
-          I18n.t('errors.messages.nonexistent_producer', id: e.id)
+          message: I18n.t('errors.messages.nonexistent_producer'),
+          id: e.id
         )
       end
 
       def update_event_payload!
-        log_job_message(:info, "Updating payload for event ID #{event_id}")
+        log_job_message(:info, message: 'Updating payload', event_id: event_id)
 
         event.update!(active: false) if change_type == :cancelled
       end

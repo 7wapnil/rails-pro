@@ -55,7 +55,7 @@ describe OddsFeed::Radar::FixtureChangeHandler do
     context 'invalid producer' do
       let(:producer_id) { rand(10..100) }
       let(:message) do
-        I18n.t('errors.messages.nonexistent_producer', id: producer_id)
+        I18n.t('errors.messages.nonexistent_producer')
       end
 
       it 'does not raise error' do
@@ -63,7 +63,8 @@ describe OddsFeed::Radar::FixtureChangeHandler do
       end
 
       it 'log message' do
-        expect(Rails.logger).to receive(:warn).with(message)
+        expect(Rails.logger).to receive(:warn).with(message: message,
+                                                    id: producer_id)
 
         subject.handle
       end

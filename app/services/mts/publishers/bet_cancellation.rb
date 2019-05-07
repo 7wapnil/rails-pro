@@ -13,7 +13,9 @@ module Mts
 
       def log_message
         log_job_message(
-          :info, "MTS Cancellation requested for bet with id: #{bet.id}"
+          :info,
+          message: 'MTS Cancellation requested',
+          bet_id: bet.id
         )
       end
 

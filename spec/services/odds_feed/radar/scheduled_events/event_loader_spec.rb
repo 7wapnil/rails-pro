@@ -33,7 +33,7 @@ describe OddsFeed::Radar::ScheduledEvents::EventLoader do
       subject
       expect(service_object)
         .to have_received(:log_job_message)
-        .with(:info, "Starting loading Event##{event_id}")
+        .with(:info, message: 'Starting loading event', event_id: event_id)
         .once
     end
   end
@@ -48,7 +48,7 @@ describe OddsFeed::Radar::ScheduledEvents::EventLoader do
       subject
       expect(service_object)
         .to have_received(:log_job_message)
-        .with(:info, "Loaded Event##{event_id} successfully.")
+        .with(:info, message: 'Loaded event successfully', event_id: event_id)
         .once
     end
   end
@@ -70,7 +70,7 @@ describe OddsFeed::Radar::ScheduledEvents::EventLoader do
     rescue StandardError
       expect(service_object)
         .to have_received(:log_job_message)
-        .with(:error, "Failed to load Event##{event_id}.")
+        .with(:error, message: 'Failed to load event', event_id: event_id)
         .once
     end
   end

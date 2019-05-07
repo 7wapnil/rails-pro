@@ -33,15 +33,15 @@ module OddsFeed
 
           @odds << odd
         rescue ActiveRecord::RecordInvalid => e
-          log_job_message(:warn, "#{e.message}, odd data: #{odd.attributes}")
+          log_job_message(:warn, message: e.message,
+                                 odd_data: odd.attributes)
         rescue StandardError => e
           log_job_failure(e)
         end
 
         def odd_data_is_not_payload(odd_data)
-          log_job_message(
-            :warn, "Odd data should be a payload, but received: `#{odd_data}`"
-          )
+          log_job_message(:warn, message: 'Odd data should be a payload',
+                                 odd_data: odd_data)
         end
 
         def build_odd(odd_data)

@@ -42,16 +42,19 @@ describe OddsFeed::Radar::MarketGenerator::OddsGenerator do
     end
 
     context 'ignore invalid odds' do
-      let(:invalid_names) { Array.new(invalid_odds_count) }
+      let(:invalid_names) { [nil] * invalid_odds_count }
       let(:valid_names) do
         Array.new(valid_odds_count) { Faker::WorldOfWarcraft.hero }
       end
       let(:names) { [*invalid_names, *valid_names] }
 
       before do
-        allow(market_data)
-          .to receive(:odd_name)
-          .and_return(*names)
+        id_to_names = Hash[market_data.outcome.map { |h| h['id'] }.zip(names)]
+        id_to_names.each do |id, name|
+          allow(market_data)
+            .to receive(:odd_name).with(id)
+                                  .and_return(name)
+        end
       end
 
       it { expect(subject.length).to eq(valid_odds_count) }
