@@ -27,8 +27,9 @@ entry_currency_rule_ranges = {
 }.symbolize_keys
 
 currency_mapping.each do |payload|
-  Currency.find_or_create_by(name: payload[:name]) do |currency|
+  Currency.find_or_create_by(code: payload[:code]) do |currency|
     currency.code = payload[:code]
+    currency.name = payload[:name]
     currency.primary = payload[:primary] || false
     currency.kind = payload[:kind]
   end
