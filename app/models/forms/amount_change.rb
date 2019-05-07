@@ -18,7 +18,7 @@ module Forms
     def save!
       subject.with_lock do
         validate!
-        subject.increment!(:amount, amount_increment)
+        subject.update!(amount: subject.amount + amount_increment)
       end
     end
 
