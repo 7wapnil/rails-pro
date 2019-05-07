@@ -23,6 +23,10 @@ module Redirect
     rescue Deposits::DepositAttemptError
       Rails.logger.error 'Customer deposit attempts exceeded.'
       callback_redirect_for(Deposits::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
+    rescue CustomerBonuses::ActivationError => e
+      Rails.logger.error e.message
+      callback_redirect_for(Deposits::CallbackUrl::SOMETHING_WENT_WRONG,
+                            message: e.message)
     rescue StandardError => e
       msg = 'Something went wrong on deposit initiation.'
       Rails.logger.error msg + e.message.to_s
@@ -76,8 +80,8 @@ module Redirect
       Customer.find(decoded_token[:id])
     end
 
-    def callback_redirect_for(state)
-      redirect_to Deposits::CallbackUrl.for(state)
+    def callback_redirect_for(state, message: nil)
+      redirect_to Deposits::CallbackUrl.for(state, message: message)
     end
 
     def initiate_params
