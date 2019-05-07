@@ -15,8 +15,7 @@ module OddsFeed
       def call
         return api_call unless cached_data?
 
-        log_job_message(:info, message: 'Cached data loaded',
-                               path: path)
+        log_job_message(:info, message: 'Cached data loaded', path: path)
         log_job_message(:debug, message: 'Loaded data',
                                 response: cached_response)
         cached_response
@@ -47,8 +46,8 @@ module OddsFeed
         Rails.cache.write(cache_key, parsed_response, cache_settings) if cache
 
         parsed_response
-      rescue RuntimeError, MultiXml::ParseError => e
-        log_job_failure([e.message, response.body])
+      rescue RuntimeError, MultiXml::ParseError => error
+        log_job_failure(error)
         raise HTTParty::ResponseError, 'Malformed response body'
       end
 

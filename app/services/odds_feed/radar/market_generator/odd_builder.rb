@@ -15,7 +15,7 @@ module OddsFeed
             :debug,
             message: 'Building odd',
             event_id: external_id,
-            odd_data: odd_name
+            odd_name: odd_name
           )
           build_odd
         end

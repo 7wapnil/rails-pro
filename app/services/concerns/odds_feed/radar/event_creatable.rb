@@ -28,9 +28,8 @@ module OddsFeed
         end
 
         def invalid_event_type
-          log_job_failure(
-            "Event with external ID #{event_id} could not be processed yet"
-          )
+          log_job_message(:error, message: 'Event cannot be processed yet',
+                                  event_id: event_id)
           nil
         end
 

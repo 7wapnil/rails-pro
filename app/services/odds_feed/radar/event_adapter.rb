@@ -61,8 +61,7 @@ module OddsFeed
                                 fixture: category_fixture)
 
         unless category_fixture
-          log_job_message(:info,
-                          'Category fixture is missing in payload, exiting')
+          log_job_message(:info, 'Category fixture is missing in payload')
           return
         end
 
@@ -92,8 +91,7 @@ module OddsFeed
                                 fixture: season_fixture)
 
         unless season_fixture
-          log_job_message(:info,
-                          'Season fixture is missing in payload, exiting')
+          log_job_message(:info, 'Season fixture is missing in payload')
           return
         end
 

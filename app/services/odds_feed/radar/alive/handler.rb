@@ -8,7 +8,8 @@ module OddsFeed
 
         def handle
           log_job_message(
-            :info,
+            :debug,
+            message: "Radar Producer #{product&.code} status",
             received_at: message.received_at,
             producer_code: product&.code,
             subscription_state: message.subscribed?,

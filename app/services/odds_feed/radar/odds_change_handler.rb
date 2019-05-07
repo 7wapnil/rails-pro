@@ -25,10 +25,11 @@ module OddsFeed
       def valid_type?
         return true if EventsManager::Entities::Event.type_match?(event_id)
 
-        error_message = I18n.t('errors.messages.unsupported_event_type',
-                               event_id: event_id)
-
-        log_job_message(:warn, message: error_message, event_id: event_id)
+        log_job_message(
+          :warn,
+          message: I18n.t('errors.messages.unsupported_event_type'),
+          event_id: event_id
+        )
 
         false
       end
@@ -66,7 +67,6 @@ module OddsFeed
                     producer: ::Radar::Producer.find(input_data['product']) }
 
         event.assign_attributes(updates)
-        log_updates!(updates)
       end
 
       def event_active?
@@ -97,16 +97,6 @@ module OddsFeed
         return [data] if data.is_a?(Hash)
 
         []
-      end
-
-      def log_updates!(updates)
-        log_job_message(
-          :info,
-          message: 'Updating event',
-          event_id: event_id,
-          product_id: input_data['product'],
-          attributes: updates
-        )
       end
 
       def update_odds

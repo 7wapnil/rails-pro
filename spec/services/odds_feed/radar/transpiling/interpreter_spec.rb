@@ -124,7 +124,9 @@ describe OddsFeed::Radar::Transpiling::Interpreter do
       end
 
       it do
-        expect(Rails.logger).to receive(:warn).with(message)
+        expect(Rails.logger)
+          .to receive(:warn)
+          .with(message: 'Interpreter error', description: message)
         interpreter.parse(raw_string)
       end
 

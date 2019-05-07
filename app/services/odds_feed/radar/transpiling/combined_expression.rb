@@ -16,11 +16,8 @@ module OddsFeed
           internal = token.match(/\(([^\)]*)/)
           return internal[1] if internal.length == 2
 
-          log_job_message(
-            :warn,
-            message: 'Unable to parse token',
-            token: token
-          )
+          log_job_message(:warn, message: 'Unable to parse token',
+                                 token: token)
           raise 'Unknown token'
         end
       end

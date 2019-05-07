@@ -403,14 +403,14 @@ en:
       unsupported_event_type: Event type is not supported
 
       mts:
-        ticket_not_found: "Ticket not found for bet with id '%{bet_id}'"
-        inconsistent_bookmaker_code: "Inconsistent ticket bookmaker Code for bet with id '%{bet_id}'"
-        live_selections: "Ticket contains live selections for bet with id '%{bet_id}'"
-        cancellation_time_expired: "Ticket contains live selections for bet with id '%{bet_id}'"
-        pre_match_section: "Cannot be cancelled because it contains pre-match selection for bet with id '%{bet_id}'"
-        cancellation_option_not_active: "Cannot be cancelled because particular cancellation option is not active for bet with id '%{bet_id}'"
-        ticket_already_settled: "Cannot be cancelled because ticket is already settled for bet with id '%{bet_id}'"
-        generic_exception: "Generic exception code for bet with id '%{bet_id}'"
+        ticket_not_found: "Ticket not found for bet"
+        inconsistent_bookmaker_code: "Inconsistent ticket bookmaker Code for bet"
+        live_selections: "Ticket contains live selections for bet"
+        cancellation_time_expired: "Ticket contains live selections for bet"
+        pre_match_section: "Cannot be cancelled because it contains pre-match selection for bet"
+        cancellation_option_not_active: "Cannot be cancelled because particular cancellation option is not active for bet"
+        ticket_already_settled: "Cannot be cancelled because ticket is already settled for bet"
+        generic_exception: "Generic exception code for bet"
 
       withdrawal:
         not_enough_money: Please check your available balance
@@ -431,6 +431,8 @@ en:
         transactions:
           kind:
             invalid: "Invalid transaction kind: '%{kind}'"
+      odds_feed:
+        low_certainty: "Settlement ignored because of low certainty"
 
   expiration_reasons:
     converted: Converted

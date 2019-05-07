@@ -91,9 +91,9 @@ module OddsFeed
           bet.cancelled_by_system!
         end
       rescue StandardError => error
-        log_job_failure(
-          "Bet #{bet.id} has not been cancelled!\nReason: #{error}"
-        )
+        log_job_message(:error, message: 'Bet was not cancelled!',
+                                bet_id: bet.id,
+                                reason: error.message)
       end
 
       def return_money(bet)

@@ -3,7 +3,7 @@
 module WebSocket
   class Client
     include Singleton
-    include OddsFeed::FlowProfiler
+    include JobLogger
 
     def trigger_event_update(event)
       trigger(SubscriptionFields::EVENTS_UPDATED, event)
@@ -65,14 +65,12 @@ module WebSocket
       event.active? && event.visible?
     end
 
-    def trigger_kind_event(profiled_event)
-      event =
-        profiled_event.is_a?(Hash) ? profiled_event[:data] : profiled_event
-      return warn("Event ID #{event.id} has no title") unless event.title
+    def trigger_kind_event(event)
+      return warn('Event has no title', event) unless event.title
 
       trigger(
         SubscriptionFields::KIND_EVENT_UPDATED,
-        profiled_event,
+        event,
         kind: event.title.kind
       )
     end
@@ -98,7 +96,7 @@ module WebSocket
     end
 
     def trigger_tournament_event(event)
-      return warn("Event #{event.id} has no tournament") unless event.tournament
+      return warn('Event has no tournament', event) unless event.tournament
 
       trigger(
         SubscriptionFields::TOURNAMENT_EVENT_UPDATED,
@@ -123,8 +121,8 @@ module WebSocket
       )
     end
 
-    def warn(msg)
-      Rails.logger.warn(msg)
+    def warn(message, event)
+      log_job_message(:warn, message: message, event_id: event.id)
     end
   end
 end

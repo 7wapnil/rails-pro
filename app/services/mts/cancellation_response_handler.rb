@@ -72,11 +72,9 @@ module Mts
     def unsuccessful_bet_cancel
       bet.pending_manual_cancellation!
 
-      log_job_failure(message: unsuccessful_message)
-    end
-
-    def unsuccessful_message
-      I18n.t("errors.messages.mts.#{status}", bet_id: bet.id)
+      log_job_message(:error,
+                      message: I18n.t("errors.messages.mts.#{status}"),
+                      bet_id: bet.id)
     end
   end
 end

@@ -76,7 +76,7 @@ module OddsFeed
       def exit_with_uncertainty
         log_job_message(
           :info,
-          message: I18n.t('logs.odds_feed.low_certainty'),
+          message: I18n.t('errors.messages.odds_feed.low_certainty'),
           event_id: event_id,
           certainty_level: certainty_level
         )
@@ -116,11 +116,8 @@ module OddsFeed
 
         bets = get_settled_bets(external_id)
         logger_level = bets.size.positive? ? :info : :debug
-        log_job_message(
-          logger_level,
-          message: 'Bets settled',
-          count: bets.size
-        )
+        log_job_message(logger_level, message: 'Bets settled',
+                                      count: bets.size)
       end
 
       def settle_bets(bets, outcome)
@@ -135,8 +132,9 @@ module OddsFeed
       rescue StandardError => error
         invalid_bet_ids.push(bet.id)
 
-        log_job_failure("Bet ##{bet.id} can't be settled")
-        log_job_failure(error)
+        log_job_message(:error, message: 'Bet cannot be settled',
+                                bet_id: bet.id,
+                                reason: error.message)
       end
 
       def proceed_bets(external_id)

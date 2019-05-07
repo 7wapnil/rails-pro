@@ -39,10 +39,11 @@ module EventsManager
     def type_supported?
       return true if EventsManager::Entities::Event.type_match?(event_data.id)
 
-      error_message = I18n.t('errors.messages.unsupported_event_type',
-                             event_id: event_data.id)
-
-      log_job_message(:warn, message: error_message, event_id: event_data.id)
+      log_job_message(
+        :warn,
+        message: I18n.t('errors.messages.unsupported_event_type'),
+        event_id: event_data.id
+      )
 
       false
     end

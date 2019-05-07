@@ -72,16 +72,12 @@ module OddsFeed
       end
 
       def payload_valid_for?(scope, payload)
-        log_job_message(
-          :debug,
-          message: "#{scope} data received",
-          payload: payload
-        )
+        log_job_message(:debug, message: "#{scope} data received",
+                                payload: payload)
 
         unless payload.is_a?(Hash)
           log_job_message(:warn, message: "#{scope} is missing",
-                                 payload: @payload)
-          return false
+                                 scope_id: payload['id'])
         end
 
         true

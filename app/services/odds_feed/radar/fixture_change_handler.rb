@@ -22,15 +22,17 @@ module OddsFeed
       def valid?
         return true if EventsManager::Entities::Event.type_match?(event_id)
 
-        error_message = I18n.t('errors.messages.unsupported_event_type')
-
-        log_job_message(:warn, message: error_message, event_id: event_id)
+        log_job_message(
+          :warn,
+          message: I18n.t('errors.messages.unsupported_event_type'),
+          event_id: event_id
+        )
 
         false
       end
 
       def update_event
-        log_job_message(:info, message: 'Updating event change type',
+        log_job_message(:info, message: 'Updating event',
                                event_id: event_id,
                                change_type: change_type)
 

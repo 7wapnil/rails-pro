@@ -19,7 +19,7 @@ module OddsFeed
           log_job_message(:info, 'Title cannot be set, exiting')
         rescue ActiveRecord::RecordNotUnique
           log_job_message(
-            :info, 'Title is not unique, try to reload AR relation'
+            :info, 'Title is not unique, trying to reload AR relation'
           )
 
           reload_and_find_title!

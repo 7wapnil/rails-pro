@@ -5,11 +5,8 @@ class EventArchivationWorker < ApplicationWorker
     events = Event.where.not(external_id: archived).all
     events.each { |event| archive(event) }
 
-    log_job_message(
-      :info,
-      message: 'Archived events',
-      events_count: events.count
-    )
+    log_job_message(:info, message: 'Events archivation',
+                           events_count: events.count)
   end
 
   def archived
