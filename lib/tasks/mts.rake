@@ -16,7 +16,7 @@ namespace :mts do
 
       status = channel
                .queue(ENV['MTS_MQ_QUEUE_CONFIRM'], durable: true)
-               .bind(ENV['MTS_MQ_USER'] + '-Submit',
+               .bind(ENV['MTS_MQ_USER'] + '-Confirm',
                      routing_key: routing_key)
 
       raise 'Failure!' unless status
