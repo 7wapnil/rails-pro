@@ -20,9 +20,14 @@ module EventsManager
                           title: title)
       Event.create_or_update_on_duplicate(event)
       log :info, message: 'Updated event', event_id: @external_id
-      update_associations(event)
 
-      event&.reload
+      update_associations(event) if load_associations?
+
+      event
+    end
+
+    def load_associations?
+      @options[:only_event].blank?
     end
 
     def update_associations(event)
