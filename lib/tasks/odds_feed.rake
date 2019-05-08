@@ -9,9 +9,18 @@ namespace :odds_feed do
     OddsFeed::PrepareScenario.call(scenario_id: id)
   end
 
-  desc 'Prepares database for staging feed'
-  task prepare_staging: :environment do
+  desc 'Deletes all odds feed produced data'
+  task clear: :environment do
     ActiveRecord::Base.logger = nil
-    OddsFeed::Scenarios::PrepareDatabase.call
+    OddsFeed::Clear.call
+  end
+
+  desc 'Prepares database for staging feed'
+  task prepare_staging: :clear
+
+  desc 'Loads a single event by MATCH_ID environment variable'
+  task load_event: :environment do
+    match_id = ENV.fetch('MATCH_ID')
+    EventsManager::EventLoader.call(match_id)
   end
 end

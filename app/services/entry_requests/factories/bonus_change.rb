@@ -3,10 +3,10 @@
 module EntryRequests
   module Factories
     class BonusChange < ApplicationService
-      def initialize(wallet:, amount:, initiator:)
+      def initialize(wallet:, amount:, **params)
         @wallet = wallet
         @amount = amount
-        @initiator = initiator
+        @initiator = params[:initiator]
       end
 
       def call
@@ -26,9 +26,8 @@ module EntryRequests
 
       def entry_request_attributes
         {
-          status: EntryRequest::INITIAL,
           amount: amount,
-          mode: EntryRequest::SYSTEM,
+          mode: EntryRequest::INTERNAL,
           kind: EntryRequest::BONUS_CHANGE,
           initiator: initiator,
           comment: comment,
@@ -48,7 +47,11 @@ module EntryRequests
       end
 
       def create_balance_request!
-        BalanceRequestBuilders::BonusChange.call(entry_request, bonus: amount)
+        BalanceEntryRequest.create!(
+          entry_request: entry_request,
+          amount: amount,
+          kind: Balance::BONUS
+        )
       end
     end
   end

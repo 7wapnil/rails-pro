@@ -47,9 +47,9 @@ module OddsFeed
             log_job_message(:warn, e.message)
           end
 
-          log_job_message(
-            :info, "'#{template}' transpiled into '#{result}'"
-          )
+          log_job_message(:info, message: 'Template transpiled',
+                                 template: template,
+                                 result: result)
           result
         end
 
@@ -62,7 +62,10 @@ module OddsFeed
                    .to_s
 
           log_job_message(
-            :debug, "'#{token}' transpiled into '#{result}'"
+            :debug,
+            message: 'Token transpiled',
+            token: token,
+            result: result
           )
           result
         end

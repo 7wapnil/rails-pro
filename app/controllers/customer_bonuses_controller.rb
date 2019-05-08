@@ -14,6 +14,7 @@ class CustomerBonusesController < ApplicationController
       wallet: @wallet,
       original_bonus: @original_bonus,
       amount: payload_params[:amount],
+      update_wallet: true,
       user: current_user
     )
 

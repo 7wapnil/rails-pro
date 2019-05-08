@@ -1,7 +1,7 @@
 FactoryBot.define do
   factory :balance_entry_request do
     kind { Balance::REAL_MONEY }
-    amount { 25.0 }
+    amount { Faker::Number.decimal(2, 2).to_d }
     entry_request
   end
 end

@@ -35,6 +35,7 @@ describe CustomerBonusesController, type: :controller do
           .with(wallet: wallet,
                 original_bonus: original_bonus,
                 amount: amount,
+                update_wallet: true,
                 user: current_user)
       end
 

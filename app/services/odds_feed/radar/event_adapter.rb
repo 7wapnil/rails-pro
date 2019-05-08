@@ -42,7 +42,11 @@ module OddsFeed
       end
 
       def attach_title!
-        log_job_message(:debug, "Title data received: #{title_fixture}")
+        log_job_message(
+          :debug,
+          message: 'Title data received',
+          fixture: title_fixture
+        )
         @event.title = EventAdapter::TitleSelector.call(payload: title_fixture)
       end
 
@@ -53,7 +57,8 @@ module OddsFeed
       end
 
       def find_or_create_category!
-        log_job_message(:debug, "Category data received: #{category_fixture}")
+        log_job_message(:debug, message: 'Category data received',
+                                fixture: category_fixture)
 
         unless category_fixture
           log_job_message(:info,
@@ -71,7 +76,8 @@ module OddsFeed
 
       def find_or_create_tournament!
         data = tournament_fixture
-        log_job_message(:debug, "Tournament data received: #{data}")
+        log_job_message(:debug, message: 'Tournament data received',
+                                fixture: data)
         @tournament = find_or_create_scope!(
           external_id: data['id'],
           name: tournament_fixture['name'],
@@ -82,7 +88,8 @@ module OddsFeed
       end
 
       def find_or_create_season!
-        log_job_message(:debug, "Season data received: #{season_fixture}")
+        log_job_message(:debug, message: 'Season data received',
+                                fixture: season_fixture)
 
         unless season_fixture
           log_job_message(:info,

@@ -28,7 +28,7 @@ module EntryRequests
       def bet_rollback_request_attrs
         {
           kind: EntryKinds::ROLLBACK,
-          mode: EntryRequest::SYSTEM,
+          mode: EntryRequest::INTERNAL,
           amount: -placement_rollback_entry.amount,
           comment: bet_rollback_comment,
           customer_id: bet.customer_id,
@@ -50,7 +50,7 @@ module EntryRequests
       def win_rollback_request_attrs
         {
           kind: EntryKinds::ROLLBACK,
-          mode: EntryRequest::SYSTEM,
+          mode: EntryRequest::INTERNAL,
           amount: winning_rollback_entry.amount.abs,
           comment: win_rollback_comment,
           customer_id: bet.customer_id,

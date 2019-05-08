@@ -3,7 +3,11 @@ module EventsManager
     def call
       load_competitor
     rescue StandardError => e
-      Rails.logger.error("Unable to create competitor: #{e.message}")
+      log :warn,
+          message: 'Unable to create competitor',
+          error: e.message,
+          external_id: @external_id,
+          competitor_data: competitor_data.to_s
       nil
     end
 
@@ -12,6 +16,10 @@ module EventsManager
     def load_competitor
       competitor = ::Competitor.new(attributes)
       ::Competitor.create_or_update_on_duplicate(competitor)
+      log :info,
+          message: 'Competitor updated',
+          competitor_id: competitor.external_id
+
       update_players(competitor)
 
       competitor
@@ -37,14 +45,14 @@ module EventsManager
       rescue ActiveRecord::RecordInvalid
         log :warn,
             message: 'Player data is invalid',
-            player: player_entity
+            player: player_entity.to_s
       end
     end
 
     def update_player(competitor, player)
-      return if competitor.players.exists?(player.id)
-
-      competitor.players << player
+      ::CompetitorPlayer.create_or_ignore_on_duplicate(
+        ::CompetitorPlayer.new(competitor: competitor, player: player)
+      )
     end
 
     def create_player(player_entity)
@@ -52,6 +60,8 @@ module EventsManager
                             name: player_entity.name,
                             full_name: player_entity.full_name)
       ::Player.create_or_update_on_duplicate(player)
+      log :info, message: 'Player updated', player_id: player_entity.id
+
       player
     end
   end

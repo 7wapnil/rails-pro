@@ -5,7 +5,8 @@ module OddsFeed
     # rubocop:disable Metrics/ClassLength
     class OddsChangeHandler < RadarMessageHandler
       def handle
-        validate!
+        validate_payload!
+        return unless valid_type?
 
         update_event!
         update_odds
@@ -16,20 +17,20 @@ module OddsFeed
 
       private
 
-      def validate!
-        validate_payload!
-        validate_type!
-      end
-
       def validate_payload!
         payload_err = "Odds change payload is malformed: #{@payload}"
         raise OddsFeed::InvalidMessageError, payload_err unless input_data
       end
 
-      def validate_type!
-        is_valid = EventsManager::Entities::Event.type_match?(event_id)
-        type_err = "Event type with external ID #{event_id} is not supported"
-        raise OddsFeed::InvalidMessageError, type_err unless is_valid
+      def valid_type?
+        return true if EventsManager::Entities::Event.type_match?(event_id)
+
+        error_message = I18n.t('errors.messages.unsupported_event_type',
+                               event_id: event_id)
+
+        log_job_message(:warn, message: error_message, event_id: event_id)
+
+        false
       end
 
       def event_id
@@ -37,18 +38,11 @@ module OddsFeed
       end
 
       def event
-        @event ||= Event
-                   .includes(:competitors, :players, :event_scopes, :title)
-                   .find_by!(external_id: event_id)
-      rescue ActiveRecord::RecordNotFound
-        ::Radar::ScheduledEvents::EventLoadingWorker.perform_async(event_id)
-
-        log_job_failure(
-          I18n.t('errors.messages.nonexistent_event', id: event_id)
-        )
-
-        raise SilentRetryJobError,
-              I18n.t('errors.messages.nonexistent_event', id: event_id)
+        @event ||= ::EventsManager::EventLoader.call(event_id,
+                                                     includes: %i[competitors
+                                                                  players
+                                                                  event_scopes
+                                                                  title])
       end
 
       def update_event!
@@ -106,11 +100,13 @@ module OddsFeed
       end
 
       def log_updates!(updates)
-        msg = <<-MESSAGE
-            Updating event with ID #{event_id}, \
-            product ID #{input_data['product']}, attributes #{updates}
-        MESSAGE
-        log_job_message(:info, msg)
+        log_job_message(
+          :info,
+          message: 'Updating event',
+          event_id: event_id,
+          product_id: input_data['product'],
+          attributes: updates
+        )
       end
 
       def update_odds
@@ -151,7 +147,9 @@ module OddsFeed
         event_statuses_map[status] || Event::NOT_STARTED
       rescue KeyError
         log_job_message(
-          :warn, "Event status missing in payload for Event #{event_id}"
+          :warn,
+          message: 'Event status missing in payload for Event',
+          event_id: event_id
         )
         Event::NOT_STARTED
       end

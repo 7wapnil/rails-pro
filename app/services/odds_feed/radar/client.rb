@@ -31,7 +31,8 @@ module OddsFeed
                   .dig('fixtures_fixture', 'fixture')
 
         unless payload
-          log_job_message(:warn, "Payload for event #{id} is missing")
+          log_job_message(:warn, message: 'Payload for event is missing',
+                                 event_id: id)
         end
 
         EventAdapter.new(payload)
@@ -72,7 +73,8 @@ module OddsFeed
                   query: query_params
                 ).request_uri
 
-        log_job_message(:info, "Calling subscription recovery on #{route}")
+        log_job_message(:info, message: 'Calling subscription recovery',
+                               route: route)
         post(route)
       end
 
@@ -103,32 +105,43 @@ module OddsFeed
           variant_urn
         ].join('/')
 
-        log_job_message(:info, "Loading market template on: #{route}")
+        log_job_message(:info, message: 'Loading market template',
+                               route: route)
         request(route, cache: cache)
       end
 
       def all_market_variants(cache: nil)
         route = "/descriptions/#{@language}/variants.xml"
 
-        log_job_message(:info, "Loading all market templates on: #{route}")
+        log_job_message(:info, message: 'Loading all market templates',
+                               route: route)
         request(route, cache: cache)
       end
 
       def player_profile(player_id, cache: nil)
         route = "/sports/#{@language}/players/#{player_id}/profile.xml"
-        log_job_message(:info, "Loading player profile: #{route}")
+        log_job_message(:info, message: 'Loading player profile',
+                               route: route)
         request(route, cache: cache)
       end
 
       def competitor_profile(competitor_id, cache: nil)
         route = "/sports/#{@language}/competitors/#{competitor_id}/profile.xml"
-        log_job_message(:info, "Loading competitor profile: #{route}")
+        log_job_message(
+          :info,
+          message: 'Loading competitor profile',
+          route: route
+        )
         request(route, cache: cache)
       end
 
       def venue_summary(venue_id, cache: nil)
         route = "/sports/#{@language}/venues/#{venue_id}/profile.xml"
-        log_job_message(:info, "Loading venue summary: #{route}")
+        log_job_message(
+          :info,
+          message: 'Loading venue summary',
+          route: route
+        )
         request(route, cache: cache)
       end
 

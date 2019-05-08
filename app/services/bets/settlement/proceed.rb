@@ -29,7 +29,7 @@ module Bets
         @entry_request = ::EntryRequests::Factories::Common.call(
           origin: bet,
           kind: EntryRequest::WIN,
-          mode: EntryRequest::SYSTEM,
+          mode: EntryRequest::INTERNAL,
           amount: bet.win_amount,
           comment: "WIN for bet #{bet.id}"
         )
@@ -39,7 +39,7 @@ module Bets
         @entry_request = ::EntryRequests::Factories::Common.call(
           origin: bet,
           kind: EntryRequest::REFUND,
-          mode: EntryRequest::SYSTEM,
+          mode: EntryRequest::INTERNAL,
           amount: bet.refund_amount,
           comment: "REFUND for bet #{bet.id}"
         )

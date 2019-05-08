@@ -13,7 +13,8 @@ class CustomerBonus < ApplicationRecord
   enum expiration_reason: {
     manual_cancel: MANUAL_CANCEL = 'manual_cancel',
     expired_by_date: EXPIRED_BY_DATE = 'expired_by_date',
-    converted: CONVERTED = 'converted'
+    converted: CONVERTED = 'converted',
+    withdrawal: WITHDRAWAL = 'withdrawal'
   }
 
   attr_reader :amount

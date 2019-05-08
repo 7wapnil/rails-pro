@@ -8,7 +8,7 @@ describe SafeCharge::DepositResponse do
   end
   let(:transaction_id) { Faker::Number.number(9) }
   let(:transaction_status) { SafeCharge::Statuses::APPROVED }
-  let(:total_amount) { entry_request.amount }
+  let(:total_amount) { real_money_balance_entry_request.amount }
   let(:currency_code) { entry_request.currency.code }
   let(:product_id) { entry_request.id.to_s }
 
@@ -43,6 +43,17 @@ describe SafeCharge::DepositResponse do
     create(:entry_request,
            kind: EntryRequest::DEPOSIT,
            status: EntryRequest::INITIAL)
+  end
+  let(:ratio) { 0.75 }
+  let!(:real_money_balance_entry_request) do
+    create(:balance_entry_request, kind: Balance::REAL_MONEY,
+                                   amount: entry_request.amount * ratio,
+                                   entry_request: entry_request)
+  end
+  let!(:bonus_balance_entry_request) do
+    create(:balance_entry_request, kind: Balance::BONUS,
+                                   amount: entry_request.amount * (1 - ratio),
+                                   entry_request: entry_request)
   end
 
   before do
@@ -93,8 +104,17 @@ describe SafeCharge::DepositResponse do
 
     context 'with no parameters mismatch' do
       it 'raises no exception' do
-        expect { verification_result }
-          .not_to raise_error(SafeCharge::CallbackDataMismatch)
+        expect { verification_result }.not_to raise_error
+      end
+    end
+
+    context 'bonus does not affect response validation' do
+      before do
+        bonus_balance_entry_request.update(amount: params['totalAmount'] / 2.0)
+      end
+
+      it 'and does not raise an error' do
+        expect { verification_result }.not_to raise_error
       end
     end
 
@@ -103,8 +123,12 @@ describe SafeCharge::DepositResponse do
     # is quite hard to intrude and alter
 
     context 'with callback amount mismatching entry_request' do
+      before do
+        real_money_balance_entry_request
+          .update(amount: params['totalAmount'] / 2.0)
+      end
+
       it 'raises SafeCharge::CallbackDataMismatch' do
-        entry_request.update(amount: params['totalAmount'] / 2.0)
         expect { verification_result }
           .to raise_error(SafeCharge::CallbackDataMismatch)
       end

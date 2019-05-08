@@ -87,7 +87,7 @@ module OddsFeed
       end
 
       def process_outcomes_for(market_data)
-        market_data['outcome'].each do |outcome|
+        Array.wrap(market_data['outcome']).each do |outcome|
           generator = ExternalId.new(event_id: event_id,
                                      market_id: market_data['id'],
                                      specs: market_data['specifiers'],
@@ -108,16 +108,19 @@ module OddsFeed
       end
 
       def update_bets(external_id, outcome)
-        log_job_message(
-          :debug, "Settling bets for odd with EID #{external_id}"
-        )
+        log_job_message(:debug, message: 'Settling bets for odd',
+                                external_id: external_id)
 
         bets = bets_by_external_id(external_id)
         settle_bets(bets, outcome)
 
         bets = get_settled_bets(external_id)
         logger_level = bets.size.positive? ? :info : :debug
-        log_job_message(logger_level, "#{bets.size} bets settled")
+        log_job_message(
+          logger_level,
+          message: 'Bets settled',
+          count: bets.size
+        )
       end
 
       def settle_bets(bets, outcome)

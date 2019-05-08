@@ -74,7 +74,7 @@ module StateMachines
         end
 
         event :finish_external_validation_with_acceptance,
-              after: :on_successfull_bet_placement do
+              after: :on_successful_bet_placement do
           transitions from: :sent_to_external_validation,
                       to: :accepted
         end
@@ -124,7 +124,7 @@ module StateMachines
         BetExternalValidation::Service.call(self)
       end
 
-      def on_successfull_bet_placement
+      def on_successful_bet_placement
         entry.confirmed_at = Time.zone.now
       end
     end

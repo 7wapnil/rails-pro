@@ -10,6 +10,7 @@ module CustomerBonuses
     validate :validate_repeated_activation
 
     delegate :customer, :original_bonus, to: :subject
+    delegate :active_bonus, to: :'customer&.reload', allow_nil: true
 
     def submit!
       validate!
@@ -20,16 +21,15 @@ module CustomerBonuses
 
     def validate!
       return if valid?
-
-      error_message = errors.full_messages.join("\n")
-      raise CustomerBonuses::ActivationError, error_message
+      
+      raise CustomerBonuses::ActivationError, displayed_error
     end
 
     def ensure_no_active_bonus
-      return unless find_existing_bonus
+      return unless active_bonus
 
-      raise CustomerBonuses::ActivationError,
-            I18n.t('errors.messages.customer_has_active_bonus')
+      errors.add(:active_bonus,
+                 I18n.t('errors.messages.customer_has_active_bonus'))
     end
 
     def validate_repeated_activation
@@ -39,12 +39,13 @@ module CustomerBonuses
                                         original_bonus: original_bonus)
       return unless duplicate
 
-      raise CustomerBonuses::ActivationError,
-            I18n.t('errors.messages.repeated_bonus_activation')
+      errors.add(:bonus,
+                 I18n.t('errors.messages.repeated_bonus_activation'))
     end
 
-    def find_existing_bonus
-      Customer.find_by(id: customer.id)&.active_bonus
+    def displayed_error
+      # [1] takes the error message itself instead of key-value pair
+      errors.first[1]
     end
   end
 end
