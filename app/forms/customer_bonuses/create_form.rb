@@ -21,7 +21,7 @@ module CustomerBonuses
 
     def validate!
       return if valid?
-      
+
       raise CustomerBonuses::ActivationError, displayed_error
     end
 
