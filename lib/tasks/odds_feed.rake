@@ -23,4 +23,12 @@ namespace :odds_feed do
     match_id = ENV.fetch('MATCH_ID')
     EventsManager::EventLoader.call(match_id)
   end
+
+  namespace :replay do
+    task prepare_queue: :environment do
+      raise 'You should provide scenario id' unless ENV['SCENARIO']
+
+      OddsFeed::ReplayService.call(scenario_id: ENV['SCENARIO'])
+    end
+  end
 end
