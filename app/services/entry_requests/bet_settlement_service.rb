@@ -24,11 +24,13 @@ module EntryRequests
     attr_reader :entry_request, :bet
 
     def handle_unexpected_bet!
-      message = I18n.t('errors.messages.entry_request_for_settled_bet',
-                       bet_id: bet.id)
+      log_job_message(:error,
+                      message: 'Entry request for settled bet is expected!',
+                      bet_id: bet.id)
 
-      log_job_failure(message)
-      entry_request.register_failure!(message)
+      entry_request.register_failure!(
+        I18n.t('errors.messages.entry_request_for_settled_bet', bet_id: bet.id)
+      )
     end
   end
 end

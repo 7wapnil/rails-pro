@@ -21,7 +21,8 @@ module OddsFeed
 
       def event(id, cache: nil)
         unless supported_external_id?(id)
-          log_job_failure("Payload for event #{id} is not supported yet")
+          log_job_message(:error, message: 'Payload is not supported yet',
+                                  event_id: id)
 
           return EventAdapter.new
         end
@@ -127,21 +128,15 @@ module OddsFeed
 
       def competitor_profile(competitor_id, cache: nil)
         route = "/sports/#{@language}/competitors/#{competitor_id}/profile.xml"
-        log_job_message(
-          :info,
-          message: 'Loading competitor profile',
-          route: route
-        )
+        log_job_message(:info, message: 'Loading competitor profile',
+                               route: route)
         request(route, cache: cache)
       end
 
       def venue_summary(venue_id, cache: nil)
         route = "/sports/#{@language}/venues/#{venue_id}/profile.xml"
-        log_job_message(
-          :info,
-          message: 'Loading venue summary',
-          route: route
-        )
+        log_job_message(:info, message: 'Loading venue summary',
+                               route: route)
         request(route, cache: cache)
       end
 

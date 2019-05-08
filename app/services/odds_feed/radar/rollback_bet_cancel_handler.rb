@@ -79,9 +79,11 @@ module OddsFeed
           bet.settled!
         end
       rescue StandardError => error
-        log_job_failure(
-          "Bet cancel for bet #{bet.id} has not been rollbacked!\n" \
-          "Reason: #{error}"
+        log_job_message(
+          :error,
+          message: 'Bet cancel for bet was not rollbacked!',
+          bet_id: bet.id,
+          reason: error.message
         )
       end
 

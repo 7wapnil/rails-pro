@@ -24,27 +24,18 @@ module OddsFeed
         attr_reader :external_id
 
         def log_start
-          log_job_message(
-            :info,
-            message: 'Starting loading event',
-            event_id: external_id
-          )
+          log_job_message(:info, message: 'Start loading event',
+                                 event_id: external_id)
         end
 
         def log_success
-          log_job_message(
-            :info,
-            message: 'Loaded event successfully',
-            event_id: external_id
-          )
+          log_job_message(:info, message: 'Event was loaded successfully',
+                                 event_id: external_id)
         end
 
         def log_failure
-          log_job_message(
-            :error,
-            message: 'Failed to load event',
-            event_id: external_id
-          )
+          log_job_message(:error, message: 'Failed to load event',
+                                  event_id: external_id)
         end
       end
     end

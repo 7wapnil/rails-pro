@@ -31,7 +31,7 @@ module EventsManager
 
     def create_scope_and_associate(entity, kind, parent_scope = nil)
       if entity.nil?
-        Rails.logger.info "Scope '#{kind}' fixture not found or empty"
+        Rails.logger.debug "Scope '#{kind}' fixture not found or empty"
         return nil
       end
 

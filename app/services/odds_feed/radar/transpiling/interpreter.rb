@@ -44,12 +44,13 @@ module OddsFeed
             token = matches.first
             result = result.gsub("{#{token}}", token_value(token))
           rescue StandardError => e
-            log_job_message(:warn, e.message)
+            log_job_message(:warn, message: 'Interpreter error',
+                                   description: e.message)
           end
 
-          log_job_message(:info, message: 'Template transpiled',
-                                 template: template,
-                                 result: result)
+          log_job_message(:debug, message: 'Template transpiled',
+                                  template: template,
+                                  result: result)
           result
         end
 
@@ -61,12 +62,9 @@ module OddsFeed
                    .value(token)
                    .to_s
 
-          log_job_message(
-            :debug,
-            message: 'Token transpiled',
-            token: token,
-            result: result
-          )
+          log_job_message(:debug, message: 'Token transpiled',
+                                  token: token,
+                                  result: result)
           result
         end
       end

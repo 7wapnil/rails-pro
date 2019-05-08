@@ -33,8 +33,7 @@ module OddsFeed
 
           @odds << odd
         rescue ActiveRecord::RecordInvalid => e
-          log_job_message(:warn, message: e.message,
-                                 odd_data: odd.attributes)
+          log_job_message(:warn, e.message)
         rescue StandardError => e
           log_job_failure(e)
         end

@@ -24,8 +24,7 @@ module OddsFeed
           @markets_data.each do |market_data|
             build_market(market_data)
           rescue StandardError => e
-            log_job_message(:debug, { message: e.message,
-                                      market_data: market_data }.to_json)
+            log_job_message(:debug, e.message)
             next
           end
         end

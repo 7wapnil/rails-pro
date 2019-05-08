@@ -34,7 +34,8 @@ describe OddsFeed::Radar::Alive::Handler do
       expect_any_instance_of(JobLogger)
         .to receive(:log_job_message)
         .with(
-          :info,
+          :debug,
+          message: "Radar Producer #{product.code} status",
           received_at: message_received_at,
           producer_code: product.code,
           subscription_state: true,

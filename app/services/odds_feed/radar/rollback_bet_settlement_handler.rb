@@ -64,8 +64,11 @@ module OddsFeed
                      status: StateMachines::BetStateMachine::ACCEPTED)
         end
       rescue StandardError => error
-        log_job_failure(
-          "Bet #{bet.id} has not been rollbacked! Reason: #{error.message}"
+        log_job_message(
+          :error,
+          message: 'Bet settlement was not rollbacked!',
+          bet_id: bet.id,
+          reason: error.message
         )
       end
 

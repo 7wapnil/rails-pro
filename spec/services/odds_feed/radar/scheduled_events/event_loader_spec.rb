@@ -25,30 +25,32 @@ describe OddsFeed::Radar::ScheduledEvents::EventLoader do
 
   context 'logging start' do
     before do
-      allow(service_object)
-        .to receive(:log_job_message)
+      allow(service_object).to receive(:log_job_message)
     end
 
     it 'logs event loading start' do
       subject
       expect(service_object)
         .to have_received(:log_job_message)
-        .with(:info, message: 'Starting loading event', event_id: event_id)
+        .with(:info, message: 'Start loading event', event_id: event_id)
         .once
     end
   end
 
   context 'logging success' do
     before do
-      allow(service_object)
-        .to receive(:log_job_message)
+      allow(service_object).to receive(:log_job_message)
     end
 
     it 'logs event loading success' do
       subject
       expect(service_object)
         .to have_received(:log_job_message)
-        .with(:info, message: 'Loaded event successfully', event_id: event_id)
+        .with(
+          :info,
+          message: 'Event was loaded successfully',
+          event_id: event_id
+        )
         .once
     end
   end

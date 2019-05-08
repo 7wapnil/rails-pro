@@ -59,11 +59,8 @@ module OddsFeed
         end
 
         def log_success(date)
-          log_job_message(
-            :info,
-            message: 'Event based data caching scheduled',
-            date: humanize(date)
-          )
+          log_job_message(:info, message: 'Event based data caching scheduled',
+                                 date: humanize(date))
         end
 
         def log_failure(date, error)
