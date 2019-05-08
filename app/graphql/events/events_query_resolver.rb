@@ -6,8 +6,6 @@ module Events
     UPCOMING_CONTEXTS =
       %w[upcoming_for_time upcoming_limited upcoming_unlimited].freeze
     SUPPORTED_CONTEXTS = [LIVE, *UPCOMING_CONTEXTS].freeze
-    UPCOMING_LIMIT = 16
-    UPCOMING_DURATION = 6
 
     def initialize(query_args)
       @query_args = query_args
@@ -69,7 +67,8 @@ module Events
     end
 
     def upcoming_for_time
-      query.where('events.start_at <= ?', UPCOMING_DURATION.hours.from_now)
+      query.where('events.start_at <= ?',
+                  Event::UPCOMING_DURATION.hours.from_now)
     end
 
     def upcoming_limited
@@ -96,7 +95,7 @@ module Events
           ON se.event_id = events.id AND se.event_scope_id = event_scopes.id
           WHERE events.id IN (#{query_ids.join(', ').presence || 'NULL'})
           ORDER BY priority, start_at ASC
-          LIMIT #{UPCOMING_LIMIT}
+          LIMIT #{Event::UPCOMING_LIMIT}
         )
       SQL
     end

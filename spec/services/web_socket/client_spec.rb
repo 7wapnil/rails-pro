@@ -27,34 +27,107 @@ describe WebSocket::Client do
         .with(SubscriptionFields::EVENT_UPDATED, event, id: event.id)
     end
 
-    it 'triggers kind events subscription' do
-      expect(subject)
-        .to have_received(:trigger)
-        .with(
-          SubscriptionFields::KIND_EVENT_UPDATED,
-          event,
-          kind: event.title.kind
-        )
+    context 'event upcoming for time' do
+      let(:event) do
+        event = create(:event, :live)
+        event.event_scopes << create(:event_scope, kind: EventScope::CATEGORY)
+        event
+      end
+
+      it 'triggers kind events subscription' do
+        expect(subject)
+          .to have_received(:trigger)
+          .with(
+            SubscriptionFields::KIND_EVENT_UPDATED,
+            event,
+            kind: event.title.kind
+          )
+      end
+
+      it 'triggers sport events subscription' do
+        expect(subject)
+          .to have_received(:trigger)
+          .with(
+            SubscriptionFields::SPORT_EVENT_UPDATED,
+            event,
+            title: event.title_id
+          )
+      end
     end
 
-    it 'triggers sport events subscription' do
-      expect(subject)
-        .to have_received(:trigger)
-        .with(
-          SubscriptionFields::SPORT_EVENT_UPDATED,
-          event,
-          title: event.title_id
-        )
+    context 'upcoming limited' do
+      let(:event) do
+        event = create(:event)
+        event.event_scopes << create(:event_scope, kind: EventScope::TOURNAMENT)
+        event.event_scopes << create(:event_scope, kind: EventScope::CATEGORY)
+        event
+      end
+
+      it 'triggers category events subscription' do
+        expect(subject)
+          .to have_received(:trigger)
+          .with(
+            SubscriptionFields::CATEGORY_EVENT_UPDATED,
+            event,
+            category: event.category.id
+          )
+      end
     end
 
-    it 'triggers category events subscription' do
-      expect(subject)
-        .to have_received(:trigger)
-        .with(
-          SubscriptionFields::CATEGORY_EVENT_UPDATED,
-          event,
-          category: event.category.id
-        )
+    context 'upcoming for more than 6 hours' do
+      let(:event) do
+        event = create(:event)
+        event.event_scopes << create(:event_scope, kind: EventScope::CATEGORY)
+        event
+      end
+
+      it 'triggers kind events subscription' do
+        expect(subject)
+          .not_to have_received(:trigger)
+          .with(
+            SubscriptionFields::KIND_EVENT_UPDATED,
+            event,
+            kind: event.title.kind
+          )
+      end
+
+      it 'triggers sport events subscription' do
+        expect(subject)
+          .not_to have_received(:trigger)
+          .with(
+            SubscriptionFields::SPORT_EVENT_UPDATED,
+            event,
+            title: event.title_id
+          )
+      end
+    end
+
+    context 'event live' do
+      let(:event) do
+        event = create(:event, :live)
+        event.event_scopes << create(:event_scope, kind: EventScope::CATEGORY)
+        event
+      end
+
+      it 'triggers kind events subscription' do
+        expect(subject)
+          .to have_received(:trigger)
+          .with(
+            SubscriptionFields::KIND_EVENT_UPDATED,
+            event,
+            kind: event.title.kind
+          )
+      end
+
+      it 'triggers sport events subscription' do
+        expect(subject)
+          .to have_received(:trigger)
+          .with(
+            SubscriptionFields::SPORT_EVENT_UPDATED,
+            event,
+            title: event.title_id
+          )
+      end
     end
 
     it 'triggers tournament events subscription' do

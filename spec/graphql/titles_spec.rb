@@ -204,7 +204,7 @@ describe GraphQL, '#titles' do
     let!(:upcoming_for_time_event) do
       create(:event,
              start_at:
-               (Events::EventsQueryResolver::UPCOMING_DURATION - 1)
+               (Event::UPCOMING_DURATION - 1)
                  .hours.from_now,
              end_at: nil)
     end
@@ -212,7 +212,7 @@ describe GraphQL, '#titles' do
     let!(:event_in_future) do
       create(:event,
              start_at:
-               (Events::EventsQueryResolver::UPCOMING_DURATION + 1)
+               (Event::UPCOMING_DURATION + 1)
                  .hours.from_now,
              end_at: nil)
     end

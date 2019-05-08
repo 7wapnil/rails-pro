@@ -29,7 +29,7 @@ module Titles
     def limit_start_at(args)
       return unless args[:context] == UPCOMING_FOR_TIME
 
-      Events::EventsQueryResolver::UPCOMING_DURATION.hours.from_now
+      Event::UPCOMING_DURATION.hours.from_now
     end
   end
 end
