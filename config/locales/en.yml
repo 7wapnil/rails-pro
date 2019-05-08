@@ -411,6 +411,7 @@ en:
         cancellation_option_not_active: "Cannot be cancelled because particular cancellation option is not active for bet"
         ticket_already_settled: "Cannot be cancelled because ticket is already settled for bet"
         generic_exception: "Generic exception code for bet"
+        failed_external_validation: Bet failed external validation. Please, try again later
 
       withdrawal:
         not_enough_money: Please check your available balance
