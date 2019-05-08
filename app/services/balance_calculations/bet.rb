@@ -3,6 +3,7 @@
 module BalanceCalculations
   class Bet < ApplicationService
     FULL_RATIO = 1.0
+    MONEY_PRECISION = 2
 
     delegate :customer_bonus, to: :bet
     delegate :applied?, to: :customer_bonus, allow_nil: true, prefix: true
@@ -24,7 +25,7 @@ module BalanceCalculations
     attr_reader :bet
 
     def calculated_real_amount
-      @calculated_real_amount ||= bet.amount * ratio
+      @calculated_real_amount ||= (bet.amount * ratio).round(MONEY_PRECISION)
     end
 
     def ratio
