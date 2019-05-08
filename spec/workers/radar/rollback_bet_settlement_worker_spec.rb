@@ -147,6 +147,26 @@ describe Radar::RollbackBetSettlementWorker do
         .by(control_entry_requests.length)
     end
 
+    context 'bonus rollover' do
+      before do
+        Bet.all.each do |bet|
+          customer_bonus = create(:customer_bonus,
+                                  customer: bet.customer,
+                                  wallet: bet.customer.wallets.first)
+
+          customer_bonus.bets << bet
+        end
+      end
+
+      it 'calls rollover bonus service' do
+        expect(Bonuses::RollbackBonusRolloverService)
+          .to receive(:call)
+          .exactly(excluded_bets.count).times
+
+        subject
+      end
+    end
+
     context 'entry requests' do
       let(:comment) do
         "Rollback won amount #{win_entry_request.amount} #{win_bet.currency}" \
