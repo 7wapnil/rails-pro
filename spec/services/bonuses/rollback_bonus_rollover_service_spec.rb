@@ -4,8 +4,10 @@ describe Bonuses::RollbackBonusRolloverService do
   subject { described_class.call(bet: bet) }
 
   let(:bet) do
-    create(:bet, :rejected, customer: customer, amount: bet_amount,
-                            odd: create(:odd, value: odd_value))
+    create(:bet, :rejected, customer: customer,
+                            amount: bet_amount,
+                            odd: create(:odd, value: odd_value),
+                            customer_bonus: customer_bonus)
   end
   let(:odd_value) { 2.5 }
   let(:customer_bonus) do
@@ -18,8 +20,6 @@ describe Bonuses::RollbackBonusRolloverService do
   let(:initial_rollover) { 1000 }
   let(:customer) { create(:customer, :ready_to_bet) }
   let(:bet_amount) { rand(10..100) }
-
-  before { customer_bonus.bets << bet }
 
   describe 'call' do
     context 'bet amount < max rollover per bet' do

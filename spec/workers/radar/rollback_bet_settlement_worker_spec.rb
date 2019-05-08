@@ -149,7 +149,7 @@ describe Radar::RollbackBetSettlementWorker do
 
     context 'bonus rollover' do
       before do
-        Bet.all.each do |bet|
+        control_bets.each do |bet|
           customer_bonus = create(:customer_bonus,
                                   customer: bet.customer,
                                   wallet: bet.customer.wallets.first)
@@ -161,7 +161,7 @@ describe Radar::RollbackBetSettlementWorker do
       it 'calls rollover bonus service' do
         expect(Bonuses::RollbackBonusRolloverService)
           .to receive(:call)
-          .exactly(excluded_bets.count).times
+          .exactly(control_bets.count).times
 
         subject
       end
