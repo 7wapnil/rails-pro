@@ -15,6 +15,9 @@
                             allowed_account_kind_options(customer),
                             class: 'form-control'
     %tr
+      %td= t('attributes.b_tag')
+      %td= customer.b_tag
+    %tr
       %td= t('attributes.last_sign_in_ip')
       %td= customer.last_sign_in_ip
     %tr
