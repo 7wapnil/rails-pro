@@ -79,9 +79,19 @@ module OddsFeed
 
       def rollback_bonus_rollover(bet)
         return unless bet.customer.customer_bonus
-        return if bet.customer_bonus != bet.customer.customer_bonus
+
+        unexpected_customer_bonus(bet) if unexpected_customer_bonus?(bet)
 
         Bonuses::RollbackBonusRolloverService.call(bet: bet)
+      end
+
+      def unexpected_customer_bonus(bet)
+        raise StandardError I18n.t('errors.messages.unexpected_customer_bonus',
+                                   bet_id: bet.id)
+      end
+
+      def unexpected_customer_bonus?(bet)
+        bet.customer_bonus != bet.customer.customer_bonus
       end
     end
   end

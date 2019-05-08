@@ -17,8 +17,10 @@ module Bonuses
     def recalculate_rollover!
       return if bet.odd_value < customer_bonus.min_odds_per_bet
 
-      balance = customer_bonus.rollover_balance
-      customer_bonus.update!(rollover_balance: balance + rollover_amount)
+      customer_bonus.with_lock do
+        balance = customer_bonus.rollover_balance
+        customer_bonus.update!(rollover_balance: balance + rollover_amount)
+      end
     end
 
     def customer_bonus
