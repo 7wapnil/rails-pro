@@ -35,6 +35,17 @@ module Mts
         @message[:result]
       end
 
+      def rejection_json
+        message.dig(:result, :bet_details, 0, :selection_details, 0)
+               .to_h
+               .except(:selection_index)
+               .to_json
+      end
+
+      def rejection_message
+        message.dig(:result, :reason, :message)
+      end
+
       private
 
       def parse(json)

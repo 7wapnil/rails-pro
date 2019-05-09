@@ -21,15 +21,11 @@ module Mts
 
     def reject_bet!(bet)
       bet.update(
-        message: I18n.t('errors.messages.mts.failed_external_validation')
+        message: response.rejection_message
       )
-      log_job_message(:info, message: message, bet_id: bet.id)
+      log_job_message(:info, message: response.rejection_json, bet_id: bet.id)
 
       bet.finish_external_validation_with_rejection!
-    end
-
-    def message
-      @message ||= @response.message.dig(:result, :reason, :message)
     end
   end
 end
