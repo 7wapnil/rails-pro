@@ -159,17 +159,17 @@ describe Radar::RollbackBetCancelWorker do
   context 'market statuses' do
     before { subject }
 
-    it 'for previously settled markets return back to SETTLED' do
+    it 'are not rollbacked for previously settled markets' do
       expect(settled_market.reload).to have_attributes(
-        status: StateMachines::MarketStateMachine::SETTLED,
-        previous_status: nil
+        status: StateMachines::MarketStateMachine::CANCELLED,
+        previous_status: StateMachines::MarketStateMachine::SETTLED
       )
     end
 
-    it 'for previously active markets return back to ACTIVE' do
+    it 'are not rollbacked for previously active markets' do
       expect(active_market.reload).to have_attributes(
-        status: StateMachines::MarketStateMachine::ACTIVE,
-        previous_status: nil
+        status: StateMachines::MarketStateMachine::CANCELLED,
+        previous_status: StateMachines::MarketStateMachine::ACTIVE
       )
     end
 

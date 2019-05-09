@@ -3,8 +3,6 @@
 module OddsFeed
   module Radar
     class RollbackBetCancelHandler < RadarMessageHandler
-      include WebsocketEventEmittable
-
       attr_accessor :batch_size
 
       def initialize(payload)
@@ -14,10 +12,7 @@ module OddsFeed
 
       def handle
         validate_message!
-        rollback_market_statuses
         rollback_bets
-
-        emit_websocket
       end
 
       private
@@ -32,20 +27,12 @@ module OddsFeed
         raise OddsFeed::InvalidMessageError, @payload
       end
 
+      def event_id
+        input_data['event_id']
+      end
+
       def markets
         Array.wrap(input_data['market'])
-      end
-
-      def rollback_market_statuses
-        Market
-          .where(external_id: market_external_ids)
-          .each { |market| rollback_market_status(market) }
-      end
-
-      def rollback_market_status(market)
-        market.rollback_status!
-      rescue StandardError => error
-        log_job_failure(error)
       end
 
       def market_external_ids
@@ -74,9 +61,9 @@ module OddsFeed
         ActiveRecord::Base.transaction do
           rollback_money(bet)
 
-          return bet.accepted! unless bet.market.settled?
+          return bet.settled! if bet.settlement_status
 
-          bet.settled!
+          bet.accepted!
         end
       rescue StandardError => error
         log_job_message(
