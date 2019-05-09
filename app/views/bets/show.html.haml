@@ -33,7 +33,7 @@
           %td= l(@bet.created_at, format: :long)
         %tr
           %td= t('attributes.status')
-          %td= status_badge(@bet.display_status)
+          %td= status_badge(@bet.status)
         %tr
           %td= t('attributes.settlement')
           %td= settle_badge(@bet.settlement_status)
