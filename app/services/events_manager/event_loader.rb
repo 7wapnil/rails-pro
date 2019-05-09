@@ -30,8 +30,12 @@ module EventsManager
     end
 
     def crawled_event
-      ::EventsManager::EventFetcher.call(@external_id)
+      ::EventsManager::EventFetcher.call(@external_id, only_event: only_event?)
       find_event
+    end
+
+    def only_event?
+      @options[:force].present? && Event.exists?(external_id: @external_id)
     end
 
     def crawling_forced?

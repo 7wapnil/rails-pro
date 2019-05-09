@@ -13,13 +13,22 @@ describe EventsManager::EventLoader do
 
       expect(EventsManager::EventFetcher)
         .to have_received(:call)
-        .with(external_id)
+        .with(external_id, only_event: false)
     end
 
     it 'loads event from db after creation' do
       allow(Event).to receive(:find_by).and_call_original
       subject.call
       expect(Event).to have_received(:find_by).twice
+    end
+
+    it 'crawls full event when forced' do
+      subject.options = { force: true }
+      subject.call
+
+      expect(EventsManager::EventFetcher)
+        .to have_received(:call)
+        .with(external_id, only_event: false)
     end
   end
 
@@ -41,18 +50,16 @@ describe EventsManager::EventLoader do
       subject.options = { includes: includes }
       subject.call
 
-      expect(Event)
-        .to have_received(:includes)
-        .with(includes)
+      expect(Event).to have_received(:includes).with(includes)
     end
 
-    it 'returns crawled event when forced' do
+    it 'returns crawled event, but does not touch associations when forced' do
       subject.options = { force: true }
       subject.call
 
       expect(EventsManager::EventFetcher)
         .to have_received(:call)
-        .with(external_id)
+        .with(external_id, only_event: true)
     end
   end
 end

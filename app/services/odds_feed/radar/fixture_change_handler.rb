@@ -77,7 +77,7 @@ module OddsFeed
       end
 
       def event
-        @event ||= ::EventsManager::EventLoader.call(event_id)
+        @event ||= ::EventsManager::EventLoader.call(event_id, force: true)
       end
     end
   end
