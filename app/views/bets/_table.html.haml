@@ -38,7 +38,7 @@
             = number_with_precision bet.winning_amount, precision: 2
             = bet.currency.code
           %td= l(bet.created_at, format: :long)
-          %td= status_badge(bet.display_status)
+          %td= status_badge(bet.status)
           %td= settle_badge(bet.settlement_status)
           %td= bet.sport
           %td= bet.category
