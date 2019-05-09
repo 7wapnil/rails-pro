@@ -81,5 +81,33 @@ describe Forms::WithdrawRequest do
       subject.valid?
       expect(subject.errors).not_to include(:last_four_digits)
     end
+
+    context 'with pending bonus bets' do
+      let(:customer) { subject.customer }
+      let(:bet) do
+        create(:bet,
+               customer: customer,
+               status: StateMachines::BetStateMachine::ACCEPTED)
+      end
+      let(:entry_request) do
+        create(:entry_request,
+               customer: customer,
+               origin: bet)
+      end
+      let!(:balance_entry_request) do
+        create(:balance_entry_request,
+               entry_request: entry_request,
+               kind: Balance::BONUS)
+      end
+
+      it 'raises validation error on validate!' do
+        expect { subject.validate! }.to(
+          raise_error(
+            ActiveModel::ValidationError,
+            /#{I18n.t('errors.messages.withdrawal.pending_bets_with_bonus')}/
+          )
+        )
+      end
+    end
   end
 end

@@ -35,6 +35,7 @@ module Forms
     validate :validate_customer_status
     validate :validate_customer_password
     validate :validate_payment_details
+    validate :validate_no_pending_bets_with_bonus
 
     def validate_payment_details
       return unless PAYMENT_METHOD_MODELS.key?(payment_method)
@@ -67,6 +68,21 @@ module Forms
 
       raise ResolvingError,
             password: I18n.t('errors.messages.password_invalid')
+    end
+
+    def validate_no_pending_bets_with_bonus
+      return if !customer || no_pending_bets_with_bonus?
+
+      errors.add(:base,
+                 I18n.t('errors.messages.withdrawal.pending_bets_with_bonus'))
+    end
+
+    def no_pending_bets_with_bonus?
+      customer
+        .bets
+        .pending
+        .joins(entry_requests: :bonus_balance_entry_request)
+        .none?
     end
   end
 end
