@@ -40,16 +40,17 @@ module Mts
         raise NotImplementedError, error_msg
       end
 
+      def additional_params
+        {}
+      end
+
       private
 
       def send_message!
         create_exchange(::Mts::Session.instance.opened_connection)
           .publish(
             formatted_message,
-            content_type: 'application/json',
-            routing_key: 'cancel',
-            persistent: false,
-            headers: { 'replyRoutingKey': self.class::ROUTING_KEY }
+            message_params
           )
       end
 
@@ -59,6 +60,14 @@ module Mts
           .exchange(self.class::EXCHANGE_NAME,
                     type: self.class::EXCHANGE_TYPE,
                     durable: true)
+      end
+
+      def message_params
+        {
+          content_type: 'application/json',
+          persistent: false,
+          headers: { 'replyRoutingKey': self.class::ROUTING_KEY }
+        }.merge(additional_params)
       end
     end
   end
