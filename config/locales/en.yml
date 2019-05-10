@@ -401,6 +401,7 @@ en:
       reset_password_confirmation_mismatch: Confirmation does not match password
       nonexistent_producer: Producer not found.
       unsupported_event_type: Event type is not supported
+      unexpected_customer_bonus: "Unexpected customer bonus for bet with id: %{bet_id}"
 
       mts:
         ticket_not_found: "Ticket not found for bet"

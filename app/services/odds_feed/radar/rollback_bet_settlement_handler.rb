@@ -44,7 +44,10 @@ module OddsFeed
       end
 
       def rollback_bets
-        bets.find_each(batch_size: BATCH_SIZE) { |bet| rollback_bet(bet) }
+        bets.find_each(batch_size: BATCH_SIZE) do |bet|
+          rollback_bet(bet)
+          rollback_bonus_rollover(bet)
+        end
       end
 
       def bets
@@ -75,6 +78,23 @@ module OddsFeed
       def rollback_winning(bet)
         entry_request = EntryRequests::Factories::Rollback.call(bet: bet)
         EntryRequests::RollbackWorker.perform_async(entry_request.id)
+      end
+
+      def rollback_bonus_rollover(bet)
+        return unless bet.customer.customer_bonus
+
+        unexpected_customer_bonus(bet) if unexpected_customer_bonus?(bet)
+
+        Bonuses::RollbackBonusRolloverService.call(bet: bet)
+      end
+
+      def unexpected_customer_bonus(bet)
+        raise StandardError I18n.t('errors.messages.unexpected_customer_bonus',
+                                   bet_id: bet.id)
+      end
+
+      def unexpected_customer_bonus?(bet)
+        bet.customer_bonus != bet.customer.customer_bonus
       end
     end
   end
