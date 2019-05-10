@@ -1,5 +1,5 @@
 module OddsFeed
-  module Markets
+  module Markets # rubocop:disable Metrics/ModuleLength
     CATEGORIES_MAP = {
       '1' => 'popular',
       '2' => 'other',
@@ -875,6 +875,6 @@ module OddsFeed
       '1058' => 'score',
       '1059' => 'score',
       '1060' => 'score'
-    }
+    }.freeze
   end
 end
