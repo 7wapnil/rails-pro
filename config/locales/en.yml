@@ -95,8 +95,12 @@ en:
     activated_at: Activated at
     actual_payout: Actual payout
     amount: Amount
+    real_money_amount: Cash amount
+    bonus_amount: Bonus amount
     authorized_at: Authorized at
     balance: Balance
+    real_money_balance: Cash balance
+    bonus_balance: Bonus balance
     bank_statement: Bank statement
     bank_statements: Bank statements
     bet_id: Bet ID
@@ -204,6 +208,7 @@ en:
     visibility: Visibility
     visible: Visible
     wager: Wager
+    wallet: Wallet
     winning_amount: Winnings
     zip_code: ZIP
     percentage: Percentage
@@ -296,6 +301,7 @@ en:
       one: 1 document
       other: "%{count} documents"
     entry: Entry
+    entries: Entries
     entry_request: Entry request
     entry_requests: Entry requests
     entry_request_count:

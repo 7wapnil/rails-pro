@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CustomersHelper
   def attachment_for(customer, kind)
     customer
@@ -29,10 +31,6 @@ module CustomersHelper
               error_message: t('messages.reset_password_error') } }
   end
 
-  def balance_kinds_options
-    Balance.kinds.map { |k, _| [t("kinds.#{k}"), k] }
-  end
-
   def entry_kinds_options
     Entry.kinds.map { |k, _| [t("kinds.#{k}"), k] }
   end
@@ -46,11 +44,9 @@ module CustomersHelper
     end
   end
 
-  def entry_kind_link_name(balance_entry)
-    "#{t('kinds.' + balance_entry.entry.kind)} ##{balance_entry.entry.id}"
-  end
+  def entry_amount_class(entry)
+    return 'text-warning' if entry.amount.zero?
 
-  def balance_change_badge_class(balance_entry)
-    "badge badge-#{balance_entry.amount.positive? ? 'success' : 'danger'}"
+    entry.amount.positive? ? 'text-success' : 'text-danger'
   end
 end
