@@ -2,10 +2,10 @@
 
 module CustomerBonuses
   class CustomerBonusesQuery < ::Base::Resolver
-    type CustomerBonuses::CustomerBonusType
+    type types[CustomerBonuses::CustomerBonusType]
 
     def resolve(_obj, _args)
-      current_customer.customer_bonus
+      CustomerBonus.customer_history(current_customer)
     end
   end
 end
