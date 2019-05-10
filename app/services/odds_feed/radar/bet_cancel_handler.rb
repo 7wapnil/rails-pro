@@ -3,8 +3,6 @@
 module OddsFeed
   module Radar
     class BetCancelHandler < RadarMessageHandler
-      include WebsocketEventEmittable
-
       attr_accessor :batch_size
 
       def initialize(payload)
@@ -14,10 +12,7 @@ module OddsFeed
 
       def handle
         validate_message!
-        update_markets_status
         cancel_bets
-
-        emit_websocket
       end
 
       private
@@ -36,9 +31,8 @@ module OddsFeed
         raise OddsFeed::InvalidMessageError, @payload
       end
 
-      def update_markets_status
-        Market.where(external_id: market_external_ids)
-              .each(&:cancelled!)
+      def event_id
+        input_data['event_id']
       end
 
       def market_external_ids

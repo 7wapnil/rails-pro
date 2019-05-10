@@ -146,9 +146,9 @@ describe Radar::BetCancelWorker do
   context 'market statuses' do
     before { subject }
 
-    it 'become CANCELLED from previous statuses' do
+    it 'are not updated for markets in payload' do
       expect(market_one.reload).to have_attributes(
-        status: StateMachines::MarketStateMachine::CANCELLED,
+        status: StateMachines::MarketStateMachine::ACTIVE,
         previous_status: StateMachines::MarketStateMachine::ACTIVE
       )
     end
