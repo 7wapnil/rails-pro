@@ -6,6 +6,9 @@ module EntryRequests
 
     def call
       authorize_entry_request!
+
+      return unless entry
+
       remove_bonus!
       authorize_entry!
     end

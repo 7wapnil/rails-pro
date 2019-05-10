@@ -19,13 +19,16 @@ module WalletEntry
 
     def update_database!
       ActiveRecord::Base.transaction do
-        create_default_balance_entry_request! if @request.balance_entry_requests
-                                                         .empty?
+        create_default_balance_entry_request! if no_balance_entry_requests?
         update_wallet!
         create_entry!
         update_balances!
         @entry
       end
+    end
+
+    def no_balance_entry_requests?
+      @request.balance_entry_requests.empty?
     end
 
     def create_entry!
@@ -40,10 +43,8 @@ module WalletEntry
     end
 
     def update_wallet!
-      @wallet = Wallet.find_or_create_by!(
-        customer: @request.customer,
-        currency: @request.currency
-      )
+      @wallet = Wallet.find_or_create_by!(customer: @request.customer,
+                                          currency: @request.currency)
       amount_increment = @request.balance_entry_requests.sum(:amount)
       ::Forms::AmountChange
         .new(@wallet, amount_increment: amount_increment, request: @request)
