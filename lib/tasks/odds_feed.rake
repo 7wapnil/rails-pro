@@ -24,6 +24,19 @@ namespace :odds_feed do
     EventsManager::EventLoader.call(match_id)
   end
 
+  desc 'Assign categories to market templates'
+  task categorize_templates: :environment do
+    puts 'Updating market templates...'
+
+    MarketTemplate.select(:id, :name, :external_id, :category).each do |mt|
+      mt.update_attributes(
+        category: OddsFeed::Markets::CATEGORIES_MAP[mt.external_id]
+      )
+    end
+
+    puts 'Done!'
+  end
+
   namespace :replay do
     task prepare_queue: :environment do
       raise 'You should provide scenario id' unless ENV['SCENARIO']
