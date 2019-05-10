@@ -1,5 +1,7 @@
 module Mts
   class ValidationResponseHandler < ApplicationService
+    include JobLogger
+
     attr_reader :response
 
     def initialize(response)
@@ -8,11 +10,22 @@ module Mts
 
     def call
       response.bets.each do |bet|
-        bet.finish_external_validation_with_rejection! if response.rejected?
         bet.finish_external_validation_with_acceptance! if response.accepted?
+        reject_bet!(bet) if response.rejected?
 
         WebSocket::Client.instance.trigger_bet_update(bet)
       end
+    end
+
+    private
+
+    def reject_bet!(bet)
+      bet.update(
+        message: response.rejection_message
+      )
+      log_job_message(:info, message: response.rejection_json, bet_id: bet.id)
+
+      bet.finish_external_validation_with_rejection!
     end
   end
 end
