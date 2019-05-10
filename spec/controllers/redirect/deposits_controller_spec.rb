@@ -65,15 +65,15 @@ describe Redirect::DepositsController do
       before do
         allow(Deposits::CallbackUrl)
           .to receive(:for)
-          .with(Deposits::CallbackUrl::SOMETHING_WENT_WRONG)
+          .with(Deposits::CallbackUrl::SOMETHING_WENT_WRONG, message: nil)
           .and_return(generic_error_callback_url)
         allow(Deposits::CallbackUrl)
           .to receive(:for)
-          .with(Deposits::CallbackUrl::ERROR)
+          .with(Deposits::CallbackUrl::ERROR, message: nil)
           .and_return(error_callback_url)
         allow(Deposits::CallbackUrl)
           .to receive(:for)
-          .with(Deposits::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
+          .with(Deposits::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED, message: nil)
           .and_return(deposit_attempts_exceeded_callback_url)
       end
 
@@ -111,7 +111,7 @@ describe Redirect::DepositsController do
       before do
         allow(::Deposits::CallbackUrl)
           .to receive(:for)
-          .with(Deposits::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
+          .with(Deposits::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED, message: nil)
           .and_return(callback_url)
 
         allow(::Deposits::InitiateHostedDepositService)
@@ -139,7 +139,7 @@ describe Redirect::DepositsController do
           allow(SafeCharge::CallbackHandler)
             .to receive(:call) { some_state }
           allow(Deposits::CallbackUrl)
-            .to receive(:for).with(some_state) { callback_url }
+            .to receive(:for).with(some_state, message: nil) { callback_url }
         end
 
         it "redirects #{state} to callback service state" do
