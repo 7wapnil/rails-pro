@@ -106,8 +106,11 @@ describe WalletEntry::AuthorizationService do
       it 'returns the created entry' do
         described_class.call(request)
 
+        current_balance_amount = entry.wallet.balances.sum(:amount)
+
         expect(entry).to be_an Entry
         expect(entry.entry_request).to eq request
+        expect(entry.balance_amount_after).to eq current_balance_amount
       end
     end
 

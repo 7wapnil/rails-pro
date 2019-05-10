@@ -4,6 +4,17 @@
 @import '~select2/dist/css/select2.min';
 
 .table {
+  tr {
+    th {
+      border-bottom: none;
+    }
+
+    &:last-child {
+      th {
+        border-bottom: 1px solid #dee2e6;
+      }
+    }
+  }
   &.vertical-with-labels {
     tr {
       td, th {

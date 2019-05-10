@@ -1,0 +1,40 @@
+%table.table.entities
+  %thead
+    %tr
+      %th= t('attributes.id')
+      %th= t('attributes.entry_kind')
+      %th= sort_link(filter.search, :created_at, t('attributes.created_at'), default_order: :asc)
+      %th= t('attributes.real_money_amount')
+      %th= t('attributes.bonus_amount')
+      %th= t('attributes.amount')
+      %th= t('attributes.currency')
+      %th{ colspan: 2 }= t('attributes.real_money_balance')
+      %th{ colspan: 2 }= t('attributes.bonus_balance')
+      %th{ colspan: 2 }= t('attributes.balance')
+  %tbody
+    - if filter.entries.any?
+      - filter.entries.each do |entry|
+        %tr{ id: "entry-#{entry.id}" }
+          %td.id
+            = link_to("##{entry.id}", entry)
+          %td
+            = t('kinds.' + entry.kind)
+          %td
+            = l(entry.created_at, format: :long)
+          %td.font-weight-bold{ class: entry_amount_class(entry) }
+            = displayed_amount(entry.real_money_balance_entry)
+          %td.font-weight-bold{ class: entry_amount_class(entry) }
+            = displayed_amount(entry.bonus_balance_entry)
+          %td.font-weight-bold{ class: entry_amount_class(entry) }
+            = displayed_amount(entry)
+          %td
+            = entry.wallet.currency_code
+          %td{ colspan: 2 }
+            = entry.real_money_balance_entry&.balance_amount_after || '-'
+          %td{ colspan: 2 }
+            = entry.bonus_balance_entry&.balance_amount_after || '-'
+          %td.font-weight-bold{ colspan: 2, class: entry_amount_class(entry) }
+            = entry.balance_amount_after
+    - else
+      %tr
+        %td{ colspan: 9 }= t(:not_found, instance: t('entities.entries'))

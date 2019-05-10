@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_04_26_152502) do
+ActiveRecord::Schema.define(version: 2019_05_10_134839) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -299,6 +299,7 @@ ActiveRecord::Schema.define(version: 2019_04_26_152502) do
     t.datetime "confirmed_at"
     t.string "external_id"
     t.bigint "entry_request_id"
+    t.decimal "balance_amount_after", precision: 8, scale: 2
     t.index ["entry_request_id"], name: "index_entries_on_entry_request_id"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"

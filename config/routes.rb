@@ -35,7 +35,6 @@ Rails.application.routes.draw do
       get :deposit_limit
       get :bets
       get :transactions
-      get :balance_entries
       get :impersonate
       post :update_promotional_subscription
       patch :update_status
@@ -53,6 +52,10 @@ Rails.application.routes.draw do
             as: :documents_history
       end
     end
+  end
+
+  resources :customers, module: :customers, only: [] do
+    resources :entries, only: :index
   end
 
   resources :customers, only: [], module: :customers do

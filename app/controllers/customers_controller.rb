@@ -10,7 +10,6 @@ class CustomersController < ApplicationController
     documents
     deposit_limit
     show
-    balance_entries
   ]
 
   before_action :new_note, only: %i[
@@ -199,17 +198,6 @@ class CustomersController < ApplicationController
     @filter = EntryRequestsFilter.new(
       source: filter_source,
       query_params: query_params(:entry_requests),
-      page: params[:page],
-      per_page: 20
-    )
-  end
-
-  def balance_entries
-    filter_source = @customer.balance_entries
-
-    @filter = BalanceEntriesFilter.new(
-      source: filter_source,
-      query_params: query_params(:entries),
       page: params[:page],
       per_page: 20
     )
