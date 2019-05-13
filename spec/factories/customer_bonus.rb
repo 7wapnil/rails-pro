@@ -13,8 +13,10 @@ FactoryBot.define do
     created_at           { Time.zone.now }
     deleted_at           { nil }
     expiration_reason    { nil }
+    rollover_balance     { rand(100..1000) }
+    rollover_initial_value { rand(100..1000) }
 
-    sequence(:code)      { |n| "FOOBAR#{n}" }
+    sequence(:code) { |n| "FOOBAR#{n}" }
 
     customer
     wallet

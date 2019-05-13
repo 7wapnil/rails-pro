@@ -3,6 +3,8 @@
 class CustomerBonus < ApplicationRecord
   acts_as_paranoid
 
+  default_scope { order(:created_at) }
+
   belongs_to :customer
   belongs_to :wallet
   belongs_to :original_bonus, class_name: 'Bonus', optional: true

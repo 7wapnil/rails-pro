@@ -14,4 +14,5 @@ QueryType = GraphQL::ObjectType.define do
   field :bets, function: Betting::BetsQuery.new
   field :transactions, function: Transactions::TransactionsQuery.new
   field :paymentMethods, function: PaymentMethods::PaymentMethodsQuery.new
+  field :customer_bonuses, function: CustomerBonuses::CustomerBonusesQuery.new
 end
