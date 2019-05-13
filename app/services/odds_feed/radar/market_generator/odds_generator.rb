@@ -28,14 +28,17 @@ module OddsFeed
         def build_and_push_odd(odd_data)
           return odd_data_is_not_payload(odd_data) unless odd_data.is_a?(Hash)
 
+          log_job_message(:debug, message: 'Build odd from message data',
+                                  odd_data: odd_data)
+
           odd = build_odd(odd_data)
           odd.validate!
 
           @odds << odd
         rescue ActiveRecord::RecordInvalid => e
-          log_job_message(:warn, e.message)
+          log_job_message(:warn, message: e.message, data: odd_data)
         rescue StandardError => e
-          log_job_failure(e)
+          log_job_message(:error, message: e.message, data: odd_data)
         end
 
         def odd_data_is_not_payload(odd_data)
