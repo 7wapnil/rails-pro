@@ -29,7 +29,7 @@ module OddsFeed
           return odd_data_is_not_payload(odd_data) unless odd_data.is_a?(Hash)
 
           log_job_message(:debug, message: 'Build odd from message data',
-                          odd_data: odd_data)
+                                  odd_data: odd_data)
 
           odd = build_odd(odd_data)
           odd.validate!
