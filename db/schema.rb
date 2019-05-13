@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_10_134839) do
+ActiveRecord::Schema.define(version: 2019_05_13_124856) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -376,6 +376,7 @@ ActiveRecord::Schema.define(version: 2019_05_10_134839) do
     t.boolean "visible", default: true
     t.boolean "active", default: false
     t.bigint "producer_id"
+    t.boolean "ready", default: false
     t.index ["active"], name: "index_events_on_active"
     t.index ["external_id"], name: "index_events_on_external_id", unique: true
     t.index ["producer_id"], name: "index_events_on_producer_id"

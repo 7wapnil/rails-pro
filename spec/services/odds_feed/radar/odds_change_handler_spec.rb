@@ -59,6 +59,25 @@ describe OddsFeed::Radar::OddsChangeHandler do
         subject.handle
       end
     end
+
+    context 'event is not ready' do
+      before do
+        event.update(ready: false)
+      end
+
+      let(:message) do
+        {
+          event_id: external_id,
+          message: 'Event is not yet ready to be processed'
+        }
+      end
+
+      it do
+        expect(Rails.logger).to receive(:info).with(message)
+
+        subject.handle
+      end
+    end
   end
 
   # Update event attributes in DB
