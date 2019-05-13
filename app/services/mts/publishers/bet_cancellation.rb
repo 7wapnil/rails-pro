@@ -6,6 +6,7 @@ module Mts
       EXCHANGE_NAME = 'arcanebet_arcanebet-Control'
       ROUTING_KEY = ENV['MTS_MQ_TICKET_CANCELLATION_RK']
       MESSAGE_VERSION = '2.1'
+      CANCEL_ROUTING_KEY = 'cancel'
       TIMEOUT_CODE = 102
       EXCHANGE_TYPE = :topic
 
@@ -32,6 +33,12 @@ module Mts
 
       def update_bet
         bet.timed_out_external_validation!
+      end
+
+      def additional_params
+        {
+          routing_key: CANCEL_ROUTING_KEY
+        }
       end
 
       private
