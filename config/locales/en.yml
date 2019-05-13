@@ -425,6 +425,7 @@ en:
         invalid_payload: "Missing %{attr}"
         method_not_supported: Withdraw method is not supported
         customer_not_verified: Customer should be verified to withdraw funds
+        pending_bets_with_bonus: You are unable to request a withdraw while having pending bets containing bonus
       withdrawal_requests:
         not_actionable: Withdrawal request has already been reviewed
         empty_comment: Rejection comment is required
