@@ -25,8 +25,7 @@ module Labelable
 
   def set_labelable_resource
     class_name = controller_name.singularize.camelize
-    klass = class_name.safe_constantize
-    raise "Can't find labelable resource '#{class_name}'!" unless klass
+    klass = class_name.constantize
 
     @labelable_resource = klass.find(params[:id])
   end

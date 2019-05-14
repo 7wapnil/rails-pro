@@ -54,7 +54,8 @@ module OddsFeed
 
           raise(
             ActiveRecord::RecordNotFound,
-            "MarketTemplate with external id #{external_id} not found."
+            'MarketTemplate not found',
+            external_id: external_id
           )
         end
 

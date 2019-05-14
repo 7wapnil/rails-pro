@@ -48,7 +48,8 @@ module OddsFeed
       rescue ActiveRecord::RecordNotFound
         raise(
           ActiveRecord::RecordNotFound,
-          "Event #{@event_external_id} not found"
+          'Event not found',
+          external_id: event_external_id
         )
       end
 

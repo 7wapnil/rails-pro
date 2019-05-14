@@ -41,7 +41,7 @@ module OddsFeed
 
       def event_raw(id, cache: nil)
         unless supported_external_id?(id)
-          raise StandardError, "Event ID '#{id}' is not supported"
+          raise StandardError, 'Event is not supported', id: id
         end
 
         route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"
