@@ -2,6 +2,8 @@
 
 class BetDecorator < ApplicationDecorator
   PRECISION = 2
+  PENDING = 'pending'
+  CANCELLED = 'cancelled'
 
   delegate :code, to: :currency, allow_nil: true, prefix: true
 
@@ -12,6 +14,13 @@ class BetDecorator < ApplicationDecorator
   delegate :name, to: :event, allow_nil: true, prefix: true
 
   delegate :username, to: :customer, allow_nil: true, prefix: true
+
+  def display_status
+    return PENDING if state_machine::PENDING_STATUSES_MASK.include?(status)
+    return CANCELLED if state_machine::CANCELLED_STATUSES_MASK.include?(status)
+
+    status
+  end
 
   def amount(human: false)
     human ? number_with_precision(super(), precision: PRECISION) : super()
@@ -27,5 +36,11 @@ class BetDecorator < ApplicationDecorator
 
   def created_at(human: false)
     human ? l(created_at, format: :long) : super()
+  end
+
+  private
+
+  def state_machine
+    StateMachines::BetStateMachine
   end
 end
