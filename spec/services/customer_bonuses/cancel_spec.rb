@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Bonuses::Cancel do
+describe CustomerBonuses::Cancel do
   let(:expiration_reason) { CustomerBonus.expiration_reasons.keys.first }
   let(:another_expiration_reason) { CustomerBonus.expiration_reasons.keys.last }
   let(:customer_bonus) { create(:customer_bonus) }

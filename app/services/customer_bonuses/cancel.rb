@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Bonuses
+module CustomerBonuses
   class Cancel < ApplicationService
     delegate :wallet, to: :customer_bonus, allow_nil: true
     delegate :bonus_balance, to: :wallet, allow_nil: true
@@ -35,7 +35,8 @@ module Bonuses
 
     def deactivate_bonus!
       customer_bonus.transaction do
-        customer_bonus.update!(expiration_reason: reason)
+        customer_bonus.update!(expiration_reason: reason,
+                               status: CustomerBonus::CANCELLED)
         customer_bonus.destroy!
       end
     end

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class CustomerBonus < ApplicationRecord
+  # include StateMachines::CustomerBonusStateMachine
   acts_as_paranoid
 
   default_scope { order(:created_at) }
@@ -17,6 +18,14 @@ class CustomerBonus < ApplicationRecord
     expired_by_date: EXPIRED_BY_DATE = 'expired_by_date',
     converted: CONVERTED = 'converted',
     withdrawal: WITHDRAWAL = 'withdrawal'
+  }
+
+  enum status: {
+    pending: PENDING = 'pending',
+    active: ACTIVE = 'active',
+    expired: EXPIRED = 'expired',
+    cancelled: CANCELLED = 'cancelled',
+    completed: COMPLETED = 'completed'
   }
 
   attr_reader :amount
