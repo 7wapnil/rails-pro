@@ -110,7 +110,7 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
 
     context 'template not found' do
       let(:external_id) { Faker::Bank.account_number }
-      let(:message)     { "Odd template ID #{external_id} not found" }
+      let(:message)     { 'Odd template not found' }
       let(:subject_with_template) { described_class.new(*args) }
 
       before { expect(subject_with_template).to receive(:find_odd_template) }

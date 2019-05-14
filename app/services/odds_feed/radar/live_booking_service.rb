@@ -49,7 +49,7 @@ module OddsFeed
         raise(
           ActiveRecord::RecordNotFound,
           'Event not found',
-          external_id: event_external_id
+          external_id: @event_external_id
         )
       end
 
