@@ -2,6 +2,8 @@ common: &default_settings
   license_key: <%= ENV['NEWRELIC_KEY'] %>
   app_name: ArcaneBet Backend
   log_level: info
+  rules:
+    ignore_url_regexes: <%= ENV['MTS_MQ_HOST'] %>
 
 development:
   <<: *default_settings
