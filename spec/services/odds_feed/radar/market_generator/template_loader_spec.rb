@@ -117,7 +117,7 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
 
       it do
         expect { subject_with_template.odd_name(external_id) }
-          .to raise_error(StandardError, message)
+          .to raise_error(Markets::MarketTemplateLoaderError, message)
       end
     end
   end
