@@ -47,7 +47,8 @@ module OddsFeed
         @event ||= Event.find_by!(external_id: @event_external_id)
       rescue ActiveRecord::RecordNotFound
         raise ActiveRecord::RecordNotFound.new(
-          'Event not found'
+          'Event not found',
+          external_id: @event_external_id
         )
       end
 

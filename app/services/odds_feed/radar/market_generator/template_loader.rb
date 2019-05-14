@@ -29,7 +29,9 @@ module OddsFeed
 
           return player_name(external_id) if player?(external_id)
 
-          raise Markets::MarketTemplateLoaderError.new 'Odd template not found', external_id: external_id
+          msg = 'Odd template not found'
+          raise Markets::MarketTemplateLoaderError.new msg,
+                                                       external_id: external_id
         end
 
         private
@@ -44,7 +46,8 @@ module OddsFeed
           player = event.players.detect { |p| p.external_id == external_id }
           return player.full_name if player
 
-          raise Markets::MarketTemplateLoaderError.new 'Player not found', external_id: external_id
+          raise Markets::MarketTemplateLoaderError.new 'Player not found',
+                                                       external_id: external_id
         end
 
         def find_odd_template(external_id)
