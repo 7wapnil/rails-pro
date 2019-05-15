@@ -52,11 +52,9 @@ module OddsFeed
           template = market_template_from_cache(external_id)
           return template if template
 
-          raise(
-            ActiveRecord::RecordNotFound,
-            'MarketTemplate not found',
-            external_id: external_id
-          )
+          error_msg = 'MarketTemplate not found'
+          log_job_message(:error, message: error_msg, external_id: external_id)
+          raise(ActiveRecord::RecordNotFound, error_msg)
         end
 
         def market_template_from_cache(external_id)
