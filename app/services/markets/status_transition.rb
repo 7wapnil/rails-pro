@@ -2,6 +2,8 @@
 
 module Markets
   class StatusTransition < ApplicationService
+    include JobLogger
+
     def initialize(market:, status: nil, persist: false)
       @market = market
       @status = status
@@ -43,7 +45,9 @@ module Markets
     end
 
     def snapshot_not_exists!
-      raise "There is no status snapshot for market #{market.external_id}!"
+      message = 'There is no status snapshot for market!'
+      log_job_message :error, message: message, market_id: market.external_id
+      raise
     end
   end
 end

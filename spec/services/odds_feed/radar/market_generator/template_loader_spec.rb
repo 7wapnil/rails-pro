@@ -113,11 +113,25 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
       let(:message)     { 'Odd template not found' }
       let(:subject_with_template) { described_class.new(*args) }
 
-      before { expect(subject_with_template).to receive(:find_odd_template) }
+      before do
+        expect(subject_with_template).to receive(:find_odd_template)
+        allow(Rails.logger)
+          .to receive(:error)
+          .with(message: message, external_id: external_id)
+      end
 
       it do
         expect { subject_with_template.odd_name(external_id) }
-          .to raise_error(Markets::MarketTemplateLoaderError, message)
+          .to raise_error(StandardError)
+      end
+
+      it 'logs the failure' do
+        subject_with_template.odd_name(external_id)
+        raise
+      rescue StandardError
+        expect(Rails.logger)
+          .to have_received(:error)
+          .with(message: message, external_id: external_id)
       end
     end
   end
