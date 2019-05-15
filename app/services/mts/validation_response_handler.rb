@@ -20,6 +20,13 @@ module Mts
     private
 
     def reject_bet!(bet)
+      refund = EntryRequests::Factories::Refund.call(
+        entry: bet.entry,
+        comment: 'Bet failed external validation.'
+      )
+
+      EntryRequests::RefundWorker.perform_async(refund.id)
+
       bet.update(
         message: response.rejection_message
       )
