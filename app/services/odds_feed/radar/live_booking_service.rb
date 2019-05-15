@@ -46,7 +46,8 @@ module OddsFeed
       def event
         @event ||= Event.find_by!(external_id: @event_external_id)
       rescue ActiveRecord::RecordNotFound => e
-        log_job_message(:error, message: e.message, external_id: @event_external_id)
+        log_job_message(:error, message: e.message,
+                                external_id: @event_external_id)
         raise e
       end
 
