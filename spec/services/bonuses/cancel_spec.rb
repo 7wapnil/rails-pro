@@ -20,7 +20,7 @@ describe Bonuses::Cancel do
     let(:wallet) { customer_bonus.wallet }
 
     let(:found_entry_request) do
-      EntryRequest.bonus_change.find_by(origin: wallet)
+      EntryRequest.bonus_change.find_by(origin: customer_bonus)
     end
     let(:comment) do
       "Bonus transaction: #{-bonus_balance.amount} #{wallet.currency} " \

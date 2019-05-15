@@ -6,14 +6,11 @@ module Deposits
       @currency = currency
     end
 
-    BUSINESS_EXCEPTION =
-      Deposits::DepositLimitRestrictionError
-      .new('Deposit limit is not available')
-
     def call
-      raise BUSINESS_EXCEPTION unless available_deposit_limit?
+      return true if available_deposit_limit?
 
-      true
+      raise Deposits::DepositLimitRestrictionError,
+            I18n.t('errors.messages.deposit_limit_exceeded')
     end
 
     private

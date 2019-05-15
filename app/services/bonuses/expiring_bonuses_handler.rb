@@ -25,8 +25,10 @@ module Bonuses
     end
 
     def cancel_bonus!(bonus)
-      Bonuses::Cancel
-        .call(bonus: bonus, reason: CustomerBonus::EXPIRED_BY_DATE)
+      Bonuses::Cancel.call(
+        bonus: bonus,
+        reason: CustomerBonus::EXPIRED_BY_DATE
+      )
     end
   end
 end

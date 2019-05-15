@@ -10,7 +10,6 @@ module CustomerBonuses
     validate :validate_repeated_activation
 
     delegate :customer, :original_bonus, to: :subject
-    delegate :active_bonus, to: :'customer&.reload', allow_nil: true
 
     def submit!
       validate!
@@ -26,7 +25,7 @@ module CustomerBonuses
     end
 
     def ensure_no_active_bonus
-      return unless active_bonus
+      return unless customer&.reload&.active_bonus
 
       errors.add(:active_bonus,
                  I18n.t('errors.messages.customer_has_active_bonus'))

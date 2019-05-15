@@ -4,34 +4,22 @@ module CustomerBonuses
   class Create < ApplicationService
     delegate :customer, to: :wallet, allow_nil: true
 
-    def initialize(wallet:, original_bonus:, **params)
+    def initialize(wallet:, bonus:, amount:, **params)
       @wallet = wallet
-      @bonus = original_bonus
-      @amount = params[:amount].to_f
-      @update_wallet = params.fetch(:update_wallet, false)
-      @initiator = params[:user]
+      @bonus = bonus
+      @amount = amount.to_f
+      @status = params.fetch(:status, CustomerBonus::INITIAL)
     end
 
     def call
-      log_activation_attempt if initiator
-      create_customer_bonus!
-      add_bonus_money if update_wallet?
-      log_successful_activation if initiator
+      CustomerBonuses::CreateForm.new(subject: customer_bonus).submit!
 
       customer_bonus
     end
 
     private
 
-    attr_accessor :wallet, :bonus, :amount, :update_wallet, :initiator
-
-    def log_activation_attempt
-      initiator.log_event(:bonus_activation, customer_bonus, customer)
-    end
-
-    def create_customer_bonus!
-      CustomerBonuses::CreateForm.new(subject: customer_bonus).submit!
-    end
+    attr_accessor :wallet, :bonus, :amount, :status
 
     def customer_bonus
       @customer_bonus ||= CustomerBonus.new(new_bonus_attributes)
@@ -54,7 +42,8 @@ module CustomerBonuses
         min_deposit: bonus.min_deposit,
         valid_for_days: bonus.valid_for_days,
         percentage: bonus.percentage,
-        expires_at: bonus.expires_at
+        expires_at: bonus.expires_at,
+        status: status
       }
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
@@ -64,22 +53,7 @@ module CustomerBonuses
     end
 
     def bonus_amount
-      BalanceCalculations::Deposit.call(bonus, amount)[:bonus]
-    end
-
-    def add_bonus_money
-      request = EntryRequests::Factories::BonusChange
-                .call(wallet: wallet, amount: amount, initiator: initiator)
-
-      EntryRequests::BonusChangeWorker.perform_async(request.id)
-    end
-
-    def update_wallet?
-      update_wallet.present?
-    end
-
-    def log_successful_activation
-      initiator.log_event(:bonus_activated, customer_bonus, customer)
+      BalanceCalculations::Deposit.call(amount, bonus)[:bonus]
     end
   end
 end

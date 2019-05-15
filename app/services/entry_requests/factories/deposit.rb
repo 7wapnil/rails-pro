@@ -3,48 +3,41 @@
 module EntryRequests
   module Factories
     class Deposit < ApplicationService
-      delegate :expired?, to: :customer_bonus, allow_nil: true, prefix: true
-
-      def initialize(wallet:, amount:, **attributes)
+      def initialize(wallet:, amount:, customer_bonus: nil, **attributes)
         @wallet = wallet
         @amount = amount
+        @customer_bonus = customer_bonus
         @mode = attributes[:mode]
         @passed_initiator = attributes[:initiator]
         @passed_comment = attributes[:comment]
-        @customer_bonus = wallet.customer.customer_bonus
       end
 
       def call
         create_entry_request!
-        validate_entry_request!
         create_balance_request!
+        create_deposit_request!
+        validate_entry_request!
 
         entry_request
       end
 
       private
 
-      attr_reader :wallet, :amount, :passed_initiator, :mode,
-                  :passed_comment, :customer_bonus, :entry_request
+      attr_reader :wallet, :amount, :customer_bonus, :passed_initiator,
+                  :mode, :passed_comment, :entry_request
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
       end
 
       def entry_request_attributes
-        wallet_attributes.merge(
+        {
           status: EntryRequest::INITIAL,
           amount: amount_value,
           mode: mode,
           kind: EntryRequest::DEPOSIT,
           initiator: initiator,
-          comment: comment
-        )
-      end
-
-      def wallet_attributes
-        {
-          origin:   wallet,
+          comment: comment,
           currency: wallet.currency,
           customer: wallet.customer
         }
@@ -55,18 +48,15 @@ module EntryRequests
       end
 
       def calculations
-        @calculations ||=
-          BalanceCalculations::Deposit
-          .call(customer_bonus, amount)
-          .tap { |amounts| amounts[:bonus] = 0 unless eligible_for_bonus? }
+        @calculations ||= BalanceCalculations::Deposit.call(
+          amount,
+          customer_bonus&.original_bonus,
+          no_bonus: bonus_not_applied?
+        )
       end
 
-      def eligible_for_bonus?
-        customer_bonus.present? &&
-          !customer_bonus.activated? &&
-          customer_bonus.min_deposit &&
-          customer_bonus.applied? &&
-          amount >= customer_bonus.min_deposit
+      def bonus_not_applied?
+        customer_bonus&.active?.present?
       end
 
       def initiator
@@ -88,32 +78,35 @@ module EntryRequests
         " by #{passed_initiator}" if passed_initiator
       end
 
+      def create_balance_request!
+        BalanceRequestBuilders::Deposit.call(entry_request, calculations)
+      end
+
+      def create_deposit_request!
+        DepositRequest.create!(
+          entry_request: entry_request,
+          customer_bonus: customer_bonus
+        )
+      end
+
       def validate_entry_request!
-        check_deposit_limit! && check_bonus_expiration!
+        verify_deposit_attempts!
+        check_deposit_limit!
+
+        true
+      rescue *DepositRequest::BUSINESS_ERRORS => error
+        entry_request.register_failure!(error.message)
+        # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
+        customer_bonus&.failed!
       end
 
       def check_deposit_limit!
-        # TODO : implement validation logic
-        deposit_limit = DepositLimit.find_by(customer: wallet.customer,
-                                             currency: wallet.currency)
-
-        return true unless deposit_limit
-
-        entry_request
-          .register_failure!(I18n.t('errors.messages.deposit_limit_present'))
+        ::Deposits::DepositLimitCheckService
+          .call(wallet.customer, amount, wallet.currency)
       end
 
-      def check_bonus_expiration!
-        return true unless customer_bonus_expired?
-
-        Bonuses::Cancel.call(bonus: customer_bonus,
-                             reason: CustomerBonus::EXPIRED_BY_DATE)
-        entry_request
-          .register_failure!(I18n.t('errors.messages.bonus_expired'))
-      end
-
-      def create_balance_request!
-        BalanceRequestBuilders::Deposit.call(entry_request, calculations)
+      def verify_deposit_attempts!
+        ::Deposits::VerifyDepositAttempt.call(wallet.customer)
       end
     end
   end

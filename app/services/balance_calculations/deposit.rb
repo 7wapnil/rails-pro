@@ -1,10 +1,13 @@
+# frozen_string_literal: true
+
 module BalanceCalculations
   class Deposit < ApplicationService
     delegate :min_deposit, to: :bonus, allow_nil: true
 
-    def initialize(bonus, deposit_amount)
+    def initialize(deposit_amount, bonus, **params)
       @amount = deposit_amount
       @bonus = bonus
+      @no_bonus = params[:no_bonus] || false
     end
 
     def call
@@ -16,12 +19,17 @@ module BalanceCalculations
 
     private
 
-    attr_reader :bonus, :amount
+    attr_reader :bonus, :amount, :no_bonus
 
     def calculate_bonus_amount
+      return 0.0 if no_bonus?
       return 0.0 unless valid_bonus?
 
       bonus_amount > max_deposit_bonus ? max_deposit_bonus : bonus_amount
+    end
+
+    def no_bonus?
+      no_bonus.present?
     end
 
     def valid_bonus?

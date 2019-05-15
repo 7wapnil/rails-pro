@@ -22,6 +22,9 @@ describe BalanceCalculations::Bet do
   let(:real_money_winning) { -(amount * ratio).round(2) }
   let(:bonus_winning) { -(amount * (1 - ratio)).round(2) }
 
+  # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
+  before { allow(customer_bonus).to receive(:active?).and_return(true) }
+
   context 'with existent bonus balance and real money balance' do
     it 'calculates real and bonus amount' do
       expect(service_call_response)
@@ -29,8 +32,9 @@ describe BalanceCalculations::Bet do
     end
   end
 
-  context 'with non-applied customer bonus' do
-    let(:customer_bonus) { create(:customer_bonus, rollover_balance: nil) }
+  context 'with inactive customer bonus' do
+    # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
+    before { allow(customer_bonus).to receive(:active?).and_return(false) }
 
     it 'calculates real amount' do
       expect(service_call_response).to eq(real_money: -amount, bonus: 0)

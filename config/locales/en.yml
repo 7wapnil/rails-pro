@@ -388,7 +388,7 @@ en:
       balance_request_uniqueness: 'already has balance entry request with this kind.'
       real_money_blank_amount: Real money amount can not be blank!
       entry_request_for_settled_bet: "Entry request for settled bet is expected! Received for bet %{bet_id}"
-      deposit_limit_present: 'Customer has a deposit limit!'
+      deposit_limit_exceeded: 'Deposit limit exceeded'
       bonus_expired: 'Bonus is expired!'
       deposit_payment_error: 'Deposit payment error!'
       entry_request_failed: "Entry request has been already failed for bet #{bet_id}"

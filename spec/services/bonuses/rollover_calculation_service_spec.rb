@@ -1,9 +1,12 @@
+# frozen_string_literal: true
+
 describe Bonuses::RolloverCalculationService do
   subject { service_object.call }
 
   let(:customer_bonus) do
-    create(:customer_bonus, :applied, min_odds_per_bet: bonus_odds_theshold)
+    create(:customer_bonus, min_odds_per_bet: bonus_odds_theshold)
   end
+
   let(:odd) { create(:odd) }
   let(:service_object) { described_class.new(customer_bonus: customer_bonus) }
 

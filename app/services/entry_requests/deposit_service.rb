@@ -6,29 +6,35 @@ module EntryRequests
 
     def initialize(entry_request:)
       @entry_request = entry_request
-      @wallet = entry_request.origin
-      @customer_bonus = wallet.customer.customer_bonus
+      @customer_bonus = entry_request.origin&.customer_bonus
     end
 
     def call
       return if entry_request.failed?
 
-      validate_entry_request!
-      attach_entry_to_bonus!
+      process_entry_request!
+
+      return success if entry
+
+      failure
     end
 
     private
 
-    attr_reader :entry_request, :wallet, :customer_bonus, :entry
+    attr_reader :entry_request, :customer_bonus, :entry
 
-    def validate_entry_request!
+    def process_entry_request!
       @entry = ::WalletEntry::AuthorizationService.call(entry_request)
     end
 
-    def attach_entry_to_bonus!
-      return unless bonus_balance_entry_request
+    def success
+      # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
+      customer_bonus&.active! if customer_bonus
+    end
 
-      customer_bonus.update_attributes!(entry: entry)
+    def failure
+      # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
+      customer_bonus&.failed! if customer_bonus
     end
   end
 end

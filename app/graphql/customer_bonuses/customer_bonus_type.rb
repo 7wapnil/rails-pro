@@ -8,7 +8,8 @@ module CustomerBonuses
     field :code, !types.String
     field :rollover_balance, !types.Float
     field :rollover_initial_value, !types.Float
-    field :status, !types.String
+    # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
+    field :status, types.String
     field :max_rollover_per_bet, !types.Float
     field :min_odds_per_bet, !types.Float
     field :valid_for_days, !types.Int

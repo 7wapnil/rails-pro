@@ -68,6 +68,8 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_one :address, autosave: true, dependent: :destroy
   has_one :customer_bonus, dependent: :destroy
 
+  accepts_nested_attributes_for :address
+
   delegate :street_address,
            :zip_code,
            :country,
@@ -75,13 +77,6 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
            :city,
            to: :address, allow_nil: true, prefix: true
 
-  accepts_nested_attributes_for :address
-  delegate :street_address,
-           :zip_code,
-           :country,
-           :state,
-           :city,
-           to: :address, allow_nil: true, prefix: true
   # Devise Validatable module creates all needed
   # validations for a user email and password.
 
@@ -137,7 +132,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def active_bonus
-    customer_bonus if customer_bonus&.activated? && customer_bonus&.applied?
+    customer_bonus if customer_bonus&.active?
   end
 
   def deposit_attempts
