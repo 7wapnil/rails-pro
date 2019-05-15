@@ -21,6 +21,11 @@ describe EventsManager::EventFetcher do
       event = subject.call
       expect(event.external_id).to eq(external_id)
     end
+
+    it 'sets ready flag when finished' do
+      event = subject.call
+      expect(event).to be_ready
+    end
   end
 
   context 'title' do
