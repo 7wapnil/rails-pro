@@ -174,11 +174,11 @@ module OddsFeed
       end
 
       def event_home_score
-        event_status_payload.fetch('home_score').to_i
+        event_status_payload['home_score'].to_i
       end
 
       def event_away_score
-        event_status_payload.fetch('away_score').to_i
+        event_status_payload['away_score'].to_i
       end
 
       def event_time_in_seconds
