@@ -33,7 +33,7 @@ module Reports
         gross_revenue,
         bets_per_day.length,
         stake_amount,
-        'net revenue' # should be implemented in future
+        gross_revenue - deposit_bonus_converted
       ]
     end
 
