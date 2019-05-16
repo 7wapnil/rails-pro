@@ -59,7 +59,7 @@ module Mts
       log_job_message(:error,
                       message: error_message,
                       id: message['result']['ticketId'])
-      raise
+      raise SilentJobRetryError
     end
 
     def successful_bet_cancel
