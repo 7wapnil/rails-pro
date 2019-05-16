@@ -109,6 +109,8 @@ class CustomersController < ApplicationController
   def upload_documents
     flash[:file_errors] = {}
     documents_from_params.each do |kind, file|
+      break unless valid_file_size?(file)
+
       document = customer.verification_documents.build(kind: kind,
                                                        status: :pending)
       document.document.attach(file)
@@ -214,6 +216,16 @@ class CustomersController < ApplicationController
                                      :email_verified,
                                      :verification_sent,
                                      :account_kind)
+  end
+
+  def valid_file_size?(file)
+    document = Documents::CreateForm.new(document: file)
+
+    return true if document.valid?
+
+    flash[:file_errors][:file_size] = document.errors.full_messages.first
+
+    false
   end
 
   def status_params

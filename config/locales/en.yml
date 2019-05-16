@@ -378,6 +378,7 @@ en:
       email_verified: Email already verified
       deposit_limits: Deposit limit reached, please try again later
       document_type_not_supported: Document type not supported
+      document_size_limit: exceeds maximum limit
       entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
       provider_disconnected: Provider is disconnected
       market_suspended: Bet market is suspended
@@ -408,6 +409,7 @@ en:
       nonexistent_producer: Producer not found.
       unsupported_event_type: Event type is not supported
       unexpected_customer_bonus: Unexpected customer bonus for bet
+
 
       mts:
         internal_server_error: "Betting service is experiencing some issues now. Bet was not accepted."
