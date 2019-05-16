@@ -3,21 +3,17 @@
 module EntryRequests
   module Factories
     class Deposit < ApplicationService
-      delegate :expired?, to: :customer_bonus, allow_nil: true, prefix: true
-
       def initialize(wallet:, amount:, **attributes)
         @wallet = wallet
         @amount = amount
         @mode = attributes[:mode]
         @passed_initiator = attributes[:initiator]
         @passed_comment = attributes[:comment]
-        # TODO:
-        @customer_bonus = wallet.customer.customer_bonuses.initial.first
       end
 
       def call
         create_entry_request!
-        validate_entry_request!
+        check_deposit_limit!
         create_balance_request!
 
         entry_request
@@ -66,7 +62,7 @@ module EntryRequests
         customer_bonus.present? &&
           !customer_bonus.activated? &&
           customer_bonus.min_deposit &&
-          customer_bonus.applied? &&
+          customer_bonus.active? &&
           amount >= customer_bonus.min_deposit
       end
 
@@ -89,10 +85,6 @@ module EntryRequests
         " by #{passed_initiator}" if passed_initiator
       end
 
-      def validate_entry_request!
-        check_deposit_limit! && check_bonus_expiration!
-      end
-
       def check_deposit_limit!
         # TODO : implement validation logic
         deposit_limit = DepositLimit.find_by(customer: wallet.customer,
@@ -102,14 +94,6 @@ module EntryRequests
 
         entry_request
           .register_failure!(I18n.t('errors.messages.deposit_limit_present'))
-      end
-
-      def check_bonus_expiration!
-        return true unless customer_bonus_expired?
-
-        CustomerBonuses::Cancel.call(bonus: customer_bonus)
-        entry_request
-          .register_failure!(I18n.t('errors.messages.bonus_expired'))
       end
 
       def create_balance_request!

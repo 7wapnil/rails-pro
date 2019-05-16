@@ -2,25 +2,29 @@
 
 FactoryBot.define do
   factory :customer_bonus do
-    kind                 { Bonus::DEPOSIT }
-    rollover_multiplier  { 10 }
-    max_rollover_per_bet { 150.00 }
-    max_deposit_match    { 1000.00 }
-    min_odds_per_bet     { 1.6 }
-    min_deposit          { 10.00 }
-    expires_at           { Time.zone.now.end_of_month }
-    valid_for_days       { 60 }
-    created_at           { Time.zone.now }
-    deleted_at           { nil }
-    rollover_balance     { rand(100..1000) }
+    kind                   { Bonus::DEPOSIT }
+    rollover_multiplier    { 10 }
+    max_rollover_per_bet   { 150.00 }
+    max_deposit_match      { 1000.00 }
+    min_odds_per_bet       { 1.6 }
+    min_deposit            { 10.00 }
+    expires_at             { Time.zone.now.end_of_month }
+    valid_for_days         { 60 }
+    created_at             { Time.zone.now }
+    deleted_at             { nil }
+    rollover_balance       { rand(100..1000) }
     rollover_initial_value { rand(100..1000) }
-    status               { CustomerBonus::ACTIVE }
+    status                 { CustomerBonus::ACTIVE }
 
     sequence(:code) { |n| "FOOBAR#{n}" }
 
     customer
     wallet
     association :original_bonus, factory: :bonus
+
+    trait :initial do
+      status { CustomerBonus::INITIAL }
+    end
 
     trait :applied do
       deleted_at {}

@@ -24,10 +24,6 @@ class CustomerBonus < ApplicationRecord
     deleted_at || ended_at < Time.zone.now
   end
 
-  def applied?
-    !expired? && rollover_balance.present?
-  end
-
   def loggable_attributes
     { code: code }
   end

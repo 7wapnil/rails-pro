@@ -1,18 +1,21 @@
 # frozen_string_literal: true
 
 module CustomerBonuses
-  class Cancel < ApplicationService
+  class Deactivate < ApplicationService
     delegate :wallet, to: :customer_bonus, allow_nil: true
     delegate :bonus_balance, to: :wallet, allow_nil: true
 
-    def initialize(bonus:, **params)
+    def initialize(bonus:, action:, **params)
       @customer_bonus = bonus
+      @action = action
       @user = params[:user]
     end
 
     def call
       return unless customer_bonus
       return customer_bonus if customer_bonus.deleted_at
+
+      validate_action!
 
       deactivate_bonus!
       confiscate_bonus_money! if positive_bonus_balance?
@@ -22,13 +25,19 @@ module CustomerBonuses
 
     protected
 
-    attr_accessor :customer_bonus, :user
+    attr_accessor :customer_bonus, :action, :user
 
     private
 
+    def validate_action!
+      valid = %i[cancel! expire!].include?(action)
+      error_message = 'Action can be either :cancel! or :expire!'
+      raise ArgumentError, error_message unless valid
+    end
+
     def deactivate_bonus!
       customer_bonus.transaction do
-        customer_bonus.cancel!
+        customer_bonus.send(action)
         customer_bonus.destroy!
       end
     end

@@ -157,29 +157,6 @@ describe Customer do
     end
   end
 
-  describe '#active_bonus' do
-    let(:customer) { create(:customer) }
-    let(:bonus) { create(:customer_bonus, customer: customer, status: status) }
-
-    before { bonus }
-
-    context 'with pending status' do
-      let(:status) { CustomerBonus::INITIAL }
-
-      it 'returns nil' do
-        expect(customer.active_bonus).to be_nil
-      end
-    end
-
-    context 'with active status' do
-      let(:status) { CustomerBonus::ACTIVE }
-
-      it 'returns customer bonus' do
-        expect(customer.active_bonus).to eq(bonus)
-      end
-    end
-  end
-
   describe '#deposit_attempts' do
     include_context 'frozen_time'
 

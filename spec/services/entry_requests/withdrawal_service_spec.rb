@@ -49,9 +49,10 @@ describe EntryRequests::WithdrawalService do
       create(:balance, :bonus, amount: balance_amount, wallet: wallet)
     end
 
-    it 'calls Bonus Cancel service' do
-      expect(CustomerBonuses::Cancel).to receive(:call).with(
-        bonus: customer.active_bonus
+    it 'calls Bonus Deactivate service' do
+      expect(CustomerBonuses::Deactivate).to receive(:call).with(
+        bonus: customer.active_bonus,
+        action: :cancel!
       )
 
       subject.call

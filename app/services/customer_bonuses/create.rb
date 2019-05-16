@@ -13,6 +13,7 @@ module CustomerBonuses
     end
 
     def call
+      check_bonus_expiration!
       log_activation_attempt if initiator
       create_customer_bonus!
       add_bonus_money if update_wallet?
@@ -80,6 +81,14 @@ module CustomerBonuses
 
     def log_successful_activation
       initiator.log_event(:bonus_activated, customer_bonus, customer)
+    end
+
+    def check_bonus_expiration!
+      return true unless customer.active_bonus&.expired?
+
+      CustomerBonuses::Deactivate.call(bonus: customer_bonus, action: :expire!)
+      failure_message = I18n.t('errors.messages.bonus_expired')
+      entry_request.register_failure!(failure_message)
     end
   end
 end

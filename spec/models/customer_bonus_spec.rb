@@ -44,7 +44,7 @@ describe CustomerBonus do
       end
     end
 
-    describe '#applied?' do
+    xdescribe '#applied?' do
       let(:customer_bonus) { build(:customer_bonus, rollover_balance: 12) }
 
       it 'returns true when bonus is not expired and has rollover balance' do

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe CustomerBonuses::Cancel do
+describe CustomerBonuses::Deactivate do
   let(:customer_bonus) { create(:customer_bonus) }
 
   include_context 'frozen_time'
@@ -19,7 +19,7 @@ describe CustomerBonuses::Cancel do
 
     before do
       allow(EntryRequests::BonusChangeWorker).to receive(:perform_async)
-      described_class.call(bonus: customer_bonus)
+      described_class.call(bonus: customer_bonus, action: :cancel!)
     end
 
     it 'removes customer bonus' do
@@ -49,8 +49,7 @@ describe CustomerBonuses::Cancel do
     end
 
     before do
-      described_class
-        .call(bonus: customer_bonus)
+      described_class.call(bonus: customer_bonus, action: :cancel!)
     end
 
     it 'does not override original expiration date' do

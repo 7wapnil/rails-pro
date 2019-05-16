@@ -8,13 +8,12 @@ module Bonuses
     }.freeze
 
     def call
-      CustomerBonus
-        .includes(PRELOAD_OPTIONS)
-        .where(expiration_reason: nil)
-        .where(ended_at_sql_clause)
-        .find_each(batch_size: BATCH_SIZE) { |bonus| 
-          CustomerBonuses::Cancel.call(bonus: bonus)
-        }
+      expiring_bonuses = CustomerBonus.includes(PRELOAD_OPTIONS)
+                                      .where(expiration_reason: nil)
+                                      .where(ended_at_sql_clause)
+      expiring_bonuses.find_each(batch_size: BATCH_SIZE) do |bonus|
+        CustomerBonuses::Deactivate.call(bonus: bonus, action: :expire!)
+      end
     end
 
     private

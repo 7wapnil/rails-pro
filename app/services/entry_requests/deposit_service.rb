@@ -7,7 +7,7 @@ module EntryRequests
     def initialize(entry_request:)
       @entry_request = entry_request
       @wallet = entry_request.origin
-      @customer_bonus = wallet.customer.customer_bonuses.initial.last
+      @customer_bonus = wallet.customer.pending_bonus
     end
 
     def call
@@ -28,7 +28,7 @@ module EntryRequests
     def attach_entry_to_bonus!
       return unless bonus_balance_entry_request
 
-      customer_bonus.activate!(entry)
+      customer_bonus.activate!
     end
   end
 end

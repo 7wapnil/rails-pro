@@ -257,7 +257,7 @@ describe EntryRequests::Factories::Deposit do
       end
     end
 
-    context 'applied?' do
+    xcontext 'applied?' do
       before do
         allow(customer_bonus)
           .to receive(:applied?)

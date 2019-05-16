@@ -67,6 +67,8 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   has_one :address, autosave: true, dependent: :destroy
   has_many :customer_bonuses, dependent: :destroy
+  has_one :active_bonus, -> { active }, class_name: CustomerBonus.name
+  has_one :pending_bonus, -> { initial }, class_name: CustomerBonus.name
 
   delegate :street_address,
            :zip_code,
@@ -134,14 +136,6 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   def deposit_limit
     DepositLimit.find_or_initialize_by(customer: self)
-  end
-
-  def active_bonus
-    customer_bonuses.active.first
-  end
-
-  def pending_bonus
-    customer_bonuses.initial.last
   end
 
   def deposit_attempts

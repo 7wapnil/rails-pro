@@ -89,7 +89,7 @@ describe EntryRequests::Factories::BetPlacement do
   context 'with customer bonus not applied' do
     before do
       allow_any_instance_of(CustomerBonus)
-        .to receive(:applied?)
+        .to receive(:active?)
         .and_return(false)
     end
 
