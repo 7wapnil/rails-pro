@@ -35,6 +35,9 @@
           %td= t('attributes.status')
           %td= status_badge(@bet.status)
         %tr
+          %td= t('attributes.message')
+          %td= @bet.message
+        %tr
           %td= t('attributes.settlement')
           %td= settle_badge(@bet.settlement_status)
         %tr
