@@ -56,7 +56,7 @@ module OddsFeed
         end
 
         def variants?
-          variant_specifier? && variant_mappings.any?
+          variant_specifier?
         end
 
         def variant_specifier?

@@ -194,7 +194,7 @@ describe Radar::MarketsUpdateWorker do
         },
         'attributes' => nil,
         'products' => %w[5],
-        'variants' => false
+        'variants' => true
       }
     end
 
