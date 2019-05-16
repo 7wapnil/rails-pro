@@ -91,8 +91,8 @@ module OddsFeed
 
       def unexpected_customer_bonus(bet)
         message = I18n.t('errors.messages.unexpected_customer_bonus')
-        log_job_message :error, message: message, bet_id: bet.id
-        raise
+        log_job_message(:error, message: message, bet_id: bet.id)
+        raise SilentJobRetryError
       end
 
       def unexpected_customer_bonus?(bet)
