@@ -4,6 +4,8 @@ require 'tempfile'
 
 module Reports
   class BaseReport < ApplicationService
+    BATCH_SIZE = 10
+
     def call
       send_report!
     end
@@ -42,7 +44,7 @@ module Reports
       CSV.generate(headers: true) do |csv|
         csv << self.class::HEADERS
 
-        subjects.each do |subject|
+        subjects.find_each(batch_size: BATCH_SIZE) do |subject|
           csv << subject_fields(subject)
         end
       end
