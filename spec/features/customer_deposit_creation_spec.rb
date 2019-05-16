@@ -47,7 +47,7 @@ describe 'creates deposit via entry request form' do
                                        valid_for_days: 2)
       click_on 'Confirm'
 
-      expect(customer_bonus.reload).to be_expired_by_date
+      expect(customer_bonus.reload).to be_expired
     end
   end
 

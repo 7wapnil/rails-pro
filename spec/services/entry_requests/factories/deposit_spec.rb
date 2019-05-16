@@ -141,8 +141,8 @@ describe EntryRequests::Factories::Deposit do
 
     let(:message) do
       "Deposit #{amount} #{currency} real money " \
-      "and 0 #{customer.customer_bonus.wallet.currency.code} bonus money " \
-      "(#{customer.customer_bonus.code} bonus code) " \
+      "and 0 #{customer.active_bonus.wallet.currency.code} bonus money " \
+      "(#{customer.active_bonus.code} bonus code) " \
       "for #{customer} by #{admin}"
     end
 
@@ -161,8 +161,8 @@ describe EntryRequests::Factories::Deposit do
     let(:impersonated_by) {}
     let(:message) do
       "Deposit #{amount} #{currency} real money " \
-      "and 0 #{customer.customer_bonus.wallet.currency.code} bonus money " \
-      "(#{customer.customer_bonus.code} bonus code) " \
+      "and 0 #{customer.active_bonus.wallet.currency.code} bonus money " \
+      "(#{customer.active_bonus.code} bonus code) " \
       "for #{customer}"
     end
 
@@ -226,7 +226,6 @@ describe EntryRequests::Factories::Deposit do
       it 'becomes closed' do
         service_call
         expect(customer_bonus).to have_attributes(
-          expiration_reason: 'expired_by_date',
           deleted_at: Time.zone.now
         )
       end

@@ -84,7 +84,7 @@ describe EntryRequests::BetPlacementWorker do
       let(:expected_real_balance) { real_amount - bet_amount }
 
       before do
-        customer.customer_bonus.destroy
+        customer.customer_bonuses.destroy
         customer.reload
         subject
       end

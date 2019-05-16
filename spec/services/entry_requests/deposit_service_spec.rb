@@ -49,7 +49,7 @@ describe EntryRequests::DepositService do
 
   context "don't affect bonus balance" do
     it 'when do not pass deposit limit' do
-      wallet.customer.customer_bonus.update_attributes(min_deposit: amount + 1)
+      wallet.customer.active_bonus.update_attributes(min_deposit: amount + 1)
       service_call
       wallet.reload
 
@@ -79,7 +79,7 @@ describe EntryRequests::DepositService do
     end
 
     it 'attaches entry to the customer bonus' do
-      expect(wallet.customer_bonus.entry).to be_instance_of(Entry)
+      expect(wallet.active_bonus.entry).to be_instance_of(Entry)
     end
 
     it 'applies customer bonus only once' do

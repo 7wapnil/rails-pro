@@ -27,11 +27,11 @@ describe CustomerBonuses::Create do
     before { subject }
 
     it 'creates new activated bonus' do
-      expect(customer.reload.customer_bonus).not_to be_nil
+      expect(customer.reload.pending_bonus).not_to be_nil
     end
 
     it 'sets rollover_initial_value correctly' do
-      expect(customer.reload.customer_bonus.rollover_initial_value)
+      expect(customer.reload.pending_bonus.rollover_initial_value)
         .to eq(amount * rollover_multiplier)
     end
   end
@@ -148,20 +148,22 @@ describe CustomerBonuses::Create do
     end
   end
 
-  context 'activating a repeatable bonus after it expires' do
+  context 'creating a repeatable bonus after it expires' do
     before do
       create(:customer_bonus,
              customer: customer,
              original_bonus: bonus,
-             expires_at: 1.day.ago)
+             expires_at: 1.day.ago,
+             status: CustomerBonus::EXPIRED)
     end
 
     it 'raises an error' do
       expect { subject }.not_to raise_error
     end
 
-    it 'activates a bonus' do
-      expect(customer.reload.customer_bonus).not_to be_nil
+    it 'creates a bonus' do
+      subject
+      expect(customer.pending_bonus).not_to be_nil
     end
   end
 
@@ -171,7 +173,8 @@ describe CustomerBonuses::Create do
       create(:customer_bonus,
              customer: customer,
              original_bonus: bonus,
-             expires_at: 1.day.ago)
+             expires_at: 1.day.ago,
+             status: CustomerBonus::EXPIRED)
     end
 
     it 'raises an error' do

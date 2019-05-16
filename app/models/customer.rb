@@ -66,7 +66,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
            inverse_of: :customer
 
   has_one :address, autosave: true, dependent: :destroy
-  has_one :customer_bonus, dependent: :destroy
+  has_many :customer_bonuses, dependent: :destroy
 
   delegate :street_address,
            :zip_code,
@@ -137,7 +137,11 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def active_bonus
-    customer_bonus if customer_bonus&.activated? && customer_bonus&.applied?
+    customer_bonuses.active.first
+  end
+
+  def pending_bonus
+    customer_bonuses.initial.last
   end
 
   def deposit_attempts

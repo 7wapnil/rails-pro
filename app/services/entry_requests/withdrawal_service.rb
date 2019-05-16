@@ -18,17 +18,14 @@ module EntryRequests
     attr_reader :entry_request, :entry
 
     delegate :customer, to: :entry_request
-    delegate :customer_bonus, to: :customer
+    delegate :active_bonus, to: :customer
 
     def authorize_entry_request!
       @entry = WalletEntry::AuthorizationService.call(entry_request)
     end
 
     def remove_bonus!
-      Bonuses::Cancel.call(
-        bonus: customer_bonus,
-        reason: CustomerBonus::WITHDRAWAL
-      )
+      CustomerBonuses::Cancel.call(bonus: active_bonus)
     end
 
     def authorize_entry!

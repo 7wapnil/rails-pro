@@ -52,7 +52,9 @@ describe Customer, '#bonuses' do
 
   context 'bonus deactivation' do
     let!(:bonus) do
-      create(:customer_bonus, customer: customer, wallet: wallet)
+      create(:customer_bonus, customer: customer,
+                              wallet: wallet,
+                              status: CustomerBonus::ACTIVE)
     end
     let!(:bonus_balance) { create(:balance, :bonus, wallet: wallet) }
 
@@ -63,7 +65,7 @@ describe Customer, '#bonuses' do
     before do
       allow(EntryRequests::BonusChangeWorker).to receive(:perform_async)
       visit customer_bonus_path(bonus)
-      click_link 'Expire'
+      click_link 'Cancel'
     end
 
     it 'redirects to customer bonuses page' do
@@ -71,7 +73,7 @@ describe Customer, '#bonuses' do
     end
 
     it 'expire customer bonus' do
-      expect(page).to have_content('Expired')
+      expect(page).to have_content('Cancelled')
     end
 
     it 'status customer bonus changed' do

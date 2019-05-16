@@ -159,30 +159,24 @@ describe Customer do
 
   describe '#active_bonus' do
     let(:customer) { create(:customer) }
-    let(:bonus) { create(:customer_bonus, customer: customer) }
-    let(:active_bonus) { customer.active_bonus }
+    let(:bonus) { create(:customer_bonus, customer: customer, status: status) }
 
-    it 'returns nil when customer without bonus' do
-      expect(active_bonus).to be_nil
+    before { bonus }
+
+    context 'with pending status' do
+      let(:status) { CustomerBonus::INITIAL }
+
+      it 'returns nil' do
+        expect(customer.active_bonus).to be_nil
+      end
     end
 
-    it 'returns nil when customer bonus is not applied?' do
-      allow(bonus).to receive(:applied?).and_return(false)
+    context 'with active status' do
+      let(:status) { CustomerBonus::ACTIVE }
 
-      expect(active_bonus).to be_nil
-    end
-
-    it 'returns nil when customer bonus is not activated?' do
-      allow(bonus).to receive(:activated?).and_return(false)
-
-      expect(active_bonus).to be_nil
-    end
-
-    it 'returns bonus when customer bonus is activated? and applied?' do
-      allow(bonus).to receive(:activated?).and_return(true)
-      allow(bonus).to receive(:applied?).and_return(true)
-
-      expect(active_bonus).to eq(bonus)
+      it 'returns customer bonus' do
+        expect(customer.active_bonus).to eq(bonus)
+      end
     end
   end
 

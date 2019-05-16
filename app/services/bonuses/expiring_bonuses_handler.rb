@@ -12,7 +12,9 @@ module Bonuses
         .includes(PRELOAD_OPTIONS)
         .where(expiration_reason: nil)
         .where(ended_at_sql_clause)
-        .find_each(batch_size: BATCH_SIZE) { |bonus| cancel_bonus!(bonus) }
+        .find_each(batch_size: BATCH_SIZE) { |bonus| 
+          CustomerBonuses::Cancel.call(bonus: bonus)
+        }
     end
 
     private
@@ -22,11 +24,6 @@ module Bonuses
         (customer_bonuses.created_at +
          INTERVAL '1' DAY * customer_bonuses.valid_for_days) < NOW()
       SQL
-    end
-
-    def cancel_bonus!(bonus)
-      Bonuses::Cancel
-        .call(bonus: bonus, reason: CustomerBonus::EXPIRED_BY_DATE)
     end
   end
 end

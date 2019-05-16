@@ -74,27 +74,6 @@ describe CustomerBonus do
       end
     end
 
-    describe '#status' do
-      it 'returns \'active\' for active bonus' do
-        customer_bonus = create(:customer_bonus)
-        expect(customer_bonus.status).to eq('active')
-      end
-
-      it 'returns \'expired\' for deleted bonus' do
-        customer_bonus = create(:customer_bonus, deleted_at: Time.zone.now)
-        expect(customer_bonus.status).to eq('expired')
-      end
-
-      it 'returns \'expired\' for expired bonus' do
-        customer_bonus = create(
-          :customer_bonus,
-          valid_for_days: 1,
-          created_at: Time.zone.now - 2.days
-        )
-        expect(customer_bonus.status).to eq('expired')
-      end
-    end
-
     describe '.customer_history' do
       let!(:customer) { create(:customer) }
       let!(:expired_customer_bonus) do

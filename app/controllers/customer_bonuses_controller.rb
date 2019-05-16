@@ -32,9 +32,8 @@ class CustomerBonusesController < ApplicationController
   end
 
   def destroy
-    Bonuses::Cancel.call(
+    CustomerBonuses::Cancel.call(
       bonus: @customer_bonus,
-      reason: CustomerBonus::MANUAL_CANCEL,
       user: current_user
     )
     redirect_to bonuses_customer_path(@customer_bonus.customer)

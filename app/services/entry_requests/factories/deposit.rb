@@ -11,7 +11,8 @@ module EntryRequests
         @mode = attributes[:mode]
         @passed_initiator = attributes[:initiator]
         @passed_comment = attributes[:comment]
-        @customer_bonus = wallet.customer.customer_bonus
+        # TODO:
+        @customer_bonus = wallet.customer.customer_bonuses.initial.first
       end
 
       def call
@@ -80,7 +81,7 @@ module EntryRequests
       def default_comment
         "Deposit #{calculations[:real_money]} #{wallet.currency} real money " \
         "and #{calculations[:bonus] || 0} #{wallet.currency} bonus money " \
-        "(#{wallet.customer&.customer_bonus&.code || 'no'} bonus code) " \
+        "(#{customer_bonus&.code || 'no'} bonus code) " \
         "for #{wallet.customer}#{initiator_comment_suffix}"
       end
 
@@ -106,8 +107,7 @@ module EntryRequests
       def check_bonus_expiration!
         return true unless customer_bonus_expired?
 
-        Bonuses::Cancel.call(bonus: customer_bonus,
-                             reason: CustomerBonus::EXPIRED_BY_DATE)
+        CustomerBonuses::Cancel.call(bonus: customer_bonus)
         entry_request
           .register_failure!(I18n.t('errors.messages.bonus_expired'))
       end

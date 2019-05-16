@@ -1,19 +1,19 @@
+# frozen_string_literal: true
+
 module StateMachines
   module CustomerBonusStateMachine
     extend ActiveSupport::Concern
 
     STATUSES = {
-      pending: PENDING = 'pending',
+      initial: INITIAL = 'initial',
+      failed: FAILED = 'failed',
       active: ACTIVE = 'active',
-      cancelled_manually: CANCELLED_MANUALLY = 'cancelled_manually',
-      expired_by_date: EXPIRED_BY_DATE = 'expired_by_date',
-      converted: CONVERTED = 'converted',
-      withdrawn: WITHDRAWN = 'withdrawn'
+      cancelled: CANCELLED = 'cancelled',
+      completed: COMPLETED = 'completed',
+      expired: EXPIRED = 'expired'
     }.freeze
 
-    EXPIRED_STATUSES = [CANCELLED_MANUALLY, EXPIRED_BY_DATE, CONVERTED, WITHDRAWN]
-
-    DEFAULT_STATUS = PENDING
+    DEFAULT_STATUS = ACTIVE
 
     included do
       enum status: STATUSES
@@ -21,31 +21,37 @@ module StateMachines
       include AASM
 
       aasm column: :status, enum: true do
-        state :pending, initial: true
+        state :initial
+        state :failed
         state :active
-        state :cancelled_manually
-        state :expired_by_date
-        state :converted
-        state :withdrawn
+        state :cancelled
+        state :completed
+        state :expired
 
         event :activate do
-          transitions from: :pending,
-                      to: :active
+          transitions from: :initial,
+                      to: :active,
+                      after: proc { |entry| update!(entry: entry) }
         end
 
-        event :expire_by_date do
+        event :fail do
           transitions from: :active,
-                      to: :expired_by_date
+                      to: :failed
         end
 
-        event :manual_cancel do
+        event :cancel do
           transitions from: :active,
-                      to: :cancelled_manually
+                      to: :cancelled
         end
 
-        event :withdraw do
+        event :complete do
           transitions from: :active,
-                      to: :withdrawn
+                      to: :completed
+        end
+
+        event :expire do
+          transitions from: :active,
+                      to: :expired
         end
       end
 

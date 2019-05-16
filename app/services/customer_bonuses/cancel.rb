@@ -5,17 +5,14 @@ module CustomerBonuses
     delegate :wallet, to: :customer_bonus, allow_nil: true
     delegate :bonus_balance, to: :wallet, allow_nil: true
 
-    def initialize(bonus:, reason:, **params)
+    def initialize(bonus:, **params)
       @customer_bonus = bonus
-      @reason = reason
       @user = params[:user]
     end
 
     def call
       return unless customer_bonus
       return customer_bonus if customer_bonus.deleted_at
-
-      validate!
 
       deactivate_bonus!
       confiscate_bonus_money! if positive_bonus_balance?
@@ -25,18 +22,13 @@ module CustomerBonuses
 
     protected
 
-    attr_accessor :customer_bonus, :reason, :user
+    attr_accessor :customer_bonus, :user
 
     private
 
-    def validate!
-      raise ArgumentError, 'Expiration reason expected!' unless reason
-    end
-
     def deactivate_bonus!
       customer_bonus.transaction do
-        customer_bonus.update!(expiration_reason: reason,
-                               status: CustomerBonus::CANCELLED)
+        customer_bonus.cancel!
         customer_bonus.destroy!
       end
     end

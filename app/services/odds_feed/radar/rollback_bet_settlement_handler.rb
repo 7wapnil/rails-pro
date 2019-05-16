@@ -81,7 +81,7 @@ module OddsFeed
       end
 
       def rollback_bonus_rollover(bet)
-        return unless bet.customer.customer_bonus
+        return unless bet.customer_bonus
 
         unexpected_customer_bonus(bet) if unexpected_customer_bonus?(bet)
 
@@ -94,7 +94,7 @@ module OddsFeed
       end
 
       def unexpected_customer_bonus?(bet)
-        bet.customer_bonus != bet.customer.customer_bonus
+        bet.customer != bet.customer_bonus.customer
       end
     end
   end
