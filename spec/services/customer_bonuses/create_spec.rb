@@ -148,7 +148,7 @@ describe CustomerBonuses::Create do
     let!(:expiring_bonus) do
       create(:customer_bonus, customer: customer,
                               original_bonus: bonus,
-                              expires_at: 2.days.ago,
+                              created_at: 2.years.ago,
                               status: CustomerBonus::ACTIVE)
     end
 

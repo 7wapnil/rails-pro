@@ -75,7 +75,11 @@ module CustomerBonuses
     def active_bonus_expired?
       return false unless customer.active_bonus
 
-      customer.active_bonus.expires_at < Time.zone.now
+      created_at = customer.active_bonus.created_at
+      dies_at = created_at + customer.active_bonus.valid_for_days.days
+      expires_at = [dies_at, customer.active_bonus.expires_at].min
+
+      expires_at < Time.zone.now
     end
   end
 end

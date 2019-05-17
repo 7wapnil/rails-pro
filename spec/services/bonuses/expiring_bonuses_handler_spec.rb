@@ -53,7 +53,7 @@ describe Bonuses::ExpiringBonusesHandler do
 
   it 'expires expired bonuses' do
     subject
-    expect(expired_bonuses.map(&:reload)).to be_all(&:deleted?)
+    expect(expired_bonuses.map(&:reload)).to be_all(&:expired?)
   end
 
   it 'creates entry requests for expired bonuses with balances' do
