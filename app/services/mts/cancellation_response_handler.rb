@@ -55,8 +55,11 @@ module Mts
     def bet
       @bet ||= Bet.find_by!(validation_ticket_id: message['result']['ticketId'])
     rescue ActiveRecord::RecordNotFound
-      raise I18n.t('errors.messages.nonexistent_bet',
-                   id: message['result']['ticketId'])
+      error_message = I18n.t('errors.messages.nonexistent_bet')
+      log_job_message(:error,
+                      message: error_message,
+                      id: message['result']['ticketId'])
+      raise SilentJobRetryError
     end
 
     def successful_bet_cancel

@@ -2,6 +2,8 @@
 
 module EntryRequests
   class BetPlacementService < ApplicationService
+    include JobLogger
+
     delegate :odd, :market, to: :bet
 
     def initialize(entry_request:)
@@ -50,8 +52,9 @@ module EntryRequests
     end
 
     def entry_request_failed!
-      raise Bets::RequestFailedError,
-            I18n.t('errors.messages.entry_request_failed', bet_id: bet.id)
+      message = I18n.t('errors.messages.entry_request_failed')
+      log_job_message(:error, message: message, bet_id: bet.id)
+      raise Bets::RequestFailedError, message
     end
 
     def zero_amount!

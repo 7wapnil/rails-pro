@@ -391,15 +391,14 @@ en:
       deposit_limit_present: 'Customer has a deposit limit!'
       bonus_expired: 'Bonus is expired!'
       deposit_payment_error: 'Deposit payment error!'
-      entry_request_failed: "Entry request has been already failed for bet #{bet_id}"
+      entry_request_failed: Entry request has been already failed
       deposit_attempts_exceeded: Deposit attempts exceeded, contact support agent
       deposit_attempt_is_not_succeded: Deposit attempt is not succeded
       technical_error_happened: Technical error happened
       deposit_request_cancelled: Deposit request canceled
       deposit_request_failed: Deposit request failed
       unsupported_payment_method: "Payment method '%{code}' is not implemented"
-      nonexistent_event: "Event with id '%{id}' does not exist"
-      nonexistent_bet: "Bet with validation ticket id '%{id}' does not exist"
+      nonexistent_bet: "Bet with validation ticket does not exist"
       password_invalid: Incorrect password
       unsupported_withdraw_method: "Payment method %{name} is not supported"
       reset_password_empty_token: Empty reset token
@@ -408,7 +407,7 @@ en:
       reset_password_confirmation_mismatch: Confirmation does not match password
       nonexistent_producer: Producer not found.
       unsupported_event_type: Event type is not supported
-      unexpected_customer_bonus: "Unexpected customer bonus for bet with id: %{bet_id}"
+      unexpected_customer_bonus: Unexpected customer bonus for bet
 
       mts:
         ticket_not_found: "Ticket not found for bet"

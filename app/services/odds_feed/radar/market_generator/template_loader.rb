@@ -29,7 +29,9 @@ module OddsFeed
 
           return player_name(external_id) if player?(external_id)
 
-          raise "Odd template ID #{external_id} not found"
+          msg = 'Odd template not found'
+          log_job_message(:error, message: msg, external_id: external_id)
+          raise SilentJobRetryError
         end
 
         private
@@ -44,7 +46,9 @@ module OddsFeed
           player = event.players.detect { |p| p.external_id == external_id }
           return player.full_name if player
 
-          raise "Player ID #{external_id} not found"
+          msg = 'Player not found'
+          log_job_message(:error, message: msg, external_id: external_id)
+          raise SilentJobRetryError
         end
 
         def find_odd_template(external_id)

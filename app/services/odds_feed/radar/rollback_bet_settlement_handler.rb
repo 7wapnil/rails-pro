@@ -4,6 +4,7 @@ module OddsFeed
   module Radar
     class RollbackBetSettlementHandler < RadarMessageHandler
       include WebsocketEventEmittable
+      include JobLogger
 
       BATCH_SIZE = 100
 
@@ -89,8 +90,9 @@ module OddsFeed
       end
 
       def unexpected_customer_bonus(bet)
-        raise StandardError I18n.t('errors.messages.unexpected_customer_bonus',
-                                   bet_id: bet.id)
+        message = I18n.t('errors.messages.unexpected_customer_bonus')
+        log_job_message(:error, message: message, bet_id: bet.id)
+        raise SilentJobRetryError
       end
 
       def unexpected_customer_bonus?(bet)

@@ -41,7 +41,9 @@ module OddsFeed
 
       def event_raw(id, cache: nil)
         unless supported_external_id?(id)
-          raise StandardError, "Event ID '#{id}' is not supported"
+          log_job_message(:error, message: 'Event is not supported',
+                                  event_id: id)
+          raise SilentJobRetryError
         end
 
         route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"

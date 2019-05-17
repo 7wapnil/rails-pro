@@ -74,6 +74,13 @@ describe Mts::CancellationResponseHandler do
     end
 
     context 'with nonexistent bet' do
+      before do
+        allow(Rails.logger)
+          .to receive(:error)
+          .with(message: error_message, id: ticket_id)
+      end
+
+      let(:error_message) { I18n.t('errors.messages.nonexistent_bet') }
       let(:status_code) { Mts::CancellationResponseHandler::SUCCESSFUL_CODE }
       let!(:bet) do
         create(:bet,
@@ -81,10 +88,17 @@ describe Mts::CancellationResponseHandler do
                validation_ticket_id: "MTS_Test_#{Faker::Number.number(13)}")
       end
 
-      it 'raise error' do
-        expect { subject_call }
-          .to raise_error(I18n.t('errors.messages.nonexistent_bet',
-                                 id: ticket_id))
+      it 'raises the error' do
+        expect { subject_call }.to raise_error(StandardError)
+      end
+
+      it 'logs the error' do
+        subject_call
+        raise
+      rescue StandardError
+        expect(Rails.logger)
+          .to have_received(:error)
+          .with(message: error_message, id: ticket_id)
       end
     end
   end

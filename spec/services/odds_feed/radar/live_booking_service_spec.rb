@@ -37,9 +37,8 @@ describe OddsFeed::Radar::LiveBookingService do
       instance_double(Event.name, external_id: Faker::Number.number)
     end
 
-    it 'raises an error and is not processed' do
+    it 'is not processed' do
       expect(api_client).not_to receive(:book_live_coverage)
-      expect { subject_api.call }.to raise_error(ActiveRecord::RecordNotFound)
     end
   end
 
