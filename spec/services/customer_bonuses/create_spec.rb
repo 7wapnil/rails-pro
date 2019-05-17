@@ -155,7 +155,6 @@ describe CustomerBonuses::Create do
     before { subject }
 
     it 'creates a new customer bonus' do
-      byebug
       expect(customer.pending_bonus).to be_present
     end
 
