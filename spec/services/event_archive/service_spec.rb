@@ -16,7 +16,11 @@ describe EventArchive::Service do
     expect(archived.name).to eq(event.name)
     expect(archived.title_name).to eq(event.title.name)
     expect(archived.description).to eq(event.name)
-    expect(archived.payload).to eq(event.payload)
+    expect(archived.display_status).to eq(event.display_status)
+    expect(archived.home_score).to eq(event.home_score)
+    expect(archived.away_score).to eq(event.away_score)
+    expect(archived.time_in_seconds).to eq(event.time_in_seconds)
+    expect(archived.liveodds).to eq(event.liveodds)
   end
 
   it 'archives every event scope' do

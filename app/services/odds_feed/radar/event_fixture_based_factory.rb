@@ -22,7 +22,7 @@ module OddsFeed
           name: event_name,
           description: event_name,
           traded_live: event_traded_live?,
-          payload: payload
+          liveodds: liveodds
         }
       end
 
@@ -35,11 +35,8 @@ module OddsFeed
         start_at_field.to_time
       end
 
-      def payload
-        {
-          competitors: fixture['competitors'],
-          liveodds: fixture['liveodds']
-        }
+      def liveodds
+        fixture['liveodds']
       end
 
       def event_name
@@ -52,7 +49,7 @@ module OddsFeed
       end
 
       def event_traded_live?
-        fixture['liveodds'] == BOOKED_FIXTURE_STATUS
+        liveodds == BOOKED_FIXTURE_STATUS
       end
 
       def patched_start_time

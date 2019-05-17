@@ -6,9 +6,26 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include EventScopeAssociations
 
   conflict_target :external_id
-  conflict_updatable :name, :status, :traded_live, :payload
+  conflict_updatable :name,
+                     :status,
+                     :traded_live,
+                     :display_status,
+                     :home_score,
+                     :away_score,
+                     :time_in_seconds,
+                     :liveodds
 
-  UPDATABLE_ATTRIBUTES = %w[name description start_at end_at].freeze
+  UPDATABLE_ATTRIBUTES = %w[
+    name
+    description
+    start_at
+    end_at
+    display_status
+    home_score
+    away_score
+    time_in_seconds
+    liveodds
+  ].freeze
 
   # 4 hours ago is a temporary workaround to reduce amount of live events
   # Will be removed when proper event ending logic is implemented
@@ -183,31 +200,20 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     end
 
     assign_attributes(other.attributes.slice(*UPDATABLE_ATTRIBUTES))
-    add_to_payload(other.payload)
 
     save!
     self
   end
 
-  # This is a good candidate to be extracted to a reusable concern
-  def add_to_payload(addition)
-    return unless addition
-
-    payload&.merge!(addition)
-    self.payload = addition unless payload
+  def alive?
+    traded_live? && (in_play?(limited: true) || suspended?)
   end
 
-  def state
-    return unless payload['state']
-
-    EventState.new(payload['state'])
+  def score
+    "#{home_score.to_i}:#{away_score.to_i}"
   end
 
   def bookable?
-    payload && payload['liveodds'] == BOOKABLE
-  end
-
-  def alive?
-    traded_live? && (in_play?(limited: true) || suspended?)
+    liveodds == BOOKABLE
   end
 end

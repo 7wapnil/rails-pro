@@ -88,12 +88,6 @@ describe OddsFeed::Radar::OddsChangeHandler do
         event.reload
       end
 
-      it 'updates payload status' do
-        subject.handle
-        event.reload
-        expect(event.payload['state'].size).not_to be_zero
-      end
-
       it 'updates event producer' do
         subject.handle
         event.reload

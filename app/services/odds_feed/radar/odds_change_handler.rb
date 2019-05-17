@@ -63,24 +63,22 @@ module OddsFeed
       end
 
       def update_event!
-        update_event_payload
         update_event_attributes
         event.save!
       end
 
-      def update_event_payload
-        new_state = OddsFeed::Radar::EventStatusService.new.call(
-          event_id: event.id, data: event_status_payload
-        )
-        event.add_to_payload(state: new_state)
-      end
-
       def update_event_attributes
-        updates = { remote_updated_at: timestamp,
-                    status: event_status,
-                    end_at: event_end_time,
-                    active: event_active?,
-                    producer: ::Radar::Producer.find(input_data['product']) }
+        updates = {
+          remote_updated_at: timestamp,
+          status: event_status,
+          end_at: event_end_time,
+          active: event_active?,
+          producer: ::Radar::Producer.find(input_data['product']),
+          display_status: event_display_status,
+          home_score: event_home_score,
+          away_score: event_away_score,
+          time_in_seconds: event_time_in_seconds
+        }
 
         event.assign_attributes(updates)
       end
@@ -183,6 +181,29 @@ module OddsFeed
           8 => Event::POSTPONED,
           9 => Event::ABANDONED
         }.stringify_keys
+      end
+
+      def event_display_status
+        MatchStatusMappingService.new.call(
+          event_status_payload.fetch('match_status')
+        )
+      end
+
+      def event_home_score
+        event_status_payload['home_score'].to_i
+      end
+
+      def event_away_score
+        event_status_payload['away_score'].to_i
+      end
+
+      def event_time_in_seconds
+        return unless event_status_payload.key?('match_time')
+
+        match_time = event_status_payload.fetch('match_time')
+        minutes = match_time.to_i
+        seconds = match_time.split(':').second.to_i
+        (minutes.minutes + seconds.seconds).to_i
       end
 
       def timestamp

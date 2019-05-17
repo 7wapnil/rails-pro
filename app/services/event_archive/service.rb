@@ -18,7 +18,11 @@ module EventArchive
         title_name: @event.title.name,
         description: @event.name,
         start_at: @event.start_at,
-        payload: @event.payload
+        display_status: @event.display_status,
+        home_score: @event.home_score,
+        away_score: @event.away_score,
+        time_in_seconds: @event.time_in_seconds,
+        liveodds: @event.liveodds
       )
     end
 

@@ -13,7 +13,11 @@ class ArchivedEvent
   field :title_name, type: String
   field :description, type: String
   field :start_at, type: DateTime
-  field :payload, type: Hash
+  field :display_status, type: String
+  field :home_score, type: Integer
+  field :away_score, type: Integer
+  field :time_in_seconds, type: Integer
+  field :liveodds, type: String
 
   index({ external_id: 1 }, unique: true, name: 'external_id_index')
 end

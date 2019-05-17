@@ -11,7 +11,6 @@ FactoryBot.define do
     end_at                 { 1.hours.ago }
     remote_updated_at      { Time.zone.now }
     status                 { Event::NOT_STARTED }
-    payload                { {} }
 
     external_id { "sr:match:#{Faker::Number.number(10)}" }
 
@@ -22,12 +21,6 @@ FactoryBot.define do
       after :build do |model|
         model.title = FactoryBot.random_or_create :title
         model.event_scopes << FactoryBot.random_or_create(:event_scope)
-        model.add_to_payload(
-          state:
-            OddsFeed::Radar::EventStatusService.new.call(
-              event_id: Faker::Number.number(3), data: nil
-            )
-        )
       end
     end
 
@@ -42,7 +35,7 @@ FactoryBot.define do
     end
 
     trait :bookable do
-      payload { { 'liveodds': 'bookable' } }
+      liveodds { 'bookable' }
     end
 
     trait :inactive do

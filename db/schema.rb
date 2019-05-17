@@ -368,7 +368,6 @@ ActiveRecord::Schema.define(version: 2019_05_13_124856) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "external_id"
-    t.json "payload"
     t.datetime "remote_updated_at"
     t.boolean "traded_live", default: false
     t.string "status", default: "not_started"
@@ -376,6 +375,11 @@ ActiveRecord::Schema.define(version: 2019_05_13_124856) do
     t.boolean "visible", default: true
     t.boolean "active", default: false
     t.bigint "producer_id"
+    t.string "display_status"
+    t.integer "home_score"
+    t.integer "away_score"
+    t.integer "time_in_seconds"
+    t.string "liveodds"
     t.boolean "ready", default: false
     t.index ["active"], name: "index_events_on_active"
     t.index ["external_id"], name: "index_events_on_external_id", unique: true

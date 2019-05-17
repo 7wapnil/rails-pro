@@ -31,11 +31,11 @@ describe GraphQL, '#events' do
                 title: title, event_scopes: [tournament])
   end
 
-  let(:result_events) { result['data']['events'] }
+  let(:result_events) { result&.dig('data', 'events') }
   let(:result_event_ids) { result_events.map { |event| event['id'].to_i } }
   let(:result_event) do
     OpenStruct.new(
-      result_events.find { |event| event['id'].to_i == control_event.id }
+      result_events&.find { |event| event['id'].to_i == control_event.id }
     )
   end
 
@@ -389,82 +389,6 @@ describe GraphQL, '#events' do
       it 'value is UPCOMING' do
         expect(result_event.start_status).to eq Event::UPCOMING
       end
-    end
-  end
-
-  context 'with state' do
-    let(:control_id) { Faker::Number.number(5) }
-    let(:payload) do
-      {
-        state: { 'id' => control_id },
-        producer: {
-          origin: 'radar',
-          id: '3'
-        }
-      }
-    end
-
-    let(:control_event_traits) { %i[with_market upcoming] }
-
-    let(:result_state) { OpenStruct.new(result_event.state) }
-
-    let(:query) do
-      %({
-          events(
-            filter: { tournamentId: #{tournament.id} },
-            context: #{upcoming_unlimited_ctx}
-          ) {
-            id
-            state {
-              id
-              period_scores { id }
-            }
-          }
-      })
-    end
-
-    before do
-      control_event.payload = payload
-      control_event.save!
-    end
-
-    it 'returns valid state' do
-      ScopedEvent.create(event: control_event, event_scope: tournament)
-
-      expect(result_state.id).to eq(control_id)
-    end
-  end
-
-  context 'without state' do
-    let(:payload) do
-      {
-        producer: {
-          origin: 'radar',
-          id: '3'
-        }
-      }
-    end
-
-    let(:control_event_traits) { [:with_market] }
-
-    let(:query) do
-      %({
-          events(context: #{upcoming_ctx}) {
-            id
-            state {
-              id
-              period_scores { id }
-            }
-          }
-      })
-    end
-
-    before do
-      control_event.payload = payload
-    end
-
-    it "doesn't return state" do
-      expect(result_event.state).to be_nil
     end
   end
 
