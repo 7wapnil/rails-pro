@@ -146,16 +146,16 @@ describe CustomerBonuses::Create do
 
   context 'with de-facto expired active bonus' do
     let!(:expiring_bonus) do
-      create(:customer_bonus,
-        customer: customer,
-        original_bonus: bonus,
-        expires_at: 2.days.ago,
-        status: CustomerBonus::ACTIVE)
+      create(:customer_bonus, customer: customer,
+                              original_bonus: bonus,
+                              expires_at: 2.days.ago,
+                              status: CustomerBonus::ACTIVE)
     end
 
     before { subject }
 
     it 'creates a new customer bonus' do
+      byebug
       expect(customer.pending_bonus).to be_present
     end
 

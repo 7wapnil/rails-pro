@@ -51,6 +51,7 @@ module CustomerBonuses
 
     def new_customer_bonus_status
       return CustomerBonus::EXPIRED unless bonus.active?
+
       @status
     end
 
