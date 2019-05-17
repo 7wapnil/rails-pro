@@ -11,6 +11,8 @@ describe Mts::ValidationResponseHandler do
 
   describe '.call' do
     context 'rejected bet' do
+      let(:refund_double) { double }
+      let(:comment) { 'Bet failed external validation.' }
       let!(:bet) do
         create(:bet, :sent_to_external_validation, validation_ticket_id: '1')
       end
@@ -18,10 +20,25 @@ describe Mts::ValidationResponseHandler do
         %({"version":"2.1","result":{"status":"rejected","ticketId":"1"}})
       end
 
+      before do
+        allow(refund_double).to receive(:id)
+        allow(EntryRequests::RefundWorker)
+          .to receive(:perform_async).and_return(true)
+      end
+
       it 'changes bet status to rejected' do
         described_class.call(payload)
         bet.reload
         expect(bet.rejected?).to eq true
+      end
+
+      it 'creates refund entry request' do
+        expect(EntryRequests::Factories::Refund)
+          .to receive(:call)
+          .with(entry: bet.entry, comment: comment)
+          .and_return(refund_double)
+
+        described_class.call(payload)
       end
     end
 

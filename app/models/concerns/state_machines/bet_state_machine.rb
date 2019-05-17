@@ -37,6 +37,20 @@ module StateMachines
       won: WON = 'won'
     }.freeze
 
+    PENDING_STATUSES_MASK = [
+      SENT_TO_INTERNAL_VALIDATION,
+      VALIDATED_INTERNALLY,
+      SENT_TO_EXTERNAL_VALIDATION,
+      ACCEPTED
+    ].freeze
+
+    CANCELLED_STATUSES_MASK = [
+      PENDING_CANCELLATION,
+      PENDING_MANUAL_CANCELLATION,
+      CANCELLED,
+      CANCELLED_BY_SYSTEM
+    ].freeze
+
     included do
       enum status: BET_STATUSES
       enum settlement_status: BET_SETTLEMENT_STATUSES

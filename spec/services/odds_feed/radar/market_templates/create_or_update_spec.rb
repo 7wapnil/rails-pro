@@ -103,7 +103,7 @@ describe OddsFeed::Radar::MarketTemplates::CreateOrUpdate do
         'specifiers' => market_data['specifiers'],
         'attributes' => nil,
         'products' => %w[5],
-        'variants' => false
+        'variants' => true
       }
     end
 

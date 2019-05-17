@@ -1,8 +1,7 @@
 %table.table.entities
   %thead
     %tr
-      %th= sort_link filter.search, :id, t('attributes.bet_id'),
-                                    default_order: :asc
+      %th= sort_link filter.search, :id, t('attributes.bet_id'), default_order: :asc
       - unless excluded_columns.include?(:customer)
         %th= t('attributes.customer')
       %th= t('attributes.event')
@@ -23,22 +22,22 @@
         %tr{ id: "bet-#{bet.id}" }
           %td= link_to bet.id, bet
           - unless excluded_columns.include?(:customer)
-            %td= link_to bet.customer.username, bet.customer
-          %td= link_to bet.odd.market.event.name, bet.odd.market.event
-          %td= bet.odd.market.name
-          %td= bet.odd.name
+            %td= link_to bet.customer_username, bet.customer
+          %td= link_to bet.event_name, bet.event
+          %td= bet.market_name
+          %td= bet.odd_name
           %td= bet.odd_value
           %td
-            = number_with_precision bet.amount, precision: 2
-            = bet.currency.code
+            = bet.amount(human: true)
+            = bet.currency_code
             \/
-            = number_with_precision bet.base_currency_amount, precision: 2
+            = bet.base_currency_amount(human: true)
             = Currency::PRIMARY_CODE
           %td
-            = number_with_precision bet.winning_amount, precision: 2
-            = bet.currency.code
-          %td= l(bet.created_at, format: :long)
-          %td= status_badge(bet.status)
+            = bet.winning_amount(human: true)
+            = bet.currency_code
+          %td= bet.created_at(human: true)
+          %td= status_badge(bet.display_status)
           %td= settle_badge(bet.settlement_status)
           %td= bet.sport
           %td= bet.category

@@ -6,7 +6,7 @@ module OddsFeed
     class OddsChangeHandler < RadarMessageHandler
       def handle
         validate_payload!
-        return unless valid_type?
+        return unless valid?
 
         update_event!
         update_odds
@@ -22,12 +22,28 @@ module OddsFeed
         raise OddsFeed::InvalidMessageError, payload_err unless input_data
       end
 
+      def valid?
+        valid_type? && event_ready?
+      end
+
       def valid_type?
         return true if EventsManager::Entities::Event.type_match?(event_id)
 
         log_job_message(
           :warn,
           message: I18n.t('errors.messages.unsupported_event_type'),
+          event_id: event_id
+        )
+
+        false
+      end
+
+      def event_ready?
+        return true if event.ready?
+
+        log_job_message(
+          :info,
+          message: 'Event is not yet ready to be processed',
           event_id: event_id
         )
 

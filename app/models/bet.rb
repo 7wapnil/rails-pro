@@ -3,13 +3,6 @@
 class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include StateMachines::BetStateMachine
 
-  PENDING_STATUSES_MASK = [
-    ACCEPTED,
-    SENT_TO_EXTERNAL_VALIDATION,
-    SENT_TO_INTERNAL_VALIDATION,
-    VALIDATED_INTERNALLY
-  ].freeze
-
   belongs_to :customer
   belongs_to :odd
   belongs_to :currency
@@ -68,13 +61,16 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   delegate :market, to: :odd
 
-  scope :pending, -> { where(status: Bet::PENDING_STATUSES_MASK) }
   scope :sort_by_winning_amount_asc,
         -> { with_winning_amount.order('winning_amount') }
   scope :sort_by_winning_amount_desc,
         -> { with_winning_amount.order('winning_amount DESC') }
 
   class << self
+    def pending
+      where(status: StateMachines::BetStateMachine::PENDING_STATUSES_MASK)
+    end
+
     def from_regular_customers
       left_outer_joins(:customer).where(
         customers: { account_kind: Customer::REGULAR }

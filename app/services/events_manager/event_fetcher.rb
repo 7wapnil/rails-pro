@@ -16,6 +16,7 @@ module EventsManager
       log :info, message: 'Updated event', event_id: @external_id
 
       update_associations(event) if load_associations?
+      event.update!(ready: true)
 
       event
     end

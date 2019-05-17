@@ -158,6 +158,7 @@ en:
     max_amount: Max amount
     max_deposit_match: Max amount
     max_rollover_per_bet: Max rollover per bet
+    message: Message
     min_amount: Min amount
     min_deposit: Min deposit
     min_odds_per_bet: Min odds per bet
