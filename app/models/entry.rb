@@ -28,4 +28,8 @@ class Entry < ApplicationRecord
   validates :kind, inclusion: { in: kinds.keys }
 
   validates_with EntryAmountValidator
+
+  scope :recent, -> do
+    where('DATE(entries.created_at) = ?', Date.current.yesterday)
+  end
 end

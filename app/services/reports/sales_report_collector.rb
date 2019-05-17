@@ -2,8 +2,13 @@
 
 module Reports
   class SalesReportCollector < ApplicationService
-    def initialize(subject:)
+    AMOUNT_INITIAL_VALUE = 0
+    BONUS = :bonus
+    REAL_MONEY = :real_money
+
+    def initialize(subject:, target_currency:)
       @subject = subject
+      @target_currency = target_currency
     end
 
     def call
@@ -12,7 +17,7 @@ module Reports
 
     private
 
-    attr_reader :subject
+    attr_reader :subject, :target_currency
 
     def report_fields # rubocop:disable Metrics/MethodLength
       [
@@ -38,68 +43,76 @@ module Reports
     end
 
     def deposits_per_day
-      @deposits_per_day ||= subject
-                            .entries
-                            .deposit
-                            .where('DATE(entries.created_at) = ?',
-                                   Date.current.yesterday)
+      @deposits_per_day ||= subject.deposit_entries
     end
 
     def bets_per_day
-      @bets_per_day ||= subject
-                        .entries
-                        .bet
-                        .where('DATE(entries.created_at) = ?',
-                               Date.current.yesterday)
+      @bets_per_day ||= subject.bet_entries
     end
 
     def win_bets_per_day
-      @win_bets_per_day ||= subject
-                            .entries
-                            .win
-                            .where('DATE(entries.created_at) = ?',
-                                   Date.current.yesterday)
+      @win_bets_per_day ||= subject.win_bet_entries
     end
 
     def subject_currency
-      @subject_currency ||= subject.currencies.first
+      @subject_currency ||= subject.wallet.currency
     end
 
     def deposit_amount
       Exchanger::Converter.call(
-        deposits_per_day.sum(:amount), subject_currency.code
+        deposits_per_day.sum(&:amount), subject_currency, target_currency
       )
     end
 
     def stake_amount
       Exchanger::Converter.call(
-        bets_per_day.sum(:amount).abs, subject_currency.code
+        bets_per_day.sum(&:amount).abs,
+        subject_currency,
+        target_currency
       )
     end
 
     def deposit_bonus_converted
-      Exchanger::Converter.call(deposit_bonus, subject_currency.code)
+      Exchanger::Converter.call(
+        balances_calculation[BONUS],
+        subject_currency,
+        target_currency
+      )
     end
 
     def deposit_real_money_converted
-      Exchanger::Converter.call(deposit_real_money, subject_currency.code)
+      Exchanger::Converter.call(
+        balances_calculation[REAL_MONEY],
+        subject_currency,
+        target_currency
+      )
     end
 
-    def deposit_bonus
-      deposits_per_day.sum { |entry| entry.bonus_balance_entry&.amount || 0 }
+    def balances_calculation
+      return @balances_calculation if @balances_calculation
+
+      @balances_calculation = Hash.new(AMOUNT_INITIAL_VALUE)
+
+      deposits_per_day.each(&method(:iterate_balance_entries))
+
+      @balances_calculation
     end
 
-    def deposit_real_money
-      deposits_per_day.sum { |entry| entry.real_money_balance_entry.amount }
+    def iterate_balance_entries(entry)
+      entry.balance_entries.each(&method(:fill_hash_with_entries_amounts))
+    end
+
+    def fill_hash_with_entries_amounts(balance_entry)
+      @balances_calculation[balance_entry.kind] += balance_entry.amount
     end
 
     def gross_revenue
       Exchanger::Converter
-        .call(gross_revenue_amount, subject_currency.code)
+        .call(gross_revenue_amount, subject_currency, target_currency)
     end
 
     def gross_revenue_amount
-      bets_per_day.sum(:amount).abs - win_bets_per_day.sum(:amount)
+      bets_per_day.sum(&:amount).abs - win_bets_per_day.sum(&:amount)
     end
   end
 end

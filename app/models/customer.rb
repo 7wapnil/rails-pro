@@ -72,6 +72,26 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   accepts_nested_attributes_for :address
 
+  has_one :wallet, -> { order(:created_at) }
+
+  has_many :bet_entries,
+           -> { bet.recent },
+           through: :wallets,
+           source: :entries,
+           class_name: Entry.name
+
+  has_many :deposit_entries,
+           -> { deposit.recent },
+           through: :wallets,
+           source: :entries,
+           class_name: Entry.name
+
+  has_many :win_bet_entries,
+           -> { win.recent },
+           through: :wallets,
+           source: :entries,
+           class_name: Entry.name
+
   delegate :street_address,
            :zip_code,
            :country,
