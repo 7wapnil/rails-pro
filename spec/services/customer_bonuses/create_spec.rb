@@ -26,42 +26,7 @@ describe CustomerBonuses::Create do
     before { subject }
 
     it 'creates new activated bonus' do
-      expect(customer.reload.pending_bonus).not_to be_nil
-    end
-
-    it 'sets rollover_initial_value correctly' do
-      expect(customer.reload.pending_bonus.rollover_initial_value)
-        .to eq(amount * rollover_multiplier)
-    end
-  end
-
-  context 'adds money' do
-    let!(:entry_currency_rule) do
-      create(:entry_currency_rule, :bonus_change,
-             currency: wallet.currency,
-             min_amount: 0,
-             max_amount: 100)
-    end
-
-    let(:comment) do
-      "Bonus transaction: #{amount.to_f} #{wallet.currency} " \
-      "for #{wallet.customer} by #{initiator}."
-    end
-
-    let(:found_entry_request) do
-      EntryRequest.bonus_change.find_by(origin: wallet)
-    end
-    let(:found_entry) { found_entry_request.entry }
-
-    include_context 'asynchronous to synchronous'
-
-    it 'and creates entry request' do
-      expect { subject }.to change(EntryRequest, :count).by(1)
-    end
-
-    it 'and creates entry request with valid attributes' do
-      subject
-      expect(customer.reload.customer_bonus).to have_attributes(
+      expect(customer.reload.pending_bonus).to have_attributes(
         original_bonus_id: bonus.id,
         customer_id: customer.id,
         wallet_id: wallet.id,
@@ -76,12 +41,12 @@ describe CustomerBonuses::Create do
         min_deposit: bonus.min_deposit,
         valid_for_days: bonus.valid_for_days,
         percentage: bonus.percentage,
-        status: CustomerBonus::ACTIVE
+        status: CustomerBonus::INITIAL
       )
     end
 
     it 'activated bonus expires at the same time as original bonus' do
-      expect(customer.reload.customer_bonus.expires_at.to_s)
+      expect(customer.reload.pending_bonus.expires_at.to_s)
         .to eq(bonus.expires_at.to_s)
     end
   end
@@ -89,13 +54,6 @@ describe CustomerBonuses::Create do
   context 'when customer has an active bonus' do
     let!(:customer_bonus) do
       create(:customer_bonus, customer: customer, wallet: wallet)
-    end
-
-    # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
-    before do
-      allow_any_instance_of(CustomerBonus)
-        .to receive(:active?)
-        .and_return(true)
     end
 
     it 'retains previous customer bonus' do
@@ -153,13 +111,13 @@ describe CustomerBonuses::Create do
       expect { subject }.not_to raise_error
     end
 
-    it 'creates a bonus' do
+    it 'activates a bonus' do
       subject
-      expect(customer.pending_bonus).not_to be_nil
+      expect(customer.reload.pending_bonus).not_to be_nil
     end
   end
 
-  context 'activating a non-repeatable bonus after it expires' do
+  context 'creating a non-repeatable bonus after it expires' do
     before do
       bonus.update(repeatable: false)
       create(:customer_bonus,

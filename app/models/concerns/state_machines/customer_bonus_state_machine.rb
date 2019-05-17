@@ -30,12 +30,11 @@ module StateMachines
 
         event :activate do
           transitions from: :initial,
-                      to: :active,
-                      after: proc { |entry| update!(entry: entry) }
+                      to: :active
         end
 
         event :fail do
-          transitions from: :active,
+          transitions from: :initial,
                       to: :failed
         end
 

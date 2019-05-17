@@ -12,7 +12,7 @@ describe EntryRequests::Factories::Deposit do
   end
   let(:original_bonus) { create(:bonus, percentage: percentage) }
   let!(:customer_bonus) do
-    create(:customer_bonus,
+    create(:customer_bonus, :initial,
            customer: customer,
            percentage: percentage,
            wallet: wallet,
@@ -158,8 +158,8 @@ describe EntryRequests::Factories::Deposit do
 
     let(:message) do
       "Deposit #{amount} #{currency} real money " \
-      "and 0 #{customer.active_bonus.wallet.currency.code} bonus money " \
-      "(#{customer.active_bonus.code} bonus code) " \
+      "and 0 #{customer_bonus.wallet.currency.code} bonus money " \
+      "(#{customer_bonus.code} bonus code) " \
       "for #{customer} by #{admin}"
     end
 
@@ -178,8 +178,8 @@ describe EntryRequests::Factories::Deposit do
     let(:impersonated_by) {}
     let(:message) do
       "Deposit #{amount} #{currency} real money " \
-      "and 0 #{customer.active_bonus.wallet.currency.code} bonus money " \
-      "(#{customer.active_bonus.code} bonus code) " \
+      "and 0 #{customer_bonus.wallet.currency.code} bonus money " \
+      "(#{customer_bonus.code} bonus code) " \
       "for #{customer}"
     end
 

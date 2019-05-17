@@ -18,13 +18,6 @@ describe CustomerBonuses::CreateForm do
     context 'with an active bonus' do
       let!(:customer_bonus) { create(:customer_bonus, customer: customer) }
 
-      # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
-      before do
-        allow_any_instance_of(CustomerBonus)
-          .to receive(:active?)
-          .and_return(true)
-      end
-
       it 'does not create bonus' do
         expect do
           subject

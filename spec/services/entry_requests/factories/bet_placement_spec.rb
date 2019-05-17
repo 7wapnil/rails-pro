@@ -36,8 +36,6 @@ describe EntryRequests::Factories::BetPlacement do
   let!(:live_producer) { create(:liveodds_producer) }
 
   before do
-    # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
-    allow(customer_bonus).to receive(:active?).and_return(true)
     prematch_producer.healthy!
     create(
       :entry_currency_rule,

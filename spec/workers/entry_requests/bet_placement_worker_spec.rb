@@ -49,8 +49,6 @@ describe EntryRequests::BetPlacementWorker do
     let(:expected_real_balance) { 742.5 }
 
     before do
-      # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
-      allow(active_bonus).to receive(:active?).and_return(true)
       create(:entry_currency_rule,
              currency: currency,
              min_amount: 10,
@@ -87,7 +85,7 @@ describe EntryRequests::BetPlacementWorker do
       let(:expected_real_balance) { real_amount - bet_amount }
 
       before do
-        customer.customer_bonuses.destroy
+        customer.active_bonus.cancel!
         customer.reload
         bet.reload
         subject

@@ -70,7 +70,7 @@ module EntryRequests
       def default_comment
         "Deposit #{calculations[:real_money]} #{wallet.currency} real money " \
         "and #{calculations[:bonus] || 0} #{wallet.currency} bonus money " \
-        "(#{wallet.customer&.customer_bonus&.code || 'no'} bonus code) " \
+        "(#{wallet.customer&.pending_bonus&.code || 'no'} bonus code) " \
         "for #{wallet.customer}#{initiator_comment_suffix}"
       end
 
@@ -97,6 +97,7 @@ module EntryRequests
       rescue *DepositRequest::BUSINESS_ERRORS => error
         entry_request.register_failure!(error.message)
         customer_bonus&.fail!
+        customer_bonus&.destroy
       end
 
       def check_deposit_limit!

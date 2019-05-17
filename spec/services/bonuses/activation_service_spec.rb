@@ -84,13 +84,6 @@ describe Bonuses::ActivationService do
       create(:customer_bonus, customer: customer, wallet: wallet)
     end
 
-    # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
-    before do
-      allow_any_instance_of(CustomerBonus)
-        .to receive(:active?)
-        .and_return(true)
-    end
-
     it 'retains previous customer bonus' do
       expect do
         subject
@@ -118,7 +111,8 @@ describe Bonuses::ActivationService do
       create(:customer_bonus,
              customer: customer,
              original_bonus: bonus,
-             expires_at: 1.day.ago)
+             expires_at: 1.day.ago,
+             status: CustomerBonus::EXPIRED)
     end
 
     it 'does not raise an error' do
@@ -126,7 +120,7 @@ describe Bonuses::ActivationService do
     end
 
     it 'activates a bonus' do
-      expect(customer.reload.customer_bonus).not_to be_nil
+      expect(customer.reload.customer_bonuses).not_to be_empty
     end
   end
 
@@ -136,7 +130,8 @@ describe Bonuses::ActivationService do
       create(:customer_bonus,
              customer: customer,
              original_bonus: bonus,
-             expires_at: 1.day.ago)
+             expires_at: 1.day.ago,
+             status: CustomerBonus::EXPIRED)
     end
 
     it 'raises an error' do

@@ -12,7 +12,7 @@ describe EntryRequests::DepositService do
   end
   let(:original_bonus) { create(:bonus, percentage: percentage) }
   let(:customer_bonus) do
-    create(:customer_bonus,
+    create(:customer_bonus, :initial,
            customer: customer,
            percentage: percentage,
            wallet: wallet,
