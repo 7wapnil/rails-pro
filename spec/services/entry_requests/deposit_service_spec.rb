@@ -80,7 +80,6 @@ describe EntryRequests::DepositService do
       let(:bonus_amount) { amount * percentage / 100.0 }
     end
 
-
     it 'activates customer bonus' do
       # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
       allow(customer_bonus).to receive(:active?).and_return(true)
