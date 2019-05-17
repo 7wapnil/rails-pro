@@ -410,6 +410,7 @@ en:
       unexpected_customer_bonus: Unexpected customer bonus for bet
 
       mts:
+        internal_server_error: "Betting service is experiencing some issues now. Bet was not accepted."
         ticket_not_found: "Ticket not found for bet"
         inconsistent_bookmaker_code: "Inconsistent ticket bookmaker Code for bet"
         live_selections: "Ticket contains live selections for bet"

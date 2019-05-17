@@ -43,7 +43,7 @@ module OddsFeed
         unless supported_external_id?(id)
           log_job_message(:error, message: 'Event is not supported',
                                   event_id: id)
-          raise SilentJobRetryError
+          raise SilentRetryJobError
         end
 
         route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"
