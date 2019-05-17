@@ -48,7 +48,7 @@ module OddsFeed
       rescue ActiveRecord::RecordNotFound => e
         log_job_message(:error, message: e.message,
                                 external_id: @event_external_id)
-        raise SilentJobRetryError, e.message
+        raise ::SilentJobRetryError, e.message
       end
 
       def api_client
