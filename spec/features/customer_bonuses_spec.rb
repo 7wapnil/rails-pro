@@ -59,7 +59,7 @@ describe Customer, '#bonuses' do
     let!(:bonus_balance) { create(:balance, :bonus, wallet: wallet) }
 
     let(:found_entry_request) do
-      EntryRequest.bonus_change.find_by(origin: wallet)
+      EntryRequest.bonus_change.find_by(origin: bonus)
     end
 
     before do

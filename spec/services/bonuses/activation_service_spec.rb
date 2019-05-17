@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
-describe CustomerBonuses::Create do
+describe Bonuses::ActivationService do
   subject { described_class.call(params) }
 
   let(:params) do
     {
       wallet: wallet,
       bonus: bonus,
-      amount: amount
+      amount: amount,
+      initiator: initiator
     }
   end
 
@@ -15,25 +16,11 @@ describe CustomerBonuses::Create do
   let(:wallet) { create(:wallet, customer: customer) }
   let(:bonus) { create(:bonus, rollover_multiplier: rollover_multiplier) }
   let(:amount) { 100 }
+  let(:initiator) { create(:user) }
   let(:rollover_multiplier) { 5 }
   let(:bonus_value) { 50 }
   let(:calculations) { { bonus: bonus_value, real_money: 100 } }
   let(:rollover_value) { (amount * rollover_multiplier).to_d }
-
-  context 'when customer has no active bonus' do
-    include_context 'frozen_time'
-
-    before { subject }
-
-    it 'creates new activated bonus' do
-      expect(customer.reload.pending_bonus).not_to be_nil
-    end
-
-    it 'sets rollover_initial_value correctly' do
-      expect(customer.reload.pending_bonus.rollover_initial_value)
-        .to eq(amount * rollover_multiplier)
-    end
-  end
 
   context 'adds money' do
     let!(:entry_currency_rule) do
@@ -44,16 +31,21 @@ describe CustomerBonuses::Create do
     end
 
     let(:comment) do
-      "Bonus transaction: #{amount.to_f} #{wallet.currency} " \
+      "Bonus transaction: #{amount} #{wallet.currency} " \
       "for #{wallet.customer} by #{initiator}."
     end
 
+    let(:created_customer_bonus) { bonus.customer_bonuses.last }
     let(:found_entry_request) do
-      EntryRequest.bonus_change.find_by(origin: wallet)
+      EntryRequest.bonus_change.find_by(origin: created_customer_bonus)
     end
     let(:found_entry) { found_entry_request.entry }
 
     include_context 'asynchronous to synchronous'
+
+    it 'and creates customer bonus' do
+      expect { subject }.to change(CustomerBonus, :count).by(1)
+    end
 
     it 'and creates entry request' do
       expect { subject }.to change(EntryRequest, :count).by(1)
@@ -61,28 +53,29 @@ describe CustomerBonuses::Create do
 
     it 'and creates entry request with valid attributes' do
       subject
-      expect(customer.reload.customer_bonus).to have_attributes(
-        original_bonus_id: bonus.id,
-        customer_id: customer.id,
-        wallet_id: wallet.id,
-        rollover_balance: rollover_value,
-        rollover_initial_value: rollover_value,
-        code: bonus.code,
-        kind: bonus.kind,
-        rollover_multiplier: bonus.rollover_multiplier,
-        max_rollover_per_bet: bonus.max_rollover_per_bet,
-        max_deposit_match: bonus.max_deposit_match,
-        min_odds_per_bet: bonus.min_odds_per_bet,
-        min_deposit: bonus.min_deposit,
-        valid_for_days: bonus.valid_for_days,
-        percentage: bonus.percentage,
-        status: CustomerBonus::ACTIVE
+      expect(found_entry_request).to have_attributes(
+        status: EntryRequest::SUCCEEDED,
+        amount: amount.to_d,
+        mode: EntryRequest::INTERNAL,
+        initiator: initiator,
+        comment: comment,
+        origin: created_customer_bonus,
+        currency: wallet.currency,
+        customer: wallet.customer
       )
     end
 
-    it 'activated bonus expires at the same time as original bonus' do
-      expect(customer.reload.customer_bonus.expires_at.to_s)
-        .to eq(bonus.expires_at.to_s)
+    it 'and creates entry' do
+      expect { subject }.to change(Entry, :count).by(1)
+    end
+
+    it 'and creates entry with valid attributes' do
+      subject
+      expect(found_entry).to have_attributes(
+        amount: amount.to_d,
+        wallet: wallet,
+        origin: created_customer_bonus
+      )
     end
   end
 
@@ -120,42 +113,20 @@ describe CustomerBonuses::Create do
     end
   end
 
-  context 'rollovers' do
-    let(:customer_bonus) { wallet.customer_bonus }
-    let(:rollover) { bonus_value * rollover_multiplier }
-
-    before do
-      allow(BalanceCalculations::Deposit)
-        .to receive(:call)
-        .and_return(calculations)
-      subject
-    end
-
-    it 'assigns rollover_initial_value' do
-      expect(customer_bonus.rollover_initial_value).to eq(rollover)
-    end
-
-    it 'assigns rollover_balance' do
-      expect(customer_bonus.rollover_balance).to eq(rollover)
-    end
-  end
-
-  context 'creating a repeatable bonus after it expires' do
+  context 'activating a repeatable bonus after it expires' do
     before do
       create(:customer_bonus,
              customer: customer,
              original_bonus: bonus,
-             expires_at: 1.day.ago,
-             status: CustomerBonus::EXPIRED)
+             expires_at: 1.day.ago)
     end
 
     it 'does not raise an error' do
       expect { subject }.not_to raise_error
     end
 
-    it 'creates a bonus' do
-      subject
-      expect(customer.pending_bonus).not_to be_nil
+    it 'activates a bonus' do
+      expect(customer.reload.customer_bonus).not_to be_nil
     end
   end
 
@@ -165,8 +136,7 @@ describe CustomerBonuses::Create do
       create(:customer_bonus,
              customer: customer,
              original_bonus: bonus,
-             expires_at: 1.day.ago,
-             status: CustomerBonus::EXPIRED)
+             expires_at: 1.day.ago)
     end
 
     it 'raises an error' do

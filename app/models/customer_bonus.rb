@@ -6,13 +6,14 @@ class CustomerBonus < ApplicationRecord
 
   default_scope { order(:created_at) }
 
+  enum kind: Bonus.kinds
+
   belongs_to :customer
   belongs_to :wallet
-  belongs_to :original_bonus, class_name: 'Bonus', optional: true
+  belongs_to :original_bonus, class_name: Bonus.name
   belongs_to :entry, optional: true
   has_many :bets
-
-  enum kind: Bonus.kinds
+  has_one :deposit_request
 
   attr_reader :amount
 
@@ -30,9 +31,5 @@ class CustomerBonus < ApplicationRecord
 
   def self.customer_history(customer)
     with_deleted.where(customer: customer)
-  end
-
-  def activated?
-    entry_id.present?
   end
 end

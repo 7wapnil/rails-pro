@@ -8,6 +8,9 @@ describe Bonuses::ExpiringBonusesHandler do
   let(:expired_bonuses) do
     create_list(:customer_bonus, control_count, :expired)
   end
+  let(:expired_bonuses_with_balance) do
+    expired_bonuses.take(control_count - 2)
+  end
 
   let!(:actual_bonus_balances) do
     actual_bonuses.map do |bonus|
@@ -15,7 +18,7 @@ describe Bonuses::ExpiringBonusesHandler do
     end
   end
   let!(:expired_bonus_balances) do
-    expired_bonuses.take(control_count - 2).map do |bonus|
+    expired_bonuses_with_balance.map do |bonus|
       create(:balance, :bonus, wallet_id: bonus.wallet_id)
     end
   end
@@ -30,12 +33,16 @@ describe Bonuses::ExpiringBonusesHandler do
     end
   end
 
-  let(:control_balance) { expired_bonus_balances.sample }
-  let(:control_wallet) { control_balance.wallet }
+  let(:control_bonus) { expired_bonuses_with_balance.sample }
+  let(:control_wallet) { control_bonus.wallet }
+  let!(:control_balance) { control_wallet.bonus_balance }
+
   let(:control_entry_request) do
-    EntryRequest.bonus_change.find_by(origin: control_wallet)
+    EntryRequest.bonus_change.find_by(origin: control_bonus)
   end
-  let(:control_entry) { Entry.bonus_change.find_by(origin: control_wallet) }
+  let(:control_entry) do
+    Entry.bonus_change.find_by(origin: control_bonus)
+  end
 
   let(:comment) do
     "Bonus transaction: #{-control_balance.amount} " \

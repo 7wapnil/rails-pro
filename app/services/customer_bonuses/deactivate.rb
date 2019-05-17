@@ -43,8 +43,11 @@ module CustomerBonuses
     end
 
     def confiscate_bonus_money!
-      request = EntryRequests::Factories::BonusChange
-                .call(wallet: wallet, amount: -bonus_balance.amount)
+      request = EntryRequests::Factories::BonusChange.call(
+        customer_bonus: customer_bonus,
+        amount: -bonus_balance.amount
+      )
+
       EntryRequests::BonusChangeWorker.perform_async(request.id)
     end
 

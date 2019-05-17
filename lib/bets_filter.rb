@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class BetsFilter
   include DateIntervalFilters
 
@@ -36,6 +38,8 @@ class BetsFilter
   end
 
   def bets
-    search.result.order(id: :desc).page(@page)
+    BetDecorator.decorate_collection(
+      search.result.order(id: :desc).page(@page)
+    )
   end
 end

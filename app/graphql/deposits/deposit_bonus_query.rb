@@ -18,7 +18,7 @@ module Deposits
 
     def resolve(_obj, args)
       bonus = find_bonus!(args)
-      bonus_hash = BalanceCalculations::Deposit.call(bonus, args[:amount])
+      bonus_hash = BalanceCalculations::Deposit.call(args[:amount], bonus)
       CalculatedBonus.new(bonus_hash)
     end
 

@@ -10,20 +10,27 @@ describe EntryRequests::DepositService do
   let(:wallet) do
     create(:wallet, customer: customer, currency: currency, amount: 0.0)
   end
-  let(:entry_request) do
-    EntryRequests::Factories::Deposit.call(
-      wallet: wallet, amount: amount, mode: EntryRequest::SKRILL
-    )
-  end
-  let(:service_call) { described_class.call(entry_request: entry_request) }
-
-  before do
+  let(:original_bonus) { create(:bonus, percentage: percentage) }
+  let(:customer_bonus) do
     create(:customer_bonus,
            customer: customer,
            percentage: percentage,
            wallet: wallet,
            rollover_balance: 20,
-           rollover_multiplier: rollover_multiplier)
+           rollover_multiplier: rollover_multiplier,
+           original_bonus: original_bonus)
+  end
+  let(:entry_request) do
+    EntryRequests::Factories::Deposit.call(
+      wallet: wallet,
+      amount: amount,
+      customer_bonus: customer_bonus,
+      mode: EntryRequest::SKRILL
+    )
+  end
+  let(:service_call) { described_class.call(entry_request: entry_request) }
+
+  before do
     allow(EntryCurrencyRule).to receive(:find_by!) { rule }
     allow(Currency).to receive(:find_by!) { currency }
   end
@@ -48,8 +55,14 @@ describe EntryRequests::DepositService do
   end
 
   context "don't affect bonus balance" do
+    let(:deposit_limit) do
+      create(:deposit_limit, currency: wallet.currency,
+                             customer: customer,
+                             value: amount - 1)
+    end
+
     it 'when do not pass deposit limit' do
-      wallet.customer.active_bonus.update_attributes(min_deposit: amount + 1)
+      deposit_limit
       service_call
       wallet.reload
 
@@ -57,29 +70,25 @@ describe EntryRequests::DepositService do
     end
   end
 
-  it 'closes customer bonus if expired' do
-    bonus = wallet.customer_bonus
-    allow(bonus).to receive(:expired?).and_return(true)
-    service_call
-
-    expect(entry_request).to have_attributes(
-      status: EntryRequest::FAILED,
-      result: { 'message' => I18n.t('errors.messages.bonus_expired') }
-    )
-  end
-
   context 'with customer bonus' do
-    before do
-      service_call
-    end
+    let(:created_deposit_request) { entry_request.origin }
+
+    before { service_call }
 
     it_behaves_like 'entries splitting with bonus' do
       let(:real_money_amount) { 100 }
       let(:bonus_amount) { amount * percentage / 100.0 }
     end
 
-    it 'attaches entry to the customer bonus' do
-      expect(wallet.active_bonus.entry).to be_instance_of(Entry)
+
+    it 'activates customer bonus' do
+      # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
+      allow(customer_bonus).to receive(:active?).and_return(true)
+      expect(wallet.customer_bonus).to be_active
+    end
+
+    it 'creates deposit request with customer bonus assigned' do
+      expect(created_deposit_request.customer_bonus).to eq(customer_bonus)
     end
 
     it 'applies customer bonus only once' do
@@ -88,8 +97,9 @@ describe EntryRequests::DepositService do
   end
 
   context 'without customer bonus' do
+    let(:customer_bonus) {}
+
     before do
-      CustomerBonus.destroy_all
       wallet.reload
       service_call
     end

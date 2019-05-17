@@ -33,10 +33,9 @@ describe CustomerBonusesController, type: :controller do
         expect(CustomerBonuses::Create)
           .to have_received(:call)
           .with(wallet: wallet,
-                original_bonus: original_bonus,
+                bonus: original_bonus,
                 amount: amount,
-                update_wallet: true,
-                user: current_user)
+                status: CustomerBonus::ACTIVE)
       end
 
       it 'redirects to customer bonuses page' do

@@ -10,12 +10,11 @@ class CustomerBonusesController < ApplicationController
        only: :create
 
   def create
-    @customer_bonus = CustomerBonuses::Create.call(
+    @customer_bonus = Bonuses::ActivationService.call(
       wallet: @wallet,
-      original_bonus: @original_bonus,
+      bonus: @original_bonus,
       amount: payload_params[:amount],
-      update_wallet: true,
-      user: current_user
+      initiator: current_user
     )
 
     redirect_to bonuses_customer_path(@customer_bonus.customer),

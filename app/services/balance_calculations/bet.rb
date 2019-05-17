@@ -6,7 +6,6 @@ module BalanceCalculations
     MONEY_PRECISION = 2
 
     delegate :customer_bonus, to: :bet
-    delegate :active?, to: :customer_bonus, allow_nil: true, prefix: true
     delegate :real_money_balance, :bonus_balance, to: :wallet, allow_nil: true
 
     def initialize(bet:)
@@ -29,7 +28,7 @@ module BalanceCalculations
     end
 
     def ratio
-      return FULL_RATIO unless customer_bonus_active?
+      return FULL_RATIO unless customer_bonus&.active?
 
       RatioCalculator.call(
         real_money_amount: real_money_balance&.amount,

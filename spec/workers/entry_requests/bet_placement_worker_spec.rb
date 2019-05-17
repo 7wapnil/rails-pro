@@ -35,19 +35,22 @@ describe EntryRequests::BetPlacementWorker do
   end
 
   context 'bonus applying' do
+    let(:original_bonus) { create(:bonus, percentage: 25) }
     let!(:active_bonus) do
       create(:customer_bonus,
              customer: customer,
              wallet: wallet,
-             entry: create(:entry),
              rollover_balance: 10,
-             percentage: 25)
+             percentage: 25,
+             original_bonus: original_bonus)
     end
 
     let(:expected_bonus_balance) { 247.5 }
     let(:expected_real_balance) { 742.5 }
 
     before do
+      # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
+      allow(active_bonus).to receive(:active?).and_return(true)
       create(:entry_currency_rule,
              currency: currency,
              min_amount: 10,
@@ -86,6 +89,7 @@ describe EntryRequests::BetPlacementWorker do
       before do
         customer.customer_bonuses.destroy
         customer.reload
+        bet.reload
         subject
       end
 

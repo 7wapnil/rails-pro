@@ -17,12 +17,6 @@ describe CustomerBonus do
       expect(customer_bonus.ended_at).to eq(time_of_end)
     end
 
-    it '#activated?' do
-      customer_bonus = build(:customer_bonus, entry_id: 1)
-
-      expect(customer_bonus).to be_activated
-    end
-
     describe '#expired?' do
       it 'returns false for active bonus' do
         customer_bonus = create(:customer_bonus)
@@ -41,36 +35,6 @@ describe CustomerBonus do
           created_at: Time.zone.now - 2.days
         )
         expect(customer_bonus).to be_expired
-      end
-    end
-
-    xdescribe '#applied?' do
-      let(:customer_bonus) { build(:customer_bonus, rollover_balance: 12) }
-
-      it 'returns true when bonus is not expired and has rollover balance' do
-        allow(customer_bonus).to receive(:expired?).and_return(false)
-
-        expect(customer_bonus).to be_applied
-      end
-
-      it 'returns false when bonus expired' do
-        allow(customer_bonus).to receive(:expired?).and_return(true)
-
-        expect(customer_bonus).not_to be_applied
-      end
-
-      it 'returns false when bonus without rollover_balance' do
-        allow(customer_bonus).to receive(:expired?).and_return(false)
-        customer_bonus.rollover_balance = nil
-
-        expect(customer_bonus).not_to be_applied
-      end
-
-      it 'returns false when bonus is expired and without rollover_balance' do
-        allow(customer_bonus).to receive(:expired?).and_return(true)
-        customer_bonus.rollover_balance = nil
-
-        expect(customer_bonus).not_to be_applied
       end
     end
 

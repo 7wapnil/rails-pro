@@ -3,9 +3,10 @@
 module EntryRequests
   module Factories
     class Deposit < ApplicationService
-      def initialize(wallet:, amount:, **attributes)
+      def initialize(wallet:, amount:, customer_bonus: nil, **attributes)
         @wallet = wallet
         @amount = amount
+        @customer_bonus = customer_bonus
         @mode = attributes[:mode]
         @passed_initiator = attributes[:initiator]
         @passed_comment = attributes[:comment]
@@ -13,35 +14,30 @@ module EntryRequests
 
       def call
         create_entry_request!
-        check_deposit_limit!
         create_balance_request!
+        create_deposit_request!
+        validate_entry_request!
 
         entry_request
       end
 
       private
 
-      attr_reader :wallet, :amount, :passed_initiator, :mode,
-                  :passed_comment, :customer_bonus, :entry_request
+      attr_reader :wallet, :amount, :customer_bonus, :passed_initiator,
+                  :mode, :passed_comment, :entry_request
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
       end
 
       def entry_request_attributes
-        wallet_attributes.merge(
+        {
           status: EntryRequest::INITIAL,
           amount: amount_value,
           mode: mode,
           kind: EntryRequest::DEPOSIT,
           initiator: initiator,
-          comment: comment
-        )
-      end
-
-      def wallet_attributes
-        {
-          origin:   wallet,
+          comment: comment,
           currency: wallet.currency,
           customer: wallet.customer
         }
@@ -52,18 +48,15 @@ module EntryRequests
       end
 
       def calculations
-        @calculations ||=
-          BalanceCalculations::Deposit
-          .call(customer_bonus, amount)
-          .tap { |amounts| amounts[:bonus] = 0 unless eligible_for_bonus? }
+        @calculations ||= BalanceCalculations::Deposit.call(
+          amount,
+          customer_bonus&.original_bonus,
+          no_bonus: bonus_not_applied?
+        )
       end
 
-      def eligible_for_bonus?
-        customer_bonus.present? &&
-          !customer_bonus.activated? &&
-          customer_bonus.min_deposit &&
-          customer_bonus.active? &&
-          amount >= customer_bonus.min_deposit
+      def bonus_not_applied?
+        customer_bonus&.active?.present?
       end
 
       def initiator
@@ -77,7 +70,7 @@ module EntryRequests
       def default_comment
         "Deposit #{calculations[:real_money]} #{wallet.currency} real money " \
         "and #{calculations[:bonus] || 0} #{wallet.currency} bonus money " \
-        "(#{customer_bonus&.code || 'no'} bonus code) " \
+        "(#{wallet.customer&.customer_bonus&.code || 'no'} bonus code) " \
         "for #{wallet.customer}#{initiator_comment_suffix}"
       end
 
@@ -85,19 +78,34 @@ module EntryRequests
         " by #{passed_initiator}" if passed_initiator
       end
 
-      def check_deposit_limit!
-        # TODO : implement validation logic
-        deposit_limit = DepositLimit.find_by(customer: wallet.customer,
-                                             currency: wallet.currency)
-
-        return true unless deposit_limit
-
-        entry_request
-          .register_failure!(I18n.t('errors.messages.deposit_limit_present'))
-      end
-
       def create_balance_request!
         BalanceRequestBuilders::Deposit.call(entry_request, calculations)
+      end
+
+      def create_deposit_request!
+        DepositRequest.create!(
+          entry_request: entry_request,
+          customer_bonus: customer_bonus
+        )
+      end
+
+      def validate_entry_request!
+        verify_deposit_attempts!
+        check_deposit_limit!
+
+        true
+      rescue *DepositRequest::BUSINESS_ERRORS => error
+        entry_request.register_failure!(error.message)
+        customer_bonus&.fail!
+      end
+
+      def check_deposit_limit!
+        ::Deposits::DepositLimitCheckService
+          .call(wallet.customer, amount, wallet.currency)
+      end
+
+      def verify_deposit_attempts!
+        ::Deposits::VerifyDepositAttempt.call(wallet.customer)
       end
     end
   end
