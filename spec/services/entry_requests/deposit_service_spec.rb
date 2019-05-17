@@ -80,12 +80,6 @@ describe EntryRequests::DepositService do
       let(:bonus_amount) { amount * percentage / 100.0 }
     end
 
-    it 'activates customer bonus' do
-      # TODO: REFACTOR AFTER CUSTOMER BONUS IMPLEMENTATION
-      allow(customer_bonus).to receive(:active?).and_return(true)
-      expect(wallet.customer_bonus).to be_active
-    end
-
     it 'creates deposit request with customer bonus assigned' do
       expect(created_deposit_request.customer_bonus).to eq(customer_bonus)
     end
