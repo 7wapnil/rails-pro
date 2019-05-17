@@ -44,10 +44,15 @@ module CustomerBonuses
         valid_for_days: bonus.valid_for_days,
         percentage: bonus.percentage,
         expires_at: bonus.expires_at,
-        status: status
+        status: new_customer_bonus_status
       }
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+
+    def new_customer_bonus_status
+      return CustomerBonus::EXPIRED unless bonus.active?
+      @status
+    end
 
     def rollover_value
       @rollover_value ||= bonus_amount * bonus.rollover_multiplier
@@ -58,11 +63,18 @@ module CustomerBonuses
     end
 
     def check_bonus_expiration!
-      return true unless customer.active_bonus&.expired?
+      return true unless active_bonus_expired?
 
-      CustomerBonuses::Deactivate.call(bonus: customer_bonus, action: :expire!)
-      failure_message = I18n.t('errors.messages.bonus_expired')
-      entry_request.register_failure!(failure_message)
+      CustomerBonuses::Deactivate.call(
+        bonus: customer.active_bonus,
+        action: CustomerBonuses::Deactivate::EXPIRE
+      )
+    end
+
+    def active_bonus_expired?
+      return false unless customer.active_bonus
+
+      customer.active_bonus.expires_at < Time.zone.now
     end
   end
 end

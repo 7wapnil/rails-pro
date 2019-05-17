@@ -25,7 +25,10 @@ module EntryRequests
     end
 
     def remove_bonus!
-      CustomerBonuses::Deactivate.call(bonus: active_bonus, action: :cancel!)
+      CustomerBonuses::Deactivate.call(
+        bonus: active_bonus,
+        action: CustomerBonuses::Deactivate::CANCEL
+      )
     end
 
     def authorize_entry!

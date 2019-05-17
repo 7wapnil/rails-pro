@@ -123,7 +123,6 @@ describe CustomerBonuses::Create do
       create(:customer_bonus,
              customer: customer,
              original_bonus: bonus,
-             expires_at: 1.day.ago,
              status: CustomerBonus::EXPIRED)
     end
 
@@ -133,6 +132,36 @@ describe CustomerBonuses::Create do
       )
       expect { subject }
         .to raise_error(CustomerBonuses::ActivationError, expected_message)
+    end
+  end
+
+  context 'somehow creating an expired bonus' do
+    let(:bonus) { create(:bonus, expires_at: 1.day.ago) }
+
+    it 'creates an expired CustomerBonus' do
+      subject
+      expect(subject).to be_expired
+    end
+  end
+
+  context 'with de-facto expired active bonus' do
+    let!(:expiring_bonus) do
+      create(:customer_bonus,
+        customer: customer,
+        original_bonus: bonus,
+        expires_at: 2.days.ago,
+        status: CustomerBonus::ACTIVE)
+    end
+
+    before { subject }
+
+    it 'creates a new customer bonus' do
+      expect(customer.pending_bonus).to be_present
+    end
+
+    it 'expires the old customer bonus' do
+      expiring_bonus
+      expect(expiring_bonus.reload).to be_expired
     end
   end
 end

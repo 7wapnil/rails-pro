@@ -77,9 +77,7 @@ describe Customer, '#bonuses' do
     end
 
     it 'status customer bonus changed' do
-      bonus.reload
-
-      expect(bonus).to be_expired
+      expect(bonus.reload).to be_cancelled
     end
 
     it 'creates bonus change entry request' do

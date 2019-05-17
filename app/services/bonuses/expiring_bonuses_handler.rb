@@ -12,7 +12,10 @@ module Bonuses
                                       .where(expiration_reason: nil)
                                       .where(ended_at_sql_clause)
       expiring_bonuses.find_each(batch_size: BATCH_SIZE) do |bonus|
-        CustomerBonuses::Deactivate.call(bonus: bonus, action: :expire!)
+        CustomerBonuses::Deactivate.call(
+          bonus: bonus,
+          action: CustomerBonuses::Deactivate::EXPIRE
+        )
       end
     end
 

@@ -33,7 +33,7 @@ class CustomerBonusesController < ApplicationController
   def destroy
     CustomerBonuses::Deactivate.call(
       bonus: @customer_bonus,
-      action: :cancel!,
+      action: CustomerBonuses::Deactivate::CANCEL,
       user: current_user
     )
     redirect_to bonuses_customer_path(@customer_bonus.customer)

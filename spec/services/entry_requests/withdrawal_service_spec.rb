@@ -52,7 +52,7 @@ describe EntryRequests::WithdrawalService do
     it 'calls Bonus Deactivate service' do
       expect(CustomerBonuses::Deactivate).to receive(:call).with(
         bonus: customer.active_bonus,
-        action: :cancel!
+        action: CustomerBonuses::Deactivate::CANCEL
       )
 
       subject.call

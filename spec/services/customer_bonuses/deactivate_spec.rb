@@ -19,7 +19,10 @@ describe CustomerBonuses::Deactivate do
 
     before do
       allow(EntryRequests::BonusChangeWorker).to receive(:perform_async)
-      described_class.call(bonus: customer_bonus, action: :cancel!)
+      described_class.call(
+        bonus: customer_bonus,
+        action: CustomerBonuses::Deactivate::CANCEL
+      )
     end
 
     it 'removes customer bonus' do

@@ -28,11 +28,11 @@ module EntryRequests
     end
 
     def success
-      customer_bonus&.activate! if customer_bonus
+      customer_bonus&.activate!
     end
 
     def failure
-      customer_bonus&.fail! if customer_bonus
+      customer_bonus&.fail!
     end
   end
 end

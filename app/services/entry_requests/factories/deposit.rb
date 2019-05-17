@@ -97,7 +97,6 @@ module EntryRequests
       rescue *DepositRequest::BUSINESS_ERRORS => error
         entry_request.register_failure!(error.message)
         customer_bonus&.fail!
-        customer_bonus&.destroy
       end
 
       def check_deposit_limit!

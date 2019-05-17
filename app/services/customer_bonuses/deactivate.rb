@@ -5,6 +5,11 @@ module CustomerBonuses
     delegate :wallet, to: :customer_bonus, allow_nil: true
     delegate :bonus_balance, to: :wallet, allow_nil: true
 
+    ACTIONS = [
+      EXPIRE = :expire!,
+      CANCEL = :cancel!
+    ].freeze
+
     def initialize(bonus:, action:, **params)
       @customer_bonus = bonus
       @action = action
@@ -30,7 +35,7 @@ module CustomerBonuses
     private
 
     def validate_action!
-      valid = %i[cancel! expire!].include?(action)
+      valid = ACTIONS.include?(action)
       error_message = 'Action can be either :cancel! or :expire!'
       raise ArgumentError, error_message unless valid
     end

@@ -248,9 +248,7 @@ describe EntryRequests::Factories::Deposit do
 
       it 'becomes closed' do
         service_call
-        expect(customer_bonus).to have_attributes(
-          deleted_at: Time.zone.now
-        )
+        expect(customer_bonus).to be_failed?
       end
     end
   end
