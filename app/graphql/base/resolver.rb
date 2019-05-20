@@ -1,6 +1,20 @@
+# frozen_string_literal: true
+
 module Base
   class Resolver < GraphQL::Function
+    include Decoratable
+
     attr_reader :current_customer
+
+    class << self
+      def decorator_enabled?
+        @decorator_class.present?
+      end
+
+      def pagination_enabled?
+        type.to_s.match?(/Pagination$/)
+      end
+    end
 
     def auth_protected?
       true

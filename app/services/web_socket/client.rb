@@ -39,7 +39,7 @@ module WebSocket
 
     def trigger_bet_update(bet)
       trigger(SubscriptionFields::BET_UPDATED,
-              bet,
+              bet.decorate,
               { id: bet.id },
               bet.customer_id)
     end
