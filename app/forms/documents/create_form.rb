@@ -4,18 +4,17 @@ module Documents
   class CreateForm
     include ActiveModel::Model
 
-    MAX_ATTACHMENT_SIZE = 2.megabytes
+    MAX_ATTACHMENT_SIZE = 2.megabytes.freeze
+    ALLOWED_FORMATS = %w[image/jpeg
+                         image/png
+                         image/jpg
+                         application/pdf].freeze
 
     attr_accessor :document
 
-    validate :document_size
-
-    private
-
-    def document_size
-      return if document.size < MAX_ATTACHMENT_SIZE
-
-      errors.add(:file_size, I18n.t('errors.messages.document_size_limit'))
-    end
+    validates :document, presence: true
+    validates :document,
+              file_size: { less_than_or_equal_to: MAX_ATTACHMENT_SIZE },
+              file_content_type: { allow: ALLOWED_FORMATS }
   end
 end
