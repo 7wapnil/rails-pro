@@ -66,22 +66,19 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
            inverse_of: :customer
 
   has_one :address, autosave: true, dependent: :destroy
-  has_one :customer_bonus, dependent: :destroy
-
-  delegate :street_address,
-           :zip_code,
-           :country,
-           :state,
-           :city,
-           to: :address, allow_nil: true, prefix: true
+  has_many :customer_bonuses, dependent: :destroy
+  has_one :active_bonus, -> { active }, class_name: CustomerBonus.name
+  has_one :pending_bonus, -> { initial }, class_name: CustomerBonus.name
 
   accepts_nested_attributes_for :address
+
   delegate :street_address,
            :zip_code,
            :country,
            :state,
            :city,
            to: :address, allow_nil: true, prefix: true
+
   # Devise Validatable module creates all needed
   # validations for a user email and password.
 
@@ -134,10 +131,6 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   def deposit_limit
     DepositLimit.find_or_initialize_by(customer: self)
-  end
-
-  def active_bonus
-    customer_bonus if customer_bonus&.activated? && customer_bonus&.applied?
   end
 
   def deposit_attempts

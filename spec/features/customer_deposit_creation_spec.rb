@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe 'creates deposit via entry request form' do
   let(:customer) { create(:customer) }
   let(:page_path) { account_management_customer_path(customer) }
@@ -35,19 +37,10 @@ describe 'creates deposit via entry request form' do
       end
     end
 
-    it 'creates 2 entries requests' do
-      click_on 'Confirm'
-      bonus_amount = (percentage / 100.0) * amount
-
-      expect(entries_amounts).to match_array([amount, bonus_amount])
-    end
-
-    it 'closes customer bonus when customer bonus is expired' do
-      customer_bonus.update_attributes(created_at: 1.month.ago,
-                                       valid_for_days: 2)
+    it 'creates only RM balance entry requests' do
       click_on 'Confirm'
 
-      expect(customer_bonus.reload).to be_expired_by_date
+      expect(entries_amounts).to match_array([amount])
     end
   end
 

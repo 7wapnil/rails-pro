@@ -12,15 +12,19 @@ FactoryBot.define do
     valid_for_days       { 60 }
     created_at           { Time.zone.now }
     deleted_at           { nil }
-    expiration_reason    { nil }
     rollover_balance     { rand(100..1000) }
-    rollover_initial_value { rand(100..1000) }
+    rollover_initial_value { rollover_balance }
+    status                 { CustomerBonus::ACTIVE }
 
     sequence(:code) { |n| "FOOBAR#{n}" }
 
     customer
     wallet
-    association :original_bonus, factory: :bonus
+    association :original_bonus, factory: :bonus, strategy: :build
+
+    trait :initial do
+      status { CustomerBonus::INITIAL }
+    end
 
     trait :applied do
       deleted_at {}
@@ -29,12 +33,9 @@ FactoryBot.define do
       rollover_initial_value { rollover_balance }
     end
 
-    trait :activated do
-      entry { create(:entry) }
-    end
-
     trait :expired do
       created_at { (valid_for_days + 1).days.ago }
+      status { CustomerBonus::EXPIRED }
     end
   end
 end

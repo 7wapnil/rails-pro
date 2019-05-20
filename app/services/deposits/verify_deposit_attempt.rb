@@ -21,8 +21,8 @@ module Deposits
     end
 
     def attempts_exceeded_error!
-      msg = I18n.t('errors.messages.deposit_attempts_exceeded')
-      raise DepositAttemptError, msg
+      raise DepositAttemptError,
+            I18n.t('errors.messages.deposit_attempts_exceeded')
     end
   end
 end

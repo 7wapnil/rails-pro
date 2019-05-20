@@ -29,8 +29,8 @@ describe BalanceCalculations::Bet do
     end
   end
 
-  context 'with non-applied customer bonus' do
-    let(:customer_bonus) { create(:customer_bonus, rollover_balance: nil) }
+  context 'with inactive customer bonus' do
+    let(:customer_bonus) { nil }
 
     it 'calculates real amount' do
       expect(service_call_response).to eq(real_money: -amount, bonus: 0)

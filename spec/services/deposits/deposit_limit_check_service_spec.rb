@@ -48,7 +48,7 @@ describe Deposits::DepositLimitCheckService do
       }
     end
 
-    let(:business_error) { described_class::BUSINESS_EXCEPTION }
+    let(:business_error) { Deposits::DepositLimitRestrictionError }
 
     context 'when wallet has no deposit limits' do
       let(:another_customer) { build(:customer) }

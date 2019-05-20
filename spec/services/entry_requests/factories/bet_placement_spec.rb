@@ -14,7 +14,7 @@ describe EntryRequests::Factories::BetPlacement do
   let(:impersonated_by) { create(:customer) }
   let(:wallet) { create(:wallet, :brick, currency: currency) }
   let(:currency) { create(:currency) }
-  let(:customer_bonus) { create(:customer_bonus, :applied) }
+  let(:customer_bonus) { create(:customer_bonus) }
   let(:market) { create(:event, :with_market, :upcoming).markets.sample }
 
   let(:bonus_balance) { create(:balance, :bonus, wallet: wallet) }
@@ -62,7 +62,7 @@ describe EntryRequests::Factories::BetPlacement do
 
   context 'with impersonated person' do
     let(:message) do
-      "Withdrawal #{bet.amount} #{currency} for #{bet.customer} " \
+      "Bet placed - #{bet.amount} #{currency} for #{bet.customer} " \
       "by #{impersonated_by}"
     end
 
@@ -74,7 +74,7 @@ describe EntryRequests::Factories::BetPlacement do
   context 'without impersonated person' do
     let(:impersonated_by) {}
     let(:message) do
-      "Withdrawal #{bet.amount} #{currency} for #{bet.customer}"
+      "Bet placed - #{bet.amount} #{currency} for #{bet.customer}"
     end
 
     it 'does not mention him in comment' do
@@ -86,10 +86,10 @@ describe EntryRequests::Factories::BetPlacement do
     end
   end
 
-  context 'with customer bonus not applied' do
+  context 'with customer bonus not activated' do
     before do
       allow_any_instance_of(CustomerBonus)
-        .to receive(:applied?)
+        .to receive(:active?)
         .and_return(false)
     end
 

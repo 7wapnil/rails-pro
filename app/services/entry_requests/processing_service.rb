@@ -15,7 +15,7 @@ module EntryRequests
     attr_reader :entry_request, :entry
 
     def authorize_entry_request!
-      @entry = WalletEntry::AuthorizationService.call(entry_request)
+      WalletEntry::AuthorizationService.call(entry_request)
     end
   end
 end

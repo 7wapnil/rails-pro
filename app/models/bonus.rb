@@ -34,4 +34,8 @@ class Bonus < ApplicationRecord
   has_many :customer_bonuses, foreign_key: :original_bonus_id
 
   scope :active, -> { where('bonuses.expires_at > ?', Time.zone.now) }
+
+  def active?
+    expires_at > Time.zone.now
+  end
 end

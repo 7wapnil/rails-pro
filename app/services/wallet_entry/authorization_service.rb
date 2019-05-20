@@ -56,7 +56,8 @@ module WalletEntry
     def create_entry!
       @entry = Entry.create!(
         wallet_id: wallet.id,
-        origin: request.origin,
+        origin_type: request.origin_type,
+        origin_id: request.origin_id,
         entry_request: request,
         kind: request.kind,
         amount: amount,

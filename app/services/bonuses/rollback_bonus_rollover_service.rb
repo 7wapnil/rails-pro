@@ -14,6 +14,8 @@ module Bonuses
 
     attr_reader :bet
 
+    delegate :customer_bonus, to: :bet
+
     def recalculate_rollover!
       return if bet.odd_value < customer_bonus.min_odds_per_bet
 
@@ -21,10 +23,6 @@ module Bonuses
         balance = customer_bonus.rollover_balance
         customer_bonus.update!(rollover_balance: balance + rollover_amount)
       end
-    end
-
-    def customer_bonus
-      @customer_bonus ||= bet.customer_bonus
     end
 
     def rollover_amount

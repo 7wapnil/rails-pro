@@ -10,12 +10,11 @@ class CustomerBonusesController < ApplicationController
        only: :create
 
   def create
-    @customer_bonus = CustomerBonuses::Create.call(
+    @customer_bonus = Bonuses::ActivationService.call(
       wallet: @wallet,
-      original_bonus: @original_bonus,
+      bonus: @original_bonus,
       amount: payload_params[:amount],
-      update_wallet: true,
-      user: current_user
+      initiator: current_user
     )
 
     redirect_to bonuses_customer_path(@customer_bonus.customer),
@@ -32,9 +31,9 @@ class CustomerBonusesController < ApplicationController
   end
 
   def destroy
-    Bonuses::Cancel.call(
+    CustomerBonuses::Deactivate.call(
       bonus: @customer_bonus,
-      reason: CustomerBonus::MANUAL_CANCEL,
+      action: CustomerBonuses::Deactivate::CANCEL,
       user: current_user
     )
     redirect_to bonuses_customer_path(@customer_bonus.customer)
