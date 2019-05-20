@@ -31,7 +31,7 @@ module OddsFeed
 
           msg = 'Odd template not found'
           log_job_message(:error, message: msg, external_id: external_id)
-          raise SilentJobRetryError
+          raise SilentRetryJobError
         end
 
         private
@@ -48,7 +48,7 @@ module OddsFeed
 
           msg = 'Player not found'
           log_job_message(:error, message: msg, external_id: external_id)
-          raise SilentJobRetryError
+          raise SilentRetryJobError
         end
 
         def find_odd_template(external_id)

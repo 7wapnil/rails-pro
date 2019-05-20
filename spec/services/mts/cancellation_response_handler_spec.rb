@@ -25,7 +25,7 @@ describe Mts::CancellationResponseHandler do
     let(:refund_entry_request) { bet.refund_request }
 
     context 'successful cancellation' do
-      let(:status_code) { Mts::CancellationResponseHandler::SUCCESSFUL_CODE }
+      let(:status_code) { Mts::Codes::SUCCESSFUL_CODE }
 
       it 'changes bet status' do
         subject_call
@@ -49,8 +49,7 @@ describe Mts::CancellationResponseHandler do
 
     context 'unsuccessful cancellation' do
       let(:status_code) do
-        Mts::CancellationResponseHandler::UNSUCCESSFUL_RESPONSE_STATUSES
-          .keys.sample
+        Mts::Codes::CANCELLATION_ERROR_CODES.keys.sample
       end
 
       it 'changes bet status' do
@@ -81,7 +80,7 @@ describe Mts::CancellationResponseHandler do
       end
 
       let(:error_message) { I18n.t('errors.messages.nonexistent_bet') }
-      let(:status_code) { Mts::CancellationResponseHandler::SUCCESSFUL_CODE }
+      let(:status_code) { Mts::Codes::SUCCESSFUL_CODE }
       let!(:bet) do
         create(:bet,
                :sent_to_external_validation,
