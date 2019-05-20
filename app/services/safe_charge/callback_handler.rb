@@ -23,14 +23,12 @@ module SafeCharge
     end
 
     def back_flow
-      entry_request.failed!
+      fail_deposit_request!
       Deposits::CallbackUrl::BACK
     end
 
     def fail_flow
-      return Deposits::CallbackUrl::ERROR if entry_request.failed?
-
-      entry_request.failed!
+      fail_deposit_request!
       Deposits::CallbackUrl::ERROR
     end
 
@@ -53,6 +51,14 @@ module SafeCharge
 
     def success_context?
       @context == Deposits::CallbackUrl::SUCCESS
+    end
+
+    private
+
+    def fail_deposit_request!
+      deposit_request = DepositRequest.find_by(entry_request: entry_request)
+      entry_request.failed!
+      deposit_request.customer_bonus&.fail!
     end
   end
 end
