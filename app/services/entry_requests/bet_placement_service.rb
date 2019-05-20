@@ -14,7 +14,7 @@ module EntryRequests
     def call
       bet.send_to_internal_validation!
 
-      return unless validate
+      return notify_betslip_about_failure unless validate
 
       bet.finish_internal_validation_successfully! do
         bet.send_to_external_validation!
@@ -60,6 +60,10 @@ module EntryRequests
     def zero_amount!
       raise Bets::PlacementError,
             I18n.t('errors.messages.real_money_blank_amount')
+    end
+
+    def notify_betslip_about_failure
+      ::Bets::NotificationWorker.perform_async(bet.id)
     end
   end
 end

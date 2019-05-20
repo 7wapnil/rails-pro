@@ -49,6 +49,7 @@ describe EntryRequests::BetPlacementService do
   before do
     create(:currency, :primary)
 
+    allow(WebSocket::Client.instance).to receive(:trigger_bet_update)
     allow_any_instance_of(Mts::ValidationMessagePublisherWorker)
       .to receive(:perform)
     prematch_producer.healthy!
@@ -176,16 +177,24 @@ describe EntryRequests::BetPlacementService do
     let(:error_message) { I18n.t('errors.messages.real_money_blank_amount') }
     let(:subject_result) { subject.call }
 
-    before do
-      entry_request.amount = 0
+    before { entry_request.amount = 0 }
+
+    context 'on failure' do
+      include_context 'asynchronous to synchronous'
+
+      it 'notifies betslip' do
+        expect(WebSocket::Client.instance).to receive(:trigger_bet_update)
+        subject_result
+      end
+    end
+
+    it 'service does not proceed after internal validation' do
+      expect(bet).not_to receive(:finish_internal_validation_successfully!)
       subject_result
     end
 
-    it 'service returns nothing' do
-      expect(subject_result).to be_nil
-    end
-
     it 'bet is failed' do
+      subject_result
       expect(bet).to have_attributes(
         status: StateMachines::BetStateMachine::FAILED,
         message: error_message
@@ -193,6 +202,7 @@ describe EntryRequests::BetPlacementService do
     end
 
     it 'entry request is failed' do
+      subject_result
       expect(entry_request).to have_attributes(
         status: EntryRequest::FAILED,
         result: { 'message' => error_message }
@@ -207,11 +217,21 @@ describe EntryRequests::BetPlacementService do
 
     before { entry_request.failed! }
 
-    it 'returns falsey result' do
-      expect(subject.call).to be_falsey
+    context 'on failure' do
+      include_context 'asynchronous to synchronous'
+
+      it 'notifies betslip' do
+        expect(WebSocket::Client.instance).to receive(:trigger_bet_update)
+        subject.call
+      end
     end
 
-    it 'does not proceed' do
+    it 'service does not proceed after internal validation' do
+      expect(bet).not_to receive(:finish_internal_validation_successfully!)
+      subject.call
+    end
+
+    it 'does not proceed updating wallets' do
       subject.call
       expect(WalletEntry::AuthorizationService).not_to receive(:call)
     end

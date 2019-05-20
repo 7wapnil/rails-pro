@@ -381,7 +381,7 @@ en:
       entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
       provider_disconnected: Provider is disconnected
       market_suspended: Bet market is suspended
-      not_negative: "cannot be negative"
+      amount_not_negative: "%{subject} amount cannot beсome negative. Current amount: %{current_amount}, new amount: %{new_amount}."
       wrong_login_credentials: Wrong username, email or password
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
       account_transition: "can't bet changed from '%{from}' to '%{to}'"
