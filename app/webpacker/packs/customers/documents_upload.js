@@ -1,3 +1,4 @@
+const maxFileSize = 2097152;
 
 const initDocumentsUpload = () => {
   $('input[type=file]').on('change', (e) => {
@@ -7,9 +8,11 @@ const initDocumentsUpload = () => {
       $(`[data-target=${name}]`).text(files[0].name)
     }
 
-    if (files[0].size > 2097152) {
-      alert('File size exceeds maximum limit!')
-      this.value = ''
+    if (files[0].size > maxFileSize) {
+      e.preventDefault();
+      alert('File size exceeds maximum limit!');
+      e.target.value = '';
+      $('[type=submit]').prop('disabled', true)
     }
   })
 

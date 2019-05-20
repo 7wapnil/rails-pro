@@ -107,15 +107,11 @@ class CustomersController < ApplicationController
   end
 
   def upload_documents
-    flash[:file_errors] = {}
+    result = Customers::VerificationDocuments::BulkCreate.call(
+      params: documents_from_params, customer: customer
+    )
 
-    documents_from_params.each do |kind, file|
-      result = Customers::VerificationDocuments::Create.call(
-        kind: kind, file: file, customer: customer
-      )
-
-      flash[:file_errors].merge!(result[:errors]) unless result[:success]
-    end
+    flash[:file_errors] = result[:errors] unless result[:success]
 
     redirect_to documents_customer_path(customer)
   end
