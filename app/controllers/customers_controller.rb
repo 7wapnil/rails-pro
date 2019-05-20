@@ -67,12 +67,12 @@ class CustomersController < ApplicationController
 
   def bonuses
     @history = CustomerBonus.customer_history(customer)
-    @current_bonus = customer.customer_bonus
-    @active_bonuses = Bonus.active
-    @new_bonus = CustomerBonus.new(
+    @customer_bonus = customer.active_bonus
+    @customer_bonus ||= CustomerBonus.new(
       customer: customer,
       wallet: customer.wallets.primary.take
     )
+    @active_bonuses = Bonus.active
   end
 
   def notes

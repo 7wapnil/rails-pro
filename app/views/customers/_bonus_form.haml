@@ -6,7 +6,7 @@
   = javascript_pack_tag 'customers/bonuses', 'data-turbolinks-track': 'reload'
 
 = card header: t(:activate_instance, instance: t('entities.bonus')) do
-  = simple_form_for new_bonus do |f|
+  = simple_form_for customer_bonus do |f|
     .row
       .col-4
         = f.input :original_bonus_id,
@@ -56,6 +56,5 @@
                     disabled: true
 
     = f.submit t(:confirm),
-               class: 'btn btn-outline-dark',
-               disabled: current_bonus && !current_bonus.expired?
+               class: 'btn btn-outline-dark'
   #bonus-data{ data: { bonuses: active_bonuses.to_json } }

@@ -35,13 +35,14 @@ describe EntryRequests::BetPlacementWorker do
   end
 
   context 'bonus applying' do
+    let(:original_bonus) { create(:bonus, percentage: 25) }
     let!(:active_bonus) do
       create(:customer_bonus,
              customer: customer,
              wallet: wallet,
-             entry: create(:entry),
              rollover_balance: 10,
-             percentage: 25)
+             percentage: 25,
+             original_bonus: original_bonus)
     end
 
     let(:expected_bonus_balance) { 247.5 }
@@ -84,8 +85,9 @@ describe EntryRequests::BetPlacementWorker do
       let(:expected_real_balance) { real_amount - bet_amount }
 
       before do
-        customer.customer_bonus.destroy
+        customer.active_bonus.cancel!
         customer.reload
+        bet.reload
         subject
       end
 

@@ -49,7 +49,7 @@ module EntryRequests
       end
 
       def comment
-        "Withdrawal #{bet.amount} #{bet.currency} " \
+        "Bet placed - #{bet.amount} #{bet.currency} " \
         "for #{bet.customer}#{initiator_comment_suffix}"
       end
 

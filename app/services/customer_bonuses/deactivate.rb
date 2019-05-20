@@ -1,13 +1,18 @@
 # frozen_string_literal: true
 
-module Bonuses
-  class Cancel < ApplicationService
+module CustomerBonuses
+  class Deactivate < ApplicationService
     delegate :wallet, to: :customer_bonus, allow_nil: true
     delegate :bonus_balance, to: :wallet, allow_nil: true
 
-    def initialize(bonus:, reason:, **params)
+    ACTIONS = [
+      EXPIRE = :expire!,
+      CANCEL = :cancel!
+    ].freeze
+
+    def initialize(bonus:, action:, **params)
       @customer_bonus = bonus
-      @reason = reason
+      @action = action
       @user = params[:user]
     end
 
@@ -15,7 +20,7 @@ module Bonuses
       return unless customer_bonus
       return customer_bonus if customer_bonus.deleted_at
 
-      validate!
+      validate_action!
 
       deactivate_bonus!
       confiscate_bonus_money! if positive_bonus_balance?
@@ -25,24 +30,31 @@ module Bonuses
 
     protected
 
-    attr_accessor :customer_bonus, :reason, :user
+    attr_accessor :customer_bonus, :action, :user
 
     private
 
-    def validate!
-      raise ArgumentError, 'Expiration reason expected!' unless reason
+    def validate_action!
+      valid = ACTIONS.include?(action)
+      error_message = 'Action can be either :cancel! or :expire!'
+      raise ArgumentError, error_message unless valid
     end
 
     def deactivate_bonus!
+      return unless customer_bonus.active?
+
       customer_bonus.transaction do
-        customer_bonus.update!(expiration_reason: reason)
+        customer_bonus.send(action)
         customer_bonus.destroy!
       end
     end
 
     def confiscate_bonus_money!
-      request = EntryRequests::Factories::BonusChange
-                .call(wallet: wallet, amount: -bonus_balance.amount)
+      request = EntryRequests::Factories::BonusChange.call(
+        customer_bonus: customer_bonus,
+        amount: -bonus_balance.amount
+      )
+
       EntryRequests::BonusChangeWorker.perform_async(request.id)
     end
 

@@ -3,8 +3,10 @@
 module EntryRequests
   module Factories
     class BonusChange < ApplicationService
-      def initialize(wallet:, amount:, **params)
-        @wallet = wallet
+      delegate :wallet, to: :customer_bonus
+
+      def initialize(customer_bonus:, amount:, **params)
+        @customer_bonus = customer_bonus
         @amount = amount
         @initiator = params[:initiator]
       end
@@ -18,7 +20,7 @@ module EntryRequests
 
       private
 
-      attr_reader :wallet, :amount, :initiator, :entry_request
+      attr_reader :customer_bonus, :amount, :initiator, :entry_request
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
@@ -31,7 +33,7 @@ module EntryRequests
           kind: EntryRequest::BONUS_CHANGE,
           initiator: initiator,
           comment: comment,
-          origin: wallet,
+          origin: customer_bonus,
           currency: wallet.currency,
           customer: wallet.customer
         }

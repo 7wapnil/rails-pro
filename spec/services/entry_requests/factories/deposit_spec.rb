@@ -10,22 +10,24 @@ describe EntryRequests::Factories::Deposit do
   let(:wallet) do
     create(:wallet, customer: customer, currency: currency, amount: 0)
   end
+  let(:original_bonus) { create(:bonus, percentage: percentage) }
+  let!(:customer_bonus) do
+    create(:customer_bonus, :initial,
+           customer: customer,
+           percentage: percentage,
+           wallet: wallet,
+           rollover_balance: 20,
+           rollover_multiplier: rollover_multiplier,
+           original_bonus: original_bonus)
+  end
 
   let(:service_call) do
     described_class.call(
       wallet: wallet,
       amount: amount,
+      customer_bonus: customer_bonus,
       mode: EntryRequest::SKRILL
     )
-  end
-
-  let!(:customer_bonus) do
-    create(:customer_bonus,
-           customer: customer,
-           percentage: percentage,
-           wallet: wallet,
-           rollover_balance: 20,
-           rollover_multiplier: rollover_multiplier)
   end
 
   before do
@@ -54,6 +56,8 @@ describe EntryRequests::Factories::Deposit do
   end
 
   context 'without customer bonus' do
+    let(:customer_bonus) {}
+
     before do
       allow(BalanceRequestBuilders::Deposit)
         .to receive(:call)
@@ -75,7 +79,7 @@ describe EntryRequests::Factories::Deposit do
     let(:total_amount) { amount + bonus }
     let(:wallet_attributes) do
       {
-        origin:   wallet,
+        origin:   kind_of(DepositRequest),
         currency: wallet.currency,
         customer: wallet.customer
       }
@@ -105,18 +109,27 @@ describe EntryRequests::Factories::Deposit do
     end
 
     let(:service_call) do
-      described_class.call(wallet: wallet, amount: amount, **attributes)
+      described_class.call(
+        wallet: wallet,
+        amount: amount,
+        customer_bonus: customer_bonus,
+        **attributes
+      )
     end
 
     before do
       allow(BalanceCalculations::Deposit)
         .to receive(:call)
-        .with(customer_bonus, amount)
+        .with(amount, original_bonus, no_bonus: false)
         .and_return(real_money: amount, bonus: bonus)
     end
 
     it 'creates entry request' do
       expect { service_call }.to change(EntryRequest, :count).by(1)
+    end
+
+    it 'creates deposit request' do
+      expect { service_call }.to change(DepositRequest, :count).by(1)
     end
 
     it 'returns entry request with deposit attributes' do
@@ -125,6 +138,10 @@ describe EntryRequests::Factories::Deposit do
 
     it 'returns entry request with wallet attributes' do
       expect(service_call).to have_attributes(wallet_attributes)
+    end
+
+    it 'returns deposit request with assigned customer bonus' do
+      expect(service_call.origin.customer_bonus).to eq(customer_bonus)
     end
   end
 
@@ -141,8 +158,8 @@ describe EntryRequests::Factories::Deposit do
 
     let(:message) do
       "Deposit #{amount} #{currency} real money " \
-      "and 0 #{customer.customer_bonus.wallet.currency.code} bonus money " \
-      "(#{customer.customer_bonus.code} bonus code) " \
+      "and 0 #{customer_bonus.wallet.currency.code} bonus money " \
+      "(#{customer_bonus.code} bonus code) " \
       "for #{customer} by #{admin}"
     end
 
@@ -161,8 +178,8 @@ describe EntryRequests::Factories::Deposit do
     let(:impersonated_by) {}
     let(:message) do
       "Deposit #{amount} #{currency} real money " \
-      "and 0 #{customer.customer_bonus.wallet.currency.code} bonus money " \
-      "(#{customer.customer_bonus.code} bonus code) " \
+      "and 0 #{customer_bonus.wallet.currency.code} bonus money " \
+      "(#{customer_bonus.code} bonus code) " \
       "for #{customer}"
     end
 
@@ -187,34 +204,40 @@ describe EntryRequests::Factories::Deposit do
     end
   end
 
-  context 'when customer has deposit limit' do
-    let!(:deposit_limit) do
-      create(:deposit_limit, customer: customer, currency: currency)
+  context 'when customer failed a lot of deposit attempts' do
+    let!(:deposit_attempts) do
+      create_list(
+        :entry_request,
+        Deposits::VerifyDepositAttempt::MAX_DEPOSIT_ATTEMPTS,
+        :deposit,
+        customer: customer,
+        created_at: 2.hours.ago
+      )
     end
 
     it 'fails created empty request' do
       expect(service_call).to have_attributes(
         status: EntryRequest::FAILED,
         result: {
-          'message' => I18n.t('errors.messages.deposit_limit_present')
+          'message' => I18n.t('errors.messages.deposit_attempts_exceeded')
         }
       )
     end
   end
 
-  context 'when customer bonus is expired' do
-    let!(:customer_bonus) do
-      create(:customer_bonus,
-             customer: customer,
-             wallet: wallet,
-             percentage: percentage,
-             created_at: 1.year.ago)
+  context 'when customer over-used a deposit limit' do
+    let!(:deposit_limit) do
+      create(:deposit_limit, customer: customer,
+                             currency: currency,
+                             value: amount - 1)
     end
 
     it 'fails created empty request' do
       expect(service_call).to have_attributes(
         status: EntryRequest::FAILED,
-        result: { 'message' => I18n.t('errors.messages.bonus_expired') }
+        result: {
+          'message' => I18n.t('errors.messages.deposit_limit_exceeded')
+        }
       )
     end
 
@@ -225,10 +248,7 @@ describe EntryRequests::Factories::Deposit do
 
       it 'becomes closed' do
         service_call
-        expect(customer_bonus).to have_attributes(
-          expiration_reason: 'expired_by_date',
-          deleted_at: Time.zone.now
-        )
+        expect(customer_bonus).to be_failed
       end
     end
   end
@@ -237,7 +257,7 @@ describe EntryRequests::Factories::Deposit do
     context 'accepted' do
       before do
         allow(customer_bonus)
-          .to receive(:activated?)
+          .to receive(:active?)
           .and_return(true)
       end
 
@@ -248,7 +268,7 @@ describe EntryRequests::Factories::Deposit do
 
     context 'without min deposit' do
       before do
-        allow(customer_bonus)
+        allow(original_bonus)
           .to receive(:min_deposit)
           .and_return(nil)
       end
@@ -258,21 +278,9 @@ describe EntryRequests::Factories::Deposit do
       end
     end
 
-    context 'applied?' do
-      before do
-        allow(customer_bonus)
-          .to receive(:applied?)
-          .and_return(false)
-      end
-
-      it 'ignores bonus in amount calculation' do
-        expect(service_call.amount).to eq(amount)
-      end
-    end
-
     context 'amount less than min deposit' do
       before do
-        allow(customer_bonus)
+        allow(original_bonus)
           .to receive(:min_deposit)
           .and_return(amount + 1)
       end

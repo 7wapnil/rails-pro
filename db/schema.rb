@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_13_124856) do
+ActiveRecord::Schema.define(version: 2019_05_20_092210) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -196,10 +196,9 @@ ActiveRecord::Schema.define(version: 2019_05_13_124856) do
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "expiration_reason"
     t.decimal "rollover_balance", precision: 8, scale: 2
     t.decimal "rollover_initial_value", precision: 8, scale: 2
-    t.integer "entry_id"
+    t.string "status", default: "initial", null: false
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["deleted_at"], name: "index_customer_bonuses_on_deleted_at"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -285,6 +284,13 @@ ActiveRecord::Schema.define(version: 2019_05_13_124856) do
     t.decimal "value"
     t.index ["currency_id"], name: "index_deposit_limits_on_currency_id"
     t.index ["customer_id"], name: "index_deposit_limits_on_customer_id"
+  end
+
+  create_table "deposit_requests", force: :cascade do |t|
+    t.bigint "customer_bonus_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_bonus_id"], name: "index_deposit_requests_on_customer_bonus_id"
   end
 
   create_table "entries", force: :cascade do |t|
@@ -554,6 +560,7 @@ ActiveRecord::Schema.define(version: 2019_05_13_124856) do
   add_foreign_key "customer_statistics", "customers"
   add_foreign_key "deposit_limits", "currencies"
   add_foreign_key "deposit_limits", "customers"
+  add_foreign_key "deposit_requests", "customer_bonuses"
   add_foreign_key "entries", "entry_requests"
   add_foreign_key "entries", "wallets"
   add_foreign_key "entry_currency_rules", "currencies"

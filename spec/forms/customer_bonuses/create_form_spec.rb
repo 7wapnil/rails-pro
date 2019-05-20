@@ -5,9 +5,7 @@ describe CustomerBonuses::CreateForm do
     subject { described_class.new(subject: customer_bonus).submit! }
 
     let(:customer) { create(:customer) }
-    let(:customer_bonus) do
-      build(:customer_bonus, :applied, :activated, customer: customer)
-    end
+    let(:customer_bonus) { build(:customer_bonus, customer: customer) }
 
     context 'without an active bonus' do
       before { subject }
@@ -18,14 +16,13 @@ describe CustomerBonuses::CreateForm do
     end
 
     context 'with an active bonus' do
-      before do
-        create(:customer_bonus, :applied, :activated, customer: customer)
-      end
+      let!(:customer_bonus) { create(:customer_bonus, customer: customer) }
 
       it 'does not create bonus' do
-        subject
-      rescue CustomerBonuses::ActivationError
-        expect(customer_bonus).not_to be_persisted
+        expect do
+          subject
+        rescue CustomerBonuses::ActivationError
+        end.not_to change(CustomerBonus, :count)
       end
 
       it 'raises an error' do

@@ -30,9 +30,9 @@ describe GraphQL, '#wallets' do
         .to include(
           'id' => customer_bonuses.first.id.to_s,
           'code' => customer_bonuses.first.code,
-          'rollover_balance' => customer_bonuses.first.rollover_balance,
-          'rollover_initial_value' => rollover_initial_value,
-          'status' => customer_bonuses.first.status,
+          'rollover_balance' => customer_bonuses.first.rollover_balance.to_d,
+          'rollover_initial_value' => rollover_initial_value.to_d,
+          'status' => CustomerBonus::ACTIVE,
           'expires_at' => control_date
         )
     end
