@@ -25,7 +25,7 @@ module CustomerBonuses
     end
 
     def ensure_no_active_bonus
-      return unless customer&.reload&.active_bonus
+      return unless customer&.active_bonus
 
       errors.add(:active_bonus,
                  I18n.t('errors.messages.customer_has_active_bonus'))
