@@ -150,7 +150,7 @@ describe CustomerBonuses::Create do
     end
 
     it 'creates a bonus' do
-      expect { subject }.to change { CustomerBonus.count }
+      expect { subject }.to change(CustomerBonus, :count)
     end
   end
 

@@ -14,7 +14,7 @@ module StateMachines
     }.freeze
 
     DEFAULT_STATUS = INITIAL
-    USED_STATUSES = [CANCELLED, COMPLETED, EXPIRED]
+    USED_STATUSES = [CANCELLED, COMPLETED, EXPIRED].freeze
 
     included do
       enum status: STATUSES
