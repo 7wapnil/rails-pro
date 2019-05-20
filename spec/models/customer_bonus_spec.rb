@@ -13,7 +13,7 @@ describe CustomerBonus do
     describe '.customer_history' do
       let!(:customer) { create(:customer) }
       let!(:expired_customer_bonus) do
-        create(:customer_bonus, customer: customer, deleted_at: Time.zone.now)
+        create(:customer_bonus, customer: customer)
       end
       let!(:active_customer_bonus) do
         create(:customer_bonus, customer: customer)

@@ -26,7 +26,7 @@ describe CustomerBonuses::Deactivate do
     end
 
     it 'removes customer bonus' do
-      expect(customer_bonus.deleted_at).not_to be_nil
+      expect(customer_bonus.deleted_at).to be_nil
     end
 
     it 'creates bonus change entry request' do

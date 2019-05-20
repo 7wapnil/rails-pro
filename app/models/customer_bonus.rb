@@ -22,6 +22,6 @@ class CustomerBonus < ApplicationRecord
   end
 
   def self.customer_history(customer)
-    with_deleted.where(customer: customer)
+    where(customer: customer)
   end
 end

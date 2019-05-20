@@ -13,7 +13,8 @@ module StateMachines
       expired: EXPIRED = 'expired'
     }.freeze
 
-    DEFAULT_STATUS = ACTIVE
+    DEFAULT_STATUS = INITIAL
+    USED_STATUSES = [CANCELLED, COMPLETED, EXPIRED]
 
     included do
       enum status: STATUSES
@@ -21,7 +22,7 @@ module StateMachines
       include AASM
 
       aasm column: :status, enum: true do
-        state :initial
+        state :initial, initial: true
         state :failed
         state :active
         state :cancelled
