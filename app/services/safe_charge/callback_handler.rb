@@ -53,8 +53,6 @@ module SafeCharge
       @context == Deposits::CallbackUrl::SUCCESS
     end
 
-    private
-
     def fail_deposit_request!
       deposit_request = DepositRequest.find_by(entry_request: entry_request)
       entry_request.failed!
