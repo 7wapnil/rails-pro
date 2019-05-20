@@ -6,6 +6,11 @@ const initDocumentsUpload = () => {
       const name = $(e.target).attr('name')
       $(`[data-target=${name}]`).text(files[0].name)
     }
+
+    if (files[0].size > 2097152) {
+      alert('File size exceeds maximum limit!')
+      this.value = ''
+    }
   })
 
   $('.upload-form').on('submit', () => {
