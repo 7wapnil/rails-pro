@@ -46,9 +46,22 @@ module OddsFeed
           player = event.players.detect { |p| p.external_id == external_id }
           return player.full_name if player
 
-          msg = 'Player not found'
-          log_job_message(:error, message: msg, external_id: external_id)
-          raise SilentRetryJobError
+          player = radar_get_missing_player(external_id)
+          player.full_name
+        end
+
+        def radar_get_missing_player(player_id)
+          msg = 'Player not found. Trying to fetch from external service'
+          log_job_message(:info, message: msg, external_id: player_id)
+
+          player_params = OddsFeed::Radar::Client
+                          .new
+                          .player_profile(player_id)
+
+          Player.create(
+            name: player_params[:name],
+            external_id: player_params[:external_id]
+          )
         end
 
         def find_odd_template(external_id)
