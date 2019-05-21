@@ -10,6 +10,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
     data['odds_change']['odds']['market']
   end
   let(:event) { create(:event, :bookable, external_id: 'sr:match:1234') }
+  let(:connection_double) { double }
 
   before do
     payload = {
@@ -40,6 +41,14 @@ describe OddsFeed::Radar::MarketGenerator::Service do
     allow(OddsFeed::Radar::Entities::PlayerLoader)
       .to receive(:call)
       .and_return(Faker::Name.name)
+
+    allow(OddsFeed::Radar::Client)
+      .to receive(:new)
+      .and_return(connection_double)
+
+    allow(connection_double)
+      .to receive(:player_profile)
+      .and_return(true)
   end
 
   context 'market with outcomes' do

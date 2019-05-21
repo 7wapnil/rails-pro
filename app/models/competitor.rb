@@ -8,4 +8,6 @@ class Competitor < ApplicationRecord
 
   has_many :competitor_players, dependent: :delete_all
   has_many :players, through: :competitor_players
+  has_many :event_competitors
+  has_many :events, through: :event_competitors
 end
