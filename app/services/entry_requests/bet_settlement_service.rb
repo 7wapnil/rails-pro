@@ -14,8 +14,13 @@ module EntryRequests
       return handle_unexpected_bet! unless bet.settled?
 
       ::WalletEntry::AuthorizationService.call(entry_request)
-      recalculate_bonus_rollover
-      complete_bonus if bet.customer_bonus&.rollover_balance&.negative?
+      
+      return unless bet.customer_bonus
+
+      bet.customer_bonus.with_lock do
+        recalculate_bonus_rollover
+        complete_bonus if bet.customer_bonus&.rollover_balance&.negative?
+      end
     end
 
     private
