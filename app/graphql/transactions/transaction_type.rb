@@ -3,17 +3,17 @@ module Transactions
     name 'Transactions'
 
     field :id, !types.ID
-    field :customer_id, types.ID
+    field :customerId, types.ID
     field :status, types.String
     field :mode, types.String
     field :currencyCode, types.String,
           resolve: ->(obj, _args, _ctx) { obj.currency.code }
     field :amount, types.Float
     field :comment, types.String
-    field :created_at, types.String do
+    field :createdAt, types.String do
       resolve ->(obj, _args, _ctx) { obj.created_at.strftime('%e.%m.%y') }
     end
-    field :updated_at, types.String do
+    field :updatedAt, types.String do
       resolve ->(obj, _args, _ctx) { obj.updated_at.strftime('%e.%m.%y') }
     end
   end

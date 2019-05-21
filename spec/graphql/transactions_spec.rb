@@ -38,7 +38,7 @@ describe GraphQL, '#transactions' do
           }
           collection {
             id
-            customer_id
+            customerId
             status
             mode
             currencyCode
