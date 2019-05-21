@@ -45,7 +45,6 @@ module CustomerBonuses
 
       customer_bonus.transaction do
         customer_bonus.send(action)
-        customer_bonus.destroy!
       end
     end
 

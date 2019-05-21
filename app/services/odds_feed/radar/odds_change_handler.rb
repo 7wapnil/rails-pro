@@ -190,17 +190,18 @@ module OddsFeed
       end
 
       def event_home_score
-        event_status_payload['home_score'].to_i
+        event_status_payload['home_score']&.to_i
       end
 
       def event_away_score
-        event_status_payload['away_score'].to_i
+        event_status_payload['away_score']&.to_i
       end
 
       def event_time_in_seconds
-        return unless event_status_payload.key?('match_time')
+        match_time = event_status_payload.dig('clock', 'match_time')
 
-        match_time = event_status_payload.fetch('match_time')
+        return unless match_time
+
         minutes = match_time.to_i
         seconds = match_time.split(':').second.to_i
         (minutes.minutes + seconds.seconds).to_i

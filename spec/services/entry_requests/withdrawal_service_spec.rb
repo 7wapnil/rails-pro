@@ -62,7 +62,7 @@ describe EntryRequests::WithdrawalService do
       subject.call
       customer.reload
 
-      expect(customer.customer_bonuses).to be_empty
+      expect(customer.customer_bonuses).not_to be_empty
     end
   end
 

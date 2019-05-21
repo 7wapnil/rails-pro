@@ -210,7 +210,9 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def score
-    "#{home_score.to_i}:#{away_score.to_i}"
+    return unless home_score && away_score
+
+    "#{home_score}:#{away_score}"
   end
 
   def bookable?
