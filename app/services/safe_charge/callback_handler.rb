@@ -55,7 +55,7 @@ module SafeCharge
 
     def fail_deposit_request!
       entry_request.failed!
-      deposit_request = DepositRequest.find_by(entry_request: entry_request)
+      deposit_request = entry_request.origin
       deposit_request&.customer_bonus&.fail!
     end
   end
