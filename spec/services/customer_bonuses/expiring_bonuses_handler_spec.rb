@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Bonuses::ExpiringBonusesHandler do
+describe CustomerBonuses::ExpiringBonusesHandler do
   subject { described_class.call }
 
   let(:control_count) { rand(3..5) }

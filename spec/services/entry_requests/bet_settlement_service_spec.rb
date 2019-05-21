@@ -50,4 +50,32 @@ describe EntryRequests::BetSettlementService do
       expect(WalletEntry::AuthorizationService).not_to receive(:call)
     end
   end
+
+  context 'with positive rollover' do
+    before { allow(CustomerBonuses::Complete).to receive(:call) }
+
+    let(:bet) { create(:bet) }
+    let(:customer_bonus) do
+      create(:customer_bonus, rollover_initial_value: 100_000)
+    end
+
+    it 'does not call CustomerBonuses::Complete' do
+      subject
+      expect(CustomerBonuses::Complete).not_to have_received(:call)
+    end
+  end
+
+  context 'with negative rollover' do
+    before { allow(CustomerBonuses::Complete).to receive(:call) }
+
+    let(:bet) { create(:bet) }
+    let(:customer_bonus) do
+      create(:customer_bonus, rollover_initial_value: -100_000)
+    end
+
+    it 'calls CustomerBonuses::Complete' do
+      subject
+      expect(CustomerBonuses::Complete).not_to have_received(:call)
+    end
+  end
 end

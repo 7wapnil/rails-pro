@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Bonuses::RollbackBonusRolloverService do
+describe CustomerBonuses::RollbackBonusRolloverService do
   subject { described_class.call(bet: bet) }
 
   let(:bet) do

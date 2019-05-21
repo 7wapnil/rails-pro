@@ -5,7 +5,7 @@ module Scheduled
     sidekiq_options queue: 'expired_bonuses', lock: :until_executed
 
     def perform
-      Bonuses::ExpiringBonusesHandler.call
+      CustomerBonuses::ExpiringBonusesHandler.call
     end
   end
 end

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Bonuses
+module CustomerBonuses
   class ExpiringBonusesHandler < ApplicationService
     BATCH_SIZE = 200
     PRELOAD_OPTIONS = {

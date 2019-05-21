@@ -86,7 +86,7 @@ module OddsFeed
 
         unexpected_customer_bonus(bet) if unexpected_customer_bonus?(bet)
 
-        Bonuses::RollbackBonusRolloverService.call(bet: bet)
+        CustomerBonuses::RollbackBonusRolloverService.call(bet: bet)
       end
 
       def unexpected_customer_bonus(bet)

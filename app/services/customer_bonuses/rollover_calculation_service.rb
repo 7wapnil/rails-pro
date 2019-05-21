@@ -1,15 +1,16 @@
 # fronzen_string_literal: true
 
-module Bonuses
+module CustomerBonuses
   class RolloverCalculationService < ApplicationService
     def initialize(customer_bonus:)
       @customer_bonus = customer_bonus
     end
 
     def call
-      return unless customer_bonus
+      return unless customer_bonus && customer_bonus&.active?
 
       recalculate_rollover!
+      complete_bonus! if customer_bonus.rollover_balance <= 0
     end
 
     attr_reader :customer_bonus
@@ -26,6 +27,10 @@ module Bonuses
 
       balance -= bets.map { |bet| bet_rollover_amount(bet) }.sum
       customer_bonus.update!(rollover_balance: balance)
+    end
+
+    def complete_bonus!
+      CustomerBonuses::Complete.call(customer_bonus: customer_bonus)
     end
 
     def bet_rollover_amount(bet)

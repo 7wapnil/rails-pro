@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Bonuses
+module CustomerBonuses
   class RollbackBonusRolloverService < ApplicationService
     def initialize(bet:)
       @bet = bet

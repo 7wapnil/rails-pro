@@ -13,10 +13,9 @@ module EntryRequests
       return if entry_request.failed?
       return handle_unexpected_bet! unless bet.settled?
 
-      ::Bonuses::RolloverCalculationService.call(
-        customer_bonus: bet.customer_bonus
-      )
       ::WalletEntry::AuthorizationService.call(entry_request)
+      recalculate_bonus_rollover
+      complete_bonus if bet.customer_bonus&.rollover_balance&.negative?
     end
 
     private
@@ -31,6 +30,16 @@ module EntryRequests
       entry_request.register_failure!(
         I18n.t('errors.messages.entry_request_for_settled_bet', bet_id: bet.id)
       )
+    end
+
+    def recalculate_bonus_rollover
+      ::CustomerBonuses::RolloverCalculationService.call(
+        customer_bonus: bet.customer_bonus
+      )
+    end
+
+    def complete_bonus
+      ::CustomerBonuses::Complete.call(customer_bonus: bet.customer_bonus)
     end
   end
 end
