@@ -35,7 +35,8 @@ module CustomerBonuses
       return if original_bonus.repeatable
 
       duplicate = CustomerBonus.find_by(customer: customer,
-                                        original_bonus: original_bonus)
+                                        original_bonus: original_bonus,
+                                        status: CustomerBonus::USED_STATUSES)
       return unless duplicate
 
       errors.add(:bonus,

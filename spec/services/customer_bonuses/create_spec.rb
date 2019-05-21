@@ -135,6 +135,25 @@ describe CustomerBonuses::Create do
     end
   end
 
+  context 'creating a non-repeatable bonus after it failed' do
+    before do
+      bonus.update(repeatable: false)
+      create(:customer_bonus,
+             customer: customer,
+             original_bonus: bonus,
+             status: CustomerBonus::FAILED)
+    end
+
+    it 'does not raise an error' do
+      expect { subject }
+        .not_to raise_error(CustomerBonuses::ActivationError)
+    end
+
+    it 'creates a bonus' do
+      expect { subject }.to change(CustomerBonus, :count)
+    end
+  end
+
   context 'somehow creating an expired bonus' do
     let(:bonus) { create(:bonus, expires_at: 1.day.ago) }
 

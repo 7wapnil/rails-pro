@@ -26,7 +26,6 @@ class CustomerBonusesController < ApplicationController
   def show
     @customer_bonus = CustomerBonus
                       .includes(:customer)
-                      .with_deleted
                       .find(params[:id])
   end
 
