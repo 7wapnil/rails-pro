@@ -25,7 +25,8 @@ module Betting
                      success: true,
                      bet: bet)
     rescue StandardError => e
-      bet&.register_failure!(e.message)
+      bet&.register_failure!(e.message,
+                             code: Bets::Notification::PLACEMENT_ERROR)
 
       OpenStruct.new(id: bet_payload[:oddId],
                      message: failure_message,
@@ -73,7 +74,7 @@ module Betting
     end
 
     def failure_message
-      I18n.t('errors.messages.graphql.betting.place.failure')
+      I18n.t('bets.notifications.placement_error')
     end
   end
 end

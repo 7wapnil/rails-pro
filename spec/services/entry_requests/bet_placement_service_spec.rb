@@ -84,8 +84,9 @@ describe EntryRequests::BetPlacementService do
 
       expect(bet)
         .to have_attributes(
-          status: StateMachines::BetStateMachine::SENT_TO_EXTERNAL_VALIDATION,
-          message: nil
+          notification_message: nil,
+          notification_code: nil,
+          status: StateMachines::BetStateMachine::SENT_TO_EXTERNAL_VALIDATION
         )
     end
   end
@@ -99,7 +100,8 @@ describe EntryRequests::BetPlacementService do
 
       expect(bet)
         .to have_attributes(
-          message: I18n.t('errors.messages.provider_disconnected'),
+          notification_message: I18n.t('errors.messages.provider_disconnected'),
+          notification_code: Bets::Notification::INTERNAL_VALIDATION_ERROR,
           status: StateMachines::BetStateMachine::FAILED
         )
     end
@@ -112,7 +114,8 @@ describe EntryRequests::BetPlacementService do
 
     it 'bet fails' do
       expect(bet).to have_attributes(
-        message: I18n.t('errors.messages.bet_odd_inactive'),
+        notification_message: I18n.t('errors.messages.bet_odd_inactive'),
+        notification_code: Bets::Notification::INTERNAL_VALIDATION_ERROR,
         status: StateMachines::BetStateMachine::FAILED
       )
     end
@@ -138,8 +141,9 @@ describe EntryRequests::BetPlacementService do
 
       expect(bet)
         .to have_attributes(
-          status: StateMachines::BetStateMachine::FAILED,
-          message: instance_of(String)
+          notification_message: I18n.t('errors.messages.betting_limits'),
+          notification_code: Bets::Notification::INTERNAL_VALIDATION_ERROR,
+          status: StateMachines::BetStateMachine::FAILED
         )
     end
   end
@@ -152,7 +156,8 @@ describe EntryRequests::BetPlacementService do
 
     it 'fails when market suspended' do
       expect(bet).to have_attributes(
-        message: I18n.t('errors.messages.market_suspended'),
+        notification_message: I18n.t('errors.messages.market_suspended'),
+        notification_code: Bets::Notification::INTERNAL_VALIDATION_ERROR,
         status: StateMachines::BetStateMachine::FAILED
       )
     end
@@ -196,8 +201,9 @@ describe EntryRequests::BetPlacementService do
     it 'bet is failed' do
       subject_result
       expect(bet).to have_attributes(
-        status: StateMachines::BetStateMachine::FAILED,
-        message: error_message
+        notification_message: error_message,
+        notification_code: Bets::Notification::INTERNAL_VALIDATION_ERROR,
+        status: StateMachines::BetStateMachine::FAILED
       )
     end
 
@@ -239,8 +245,9 @@ describe EntryRequests::BetPlacementService do
     it 'fails bet' do
       subject.call
       expect(bet).to have_attributes(
-        status: StateMachines::BetStateMachine::FAILED,
-        message: error_message
+        notification_message: error_message,
+        notification_code: Bets::Notification::INTERNAL_VALIDATION_ERROR,
+        status: StateMachines::BetStateMachine::FAILED
       )
     end
   end

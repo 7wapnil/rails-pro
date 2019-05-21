@@ -51,7 +51,10 @@ module Mts
     end
 
     def unsuccessful_bet_cancel
-      bet.pending_manual_cancellation!
+      bet.finish_external_cancellation_with_rejection!(
+        I18n.t("errors.messages.mts.#{status}"),
+        code: Bets::Notification::MTS_CANCELLATION_ERROR
+      )
 
       log_job_message(:error,
                       message: I18n.t("errors.messages.mts.#{status}"),

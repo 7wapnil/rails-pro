@@ -95,7 +95,8 @@ module StateMachines
 
         event :finish_external_validation_with_rejection do
           transitions from: :sent_to_external_validation,
-                      to: :rejected
+                      to: :rejected,
+                      after: :update_error_notification
         end
 
         event :timed_out_external_validation do
@@ -104,8 +105,12 @@ module StateMachines
         end
 
         event :finish_external_cancellation_with_rejection do
-          transitions from: :pending_cancellation,
-                      to: :pending_manual_cancellation
+          transitions from: %i[pending_cancellation
+                               sent_to_external_validation
+                               accepted
+                               rejected],
+                      to: :pending_manual_cancellation,
+                      after: :update_error_notification
         end
 
         event :finish_external_cancellation_with_acceptance do
@@ -116,7 +121,7 @@ module StateMachines
         event :register_failure do
           transitions from: %i[initial sent_to_internal_validation],
                       to: :failed,
-                      after: proc { |msg| update(message: msg) }
+                      after: :update_error_notification
         end
 
         event :settle do
@@ -140,6 +145,20 @@ module StateMachines
 
       def on_successful_bet_placement
         entry.confirmed_at = Time.zone.now
+      end
+
+      def update_notification(message, code:)
+        update(notification_message: message, notification_code: code)
+      end
+
+      private
+
+      def update_error_notification(message, code: default_error_code)
+        update_notification(message, code: code)
+      end
+
+      def default_error_code
+        Bets::Notification::INTERNAL_SERVER_ERROR
       end
     end
   end

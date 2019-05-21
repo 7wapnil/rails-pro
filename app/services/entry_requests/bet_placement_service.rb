@@ -4,6 +4,8 @@ module EntryRequests
   class BetPlacementService < ApplicationService
     include JobLogger
 
+    NOTIFICATION_ERROR_CODE = Bets::Notification::INTERNAL_VALIDATION_ERROR
+
     delegate :odd, :market, to: :bet
 
     def initialize(entry_request:)
@@ -28,11 +30,11 @@ module EntryRequests
     def validate
       validate_bet! && validate_entry_request!
     rescue Bets::PlacementError => error
-      bet.register_failure!(error.message)
+      bet.register_failure!(error.message, code: NOTIFICATION_ERROR_CODE)
       entry_request.register_failure!(error.message)
       false
     rescue Bets::RequestFailedError => error
-      bet.register_failure!(error.message)
+      bet.register_failure!(error.message, code: NOTIFICATION_ERROR_CODE)
       false
     end
 

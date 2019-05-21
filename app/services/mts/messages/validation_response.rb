@@ -43,7 +43,7 @@ module Mts
       end
 
       def rejection_message
-        I18n.t("errors.messages.mts.#{exception_key}")
+        message.dig(:result, :reason, :message)
       end
 
       private
@@ -52,15 +52,6 @@ module Mts
         hash = JSON.parse(json)
         ::HashDeepFormatter
           .deep_transform_keys(hash) { |key| key.to_s.underscore.to_sym }
-      end
-
-      def exception_key
-        Mts::Codes::SUBMISSION_ERROR_CODES
-          .fetch(error_code, Mts::Codes::DEFAULT_EXCEPTION_KEY)
-      end
-
-      def error_code
-        message.dig(:result, :reason, :code)
       end
     end
   end
