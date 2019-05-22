@@ -59,11 +59,20 @@ module OddsFeed
                           external_id: player_id,
                           event_id: event.external_id)
 
-          player_payload = api_client.player_profile(player_id)
-
-          player = Player.from_radar_payload(player_payload)
+          player = build_player_from_payload(player_id)
           Player.create_or_ignore_on_duplicate(player)
           player
+        end
+
+        def build_player_from_payload(player_id)
+          params = api_client.player_profile(player_id)
+                             .dig('player_profile', 'player')
+
+          raise ArgumentError, 'Player payload is malformed' unless params
+
+          Player.new(external_id: params['id'],
+                     name: params['name'],
+                     full_name: params['full_name'])
         end
 
         def find_odd_template(external_id)
