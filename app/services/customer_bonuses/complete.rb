@@ -37,9 +37,7 @@ module CustomerBonuses
 
     def grant_real_money_request
       EntryRequests::Factories::BonusConversion.call(
-        wallet: wallet,
-        amount: bonus_balance.amount,
-        mode: EntryRequest::INTERNAL
+        customer_bonus: customer_bonus
       )
     end
 

@@ -42,7 +42,7 @@ describe CustomerBonuses::Complete do
 
     it 'creates a real_money EntryRequest' do
       expect { subject }
-        .to change(EntryRequest.where(kind: EntryKinds::DEPOSIT), :count)
+        .to change(EntryRequest.where(kind: EntryKinds::BONUS_CONVERSION), :count)
     end
   end
 end
