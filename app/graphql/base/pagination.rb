@@ -31,7 +31,7 @@ module Base
       prepend Pagination::Resolvable
 
       argument :page, types.Int, 'Page number', default_value: FIRST_PAGE
-      argument :per_page, types.Int, 'Items per page',
+      argument :perPage, types.Int, 'Items per page',
                default_value: DEFAULT_ITEMS_COUNT
     end
   end

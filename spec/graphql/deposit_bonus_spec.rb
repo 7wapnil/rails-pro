@@ -5,9 +5,9 @@ describe GraphQL, '#deposit_bonus' do
   let(:amount) { 100.0 }
 
   let(:query) do
-    %(mutation deposit_bonus($amount: Float!, $code: String!) {
-      deposit_bonus(amount: $amount, code: $code) {
-        real_money
+    %(mutation depositBonus($amount: Float!, $code: String!) {
+      depositBonus(amount: $amount, code: $code) {
+        realMoney
         bonus
       }
     })
@@ -31,7 +31,7 @@ describe GraphQL, '#deposit_bonus' do
   describe 'basic query with an existing bonus' do
     let!(:bonus) { create(:bonus) }
     let(:code) { bonus.code }
-    let(:deposit_bonus) { result['data']['deposit_bonus'] }
+    let(:deposit_bonus) { result['data']['depositBonus'] }
 
     describe 'when amount is too low' do
       let(:amount) { bonus.min_deposit - 1.0 }
@@ -60,7 +60,7 @@ describe GraphQL, '#deposit_bonus' do
     end
 
     it 'returns the original amount along with bonus value' do
-      expect(deposit_bonus['real_money']).to eq(amount)
+      expect(deposit_bonus['realMoney']).to eq(amount)
     end
   end
 

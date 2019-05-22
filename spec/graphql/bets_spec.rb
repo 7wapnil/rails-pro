@@ -28,7 +28,7 @@ describe GraphQL, '#bets' do
           }
           collection {
             id
-            created_at
+            createdAt
           }
         }
       })

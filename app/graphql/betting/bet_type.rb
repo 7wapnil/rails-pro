@@ -7,7 +7,7 @@ module Betting
     field :currency, !Currencies::CurrencyType
     field :odd, !Types::OddType
     field :market, !Types::MarketType
-    field :created_at, types.String do
+    field :createdAt, types.String do
       resolve ->(obj, _args, _ctx) { obj.created_at.strftime('%e.%m.%y') }
     end
     field :event, Events::EventType

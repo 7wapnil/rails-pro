@@ -60,13 +60,13 @@ describe GraphQL, '#events' do
     let(:control_market) { control_event.dashboard_markets.first }
     let(:control_odds) { control_market.odds }
 
-    let(:result_market) { result_event.dashboard_market }
+    let(:result_market) { result_event.dashboardMarket }
 
     let(:query) do
       %({
           events(context: #{upcoming_ctx}) {
             id
-            dashboard_market {
+            dashboardMarket {
               id
               odds { id }
             }
@@ -84,7 +84,7 @@ describe GraphQL, '#events' do
       let(:control_event_traits) { [:upcoming] }
 
       let(:query) do
-        %({ events(context: #{upcoming_ctx}) { id markets_count } })
+        %({ events(context: #{upcoming_ctx}) { id marketsCount } })
       end
 
       before do
@@ -100,7 +100,7 @@ describe GraphQL, '#events' do
       end
 
       it 'returns valid markets count' do
-        expect(result_event.markets_count).to eq(control_count)
+        expect(result_event.marketsCount).to eq(control_count)
       end
     end
 
@@ -118,7 +118,7 @@ describe GraphQL, '#events' do
       let(:control_event_traits) { %i[with_market upcoming] }
 
       it 'is not returned' do
-        expect(result_event.dashboard_market).to be_nil
+        expect(result_event.dashboardMarket).to be_nil
       end
     end
 
@@ -130,7 +130,7 @@ describe GraphQL, '#events' do
       let(:control_event_markets) { [control_market] }
 
       it 'is not returned' do
-        expect(result_event.dashboard_market).to be_nil
+        expect(result_event.dashboardMarket).to be_nil
       end
     end
   end
@@ -191,13 +191,13 @@ describe GraphQL, '#events' do
                                   status: Market::ACTIVE)
     end
 
-    let(:result_market) { result_event.dashboard_market }
+    let(:result_market) { result_event.dashboardMarket }
 
     let(:query) do
       %({
           events(context: #{upcoming_ctx}) {
             id
-            dashboard_market { id }
+            dashboardMarket { id }
           }
       })
     end
@@ -351,14 +351,14 @@ describe GraphQL, '#events' do
   end
 
   context 'start status' do
-    let(:query) { %({ events(context: #{ctx}) { id start_status } }) }
+    let(:query) { %({ events(context: #{ctx}) { id startStatus } }) }
     let(:ctx) { 'live' }
 
     context 'with SUSPENDED status' do
       let(:control_event_traits) { %i[with_market live] }
 
       it 'value is LIVE' do
-        expect(result_event.start_status).to eq Event::LIVE
+        expect(result_event.startStatus).to eq Event::LIVE
       end
     end
 
@@ -366,7 +366,7 @@ describe GraphQL, '#events' do
       let(:control_event_traits) { %i[with_market live] }
 
       it 'value is LIVE' do
-        expect(result_event.start_status).to eq Event::LIVE
+        expect(result_event.startStatus).to eq Event::LIVE
       end
     end
 
@@ -378,7 +378,7 @@ describe GraphQL, '#events' do
       end
 
       it 'value is nil' do
-        expect(result_event.start_status).to be_nil
+        expect(result_event.startStatus).to be_nil
       end
     end
 
@@ -387,7 +387,7 @@ describe GraphQL, '#events' do
       let(:control_event_traits) { %i[with_market upcoming] }
 
       it 'value is UPCOMING' do
-        expect(result_event.start_status).to eq Event::UPCOMING
+        expect(result_event.startStatus).to eq Event::UPCOMING
       end
     end
   end

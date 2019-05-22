@@ -29,7 +29,9 @@ module Customers
     end
 
     def prepared_attributes(attrs)
-      attrs.symbolize_keys!
+      attrs.transform_keys! do |key|
+        key.to_s.underscore.to_sym
+      end
       attrs.merge(address_attributes:
                     attrs.extract!(:country, :city, :street_address,
                                    :state, :zip_code))

@@ -18,13 +18,14 @@ module Events
     field :visible, !types.Boolean
     field :title, Titles::TitleType
 
-    field :start_status, Events::StartStatusEnum
+    field :startStatus, Events::StartStatusEnum,
+          property: :start_status
 
-    field :start_at, types.String do
+    field :startAt, types.String do
       resolve ->(obj, _args, _ctx) { obj.start_at&.iso8601 }
     end
 
-    field :end_at, types.String do
+    field :endAt, types.String do
       resolve ->(obj, _args, _ctx) { obj.end_at&.iso8601 }
     end
 
@@ -34,13 +35,13 @@ module Events
 
     field :tournament, Types::ScopeType
 
-    field :markets_count, !types.Int do
+    field :marketsCount, !types.Int do
       resolve ->(obj, _args, _ctx) do
         obj.dashboard_markets.size
       end
     end
 
-    field :dashboard_market, Types::MarketType do
+    field :dashboardMarket, Types::MarketType do
       resolve ->(obj, _args, _ctx) do
         EventMarketsLoader.for(Market).load(obj.id)
       end

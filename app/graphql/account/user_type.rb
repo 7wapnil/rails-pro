@@ -6,20 +6,29 @@ module Account
     field :email, !types.String
     field :username, !types.String
     field :verified, !types.Boolean
-    field :date_of_birth, !types.String
+    field :dateOfBirth, !types.String,
+          property: :date_of_birth
     field :phone, types.String
     field :gender, types.String
-    field :first_name, !types.String
-    field :last_name, !types.String
-    field :agreed_with_promotional, !types.Boolean
-    field :address_street_address, types.String
-    field :address_zip_code, types.String
-    field :address_country, types.String
-    field :address_city, types.String
-    field :address_state, types.String
-    field :regular, types.Boolean do
-      resolve ->(obj, _args, _ctx) { obj.regular? }
-    end
-    field :available_withdraw_methods, types[types.String]
+    field :firstName, !types.String,
+          property: :first_name
+    field :lastName, !types.String,
+          property: :last_name
+    field :agreedWithPromotional, !types.Boolean,
+          property: :agreed_with_promotional
+    field :addressStreetAddress, types.String,
+          property: :address_street_address
+    field :addressZipCode, types.String,
+          property: :address_zip_code
+    field :addressCountry, types.String,
+          property: :address_country
+    field :addressCity, types.String,
+          property: :address_city
+    field :addressState, types.String,
+          property: :address_state
+    field :regular, types.Boolean,
+          property: :regular?
+    field :availableWithdrawMethods, types[types.String],
+          property: :available_withdraw_methods
   end
 end
