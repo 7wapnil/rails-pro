@@ -2,7 +2,7 @@ module Account
   class RequestPasswordReset < ::Base::Resolver
     argument :email, !types.String
 
-    type !types.Boolean
+    type types.Boolean
 
     def auth_protected?
       false
