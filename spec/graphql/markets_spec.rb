@@ -21,7 +21,7 @@ describe GraphQL, '#markets' do
       let(:query) do
         %({ markets (eventId: #{event.id}) {
               id
-              event_id
+              eventId
               name
         } })
       end
@@ -33,7 +33,7 @@ describe GraphQL, '#markets' do
       it 'returns error when no event ID defined' do
         market = result['data']['markets'][0]
         expect(market).to have_key('id')
-        expect(market).to have_key('event_id')
+        expect(market).to have_key('eventId')
         expect(market).to have_key('name')
       end
     end
