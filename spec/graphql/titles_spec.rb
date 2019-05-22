@@ -31,7 +31,7 @@ describe GraphQL, '#titles' do
             id
             name
             kind
-            show_category_in_navigation
+            showCategoryInNavigation
           }
       })
     end
@@ -139,7 +139,7 @@ describe GraphQL, '#titles' do
     let(:query) do
       %({
           titles {
-            event_scopes {
+            eventScopes {
               id
               name
               kind
@@ -156,7 +156,7 @@ describe GraphQL, '#titles' do
     let(:invisible_event) { create(:event, :invisible, title: title) }
 
     let(:result_event_scope_ids) do
-      result_titles.first['event_scopes'].map { |scope| scope['id'].to_i }
+      result_titles.first['eventScopes'].map { |scope| scope['id'].to_i }
     end
 
     let!(:control_event_scopes) do
