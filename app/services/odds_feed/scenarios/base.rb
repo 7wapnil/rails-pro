@@ -7,10 +7,14 @@ module OddsFeed
         event_ids.each { |event_id| load_event(event_id) }
       end
 
+      def event_ids
+        JSON.parse(File.read(scenario_path))
+      end
+
       protected
 
-      def event_ids
-        raise NotImplementedError, 'Method #event_ids has to be implemented!'
+      def scenario_path
+        raise NotImplementedError, 'Define #scenario_path!'
       end
 
       private
