@@ -19,7 +19,7 @@ module EntryRequests
 
       bet.customer_bonus.with_lock do
         recalculate_bonus_rollover
-        complete_bonus if bet.customer_bonus&.rollover_balance&.negative?
+        complete_bonus if bet.customer_bonus.rollover_balance.negative?
       end
     end
 

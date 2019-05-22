@@ -8,7 +8,7 @@ module CustomerBonuses
     end
 
     def call
-      return unless customer_bonus && customer_bonus&.active?
+      return unless customer_bonus&.active?
 
       return if customer_bonus.rollover_balance.positive?
 
@@ -21,9 +21,11 @@ module CustomerBonuses
     private
 
     def submit_entry_requests
-      [remove_bonus_money_request, grant_real_money_request].each do |request|
-        EntryRequests::BonusChangeWorker.perform_async(request.id)
-      end
+      request = remove_bonus_money_request
+      EntryRequests::BonusChangeWorker.perform_async(request.id)
+
+      request = grant_real_money_request
+      EntryRequests::BonusConversionWorker.perform_async(request.id)
     end
 
     def remove_bonus_money_request
@@ -34,7 +36,7 @@ module CustomerBonuses
     end
 
     def grant_real_money_request
-      EntryRequests::Factories::Deposit.call(
+      EntryRequests::Factories::BonusConversion.call(
         wallet: wallet,
         amount: bonus_balance.amount,
         mode: EntryRequest::INTERNAL

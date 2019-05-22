@@ -7,10 +7,9 @@ module CustomerBonuses
     end
 
     def call
-      return unless customer_bonus && customer_bonus&.active?
+      return unless customer_bonus&.active?
 
       recalculate_rollover!
-      complete_bonus! if customer_bonus.rollover_balance <= 0
     end
 
     attr_reader :customer_bonus
@@ -27,10 +26,6 @@ module CustomerBonuses
 
       balance -= bets.map { |bet| bet_rollover_amount(bet) }.sum
       customer_bonus.update!(rollover_balance: balance)
-    end
-
-    def complete_bonus!
-      CustomerBonuses::Complete.call(customer_bonus: customer_bonus)
     end
 
     def bet_rollover_amount(bet)
