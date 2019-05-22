@@ -51,11 +51,13 @@ module OddsFeed
         end
 
         def radar_get_missing_player(player_id)
-          msg = 'Player not found in the competing teams'
-          log_job_message(:warn, message: msg, external_id: player_id)
-
           player = Player.find_by(external_id: player_id)
           return player if player
+
+          log_job_message(:warn,
+                          message: 'Player not found in the database',
+                          external_id: player_id,
+                          event_id: event.external_id)
 
           player_payload = api_client.player_profile(player_id)
 
