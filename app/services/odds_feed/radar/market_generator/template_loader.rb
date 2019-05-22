@@ -8,10 +8,11 @@ module OddsFeed
 
         PLAYER_REGEX = /.*:player:.*/
 
-        attr_reader :stored_template, :template
+        attr_reader :stored_template, :template, :api_client
 
         def initialize(event, stored_template, variant_id = nil)
           @event = event
+          @api_client = OddsFeed::Radar::Client.new
           @stored_template = stored_template
           @variant_id = variant_id
         end
@@ -43,25 +44,24 @@ module OddsFeed
         end
 
         def player_name(external_id)
-          player = event.players.detect { |p| p.external_id == external_id }
-          return player.full_name if player
+          player = event.players.detect { |p| p.external_id == external_id } ||
+                   radar_get_missing_player(external_id)
 
-          player = radar_get_missing_player(external_id)
           player.full_name
         end
 
         def radar_get_missing_player(player_id)
-          msg = 'Player not found. Trying to fetch from external service'
-          log_job_message(:info, message: msg, external_id: player_id)
+          msg = 'Player not found in the competing teams'
+          log_job_message(:warn, message: msg, external_id: player_id)
 
-          player_params = OddsFeed::Radar::Client
-                          .new
-                          .player_profile(player_id)
+          player = Player.find_by(external_id: player_id)
+          return player if player
 
-          Player.create(
-            name: player_params[:name],
-            external_id: player_params[:external_id]
-          )
+          player_payload = api_client.player_profile(player_id)
+
+          player = Player.from_radar_payload(player_payload)
+          Player.create_or_ignore_on_duplicate(player)
+          player
         end
 
         def find_odd_template(external_id)

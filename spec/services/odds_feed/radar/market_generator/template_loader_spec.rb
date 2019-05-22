@@ -31,30 +31,53 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
   end
 
   describe '#odd_name' do
-    let(:name)      { Faker::WorldOfWarcraft.hero }
-    let(:player_id) { 'sr:player:1234' }
-
     context 'player odd payload' do
       let(:subject_with_template) { described_class.new(*args) }
-      let!(:player) do
+
+      it 'generates odd name from a competing player name' do
+        player_id = 'sr:player:1234'
         player = create(:player, external_id: player_id)
         competitor = create(:competitor)
         competitor.players << player
         event.competitors << competitor
-        player
-      end
 
-      before do
         allow(subject_with_template).to receive(:find_odd_template)
-      end
 
-      it do
         expect(subject_with_template.odd_name(player_id))
           .to eq(player.full_name)
+      end
+
+      it 'generates odd name from a player loaded from API' do
+        player_payload = {
+          'player_profile' => {
+            'player' => {
+              'id' => 'sr:player:903786',
+              'name' => 'Pezzella, Giuseppe',
+              'full_name' => 'Giuseppe Pezzella',
+              'type' => 'defender',
+              'date_of_birth' => '1997-11-29',
+              'nationality' => 'Italy',
+              'country_code' => 'ITA',
+              'height' => '187',
+              'weight' => '85',
+              'gender' => 'male'
+            }
+          }
+        }
+
+        allow(subject_with_template).to receive(:find_odd_template)
+
+        allow(subject_with_template.api_client)
+          .to receive(:player_profile)
+          .and_return(player_payload)
+
+        expect(subject_with_template.odd_name('sr:player:903786'))
+          .to eq('Giuseppe Pezzella')
       end
     end
 
     context 'payload from loaded template' do
+      let(:name) { Faker::WorldOfWarcraft.hero }
       let(:variant_id) {}
       let(:template) do
         create(:market_template, payload: { outcomes: outcomes })
