@@ -28,6 +28,11 @@ describe OddsFeed::Radar::MarketGenerator::Service do
     end
   end
 
+  before do
+    allow_any_instance_of(OddsFeed::Radar::Client)
+      .to receive(:request)
+  end
+
   describe 'market attributes' do
     subject { described_class.new(event, markets_data) }
 
