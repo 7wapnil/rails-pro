@@ -55,5 +55,11 @@ namespace :odds_feed do
 
       OddsFeed::ReplayService.call(scenario_id: ENV['SCENARIO'])
     end
+
+    desc 'Prepares missing players for replay'
+    task load_players: :environment do
+      ActiveRecord::Base.logger = nil
+      OddsFeed::ReplayPlayersLoader.call
+    end
   end
 end

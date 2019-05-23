@@ -37,6 +37,10 @@ describe OddsFeed::Radar::MarketGenerator::Service do
                              name: 'Template name')
 
     allow(WebSocket::Client.instance).to receive(:trigger_market_update)
+
+    allow_any_instance_of(OddsFeed::Radar::Client)
+      .to receive(:request)
+
     allow(OddsFeed::Radar::Entities::PlayerLoader)
       .to receive(:call)
       .and_return(Faker::Name.name)
