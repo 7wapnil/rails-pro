@@ -13,7 +13,10 @@ module EntryRequests
       return if entry_request.failed?
       return handle_unexpected_bet! unless bet.settled?
 
-      ::WalletEntry::AuthorizationService.call(entry_request)
+      entry = ::WalletEntry::AuthorizationService.call(entry_request)
+
+      return unless entry
+
       ::CustomerBonuses::BetSettlementService.call(bet: bet)
     end
 
