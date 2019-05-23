@@ -23,7 +23,7 @@ module Betting
       OpenStruct.new(id: bet_payload[:oddId],
                      message: nil,
                      success: true,
-                     bet: bet)
+                     bet: bet.decorate)
     rescue StandardError => e
       bet&.register_failure!(e.message,
                              code: Bets::Notification::PLACEMENT_ERROR)
@@ -31,7 +31,7 @@ module Betting
       OpenStruct.new(id: bet_payload[:oddId],
                      message: failure_message,
                      success: false,
-                     bet: bet)
+                     bet: bet&.decorate)
     end
 
     def request_for_bet!(bet)
