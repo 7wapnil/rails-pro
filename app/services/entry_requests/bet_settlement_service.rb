@@ -13,9 +13,9 @@ module EntryRequests
       return if entry_request.failed?
       return handle_unexpected_bet! unless bet.settled?
 
-      ::WalletEntry::AuthorizationService.call(entry_request)
+      entry = ::WalletEntry::AuthorizationService.call(entry_request)
 
-      return unless bet.customer_bonus
+      return unless entry && bet.customer_bonus
 
       bet.customer_bonus.with_lock do
         recalculate_bonus_rollover
@@ -44,7 +44,7 @@ module EntryRequests
     end
 
     def complete_bonus
-      ::CustomerBonuses::Complete.call(customer_bonus: bet.customer_bonus)
+      CustomerBonuses::CompleteWorker.perform_async(customer_bonus: bet.customer_bonus)
     end
   end
 end

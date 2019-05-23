@@ -52,30 +52,51 @@ describe EntryRequests::BetSettlementService do
   end
 
   context 'with positive rollover' do
-    before { allow(CustomerBonuses::Complete).to receive(:call) }
+    before { allow(CustomerBonuses::CompleteWorker).to receive(:perform_async) }
 
-    let(:bet) { create(:bet) }
+    let(:bet) { create(:bet, :settled, customer_bonus: customer_bonus) }
     let(:customer_bonus) do
       create(:customer_bonus, rollover_initial_value: 100_000)
     end
 
     it 'does not call CustomerBonuses::Complete' do
       subject
-      expect(CustomerBonuses::Complete).not_to have_received(:call)
+      expect(CustomerBonuses::CompleteWorker).not_to have_received(:perform_async)
     end
   end
 
   context 'with negative rollover' do
-    before { allow(CustomerBonuses::Complete).to receive(:call) }
+    before do
+      allow(CustomerBonuses::CompleteWorker).to receive(:perform_async)
+      allow(WalletEntry::AuthorizationService)
+        .to receive(:call).and_return(create(:entry))
+    end
 
-    let(:bet) { create(:bet) }
+    let(:bet) { create(:bet, :settled, customer_bonus: customer_bonus) }
     let(:customer_bonus) do
       create(:customer_bonus, rollover_initial_value: -100_000)
     end
 
     it 'calls CustomerBonuses::Complete' do
       subject
-      expect(CustomerBonuses::Complete).not_to have_received(:call)
+      expect(CustomerBonuses::CompleteWorker).to have_received(:perform_async)
+    end
+  end
+
+  context 'with authorization failure' do
+    before do
+      allow(CustomerBonuses::CompleteWorker).to receive(:perform_async)
+      allow(WalletEntry::AuthorizationService).to receive(:call).and_return(nil)
+    end
+
+    let(:bet) { create(:bet, :settled, customer_bonus: customer_bonus) }
+    let(:customer_bonus) do
+      create(:customer_bonus, rollover_initial_value: -100_000)
+    end
+
+    it 'calls CustomerBonuses::Complete' do
+      subject
+      expect(CustomerBonuses::CompleteWorker).not_to have_received(:perform_async)
     end
   end
 end
