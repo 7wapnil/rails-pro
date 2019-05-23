@@ -11,6 +11,7 @@ module Account
     def resolve(_obj, args)
       customer = Customer.find_by(email: args[:email], email_verified: true)
       Account::SendPasswordResetService.call(customer)
+      true
     end
   end
 end
