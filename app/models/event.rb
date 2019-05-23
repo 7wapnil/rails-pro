@@ -75,7 +75,9 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
              inverse_of: :events,
              optional: true
   has_many :markets, dependent: :destroy
-  has_many :categorized_markets, -> { with_category }, class_name: Market.name
+  has_many :categorized_markets,
+           -> { for_displaying.with_category },
+           class_name: Market.name
   has_many :bets, through: :markets
   has_many :scoped_events, dependent: :delete_all
   has_many :event_scopes, through: :scoped_events
