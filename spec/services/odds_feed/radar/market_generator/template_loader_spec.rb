@@ -67,22 +67,13 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
 
         allow(subject_with_template).to receive(:find_odd_template)
 
-        allow(subject_with_template.api_client)
+        allow_any_instance_of(OddsFeed::Radar::Client)
           .to receive(:player_profile)
+          .with('sr:player:903786')
           .and_return(player_payload)
 
         expect(subject_with_template.odd_name('sr:player:903786'))
           .to eq('Giuseppe Pezzella')
-      end
-
-      it 'raises an argument error if player payload is invalid' do
-        allow(subject_with_template).to receive(:find_odd_template)
-        allow(subject_with_template.api_client)
-          .to receive(:player_profile)
-          .and_return({})
-
-        expect { subject_with_template.odd_name('sr:player:903786') }
-          .to raise_error ArgumentError, 'Player payload is malformed'
       end
     end
 

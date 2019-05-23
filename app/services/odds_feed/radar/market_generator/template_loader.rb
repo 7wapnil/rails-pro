@@ -8,11 +8,10 @@ module OddsFeed
 
         PLAYER_REGEX = /.*:player:.*/
 
-        attr_reader :stored_template, :template, :api_client
+        attr_reader :stored_template, :template
 
         def initialize(event, stored_template, variant_id = nil)
           @event = event
-          @api_client = OddsFeed::Radar::Client.new
           @stored_template = stored_template
           @variant_id = variant_id
         end
@@ -59,20 +58,9 @@ module OddsFeed
                           external_id: player_id,
                           event_id: event.external_id)
 
-          player = build_player_from_payload(player_id)
+          player = OddsFeed::Radar::PlayerLoader.call(player_id)
           Player.create_or_ignore_on_duplicate(player)
           player
-        end
-
-        def build_player_from_payload(player_id)
-          params = api_client.player_profile(player_id)
-                             .dig('player_profile', 'player')
-
-          raise ArgumentError, 'Player payload is malformed' unless params
-
-          Player.new(external_id: params['id'],
-                     name: params['name'],
-                     full_name: params['full_name'])
         end
 
         def find_odd_template(external_id)
