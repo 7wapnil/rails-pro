@@ -19,6 +19,6 @@ module Betting
     end
 
     field :message, types.String
-    field :status, !types.String
+    field :status, !types.String, property: :display_status
   end
 end

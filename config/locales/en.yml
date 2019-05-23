@@ -568,6 +568,14 @@ en:
     succeeded: Succeeded
     verified: Verified
     cancelled_by_system: Cancelled
+    sent_to_internal_validation: Internal validation
+    validated_internally: Validated internally
+    sent_to_external_validation: External validation
+    accepted: Accepted
+    pending_cancellation: Pending cancellation
+    pending_manual_cancellation: Pending MTS cancellation
+    cancelled: Cancelled
+    rejected: Rejected
 
   payment_methods:
     credit_card:

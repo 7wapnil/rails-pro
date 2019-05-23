@@ -3,6 +3,7 @@ module Betting
     include ::Base::Pagination
 
     type !types[BetType]
+    decorate_with BetDecorator
 
     description 'Get all bets'
 
