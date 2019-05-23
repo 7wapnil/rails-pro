@@ -6,7 +6,7 @@ module CustomerBonuses
 
     def call
       return unless customer_bonus&.active?
-      
+
       recalculate_bonus_rollover
 
       return if unsettled_bets_remaining
@@ -14,7 +14,7 @@ module CustomerBonuses
       complete_bonus if customer_bonus.rollover_balance.negative?
 
       bonus_money_left = customer_bonus.wallet.bonus_balance&.amount
-      lose_bonus unless bonus_money_left.positive?
+      lose_bonus unless bonus_money_left&.positive?
     end
 
     attr_reader :bet
@@ -30,7 +30,8 @@ module CustomerBonuses
     end
 
     def complete_bonus
-      ::CustomerBonuses::Complete.call(customer_bonus: customer_bonus)
+      CustomerBonuses::CompleteWorker
+        .perform_async(customer_bonus: bet.customer_bonus)
     end
 
     def lose_bonus
@@ -41,7 +42,7 @@ module CustomerBonuses
 
     def unsettled_bets_remaining
       bonus_bets = Bet.where(customer_bonus: customer_bonus)
-      bonus_bets.with_lock.where.not(settlement_status: nil).exists?
+      bonus_bets.where(settlement_status: nil).exists?
     end
   end
 end
