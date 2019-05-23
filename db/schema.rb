@@ -381,12 +381,12 @@ ActiveRecord::Schema.define(version: 2019_05_20_115412) do
     t.boolean "visible", default: true
     t.boolean "active", default: false
     t.bigint "producer_id"
+    t.boolean "ready", default: false
     t.string "display_status"
     t.integer "home_score"
     t.integer "away_score"
     t.integer "time_in_seconds"
     t.string "liveodds"
-    t.boolean "ready", default: false
     t.index ["active"], name: "index_events_on_active"
     t.index ["external_id"], name: "index_events_on_external_id", unique: true
     t.index ["producer_id"], name: "index_events_on_producer_id"

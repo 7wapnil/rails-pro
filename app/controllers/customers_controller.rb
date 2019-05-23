@@ -107,15 +107,12 @@ class CustomersController < ApplicationController
   end
 
   def upload_documents
-    flash[:file_errors] = {}
-    documents_from_params.each do |kind, file|
-      document = customer.verification_documents.build(kind: kind,
-                                                       status: :pending)
-      document.document.attach(file)
-      unless document.save
-        flash[:file_errors][kind] = document.errors.full_messages.first
-      end
-    end
+    result = Customers::VerificationDocuments::BulkCreate.call(
+      params: documents_from_params, customer: customer
+    )
+
+    flash[:file_errors] = result[:errors] unless result[:success]
+
     redirect_to documents_customer_path(customer)
   end
 
