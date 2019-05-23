@@ -6,7 +6,7 @@ module OddsFeed
       private
 
       def scenario_path
-        Rails.root.join('certification', 'scenario_2.json')
+        Rails.root.join('certification', 'scenario_2.csv')
       end
     end
   end

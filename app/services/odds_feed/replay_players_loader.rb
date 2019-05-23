@@ -5,23 +5,21 @@ module OddsFeed
     BATCH_SIZE = 2000
 
     def call
-      data.each_slice(BATCH_SIZE).with_index(&method(:load_players))
+      spreadsheet.each_slice(BATCH_SIZE).with_index(&method(:load_players))
     end
 
     private
 
-    def data
-      JSON.parse(
-        File.read(players_data_path)
-      )
+    def spreadsheet
+      CSV.parse(raw_data, headers: true)
     end
 
-    def players_data_path
-      Rails.root.join('certification', 'missing_players.json')
+    def raw_data
+      File.read(Rails.root.join('certification', 'missing_players.csv'))
     end
 
     def load_players(batch, batch_index)
-      players = batch.map { |player_data| Player.new(player_data) }
+      players = batch.map { |player_data| Player.new(player_data.to_h) }
 
       Player.import(players, on_duplicate_key_ignore: true)
       puts "== #{batch_index * BATCH_SIZE + batch.length} players loaded =="
