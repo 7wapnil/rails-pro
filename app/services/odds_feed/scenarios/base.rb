@@ -8,7 +8,9 @@ module OddsFeed
       end
 
       def event_ids
-        JSON.parse(File.read(scenario_path))
+        @event_ids ||= CSV
+                       .parse(File.read(scenario_path), headers: false)
+                       .flatten
       end
 
       protected
