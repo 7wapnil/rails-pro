@@ -27,12 +27,14 @@ module Mts
 
       EntryRequests::RefundWorker.perform_async(refund.id)
 
-      bet.update(message: response.rejection_message)
       log_job_message(:info, message: 'Bet failed external validation.',
                              payload: response.rejection_json,
                              bet_id: bet.id)
 
-      bet.finish_external_validation_with_rejection!
+      bet.finish_external_validation_with_rejection!(
+        response.rejection_message,
+        code: Bets::Notification::EXTERNAL_VALIDATION_ERROR
+      )
     end
   end
 end

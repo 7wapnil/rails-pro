@@ -159,6 +159,7 @@ en:
     max_deposit_match: Max amount
     max_rollover_per_bet: Max rollover per bet
     message: Message
+    notification_message: Status message
     min_amount: Min amount
     min_deposit: Min deposit
     min_odds_per_bet: Min odds per bet
@@ -216,6 +217,14 @@ en:
     confirmed_at: Confirmed at
     balance_id: Balance ID
     balance_kind: Balance type
+
+  bets:
+    notifications:
+      internal_server_error: "Betting service is experiencing some issues now. Bet was not accepted"
+      placement_error: "Oops! Bet cannot be accepted. Feel free to contact administration or try again later"
+      internal_validation_error: "Oops! Bet cannot be accepted. Feel free to contact administration or try again later"
+      external_validation_error: "Betting service is experiencing some issues now. Bet was not accepted"
+      mts_cancellation_error: "MTS rejected bet cancellation"
 
   customers:
     statistics:
@@ -381,7 +390,7 @@ en:
       entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
       provider_disconnected: Provider is disconnected
       market_suspended: Bet market is suspended
-      not_negative: "cannot be negative"
+      amount_not_negative: "%{subject} amount cannot beсome negative. Current amount: %{current_amount}, new amount: %{new_amount}."
       wrong_login_credentials: Wrong username, email or password
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
       account_transition: "can't bet changed from '%{from}' to '%{to}'"
@@ -431,9 +440,6 @@ en:
         not_actionable: Withdrawal request has already been reviewed
         empty_comment: Rejection comment is required
       graphql:
-        betting:
-          place:
-            failure: Oops! Bet cannot be accepted. Feel free to contact administration or try again later
         events:
           context:
             invalid: "Unsupported context '%{context}'. Supported contexts: %{contexts}"

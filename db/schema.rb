@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_20_115412) do
+ActiveRecord::Schema.define(version: 2019_05_21_110952) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -94,7 +94,7 @@ ActiveRecord::Schema.define(version: 2019_05_20_115412) do
     t.decimal "amount"
     t.decimal "odd_value"
     t.string "status"
-    t.text "message"
+    t.text "notification_message"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
@@ -103,6 +103,7 @@ ActiveRecord::Schema.define(version: 2019_05_20_115412) do
     t.datetime "validation_ticket_sent_at"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
+    t.string "notification_code"
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_bonus_id"], name: "index_bets_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"

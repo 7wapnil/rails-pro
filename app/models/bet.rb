@@ -193,4 +193,11 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
                            .balance_entry_requests
                            .bonus.first.amount
   end
+
+  # TODO: Move to decorator
+  def human_notification_message
+    return unless notification_code
+
+    I18n.t("bets.notifications.#{notification_code}", default: nil)
+  end
 end

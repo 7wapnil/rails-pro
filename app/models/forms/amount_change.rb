@@ -30,7 +30,11 @@ module Forms
 
     def amount_not_negative
       result_amount = subject.amount + amount_increment.to_d
-      message = I18n.t('errors.messages.not_negative')
+      message = I18n.t('errors.messages.amount_not_negative',
+                       subject: subject.to_s,
+                       current_amount: subject.amount,
+                       new_amount: result_amount)
+
       errors.add(:base, message) if result_amount.negative?
     end
   end

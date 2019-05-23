@@ -31,4 +31,8 @@ class Wallet < ApplicationRecord
 
     WebSocket::Client.instance.trigger_wallet_update(self)
   end
+
+  def to_s
+    "#{currency} Wallet"
+  end
 end
