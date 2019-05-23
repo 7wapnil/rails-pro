@@ -44,7 +44,8 @@ module EntryRequests
     end
 
     def complete_bonus
-      CustomerBonuses::CompleteWorker.perform_async(customer_bonus: bet.customer_bonus)
+      CustomerBonuses::CompleteWorker
+        .perform_async(customer_bonus: bet.customer_bonus)
     end
   end
 end

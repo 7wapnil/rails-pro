@@ -61,7 +61,8 @@ describe EntryRequests::BetSettlementService do
 
     it 'does not call CustomerBonuses::Complete' do
       subject
-      expect(CustomerBonuses::CompleteWorker).not_to have_received(:perform_async)
+      expect(CustomerBonuses::CompleteWorker)
+        .not_to have_received(:perform_async)
     end
   end
 
@@ -96,7 +97,8 @@ describe EntryRequests::BetSettlementService do
 
     it 'calls CustomerBonuses::Complete' do
       subject
-      expect(CustomerBonuses::CompleteWorker).not_to have_received(:perform_async)
+      expect(CustomerBonuses::CompleteWorker)
+        .not_to have_received(:perform_async)
     end
   end
 end
