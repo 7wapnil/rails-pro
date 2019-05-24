@@ -3,9 +3,9 @@ describe Redirect::DepositsController do
     subject do
       get :initiate,
           params: { token: JwtService.encode(id: customer.id),
-                    currency_code: wallet.currency.code,
+                    currencyCode: wallet.currency.code,
                     amount: amount,
-                    bonus_code: bonus.code }
+                    bonusCode: bonus.code }
     end
 
     let(:amount) { Faker::Number.decimal(2, 2).to_d }
@@ -20,9 +20,9 @@ describe Redirect::DepositsController do
     let(:valid_params) do
       {
         customer: customer,
-        currency_code: wallet.currency.code,
+        currencyCode: wallet.currency.code,
         amount: amount,
-        bonus_code: bonus.code
+        bonusCode: bonus.code
       }
     end
 
@@ -159,7 +159,7 @@ describe Redirect::DepositsController do
         get(
           :initiate,
           params: valid_params
-                    .update(currency_code: 'INVALID',
+                    .update(currencyCode: 'INVALID',
                             token: JwtService.encode(id: customer.id))
         )
       end

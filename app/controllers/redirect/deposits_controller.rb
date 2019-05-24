@@ -8,7 +8,7 @@ module Redirect
           customer: customer,
           currency: currency_by_code,
           amount: initiate_params[:amount].to_d,
-          bonus_code: initiate_params[:bonus_code]
+          bonus_code: initiate_params[:bonusCode]
         )
 
       entry_request.save!
@@ -67,10 +67,10 @@ module Redirect
     private
 
     def currency_by_code
-      Currency.find_by!(code: initiate_params[:currency_code])
+      Currency.find_by!(code: initiate_params[:currencyCode])
     rescue ActiveRecord::RecordNotFound
       message =
-        "Currency with code #{initiate_params[:currency_code]} not found."
+        "Currency with code #{initiate_params[:currencyCode]} not found."
       raise ActiveRecord::RecordNotFound.new, message
     end
 
@@ -85,7 +85,7 @@ module Redirect
     end
 
     def initiate_params
-      params.permit(:token, :currency_code, :amount, :bonus_code)
+      params.permit(:token, :currencyCode, :amount, :bonusCode)
     end
   end
 end
