@@ -8,7 +8,7 @@ class JwtService
   end
 
   def self.extract_user_id(param)
-    hash = self.decode(param)[0].symbolize_keys
+    hash = decode(param)[0].symbolize_keys
     hash[:id]
   end
 end

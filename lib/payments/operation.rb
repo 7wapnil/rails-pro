@@ -20,7 +20,7 @@ module Payments
     def validate_transaction!
       return if transaction.valid?
 
-      raise Payments::InvalidTransactionError.new(transaction)
+      raise Payments::InvalidTransactionError, transaction
     end
   end
 end

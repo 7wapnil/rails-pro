@@ -1,6 +1,6 @@
 module Payments
   class BaseProvider
-    def payment_page_url(transaction)
+    def payment_page_url(_transaction)
       raise ::NotImplementedError
     end
 

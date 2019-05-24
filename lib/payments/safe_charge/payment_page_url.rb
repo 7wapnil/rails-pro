@@ -3,7 +3,7 @@ module Payments
     class PaymentPageUrl < ApplicationService
       include ::Payments::Methods
 
-      API_VERSION = '4.0.0'
+      API_VERSION = '4.0.0'.freeze
 
       def initialize(transaction)
         @transaction = transaction
@@ -16,7 +16,7 @@ module Payments
       private
 
       def base_url
-        @url ||= ENV['SAFECHARGE_HOSTED_PAYMENTS_URL']
+        @base_url ||= ENV['SAFECHARGE_HOSTED_PAYMENTS_URL']
       end
 
       def query
@@ -50,8 +50,8 @@ module Payments
           dateOfBirth: customer_date_of_birth,
           address1: @transaction.customer.address.street_address,
           city: @transaction.customer.address.city,
-          country: @transaction.customer.address.country, # TODO: Take directly from db
-          state: @transaction.customer.address.state, # TODO: Take directly from db
+          country: @transaction.customer.address.country, # TODO: Take from db
+          state: @transaction.customer.address.state, # TODO: Take from db
           zip: @transaction.customer.address.zip_code,
           isNative: 1,
           payment_method: provider_method_name(@transaction.method),
@@ -91,8 +91,8 @@ module Payments
         ].map(&:to_s).join
       end
 
-      def notification_url(result)
-        "http://localhost:3000/payments/safe_charge/notification?result=#{result}"
+      def notification_url(res)
+        "http://localhost:3000/payments/safe_charge/notification?result=#{res}"
       end
     end
   end

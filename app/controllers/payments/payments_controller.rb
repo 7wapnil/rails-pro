@@ -14,7 +14,7 @@ module Payments
       )
 
       payment_page_url = ::Payments::Deposit.call(transaction)
-      render inline: "<a href=\"#{payment_page_url}\" target=\"_blank\">Link to payment page is here</a>"
+      render inline: "<a href=\"#{payment_page_url}\" target=\"_blank\">Link to payment page is here</a>" # rubocop:disable Metrics/LineLength
     rescue StandardError => e
       log_message(:error, e.message)
       render plain: e.message
