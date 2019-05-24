@@ -81,3 +81,9 @@
     every: <%= ENV.fetch('MTS_RECONNECTION_INTERVAL', '30s') %>
     class: Mts::ReconnectionWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+
+  registration_reports_sending:
+    every: <%= ENV.fetch('REG_REPORT_INTERVAL', '1d') %>
+    class: Scheduled::RegistrationReportsWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Sends registration reports to FTP server"

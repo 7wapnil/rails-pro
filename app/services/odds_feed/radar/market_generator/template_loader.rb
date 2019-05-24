@@ -43,12 +43,24 @@ module OddsFeed
         end
 
         def player_name(external_id)
-          player = event.players.detect { |p| p.external_id == external_id }
-          return player.full_name if player
+          player = event.players.detect { |p| p.external_id == external_id } ||
+                   radar_get_missing_player(external_id)
 
-          msg = 'Player not found'
-          log_job_message(:error, message: msg, external_id: external_id)
-          raise SilentRetryJobError
+          player.full_name
+        end
+
+        def radar_get_missing_player(player_id)
+          player = Player.find_by(external_id: player_id)
+          return player if player
+
+          log_job_message(:warn,
+                          message: 'Player not found in the database',
+                          external_id: player_id,
+                          event_id: event.external_id)
+
+          player = OddsFeed::Radar::PlayerLoader.call(player_id)
+          Player.create_or_ignore_on_duplicate(player)
+          player
         end
 
         def find_odd_template(external_id)

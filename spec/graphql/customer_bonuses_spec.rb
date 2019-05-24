@@ -17,8 +17,8 @@ describe GraphQL, '#wallets' do
 
   describe 'query' do
     let(:query) do
-      %({ customer_bonuses { id code rollover_balance
-                           rollover_initial_value status expires_at} })
+      %({ customerBonuses { id code rolloverBalance
+                           rolloverInitialValue status expiresAt} })
     end
 
     let(:control_date) do
@@ -26,19 +26,19 @@ describe GraphQL, '#wallets' do
     end
 
     it 'returns customer bonus info' do
-      expect(result['data']['customer_bonuses'].first)
+      expect(result['data']['customerBonuses'].first)
         .to include(
           'id' => customer_bonuses.first.id.to_s,
           'code' => customer_bonuses.first.code,
-          'rollover_balance' => customer_bonuses.first.rollover_balance.to_d,
-          'rollover_initial_value' => rollover_initial_value.to_d,
+          'rolloverBalance' => customer_bonuses.first.rollover_balance.to_d,
+          'rolloverInitialValue' => rollover_initial_value.to_d,
           'status' => CustomerBonus::ACTIVE,
-          'expires_at' => control_date
+          'expiresAt' => control_date
         )
     end
 
     it 'returns list of customer bonuses' do
-      expect(result['data']['customer_bonuses'].count).to eq(control_count)
+      expect(result['data']['customerBonuses'].count).to eq(control_count)
     end
   end
 end

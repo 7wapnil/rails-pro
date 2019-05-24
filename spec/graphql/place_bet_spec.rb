@@ -108,7 +108,7 @@ describe GraphQL, '#place_bet' do
 
     it 'does not find not-existing odd and gives an error' do
       expect(error_message)
-        .to eq I18n.t('errors.messages.graphql.betting.place.failure')
+        .to eq I18n.t('bets.notifications.placement_error')
     end
 
     context 'with inactive odd' do
@@ -116,7 +116,7 @@ describe GraphQL, '#place_bet' do
 
       it 'gives an error' do
         expect(error_message)
-          .to eq I18n.t('errors.messages.graphql.betting.place.failure')
+          .to eq I18n.t('bets.notifications.placement_error')
       end
     end
 
@@ -126,7 +126,7 @@ describe GraphQL, '#place_bet' do
 
       it 'gives an error' do
         expect(error_message)
-          .to eq I18n.t('errors.messages.graphql.betting.place.failure')
+          .to eq I18n.t('bets.notifications.placement_error')
       end
     end
   end

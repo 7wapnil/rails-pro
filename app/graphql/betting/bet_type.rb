@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Betting
   BetType = GraphQL::ObjectType.define do
     name 'Bet'
@@ -7,7 +9,7 @@ module Betting
     field :currency, !Currencies::CurrencyType
     field :odd, !Types::OddType
     field :market, !Types::MarketType
-    field :created_at, types.String do
+    field :createdAt, types.String do
       resolve ->(obj, _args, _ctx) { obj.created_at.strftime('%e.%m.%y') }
     end
     field :event, Events::EventType
@@ -18,7 +20,7 @@ module Betting
       resolve ->(obj, _args, _ctx) { obj.odd_value }
     end
 
-    field :message, types.String
-    field :status, !types.String
+    field :message, types.String, property: :human_notification_message
+    field :status, !types.String, property: :display_status
   end
 end

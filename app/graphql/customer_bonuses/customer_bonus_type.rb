@@ -6,13 +6,18 @@ module CustomerBonuses
 
     field :id, !types.ID
     field :code, !types.String
-    field :rollover_balance, !types.Float
-    field :rollover_initial_value, !types.Float
+    field :rolloverBalance, !types.Float,
+          property: :rollover_balance
+    field :rolloverInitialValue, !types.Float,
+          property: :rollover_initial_value
     field :status, !types.String
-    field :max_rollover_per_bet, !types.Float
-    field :min_odds_per_bet, !types.Float
-    field :valid_for_days, !types.Int
-    field :expires_at, !types.String do
+    field :maxRolloverPerBet, !types.Float,
+          property: :max_rollover_per_bet
+    field :minOddsPerBet, !types.Float,
+          property: :min_odds_per_bet
+    field :validForDays, !types.Int,
+          property: :valid_for_days
+    field :expiresAt, !types.String do
       resolve ->(obj, _args, _ctx) { obj.expires_at.strftime('%e.%m.%y') }
     end
   end

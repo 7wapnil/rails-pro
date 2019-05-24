@@ -68,7 +68,7 @@ shared_examples_for Base::Pagination do
     allow(query_class.arguments['page'])
       .to receive(:default_value)
       .and_return(Base::Pagination::DEFAULT_ITEMS_COUNT)
-    allow(query_class.arguments['per_page'])
+    allow(query_class.arguments['perPage'])
       .to receive(:default_value)
       .and_return(Base::Pagination::FIRST_PAGE)
 
@@ -83,11 +83,11 @@ shared_examples_for Base::Pagination do
 
   def append_arguments!(part, query_name, page, per_page)
     if part.match?(/^\s*#{query_name}\s*\(/)
-      return part.gsub!(/\)\s*$/, ", page: #{page}, per_page: #{per_page})")
+      return part.gsub!(/\)\s*$/, ", page: #{page}, perPage: #{per_page})")
     end
 
     part.gsub!(query_name,
-               "#{query_name} (page: #{page}, per_page: #{per_page})")
+               "#{query_name} (page: #{page}, perPage: #{per_page})")
   end
 
   it 'returns collection as data' do

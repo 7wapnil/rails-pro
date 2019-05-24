@@ -35,19 +35,19 @@ describe GraphQL do
       { input: {
         username: 'test',
         email: 'wrongemail',
-        first_name: 'Test',
-        last_name: 'User',
-        date_of_birth: '01-01-2018',
+        firstName: 'Test',
+        lastName: 'User',
+        dateOfBirth: '01-01-2018',
         password: '123456',
-        password_confirmation: '123456',
+        passwordConfirmation: '123456',
         gender: Customer::FEMALE,
         country: 'Canada',
         city: 'Toronto',
         state: 'State',
-        zip_code: '123',
-        street_address: 'Street Addr',
+        zipCode: '123',
+        streetAddress: 'Street Addr',
         phone: '1232132132',
-        agreed_with_promotional: true
+        agreedWithPromotional: true
       } }
     end
 
@@ -62,20 +62,20 @@ describe GraphQL do
       { input: {
         username: 'test',
         email: 'test@email.com',
-        first_name: 'Test',
-        last_name: 'User',
-        date_of_birth: '01-01-1998',
+        firstName: 'Test',
+        lastName: 'User',
+        dateOfBirth: '01-01-1998',
         password: '123456',
-        password_confirmation: '123456',
+        passwordConfirmation: '123456',
         gender: Customer::FEMALE,
         country: 'Canada',
         city: 'Toronto',
         state: 'State',
-        zip_code: '123',
-        street_address: 'Street Addr',
+        zipCode: '123',
+        streetAddress: 'Street Addr',
         phone: '37258383943',
-        agreed_with_promotional: true,
-        b_tag: 'AFFILIATE_ID'
+        agreedWithPromotional: true,
+        bTag: 'AFFILIATE_ID'
       } }
     end
 

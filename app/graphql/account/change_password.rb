@@ -1,8 +1,8 @@
 module Account
   class ChangePassword < ::Base::Resolver
-    argument :existing_password, !types.String
-    argument :new_password, !types.String
-    argument :new_password_confirmation, !types.String
+    argument :existingPassword, !types.String
+    argument :newPassword, !types.String
+    argument :newPasswordConfirmation, !types.String
 
     type !types.Boolean
 

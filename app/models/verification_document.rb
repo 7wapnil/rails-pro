@@ -5,7 +5,6 @@ class VerificationDocument < ApplicationRecord
 
   acts_as_paranoid
 
-  MAX_ATTACHMENT_SIZE = 2.megabytes.freeze
   KINDS = {
     personal_id:    PERSONAL_ID    = 'personal_id',
     utility_bill:   UTILITY_BILL   = 'utility_bill',
@@ -25,14 +24,6 @@ class VerificationDocument < ApplicationRecord
   belongs_to :customer
   has_one_attached :document
   has_many :comments, as: :commentable
-
-  validates :document, presence: true
-  validates :document,
-            file_size: { less_than_or_equal_to: MAX_ATTACHMENT_SIZE },
-            file_content_type: { allow: %w[image/jpeg
-                                           image/png
-                                           image/jpg
-                                           application/pdf] }
 
   scope :recently_actioned, -> { where(status: %i[confirmed rejected]) }
   delegate :filename, to: :document

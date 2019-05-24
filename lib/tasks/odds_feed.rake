@@ -37,11 +37,29 @@ namespace :odds_feed do
     puts 'Done!'
   end
 
+  namespace :markets do
+    desc 'Update market templates'
+    task update: 'radar:update_market_templates'
+
+    desc 'Assign categories to market templates'
+    task categorize: :categorize_templates
+  end
+
   namespace :replay do
+    desc 'Prepares database for selected replay scenario'
+    task prepare: :prepare_replay
+
+    desc 'Add scenario matches to the replay quueue'
     task prepare_queue: :environment do
       raise 'You should provide scenario id' unless ENV['SCENARIO']
 
       OddsFeed::ReplayService.call(scenario_id: ENV['SCENARIO'])
+    end
+
+    desc 'Prepares missing players for replay'
+    task load_players: :environment do
+      ActiveRecord::Base.logger = nil
+      OddsFeed::ReplayPlayersLoader.call
     end
   end
 end

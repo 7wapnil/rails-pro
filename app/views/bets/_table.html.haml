@@ -37,7 +37,7 @@
             = bet.winning_amount(human: true)
             = bet.currency_code
           %td= bet.created_at(human: true)
-          %td= status_badge(bet.display_status)
+          %td= status_badge(bet.status)
           %td= settle_badge(bet.settlement_status)
           %td= bet.sport
           %td= bet.category

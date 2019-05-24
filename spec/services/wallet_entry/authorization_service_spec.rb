@@ -203,7 +203,10 @@ describe WalletEntry::AuthorizationService do
       end
 
       it 'fails to update wallet amount to negative' do
-        error_message = I18n.t('errors.messages.not_negative')
+        error_message = I18n.t('errors.messages.amount_not_negative',
+                               subject: wallet.to_s,
+                               current_amount: wallet.amount,
+                               new_amount: -10)
 
         request.amount = -60
 
@@ -216,9 +219,13 @@ describe WalletEntry::AuthorizationService do
       end
 
       it 'fails to update balance amount to negative' do
-        error_message = I18n.t('errors.messages.not_negative')
-
         balance.update_attributes!(amount: 30)
+
+        error_message = I18n.t('errors.messages.amount_not_negative',
+                               subject: balance.to_s,
+                               current_amount: balance.amount,
+                               new_amount: -10)
+
         request.amount = -40
 
         described_class.call(request)

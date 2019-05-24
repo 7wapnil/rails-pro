@@ -124,7 +124,7 @@ module Events
       return query if event_scope_ids.blank?
 
       query
-        .eager_load(:event_scopes)
+        .joins(:event_scopes)
         .where(event_scopes: { id: event_scope_ids })
     end
 

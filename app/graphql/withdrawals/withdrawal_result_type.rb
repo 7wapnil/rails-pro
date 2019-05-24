@@ -7,10 +7,10 @@ module Withdrawals
     field :amount, types.Float
     field :kind, types.String
     field :mode, types.String
-    field :customer_id, types.ID
-    field :currency_id, types.ID
-    field :initiator_id, types.ID
-    field :initiator_type, types.String
-    field :error_messages, types[types.String]
+    field :customerId, types.ID
+    field :currencyId, types.ID
+    field :initiatorId, types.ID
+    field :initiatorType, types.String
+    field :errorMessages, types[types.String]
   end
 end

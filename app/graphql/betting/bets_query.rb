@@ -1,23 +1,19 @@
+# frozen_string_literal: true
+
 module Betting
   class BetsQuery < ::Base::Resolver
     include ::Base::Pagination
 
     type !types[BetType]
+    decorate_with BetDecorator
 
-    description 'Get all bets'
+    description 'Get bets list for customer'
 
     argument :kind, types.String
+    argument :ids, types[types.ID]
 
     def resolve(_obj, args)
-      query = Bet
-              .where(customer: @current_customer)
-              .order(created_at: :desc)
-      if args[:kind]
-        query = query.joins(odd: { market: { event: :title } })
-                     .where('titles.kind = ?', args[:kind])
-      end
-
-      query.all
+      BetsQueryResolver.new(args: args, customer: @current_customer).resolve
     end
   end
 end
