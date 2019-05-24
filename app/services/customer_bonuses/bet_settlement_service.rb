@@ -30,7 +30,7 @@ module CustomerBonuses
 
     def complete_bonus
       CustomerBonuses::CompleteWorker
-        .perform_async(customer_bonus: bet.customer_bonus)
+        .perform_async(customer_bonus: customer_bonus)
     end
 
     def lose_bonus
