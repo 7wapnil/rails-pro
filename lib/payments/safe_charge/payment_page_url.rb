@@ -55,7 +55,12 @@ module Payments
           zip: @transaction.customer.address.zip_code,
           isNative: 1,
           payment_method: provider_method_name(@transaction.method),
-          payment_method_mode: 'filter'
+          payment_method_mode: 'filter',
+          success_url: notification_url(:success),
+          error_url: notification_url(:fail),
+          back_url: notification_url(:cancel),
+          pending_url: notification_url(:pending),
+          notify_url: notification_url(:notification)
         }
       end
 
@@ -84,6 +89,10 @@ module Payments
           ENV['SAFECHARGE_SECRET_KEY'],
           *query_hash.values
         ].map(&:to_s).join
+      end
+
+      def notification_url(result)
+        "http://localhost:3000/payments/safe_charge/notification?result=#{result}"
       end
     end
   end

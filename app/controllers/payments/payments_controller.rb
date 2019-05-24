@@ -1,5 +1,7 @@
 module Payments
   class PaymentsController < ActionController::Base
+    skip_before_action :verify_authenticity_token
+
     def deposit
       console
 
@@ -18,22 +20,8 @@ module Payments
       render plain: e.message
     end
 
-    def success
-      log_message(:info, 'Received success response')
-      provider.handle_success
-    end
-
-    def fail
-      log_message(:info, 'Received failed response')
-      provider.handle_fail
-    end
-
-    def cancel
-      log_message(:info, 'Received cancellation response')
-      provider.handle_cancel
-    end
-
     def notification
+      raise ::NotImplementedError
     end
 
     def provider

@@ -130,9 +130,13 @@ Rails.application.routes.draw do
 
     resources :wirecard, only: [] do
       collection do
-        get :success
-        get :error
-        get :pending
+        post :notification
+      end
+    end
+
+    resources :safe_charge, only: [] do
+      collection do
+        get :notification
       end
     end
   end

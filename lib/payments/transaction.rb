@@ -14,8 +14,13 @@ module Payments
               },
               format: { with: /\A\d{1,12}(\.\d{0,2})?\z/ }
 
-    def wallet!
-      Wallet.find_or_create_by!(customer: customer, currency: currency)
+    def wallet
+      @wallet ||= Wallet.find_or_create_by!(customer: customer,
+                                            currency: currency)
+    end
+
+    def bonus
+      @bonus ||= Bonus.find_by_code(bonus_code)
     end
   end
 end

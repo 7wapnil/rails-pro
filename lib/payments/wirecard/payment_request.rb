@@ -3,6 +3,8 @@ module Payments
     class PaymentRequest
       include Methods
 
+      attr_reader :transaction
+
       def initialize(transaction)
         @transaction = transaction
       end
@@ -13,7 +15,7 @@ module Payments
             'merchant-account-id': {
               'value': ENV['WIRECARD_MERCHANT_ACCOUNT_ID']
             },
-            'request-id': transaction.id,
+            'request-id': "{{$guid}}:#{transaction.id}",
             'transaction-type': 'authorization',
             'requested-amount': {
               'value': transaction.amount,
@@ -28,33 +30,18 @@ module Payments
                 { 'name': provider_method_name(transaction.method) }
               ]
             },
-            'success-redirect-url': success_redirect_url,
-            'fail-redirect-url': fail_redirect_url,
-            'cancel-redirect-url': cancel_redirect_url
+            'redirect-url': notification_url,
+            'success-redirect-url': notification_url,
+            'fail-redirect-url': notification_url,
+            'cancel-redirect-url': notification_url
           }
         }
       end
 
       private
 
-      def transaction
-        @transaction
-      end
-
-      def success_redirect_url
-        "#{redirect_domain}/success"
-      end
-
-      def fail_redirect_url
-        "#{redirect_domain}/fail"
-      end
-
-      def cancel_redirect_url
-        "#{redirect_domain}/cancel"
-      end
-
-      def redirect_domain
-        'https://backend.arcanedemo.com/payments/wirecard'
+      def notification_url
+        "http://localhost:3000/payments/wirecard/notification"
       end
     end
   end
