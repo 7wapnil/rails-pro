@@ -10,11 +10,12 @@ module StateMachines
       active: ACTIVE = 'active',
       cancelled: CANCELLED = 'cancelled',
       completed: COMPLETED = 'completed',
+      lost: LOST = 'lost',
       expired: EXPIRED = 'expired'
     }.freeze
 
     DEFAULT_STATUS = INITIAL
-    USED_STATUSES = [CANCELLED, COMPLETED, EXPIRED].freeze
+    USED_STATUSES = [CANCELLED, COMPLETED, LOST, EXPIRED].freeze
 
     included do
       enum status: STATUSES
@@ -27,6 +28,7 @@ module StateMachines
         state :active
         state :cancelled
         state :completed
+        state :lost
         state :expired
 
         event :activate do
@@ -52,6 +54,11 @@ module StateMachines
         event :expire do
           transitions from: :active,
                       to: :expired
+        end
+
+        event :lose do
+          transitions from: :active,
+                      to: :lost
         end
       end
 

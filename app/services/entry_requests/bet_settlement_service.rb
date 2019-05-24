@@ -15,13 +15,12 @@ module EntryRequests
 
       entry = ::WalletEntry::AuthorizationService.call(entry_request)
 
-      return unless entry && bet.customer_bonus
+      return unless entry
 
-      bet.customer_bonus.with_lock do
-        recalculate_bonus_rollover
-        complete_bonus if bet.customer_bonus.rollover_balance.negative?
-      end
+      ::CustomerBonuses::BetSettlementService.call(bet: bet)
     end
+
+    delegate :customer_bonus, to: :bet
 
     private
 
@@ -35,17 +34,6 @@ module EntryRequests
       entry_request.register_failure!(
         I18n.t('errors.messages.entry_request_for_settled_bet', bet_id: bet.id)
       )
-    end
-
-    def recalculate_bonus_rollover
-      ::CustomerBonuses::RolloverCalculationService.call(
-        customer_bonus: bet.customer_bonus
-      )
-    end
-
-    def complete_bonus
-      CustomerBonuses::CompleteWorker
-        .perform_async(customer_bonus: bet.customer_bonus)
     end
   end
 end
