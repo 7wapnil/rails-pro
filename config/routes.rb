@@ -125,6 +125,18 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :payments do
+    get '/', to: 'payments#deposit'
+
+    resources :wirecard, only: [] do
+      collection do
+        get :success
+        get :error
+        get :pending
+      end
+    end
+  end
+
   devise_for :users, controllers: {
     sessions: 'users/sessions'
   }

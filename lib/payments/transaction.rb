@@ -1,21 +1,21 @@
 module Payments
   class Transaction
     include ::ActiveModel::Model
-    include Methods
-    attr_accessor :customer, :amount, :currency, :bonus_code
 
-    validates :customer, :amount, :currency, presence: true
+    MIN_AMOUNT = 0
+    MAX_AMOUNT = 10_000
 
-    def self.build(method)
-      support = TRANSACTIONS[method].present?
-      err_msg = "#{method} is not supported"
-      raise ::Payments::Errors::NotSupportedError, err_msg unless support
+    attr_accessor :id, :method, :customer, :amount, :currency, :bonus_code
 
-      TRANSACTIONS[method].new
-    end
+    validates :method, :customer, :amount, :currency, presence: true
+    validates :amount,
+              numericality: {
+                greater_than: MIN_AMOUNT, less_than: MAX_AMOUNT
+              },
+              format: { with: /\A\d{1,12}(\.\d{0,2})?\z/ }
 
-    def deposit_provider
-      raise ::NotImplementedError
+    def wallet!
+      Wallet.find_or_create_by!(customer: customer, currency: currency)
     end
   end
 end
