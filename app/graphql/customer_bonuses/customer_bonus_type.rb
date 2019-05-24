@@ -18,7 +18,10 @@ module CustomerBonuses
     field :validForDays, !types.Int,
           property: :valid_for_days
     field :expiresAt, !types.String do
-      resolve ->(obj, _args, _ctx) { obj.expires_at.strftime('%e.%m.%y') }
+      resolve ->(obj, _args, _ctx) { obj.expires_at(human: true) }
+    end
+    field :amount, !types.String do
+      resolve ->(obj, _atgs, _ctx) { obj.amount(human: true) }
     end
   end
 end

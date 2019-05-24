@@ -16,6 +16,7 @@ module StateMachines
 
     DEFAULT_STATUS = INITIAL
     USED_STATUSES = [CANCELLED, COMPLETED, LOST, EXPIRED].freeze
+    SYSTEM_STATUSES = [INITIAL, FAILED].freeze
 
     included do
       enum status: STATUSES
@@ -33,11 +34,12 @@ module StateMachines
 
         event :activate do
           transitions from: :initial,
-                      to: :active
+                      to: :active,
+                      after: :assign_balance_entry
         end
 
         event :fail do
-          transitions from: :initial,
+          transitions from: %i[initial failed expired],
                       to: :failed
         end
 
@@ -63,6 +65,12 @@ module StateMachines
       end
 
       validates :status, presence: true
+
+      private
+
+      def assign_balance_entry(balance_entry)
+        update(balance_entry: balance_entry)
+      end
     end
   end
 end

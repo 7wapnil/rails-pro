@@ -26,16 +26,18 @@ class BetDecorator < ApplicationDecorator
     human ? number_with_precision(super(), precision: PRECISION) : super()
   end
 
-  def winning_amount(human: false)
-    human ? number_with_precision(super(), precision: PRECISION) : super()
-  end
-
   def base_currency_amount(human: false)
     human ? number_with_precision(super(), precision: PRECISION) : super()
   end
 
   def created_at(human: false)
     human ? l(created_at, format: :long) : super()
+  end
+
+  def human_notification_message
+    return unless notification_code
+
+    I18n.t("bets.notifications.#{notification_code}", default: nil)
   end
 
   private

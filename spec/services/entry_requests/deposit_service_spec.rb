@@ -87,6 +87,15 @@ describe EntryRequests::DepositService do
     it 'applies customer bonus only once' do
       expect { service_call }.not_to change(BalanceEntryRequest.bonus, :count)
     end
+
+    it 'activates customer bonus' do
+      service_call
+
+      expect(customer_bonus.reload).to have_attributes(
+        balance_entry_id: entry_request.entry.bonus_balance_entry.id,
+        status: CustomerBonus::ACTIVE
+      )
+    end
   end
 
   context 'without customer bonus' do
@@ -109,6 +118,15 @@ describe EntryRequests::DepositService do
     it 'does not proceed' do
       service_call
       expect(WalletEntry::AuthorizationService).not_to receive(:call)
+    end
+
+    it 'fails customer bonus' do
+      service_call
+
+      expect(customer_bonus.reload).to have_attributes(
+        balance_entry_id: nil,
+        status: CustomerBonus::FAILED
+      )
     end
   end
 end

@@ -14,6 +14,7 @@ module EntryRequests
       def call
         create_entry_request!
         create_balance_request!
+        validate_entry_request!
 
         entry_request
       end
@@ -53,6 +54,19 @@ module EntryRequests
           entry_request: entry_request,
           amount: amount,
           kind: Balance::BONUS
+        )
+      end
+
+      def validate_entry_request!
+        check_bonus_expiration!
+      end
+
+      def check_bonus_expiration!
+        return true if entry_request.amount.negative?
+        return true unless customer_bonus.expired?
+
+        entry_request.register_failure!(
+          I18n.t('errors.messages.entry_requests.bonus_expired')
         )
       end
     end

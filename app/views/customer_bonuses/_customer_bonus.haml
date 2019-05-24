@@ -1,8 +1,3 @@
-:ruby
-  entry = @customer_bonus.entry
-  customer = @customer_bonus.customer
-  entry_link = entry ? link_to(t('entities.entry'), entry_path(entry)) : 'n/a'
-
 .row.mt-4
   .col
     = card header: customer_bonus.code, class: 'bonus-details' do
@@ -12,7 +7,7 @@
             %table.table
               %tr
                 %td= t('attributes.customer_name')
-                %td= link_to(customer.full_name, customer_path(customer))
+                %td= customer_bonus.link_to_customer
               %tr
                 %td= t('attributes.rollover_multiplier')
                 %td= customer_bonus.rollover_multiplier
@@ -30,7 +25,7 @@
             %table.table
               %tr
                 %td= t('attributes.percentage')
-                %td= number_to_percentage(customer_bonus.percentage, precision: 0)
+                %td= customer_bonus.percentage(human: true)
               %tr
                 %td= t('attributes.kind')
                 %td= customer_bonus.kind
@@ -43,10 +38,7 @@
               - if customer_bonus.expired?
                 %tr
                   %td= t('attributes.expired_at')
-                  %td= l(customer_bonus.deleted_at)
-                %tr
-                  %td= t('attributes.expiration_reason')
-                  %td= t("expiration_reasons.#{customer_bonus.expiration_reason}")
+                  %td= l(customer_bonus.expires_at)
               - else
                 %tr
                   %td= t('attributes.expires_at')
@@ -59,13 +51,16 @@
             %table.table
               %tr
                 %td= t('entities.entry_information')
-                %td= entry_link
+                %td= customer_bonus.link_to_entry
               %tr
                 %td= t('attributes.rollover_balance')
                 %td= customer_bonus.rollover_balance
               %tr
                 %td= t('attributes.rollover_initial_balance')
                 %td= customer_bonus.rollover_initial_value
+              %tr
+                %td= t('attributes.awarded_amount')
+                %td= customer_bonus.amount(human: true)
 
       %hr
         = link_back bonuses_customer_path(customer_bonus.customer)

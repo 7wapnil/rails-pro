@@ -62,12 +62,13 @@ RSpec.configure do |config|
   # config.filter_gems_from_backtrace("gem name")
 
   config.include Rails.application.routes.url_helpers, type: :feature
+  config.include Rails.application.routes.url_helpers, type: :decorator
+  config.include Rails.application.routes.url_helpers, routes: true
   config.include ActionView::Helpers::NumberHelper, type: :feature
   config.include Warden::Test::Helpers, type: :feature
   config.include FeatureHelpers, type: :feature
   config.include RequestSpecHelper, type: :controller
   config.include Devise::Test::ControllerHelpers, type: :controller
-  config.include Rails.application.routes.url_helpers, routes: true
 
   # Some work to do before any test
   config.before do

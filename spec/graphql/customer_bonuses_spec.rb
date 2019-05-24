@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe GraphQL, '#wallets' do
+describe GraphQL, '#customerBonuses' do
   let(:auth_customer) { create(:customer) }
   let(:context) { { current_customer: auth_customer } }
   let(:variables) { {} }
@@ -17,23 +17,35 @@ describe GraphQL, '#wallets' do
 
   describe 'query' do
     let(:query) do
-      %({ customerBonuses { id code rolloverBalance
-                           rolloverInitialValue status expiresAt} })
+      %({
+        customerBonuses {
+          id
+          code
+          rolloverBalance
+          rolloverInitialValue
+          status
+          expiresAt
+          amount
+        }
+      })
     end
 
     let(:control_date) do
       customer_bonuses.first.expires_at.strftime('%e.%m.%y')
     end
 
+    let(:control_customer_bonus) { customer_bonuses.first.decorate }
+
     it 'returns customer bonus info' do
       expect(result['data']['customerBonuses'].first)
         .to include(
-          'id' => customer_bonuses.first.id.to_s,
-          'code' => customer_bonuses.first.code,
-          'rolloverBalance' => customer_bonuses.first.rollover_balance.to_d,
+          'id' => control_customer_bonus.id.to_s,
+          'code' => control_customer_bonus.code,
+          'rolloverBalance' => control_customer_bonus.rollover_balance.to_d,
           'rolloverInitialValue' => rollover_initial_value.to_d,
           'status' => CustomerBonus::ACTIVE,
-          'expiresAt' => control_date
+          'expiresAt' => control_date,
+          'amount' => control_customer_bonus.amount(human: true)
         )
     end
 

@@ -22,6 +22,12 @@ describe Bonuses::ActivationService do
   let(:calculations) { { bonus: bonus_value, real_money: 100 } }
   let(:rollover_value) { (amount * rollover_multiplier).to_d }
 
+  let(:created_customer_bonus) { bonus.customer_bonuses.last }
+  let(:found_entry_request) do
+    EntryRequest.bonus_change.find_by(origin: created_customer_bonus)
+  end
+  let(:found_entry) { found_entry_request.entry }
+
   context 'adds money' do
     let!(:entry_currency_rule) do
       create(:entry_currency_rule, :bonus_change,
@@ -34,12 +40,6 @@ describe Bonuses::ActivationService do
       "Bonus transaction: #{amount} #{wallet.currency} " \
       "for #{wallet.customer} by #{initiator}."
     end
-
-    let(:created_customer_bonus) { bonus.customer_bonuses.last }
-    let(:found_entry_request) do
-      EntryRequest.bonus_change.find_by(origin: created_customer_bonus)
-    end
-    let(:found_entry) { found_entry_request.entry }
 
     include_context 'asynchronous to synchronous'
 
@@ -124,22 +124,26 @@ describe Bonuses::ActivationService do
     end
   end
 
-  context 'activating a non-repeatable bonus after it expires' do
-    before do
-      bonus.update(repeatable: false)
-      create(:customer_bonus,
-             customer: customer,
-             original_bonus: bonus,
-             expires_at: 1.day.ago,
-             status: CustomerBonus::EXPIRED)
-    end
+  context 'activating an expired_bonus' do
+    before { bonus.update(expires_at: 1.day.ago) }
 
     it 'raises an error' do
-      expected_message = I18n.t(
-        'errors.messages.repeated_bonus_activation'
-      )
+      expected_message = I18n.t('errors.messages.entry_requests.bonus_expired')
       expect { subject }
         .to raise_error(CustomerBonuses::ActivationError, expected_message)
+    end
+
+    it 'fails entry request' do
+      subject
+    rescue CustomerBonuses::ActivationError
+      expect(found_entry_request).to be_failed
+    end
+
+    it 'does not create entry' do
+      expect do
+        subject
+      rescue StandardError
+      end.not_to change(Entry, :count)
     end
   end
 end

@@ -2,15 +2,13 @@
 
 module EntryRequests
   class DepositService < ApplicationService
-    delegate :bonus_balance_entry_request, to: :entry_request
-
     def initialize(entry_request:)
       @entry_request = entry_request
       @customer_bonus = entry_request.origin&.customer_bonus
     end
 
     def call
-      return if entry_request.failed?
+      return failure if entry_request.failed?
 
       process_entry_request!
 
@@ -28,7 +26,7 @@ module EntryRequests
     end
 
     def success
-      customer_bonus&.activate!
+      customer_bonus&.activate!(entry.bonus_balance_entry)
     end
 
     def failure
