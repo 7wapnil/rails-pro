@@ -8,10 +8,9 @@ module CustomerBonuses
       return unless customer_bonus&.active?
 
       recalculate_bonus_rollover
+      complete_bonus if customer_bonus.rollover_balance.negative?
 
       return if unsettled_bets_remaining
-
-      complete_bonus if customer_bonus.rollover_balance.negative?
 
       bonus_money_left = customer_bonus.wallet.bonus_balance&.amount
       lose_bonus unless bonus_money_left&.positive?
