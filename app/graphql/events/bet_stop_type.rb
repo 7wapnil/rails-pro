@@ -4,7 +4,7 @@ module Events
   BetStopType = GraphQL::ObjectType.define do
     name 'BetStop'
 
-    field :event_id, !types.ID
-    field :market_status, types.String
+    field :eventId, !types.ID, property: :event_id
+    field :marketStatus, types.String, property: :market_status
   end
 end
