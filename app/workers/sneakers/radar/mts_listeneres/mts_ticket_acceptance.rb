@@ -7,7 +7,7 @@ module Radar
 
       EXCHANGE_NAME = 'arcanebet_arcanebet-Confirm'
 
-      from_queue ENV['MTS_MQ_QUEUE_CONFIRM'],
+      from_queue ENV.fetch('MTS_MQ_QUEUE_CONFIRM'),
                  connection: Mts::Session.instance.connection,
                  exchange: EXCHANGE_NAME,
                  exchange_options: {
@@ -16,7 +16,7 @@ module Radar
                  },
                  queue_options: {
                    durable: true,
-                   routing_key: ENV['MTS_MQ_TICKET_CONFIRMATION_RK']
+                   routing_key: ENV.fetch('MTS_MQ_TICKET_CONFIRMATION_RK')
                  },
                  ack: true,
                  heartbeat: 30,

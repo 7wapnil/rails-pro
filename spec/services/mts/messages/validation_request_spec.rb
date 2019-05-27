@@ -11,7 +11,7 @@ describe Mts::Messages::ValidationRequest do
         .with('MTS_MODE')
         .and_return('test')
 
-      allow(ENV).to receive(:[])
+      allow(ENV).to receive(:fetch)
         .with('MTS_LIMIT_ID')
         .and_return(limit_id)
 

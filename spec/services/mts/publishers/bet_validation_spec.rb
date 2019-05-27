@@ -7,6 +7,13 @@ describe Mts::Publishers::BetValidation do
   let(:bet) { create(:bet) }
   let(:connection_double) { double }
 
+  before do
+    allow(ENV)
+      .to receive(:fetch)
+      .with('MTS_LIMIT_ID')
+      .and_return(1)
+  end
+
   describe '#publish!' do
     before do
       allow(::Mts::Session.instance).to receive(:opened_connection)
