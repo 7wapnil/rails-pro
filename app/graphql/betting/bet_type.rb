@@ -20,7 +20,8 @@ module Betting
       resolve ->(obj, _args, _ctx) { obj.odd_value }
     end
 
+    field :status, !types.String
     field :message, types.String, property: :human_notification_message
-    field :status, !types.String, property: :display_status
+    field :displayStatus, !types.String, property: :display_status
   end
 end
