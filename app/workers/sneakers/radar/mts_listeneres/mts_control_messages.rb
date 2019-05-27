@@ -7,7 +7,7 @@ module Radar
 
       EXCHANGE_NAME = 'arcanebet_arcanebet-Reply'
 
-      from_queue ENV['MTS_MQ_QUEUE_REPLY'],
+      from_queue ENV.fetch('MTS_MQ_QUEUE_REPLY'),
                  connection: Mts::Session.instance.connection,
                  exchange: EXCHANGE_NAME,
                  exchange_options: {
@@ -16,7 +16,7 @@ module Radar
                  },
                  queue_options: {
                    durable: true,
-                   routing_key: ENV['MTS_MQ_TICKET_CANCELLATION_RK']
+                   routing_key: ENV.fetch('MTS_MQ_TICKET_CANCELLATION_RK')
                  },
                  ack: true,
                  heartbeat: 30,
