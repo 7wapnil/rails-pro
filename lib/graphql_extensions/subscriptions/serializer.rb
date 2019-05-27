@@ -3,15 +3,22 @@
 module GraphqlExtensions
   module Subscriptions
     module Serializer
+      KEYWORDS = [
+        OPEN_STRUCT = 'open_struct',
+        DECORATED = 'decorated'
+      ].freeze
+
       class << self
         def load(json_string)
-          data = JSON.parse(json_string)
+          serialized_data = JSON.parse(json_string)
+          keywords = extract_keywords!(serialized_data)
 
-          return load_open_struct(data) if open_struct_loaded?(data)
+          return OpenStruct.new(serialized_data) if keywords[OPEN_STRUCT]
 
-          object = GraphQL::Subscriptions::Serialize.load(json_string)
+          original_json = dump_json(serialized_data)
+          object = GraphQL::Subscriptions::Serialize.load(original_json)
 
-          return object.decorate if decorator_loaded?(data)
+          return object.decorate if keywords[DECORATED]
 
           object
         end
@@ -28,31 +35,29 @@ module GraphqlExtensions
 
         private
 
-        def open_struct_loaded?(serialized_data)
-          serialized_data.is_a?(Hash) &&
-            serialized_data['open_struct'].present?
-        end
+        def extract_keywords!(serialized_data)
+          return {} unless serialized_data.is_a?(Hash)
 
-        def decorator_loaded?(serialized_data)
-          serialized_data.is_a?(Hash) &&
-            serialized_data['decorated'].present?
-        end
+          keywords = serialized_data.slice(*KEYWORDS)
 
-        def load_open_struct(serialized_data)
-          OpenStruct.new(serialized_data.except('open_struct'))
+          serialized_data.except!(*KEYWORDS)
+
+          keywords
         end
 
         def dump_open_struct(serialized_data)
-          JSON.generate(
-            serialized_data.to_h.merge(open_struct: true),
-            quirks_mode: true
+          dump_json(
+            serialized_data.to_h.merge(open_struct: true)
           )
         end
 
+        def dump_json(serialized_data)
+          JSON.generate(serialized_data, quirks_mode: true)
+        end
+
         def dump_decorator(serialized_data)
-          JSON.generate(
-            JSON.parse(serialized_data).merge(decorated: true),
-            quirks_mode: true
+          dump_json(
+            JSON.parse(serialized_data).merge(decorated: true)
           )
         end
       end
