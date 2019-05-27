@@ -53,7 +53,7 @@
               %span= scope.name
     %tr
       %td= t('attributes.event_status')
-      %td= event.payload['event_status']
+      %td= event.status
     %tr
       %td= t('attributes.visible')
       %td= visibility_toggle(event, update_visibility_event_path(event))
