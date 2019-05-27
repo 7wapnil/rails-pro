@@ -10,7 +10,7 @@ module CustomerBonuses
       recalculate_bonus_rollover
       complete_bonus unless customer_bonus.rollover_balance.positive?
 
-      return if unsettled_bets_remaining
+      return if unsettled_bets_remaining || customer_bonus.completed?
 
       bonus_money_left = customer_bonus.wallet.bonus_balance&.amount
       lose_bonus unless bonus_money_left&.positive?
@@ -36,6 +36,9 @@ module CustomerBonuses
     def lose_bonus
       return unless customer_bonus.active?
 
+      # Other CustomerBonus deactivation processes
+      # involve bonus balance conviscation. At this
+      # point, there is nothing to confiscate.
       customer_bonus.lose!
     end
 
