@@ -43,8 +43,7 @@ module CustomerBonuses
     end
 
     def unsettled_bets_remaining
-      bonus_bets = Bet.where(customer_bonus: customer_bonus)
-      bonus_bets.where(settlement_status: nil).exists?
+      customer_bonus.bets.where(settlement_status: nil).exists?
     end
   end
 end
