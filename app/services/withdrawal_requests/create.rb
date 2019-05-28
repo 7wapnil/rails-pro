@@ -73,7 +73,7 @@ module WithdrawalRequests
 
     def create_withdrawal_request!
       WithdrawalRequest.create(entry_request: withdrawal,
-                               payment_details: payload_hash)
+                               details: payload_hash)
     end
   end
 end

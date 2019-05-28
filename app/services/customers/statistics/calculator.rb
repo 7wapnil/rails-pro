@@ -93,8 +93,7 @@ module Customers
           entries
           .includes(:withdrawal_request)
           .withdraw
-          .where(origin_type: WithdrawalRequest.name,
-                 withdrawal_requests: { status: WithdrawalRequest::APPROVED })
+          .where(customer_transactions: { status: WithdrawalRequest::APPROVED })
       end
 
       def prematch_wager

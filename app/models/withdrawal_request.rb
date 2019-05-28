@@ -1,24 +1,6 @@
 # frozen_string_literal: true
 
-class WithdrawalRequest < ApplicationRecord
-  has_many :entry_requests, as: :origin
-  has_one :entry_request,
-          -> { unscoped.order(:created_at) },
-          as: :origin
-  has_one :entry,
-          -> { unscoped.order(:created_at) },
-          through: :entry_request,
-          required: false,
-          as: :origin
-
-  belongs_to :actioned_by, class_name: User.name, optional: true
-
-  enum status: {
-    pending: PENDING = 'pending',
-    approved: APPROVED = 'approved',
-    rejected: REJECTED = 'rejected'
-  }
-
+class WithdrawalRequest < CustomerTransaction
   def loggable_attributes
     { id: id, status: status }
   end

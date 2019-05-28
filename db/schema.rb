@@ -547,15 +547,6 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.index ["customer_id"], name: "index_wallets_on_customer_id"
   end
 
-  create_table "withdrawal_requests", force: :cascade do |t|
-    t.string "status", default: "pending"
-    t.jsonb "payment_details"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "actioned_by_id"
-    t.index ["actioned_by_id"], name: "index_withdrawal_requests_on_actioned_by_id"
-  end
-
   add_foreign_key "addresses", "customers"
   add_foreign_key "balance_entries", "balances"
   add_foreign_key "balance_entries", "entries"
@@ -594,5 +585,4 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
   add_foreign_key "verification_documents", "customers"
   add_foreign_key "wallets", "currencies"
   add_foreign_key "wallets", "customers"
-  add_foreign_key "withdrawal_requests", "users", column: "actioned_by_id"
 end

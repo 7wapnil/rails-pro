@@ -9,6 +9,7 @@ module Withdrawals
       input = args['input']
       withdrawal_data = input.to_h
       withdrawal_data[:customer] = current_customer
+      withdrawal_data[:details] = withdrawal_data.delete(:payment_details)
       Forms::WithdrawRequest.new(withdrawal_data).validate!
 
       withdrawal_request = create_withdrawal_request!(input)
