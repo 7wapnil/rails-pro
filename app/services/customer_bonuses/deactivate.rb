@@ -18,7 +18,6 @@ module CustomerBonuses
 
     def call
       return unless customer_bonus
-      return customer_bonus if customer_bonus.deleted_at
 
       validate_action!
 

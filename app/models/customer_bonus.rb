@@ -3,8 +3,6 @@
 class CustomerBonus < ApplicationRecord
   include StateMachines::CustomerBonusStateMachine
 
-  acts_as_paranoid
-
   default_scope { order(:created_at) }
 
   enum kind: Bonus.kinds

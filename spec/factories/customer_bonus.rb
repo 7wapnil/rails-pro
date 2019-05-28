@@ -11,7 +11,6 @@ FactoryBot.define do
     expires_at           { Time.zone.now.end_of_month }
     valid_for_days       { 60 }
     created_at           { Time.zone.now }
-    deleted_at           { nil }
     rollover_balance     { rand(100..1000) }
     rollover_initial_value { rollover_balance }
     status                 { CustomerBonus::ACTIVE }
