@@ -3,8 +3,8 @@
 describe EntryRequests::Factories::WinPayout do
   subject { described_class.call(origin: bet, **attributes) }
 
-  let(:winning) { rand(100..500).to_f }
-  let(:amount) { rand(10..100).to_f }
+  let(:winning) { rand(100..500).to_d }
+  let(:amount) { rand(10..100).to_d }
   let(:ratio) { 0.75 }
 
   let(:placement_entry) { create(:entry, :bet, amount: amount, origin: bet) }
