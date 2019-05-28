@@ -3,8 +3,6 @@ module Payments
     skip_before_action :verify_authenticity_token
 
     def deposit
-      console
-
       transaction = ::Payments::Transaction.new(
         method: payment_method,
         customer: customer,
@@ -21,7 +19,10 @@ module Payments
     end
 
     def notification
-      raise ::NotImplementedError
+      Rails.logger.debug "Notification received: #{params}"
+
+      result = provider.handle_payment_response(params)
+      render plain: result
     end
 
     def provider

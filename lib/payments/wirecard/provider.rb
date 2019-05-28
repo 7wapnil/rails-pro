@@ -6,6 +6,10 @@ module Payments
         response['payment-redirect-url']
       end
 
+      def payment_response_handler
+        PaymentResponse
+      end
+
       def client
         @client ||= Client.new
       end

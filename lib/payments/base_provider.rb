@@ -4,15 +4,12 @@ module Payments
       raise ::NotImplementedError
     end
 
-    def handle_success
-      raise ::NotImplementedError
+    def handle_payment_response(params)
+      handler = payment_response_handler.new(params)
+      handler.call
     end
 
-    def handle_fail
-      raise ::NotImplementedError
-    end
-
-    def handle_cancel
+    def payment_response_handler
       raise ::NotImplementedError
     end
   end

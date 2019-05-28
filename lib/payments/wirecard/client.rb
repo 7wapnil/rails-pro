@@ -3,8 +3,7 @@ module Payments
     class Client
       include HTTParty
 
-      # base_uri ENV['WIRECARD_API_ENDPOINT']
-      base_uri 'https://wpp-test.wirecard.com'
+      base_uri ENV['WIRECARD_API_ENDPOINT']
       raise_on [400, 401, 403, 500]
       headers 'Accept': 'application/json',
               'Content-Type': 'application/json'

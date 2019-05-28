@@ -55,7 +55,6 @@ module Payments
           zip: @transaction.customer.address.zip_code,
           isNative: 1,
           payment_method: provider_method_name(@transaction.method),
-          payment_method_mode: 'filter',
           success_url: notification_url(:success),
           error_url: notification_url(:fail),
           back_url: notification_url(:cancel),
