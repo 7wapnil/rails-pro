@@ -303,13 +303,6 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.index ["customer_id"], name: "index_deposit_limits_on_customer_id"
   end
 
-  create_table "deposit_requests", force: :cascade do |t|
-    t.bigint "customer_bonus_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["customer_bonus_id"], name: "index_deposit_requests_on_customer_bonus_id"
-  end
-
   create_table "entries", force: :cascade do |t|
     t.bigint "wallet_id"
     t.string "kind"
@@ -582,7 +575,6 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
   add_foreign_key "customer_transactions", "users", column: "actioned_by_id"
   add_foreign_key "deposit_limits", "currencies"
   add_foreign_key "deposit_limits", "customers"
-  add_foreign_key "deposit_requests", "customer_bonuses"
   add_foreign_key "entries", "entry_requests"
   add_foreign_key "entries", "wallets"
   add_foreign_key "entry_currency_rules", "currencies"
