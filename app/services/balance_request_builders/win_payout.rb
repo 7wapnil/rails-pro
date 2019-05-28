@@ -7,7 +7,7 @@ module BalanceRequestBuilders
     end
 
     def bonus_balance_entry_request
-      return nil unless customer_bonus&.active?
+      return unless customer_bonus&.active?
 
       super
     end
