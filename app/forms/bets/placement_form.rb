@@ -10,9 +10,9 @@ module Bets
 
     def validate!
       check_if_odd_active! &&
+        check_if_market_active! &&
         limits_validation! &&
-        check_provider_connection! &&
-        check_if_market_not_suspended!
+        check_provider_connection!
     end
 
     private
@@ -50,10 +50,10 @@ module Bets
       event.upcoming? && Radar::Producer.prematch.unsubscribed?
     end
 
-    def check_if_market_not_suspended!
-      return true unless market.suspended?
+    def check_if_market_active!
+      return true if market.active?
 
-      raise ::Bets::PlacementError, I18n.t('errors.messages.market_suspended')
+      raise ::Bets::PlacementError, I18n.t('errors.messages.market_inactive')
     end
   end
 end
