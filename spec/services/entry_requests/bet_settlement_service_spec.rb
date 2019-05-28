@@ -50,4 +50,22 @@ describe EntryRequests::BetSettlementService do
       expect(WalletEntry::AuthorizationService).not_to receive(:call)
     end
   end
+
+  context 'with authorization failure' do
+    before do
+      allow(CustomerBonuses::BetSettlementService).to receive(:call)
+      allow(WalletEntry::AuthorizationService).to receive(:call).and_return(nil)
+    end
+
+    let(:bet) { create(:bet, :settled, :won, customer_bonus: customer_bonus) }
+    let(:customer_bonus) do
+      create(:customer_bonus, rollover_initial_value: -100_000)
+    end
+
+    it 'calls CustomerBonuses::Complete' do
+      subject
+      expect(CustomerBonuses::BetSettlementService)
+        .not_to have_received(:call)
+    end
+  end
 end

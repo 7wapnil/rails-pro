@@ -159,7 +159,7 @@ describe Radar::RollbackBetSettlementWorker do
       end
 
       it 'calls rollover bonus service' do
-        expect(Bonuses::RollbackBonusRolloverService)
+        expect(CustomerBonuses::RollbackBonusRolloverService)
           .to receive(:call)
           .exactly(control_bets.count).times
 

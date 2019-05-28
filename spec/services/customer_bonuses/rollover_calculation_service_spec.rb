@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Bonuses::RolloverCalculationService do
+describe CustomerBonuses::RolloverCalculationService do
   subject { service_object.call }
 
   let(:customer_bonus) do
@@ -63,6 +63,17 @@ describe Bonuses::RolloverCalculationService do
     let(:bonus_odds_theshold) { odd.value - 0.1 }
 
     it 'does not affect the rollover' do
+      expect { subject }.not_to change(customer_bonus, :rollover_balance)
+    end
+  end
+
+  context 'with completed customer bonus' do
+    before { customer_bonus.complete! }
+
+    let(:bet_amount) { customer_bonus.max_rollover_per_bet / 2.0 }
+    let(:bonus_odds_theshold) { odd.value - 0.1 }
+
+    it 'does not change the rollover' do
       expect { subject }.not_to change(customer_bonus, :rollover_balance)
     end
   end

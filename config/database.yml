@@ -3,19 +3,19 @@ default: &default
   encoding: unicode
   pool: <%= ENV.fetch('DB_POOL_SIZE') { 20 } %>
 
-development:
+local: &local
   <<: *default
-  database: arcanebet_development
   host: <%= ENV['DATABASE_HOST'] %>
   username: <%= ENV['DATABASE_USERNAME'] %>
   password: <%= ENV['DATABASE_PASSWORD'] %>
 
+development:
+  <<: *local
+  database: arcanebet_development
+  
 test:
-  <<: *default
+  <<: *local
   database: arcanebet_test
-  host: <%= ENV['DATABASE_HOST'] %>
-  username: <%= ENV['DATABASE_USERNAME'] %>
-  password: <%= ENV['DATABASE_PASSWORD'] %>
 
 production:
   <<: *default

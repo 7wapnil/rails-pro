@@ -1,13 +1,13 @@
 # fronzen_string_literal: true
 
-module Bonuses
+module CustomerBonuses
   class RolloverCalculationService < ApplicationService
     def initialize(customer_bonus:)
       @customer_bonus = customer_bonus
     end
 
     def call
-      return unless customer_bonus
+      return unless customer_bonus&.active?
 
       recalculate_rollover!
     end
