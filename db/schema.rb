@@ -240,6 +240,20 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.index ["customer_id"], name: "index_customer_statistics_on_customer_id"
   end
 
+  create_table "customer_transactions", force: :cascade do |t|
+    t.string "type"
+    t.string "status"
+    t.string "external_id"
+    t.bigint "actioned_by_id"
+    t.bigint "customer_bonus_id"
+    t.jsonb "details"
+    t.datetime "finalized_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actioned_by_id"], name: "index_customer_transactions_on_actioned_by_id"
+    t.index ["customer_bonus_id"], name: "index_customer_transactions_on_customer_bonus_id"
+  end
+
   create_table "customers", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -564,6 +578,8 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "customer_statistics", "customers"
+  add_foreign_key "customer_transactions", "customer_bonuses"
+  add_foreign_key "customer_transactions", "users", column: "actioned_by_id"
   add_foreign_key "deposit_limits", "currencies"
   add_foreign_key "deposit_limits", "customers"
   add_foreign_key "deposit_requests", "customer_bonuses"
