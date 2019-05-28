@@ -6,7 +6,7 @@ module Exchanger
       @target_code = target_currency || ::Currency::PRIMARY_CODE
 
       @origin_currency = origin_currency if origin_currency.is_a? Currency
-      @target_currency = origin_currency if target_currency.is_a? Currency
+      @target_currency = target_currency if target_currency.is_a? Currency
     end
 
     def call
