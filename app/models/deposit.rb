@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class DepositRequest < CustomerTransaction
+class Deposit < CustomerTransaction
   BUSINESS_ERRORS = [
     Deposits::DepositLimitRestrictionError,
     Deposits::DepositAttemptError,

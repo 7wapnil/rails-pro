@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :deposit_request do
+  factory :deposit do
     trait :with_bonus do
       association :customer_bonus, factory: :customer_bonus,
                                    strategy: :build

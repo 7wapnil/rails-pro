@@ -408,8 +408,8 @@ en:
       deposit_attempts_exceeded: Deposit attempts exceeded, contact support agent
       deposit_attempt_is_not_succeded: Deposit attempt is not succeded
       technical_error_happened: Technical error happened
-      deposit_request_cancelled: Deposit request canceled
-      deposit_request_failed: Deposit request failed
+      deposit_cancelled: Deposit request canceled
+      deposit_failed: Deposit request failed
       unsupported_payment_method: "Payment method '%{code}' is not implemented"
       nonexistent_bet: "Bet with validation ticket does not exist"
       password_invalid: Incorrect password
