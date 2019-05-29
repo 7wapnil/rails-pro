@@ -44,7 +44,7 @@ module OddsFeed
       end
 
       def kind(id)
-        ESPORTS_MAP.include?(id) ? :esports : :sports
+        ESPORTS_MAP.include?(id) ? Title::ESPORTS : Title::SPORTS
       end
     end
   end
