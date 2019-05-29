@@ -19,6 +19,8 @@ describe GraphQL do
     })
   end
 
+  before { create(:currency, code: 'EUR') }
+
   context 'wrong input' do
     let(:variables) do
       { input: {} }
@@ -47,7 +49,8 @@ describe GraphQL do
         zipCode: '123',
         streetAddress: 'Street Addr',
         phone: '1232132132',
-        agreedWithPromotional: true
+        agreedWithPromotional: true,
+        currency: 'EUR'
       } }
     end
 
@@ -75,7 +78,8 @@ describe GraphQL do
         streetAddress: 'Street Addr',
         phone: '37258383943',
         agreedWithPromotional: true,
-        bTag: 'AFFILIATE_ID'
+        bTag: 'AFFILIATE_ID',
+        currency: 'EUR'
       } }
     end
 
@@ -88,6 +92,11 @@ describe GraphQL do
     it 'creates new customer record' do
       result
       expect(Customer.find_by(email: 'test@email.com')).not_to be_nil
+    end
+
+    it 'creates customer related wallet' do
+      result
+      expect(Customer.find_by(email: 'test@email.com').wallets).not_to be_empty
     end
 
     it 'logs audit event on sign up' do

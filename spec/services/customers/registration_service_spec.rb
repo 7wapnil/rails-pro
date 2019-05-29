@@ -10,8 +10,11 @@ describe Customers::RegistrationService do
       date_of_birth: '01-01-1999',
       phone: '37258383943',
       password: '123456',
-      password_confirmation: '123456' }
+      password_confirmation: '123456',
+      currency: 'EUR' }
   end
+
+  before { create(:currency, code: 'EUR') }
 
   it 'raises error on invalid customer data' do
     expect { described_class.call({}) }
@@ -34,5 +37,11 @@ describe Customers::RegistrationService do
     allow(subject).to receive(:send_email_verification_email)
     subject.call
     expect(subject).to have_received(:send_email_verification_email)
+  end
+
+  it 'creates customer related wallet' do
+    subject = described_class.new(valid_input)
+    allow(subject).to receive(:send_email_verification_email)
+    expect(subject.call.wallets).not_to be_empty
   end
 end
