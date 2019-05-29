@@ -5,7 +5,14 @@ describe CustomerBonus, '#show' do
     subject do
       create(:customer_bonus,
              rollover_balance: Faker::Number.decimal(2, 2),
-             rollover_initial_value: Faker::Number.decimal(2, 2))
+             rollover_initial_value: Faker::Number.decimal(2, 2),
+             balance_entry: balance_entry)
+    end
+
+    let(:entry) { create(:entry, :bonus_change) }
+    let(:bonus_balance) { create(:balance, :bonus) }
+    let(:balance_entry) do
+      create(:balance_entry, entry: entry, balance: bonus_balance)
     end
 
     before do

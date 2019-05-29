@@ -4,6 +4,8 @@ class BalanceEntry < ApplicationRecord
   belongs_to :balance
   belongs_to :entry
 
+  has_one :customer_bonus, inverse_of: :balance_entry
+
   validates :amount, presence: true
 
   # scope :real_money

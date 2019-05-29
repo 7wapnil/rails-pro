@@ -33,6 +33,7 @@ en:
   view: View
   balance_interactions: Balance interactions
   balance_interaction_requests: Balance interaction requests
+  not_available: 'N/A'
 
   activate_instance: "Activate %{instance}"
   activated: "%{instance} activated"
@@ -95,6 +96,7 @@ en:
     activated_at: Activated at
     actual_payout: Actual payout
     amount: Amount
+    awarded_amount: Awarded amount
     real_money_amount: Cash amount
     bonus_amount: Bonus amount
     authorized_at: Authorized at
@@ -429,6 +431,9 @@ en:
         cancellation_option_not_active: "Cannot be cancelled because particular cancellation option is not active for bet"
         ticket_already_settled: "Cannot be cancelled because ticket is already settled for bet"
         generic_exception: "Generic exception code for bet"
+
+      entry_requests:
+        bonus_expired: 'Customer bonus is expired!'
 
       withdrawal:
         not_enough_money: Please check your available balance

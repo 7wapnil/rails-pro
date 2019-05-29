@@ -33,6 +33,8 @@ class CustomersController < ApplicationController
     show
   ]
 
+  decorates_assigned :customer_bonus
+
   def index
     @filter = CustomersFilter.new(source: Customer,
                                   query_params: query_params(:customers),

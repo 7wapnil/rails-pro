@@ -29,5 +29,10 @@ FactoryBot.define do
       created_at { (valid_for_days + 1).days.ago }
       status { CustomerBonus::EXPIRED }
     end
+
+    trait :with_balance_entry do
+      association :balance_entry, factory: %i[balance_entry bonus],
+                                  strategy: :build
+    end
   end
 end

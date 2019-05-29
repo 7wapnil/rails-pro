@@ -5,6 +5,10 @@ FactoryBot.define do
     amount { Faker::Number.decimal(3, 2) }
 
     entry
-    balance
+    association :balance, strategy: :build
+
+    trait :bonus do
+      association :balance, factory: %i[balance bonus], strategy: :build
+    end
   end
 end

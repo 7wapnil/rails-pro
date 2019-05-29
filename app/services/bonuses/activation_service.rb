@@ -24,7 +24,8 @@ module Bonuses
 
     private
 
-    attr_accessor :wallet, :bonus, :amount, :initiator, :customer_bonus
+    attr_accessor :wallet, :bonus, :amount, :initiator,
+                  :customer_bonus, :entry_request
 
     def log_activation_attempt
       initiator.log_event(:bonus_activation, { code: bonus.code }, customer)
@@ -40,13 +41,23 @@ module Bonuses
     end
 
     def charge_bonus_money
-      entry_request = EntryRequests::Factories::BonusChange.call(
+      create_entry_request!
+
+      return charge_failed! if entry_request.failed?
+
+      EntryRequests::BonusChangeWorker.perform_async(entry_request.id)
+    end
+
+    def create_entry_request!
+      @entry_request = EntryRequests::Factories::BonusChange.call(
         customer_bonus: customer_bonus,
         amount: amount,
         initiator: initiator
       )
+    end
 
-      EntryRequests::BonusChangeWorker.perform_async(entry_request.id)
+    def charge_failed!
+      raise CustomerBonuses::ActivationError, entry_request.result['message']
     end
 
     def log_successful_activation

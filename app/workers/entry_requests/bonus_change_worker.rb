@@ -5,7 +5,7 @@ module EntryRequests
     private
 
     def processing_service
-      EntryRequests::ProcessingService
+      EntryRequests::BonusChangeService
     end
   end
 end

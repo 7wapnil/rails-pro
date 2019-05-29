@@ -90,6 +90,7 @@ module EntryRequests
       end
 
       def validate_entry_request!
+        check_bonus_expiration!
         verify_deposit_attempts!
         check_deposit_limit!
 
@@ -97,6 +98,13 @@ module EntryRequests
       rescue *DepositRequest::BUSINESS_ERRORS => error
         entry_request.register_failure!(error.message)
         customer_bonus&.fail!
+      end
+
+      def check_bonus_expiration!
+        return true unless customer_bonus&.expired?
+
+        raise CustomerBonuses::ActivationError,
+              I18n.t('errors.messages.entry_requests.bonus_expired')
       end
 
       def check_deposit_limit!

@@ -34,7 +34,7 @@
             = bet.base_currency_amount(human: true)
             = Currency::PRIMARY_CODE
           %td
-            = bet.winning_amount(human: true)
+            = number_with_precision bet.winning_amount, precision: 2
             = bet.currency_code
           %td= bet.created_at(human: true)
           %td= status_badge(bet.status)

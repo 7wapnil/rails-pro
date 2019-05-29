@@ -1,13 +1,15 @@
 # frozen_string_literal: true
 
 class CustomerBonusesController < ApplicationController
-  find :customer_bonus, only: :destroy
+  find :customer_bonus, only: %i[show destroy]
   find :wallet, by: %i[customer_bonus wallet_id], strict: false, only: :create
   find :original_bonus,
        by: %i[customer_bonus original_bonus_id],
        class: Bonus.name,
        strict: false,
        only: :create
+
+  decorates_assigned :customer_bonus
 
   def create
     @customer_bonus = Bonuses::ActivationService.call(
@@ -21,12 +23,6 @@ class CustomerBonusesController < ApplicationController
                 notice: t(:activated, instance: t('entities.bonus'))
   rescue CustomerBonuses::ActivationError => error
     redirect_to bonuses_customer_path(@wallet.customer), alert: error.message
-  end
-
-  def show
-    @customer_bonus = CustomerBonus
-                      .includes(:customer)
-                      .find(params[:id])
   end
 
   def destroy
