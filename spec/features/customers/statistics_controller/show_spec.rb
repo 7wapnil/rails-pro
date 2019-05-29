@@ -33,21 +33,21 @@ describe Customers::StatisticsController, '#show' do
       create_list(:entry, rand(1..3), customer: customer)
     end
 
-    let(:withdrawal_request) { create(:withdrawal_request, :approved) }
+    let(:withdrawal) { create(:withdrawal, :approved) }
     let!(:withdrawals) do
       [
         create(:entry, :withdraw,
                customer: customer,
-               origin: build(:withdrawal_request, :rejected)),
+               origin: build(:withdrawal, :rejected)),
         create(:entry, :withdraw,
                customer: customer,
-               origin: build(:withdrawal_request))
+               origin: build(:withdrawal))
       ]
     end
     let!(:successful_withdrawals) do
       create_list(:entry, rand(1..3), :withdraw,
                   customer: customer,
-                  origin: withdrawal_request)
+                  origin: withdrawal)
     end
 
     let(:event) { create(:event) }

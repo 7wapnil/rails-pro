@@ -4,8 +4,8 @@
 - content_for :js do
   = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
 
-= search_form_for filter.search, url: withdrawal_requests_path,
-                                 as: :withdrawal_requests do |f|
+= search_form_for filter.search, url: withdrawals_path,
+                                 as: :withdrawals do |f|
   %table.table.search
     %thead
       %tr
@@ -24,7 +24,7 @@
           .filter_field
             = f.label :status_eq, class: 'sr-only'
             = f.select :status_eq,
-                        withdrawal_request_statuses(filter),
+                        withdrawal_statuses(filter),
                         { include_blank: true },
                         class: 'form-control'
 
@@ -75,7 +75,7 @@
           .filter_field
             = f.label :entry_request_mode_eq, class: 'sr-only'
             = f.select :entry_request_mode_eq,
-                        withdrawal_request_payment_methods(filter),
+                        withdrawal_payment_methods(filter),
                         { include_blank: true },
                         class: 'form-control'
         %th

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class WithdrawalRequest < CustomerTransaction
+class Withdrawal < CustomerTransaction
   def loggable_attributes
     { id: id, status: status }
   end
@@ -11,7 +11,7 @@ class WithdrawalRequest < CustomerTransaction
   end
 
   def reject!(user, comment)
-    comment_error = I18n.t('errors.messages.withdrawal_requests.empty_comment')
+    comment_error = I18n.t('errors.messages.withdrawals.empty_comment')
     raise comment_error if comment.empty?
 
     review!(user, REJECTED)
@@ -21,7 +21,7 @@ class WithdrawalRequest < CustomerTransaction
   private
 
   def review!(user, new_status)
-    error_message = I18n.t('errors.messages.withdrawal_requests.not_actionable')
+    error_message = I18n.t('errors.messages.withdrawals.not_actionable')
     raise error_message unless pending?
 
     update!(actioned_by: user, status: new_status)

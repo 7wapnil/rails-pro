@@ -91,9 +91,9 @@ module Customers
       def successful_withdrawals
         @successful_withdrawals ||=
           entries
-          .includes(:withdrawal_request)
+          .includes(:withdrawal)
           .withdraw
-          .where(customer_transactions: { status: WithdrawalRequest::APPROVED })
+          .where(customer_transactions: { status: Withdrawal::APPROVED })
       end
 
       def prematch_wager
