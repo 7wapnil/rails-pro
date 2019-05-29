@@ -10,14 +10,13 @@ class ApiUploadController < ApiController
     Rails.logger.debug("Uploading attachments for customer #{current_customer}")
     Rails.logger.debug("received attachments #{attachments_from_params.keys}")
 
-    attachments_from_params.each do |kind, file|
-      document = current_customer.verification_documents.build(kind: kind,
-                                                               status: :pending)
-      document.document.attach(file)
-      document.save!
-    end
+    result = Customers::VerificationDocuments::BulkCreate.call(
+      params: attachments_from_params, customer: current_customer
+    )
 
-    render json: { success: true }
+    return render json: { success: true } if result[:success]
+
+    fail_with(result[:errors].map(&method(:format_errors)))
   end
 
   private
@@ -33,12 +32,16 @@ class ApiUploadController < ApiController
   end
 
   def fail_with(message, status: 400)
-    render(json: { success: false, status: status, errors: [message] })
+    render(json: { success: false, status: status, message: message })
   end
 
   def attachments_from_params
     params
       .require(:attachments)
       .permit(*VerificationDocument::KINDS.keys)
+  end
+
+  def format_errors(key, value)
+    "#{value} for #{key.humanize}"
   end
 end

@@ -1,7 +1,13 @@
 const maxFileSize = 2097152;
 
 const initDocumentsUpload = () => {
+  const errors = []
+
   $('input[type=file]').on('change', (e) => {
+    const index = errors.findIndex(name => name === e.target.id)
+    if (index !== -1) errors.splice(index, 1)
+
+    if (errors.length === 0) $('[type=submit]').prop('disabled', false)
     const { target: { files } } = e
     if (files.length > 0) {
       const name = $(e.target).attr('name')
@@ -13,6 +19,10 @@ const initDocumentsUpload = () => {
       alert('File size exceeds maximum limit!');
       e.target.value = '';
       $('[type=submit]').prop('disabled', true)
+
+      if (errors.findIndex(name => name === e.target.id) === -1) {
+        errors.push(e.target.id)
+      }
     }
   })
 
