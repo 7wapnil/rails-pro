@@ -18,4 +18,11 @@ namespace :radar do
   task update_event_scopes: :environment do
     Radar::EventScopesLoadingWorker.new.perform
   end
+
+  namespace :titles do
+    desc 'Preload Radar titles'
+    task load: :environment do
+      OddsFeed::Radar::TitlesLoader.call
+    end
+  end
 end
