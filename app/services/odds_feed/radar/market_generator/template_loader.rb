@@ -91,8 +91,8 @@ module OddsFeed
         end
 
         def radar_variant_odds
-          OddsFeed::Radar::Client
-            .new
+          ::OddsFeed::Radar::Client
+            .instance
             .market_variants(
               market_id,
               variant_id,

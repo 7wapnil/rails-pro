@@ -1,12 +1,14 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     class SubscriptionRecovery < ApplicationService
       MINIMAL_DELAY_BETWEEN_CALLS_IN_SECONDS = 30
       OLDEST_RECOVERY_AVAILABLE_IN_HOURS = 72
 
-      RECOVERY_RATES_REACHED_MESSAGE = 'Recovery rates reached'.freeze
-      UNSUCCESSFUL_RECOVERY_MESSAGE = 'Unsuccessful recovery'.freeze
-      RECOVERY_REQUEST_INITIATED_MESSAGE = 'Recovery request initiated'.freeze
+      RECOVERY_RATES_REACHED_MESSAGE = 'Recovery rates reached'
+      UNSUCCESSFUL_RECOVERY_MESSAGE = 'Unsuccessful recovery'
+      RECOVERY_REQUEST_INITIATED_MESSAGE = 'Recovery request initiated'
 
       include JobLogger
 
@@ -87,7 +89,7 @@ module OddsFeed
       end
 
       def api_client
-        @api_client ||= Client.new
+        @api_client ||= ::OddsFeed::Radar::Client.instance
       end
     end
   end

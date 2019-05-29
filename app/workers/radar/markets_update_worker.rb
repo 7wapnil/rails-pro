@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Radar
   class MarketsUpdateWorker < ApplicationWorker
     include ::QueueName
@@ -53,7 +55,7 @@ module Radar
     end
 
     def client
-      @client ||= OddsFeed::Radar::Client.new
+      @client ||= ::OddsFeed::Radar::Client.instance
     end
   end
 end

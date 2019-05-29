@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Radar::MarketsUpdateWorker do
   let(:response) do
     XmlParser.parse(file_fixture('radar_markets_descriptions.xml').read)
@@ -11,7 +13,7 @@ describe Radar::MarketsUpdateWorker do
     response.dig('market_descriptions', 'market').length
   end
 
-  let(:client) { OddsFeed::Radar::Client.new }
+  let(:client) { ::OddsFeed::Radar::Client.instance }
   let(:expected_payload) do
     {
       outcomes: {
@@ -36,9 +38,13 @@ describe Radar::MarketsUpdateWorker do
   let(:found_template) { MarketTemplate.find_by(external_id: template_id) }
 
   before do
-    allow(client).to receive(:request)
-    allow(client).to receive(:markets).and_return(response)
-    allow(client).to receive(:all_market_variants).and_return(variants_payload)
+    allow_any_instance_of(::OddsFeed::Radar::Client).to receive(:request)
+    allow_any_instance_of(::OddsFeed::Radar::Client)
+      .to receive(:markets)
+      .and_return(response)
+    allow_any_instance_of(::OddsFeed::Radar::Client)
+      .to receive(:all_market_variants)
+      .and_return(variants_payload)
     allow(subject).to receive(:client).and_return(client)
   end
 

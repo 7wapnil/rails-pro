@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     class Client # rubocop:disable Metrics/ClassLength
       include HTTParty
       include JobLogger
+      include Singleton
 
       DEFAULT_CACHE_TERM = 12.hours
 

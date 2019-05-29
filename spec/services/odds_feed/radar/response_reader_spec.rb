@@ -19,7 +19,7 @@ describe OddsFeed::Radar::ResponseReader do
   end
 
   before do
-    allow(OddsFeed::Radar::Client)
+    allow(::OddsFeed::Radar::Client)
       .to receive(:get)
       .with(path, options)
       .and_return(response)
@@ -45,7 +45,7 @@ describe OddsFeed::Radar::ResponseReader do
       context 'and cache data with settings' do
         let(:cache) do
           {
-            cache: { expires_in: OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
+            cache: { expires_in: ::OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
           }
         end
 
@@ -111,7 +111,7 @@ describe OddsFeed::Radar::ResponseReader do
     end
 
     it "and doesn't call Radar client" do
-      expect(OddsFeed::Radar::Client).not_to receive(:get)
+      expect(::OddsFeed::Radar::Client).not_to receive(:get)
       subject
     end
 

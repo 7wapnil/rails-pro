@@ -165,7 +165,7 @@ describe Event do
   end
 
   describe '.#upcoming? ' do
-    shared_context 'frozen_time'
+    include_context 'frozen_time'
 
     it 'when end_at exist is not upcoming' do
       expect(build(:event, end_at: Time.zone.now)).not_to be_upcoming

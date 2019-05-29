@@ -8,7 +8,7 @@ describe EventsManager::CompetitorLoader do
   end
 
   before do
-    allow_any_instance_of(OddsFeed::Radar::Client)
+    allow_any_instance_of(::OddsFeed::Radar::Client)
       .to receive(:competitor_profile)
       .and_return(competitor_response)
   end

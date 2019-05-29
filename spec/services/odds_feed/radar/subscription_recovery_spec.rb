@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::SubscriptionRecovery do
   describe '.call' do
     let(:node_id) { Faker::Number.number(4).to_s }
-    let(:client_double) { instance_double(OddsFeed::Radar::Client.name) }
+    let(:client_double) { instance_double(::OddsFeed::Radar::Client.name) }
     let(:product) { create(:producer) }
     let(:another_product) { create(:producer) }
     let(:recovery_time_timestamp) { Faker::Time.backward(100).to_i }
@@ -16,8 +18,7 @@ describe OddsFeed::Radar::SubscriptionRecovery do
       allow(ENV).to receive(:[]).and_call_original
       allow(ENV).to receive(:[]).with('RADAR_MQ_NODE_ID').and_return(node_id)
 
-      allow(OddsFeed::Radar::Client)
-        .to receive(:new) { client_double }
+      allow(::OddsFeed::Radar::Client).to receive(:instance) { client_double }
       allow(client_double)
         .to receive(:product_recovery_initiate_request).and_return(
           'response' => {

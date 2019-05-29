@@ -28,7 +28,7 @@ module OddsFeed
       end
 
       def client
-        @client ||= OddsFeed::Radar::Client.new
+        @client ||= ::OddsFeed::Radar::Client.instance
       end
 
       def payload

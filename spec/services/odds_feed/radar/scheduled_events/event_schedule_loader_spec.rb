@@ -48,7 +48,7 @@ describe OddsFeed::Radar::ScheduledEvents::EventScheduleLoader do
     allow(ScopedEvent).to receive(:import)
     allow(service_object).to receive(:log_job_message)
 
-    allow_any_instance_of(OddsFeed::Radar::Client)
+    allow_any_instance_of(::OddsFeed::Radar::Client)
       .to receive(:events_for_date)
       .and_return(event_adapters)
 
@@ -85,16 +85,18 @@ describe OddsFeed::Radar::ScheduledEvents::EventScheduleLoader do
   end
 
   context 'import' do
-    before { subject }
-
     it 'schedules a loading worker for each event' do
       expect(::Radar::ScheduledEvents::EventLoadingWorker)
-        .to have_received(:perform_async)
+        .to receive(:perform_async)
         .exactly(events.size)
         .times
+
+      subject
     end
 
     it 'gets external_id from events' do
+      subject
+
       event_adapters.each do |event|
         expect(event.result)
           .to have_received(:[])

@@ -1,7 +1,7 @@
 namespace :radar do
   desc 'Book next day\'s matches for live coverage'
   task book_live_coverage: :environment do
-    client = OddsFeed::Radar::Client.new
+    client = ::OddsFeed::Radar::Client.instance
 
     Rails.logger.info 'Querying upcoming events ...'
     client.events_for_date(Date.tomorrow).each do |event_adapter|
@@ -12,11 +12,6 @@ namespace :radar do
   desc 'Update market templates'
   task update_market_templates: :environment do
     Radar::MarketsUpdateWorker.new.perform
-  end
-
-  desc 'Create Sidekiq jobs for updating event scopes'
-  task update_event_scopes: :environment do
-    Radar::EventScopesLoadingWorker.new.perform
   end
 
   namespace :titles do

@@ -1,4 +1,6 @@
-describe 'Producer state change feature. ' do
+# frozen_string_literal: true
+
+describe 'Producer state change feature' do
   let(:producer) { create(:producer) }
   let(:another_producer) { create(:producer) }
   let(:producers) { [producer, another_producer] }
@@ -7,12 +9,9 @@ describe 'Producer state change feature. ' do
   let(:metadata) do
     { 'scheduled_at' => time_milliseconds }
   end
-  let(:client_double) { instance_double('OddsFeed::Radar::Client') }
 
   before do
-    allow(OddsFeed::Radar::Client)
-      .to receive(:new) { client_double }
-    allow(client_double)
+    allow_any_instance_of(::OddsFeed::Radar::Client)
       .to receive(:product_recovery_initiate_request).and_return(
         'response' => {
           'response_code' => 'ACCEPTED'

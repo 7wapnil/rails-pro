@@ -10,7 +10,7 @@ shared_examples 'service caches competitors and players' do
   end
 
   before do
-    allow_any_instance_of(OddsFeed::Radar::Client)
+    allow_any_instance_of(::OddsFeed::Radar::Client)
       .to receive(:competitor_profile)
       .with(competitor_id, any_args)
       .and_return(competitor_payload)

@@ -145,8 +145,7 @@ describe CustomerBonuses::Create do
     end
 
     it 'does not raise an error' do
-      expect { subject }
-        .not_to raise_error(CustomerBonuses::ActivationError)
+      expect { subject }.not_to raise_error
     end
 
     it 'creates a bonus' do

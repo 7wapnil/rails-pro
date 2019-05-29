@@ -67,7 +67,7 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
 
         allow(subject_with_template).to receive(:find_odd_template)
 
-        allow_any_instance_of(OddsFeed::Radar::Client)
+        allow_any_instance_of(::OddsFeed::Radar::Client)
           .to receive(:player_profile)
           .with('sr:player:903786')
           .and_return(player_payload)
@@ -85,7 +85,7 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
       end
 
       before do
-        expect_any_instance_of(OddsFeed::Radar::Client)
+        expect_any_instance_of(::OddsFeed::Radar::Client)
           .not_to receive(:market_variants)
       end
 
@@ -124,7 +124,7 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
             variants: true
           }
         )
-        expect_any_instance_of(OddsFeed::Radar::Client)
+        expect_any_instance_of(::OddsFeed::Radar::Client)
           .to receive(:market_variants)
           .and_return(payload)
       end

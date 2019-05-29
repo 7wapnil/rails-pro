@@ -52,8 +52,8 @@ module OddsFeed
         end
 
         def events(date)
-          OddsFeed::Radar::Client
-            .new
+          ::OddsFeed::Radar::Client
+            .instance
             .events_for_date(date)
             .map(&:result)
         end

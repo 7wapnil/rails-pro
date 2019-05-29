@@ -39,8 +39,8 @@ module OddsFeed
         end
 
         def payload
-          @payload ||= OddsFeed::Radar::Client
-                       .new
+          @payload ||= ::OddsFeed::Radar::Client
+                       .instance
                        .competitor_profile(
                          external_id,
                          cache: { expires_in: Client::DEFAULT_CACHE_TERM }

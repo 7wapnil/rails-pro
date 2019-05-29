@@ -13,7 +13,7 @@ describe Radar::ScheduledEvents::EventScheduleLoadingWorker do
   end
 
   before do
-    allow_any_instance_of(OddsFeed::Radar::Client)
+    allow_any_instance_of(::OddsFeed::Radar::Client)
       .to receive(:events_for_date)
   end
 
