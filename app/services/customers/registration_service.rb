@@ -7,17 +7,19 @@ module Customers
 
     def call
       ActiveRecord::Base.transaction do
-        customer = Customer.create!(prepared_attributes(customer_data))
-        track_registration(customer)
-        send_email_verification_email(customer)
+        @customer = Customer.create!(prepared_attributes(customer_data))
         attach_wallet!(customer)
-        customer
       end
+
+      track_registration(customer)
+      send_email_verification_email(customer)
+
+      customer
     end
 
     private
 
-    attr_reader :currency_code, :customer_data, :request
+    attr_reader :currency_code, :customer_data, :request, :customer
 
     def track_registration(customer)
       customer.log_event :customer_signed_up, customer
