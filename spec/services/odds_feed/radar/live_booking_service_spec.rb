@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::LiveBookingService do
   subject { described_class.new(event.external_id) }
 
@@ -9,7 +11,7 @@ describe OddsFeed::Radar::LiveBookingService do
            external_id: 'sr:match:11868180',
            traded_live: false)
   end
-  let(:api_client) { OddsFeed::Radar::Client.new }
+  let(:api_client) { ::OddsFeed::Radar::Client.instance }
 
   before do
     allow(subject_api).to receive(:api_client).and_return(api_client)

@@ -13,7 +13,7 @@ describe Mts::Publishers::BetCancellation do
 
     context 'valid params' do
       it 'do not raise error' do
-        expect { subject_call }.not_to raise_error(NotImplementedError)
+        expect { subject_call }.not_to raise_error
       end
 
       it 'update bet status' do

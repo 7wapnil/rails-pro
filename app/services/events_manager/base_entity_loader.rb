@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EventsManager
   class BaseEntityLoader < ApplicationService
     include EventsManager::Logger
@@ -16,7 +18,7 @@ module EventsManager
     protected
 
     def api_client
-      @api_client ||= OddsFeed::Radar::Client.new
+      @api_client ||= ::OddsFeed::Radar::Client.instance
     end
   end
 end

@@ -7,7 +7,7 @@ describe EventsManager::EventFetcher do
   end
 
   before do
-    allow_any_instance_of(OddsFeed::Radar::Client)
+    allow_any_instance_of(::OddsFeed::Radar::Client)
       .to receive(:event_raw)
       .and_return(event_response)
 

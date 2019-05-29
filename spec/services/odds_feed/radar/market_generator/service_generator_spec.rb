@@ -38,7 +38,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
 
     allow(WebSocket::Client.instance).to receive(:trigger_market_update)
 
-    allow_any_instance_of(OddsFeed::Radar::Client)
+    allow_any_instance_of(::OddsFeed::Radar::Client)
       .to receive(:request)
 
     allow(OddsFeed::Radar::Entities::PlayerLoader)

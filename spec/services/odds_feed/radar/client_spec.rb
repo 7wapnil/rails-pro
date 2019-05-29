@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 describe OddsFeed::Radar::Client do
+  let(:object) { described_class.instance }
+
   let(:headers) { { "x-access-token": 'test-api-token' } }
   let!(:api_domain) { 'https://test-api-domain' }
 
@@ -17,7 +19,7 @@ describe OddsFeed::Radar::Client do
         .with(headers: headers)
         .to_return(status: 200, body: body)
 
-      subject.who_am_i
+      object.who_am_i
     end
   end
 
@@ -32,7 +34,7 @@ describe OddsFeed::Radar::Client do
         .with(headers: headers)
         .to_return(status: 403, body: forbidden_response)
 
-      expect { subject.who_am_i }.to raise_error(HTTParty::ResponseError)
+      expect { object.who_am_i }.to raise_error(HTTParty::ResponseError)
     end
 
     it 'raises error on invalid xml' do
@@ -40,7 +42,7 @@ describe OddsFeed::Radar::Client do
         .with(headers: headers)
         .to_return(status: 200, body: invalid_xml)
 
-      expect { subject.who_am_i }
+      expect { object.who_am_i }
         .to raise_error(HTTParty::ResponseError, 'Malformed response body')
     end
 
@@ -49,7 +51,7 @@ describe OddsFeed::Radar::Client do
         .with(headers: headers)
         .to_return(status: 200, body: 'Plain text')
 
-      expect { subject.who_am_i }
+      expect { object.who_am_i }
         .to raise_error(HTTParty::ResponseError, 'Malformed response body')
     end
   end
@@ -63,19 +65,19 @@ describe OddsFeed::Radar::Client do
     it 'returns an adapter' do
       stub_request(:any, route).with(headers: headers).to_return(body: '')
 
-      expect(subject.event(event_id)).to be_a(OddsFeed::Radar::EventAdapter)
+      expect(object.event(event_id)).to be_a(OddsFeed::Radar::EventAdapter)
     end
 
     context 'handle unexpected event types' do
       let(:event_id) { 'sr:season:10001' }
 
       it 'and returns an adapter' do
-        expect(subject.event(event_id)).to be_a(OddsFeed::Radar::EventAdapter)
+        expect(object.event(event_id)).to be_a(OddsFeed::Radar::EventAdapter)
       end
 
       it "and doesn't try to achieve Radar API" do
         expect(OddsFeed::Radar::ResponseReader).not_to receive(:call)
-        subject.event(event_id)
+        object.event(event_id)
       end
     end
   end
@@ -88,8 +90,8 @@ describe OddsFeed::Radar::Client do
     let(:product_code) { Faker::Lorem.word.to_sym }
 
     before do
-      allow(subject).to receive(:log_job_message)
-      allow(subject).to receive(:post)
+      allow(object).to receive(:log_job_message)
+      allow(object).to receive(:post)
     end
 
     context 'with requires arguments only' do
@@ -99,18 +101,18 @@ describe OddsFeed::Radar::Client do
       end
 
       before do
-        subject.product_recovery_initiate_request(
+        object.product_recovery_initiate_request(
           product_code: product_code, after: recover_after
         )
       end
 
       it 'logs job message' do
         log_message = 'Calling subscription recovery'
-        expect(subject).to have_received(:log_job_message)
+        expect(object).to have_received(:log_job_message)
           .with(:info, message: log_message, route: expected_path).once
       end
       it 'post to correct path' do
-        expect(subject).to have_received(:post)
+        expect(object).to have_received(:post)
           .with(expected_path).once
       end
     end
@@ -128,14 +130,14 @@ describe OddsFeed::Radar::Client do
       end
 
       before do
-        subject.product_recovery_initiate_request(
+        object.product_recovery_initiate_request(
           product_code: product_code, after: recover_after,
           request_id: request_id, node_id: node_id
         )
       end
 
       it 'logs job message' do
-        expect(subject).to have_received(:log_job_message)
+        expect(object).to have_received(:log_job_message)
           .with(
             :info,
             message: 'Calling subscription recovery',
@@ -143,7 +145,7 @@ describe OddsFeed::Radar::Client do
           ).once
       end
       it 'post to correct path' do
-        expect(subject).to have_received(:post)
+        expect(object).to have_received(:post)
           .with(expected_path).once
       end
     end
@@ -155,7 +157,7 @@ describe OddsFeed::Radar::Client do
 
     before do
       allow(OddsFeed::Radar::ResponseReader).to receive(:call)
-      subject.all_market_variants(cache: cache_arguments)
+      object.all_market_variants(cache: cache_arguments)
     end
 
     it 'reaches Radar API response' do

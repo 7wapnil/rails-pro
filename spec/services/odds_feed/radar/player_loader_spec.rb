@@ -16,7 +16,7 @@ describe OddsFeed::Radar::PlayerLoader do
         }
       }
 
-      allow_any_instance_of(OddsFeed::Radar::Client)
+      allow_any_instance_of(::OddsFeed::Radar::Client)
         .to receive(:player_profile)
         .with('sr:player:903786')
         .and_return(payload)
@@ -43,7 +43,7 @@ describe OddsFeed::Radar::PlayerLoader do
         }
       }
 
-      allow_any_instance_of(OddsFeed::Radar::Client)
+      allow_any_instance_of(::OddsFeed::Radar::Client)
         .to receive(:player_profile)
         .with('sr:player:903786')
         .and_return(payload)

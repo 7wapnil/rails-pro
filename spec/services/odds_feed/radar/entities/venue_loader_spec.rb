@@ -10,12 +10,12 @@ describe OddsFeed::Radar::Entities::VenueLoader do
 
   let(:cache_settings) do
     {
-      cache: { expires_in: OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
+      cache: { expires_in: ::OddsFeed::Radar::Client::DEFAULT_CACHE_TERM }
     }
   end
 
   before do
-    allow_any_instance_of(OddsFeed::Radar::Client)
+    allow_any_instance_of(::OddsFeed::Radar::Client)
       .to receive(:venue_summary)
       .with(external_id, cache_settings)
       .and_return(payload)

@@ -52,7 +52,7 @@ describe OddsFeed::Radar::OddsChangeHandler, :perf do
   before do
     allow(WebSocket::Client.instance).to receive(:trigger_event_update)
     allow(WebSocket::Client.instance).to receive(:trigger_market_update)
-    allow_any_instance_of(OddsFeed::Radar::Client).to receive(:player_profile)
+    allow_any_instance_of(::OddsFeed::Radar::Client).to receive(:player_profile)
   end
 
   context 'validate payload' do

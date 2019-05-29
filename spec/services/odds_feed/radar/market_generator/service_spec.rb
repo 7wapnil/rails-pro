@@ -29,7 +29,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
   end
 
   before do
-    allow_any_instance_of(OddsFeed::Radar::Client)
+    allow_any_instance_of(::OddsFeed::Radar::Client)
       .to receive(:request)
   end
 

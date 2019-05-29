@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Deposits::VerifyDepositAttempt do
   let(:customer) { instance_double(Customer) }
   let(:max_attempts) { Deposits::VerifyDepositAttempt::MAX_DEPOSIT_ATTEMPTS }
@@ -12,9 +14,7 @@ describe Deposits::VerifyDepositAttempt do
 
   it "don't raise error when count of attempts is not greater than allow" do
     allow(customer).to receive(:deposit_attempts).and_return(max_attempts)
-    msg = I18n.t('errors.messages.deposit_attempts_exceeded')
 
-    expect { service_call }.not_to raise_error(Deposits::DepositAttemptError,
-                                               msg)
+    expect { service_call }.not_to raise_error
   end
 end

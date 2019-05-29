@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     class LiveBookingService < ApplicationService
@@ -52,7 +54,7 @@ module OddsFeed
       end
 
       def api_client
-        @api_client ||= OddsFeed::Radar::Client.new
+        @api_client ||= ::OddsFeed::Radar::Client.instance
       end
 
       def replay?

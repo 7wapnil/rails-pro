@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     class PlayerLoader < ApplicationService
       def initialize(player_id)
         @player_id = player_id
-        @api_client = Client.new
+        @api_client = ::OddsFeed::Radar::Client.instance
       end
 
       def call
