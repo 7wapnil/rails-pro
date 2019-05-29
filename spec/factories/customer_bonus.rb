@@ -11,7 +11,6 @@ FactoryBot.define do
     expires_at           { Time.zone.now.end_of_month }
     valid_for_days       { 60 }
     created_at           { Time.zone.now }
-    deleted_at           { nil }
     rollover_balance     { rand(100..1000) }
     rollover_initial_value { rollover_balance }
     status                 { CustomerBonus::ACTIVE }
@@ -24,13 +23,6 @@ FactoryBot.define do
 
     trait :initial do
       status { CustomerBonus::INITIAL }
-    end
-
-    trait :applied do
-      deleted_at {}
-      valid_for_days { rand(1..20) }
-      rollover_balance { Faker::Number.decimal(2, 2).to_f }
-      rollover_initial_value { rollover_balance }
     end
 
     trait :expired do

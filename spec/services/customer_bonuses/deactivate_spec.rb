@@ -25,10 +25,6 @@ describe CustomerBonuses::Deactivate do
       )
     end
 
-    it 'removes customer bonus' do
-      expect(customer_bonus.deleted_at).to be_nil
-    end
-
     it 'creates bonus change entry request' do
       expect(found_entry_request).to have_attributes(
         mode: EntryRequest::INTERNAL,
@@ -43,20 +39,6 @@ describe CustomerBonuses::Deactivate do
       expect(EntryRequests::BonusChangeWorker)
         .to have_received(:perform_async)
         .with(found_entry_request.id)
-    end
-  end
-
-  context 'with already processed bonus' do
-    let(:customer_bonus) do
-      create(:customer_bonus, deleted_at: 5.hours.ago)
-    end
-
-    before do
-      described_class.call(bonus: customer_bonus, action: :cancel!)
-    end
-
-    it 'does not override original expiration date' do
-      expect(customer_bonus.deleted_at).to eq(5.hours.ago)
     end
   end
 end

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_21_110952) do
+ActiveRecord::Schema.define(version: 2019_05_27_085916) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -194,14 +194,12 @@ ActiveRecord::Schema.define(version: 2019_05_21_110952) do
     t.integer "percentage"
     t.datetime "expires_at"
     t.integer "original_bonus_id"
-    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "rollover_balance", precision: 8, scale: 2
     t.decimal "rollover_initial_value", precision: 8, scale: 2
     t.string "status", default: "initial", null: false
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
-    t.index ["deleted_at"], name: "index_customer_bonuses_on_deleted_at"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
   end
 

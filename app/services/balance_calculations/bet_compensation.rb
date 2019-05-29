@@ -12,6 +12,8 @@ module BalanceCalculations
     end
 
     def call
+      return all_real_money if complete_bonus_bet?
+
       {
         real_money: calculated_real_amount,
         bonus: calculated_bonus_amount
@@ -21,6 +23,14 @@ module BalanceCalculations
     private
 
     attr_reader :entry_request
+
+    def all_real_money
+      { real_money: entry_request.amount }
+    end
+
+    def complete_bonus_bet?
+      bet.customer_bonus&.completed?
+    end
 
     def bet
       @bet ||= entry_request.origin
