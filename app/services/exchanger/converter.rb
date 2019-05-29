@@ -1,9 +1,12 @@
 module Exchanger
   class Converter < ApplicationService
-    def initialize(value, origin_code, target_code = nil)
+    def initialize(value, origin_currency, target_currency = nil)
       @value = value
-      @origin_code = origin_code
-      @target_code = target_code || ::Currency::PRIMARY_CODE
+      @origin_code = origin_currency # origin_currency
+      @target_code = target_currency || ::Currency::PRIMARY_CODE
+
+      @origin_currency = origin_currency if origin_currency.is_a? Currency
+      @target_currency = target_currency if target_currency.is_a? Currency
     end
 
     def call
