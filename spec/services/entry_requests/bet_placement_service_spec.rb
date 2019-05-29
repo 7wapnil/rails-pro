@@ -156,7 +156,7 @@ describe EntryRequests::BetPlacementService do
 
     it 'fails when market suspended' do
       expect(bet).to have_attributes(
-        notification_message: I18n.t('errors.messages.market_suspended'),
+        notification_message: I18n.t('errors.messages.market_inactive'),
         notification_code: Bets::Notification::INTERNAL_VALIDATION_ERROR,
         status: StateMachines::BetStateMachine::FAILED
       )
