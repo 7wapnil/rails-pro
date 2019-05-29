@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mts
   class ValidationResponseHandler < ApplicationService
     include JobLogger
@@ -33,7 +35,7 @@ module Mts
 
       bet.finish_external_validation_with_rejection!(
         response.rejection_message,
-        code: Bets::Notification::EXTERNAL_VALIDATION_ERROR
+        code: response.rejection_key
       )
     end
   end

@@ -225,6 +225,7 @@ en:
       internal_validation_error: "Oops! Bet cannot be accepted. Feel free to contact administration or try again later"
       external_validation_error: "Betting service is experiencing some issues now. Bet was not accepted"
       mts_cancellation_error: "MTS rejected bet cancellation"
+      liability_limit_reached_error: 'Oops! Bet cannot be accepted according to liability limits. Try to place bet with less odds/smaller stake or contact an administration.'
 
   customers:
     statistics:

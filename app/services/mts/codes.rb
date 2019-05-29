@@ -3,7 +3,7 @@
 module Mts
   class Codes
     SUCCESSFUL_CODE = 1024
-    DEFAULT_EXCEPTION_KEY = 'internal_server_error'
+    DEFAULT_EXCEPTION_KEY = Bets::Notification::EXTERNAL_VALIDATION_ERROR
 
     MODEL_ERROR_CODES = {
       -100 => DEFAULT_EXCEPTION_KEY,
@@ -76,9 +76,9 @@ module Mts
     }.freeze
 
     RISK_MANAGEMENT_ERROR_CODES = {
-      -701 => DEFAULT_EXCEPTION_KEY,
-      -702 => DEFAULT_EXCEPTION_KEY,
-      -703 => DEFAULT_EXCEPTION_KEY,
+      -701 => Bets::Notification::LIABILITY_LIMIT_REACHED_ERROR,
+      -702 => Bets::Notification::LIABILITY_LIMIT_REACHED_ERROR,
+      -703 => Bets::Notification::LIABILITY_LIMIT_REACHED_ERROR,
       -900 => DEFAULT_EXCEPTION_KEY,
       -993 => DEFAULT_EXCEPTION_KEY,
       -994 => DEFAULT_EXCEPTION_KEY,
