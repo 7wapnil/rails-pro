@@ -3,41 +3,27 @@ module Payments
     STATUS_SUCCESS = :success
     STATUS_FAILED = :failed
     STATUS_PENDING = :pending
-    STATUS_CANCELED = :cancelled
+    STATUS_CANCELED = :canceled
 
     def initialize(response)
       @response = response
     end
 
     def call
-      return if pending?
+      return if status == STATUS_PENDING
 
-      return fail_entry_request! if failed? || canceled?
+      return cancel_entry_request! if status == STATUS_CANCELED
 
-      complete_entry_request!
+      return fail_entry_request! if status == STATUS_FAILED
+
+      return complete_entry_request! if status == STATUS_SUCCESS
+
+      throw_unknown_status
     end
 
     def entry_request
       @entry_request ||= ::EntryRequest.find(request_id)
     end
-
-    def success?
-      status == STATUS_SUCCESS
-    end
-
-    def failed?
-      status == STATUS_FAILED
-    end
-
-    def canceled?
-      status == STATUS_CANCELED
-    end
-
-    def pending?
-      status == STATUS_PENDING
-    end
-
-    def message; end
 
     def status
       raise ::NotImplementedError
@@ -47,10 +33,28 @@ module Payments
       raise ::NotImplementedError
     end
 
+    def status_message; end
+
     private
 
+    def cancel_entry_request!
+      Rails.logger.warn message: 'Payment request canceled',
+                        status: status,
+                        status_message: status_message,
+                        request_id: request_id
+      entry_request.register_failure!('Canceled by customer')
+
+      raise ::Payments::CanceledError
+    end
+
     def fail_entry_request!
-      entry_request.register_failure!(message)
+      Rails.logger.warn message: 'Payment request failed',
+                        status: status,
+                        status_message: status_message,
+                        request_id: request_id
+      entry_request.register_failure!(status_message)
+
+      raise ::Payments::TechnicalError
     end
 
     def complete_entry_request!
@@ -60,6 +64,10 @@ module Payments
       )
       entry_request.update(origin: wallet)
       ::EntryRequests::DepositService.call(entry_request: entry_request)
+    end
+
+    def throw_unknown_status
+      raise ::Payments::NotSupportedError, "Unknown response status #{status}"
     end
   end
 end

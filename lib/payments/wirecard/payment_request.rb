@@ -30,6 +30,7 @@ module Payments
 
       private
 
+      # TODO: Replace with dynamic domain
       def notification_url
         'http://localhost:3000/payments/wirecard/notification'
       end

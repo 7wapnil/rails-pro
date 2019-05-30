@@ -5,8 +5,7 @@ module Payments
     end
 
     def handle_payment_response(params)
-      handler = payment_response_handler.new(params)
-      handler.call
+      payment_response_handler.call(params)
     end
 
     def payment_response_handler

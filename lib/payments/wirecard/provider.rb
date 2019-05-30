@@ -7,7 +7,7 @@ module Payments
       end
 
       def payment_response_handler
-        PaymentResponse
+        ::Payments::Wirecard::PaymentResponse
       end
 
       def client

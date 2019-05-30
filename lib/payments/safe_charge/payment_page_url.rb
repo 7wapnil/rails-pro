@@ -55,10 +55,18 @@ module Payments
           zip: @transaction.customer.address.zip_code,
           isNative: 1,
           payment_method: provider_method_name(@transaction.method),
-          success_url: notification_url(:success),
-          error_url: notification_url(:fail),
-          back_url: notification_url(:cancel),
-          pending_url: notification_url(:pending),
+          success_url: notification_url(
+            ::Payments::PaymentResponse::STATUS_SUCCESS
+          ),
+          error_url: notification_url(
+            ::Payments::PaymentResponse::STATUS_FAILED
+          ),
+          back_url: notification_url(
+            ::Payments::PaymentResponse::STATUS_CANCELED
+          ),
+          pending_url: notification_url(
+            ::Payments::PaymentResponse::STATUS_PENDING
+          ),
           notify_url: notification_url(:notification)
         }
       end
@@ -90,8 +98,10 @@ module Payments
         ].map(&:to_s).join
       end
 
+      # TODO: Replace with dynamic domain
       def notification_url(res)
-        "http://localhost:3000/payments/safe_charge/notification?result=#{res}"
+        endpoint = 'http://localhost:3000/payments/safe_charge/notification'
+        "#{endpoint}?request_id=#{@transaction.id}&result=#{res}"
       end
     end
   end

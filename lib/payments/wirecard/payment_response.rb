@@ -10,7 +10,7 @@ module Payments
         request_data.split(':')[1].to_i
       end
 
-      def message
+      def status_message
         status = parsed_response.dig('payment', 'statuses', 'status')
         return nil unless status.present?
 

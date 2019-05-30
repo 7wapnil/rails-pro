@@ -127,6 +127,7 @@ Rails.application.routes.draw do
 
   namespace :payments do
     get '/', to: 'payments#deposit'
+    get '/test', to: 'payments#test'
 
     resources :wirecard, only: [] do
       collection do

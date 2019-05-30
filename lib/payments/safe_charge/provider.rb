@@ -6,7 +6,7 @@ module Payments
       end
 
       def payment_response_handler
-        PaymentResponse
+        ::Payments::SafeCharge::PaymentResponse
       end
 
       def client
