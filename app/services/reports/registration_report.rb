@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Reports
-  class RegistrationReports < BaseReport
+  class RegistrationReport < BaseReport
     REPORT_TYPE = 'reg'
     HEADERS = %w[BTAG	BRAND	ACCOUNT_OPENING_DATE
                  PLAYER_ID USERNAME COUNTRY].freeze
