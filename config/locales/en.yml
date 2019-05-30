@@ -125,6 +125,7 @@ en:
     customer_verification_status: Customer verification status
     date: Date
     date_of_birth: Date of birth
+    deactivated_at: Deactivated at
     description: Description
     email: Email
     end_at: End at

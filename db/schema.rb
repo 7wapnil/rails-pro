@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_27_085916) do
+ActiveRecord::Schema.define(version: 2019_05_28_131211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -199,6 +199,8 @@ ActiveRecord::Schema.define(version: 2019_05_27_085916) do
     t.decimal "rollover_balance", precision: 8, scale: 2
     t.decimal "rollover_initial_value", precision: 8, scale: 2
     t.string "status", default: "initial", null: false
+    t.datetime "activated_at"
+    t.datetime "deactivated_at"
     t.bigint "balance_entry_id"
     t.index ["balance_entry_id"], name: "index_customer_bonuses_on_balance_entry_id"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
