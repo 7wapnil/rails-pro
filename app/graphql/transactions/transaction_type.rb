@@ -3,7 +3,7 @@ module Transactions
     name 'Transactions'
 
     field :id, !types.ID
-    field :customerId, types.ID
+    field :customerId, types.ID, property: :customer_id
     field :status, types.String
     field :mode, types.String
     field :currencyCode, types.String,
