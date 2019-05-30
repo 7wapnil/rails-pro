@@ -87,3 +87,9 @@
     class: Scheduled::RegistrationReportsWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Sends registration reports to FTP server"
+
+  sales_reports_sending:
+    every: <%= ENV.fetch('SALES_REPORT_INTERVAL', '1d') %>
+    class: Scheduled::SalesReportsWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Sends sales reports to FTP server"
