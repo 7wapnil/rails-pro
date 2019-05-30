@@ -25,4 +25,6 @@ class CustomerTransaction < ApplicationRecord
   belongs_to :customer_bonus, optional: true
 
   enum status: STATUSES
+
+  delegate :customer, to: :entry_request
 end
