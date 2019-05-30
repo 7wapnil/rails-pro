@@ -8,11 +8,14 @@ module Reports
                  CASINO_bonuses	CASINO_stake	CASINO_NGR	SPORTS_BONUSES
                  SPORTS_REVENUE	SPORTS_BETS	SPORTS_STAKE	SPORTS_NGR].freeze
 
-    PRELOAD_OPTIONS = [
-      :bet_entries,
-      :win_bet_entries,
-      deposit_entries: :balance_entries
-    ].freeze
+    PRELOAD_OPTIONS = %i[bet_entries win_bet_entries].freeze
+    INCLUDES_OPTIONS = {
+      wallet: :currency,
+      deposit_entries:
+       {
+         balance_entries: :balance
+       }
+    }.freeze
 
     protected
 
@@ -26,7 +29,7 @@ module Reports
         .where
         .not(b_tag: nil)
         .left_joins(*PRELOAD_OPTIONS)
-        .includes(wallet: :currency)
+        .includes(**INCLUDES_OPTIONS)
         .where(query_string, *query_params)
         .distinct
     end

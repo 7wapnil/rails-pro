@@ -11,6 +11,7 @@ class Entry < ApplicationRecord
   belongs_to :entry_request, optional: true
 
   has_many :balance_entries, dependent: :destroy
+  has_many :balances, through: :balance_entries
 
   has_one :currency, through: :wallet
   has_one :customer, through: :wallet
