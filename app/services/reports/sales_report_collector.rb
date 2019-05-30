@@ -23,10 +23,10 @@ module Reports
       [
         subject.b_tag,
         ENV['BRAND'],
-        Date.current.yesterday.strftime('%d/%m/%Y'),
+        Date.current.yesterday.strftime('%Y-%m-%d'),
         subject.id,
         subject_currency,
-        'Chargeback', # should be implemented in future
+        0, # should be implemented in future
         deposit_real_money_converted,
         deposits_per_day.length,
         0, # should be implemented in future
