@@ -103,7 +103,9 @@ module Reports
     end
 
     def fill_hash_with_entries_amounts(balance_entry)
-      @balances_calculation[balance_entry.kind] += balance_entry.amount
+      kind = balance_entry.balance.kind.to_sym
+
+      @balances_calculation[kind] += balance_entry.amount
     end
 
     def gross_revenue
