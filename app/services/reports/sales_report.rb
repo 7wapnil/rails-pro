@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Reports
-  class SalesReports < BaseReport
+  class SalesReport < BaseReport
     REPORT_TYPE = 'sales'
     HEADERS = %w[BTAG	BRAND	TRANSACTION_DATE	PLAYER_ID	CURRENCY	Chargeback
                  DEPOSITS	DEPOSITS_Count	CASINO_Bets	CASINO_revenue

@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 module Scheduled
-  class SalesReportsWorker < ApplicationWorker
+  class SalesReportWorker < ApplicationWorker
     def perform
-      ::Reports::SalesReports.call
+      ::Reports::SalesReport.call
     end
   end
 end
