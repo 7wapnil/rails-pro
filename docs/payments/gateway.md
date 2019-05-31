@@ -2,14 +2,20 @@
 Initial architecture for gateway. Usage example:
 
 ```ruby
-transaction = Payments::Transaction.build(:credit_card)
-transaction.customer = customer
-transaction.amount = 1000
-transaction.currency = currency
-transaction.bonus_code = 'TEST_BONUS'
+# Generating payment page url
+transaction = Payments::Transaction.new(
+  method: :credit_card,
+  customer: customer,
+  amount: 1000,
+  currency: currency,
+  bonus_code: 'TEST_BONUS_CODE'
+)
 
-payments_service = Payments::Service.new
-payments_service.deposit(transaction)
+Payments::Deposit.call(transaction)
+
+
+# Handling response on return
+Payments::Wirecard.new.handle_payment_response(params) 
 
 ```
 
