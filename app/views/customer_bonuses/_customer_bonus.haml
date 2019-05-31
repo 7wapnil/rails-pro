@@ -61,12 +61,14 @@
               %tr
                 %td= t('attributes.awarded_amount')
                 %td= customer_bonus.amount(human: true)
-              %tr
-                %td= t('attributes.activated_at')
-                %td= l(customer_bonus.activated_at)
-              %tr
-                %td= t('attributes.deactivated_at')
-                %td= l(customer_bonus.deactivated_at)
+              - if customer_bonus.customer_bonus.activated_at
+                %tr
+                  %td= t('attributes.activated_at')
+                  %td= l(customer_bonus.activated_at)
+              - if customer_bonus.customer_bonus.deactivated_at
+                %tr
+                  %td= t('attributes.deactivated_at')
+                  %td= l(customer_bonus.deactivated_at)
 
       %hr
         = link_back bonuses_customer_path(customer_bonus.customer)
