@@ -33,4 +33,52 @@ describe CustomerBonus do
       end
     end
   end
+
+  context 'state transition timestamps' do
+    before { subject }
+
+    describe '#activate!' do
+      subject { customer_bonus.activate!(nil) }
+
+      let(:customer_bonus) do
+        create(:customer_bonus, status: CustomerBonus::INITIAL)
+      end
+
+      it 'sets #activated_at' do
+        expect(customer_bonus.reload.activated_at).not_to be_nil
+      end
+    end
+  end
+
+  describe 'dectivation' do
+    before { subject }
+
+    let(:customer_bonus) do
+      create(:customer_bonus, status: CustomerBonus::ACTIVE)
+    end
+
+    context '#cancel!' do
+      subject { customer_bonus.cancel! }
+
+      it 'sets #deactivated_at' do
+        expect(customer_bonus.reload.deactivated_at).not_to be_nil
+      end
+    end
+
+    context '#expire!' do
+      subject { customer_bonus.expire! }
+
+      it 'sets #deactivated_at' do
+        expect(customer_bonus.reload.deactivated_at).not_to be_nil
+      end
+    end
+
+    context '#lose!' do
+      subject { customer_bonus.lose! }
+
+      it 'sets #deactivated_at' do
+        expect(customer_bonus.reload.deactivated_at).not_to be_nil
+      end
+    end
+  end
 end
