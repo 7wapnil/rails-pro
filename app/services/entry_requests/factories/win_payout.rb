@@ -10,7 +10,7 @@ module EntryRequests
 
       def call
         create_entry_request!
-        create_balance_requests!
+        @balance_requests = create_balance_requests!
         adjust_amount!
 
         entry_request
@@ -40,7 +40,7 @@ module EntryRequests
       end
 
       def create_balance_requests!
-        @balance_requests ||= BalanceRequestBuilders::WinPayout
+        BalanceRequestBuilders::WinPayout
           .call(entry_request, amount_calculations)
       end
 
