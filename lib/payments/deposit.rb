@@ -1,3 +1,17 @@
+# Part of code copied from old Mihail's solution and looks like not the best
+# one.
+# On execution entry request (initial or failed) are not saved, but must be!
+# So, I propose to update this code with following order:
+#
+# - Create initial request (status initial)
+# - Validate transaction
+# -- If invalid or error raised update request to FAILED with result message
+# - return payment page url
+#
+#
+# Validation of business rules (deposit amount limit, attempts) moved to
+# Transaction
+#
 module Payments
   class Deposit < Operation
     include Methods
@@ -10,8 +24,9 @@ module Payments
     protected
 
     def execute_operation
-      entry_request = create_entry_request
+      entry_request = initial_entry_request
       @transaction.id = entry_request.id
+      apply_bonus_code!
 
       provider.payment_page_url(@transaction)
     end
@@ -23,22 +38,8 @@ module Payments
     end
 
     def create_entry_request
-      validate_business_rules!
       apply_bonus_code!
-
       initial_entry_request
-    rescue *BUSINESS_ERRORS => e
-      Rails.logger.info e.message
-      entry_request_failure(e)
-    end
-
-    def validate_business_rules!
-      # TODO: Existing deposit request found
-      # TODO: Check bonus code
-      ::Deposits::DepositLimitCheckService.call(transaction.customer,
-                                                transaction.amount,
-                                                transaction.currency)
-      ::Deposits::VerifyDepositAttempt.call(transaction.customer)
     end
 
     def apply_bonus_code!
@@ -51,20 +52,15 @@ module Payments
       )
     end
 
-    def wallet
-      Wallet.find_or_create_by!(customer: @customer, currency: @currency)
-    end
-
-    def bonus
-      @bonus ||= Bonus.find_by_code(@bonus_code)
-    end
-
     def initial_entry_request
-      EntryRequests::Factories::Deposit.call(
+      request = EntryRequests::Factories::Deposit.call(
         wallet: transaction.wallet,
         amount: transaction.amount,
         mode: transaction.method
       )
+      request.save!
+
+      request
     end
 
     def entry_request_failure(error)
