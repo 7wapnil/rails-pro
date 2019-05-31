@@ -8,6 +8,8 @@ class CustomerTransaction < ApplicationRecord
     rejected:  REJECTED  = 'rejected'
   }.freeze
 
+  TYPES = %w[Deposit Withdrawal].freeze
+
   has_many :entry_requests, as: :origin
 
   has_one :entry_request,

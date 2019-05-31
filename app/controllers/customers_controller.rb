@@ -189,14 +189,12 @@ class CustomersController < ApplicationController
   end
 
   def transactions
-    filter_source = EntryRequest
-                    .transactions
-                    .where(customer: customer)
-                    .includes(:entry)
-
-    @filter = EntryRequestsFilter.new(
+    filter_source = CustomerTransaction
+                    .includes(entry_requests: %i[customer currency])
+                    .where(entry_requests: { customer: customer })
+    @filter = CustomerTransactionsFilter.new(
       source: filter_source,
-      query_params: query_params(:entry_requests),
+      query_params: query_params(:customer_transactions),
       page: params[:page],
       per_page: 20
     )
