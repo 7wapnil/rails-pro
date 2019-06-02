@@ -14,6 +14,10 @@ FactoryBot.define do
       association :wallet, strategy: :random_or_create
     end
 
+    trait :recent do
+      created_at { Date.current.yesterday.midday }
+    end
+
     before(:create) do |entry|
       create(:entry_currency_rule,
              currency: entry.currency,

@@ -30,6 +30,7 @@ module Reports
         .not(b_tag: nil)
         .left_joins(*PRELOAD_OPTIONS)
         .includes(**INCLUDES_OPTIONS)
+        .references(:deposit_entries)
         .where(query_string, *query_params)
         .distinct
     end
