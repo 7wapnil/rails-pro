@@ -2,7 +2,7 @@
 
 module CustomerBonuses
   class CompleteWorker < ApplicationWorker
-    def perform_async(customer_bonus:)
+    def perform(customer_bonus:)
       CustomerBonuses::Complete.call(customer_bonus: customer_bonus)
     end
   end

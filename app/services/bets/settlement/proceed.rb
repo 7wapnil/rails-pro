@@ -36,7 +36,7 @@ module Bets
       end
 
       def create_refund_entry_request!
-        @entry_request = ::EntryRequests::Factories::WinPayout.call(
+        @entry_request = ::EntryRequests::Factories::Common.call(
           origin: bet,
           kind: EntryRequest::REFUND,
           mode: EntryRequest::INTERNAL,

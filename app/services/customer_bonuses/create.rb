@@ -76,8 +76,7 @@ module CustomerBonuses
       return false unless customer.active_bonus
 
       created_at = customer.active_bonus.created_at
-      dies_at = created_at + customer.active_bonus.valid_for_days.days
-      expires_at = [dies_at, customer.active_bonus.expires_at].min
+      expires_at = created_at + customer.active_bonus.valid_for_days.days
 
       expires_at < Time.zone.now
     end
