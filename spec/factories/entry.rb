@@ -7,6 +7,7 @@ FactoryBot.define do
     authorized_at { nil }
     sequence(:external_id) { |n| "ID_#{n}" }
 
+    created_at { Date.current.midday }
     wallet
     entry_request
 
