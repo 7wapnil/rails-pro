@@ -8,10 +8,6 @@ module Payments
       def payment_response_handler
         ::Payments::SafeCharge::PaymentResponse
       end
-
-      def client
-        @client ||= Client.new
-      end
     end
   end
 end

@@ -17,8 +17,7 @@ module Payments
     include Methods
 
     BUSINESS_ERRORS = [
-      ::Deposits::DepositLimitRestrictionError,
-      ::Deposits::InvalidDepositRequestError
+      ::Deposits::DepositLimitRestrictionError
     ].freeze
 
     protected
