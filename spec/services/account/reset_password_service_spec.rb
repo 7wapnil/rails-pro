@@ -2,17 +2,20 @@ describe Account::ResetPasswordService do
   subject { described_class.new(token, password, confirmation) }
 
   let(:token) { valid_token }
-  let(:valid_token) { 'the-token' }
+  let(:valid_token) { 'j_b8WrhPTZ3mqFsRgfEw' }
   let(:sent_at) { Time.now.utc }
   let(:password) { 'the-password' }
   let(:confirmation) { password }
+
+  # rubocop:disable Metrics/LineLength
   let!(:customer) do
     create(
       :customer,
-      reset_password_token: valid_token,
+      reset_password_token: '1efe2f9f0ff5f7474a3a3143cb43b1d3e8dc6025abda9bcb0651e17208f99c02',
       reset_password_sent_at: sent_at
     )
   end
+  # rubocop:enable Metrics/LineLength
 
   context 'with valid token and matching passwords' do
     it 'calls reset_password on customer' do
