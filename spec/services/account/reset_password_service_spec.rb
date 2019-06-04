@@ -1,15 +1,20 @@
 describe Account::ResetPasswordService do
   subject { described_class.new(token, password, confirmation) }
 
+  let(:devise_tokens) do
+    Devise.token_generator.generate(Customer, :reset_password_token)
+  end
+
   let(:token) { valid_token }
-  let(:valid_token) { 'the-token' }
+  let(:valid_token) { devise_tokens.first }
   let(:sent_at) { Time.now.utc }
   let(:password) { 'the-password' }
   let(:confirmation) { password }
+
   let!(:customer) do
     create(
       :customer,
-      reset_password_token: valid_token,
+      reset_password_token: devise_tokens.last,
       reset_password_sent_at: sent_at
     )
   end

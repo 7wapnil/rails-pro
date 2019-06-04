@@ -12,12 +12,14 @@ module Account
 
       update_reset_password_token
       send_reset_password_mail
+
+      @raw_token
     end
 
     private
 
     def update_reset_password_token
-      _raw, token =
+      @raw_token, token =
         Devise.token_generator.generate(Customer, :reset_password_token)
 
       customer.update!(
@@ -32,7 +34,7 @@ module Account
     def send_reset_password_mail
       ArcanebetMailer
         .with(customer: customer)
-        .reset_password_mail
+        .reset_password_mail(@raw_token)
         .deliver_later
     end
   end

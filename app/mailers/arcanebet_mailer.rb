@@ -33,11 +33,11 @@ class ArcanebetMailer < ApplicationMailer
     )
   end
 
-  def reset_password_mail
+  def reset_password_mail(raw_token)
     domain = ENV['FRONTEND_URL']
     @person = params[:customer]
     @reset_password_url =
-      "#{domain}/reset_password/#{@person.reset_password_token}"
+      "#{domain}/reset_password/#{raw_token}"
 
     mail(
       to: @person.email,

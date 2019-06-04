@@ -18,7 +18,7 @@ describe ArcanebetMailer do
 
     it 'sends reset password email' do
       email =
-        described_class.with(customer: customer).reset_password_mail
+        described_class.with(customer: customer).reset_password_mail('FOOBAR')
       expect(email.to.first).to eq(customer.email)
     end
   end
