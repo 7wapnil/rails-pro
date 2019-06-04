@@ -5,6 +5,7 @@ module Payments
     type !types.Boolean
     description 'Create withdrawal request'
 
+    # TODO: extract arguments here and remove input type
     argument :input, Inputs::WithdrawInput
 
     def resolve(_obj, args)

@@ -601,10 +601,12 @@ en:
     cancelled: Cancelled
     rejected: Rejected
 
-  payment_methods:
-    credit_card:
-      title: Credit card (Visa, MasterCard, Maestro)
-      note: 'Range: 10 - 10 000€ / No service fee'
+  payments:
+    withdrawals:
+      payment_methods:
+        credit_card:
+          title: Credit card (Visa, MasterCard, Maestro)
+          note: 'Range: 10 - 10 000€ / No service fee'
 
   time:
     formats:

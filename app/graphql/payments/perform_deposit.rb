@@ -4,7 +4,7 @@ module Payments
   class PerformDeposit < ::Base::Resolver
     type ::Payments::DepositType
 
-    argument :paymentMethod, ::Payments::DepositPaymentMethodEnum
+    argument :paymentMethod, ::Payments::Deposits::PaymentMethodEnum
     argument :currencyCode, !types.String
     argument :amount, !types.Float
     argument :bonusCode, types.String

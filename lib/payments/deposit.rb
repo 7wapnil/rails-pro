@@ -16,8 +16,18 @@ module Payments
   class Deposit < Operation
     include Methods
 
+    PAYMENT_METHODS = [
+      ::Payments::Methods::CREDIT_CARD,
+      ::Payments::Methods::NETELLER,
+      ::Payments::Methods::SKRILL,
+      ::Payments::Methods::PAYSAFECARD,
+      ::Payments::Methods::BITCOIN
+    ].freeze
+
     BUSINESS_ERRORS = [
-      ::Deposits::DepositLimitRestrictionError
+      ::Deposits::DepositLimitRestrictionError,
+      ::Deposits::DepositAttemptError,
+      ::CustomerBonuses::ActivationError
     ].freeze
 
     protected

@@ -15,6 +15,8 @@ QueryType = GraphQL::ObjectType.define do
         function: Account::VerifyPasswordToken::Resolver.new
   field :bets, function: Betting::BetsQuery.new
   field :transactions, function: Transactions::TransactionsQuery.new
-  field :paymentMethods, function: PaymentMethods::PaymentMethodsQuery.new
   field :customerBonuses, function: CustomerBonuses::CustomerBonusesQuery.new
+  field :depositMethods, function: ::Payments::Deposits::PaymentMethodsQuery.new
+  field :withdrawalMethods,
+        function: ::Payments::Withdrawals::PaymentMethodsQuery.new
 end

@@ -94,7 +94,7 @@ module EntryRequests
         perform_customer_validations! unless initiator.is_a?(User)
 
         true
-      rescue *::Deposit::BUSINESS_ERRORS => error
+      rescue *::Payments::Deposit::BUSINESS_ERRORS => error
         entry_request.register_failure!(error.message)
         customer_bonus&.fail!
       end
