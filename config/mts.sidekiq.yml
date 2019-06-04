@@ -1,3 +1,20 @@
 :concurrency: 1
 :queues:
   - mts
+  - expired_live
+  - expired_prematch
+
+:schedule:
+  mts_live_validation:
+    every: <%= "#{ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10)}s" %>
+    class: Scheduled::ExpiringLiveWorker
+    queue: expired_live
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Sends cancellation message to MTS for all LIVE bets that reached timeout waiting for MTS status update"
+
+  mts_prematch_validation:
+    every: <%= "#{ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT_SECONDS', 3)}s" %>
+    class: Scheduled::ExpiringPrematchWorker
+    queue: expired_prematch
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Sends cancellation message to MTS for all PRE-MATCH bets that reached timeout waiting for MTS status update"

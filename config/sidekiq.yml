@@ -1,8 +1,6 @@
 :queues:
   - default
   - expired_bonuses
-  - expired_live
-  - expired_prematch
   - radar_odds_feed_high
   - radar_odds_feed_low
   - radar_live_coverage_booking
@@ -20,20 +18,6 @@
     queue: expired_bonuses
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Closes expired bonuses. Bonus expiration defined by deleted state or and time which must less then current time"
-
-  mts_live_validation:
-    every: <%= "#{ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10)}s" %>
-    class: Scheduled::ExpiringLiveWorker
-    queue: expired_live
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Sends cancellation message to MTS for all LIVE bets that reached timeout waiting for MTS status update"
-
-  mts_prematch_validation:
-    every: <%= "#{ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT_SECONDS', 3)}s" %>
-    class: Scheduled::ExpiringPrematchWorker
-    queue: expired_prematch
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Sends cancellation message to MTS for all PRE-MATCH bets that reached timeout waiting for MTS status update"
 
   missing_heartbeat_check:
     include_metadata: true
