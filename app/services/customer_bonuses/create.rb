@@ -64,12 +64,21 @@ module CustomerBonuses
     end
 
     def check_bonus_expiration!
-      return true unless customer&.active_bonus&.time_exceeded?
+      return true unless active_bonus_expired?
 
       CustomerBonuses::Deactivate.call(
         bonus: customer.active_bonus,
         action: CustomerBonuses::Deactivate::EXPIRE
       )
+    end
+
+    def active_bonus_expired?
+      return false unless customer.active_bonus
+
+      created_at = customer.active_bonus.created_at
+      expires_at = created_at + customer.active_bonus.valid_for_days.days
+
+      expires_at < Time.zone.now
     end
   end
 end

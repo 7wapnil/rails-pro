@@ -70,9 +70,7 @@ describe EntryRequests::Factories::BonusChange do
 
   context 'when expired customer bonus is passed' do
     let(:customer_bonus) do
-      create(:customer_bonus, customer: customer,
-                              wallet: wallet,
-                              status: CustomerBonus::EXPIRED)
+      create(:customer_bonus, :expired, customer: customer, wallet: wallet)
     end
 
     it 'returns failed entry request' do
