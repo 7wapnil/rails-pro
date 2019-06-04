@@ -54,8 +54,8 @@ module Reports
     end
 
     def date_range
-      [Date.current.yesterday.beginning_of_day,
-       Date.current.yesterday.end_of_day]
+      [Time.zone.yesterday.beginning_of_day,
+       Time.zone.yesterday.end_of_day]
     end
 
     def date_range_query
