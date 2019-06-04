@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 describe GraphQL, '#withdraw' do
   let(:auth_customer) { create(:customer) }
   let(:amount) { Faker::Number.decimal(2, 2).to_d }
-  let(:payment_method) { EntryRequest::CREDIT_CARD }
+  let(:payment_method) { ::Payments::Methods::CREDIT_CARD }
   let(:payload) do
     [
       { code: 'holder_name', value: Faker::Lorem.characters(25) },

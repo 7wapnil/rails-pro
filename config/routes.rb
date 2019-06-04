@@ -126,20 +126,11 @@ Rails.application.routes.draw do
   end
 
   namespace :payments do
-    get '/', to: 'payments#deposit'
-    get '/test', to: 'payments#test'
+    match ':method/notification', to: 'notifications#create', via: %i[get post]
 
-    resources :wirecard, only: [] do
-      collection do
-        post :notification
-      end
-    end
-
-    resources :safe_charge, only: [] do
-      collection do
-        get :notification
-      end
-    end
+    resources :deposits, path: 'deposit', only: :create
+    resources :withdrawals, path: 'withdrawal', only: :create
+    resources :test, only: :create
   end
 
   devise_for :users, controllers: {

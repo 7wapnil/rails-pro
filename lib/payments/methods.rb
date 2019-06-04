@@ -1,51 +1,58 @@
+# frozen_string_literal: true
+
 module Payments
   module Methods
-    CREDIT_CARD = :credit_card
-    NETELLER = :neteller
-    SKRILL = :skrill
-    PAYSAFECARD = :paysafecard
-    SOFORT = :sofort
-    IDEAL = :ideal
-    WEBMONEY = :webmoney
-    YANDEX = :yandex
-    QIWI = :qiwi
+    CREDIT_CARD = 'credit_card'
+    NETELLER = 'neteller'
+    SKRILL = 'skrill'
+    PAYSAFECARD = 'paysafecard'
+    SOFORT = 'sofort'
+    IDEAL = 'ideal'
+    WEBMONEY = 'webmoney'
+    YANDEX = 'yandex'
+    QIWI = 'qiwi'
+    BITCOIN = 'bitcoin'
 
     METHOD_PROVIDERS = {
       CREDIT_CARD => {
-        provider: Wirecard::Provider,
+        provider: ::Payments::Wirecard::Provider,
         name: 'creditcard'
       },
       NETELLER => {
-        provider: SafeCharge::Provider,
+        provider: ::Payments::SafeCharge::Provider,
         name: 'apmgw_Neteller'
       },
       SKRILL => {
-        provider: SafeCharge::Provider,
+        provider: ::Payments::SafeCharge::Provider,
         name: 'apmgw_MoneyBookers'
       },
       PAYSAFECARD => {
-        provider: SafeCharge::Provider,
+        provider: ::Payments::SafeCharge::Provider,
         name: 'apmgw_PaySafeCard'
       },
       SOFORT => {
-        provider: SafeCharge::Provider,
+        provider: ::Payments::SafeCharge::Provider,
         name: 'apmgw_Sofort'
       },
       IDEAL => {
-        provider: SafeCharge::Provider,
+        provider: ::Payments::SafeCharge::Provider,
         name: 'apmgw_iDeal'
       },
       WEBMONEY => {
-        provider: SafeCharge::Provider,
+        provider: ::Payments::SafeCharge::Provider,
         name: 'apmgw_WebMoney'
       },
       YANDEX => {
-        provider: SafeCharge::Provider,
+        provider: ::Payments::SafeCharge::Provider,
         name: 'apmgw_YANDEXMONEY'
       },
       QIWI => {
-        provider: SafeCharge::Provider,
+        provider: ::Payments::SafeCharge::Provider,
         name: 'apmgw_QIWI'
+      },
+      BITCOIN => {
+        provider: ::Payments::Coinspaid::Provider,
+        name: 'bitcoin'
       }
     }.freeze
 

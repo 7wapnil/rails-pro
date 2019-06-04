@@ -1,5 +1,7 @@
-module Withdrawals
-  class Create < ::Base::Resolver
+# frozen_string_literal: true
+
+module Payments
+  class PerformWithdrawal < ::Base::Resolver
     type !types.Boolean
     description 'Create withdrawal request'
 
