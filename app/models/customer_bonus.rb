@@ -24,4 +24,8 @@ class CustomerBonus < ApplicationRecord
   def self.customer_history(customer)
     includes(:balance_entry).where(customer: customer)
   end
+
+  def locked?
+    bets.pending.any?
+  end
 end
