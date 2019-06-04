@@ -24,4 +24,10 @@ class CustomerBonus < ApplicationRecord
   def self.customer_history(customer)
     includes(:balance_entry).where(customer: customer)
   end
+
+  def time_exceeded?
+    return false unless active?
+
+    created_at + valid_for_days.days < Time.zone.now
+  end
 end
