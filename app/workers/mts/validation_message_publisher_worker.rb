@@ -2,6 +2,8 @@
 
 module Mts
   class ValidationMessagePublisherWorker < ApplicationWorker
+    sidekiq_options queue: :mts
+
     def perform(bet_id)
       bet = find_bet(bet_id)
       response = Publishers::BetValidation.publish!(bet: bet)

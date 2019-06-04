@@ -2,6 +2,8 @@
 
 module Mts
   class ReconnectionWorker < ApplicationWorker
+    sidekiq_options queue: :mts
+
     def perform
       return if MtsConnection.instance.healthy?
 

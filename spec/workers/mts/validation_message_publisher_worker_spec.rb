@@ -9,7 +9,7 @@ describe Mts::ValidationMessagePublisherWorker do
       .and_return(true)
   end
 
-  it { is_expected.to be_processed_in :default }
+  it { is_expected.to be_processed_in :mts }
 
   it 'publishes with correct publisher' do
     expect(Mts::Publishers::BetValidation).to receive('publish!')
