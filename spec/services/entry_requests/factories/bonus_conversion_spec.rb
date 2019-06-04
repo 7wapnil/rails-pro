@@ -2,7 +2,12 @@ describe EntryRequests::Factories::BonusConversion do
   context 'when creating bonus conversion entry request' do
     subject { service.call }
 
-    let(:service) { described_class.new(customer_bonus: customer_bonus) }
+    let(:service) do
+      described_class.new(
+        customer_bonus: customer_bonus,
+        amount: customer_bonus.wallet.bonus_balance.amount
+      )
+    end
     let(:bonus_balance) { create(:balance, :bonus) }
     let(:wallet) { create(:wallet, bonus_balance: bonus_balance) }
     let(:customer_bonus) do
