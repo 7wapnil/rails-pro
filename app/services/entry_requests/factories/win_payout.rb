@@ -10,14 +10,15 @@ module EntryRequests
 
       def call
         create_entry_request!
-        create_balance_requests!
+        @balance_requests = create_balance_requests!
+        adjust_amount!
 
         entry_request
       end
 
       private
 
-      attr_reader :bet, :entry_request, :attributes
+      attr_reader :bet, :entry_request, :attributes, :balance_requests
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
@@ -45,6 +46,11 @@ module EntryRequests
 
       def amount_calculations
         BalanceCalculations::BetCompensation.call(entry_request: entry_request)
+      end
+
+      def adjust_amount!
+        new_amount = balance_requests.map(&:amount).sum
+        entry_request.update(amount: new_amount)
       end
     end
   end

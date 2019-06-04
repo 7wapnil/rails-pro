@@ -6,12 +6,12 @@ module Account
       @token = token
       @password = password
       @confirmation = confirmation
-      @customer = Customer.find_by(reset_password_token: token)
+      @customer = Devise::ResetPasswordToken::CustomerLoader.call(token)
     end
 
     def call
       raise_gql('empty_token') unless token
-      raise_gql('token_not_found') unless customer
+      raise_gql('token_not_found') unless customer.persisted?
       raise_gql('token_expired') unless customer.reset_password_period_valid?
       raise_gql('confirmation_mismatch') unless password == confirmation
 

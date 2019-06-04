@@ -77,7 +77,7 @@ describe EntryRequests::Factories::WinPayout do
     end
   end
 
-  context 'with origin.customer_bonus inactive' do
+  context 'with expired origin.customer_bonus' do
     let(:bet) do
       create(:bet, customer: customer_bonus.customer,
                    customer_bonus: customer_bonus)
@@ -88,6 +88,11 @@ describe EntryRequests::Factories::WinPayout do
 
     it 'does not create a bonus balance request' do
       expect(subject.bonus_balance_entry_request).to be_nil
+    end
+
+    it 'adjusts entry_request amount' do
+      expect(subject.amount)
+        .to eq(subject.real_money_balance_entry_request.amount)
     end
   end
 

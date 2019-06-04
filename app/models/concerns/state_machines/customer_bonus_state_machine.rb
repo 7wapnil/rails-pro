@@ -35,7 +35,7 @@ module StateMachines
         event :activate do
           transitions from: :initial,
                       to: :active,
-                      after: :assign_balance_entry
+                      after: %i[assign_balance_entry set_activated_at]
         end
 
         event :fail do
@@ -45,22 +45,26 @@ module StateMachines
 
         event :cancel do
           transitions from: :active,
-                      to: :cancelled
+                      to: :cancelled,
+                      after: :set_deactivated_at
         end
 
         event :complete do
           transitions from: :active,
-                      to: :completed
+                      to: :completed,
+                      after: :set_deactivated_at
         end
 
         event :expire do
           transitions from: :active,
-                      to: :expired
+                      to: :expired,
+                      after: :set_deactivated_at
         end
 
         event :lose do
           transitions from: :active,
-                      to: :lost
+                      to: :lost,
+                      after: :set_deactivated_at
         end
       end
 
@@ -70,6 +74,14 @@ module StateMachines
 
       def assign_balance_entry(balance_entry)
         update(balance_entry: balance_entry)
+      end
+
+      def set_activated_at
+        update(activated_at: Time.zone.now)
+      end
+
+      def set_deactivated_at
+        update(deactivated_at: Time.zone.now)
       end
     end
   end

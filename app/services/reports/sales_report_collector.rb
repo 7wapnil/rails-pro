@@ -23,10 +23,10 @@ module Reports
       [
         subject.b_tag,
         ENV['BRAND'],
-        Date.current.yesterday.strftime('%d/%m/%Y'),
+        Date.current.yesterday.strftime('%Y-%m-%d'),
         subject.id,
         subject_currency,
-        'Chargeback', # should be implemented in future
+        0, # should be implemented in future
         deposit_real_money_converted,
         deposits_per_day.length,
         0, # should be implemented in future
@@ -103,7 +103,9 @@ module Reports
     end
 
     def fill_hash_with_entries_amounts(balance_entry)
-      @balances_calculation[balance_entry.kind] += balance_entry.amount
+      kind = balance_entry.balance.kind.to_sym
+
+      @balances_calculation[kind] += balance_entry.amount
     end
 
     def gross_revenue

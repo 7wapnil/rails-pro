@@ -125,6 +125,7 @@ en:
     customer_verification_status: Customer verification status
     date: Date
     date_of_birth: Date of birth
+    deactivated_at: Deactivated at
     description: Description
     email: Email
     end_at: End at
@@ -532,6 +533,10 @@ en:
     reset_password_error: Could not copy password to clipboard
     withdrawal_confirmed: Withdrawal confirmed.
     withdrawal_rejected: Withdrawal rejected.
+    reset_password_token:
+      valid: 'Reset password token is valid'
+      invalid: 'Reset password token is invalid'
+      expired: 'Reset password token expired'
 
   navigation:
     customer:
