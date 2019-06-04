@@ -5,8 +5,9 @@ module EntryRequests
     class BonusConversion < ApplicationService
       delegate :wallet, to: :customer_bonus
 
-      def initialize(customer_bonus:)
+      def initialize(customer_bonus:, amount:)
         @customer_bonus = customer_bonus
+        @amount = amount
       end
 
       def call
@@ -16,7 +17,7 @@ module EntryRequests
         entry_request
       end
 
-      attr_reader :customer_bonus, :entry_request
+      attr_reader :customer_bonus, :amount, :entry_request
 
       private
 
@@ -47,10 +48,6 @@ module EntryRequests
           amount: amount,
           kind: Balance::REAL_MONEY
         )
-      end
-
-      def amount
-        wallet.bonus_balance.amount
       end
     end
   end
