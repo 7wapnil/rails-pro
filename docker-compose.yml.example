@@ -43,7 +43,21 @@ services:
 
   worker:
     image: arcanebet/arcanebet:dev
-    command: bundle exec sidekiq
+    command: bundle exec sidekiq -C config/sidekiq.yml
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    volumes:
+      - .:/arcanebet
+      - bundle:/usr/local/bundle
+    depends_on:
+      - db
+      - redis
+
+  worker_mts:
+    image: arcanebet/arcanebet:dev
+    command: bundle exec sidekiq -C config/mts.sidekiq.yml
     stdin_open: true
     tty: true
     env_file:
