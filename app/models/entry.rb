@@ -31,6 +31,8 @@ class Entry < ApplicationRecord
   validates_with EntryAmountValidator
 
   scope :recent, -> do
-    where('DATE(entries.created_at) = ?', Date.current.yesterday)
+    where('entries.created_at > ? AND entries.created_at < ?',
+          Date.current.yesterday.beginning_of_day,
+          Date.current.yesterday.end_of_day)
   end
 end

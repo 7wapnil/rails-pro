@@ -7,7 +7,6 @@ FactoryBot.define do
     authorized_at { nil }
     sequence(:external_id) { |n| "ID_#{n}" }
 
-    created_at { Date.current.midday }
     wallet
     entry_request
 
@@ -17,6 +16,10 @@ FactoryBot.define do
 
     trait :recent do
       created_at { Date.current.yesterday.midday }
+    end
+
+    trait :with_bonus_balances do
+      balance_entries { create_list(:balance_entry, 2, :bonus) }
     end
 
     before(:create) do |entry|
