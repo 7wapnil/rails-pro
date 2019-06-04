@@ -81,4 +81,35 @@ describe CustomerBonus do
       end
     end
   end
+
+  describe '#locked?' do
+    let(:customer_bonus) do
+      create(:customer_bonus, status: CustomerBonus::ACTIVE)
+    end
+    let(:bet) do
+      create(
+        :bet,
+        customer_bonus: customer_bonus,
+        status: bet_status
+      )
+    end
+
+    context 'with pending bet' do
+      let(:bet_status) { StateMachines::BetStateMachine::ACCEPTED }
+
+      it 'returns true' do
+        bet
+        expect(customer_bonus).to be_locked
+      end
+    end
+
+    context 'without pending bets' do
+      let(:bet_status) { StateMachines::BetStateMachine::SETTLED }
+
+      it 'returns false' do
+        bet
+        expect(customer_bonus).not_to be_locked
+      end
+    end
+  end
 end
