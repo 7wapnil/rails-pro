@@ -10,7 +10,7 @@ module CustomerBonuses
       return unless customer_bonus&.active?
 
       recalculate_bonus_rollover
-      complete_bonus unless customer_bonus.rollover_balance.positive?
+      complete_bonus unless customer_bonus.reload.rollover_balance.positive?
 
       return if unsettled_bets_remaining || customer_bonus.completed?
 
