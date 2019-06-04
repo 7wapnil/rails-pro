@@ -42,9 +42,7 @@ module CustomerBonuses
     def deactivate_bonus!
       return unless customer_bonus.active?
 
-      customer_bonus.transaction do
-        customer_bonus.send(action)
-      end
+      customer_bonus.send(action)
     end
 
     def confiscate_bonus_money!
