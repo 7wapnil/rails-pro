@@ -2,33 +2,33 @@
 
 module CustomerBonuses
   class RolloverCalculationService < ApplicationService
-    def initialize(customer_bonus:)
-      @customer_bonus = customer_bonus
+    def initialize(bet:)
+      @bet = bet
     end
 
     def call
-      return unless customer_bonus&.active?
+      return unless bet.settled?
+
+      return unless bet&.customer_bonus&.active?
 
       recalculate_rollover!
     end
 
-    attr_reader :customer_bonus
+    attr_reader :bet
+    delegate :customer_bonus, to: :bet
 
     private
 
     def recalculate_rollover!
-      balance = customer_bonus.rollover_initial_value
-      bets = customer_bonus
-             .bets
-             .settled
-             .where(void_factor: nil)
-             .where('odd_value > ?', customer_bonus.min_odds_per_bet)
+      return if bet.odd_value < customer_bonus.min_odds_per_bet
 
-      balance -= bets.map { |bet| bet_rollover_amount(bet) }.sum
-      customer_bonus.update!(rollover_balance: balance)
+      customer_bonus.with_lock do
+        customer_bonus.rollover_balance -= bet_rollover_amount
+        customer_bonus.save!
+      end
     end
 
-    def bet_rollover_amount(bet)
+    def bet_rollover_amount
       [customer_bonus.max_rollover_per_bet, bet.amount].min
     end
   end
