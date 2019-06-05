@@ -40,7 +40,7 @@ describe Mts::Messages::ValidationRequest do
     end
 
     let(:customer) do
-      create(:customer, id: 123_456_78, last_sign_in_ip: '202.12.22.4')
+      create(:customer, id: 123_456_78, current_sign_in_ip: '202.12.22.4')
     end
     let(:base_currency_amount) { Faker::Number.decimal(2, 2).to_d }
     let(:euro) { create(:currency, code: 'EUR') }
