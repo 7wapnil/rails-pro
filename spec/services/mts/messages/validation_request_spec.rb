@@ -23,7 +23,7 @@ describe Mts::Messages::ValidationRequest do
 
     let(:example_json) do
       <<-EXAMPLE_JSON
-      {"version": "2.1", "timestampUtc": 1486541079460000, "testSource": true,
+      {"version": "2.3", "timestampUtc": 1486541079460000, "testSource": true,
       "ticketId": "MTS_Test_1486541079460000",
       "sender": {"currency": "EUR",
        "channel": "internet", "bookmakerId": #{bookmaker_id},

@@ -1,9 +1,9 @@
 describe Mts::ValidationResponseHandler do
   describe '.new' do
-    let(:payload) { %({"version":"2.1","foo":"bar"}) }
+    let(:payload) { %({"version":"2.3","foo":"bar"}) }
 
     it 'stores validation response message to response variable' do
-      service = described_class.new(%({"version":"2.1","foo":"bar"}))
+      service = described_class.new(%({"version":"2.3","foo":"bar"}))
       expect(service.instance_variable_get(:@response)
                .message[:foo]).to eq 'bar'
     end
@@ -17,7 +17,7 @@ describe Mts::ValidationResponseHandler do
         create(:bet, :sent_to_external_validation, validation_ticket_id: '1')
       end
       let(:payload) do
-        %({"version":"2.1","result":{"status":"rejected","ticketId":"1"}})
+        %({"version":"2.3","result":{"status":"rejected","ticketId":"1"}})
       end
 
       before do
@@ -47,7 +47,7 @@ describe Mts::ValidationResponseHandler do
         create(:bet, :sent_to_external_validation, validation_ticket_id: '1')
       end
       let(:payload) do
-        %({"version":"2.1","result":{"status":"accepted","ticketId":"1"}})
+        %({"version":"2.3","result":{"status":"accepted","ticketId":"1"}})
       end
 
       it 'changes bet status to accepted' do

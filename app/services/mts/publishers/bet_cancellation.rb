@@ -5,7 +5,7 @@ module Mts
     class BetCancellation < MessagePublisher
       EXCHANGE_NAME = 'arcanebet_arcanebet-Control'
       ROUTING_KEY = ENV['MTS_MQ_TICKET_CANCELLATION_RK']
-      MESSAGE_VERSION = '2.1'
+      MESSAGE_VERSION = '2.3'
       CANCEL_ROUTING_KEY = 'cancel'
       TIMEOUT_CODE = 102
       EXCHANGE_TYPE = :topic

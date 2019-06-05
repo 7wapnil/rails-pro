@@ -33,7 +33,7 @@ describe Mts::Messages::ValidationResponse do
                }
             ]
          },
-         "version":"2.1",
+         "version":"2.3",
          "signature":"aa4VStP7qEWqm/czafvGQ5PWMv35P6UwfPOoAULRLXs=",
          "exchangeRate":10000
       }
@@ -48,13 +48,13 @@ describe Mts::Messages::ValidationResponse do
     end
 
     it 'detects version' do
-      expect(subject.version).to eq '2.1'
+      expect(subject.version).to eq '2.3'
     end
   end
 
   describe 'initialize' do
     it 'parses input to message variable' do
-      input_json = '{"version":"2.1","foo":"bar"}'
+      input_json = '{"version":"2.3","foo":"bar"}'
       expect_any_instance_of(described_class)
         .to receive(:parse).with(input_json).once.and_call_original
       response = described_class.new(input_json)
