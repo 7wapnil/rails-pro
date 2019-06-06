@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_09_080430) do
+ActiveRecord::Schema.define(version: 2019_06_05_154409) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,7 +62,6 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "balance_amount_after", precision: 8, scale: 2
-    t.decimal "base_currency_amount"
     t.index ["balance_id"], name: "index_balance_entries_on_balance_id"
     t.index ["entry_id"], name: "index_balance_entries_on_entry_id"
   end
@@ -100,12 +99,11 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.datetime "validation_ticket_sent_at"
     t.string "settlement_status"
+    t.datetime "validation_ticket_sent_at"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"
-    t.boolean "counted_towards_rollover", default: false
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_bonus_id"], name: "index_bets_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
@@ -201,9 +199,9 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.decimal "rollover_balance", precision: 8, scale: 2
     t.decimal "rollover_initial_value", precision: 8, scale: 2
     t.string "status", default: "initial", null: false
-    t.bigint "balance_entry_id"
     t.datetime "activated_at"
     t.datetime "deactivated_at"
+    t.bigint "balance_entry_id"
     t.index ["balance_entry_id"], name: "index_customer_bonuses_on_balance_entry_id"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -226,6 +224,9 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.decimal "deposit_value", precision: 8, scale: 2, default: "0.0"
     t.integer "withdrawal_count", default: 0
     t.decimal "withdrawal_value", precision: 8, scale: 2, default: "0.0"
+    t.decimal "theoretical_bonus_cost", precision: 8, scale: 2, default: "0.0"
+    t.decimal "potential_bonus_cost", precision: 8, scale: 2, default: "0.0"
+    t.decimal "actual_bonus_cost", precision: 8, scale: 2, default: "0.0"
     t.integer "prematch_bet_count", default: 0
     t.decimal "prematch_wager", precision: 8, scale: 2, default: "0.0"
     t.decimal "prematch_payout", precision: 8, scale: 2, default: "0.0"
@@ -236,40 +237,7 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.bigint "customer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.datetime "last_updated_at"
-    t.decimal "total_bonus_awarded", precision: 8, scale: 2, default: "0.0"
-    t.decimal "total_bonus_completed", precision: 8, scale: 2, default: "0.0"
     t.index ["customer_id"], name: "index_customer_statistics_on_customer_id"
-  end
-
-  create_table "customer_summaries", force: :cascade do |t|
-    t.date "day", null: false
-    t.decimal "bonus_wager_amount", precision: 8, scale: 2, default: "0.0", null: false
-    t.decimal "real_money_wager_amount", precision: 8, scale: 2, default: "0.0", null: false
-    t.decimal "bonus_payout_amount", precision: 8, scale: 2, default: "0.0", null: false
-    t.decimal "real_money_payout_amount", precision: 8, scale: 2, default: "0.0", null: false
-    t.decimal "bonus_deposit_amount", precision: 8, scale: 2, default: "0.0", null: false
-    t.decimal "real_money_deposit_amount", precision: 8, scale: 2, default: "0.0", null: false
-    t.decimal "withdraw_amount", precision: 8, scale: 2, default: "0.0", null: false
-    t.integer "signups_count", default: 0, null: false
-    t.integer "betting_customer_ids", default: [], null: false, array: true
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["day"], name: "index_customer_summaries_on_day", unique: true
-  end
-
-  create_table "customer_transactions", force: :cascade do |t|
-    t.string "type"
-    t.string "status"
-    t.string "external_id"
-    t.bigint "actioned_by_id"
-    t.bigint "customer_bonus_id"
-    t.jsonb "details"
-    t.datetime "finalized_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["actioned_by_id"], name: "index_customer_transactions_on_actioned_by_id"
-    t.index ["customer_bonus_id"], name: "index_customer_transactions_on_customer_bonus_id"
   end
 
   create_table "customers", force: :cascade do |t|
@@ -305,7 +273,6 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.boolean "verification_sent", default: false, null: false
     t.string "email_verification_token"
     t.string "b_tag"
-    t.boolean "agreed_with_privacy", default: true, null: false
     t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
     t.index ["email_verification_token"], name: "index_customers_on_email_verification_token", unique: true
@@ -322,6 +289,13 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.index ["customer_id"], name: "index_deposit_limits_on_customer_id"
   end
 
+  create_table "deposit_requests", force: :cascade do |t|
+    t.bigint "customer_bonus_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_bonus_id"], name: "index_deposit_requests_on_customer_bonus_id"
+  end
+
   create_table "entries", force: :cascade do |t|
     t.bigint "wallet_id"
     t.string "kind"
@@ -335,7 +309,6 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.string "external_id"
     t.bigint "entry_request_id"
     t.decimal "balance_amount_after", precision: 8, scale: 2
-    t.decimal "base_currency_amount"
     t.index ["entry_request_id"], name: "index_entries_on_entry_request_id"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
@@ -375,7 +348,6 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
   create_table "event_competitors", id: false, force: :cascade do |t|
     t.bigint "event_id"
     t.bigint "competitor_id"
-    t.string "qualifier"
     t.index ["competitor_id"], name: "index_event_competitors_on_competitor_id"
     t.index ["event_id", "competitor_id"], name: "index_event_competitors_on_event_id_and_competitor_id", unique: true
     t.index ["event_id"], name: "index_event_competitors_on_event_id"
@@ -464,8 +436,6 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.boolean "visible", default: true
     t.string "category"
     t.string "previous_status"
-    t.string "template_id"
-    t.string "template_specifiers"
     t.index ["event_id"], name: "index_markets_on_event_id"
     t.index ["external_id"], name: "index_markets_on_external_id", unique: true
   end
@@ -479,7 +449,6 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.string "external_id"
     t.decimal "value"
     t.string "status"
-    t.string "outcome_id", default: ""
     t.index ["external_id"], name: "index_odds_on_external_id", unique: true
     t.index ["market_id"], name: "index_odds_on_market_id"
   end
@@ -544,7 +513,6 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "failed_attempts", default: 0, null: false
-    t.string "time_zone"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -571,9 +539,18 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.index ["customer_id"], name: "index_wallets_on_customer_id"
   end
 
+  create_table "withdrawal_requests", force: :cascade do |t|
+    t.string "status", default: "pending"
+    t.jsonb "payment_details"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "actioned_by_id"
+    t.index ["actioned_by_id"], name: "index_withdrawal_requests_on_actioned_by_id"
+  end
+
   add_foreign_key "addresses", "customers"
   add_foreign_key "balance_entries", "balances"
-  add_foreign_key "balance_entries", "entries"
+  add_foreign_key "balance_entries", "entries", on_delete: :cascade
   add_foreign_key "balances", "wallets"
   add_foreign_key "bets", "currencies"
   add_foreign_key "bets", "customers"
@@ -582,15 +559,14 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
   add_foreign_key "betting_limits", "titles"
   add_foreign_key "competitor_players", "competitors", on_delete: :cascade
   add_foreign_key "competitor_players", "players", on_delete: :cascade
-  add_foreign_key "customer_bonuses", "balance_entries"
+  add_foreign_key "customer_bonuses", "balance_entries", on_delete: :cascade
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "customer_statistics", "customers"
-  add_foreign_key "customer_transactions", "customer_bonuses"
-  add_foreign_key "customer_transactions", "users", column: "actioned_by_id"
   add_foreign_key "deposit_limits", "currencies"
   add_foreign_key "deposit_limits", "customers"
-  add_foreign_key "entries", "entry_requests"
+  add_foreign_key "deposit_requests", "customer_bonuses", on_delete: :cascade
+  add_foreign_key "entries", "entry_requests", on_delete: :cascade
   add_foreign_key "entries", "wallets"
   add_foreign_key "entry_currency_rules", "currencies"
   add_foreign_key "entry_requests", "currencies"
@@ -609,4 +585,5 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
   add_foreign_key "verification_documents", "customers"
   add_foreign_key "wallets", "currencies"
   add_foreign_key "wallets", "customers"
+  add_foreign_key "withdrawal_requests", "users", column: "actioned_by_id"
 end
