@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Payments
-  module Coinspaid
+  module CoinsPaid
     class Provider < ::Payments::BaseProvider
       # TODO: implement Coinspaid functionality
       def payment_page_url(_transaction)

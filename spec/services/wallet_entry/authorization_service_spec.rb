@@ -5,7 +5,7 @@ describe WalletEntry::AuthorizationService do
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
 
   before do
-    allow(EntryCurrencyRule).to receive(:find_by!) { rule }
+    allow(EntryCurrencyRule).to receive(:find_by) { rule }
     allow(Currency).to receive(:find_by!) { currency }
   end
 

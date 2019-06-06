@@ -5,5 +5,6 @@ module Payments
     name 'DepositType'
 
     field :url, !types.String
+    field :message, types.String
   end
 end

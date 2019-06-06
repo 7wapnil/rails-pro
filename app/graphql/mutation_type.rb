@@ -16,6 +16,6 @@ MutationType = GraphQL::ObjectType.define do
 
   field :depositBonus, function: Deposits::DepositBonusQuery.new
 
-  field :deposit, function: Payments::PerformDeposit.new
-  field :withdraw, function: Payments::PerformWithdrawal.new
+  field :deposit, function: ::Payments::Deposits::Perform.new
+  field :withdraw, function: ::Payments::Withdrawals::Perform.new
 end

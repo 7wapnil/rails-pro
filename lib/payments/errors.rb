@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Payments
   class GatewayError < ::StandardError; end
 
@@ -9,13 +11,21 @@ module Payments
     end
   end
 
-  class CanceledError < GatewayError
+  class FailedError < GatewayError
     def message
-      I18n.t('errors.messages.deposit_request_cancelled')
+      I18n.t('errors.messages.payment_failed_error')
     end
   end
 
-  class InvalidTransactionError < GatewayError
+  class CancelledError < GatewayError
+    def message
+      I18n.t('errors.messages.payment_cancelled_error')
+    end
+  end
+
+  class BusinessRuleError < ::StandardError; end
+
+  class InvalidTransactionError < ::StandardError
     def initialize(transaction)
       @transaction = transaction
       super

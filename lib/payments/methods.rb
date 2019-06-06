@@ -15,7 +15,8 @@ module Payments
 
     METHOD_PROVIDERS = {
       CREDIT_CARD => {
-        provider: ::Payments::Wirecard::Provider,
+        # provider: ::Payments::Wirecard::Provider,
+        provider: ::Payments::SafeCharge::Provider, # TODO: change to Wirecard
         name: 'creditcard'
       },
       NETELLER => {
@@ -51,7 +52,7 @@ module Payments
         name: 'apmgw_QIWI'
       },
       BITCOIN => {
-        provider: ::Payments::Coinspaid::Provider,
+        provider: ::Payments::CoinsPaid::Provider,
         name: 'bitcoin'
       }
     }.freeze

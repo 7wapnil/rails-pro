@@ -125,11 +125,19 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :payments do
-    match ':method/notification', to: 'notifications#create', via: %i[get post]
+  namespace :webhooks do
+    namespace :safe_charge do
+      match :payment, to: 'payments#create', via: %i[get post]
+    end
 
-    resources :deposits, path: 'deposit', only: :create
-    resources :withdrawals, path: 'withdrawal', only: :create
+    namespace :coins_paid do
+      match :payment, to: 'payments#create', via: %i[get post]
+    end
+
+    namespace :wirecard do
+      match :payment, to: 'payments#create', via: %i[get post]
+    end
+
     resources :test, only: :create
   end
 

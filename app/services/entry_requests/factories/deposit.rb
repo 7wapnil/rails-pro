@@ -2,6 +2,7 @@
 
 module EntryRequests
   module Factories
+    # rubocop:disable Metrics/ClassLength
     class Deposit < ApplicationService
       def initialize(wallet:, amount:, customer_bonus: nil, **attributes)
         @wallet = wallet
@@ -89,7 +90,9 @@ module EntryRequests
         )
       end
 
+      # TODO: extract to form object
       def validate_entry_request!
+        check_currency_rule!
         check_bonus_expiration!
         perform_customer_validations! unless initiator.is_a?(User)
 
@@ -99,9 +102,30 @@ module EntryRequests
         customer_bonus&.fail!
       end
 
-      def perform_customer_validations!
-        verify_deposit_attempts!
-        check_deposit_limit!
+      def check_currency_rule!
+        return true unless currency_rule
+        return amount_greater_than_allowed! if amount > currency_rule.max_amount
+
+        amount_less_than_allowed! if amount < currency_rule.min_amount
+      end
+
+      def currency_rule
+        @currency_rule ||= EntryCurrencyRule.find_by(currency: wallet.currency,
+                                                     kind: EntryKinds::DEPOSIT)
+      end
+
+      def amount_less_than_allowed!
+        raise CurrencyRuleError,
+              I18n.t('errors.messages.amount_less_than_allowed',
+                     min_amount: rule.min_amount,
+                     currency: currency.code)
+      end
+
+      def amount_greater_than_allowed!
+        raise CurrencyRuleError,
+              I18n.t('errors.messages.amount_greater_than_allowed',
+                     max_amount: rule.max_amount,
+                     currency: currency.code)
       end
 
       def check_bonus_expiration!
@@ -109,6 +133,11 @@ module EntryRequests
 
         raise CustomerBonuses::ActivationError,
               I18n.t('errors.messages.entry_requests.bonus_expired')
+      end
+
+      def perform_customer_validations!
+        verify_deposit_attempts!
+        check_deposit_limit!
       end
 
       def check_deposit_limit!
@@ -120,5 +149,6 @@ module EntryRequests
         ::Deposits::VerifyDepositAttempt.call(wallet.customer)
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

@@ -396,6 +396,8 @@ en:
       deposit_limits: Deposit limit reached, please try again later
       document_type_not_supported: Document type not supported
       entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
+      amount_greater_than_allowed: "Amount should be less than %{max_amount} %{currency}"
+      amount_less_than_allowed: "Amount should be greater than %{min_amount} %{currency}"
       provider_disconnected: Provider is disconnected
       market_inactive: Bet market is inactive
       amount_not_negative: "%{subject} amount cannot beсome negative. Current amount: %{current_amount}, new amount: %{new_amount}."
@@ -414,6 +416,11 @@ en:
       technical_error_happened: Technical error happened
       deposit_cancelled: Deposit request canceled
       deposit_failed: Deposit request failed
+      payment_failed_error: Payment was failed
+      payment_cancelled_error: Payment was cancelled
+      cancelled_by_customer: Payment was cancelled by customer
+      deposit_request_cancelled: Deposit was cancelled
+      deposit_request_failed: Your deposit was failed. Try again or contact an administration to resolve the problem
       unsupported_payment_method: "Payment method '%{code}' is not implemented"
       nonexistent_bet: "Bet with validation ticket does not exist"
       password_invalid: Incorrect password
@@ -607,6 +614,8 @@ en:
         credit_card:
           title: Credit card (Visa, MasterCard, Maestro)
           note: 'Range: 10 - 10 000€ / No service fee'
+    deposits:
+      success_message: 'You will be redirected to the payment page in a while'
 
   time:
     formats:

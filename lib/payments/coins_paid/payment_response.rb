@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Payments
-  module SafeCharge
+  module CoinsPaid
     class PaymentResponse < ::Payments::PaymentResponse
       # TODO: implement Coinspaid functionality
       def status

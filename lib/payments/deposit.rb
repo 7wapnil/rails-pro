@@ -27,62 +27,55 @@ module Payments
     BUSINESS_ERRORS = [
       ::Deposits::DepositLimitRestrictionError,
       ::Deposits::DepositAttemptError,
+      ::Deposits::CurrencyRuleError,
       ::CustomerBonuses::ActivationError
     ].freeze
 
-    protected
-
-    def execute_operation
-      entry_request = initial_entry_request
-      @transaction.id = entry_request.id
-      apply_bonus_code!
-
-      provider.payment_page_url(@transaction)
-    end
-
     private
 
-    def provider
-      find_method_provider(@transaction.method).new
-    end
+    attr_reader :entry_request, :customer_bonus
 
-    def create_entry_request
+    def execute_operation
       apply_bonus_code!
-      initial_entry_request
+      create_entry_request
+      assign_request_to_transaction
+
+      return entry_request_failed! if entry_request.failed?
+
+      provider.payment_page_url(transaction)
     end
 
     def apply_bonus_code!
       return unless transaction.bonus
 
-      ::CustomerBonuses::Create.call(
+      @customer_bonus = ::CustomerBonuses::Create.call(
         wallet: transaction.wallet,
-        original_bonus: transaction.bonus,
+        bonus: transaction.bonus,
         amount: transaction.amount
       )
+    rescue *BUSINESS_ERRORS => error
+      raise ::Payments::BusinessRuleError, error.message
     end
 
-    def initial_entry_request
-      request = EntryRequests::Factories::Deposit.call(
+    def create_entry_request
+      @entry_request = EntryRequests::Factories::Deposit.call(
         wallet: transaction.wallet,
         amount: transaction.amount,
-        mode: transaction.method
+        mode: transaction.method,
+        customer_bonus: customer_bonus
       )
-      request.save!
-
-      request
     end
 
-    def entry_request_failure(error)
-      EntryRequest.new(
-        status: EntryRequest::FAILED,
-        amount: transaction.amount,
-        initiator: transaction.customer,
-        customer: transaction.amount.customer,
-        currency: transaction.amount.currency,
-        result: { message: error.message },
-        mode: transaction.method,
-        kind: EntryRequest::DEPOSIT
-      )
+    def assign_request_to_transaction
+      transaction.id = entry_request.id
+    end
+
+    def entry_request_failed!
+      raise Payments::BusinessRuleError, entry_request.result['message']
+    end
+
+    def provider
+      find_method_provider(transaction.method).new
     end
   end
 end
