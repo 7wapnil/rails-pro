@@ -16,7 +16,7 @@ GraphQL::Errors.configure(ArcanebetSchema) do
   rescue_from ::ResolvingError do |exception, _obj, _args, ctx|
     exception.errors_map.each do |key, value|
       error = GraphQL::ExecutionError.new(value)
-      error.path = [key]
+      error.path = [camelize_symbol(key)]
       ctx.add_error(error)
     end
     ctx.errors.pop
@@ -31,7 +31,7 @@ GraphQL::Errors.configure(ArcanebetSchema) do
       error = GraphQL::ExecutionError.new(
         exception.record.errors.full_messages_for(attribute).first
       )
-      error.path = [attribute]
+      error.path = [camelize_symbol(attribute)]
       ctx.add_error(error)
     end
     ctx.errors.pop
@@ -42,7 +42,7 @@ GraphQL::Errors.configure(ArcanebetSchema) do
       error = GraphQL::ExecutionError.new(
         exception.model.errors.full_messages_for(attribute).first
       )
-      error.path = [attribute]
+      error.path = [camelize_symbol(attribute)]
       ctx.add_error(error)
     end
     ctx.errors.pop
@@ -51,4 +51,8 @@ GraphQL::Errors.configure(ArcanebetSchema) do
   rescue_from StandardError do |exception|
     GraphQL::ExecutionError.new(exception.message)
   end
+end
+
+def camelize_symbol(sym)
+  sym.to_s.camelize(:lower).to_sym
 end
