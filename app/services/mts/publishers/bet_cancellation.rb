@@ -4,6 +4,7 @@ module Mts
   module Publishers
     class BetCancellation < MessagePublisher
       EXCHANGE_NAME = 'arcanebet_arcanebet-Control'
+      QUEUE_NAME = ENV['MTS_MQ_QUEUE_REPLY']
       ROUTING_KEY = ENV['MTS_MQ_TICKET_CANCELLATION_RK']
       MESSAGE_VERSION = '2.1'
       CANCEL_ROUTING_KEY = 'cancel'

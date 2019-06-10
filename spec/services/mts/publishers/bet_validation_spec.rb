@@ -6,6 +6,7 @@ describe Mts::Publishers::BetValidation do
 
   let(:bet) { create(:bet) }
   let(:connection_double) { double }
+  let(:queue_double) { double }
 
   before do
     allow(ENV)
@@ -24,6 +25,9 @@ describe Mts::Publishers::BetValidation do
         .and_return(connection_double)
       allow(connection_double).to receive(:publish)
         .and_return(true)
+      allow(connection_double).to receive(:queue)
+        .and_return(queue_double)
+      allow(queue_double).to receive(:bind)
     end
 
     context 'valid params' do
