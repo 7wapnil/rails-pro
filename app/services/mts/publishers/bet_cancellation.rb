@@ -33,6 +33,7 @@ module Mts
 
       def update_bet
         bet.timed_out_external_validation!
+        emit_websocket
       end
 
       def additional_params
@@ -45,6 +46,10 @@ module Mts
 
       def timestamp
         (Time.now.to_f * 1000).to_i
+      end
+
+      def emit_websocket
+        WebSocket::Client.instance.trigger_bet_update(bet)
       end
     end
   end
