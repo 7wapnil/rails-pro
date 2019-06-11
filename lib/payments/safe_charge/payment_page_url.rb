@@ -53,6 +53,7 @@ module Payments
         @query_hash_with_checksum ||= query_hash.merge(checksum: checksum)
       end
 
+      # TODO: Take country and state from db
       def query_hash # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         @query_hash ||= {
           merchant_id: ENV['SAFECHARGE_MERCHANT_ID'],
