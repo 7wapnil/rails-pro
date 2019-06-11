@@ -2,6 +2,7 @@
 
 module Payments
   module SafeCharge
+    # rubocop:disable Metrics/ClassLength
     class PaymentPageUrl < ApplicationService
       include ::Payments::Methods
       include Rails.application.routes.url_helpers
@@ -15,8 +16,14 @@ module Payments
       FILTER_MODE = 'filter'
       WEB_PROTOCOL = 'https'
 
-      def initialize(transaction)
+      delegate :customer, :currency, :amount, to: :transaction
+      delegate :address, to: :customer, prefix: true
+      delegate :street_address, :city, :country_code, :zip_code,
+               to: :customer_address, allow_nil: true, prefix: true
+
+      def initialize(transaction, **extra_query_params)
         @transaction = transaction
+        @extra_query_params = extra_query_params
       end
 
       def call
@@ -26,6 +33,8 @@ module Payments
       end
 
       private
+
+      attr_reader :transaction, :extra_query_params
 
       def validate!
         PaymentUrlValidator.call(url: base_url,
@@ -44,64 +53,105 @@ module Payments
         @query_hash_with_checksum ||= query_hash.merge(checksum: checksum)
       end
 
-      # TODO: Take country and state from db
       def query_hash # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         @query_hash ||= {
           merchant_id: ENV['SAFECHARGE_MERCHANT_ID'],
           merchant_site_id: ENV['SAFECHARGE_MERCHANT_SITE_ID'],
           version: API_VERSION,
-          encoding: Encoding::UTF_8.to_s,
-          time_stamp: time_stamp,
+          encoding: encoding,
+          time_stamp: timestamp,
           currency: currency_code,
-          userid: @transaction.customer.id,
-          productId: @transaction.id,
-          user_token_id: @transaction.customer.id,
-          item_name_1: item_name,
-          item_number_1: @transaction.id,
-          item_amount_1: @transaction.amount,
+          userid: customer.id,
+          productId: transaction.id,
+          user_token_id: customer.id,
+          item_name_1: extra_query_params.fetch(:item_name_1) { item_name },
+          item_number_1: transaction.id,
+          item_amount_1: transaction.amount,
           item_quantity_1: ITEM_QUANTITY,
-          total_amount: @transaction.amount,
-          first_name: @transaction.customer.first_name,
-          last_name: @transaction.customer.last_name,
-          email: @transaction.customer.email,
-          phone1: @transaction.customer.phone,
+          total_amount: transaction.amount,
+          first_name: customer.first_name,
+          last_name: customer.last_name,
+          email: customer.email,
+          phone1: customer.phone,
           dateOfBirth: customer_date_of_birth,
-          address1: @transaction.customer.address.street_address,
-          city: @transaction.customer.address.city,
-          country: @transaction.customer.address.country_code,
-          state: @transaction.customer.address.state_code,
-          zip: @transaction.customer.address.zip_code,
-          isNative: IS_NATIVE,
-          payment_method: provider_method_name(@transaction.method),
-          payment_method_mode: FILTER_MODE,
-          success_url: webhook_url(::Payments::PaymentResponse::STATUS_SUCCESS),
-          error_url: webhook_url(::Payments::PaymentResponse::STATUS_FAILED),
-          pending_url: webhook_url(::Payments::PaymentResponse::STATUS_PENDING),
-          back_url: webhook_url(::Payments::PaymentResponse::STATUS_CANCELED),
-          notify_url: webhook_url(
-            ::Payments::SafeCharge::PaymentResponse::NOTIFICATION
-          )
+          address1: customer_address_street_address,
+          city: customer_address_city,
+          country: customer_address_country_code, # TODO: Take from db
+          state: customer_address_state_code, # TODO: Take from db
+          zip: customer_address_zip_code,
+          isNative: extra_query_params.fetch(:isNative, IS_NATIVE),
+          payment_method: provider_method_name(transaction.method),
+          success_url: success_redirection_url,
+          error_url: webhook_url,
+          pending_url: webhook_url,
+          back_url: cancellation_redirection_url,
+          notify_url: webhook_url
         }
       end
 
-      def time_stamp
-        Time.zone.now.strftime(TIMESTAMP_FORMAT)
+      def encoding
+        extra_query_params.fetch(:encoding) { Encoding::UTF_8.to_s }
+      end
+
+      def timestamp
+        return specified_timestamp if specified_timestamp.is_a?(String)
+
+        specified_timestamp&.strftime(TIMESTAMP_FORMAT)
+      end
+
+      def specified_timestamp
+        @specified_timestamp ||= extra_query_params
+                                 .fetch(:time_stamp) { Time.zone.now }
       end
 
       def item_name
-        "Deposit #{amount} to your #{currency_code} wallet on ArcaneBet"
-      end
-
-      def amount
-        @transaction.amount
+        "Deposit #{transaction.amount} to your #{currency_code} wallet on " \
+        "#{ENV['BRAND_NAME']}"
       end
 
       def currency_code
-        @transaction.currency.code
+        @currency_code ||= extra_query_params
+                           .fetch(:currency_code) { currency.code }
       end
 
       def customer_date_of_birth
-        @transaction.customer.date_of_birth&.strftime(DATE_OF_BIRTH_FORMAT)
+        customer.date_of_birth&.strftime(DATE_OF_BIRTH_FORMAT)
+      end
+
+      # TODO: remove when states would be handled on back-end
+      def customer_address_state_code
+        customer_address.state_code if with_state?
+      end
+
+      def with_state?
+        State::AVAILABLE_STATES.key?(customer_address_country_code)
+      end
+
+      # Don't become confused.
+      # Success redirection response is received on
+      # GET payments#show
+      def success_redirection_url
+        webhook_url
+      end
+
+      # Webhook response is received on
+      # POST payments#create
+      def webhook_url
+        webhooks_safe_charge_payment_url(
+          host: ENV['APP_HOST'],
+          protocol: WEB_PROTOCOL,
+          request_id: transaction.id
+        )
+      end
+
+      # Cancellation redirection response is received on
+      # GET cancelled_payments#show
+      def cancellation_redirection_url
+        webhooks_safe_charge_payment_cancel_url(
+          host: ENV['APP_HOST'],
+          protocol: WEB_PROTOCOL,
+          request_id: transaction.id
+        )
       end
 
       def checksum
@@ -114,15 +164,7 @@ module Payments
           *query_hash.values
         ].map(&:to_s).join
       end
-
-      def webhook_url(result)
-        webhooks_safe_charge_payment_url(
-          host: ENV['APP_HOST'],
-          result: result,
-          protocol: WEB_PROTOCOL,
-          request_id: @transaction.id
-        )
-      end
+      # rubocop:enable Metrics/ClassLength
     end
   end
 end

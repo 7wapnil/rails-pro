@@ -39,7 +39,8 @@ module Withdrawals
     end
 
     def required_fields
-      SafeCharge::Withdraw::WITHDRAW_MODE_FIELDS[payment_method]
+      ::Payments::SafeCharge::WithdrawalMethods::WITHDRAW_MODE_FIELDS
+        .fetch(payment_method)
         .map { |detail| detail[:code] }
     end
 
@@ -50,9 +51,10 @@ module Withdrawals
     end
 
     def valid_withdraw_payment_method?
-      SafeCharge::Withdraw::AVAILABLE_WITHDRAW_MODES.values
-                                                    .flatten
-                                                    .include?(payment_method)
+      ::Payments::SafeCharge::WithdrawalMethods::AVAILABLE_WITHDRAW_MODES
+        .values
+        .flatten
+        .include?(payment_method)
     end
 
     def payload_hash

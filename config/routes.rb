@@ -112,26 +112,14 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :redirect do
-    resources :deposits, only: [] do
-      collection do
-        get :initiate
-        get :success
-        get :error
-        get :pending
-        get :back
-        post :webhook
-      end
-    end
-  end
-
   # TODO: remove after full coinspaid implementation
   post '/payments/coinspaid/notification',
        to: 'webhooks/coins_paid/payments#create'
 
   namespace :webhooks do
     namespace :safe_charge do
-      match :payment, to: 'payments#create', via: %i[get post]
+      resource :payment, only: %i[create show]
+      get 'payment/cancel', to: 'cancelled_payments#show'
     end
 
     namespace :coins_paid do
@@ -141,8 +129,6 @@ Rails.application.routes.draw do
     namespace :wirecard do
       match :payment, to: 'payments#create', via: %i[get post]
     end
-
-    resources :test, only: :create
   end
 
   devise_for :users, controllers: {

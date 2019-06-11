@@ -19,15 +19,15 @@ module Payments
       end
 
       def call
-        raise error('Payment url is not provided.') if url.blank?
+        raise error('Payment url is not provided') if url.blank?
 
         check_mandatory_fields!
         check_encoding!
         check_currency!
         check_amount!
 
-        raise error('time_stamp has wrong format.') unless time_stamp_valid?
-        raise error('dateOfBirth has wrong format.') unless date_of_birth_valid?
+        raise error('time_stamp in wrong format') unless time_stamp_valid?
+        raise error('dateOfBirth in wrong format') unless date_of_birth_valid?
 
         check_boolean_fields!
         check_address_fields!
@@ -48,7 +48,7 @@ module Payments
         return unless missing_mandatory_fields.any?
 
         raise error(
-          "Fields are required: #{missing_mandatory_fields.join(', ')}."
+          "Fields are required: #{missing_mandatory_fields.join(', ')}"
         )
       end
 
@@ -63,23 +63,24 @@ module Payments
       def check_encoding!
         return if ::Encoding.name_list.include?(query.encoding)
 
-        raise error("`#{query.encoding}` is invalid encoding type.")
+        raise error("`#{query.encoding}` is invalid encoding type")
       end
 
       def check_currency!
         return if currency_available?
 
-        raise error("`#{query.currency}` currency is not supported.")
+        raise error("`#{query.currency}` currency is not supported")
       end
 
       def currency_available?
-        ::SafeCharge::Currency::AVAILABLE_CURRENCY_LIST.include?(query.currency)
+        ::Payments::SafeCharge::Currency::AVAILABLE_CURRENCY_LIST
+          .include?(query.currency)
       end
 
       def check_amount!
         return if amounts_positive?
 
-        raise error('Amount has to be positive.')
+        raise error('Amount has to be positive')
       end
 
       def amounts_positive?
@@ -106,7 +107,7 @@ module Payments
         return unless invalid_boolean_fields.any?
 
         raise error(
-          "Fields have to be 0 or 1: #{invalid_boolean_fields.join(', ')}."
+          "Fields have to be 0 or 1: #{invalid_boolean_fields.join(', ')}"
         )
       end
 
@@ -122,16 +123,15 @@ module Payments
       end
 
       def check_country!
-        raise error 'Provided country is not supported.' unless valid_country?
+        raise error 'Provided country is not supported' unless valid_country?
       end
 
       def valid_country?
-        !query.country ||
-          ::SafeCharge::Country::AVAILABLE_COUNTRIES.include?(query.country)
+        !query.country || Country::AVAILABLE_COUNTRIES.include?(query.country)
       end
 
       def check_state!
-        raise error 'Provided state is not supported.' unless valid_state?
+        raise error 'Provided state is not supported' unless valid_state?
       end
 
       def valid_state?
@@ -141,14 +141,13 @@ module Payments
       end
 
       def available_states
-        @available_states ||=
-          ::SafeCharge::State::AVAILABLE_STATES[query.country].to_a
+        @available_states ||= State::AVAILABLE_STATES[query.country].to_a
       end
 
       def validate_checksum!
         return if Digest::SHA256.hexdigest(checksum_string) == query.checksum
 
-        raise error 'Checksum is corrupted.'
+        raise error 'Checksum is corrupted'
       end
 
       def checksum_string

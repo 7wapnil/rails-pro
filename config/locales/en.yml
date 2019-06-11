@@ -417,6 +417,7 @@ en:
       deposit_cancelled: Deposit request canceled
       deposit_failed: Deposit request failed
       payment_failed_error: Payment was failed
+      payment_failed_with_reason_error: "Payment was failed: `%{reason}`"
       payment_cancelled_error: Payment was cancelled
       cancelled_by_customer: Payment was cancelled by customer
       deposit_request_cancelled: Deposit was cancelled
@@ -624,6 +625,10 @@ en:
           cancelled: This transaction is a double spend. Pay attention to this customer.
           not_enough_fee: Not enough money to pay fee for transfers of ETH / ERC20 / USDT, when money are deposited transactions will try to transfer
 
+  webhooks:
+    safe_charge:
+      redirections:
+        success_message: 'Deposit was proceeded successfully'
   time:
     formats:
       date_picker: "%-d %B %Y"

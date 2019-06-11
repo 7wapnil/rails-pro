@@ -4,6 +4,8 @@ module EntryRequests
   module Factories
     # rubocop:disable Metrics/ClassLength
     class Deposit < ApplicationService
+      delegate :currency, to: :entry_request
+
       def initialize(wallet:, amount:, customer_bonus: nil, **attributes)
         @wallet = wallet
         @amount = amount
@@ -26,8 +28,6 @@ module EntryRequests
 
       attr_reader :wallet, :amount, :customer_bonus, :passed_initiator,
                   :mode, :passed_comment, :entry_request
-
-      delegate :currency, to: :wallet, prefix: true
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
@@ -82,7 +82,7 @@ module EntryRequests
       end
 
       def create_balance_request!
-        BalanceRequestBuilders::Deposit.call(entry_request, calculations)
+        ::BalanceRequestBuilders::Deposit.call(entry_request, calculations)
       end
 
       def create_deposit!
@@ -120,14 +120,14 @@ module EntryRequests
         raise ::Deposits::CurrencyRuleError,
               I18n.t('errors.messages.amount_less_than_allowed',
                      min_amount: currency_rule.min_amount,
-                     currency: wallet_currency.code)
+                     currency: currency.to_s)
       end
 
       def amount_greater_than_allowed!
         raise ::Deposits::CurrencyRuleError,
               I18n.t('errors.messages.amount_greater_than_allowed',
                      max_amount: currency_rule.max_amount,
-                     currency: currency.code)
+                     currency: currency.to_s)
       end
 
       def check_bonus_expiration!

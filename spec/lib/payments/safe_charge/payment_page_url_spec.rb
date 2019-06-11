@@ -1,6 +1,16 @@
-describe Deposits::GetPaymentPageUrl do
-  subject do
-    described_class.call(entry_request: entry_request, **extra_query_params)
+# frozen_string_literal: true
+
+describe ::Payments::SafeCharge::PaymentPageUrl do
+  subject { described_class.call(transaction, **extra_query_params) }
+
+  let(:transaction) do
+    ::Payments::Transaction.new(
+      id: entry_request.id,
+      method: Payments::Methods::CREDIT_CARD,
+      customer: entry_request.customer,
+      currency: entry_request.currency,
+      amount: entry_request.amount
+    )
   end
 
   let(:customer) { create(:customer, :with_address) }
@@ -9,13 +19,13 @@ describe Deposits::GetPaymentPageUrl do
     create(:balance_entry_request, entry_request: entry_request)
   end
   let(:extra_query_params) { {} }
-  let(:amount) { balance_entry_request.amount }
+  let(:amount) { entry_request.amount }
 
   let(:payment_url) { Faker::Internet.url }
   let(:merchant_id) { Faker::Bank.account_number }
   let(:merchant_site_id) { Faker::Vehicle.vin }
   let(:secret_key) { Faker::Vehicle.vin }
-  let(:urls) { Array.new(5) { Faker::Internet.url } }
+  let(:brand_name) { Faker::Restaurant.name }
 
   let(:result_uri) { URI.parse(subject) }
   let(:result_query) do
@@ -25,9 +35,16 @@ describe Deposits::GetPaymentPageUrl do
   end
 
   before do
-    allow(Deposits::PaymentUrlValidator).to receive(:call).and_return(true)
+    allow(::Payments::SafeCharge::PaymentUrlValidator)
+      .to receive(:call)
+      .and_return(true)
 
     allow(ENV).to receive(:[]).and_call_original
+    allow(ENV)
+      .to receive(:[])
+      .with('APP_HOST')
+      .and_return(payment_url)
+
     allow(ENV)
       .to receive(:[])
       .with('SAFECHARGE_HOSTED_PAYMENTS_URL')
@@ -50,28 +67,8 @@ describe Deposits::GetPaymentPageUrl do
 
     allow(ENV)
       .to receive(:[])
-      .with('SAFECHARGE_DEPOSIT_SUCCESS_URL')
-      .and_return(urls.first)
-
-    allow(ENV)
-      .to receive(:[])
-      .with('SAFECHARGE_DEPOSIT_ERROR_URL')
-      .and_return(urls.second)
-
-    allow(ENV)
-      .to receive(:[])
-      .with('SAFECHARGE_DEPOSIT_PENDING_URL')
-      .and_return(urls.third)
-
-    allow(ENV)
-      .to receive(:[])
-      .with('SAFECHARGE_DEPOSIT_BACK_URL')
-      .and_return(urls.fourth)
-
-    allow(ENV)
-      .to receive(:[])
-      .with('SAFECHARGE_DEPOSIT_NOTIFY_URL')
-      .and_return(urls.fifth)
+      .with('BRAND_NAME')
+      .and_return(brand_name)
   end
 
   it 'takes payment uri from ENV' do
@@ -93,12 +90,11 @@ describe Deposits::GetPaymentPageUrl do
   context 'other mandatory parameters' do
     let(:currency) { entry_request.currency }
     let(:time_stamp) do
-      Time.zone.now.strftime(described_class::TIME_STAMP_FORMAT)
+      Time.zone.now.strftime(described_class::TIMESTAMP_FORMAT)
     end
 
     let(:item_name) do
-      "Deposit #{balance_entry_request.amount} to your #{currency.code} " \
-      'wallet on ArcaneBet.'
+      "Deposit #{amount} to your #{currency.code} wallet on #{brand_name}"
     end
 
     include_context 'frozen_time'
@@ -159,31 +155,31 @@ describe Deposits::GetPaymentPageUrl do
     end
   end
 
-  context 'url parameters' do
+  context 'url parameters', routes: true do
+    let(:webhook_url) do
+      webhooks_safe_charge_payment_url(
+        host: ENV['APP_HOST'],
+        protocol: described_class::WEB_PROTOCOL,
+        request_id: transaction.id
+      )
+    end
+    let(:cancellation_redirection_url) do
+      webhooks_safe_charge_payment_cancel_url(
+        host: ENV['APP_HOST'],
+        protocol: described_class::WEB_PROTOCOL,
+        request_id: transaction.id
+      )
+    end
+
     it 'are appended' do
       expect(result_query)
         .to have_attributes(
-          success_url: urls.first,
-          error_url: urls.second,
-          pending_url: urls.third,
-          back_url: urls.fourth,
-          notify_url: urls.fifth
+          success_url: webhook_url,
+          error_url: webhook_url,
+          pending_url: webhook_url,
+          back_url: cancellation_redirection_url,
+          notify_url: webhook_url
         )
-    end
-
-    context 'when ENV variables are empty' do
-      let(:urls) { Array.new(5) { '' } }
-
-      it 'are not prepended' do
-        expect(result_query.to_h.keys)
-          .not_to include(
-            :success_url,
-            :error_url,
-            :pending_url,
-            :back_url,
-            :notify_url
-          )
-      end
     end
   end
 
@@ -203,7 +199,7 @@ describe Deposits::GetPaymentPageUrl do
       let(:encoding) { Encoding.name_list.sample }
       let(:item_name_1) { Faker::WorldOfWarcraft.quote }
       let(:is_native) do
-        Deposits::PaymentUrlValidator::BOOLEAN_OPTIONS.sample.to_s
+        ::Payments::SafeCharge::PaymentUrlValidator::BOOLEAN_OPTIONS.sample.to_s
       end
 
       let(:extra_query_params) do
@@ -229,7 +225,7 @@ describe Deposits::GetPaymentPageUrl do
       let(:extra_query_params) { { time_stamp: time_stamp } }
 
       let(:formatted_time_stamp) do
-        time_stamp.strftime(described_class::TIME_STAMP_FORMAT)
+        time_stamp.strftime(described_class::TIMESTAMP_FORMAT)
       end
 
       it 'and works' do
@@ -242,7 +238,7 @@ describe Deposits::GetPaymentPageUrl do
       let(:extra_query_params) { { time_stamp: time_stamp } }
 
       let(:formatted_time_stamp) do
-        time_stamp.strftime(described_class::TIME_STAMP_FORMAT)
+        time_stamp.strftime(described_class::TIMESTAMP_FORMAT)
       end
 
       it 'and works' do
@@ -253,7 +249,7 @@ describe Deposits::GetPaymentPageUrl do
     context 'time_stamp param is passed as String' do
       let(:time_stamp) { rand(7).days.ago }
       let(:formatted_time_stamp) do
-        time_stamp.strftime(described_class::TIME_STAMP_FORMAT)
+        time_stamp.strftime(described_class::TIMESTAMP_FORMAT)
       end
 
       let(:extra_query_params) { { time_stamp: formatted_time_stamp } }
@@ -272,7 +268,7 @@ describe Deposits::GetPaymentPageUrl do
     end
 
     it 'is called with checksum' do
-      expect(Deposits::PaymentUrlValidator)
+      expect(::Payments::SafeCharge::PaymentUrlValidator)
         .to receive(:call)
         .with(url: payment_url, query_hash: hash_including(checksum: checksum))
 
@@ -281,13 +277,13 @@ describe Deposits::GetPaymentPageUrl do
 
     context 'on error' do
       before do
-        allow(Deposits::PaymentUrlValidator)
+        allow(::Payments::SafeCharge::PaymentUrlValidator)
           .to receive(:call)
           .and_raise(SafeCharge::InvalidPaymentUrlError)
       end
 
       it "doesn't proceed" do
-        expect { subject }.to raise_error(SafeCharge::InvalidPaymentUrlError)
+        expect { subject }.to raise_error(::SafeCharge::InvalidPaymentUrlError)
       end
     end
   end

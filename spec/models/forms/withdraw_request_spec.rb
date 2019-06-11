@@ -10,7 +10,9 @@ describe Forms::WithdrawRequest do
   it do
     expect(subject)
       .to validate_inclusion_of(:payment_method)
-      .in_array(SafeCharge::Withdraw::AVAILABLE_WITHDRAW_MODES.keys)
+      .in_array(
+        ::Payments::SafeCharge::WithdrawalMethods::AVAILABLE_WITHDRAW_MODES.keys
+      )
   end
 
   it do

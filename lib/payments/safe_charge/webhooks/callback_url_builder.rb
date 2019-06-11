@@ -4,20 +4,13 @@ module Payments
   module SafeCharge
     module Webhooks
       class CallbackUrlBuilder < ApplicationService
-        REQUEST_FAILED_MESSAGE =
-          I18n.t('errors.messages.deposit_request_failed')
-        REQUEST_MESSAGE_CANCELLED_MESSAGE =
-          I18n.t('errors.messages.deposit_request_cancelled')
-        SOMETHING_WENT_WRONG_MESSAGE =
-          I18n.t('errors.messages.technical_error_happened')
-        FAILED_ENTRY_REQUEST_MESSAGE =
-          I18n.t('errors.messages.deposit_attempt_is_not_succeded')
-        DEPOSIT_ATTEMPTS_EXCEEDED_MESSAGE =
-          I18n.t('errors.messages.deposit_attempts_exceeded')
+        STATES_MAP = {
+          ::Payments::PaymentResponse::STATUS_SUCCESS => :success,
+          ::Payments::PaymentResponse::STATUS_CANCELLED => :error
+        }.freeze
 
-        def initialize(state:, message: nil)
-          @state = state
-          @message = message
+        def initialize(status:)
+          @status = status
         end
 
         def call
@@ -26,13 +19,23 @@ module Payments
 
         private
 
-        attr_reader :state, :message
+        attr_reader :status
 
         def query_params
-          URI.encode_www_form(
-            depositState: state,
-            depositStateMessage: message
-          )
+          URI.encode_www_form(depositState: state, depositStateMessage: message)
+        end
+
+        def state
+          STATES_MAP[status]
+        end
+
+        def message
+          case status
+          when ::Payments::PaymentResponse::STATUS_SUCCESS
+            I18n.t('webhooks.safe_charge.redirections.success_message')
+          when ::Payments::PaymentResponse::STATUS_CANCELLED
+            I18n.t('errors.messages.deposit_request_cancelled')
+          end
         end
       end
     end

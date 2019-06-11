@@ -10,8 +10,10 @@ module Payments
     validates :amount, numericality: true
 
     def wallet
-      @wallet ||= Wallet.find_or_create_by!(customer: customer,
-                                            currency: currency)
+      @wallet ||= Wallets::FindOrCreate.call(
+        customer: customer,
+        currency: currency
+      )
     end
 
     def bonus

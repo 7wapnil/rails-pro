@@ -17,39 +17,39 @@ module Payments
       CREDIT_CARD => {
         # provider: ::Payments::Wirecard::Provider,
         provider: ::Payments::SafeCharge::Provider, # TODO: change to Wirecard
-        name: 'creditcard'
+        name: SafeCharge::Methods::CC_CARD
       },
       NETELLER => {
         provider: ::Payments::SafeCharge::Provider,
-        name: 'apmgw_Neteller'
+        name: SafeCharge::Methods::APMGW_NETELLER
       },
       SKRILL => {
         provider: ::Payments::SafeCharge::Provider,
-        name: 'apmgw_MoneyBookers'
+        name: SafeCharge::Methods::APMGW_MONEYBOOKERS
       },
       PAYSAFECARD => {
         provider: ::Payments::SafeCharge::Provider,
-        name: 'apmgw_PaySafeCard'
+        name: SafeCharge::Methods::APMGW_PAYSAFECARD
       },
       SOFORT => {
         provider: ::Payments::SafeCharge::Provider,
-        name: 'apmgw_Sofort'
+        name: SafeCharge::Methods::APMGW_SOFORT
       },
       IDEAL => {
         provider: ::Payments::SafeCharge::Provider,
-        name: 'apmgw_iDeal'
+        name: SafeCharge::Methods::APMGW_IDEAL
       },
       WEBMONEY => {
         provider: ::Payments::SafeCharge::Provider,
-        name: 'apmgw_WebMoney'
+        name: SafeCharge::Methods::APMGW_WEBMONEY
       },
       YANDEX => {
         provider: ::Payments::SafeCharge::Provider,
-        name: 'apmgw_YANDEXMONEY'
+        name: SafeCharge::Methods::APMGW_YANDEXMONEY
       },
       QIWI => {
         provider: ::Payments::SafeCharge::Provider,
-        name: 'apmgw_QIWI'
+        name: SafeCharge::Methods::APMGW_QIWI
       },
       BITCOIN => {
         provider: ::Payments::CoinsPaid::Provider,

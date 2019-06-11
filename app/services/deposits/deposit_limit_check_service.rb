@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Deposits
   class DepositLimitCheckService < ApplicationService
     def initialize(customer, amount, currency)

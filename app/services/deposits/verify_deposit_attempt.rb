@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Deposits
   class VerifyDepositAttempt < ApplicationService
     MAX_DEPOSIT_ATTEMPTS = ENV.fetch('MAX_DEPOSIT_ATTEMPTS', 5).to_i

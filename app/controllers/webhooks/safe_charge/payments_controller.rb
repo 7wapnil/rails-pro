@@ -4,37 +4,37 @@ module Webhooks
   module SafeCharge
     class PaymentsController < ActionController::Base
       skip_before_action :verify_authenticity_token
+      before_action :verify_payment_signature
 
-      # rubocop:disable Metrics/MethodLength
+      def show
+        redirect_to success_redirection_url
+      end
+
       def create
         ::Payments::SafeCharge::Provider.new.handle_payment_response(params)
 
-        callback_redirect_for(:success, 'Deposit was proceeded successfully')
-      rescue ::Payments::CancelledError
-        callback_redirect_for(
-          :error, I18n.t('errors.messages.deposit_request_cancelled')
-        )
+        head :ok
       rescue ::Payments::FailedError
-        callback_redirect_for(
-          :error, I18n.t('errors.messages.deposit_request_failed')
-        )
+        head :unprocessable_entity
       rescue StandardError => error
         Rails.logger.error(message: 'Technical error appeared on deposit',
                            error: error.message)
-        callback_redirect_for(
-          :fail, I18n.t('errors.messages.technical_error_happened')
-        )
+
+        head :internal_server_error
       end
-      # rubocop:enable Metrics/MethodLength
 
       private
 
-      def callback_redirect_for(state, message = nil)
-        redirect_to(
-          ::Payments::SafeCharge::Webhooks::CallbackUrlBuilder.call(
-            state: state,
-            message: message
-          )
+      def verify_payment_signature
+        return if ::Payments::SafeCharge::SignatureVerifier.call(params)
+
+        raise ::Deposits::AuthenticationError,
+              'Malformed SafeCharge deposit request!'
+      end
+
+      def success_redirection_url
+        ::Payments::SafeCharge::Webhooks::CallbackUrlBuilder.call(
+          status: ::Payments::PaymentResponse::STATUS_SUCCESS
         )
       end
     end

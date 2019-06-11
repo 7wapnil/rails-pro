@@ -1,4 +1,6 @@
-describe Deposits::PaymentUrlValidator do
+# frozen_string_literal: true
+
+describe ::Payments::SafeCharge::PaymentUrlValidator do
   subject do
     described_class.call(url: payment_url, query_hash: query_hash)
   end
@@ -14,20 +16,22 @@ describe Deposits::PaymentUrlValidator do
   let(:urls) { Array.new(5) { Faker::Internet.url } }
   let(:checksum) { Faker::Crypto.sha256 }
   let(:time_stamp) do
-    Time.zone.now.strftime(Deposits::GetPaymentPageUrl::TIME_STAMP_FORMAT)
+    Time.zone
+        .now
+        .strftime(::Payments::SafeCharge::PaymentPageUrl::TIMESTAMP_FORMAT)
   end
 
   let(:date_of_birth) do
     customer
       .date_of_birth
-      .strftime(Deposits::GetPaymentPageUrl::DATE_OF_BIRTH_FORMAT)
+      .strftime(::Payments::SafeCharge::PaymentPageUrl::DATE_OF_BIRTH_FORMAT)
   end
 
   let(:query_params) do
     {
       merchant_id: merchant_id,
       merchant_site_id: merchant_site_id,
-      version: Deposits::GetPaymentPageUrl::API_VERSION,
+      version: ::Payments::SafeCharge::PaymentPageUrl::API_VERSION,
       encoding: Encoding::UTF_8.to_s,
       time_stamp: time_stamp,
       currency: currency.code,
@@ -37,7 +41,7 @@ describe Deposits::PaymentUrlValidator do
       item_name_1: Faker::WorldOfWarcraft.quote,
       item_number_1: entry_request.id,
       item_amount_1: entry_request.amount,
-      item_quantity_1: Deposits::GetPaymentPageUrl::ITEM_QUANTITY,
+      item_quantity_1: ::Payments::SafeCharge::PaymentPageUrl::ITEM_QUANTITY,
       total_amount: entry_request.amount,
       first_name: customer.first_name,
       last_name: customer.last_name,
@@ -83,7 +87,7 @@ describe Deposits::PaymentUrlValidator do
       expect { subject }
         .to raise_error(
           SafeCharge::InvalidPaymentUrlError,
-          'Payment url is not provided.'
+          'Payment url is not provided'
         )
     end
   end
@@ -102,7 +106,7 @@ describe Deposits::PaymentUrlValidator do
       expect { subject }
         .to raise_error(
           SafeCharge::InvalidPaymentUrlError,
-          "Fields are required: #{excluded_fields.join(', ')}."
+          "Fields are required: #{excluded_fields.join(', ')}"
         )
     end
   end
@@ -115,7 +119,7 @@ describe Deposits::PaymentUrlValidator do
       expect { subject }
         .to raise_error(
           SafeCharge::InvalidPaymentUrlError,
-          "`#{value}` is invalid encoding type."
+          "`#{value}` is invalid encoding type"
         )
     end
   end
@@ -128,7 +132,7 @@ describe Deposits::PaymentUrlValidator do
       expect { subject }
         .to raise_error(
           SafeCharge::InvalidPaymentUrlError,
-          "`#{value}` currency is not supported."
+          "`#{value}` currency is not supported"
         )
     end
   end
@@ -141,7 +145,7 @@ describe Deposits::PaymentUrlValidator do
         expect { subject }
           .to raise_error(
             SafeCharge::InvalidPaymentUrlError,
-            'Amount has to be positive.'
+            'Amount has to be positive'
           )
       end
     end
@@ -155,7 +159,7 @@ describe Deposits::PaymentUrlValidator do
         expect { subject }
           .to raise_error(
             SafeCharge::InvalidPaymentUrlError,
-            'Amount has to be positive.'
+            'Amount has to be positive'
           )
       end
     end
@@ -167,7 +171,7 @@ describe Deposits::PaymentUrlValidator do
         expect { subject }
           .to raise_error(
             SafeCharge::InvalidPaymentUrlError,
-            'Amount has to be positive.'
+            'Amount has to be positive'
           )
       end
     end
@@ -181,7 +185,7 @@ describe Deposits::PaymentUrlValidator do
         expect { subject }
           .to raise_error(
             SafeCharge::InvalidPaymentUrlError,
-            'Amount has to be positive.'
+            'Amount has to be positive'
           )
       end
     end
@@ -195,7 +199,7 @@ describe Deposits::PaymentUrlValidator do
         expect { subject }
           .to raise_error(
             SafeCharge::InvalidPaymentUrlError,
-            'time_stamp has wrong format.'
+            'time_stamp in wrong format'
           )
       end
     end
@@ -207,7 +211,7 @@ describe Deposits::PaymentUrlValidator do
         expect { subject }
           .to raise_error(
             SafeCharge::InvalidPaymentUrlError,
-            'time_stamp has wrong format.'
+            'time_stamp in wrong format'
           )
       end
     end
@@ -231,7 +235,7 @@ describe Deposits::PaymentUrlValidator do
         expect { subject }
           .to raise_error(
             SafeCharge::InvalidPaymentUrlError,
-            'dateOfBirth has wrong format.'
+            'dateOfBirth in wrong format'
           )
       end
     end
@@ -243,7 +247,7 @@ describe Deposits::PaymentUrlValidator do
         expect { subject }
           .to raise_error(
             SafeCharge::InvalidPaymentUrlError,
-            'dateOfBirth has wrong format.'
+            'dateOfBirth in wrong format'
           )
       end
     end
@@ -256,7 +260,7 @@ describe Deposits::PaymentUrlValidator do
       expect { subject }
         .to raise_error(
           SafeCharge::InvalidPaymentUrlError,
-          'Fields have to be 0 or 1: isNative.'
+          'Fields have to be 0 or 1: isNative'
         )
     end
   end
@@ -269,7 +273,7 @@ describe Deposits::PaymentUrlValidator do
         expect { subject }
           .to raise_error(
             SafeCharge::InvalidPaymentUrlError,
-            'Provided country is not supported.'
+            'Provided country is not supported'
           )
       end
     end
@@ -289,7 +293,7 @@ describe Deposits::PaymentUrlValidator do
         expect { subject }
           .to raise_error(
             SafeCharge::InvalidPaymentUrlError,
-            'Provided state is not supported.'
+            'Provided state is not supported'
           )
       end
     end
@@ -301,7 +305,7 @@ describe Deposits::PaymentUrlValidator do
         expect { subject }
           .to raise_error(
             SafeCharge::InvalidPaymentUrlError,
-            'Provided state is not supported.'
+            'Provided state is not supported'
           )
       end
     end
@@ -313,7 +317,7 @@ describe Deposits::PaymentUrlValidator do
         expect { subject }
           .to raise_error(
             SafeCharge::InvalidPaymentUrlError,
-            'Provided state is not supported.'
+            'Provided state is not supported'
           )
       end
     end
@@ -334,7 +338,7 @@ describe Deposits::PaymentUrlValidator do
       expect { subject }
         .to raise_error(
           SafeCharge::InvalidPaymentUrlError,
-          'Checksum is corrupted.'
+          'Checksum is corrupted'
         )
     end
   end

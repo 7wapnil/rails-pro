@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe EntryRequests::PaymentMethodService do
+describe ::Payments::SafeCharge::PaymentMethodService do
   let(:service_call) { described_class.call(params) }
 
   let!(:entry_request) { create(:entry_request) }
@@ -12,7 +12,7 @@ describe EntryRequests::PaymentMethodService do
   end
 
   context 'with valid params' do
-    let(:payment_method_code) { SafeCharge::PaymentMethods::CC_CARD }
+    let(:payment_method_code) { ::Payments::SafeCharge::Methods::CC_CARD }
 
     it 'do not raise error' do
       expect { service_call }.not_to raise_error

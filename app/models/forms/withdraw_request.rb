@@ -3,6 +3,7 @@
 module Forms
   class WithdrawRequest
     include ActiveModel::Model
+    include ::Payments::SafeCharge::WithdrawalMethods
 
     PAYMENT_METHOD_MODELS = {
       EntryRequest::CREDIT_CARD => Forms::PaymentMethods::CreditCard
@@ -29,7 +30,7 @@ module Forms
               format: { with: /\A\d{1,12}(\.\d{0,2})?\z/ }
     validates :payment_method,
               inclusion: {
-                in: SafeCharge::Withdraw::AVAILABLE_WITHDRAW_MODES.keys,
+                in: AVAILABLE_WITHDRAW_MODES.keys,
                 message: I18n.t(
                   'errors.messages.withdrawal.method_not_supported'
                 )
