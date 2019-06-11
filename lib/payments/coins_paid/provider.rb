@@ -3,13 +3,18 @@
 module Payments
   module CoinsPaid
     class Provider < ::Payments::BaseProvider
-      # TODO: implement Coinspaid functionality
-      def payment_page_url(_transaction)
-        '#'
+      def payment_page_url(transaction)
+        client.authorize_payment(transaction)
       end
 
       def payment_response_handler
-        ::Payments::SafeCharge::PaymentResponse
+        ::Payments::CoinsPaid::PaymentResponse
+      end
+
+      private
+
+      def client
+        @client ||= Client.new
       end
     end
   end

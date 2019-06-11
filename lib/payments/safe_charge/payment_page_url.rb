@@ -44,6 +44,7 @@ module Payments
         @query_hash_with_checksum ||= query_hash.merge(checksum: checksum)
       end
 
+      # TODO: Take country and state from db
       def query_hash # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         @query_hash ||= {
           merchant_id: ENV['SAFECHARGE_MERCHANT_ID'],
@@ -67,8 +68,8 @@ module Payments
           dateOfBirth: customer_date_of_birth,
           address1: @transaction.customer.address.street_address,
           city: @transaction.customer.address.city,
-          country: @transaction.customer.address.country, # TODO: Take from db
-          state: @transaction.customer.address.state, # TODO: Take from db
+          country: @transaction.customer.address.country_code,
+          state: @transaction.customer.address.state_code,
           zip: @transaction.customer.address.zip_code,
           isNative: IS_NATIVE,
           payment_method: provider_method_name(@transaction.method),

@@ -27,6 +27,8 @@ module EntryRequests
       attr_reader :wallet, :amount, :customer_bonus, :passed_initiator,
                   :mode, :passed_comment, :entry_request
 
+      delegate :currency, to: :wallet, prefix: true
+
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
       end
@@ -115,16 +117,16 @@ module EntryRequests
       end
 
       def amount_less_than_allowed!
-        raise CurrencyRuleError,
+        raise ::Deposits::CurrencyRuleError,
               I18n.t('errors.messages.amount_less_than_allowed',
-                     min_amount: rule.min_amount,
-                     currency: currency.code)
+                     min_amount: currency_rule.min_amount,
+                     currency: wallet_currency.code)
       end
 
       def amount_greater_than_allowed!
-        raise CurrencyRuleError,
+        raise ::Deposits::CurrencyRuleError,
               I18n.t('errors.messages.amount_greater_than_allowed',
-                     max_amount: rule.max_amount,
+                     max_amount: currency_rule.max_amount,
                      currency: currency.code)
       end
 

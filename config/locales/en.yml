@@ -616,6 +616,13 @@ en:
           note: 'Range: 10 - 10 000€ / No service fee'
     deposits:
       success_message: 'You will be redirected to the payment page in a while'
+      coins_paid:
+        statuses:
+          confirmed: You are safe to process this transaction
+          not_confirmed: Transaction is not yet confirmed
+          error: Some error occurred, pls see “error” field
+          cancelled: This transaction is a double spend. Pay attention to this customer.
+          not_enough_fee: Not enough money to pay fee for transfers of ETH / ERC20 / USDT, when money are deposited transactions will try to transfer
 
   time:
     formats:
