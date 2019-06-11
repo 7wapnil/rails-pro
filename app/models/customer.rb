@@ -113,6 +113,11 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   validates :username, uniqueness: { case_sensitive: false }
   validates :email, uniqueness: { case_sensitive: false }
   validates :verified, :activated, :locked, inclusion: { in: [true, false] }
+  validates :agreed_with_privacy, inclusion: {
+    in: [true],
+    message: I18n.t('errors.messages.tos_not_accepted')
+  }
+
   validates :phone, phone: true
   validates_with AgeValidator
   ransack_alias :ip_address, :last_sign_in_ip_or_current_sign_in_ip

@@ -16,6 +16,8 @@ module Account
           property: :last_name
     field :agreedWithPromotional, !types.Boolean,
           property: :agreed_with_promotional
+    field :agreedWithPrivacy, !types.Boolean,
+          property: :agreed_with_privacy
     field :addressStreetAddress, types.String,
           property: :address_street_address
     field :addressZipCode, types.String,

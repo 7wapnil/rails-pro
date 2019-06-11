@@ -50,6 +50,7 @@ describe GraphQL do
         streetAddress: 'Street Addr',
         phone: '1232132132',
         agreedWithPromotional: true,
+        agreedWithPrivacy: true,
         currency: 'EUR'
       } }
     end
@@ -78,6 +79,7 @@ describe GraphQL do
         streetAddress: 'Street Addr',
         phone: '37258383943',
         agreedWithPromotional: true,
+        agreedWithPrivacy: true,
         bTag: 'AFFILIATE_ID',
         currency: 'EUR'
       } }
@@ -112,6 +114,39 @@ describe GraphQL do
                             first_name: 'Test',
                             last_name: 'User',
                             b_tag: 'AFFILIATE_ID')
+    end
+  end
+
+  context 'not agreing with ToS' do
+    let(:variables) do
+      { input: {
+        username: 'test',
+        email: 'test@email.com',
+        firstName: 'Test',
+        lastName: 'User',
+        dateOfBirth: '01-01-1998',
+        password: '123456',
+        passwordConfirmation: '123456',
+        gender: Customer::FEMALE,
+        country: 'Canada',
+        city: 'Toronto',
+        state: 'State',
+        zipCode: '123',
+        streetAddress: 'Street Addr',
+        phone: '37258383943',
+        agreedWithPromotional: true,
+        agreedWithPrivacy: false,
+        bTag: 'AFFILIATE_ID',
+        currency: 'EUR'
+      } }
+    end
+
+    it 'returns a validation error' do
+      expect(result['errors'][0]['message']).not_to be_blank
+    end
+
+    it 'does not create a customer' do
+      expect(Customer.find_by(email: variables[:input][:email])).to be_nil
     end
   end
 end
