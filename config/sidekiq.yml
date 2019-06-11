@@ -10,6 +10,7 @@
   - mq
   - mailers
   - exchange_rates
+  - expired_entry_requests
 
 :schedule:
   expiring_bonuses:
@@ -97,3 +98,10 @@
     class: Mts::RandomBetPlacementWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Random bet placement for MTS testing"
+
+  expirining_entry_requests_worker:
+    every: <%= ENV.fetch('EXPIRING_ENTRY_REQUESTS_INTERVAL', '1d') %>
+    class: Scheduled::ExpiringEntryRequestsWorker
+    queue: expired_entry_requests
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Fails expired deposit requests and connected bonuses"

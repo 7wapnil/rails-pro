@@ -19,10 +19,6 @@ class EntryRequest < ApplicationRecord
 
   default_scope { order(created_at: :desc) }
 
-  scope :transactions, -> {
-    where(kind: [DEPOSIT, WITHDRAW, REFUND]).order(created_at: :desc)
-  }
-
   enum status: {
     initial:   INITIAL = 'initial',
     pending:   PENDING = 'pending',
@@ -85,6 +81,14 @@ class EntryRequest < ApplicationRecord
       result: { message: message }
     )
     false
+  end
+
+  def self.expired
+    initial.where('created_at > ?', Time.zone.yesterday.midnight)
+  end
+
+  def self.transactions
+    where(kind: [DEPOSIT, WITHDRAW, REFUND]).order(created_at: :desc)
   end
 
   private
