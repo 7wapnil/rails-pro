@@ -28,6 +28,7 @@ module Arcanebet
     config.eager_load_paths << Rails.root.join('lib/errors')
     config.eager_load_paths << Rails.root.join('app/workers/sneakers')
     config.eager_load_paths << Rails.root.join('app/graphql/enums')
+    config.eager_load_paths << Rails.root.join('app/consumers')
 
     # Exclude Sneakers workers
     unless Rails.env.test? || ENV['WORKERS']
@@ -61,6 +62,11 @@ module Arcanebet
     config.after_initialize do
       Rails.logger = Airbrake::AirbrakeLogger.new(Rails.logger)
       Rails.logger.airbrake_level = Logger::FATAL
+
+      if ENV.fetch('MTS_LISTENERS', 'false') == 'true'
+        Listeners::TicketAcceptanceListener.instance.listen
+        Listeners::TicketCancellationListener.instance.listen
+      end
     end
   end
 end
