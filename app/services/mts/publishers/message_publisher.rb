@@ -56,12 +56,11 @@ module Mts
 
       def create_exchange(conn)
         channel = conn.create_channel
-        exchange = channel.exchange(self.class::EXCHANGE_NAME,
-                                    type: self.class::EXCHANGE_TYPE,
-                                    durable: true)
         channel.queue(self.class::QUEUE_NAME, durable: true)
                .bind(self.class::EXCHANGE_NAME)
-        exchange
+        channel.exchange(self.class::EXCHANGE_NAME,
+                         type: self.class::EXCHANGE_TYPE,
+                         durable: true)
       end
 
       def message_params
