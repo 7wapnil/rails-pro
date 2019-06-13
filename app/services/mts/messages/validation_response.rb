@@ -47,7 +47,8 @@ module Mts
       end
 
       def rejection_key
-        Mts::Codes::SUBMISSION_ERROR_CODES[error_code]
+        Mts::Codes::SUBMISSION_ERROR_CODES
+          .fetch(error_code, Mts::Codes::DEFAULT_EXCEPTION_KEY)
       end
 
       private
@@ -59,7 +60,7 @@ module Mts
       end
 
       def error_code
-        message.dig(:result, :reason, :code)
+        message.dig(:result, :reason, :code)&.to_i
       end
     end
   end
