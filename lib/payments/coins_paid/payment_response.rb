@@ -2,7 +2,7 @@
 
 module Payments
   module CoinsPaid
-    class PaymentResponse < ApplicationService
+    class PaymentResponse < ::Payments::PaymentResponse
       include Statuses
 
       M_BTC_MULTIPLIER = 1000
@@ -24,8 +24,6 @@ module Payments
       end
 
       private
-
-      attr_reader :response
 
       def entry_finished_state?
         FINISH_STATES.include?(entry_request.status)
@@ -67,9 +65,8 @@ module Payments
       end
 
       def cancel_flow
-        deposit_request = entry_request.origin
-        deposit_request&.customer_bonus&.fail!
         entry_request.register_failure!(message)
+        fail_bonus
       end
 
       def message
@@ -87,8 +84,8 @@ module Payments
         end
       end
 
-      def entry_request
-        @entry_request ||= EntryRequest.find(response['foreign_id'])
+      def request_id
+        response['foreign_id']
       end
 
       def status

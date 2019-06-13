@@ -10,7 +10,7 @@ module Payments
       end
 
       def call
-        return cancel_entry_request if status == STATUS_CANCELLED
+        return cancel_entry_request if cancelled?
         return if failed_attempt?
 
         save_transaction_id! unless entry_request.external_id
@@ -24,16 +24,39 @@ module Payments
 
       private
 
-      def save_transaction_id!
-        entry_request.update!(external_id: transaction_id)
+      def cancelled?
+        status == ::Payments::Webhooks::Statuses::CANCELLED
       end
 
-      def entry_request
-        @entry_request ||= ::EntryRequest.find(request_id)
+      def status
+        response[:Status]
+      end
+
+      def cancel_entry_request
+        Rails.logger.warn(message: 'Payment request canceled',
+                          status: status,
+                          payment_message_status: payment_message_status,
+                          request_id: request_id)
+        entry_request.register_failure!(
+          I18n.t('errors.messages.cancelled_by_customer')
+        )
+        fail_bonus
+      end
+
+      def payment_message_status
+        response[:ppp_status]
       end
 
       def request_id
         response[:request_id]
+      end
+
+      def failed_attempt?
+        payment_message_status == FAIL && status == DECLINED
+      end
+
+      def save_transaction_id!
+        entry_request.update!(external_id: transaction_id)
       end
 
       def transaction_id
@@ -51,28 +74,6 @@ module Payments
         status == PENDING && payment_message_status == PENDING
       end
 
-      def status
-        response[:Status]
-      end
-
-      def failed_attempt?
-        payment_message_status == FAIL && status == DECLINED
-      end
-
-      def cancel_entry_request
-        Rails.logger.warn(message: 'Payment request canceled',
-                          status: status,
-                          payment_message_status: payment_message_status,
-                          request_id: request_id)
-        entry_request.register_failure!(
-          I18n.t('errors.messages.cancelled_by_customer')
-        )
-      end
-
-      def payment_message_status
-        response[:ppp_status]
-      end
-
       def fail_entry_request!
         Rails.logger.warn(message: 'Payment request failed',
                           status: status,
@@ -84,6 +85,7 @@ module Payments
           I18n.t('errors.messages.payment_failed_with_reason_error',
                  reason: response[:Reason])
         )
+        fail_bonus
 
         raise ::Payments::TechnicalError
       end

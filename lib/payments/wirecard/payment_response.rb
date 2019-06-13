@@ -3,74 +3,86 @@
 module Payments
   module Wirecard
     class PaymentResponse < ::Payments::PaymentResponse
+      include ::Payments::Wirecard::Statuses
+      include ::Payments::Wirecard::TransactionStates
+
+      def initialize(params)
+        @response = JSON.parse(Base64.decode64(params['response-base64']))
+      end
+
       def call
-        return if [STATUS_NOTIFICATION, STATUS_PENDING].include?(status)
+        return cancel_entry_request if cancelled?
 
-        return cancel_entry_request! if status == STATUS_CANCELLED
-        return fail_entry_request! if status == STATUS_FAILED
-        return complete_entry_request! if status == STATUS_SUCCESS
+        save_transaction_id! unless entry_request.external_id
 
-        throw_unknown_status
+        return complete_entry_request if approved?
+
+        fail_entry_request
       end
 
       private
 
-      def status
-        parsed_response.dig('payment', 'transaction-state').to_sym
+      def cancelled?
+        CANCELLED_STATUSES.include?(status_details['code']) &&
+          transaction_state == FAILED
       end
 
-      def parsed_response
-        @parsed_response ||= JSON.parse(
-          Base64.decode64(@response['response-base64'])
-        )
+      def status_details
+        @status_details ||=
+          response.dig('payment', 'statuses', 'status').to_a.last.to_h
       end
 
-      def cancel_entry_request!
-        Rails.logger.warn message: 'Payment request canceled',
-                          status: status,
-                          status_message: status_message,
+      def transaction_state
+        @transaction_state ||= response.dig('payment', 'transaction-state')
+      end
+
+      def cancel_entry_request
+        Rails.logger.warn message: 'Payment request cancelled',
+                          status: status_details['code'],
+                          status_message: status_details['description'],
                           request_id: request_id
         entry_request.register_failure!(
           I18n.t('errors.messages.cancelled_by_customer')
         )
+        fail_bonus
 
         raise ::Payments::CancelledError
       end
 
-      def entry_request
-        @entry_request ||= ::EntryRequest.find(request_id)
-      end
-
       def request_id
-        request_data = parsed_response.dig('payment', 'request-id')
-        request_data.split(':')[1].to_i
+        @request_id ||=
+          response.dig('payment', 'request-id').to_s.split(':').last.to_i
       end
 
-      def status_message
-        status = parsed_response.dig('payment', 'statuses', 'status')
-        return nil unless status.present?
-
-        status[0]['description']
+      def save_transaction_id!
+        entry_request.update!(external_id: transaction_id)
       end
 
-      def fail_entry_request!
+      def transaction_id
+        response.dig('payment', 'transaction-id')
+      end
+
+      def approved?
+        status_details['code'].match?(APPROVED_STATUSES_REGEX) &&
+          transaction_state == SUCCESSFUL
+      end
+
+      def complete_entry_request
+        ::EntryRequests::DepositWorker.perform_async(entry_request.id)
+      end
+
+      def fail_entry_request
         Rails.logger.warn message: 'Payment request failed',
-                          status: status,
-                          status_message: status_message,
+                          status: status_details['code'],
+                          status_message: status_details['description'],
                           request_id: request_id
         entry_request.register_failure!(
-          I18n.t('errors.messages.payment_failed_error')
+          I18n.t('errors.messages.payment_failed_with_reason_error',
+                 reason: status_details['description'])
         )
+        fail_bonus
 
-        raise ::Payments::TechnicalError
-      end
-
-      def complete_entry_request!
-        ::EntryRequests::DepositService.call(entry_request: entry_request)
-      end
-
-      def throw_unknown_status
-        raise ::Payments::NotSupportedError, "Unknown response status #{status}"
+        raise ::Payments::FailedError
       end
     end
   end

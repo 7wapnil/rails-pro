@@ -1,7 +1,8 @@
 module Payments
   module Wirecard
     class PaymentRequest
-      include Methods
+      include ::Payments::Methods
+      include Rails.application.routes.url_helpers
 
       attr_reader :transaction
 
@@ -9,7 +10,7 @@ module Payments
         @transaction = transaction
       end
 
-      def build # rubocop:disable Metrics/MethodLength
+      def build
         {
           'payment': {
             'merchant-account-id': {
@@ -20,19 +21,19 @@ module Payments
             'requested-amount': request_amount,
             'account-holder': account_holder,
             'payment-methods': payment_method,
-            'redirect-url': notification_url,
-            'success-redirect-url': notification_url,
-            'fail-redirect-url': notification_url,
-            'cancel-redirect-url': notification_url
+            'redirect-url': webhook_url
           }
         }
       end
 
       private
 
-      # TODO: Replace with dynamic domain
-      def notification_url
-        'http://localhost:3000/payments/wirecard/notification'
+      def webhook_url
+        webhooks_wirecard_payment_url(
+          host: ENV['APP_HOST'],
+          protocol: :https,
+          request_id: transaction.id
+        )
       end
 
       def request_amount

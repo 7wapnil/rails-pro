@@ -32,7 +32,9 @@ module Payments
       end
 
       def signature(transaction)
-        @signature ||= Payments::SignatureService.call(data: body(transaction))
+        @signature ||= Payments::CoinsPaid::SignatureService.call(
+          data: body(transaction)
+        )
       end
 
       def payment_address(response)

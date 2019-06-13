@@ -26,6 +26,7 @@ describe ::Payments::SafeCharge::PaymentPageUrl do
   let(:merchant_site_id) { Faker::Vehicle.vin }
   let(:secret_key) { Faker::Vehicle.vin }
   let(:brand_name) { Faker::Restaurant.name }
+  let(:web_protocol) { 'http' }
 
   let(:result_uri) { URI.parse(subject) }
   let(:result_query) do
@@ -69,6 +70,11 @@ describe ::Payments::SafeCharge::PaymentPageUrl do
       .to receive(:[])
       .with('BRAND_NAME')
       .and_return(brand_name)
+
+    allow(ENV)
+      .to receive(:fetch)
+      .with('WEB_PROTOCOL', any_args)
+      .and_return(web_protocol)
   end
 
   it 'takes payment uri from ENV' do
@@ -158,15 +164,15 @@ describe ::Payments::SafeCharge::PaymentPageUrl do
   context 'url parameters', routes: true do
     let(:webhook_url) do
       webhooks_safe_charge_payment_url(
-        host: ENV['APP_HOST'],
-        protocol: described_class::WEB_PROTOCOL,
+        host: payment_url,
+        protocol: web_protocol,
         request_id: transaction.id
       )
     end
     let(:cancellation_redirection_url) do
       webhooks_safe_charge_payment_cancel_url(
-        host: ENV['APP_HOST'],
-        protocol: described_class::WEB_PROTOCOL,
+        host: payment_url,
+        protocol: web_protocol,
         request_id: transaction.id
       )
     end

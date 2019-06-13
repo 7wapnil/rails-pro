@@ -15,9 +15,8 @@ module Payments
 
     METHOD_PROVIDERS = {
       CREDIT_CARD => {
-        # provider: ::Payments::Wirecard::Provider,
-        provider: ::Payments::SafeCharge::Provider, # TODO: change to Wirecard
-        name: SafeCharge::Methods::CC_CARD
+        provider: ::Payments::Wirecard::Provider,
+        name: Wirecard::Methods::CREDIT_CARD
       },
       NETELLER => {
         provider: ::Payments::SafeCharge::Provider,

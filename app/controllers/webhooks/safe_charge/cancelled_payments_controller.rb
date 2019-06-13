@@ -16,12 +16,12 @@ module Webhooks
       private
 
       def cancellation_params
-        params.merge(Status: ::Payments::PaymentResponse::STATUS_CANCELLED)
+        params.merge(Status: ::Payments::Webhooks::Statuses::CANCELLED)
       end
 
       def redirection_url
-        ::Payments::SafeCharge::Webhooks::CallbackUrlBuilder.call(
-          status: ::Payments::PaymentResponse::STATUS_CANCELLED
+        ::Payments::Webhooks::DepositRedirectionUrlBuilder.call(
+          status: ::Payments::Webhooks::Statuses::CANCELLED
         )
       end
     end

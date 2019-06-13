@@ -33,8 +33,8 @@ module Webhooks
       end
 
       def success_redirection_url
-        ::Payments::SafeCharge::Webhooks::CallbackUrlBuilder.call(
-          status: ::Payments::PaymentResponse::STATUS_SUCCESS
+        ::Payments::Webhooks::DepositRedirectionUrlBuilder.call(
+          status: ::Payments::Webhooks::Statuses::SUCCESS
         )
       end
     end

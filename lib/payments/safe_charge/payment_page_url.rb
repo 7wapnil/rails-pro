@@ -14,7 +14,7 @@ module Payments
       ITEM_QUANTITY = 1
       IS_NATIVE = 1
       FILTER_MODE = 'filter'
-      WEB_PROTOCOL = 'https'
+      DEFAULT_WEB_PROTOCOL = 'https'
 
       delegate :customer, :currency, :amount, to: :transaction
       delegate :address, to: :customer, prefix: true
@@ -139,9 +139,13 @@ module Payments
       def webhook_url
         webhooks_safe_charge_payment_url(
           host: ENV['APP_HOST'],
-          protocol: WEB_PROTOCOL,
+          protocol: web_protocol,
           request_id: transaction.id
         )
+      end
+
+      def web_protocol
+        @web_protocol ||= ENV.fetch('WEB_PROTOCOL', DEFAULT_WEB_PROTOCOL)
       end
 
       # Cancellation redirection response is received on
@@ -149,7 +153,7 @@ module Payments
       def cancellation_redirection_url
         webhooks_safe_charge_payment_cancel_url(
           host: ENV['APP_HOST'],
-          protocol: WEB_PROTOCOL,
+          protocol: web_protocol,
           request_id: transaction.id
         )
       end

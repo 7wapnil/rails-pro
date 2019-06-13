@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Payments::SafeCharge::Webhooks::CallbackUrlBuilder do
+describe ::Payments::Webhooks::DepositRedirectionUrlBuilder do
   subject { described_class.call(status: status) }
 
   let(:frontend_url) { Faker::Internet.url }
@@ -19,7 +19,7 @@ describe ::Payments::SafeCharge::Webhooks::CallbackUrlBuilder do
   end
 
   context 'when success callback url requested' do
-    let(:status) { ::Payments::PaymentResponse::STATUS_SUCCESS }
+    let(:status) { ::Payments::Webhooks::Statuses::SUCCESS }
     let(:state) { :success }
     let(:message) do
       I18n.t('webhooks.safe_charge.redirections.success_message')
@@ -31,7 +31,7 @@ describe ::Payments::SafeCharge::Webhooks::CallbackUrlBuilder do
   end
 
   context 'when cancellation callback url requested' do
-    let(:status) { ::Payments::PaymentResponse::STATUS_CANCELLED }
+    let(:status) { ::Payments::Webhooks::Statuses::CANCELLED }
     let(:state) { :error }
     let(:message) { I18n.t('errors.messages.deposit_request_cancelled') }
 
@@ -41,7 +41,7 @@ describe ::Payments::SafeCharge::Webhooks::CallbackUrlBuilder do
   end
 
   context 'when random callback url requested' do
-    let(:status) { ::Payments::PaymentResponse::STATUS_PENDING }
+    let(:status) { 'pending' }
     let(:state) {}
     let(:message) {}
 

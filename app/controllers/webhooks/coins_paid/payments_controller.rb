@@ -19,12 +19,17 @@ module Webhooks
       private
 
       def verify_payment_signature
-        signature = Payments::SignatureService.call(data: request.body.string)
+        signature = Payments::CoinsPaid::SignatureService.call(
+          data: request.body.string
+        )
 
-        result = signature.blank? ||
-                 signature != request.headers['X-Processing-Signature']
+        valid = signature.present? &&
+                signature == request.headers['X-Processing-Signature']
 
-        raise ::Deposits::AuthenticationError if result
+        return if valid
+
+        raise ::Deposits::AuthenticationError,
+              'Malformed CoinsPaid deposit request!'
       end
     end
   end
