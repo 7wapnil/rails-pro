@@ -54,6 +54,7 @@ describe ::Payments::SafeCharge::PaymentUrlValidator do
       state: address.state_code,
       zip: address.zip_code,
       isNative: 1,
+      payment_method: ::Payments::SafeCharge::Methods::CC_CARD,
       success_url: urls.first,
       error_url: urls.second,
       pending_url: urls.third,
@@ -131,8 +132,8 @@ describe ::Payments::SafeCharge::PaymentUrlValidator do
     it 'receives failure' do
       expect { subject }
         .to raise_error(
-          SafeCharge::InvalidPaymentUrlError,
-          "`#{value}` currency is not supported"
+          SafeCharge::InvalidInputError,
+          I18n.t('errors.messages.currency_not_supported')
         )
     end
   end
@@ -144,8 +145,8 @@ describe ::Payments::SafeCharge::PaymentUrlValidator do
       it 'receives failure' do
         expect { subject }
           .to raise_error(
-            SafeCharge::InvalidPaymentUrlError,
-            'Amount has to be positive'
+            SafeCharge::InvalidInputError,
+            I18n.t('errors.messages.amount_negative')
           )
       end
     end
@@ -158,8 +159,8 @@ describe ::Payments::SafeCharge::PaymentUrlValidator do
       it 'receives failure' do
         expect { subject }
           .to raise_error(
-            SafeCharge::InvalidPaymentUrlError,
-            'Amount has to be positive'
+            SafeCharge::InvalidInputError,
+            I18n.t('errors.messages.amount_negative')
           )
       end
     end
@@ -170,8 +171,8 @@ describe ::Payments::SafeCharge::PaymentUrlValidator do
       it 'receives failure' do
         expect { subject }
           .to raise_error(
-            SafeCharge::InvalidPaymentUrlError,
-            'Amount has to be positive'
+            SafeCharge::InvalidInputError,
+            I18n.t('errors.messages.amount_negative')
           )
       end
     end
@@ -184,8 +185,8 @@ describe ::Payments::SafeCharge::PaymentUrlValidator do
       it 'receives failure' do
         expect { subject }
           .to raise_error(
-            SafeCharge::InvalidPaymentUrlError,
-            'Amount has to be positive'
+            SafeCharge::InvalidInputError,
+            I18n.t('errors.messages.amount_negative')
           )
       end
     end
@@ -272,8 +273,8 @@ describe ::Payments::SafeCharge::PaymentUrlValidator do
       it 'receives failure' do
         expect { subject }
           .to raise_error(
-            SafeCharge::InvalidPaymentUrlError,
-            'Provided country is not supported'
+            SafeCharge::InvalidInputError,
+            I18n.t('errors.messages.country_not_supported')
           )
       end
     end
@@ -292,8 +293,8 @@ describe ::Payments::SafeCharge::PaymentUrlValidator do
       it 'receives failure' do
         expect { subject }
           .to raise_error(
-            SafeCharge::InvalidPaymentUrlError,
-            'Provided state is not supported'
+            SafeCharge::InvalidInputError,
+            I18n.t('errors.messages.state_not_supported')
           )
       end
     end
@@ -304,8 +305,8 @@ describe ::Payments::SafeCharge::PaymentUrlValidator do
       it 'receives failure' do
         expect { subject }
           .to raise_error(
-            SafeCharge::InvalidPaymentUrlError,
-            'Provided state is not supported'
+            SafeCharge::InvalidInputError,
+            I18n.t('errors.messages.state_not_supported')
           )
       end
     end
@@ -316,8 +317,8 @@ describe ::Payments::SafeCharge::PaymentUrlValidator do
       it 'receives failure' do
         expect { subject }
           .to raise_error(
-            SafeCharge::InvalidPaymentUrlError,
-            'Provided state is not supported'
+            SafeCharge::InvalidInputError,
+            I18n.t('errors.messages.state_not_supported')
           )
       end
     end

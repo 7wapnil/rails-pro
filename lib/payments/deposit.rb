@@ -31,6 +31,10 @@ module Payments
       ::CustomerBonuses::ActivationError
     ].freeze
 
+    INPUT_ERRORS = [
+      ::SafeCharge::InvalidInputError
+    ].freeze
+
     private
 
     attr_reader :entry_request, :customer_bonus
@@ -43,6 +47,8 @@ module Payments
       return entry_request_failed! if entry_request.failed?
 
       provider.payment_page_url(transaction)
+    rescue *INPUT_ERRORS => error
+      raise ::Payments::GatewayError, error.message
     end
 
     def apply_bonus_code!

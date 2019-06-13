@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :entry_request do
     status  { EntryRequest::INITIAL }
-    mode    { EntryRequest::CASHIER }
+    mode    { EntryRequest::CREDIT_CARD }
     kind    { EntryRequest::DEPOSIT }
     amount  { Random.new.rand(1.00..200.00).round(2) }
     comment { Faker::Lorem.paragraph }

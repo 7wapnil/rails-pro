@@ -81,6 +81,7 @@ module Payments
           zip: customer_address_zip_code,
           isNative: extra_query_params.fetch(:isNative, IS_NATIVE),
           payment_method: provider_method_name(transaction.method),
+          payment_method_mode: FILTER_MODE,
           success_url: success_redirection_url,
           error_url: webhook_url,
           pending_url: webhook_url,
@@ -154,7 +155,16 @@ module Payments
         webhooks_safe_charge_payment_cancel_url(
           host: ENV['APP_HOST'],
           protocol: web_protocol,
-          request_id: transaction.id
+          request_id: transaction.id,
+          signature: cancellation_signature
+        )
+      end
+
+      def cancellation_signature
+        OpenSSL::HMAC.hexdigest(
+          CancellationSignatureVerifier::SIGNATURE_ALGORITHM,
+          ENV['SAFECHARGE_SECRET_KEY'],
+          transaction.id.to_s
         )
       end
 

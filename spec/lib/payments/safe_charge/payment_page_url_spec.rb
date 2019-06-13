@@ -169,11 +169,15 @@ describe ::Payments::SafeCharge::PaymentPageUrl do
         request_id: transaction.id
       )
     end
+    let(:cancellation_signature) do
+      OpenSSL::HMAC.hexdigest('sha256', secret_key, transaction.id.to_s)
+    end
     let(:cancellation_redirection_url) do
       webhooks_safe_charge_payment_cancel_url(
         host: payment_url,
         protocol: web_protocol,
-        request_id: transaction.id
+        request_id: transaction.id,
+        signature: cancellation_signature
       )
     end
 

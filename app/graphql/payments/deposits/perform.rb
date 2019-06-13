@@ -12,8 +12,10 @@ module Payments
 
         raise '`input` has to be passed' unless input
 
-        transaction = perform_transaction(input)
-        response(transaction)
+        url = perform_transaction(input)
+
+        OpenStruct.new(url: url,
+                       message: I18n.t('payments.deposits.success_message'))
       rescue ::Payments::GatewayError, ::Payments::BusinessRuleError => e
         payment_error!(e)
       rescue StandardError => e
@@ -23,24 +25,18 @@ module Payments
       private
 
       def perform_transaction(input)
-        ::Payments::Transaction.new(
+        transaction = ::Payments::Transaction.new(
           method: input[:paymentMethod],
           customer: current_customer,
           currency: find_currency(input[:currencyCode]),
           amount: input[:amount].to_d,
           bonus_code: input[:bonusCode]
         )
+        ::Payments::Deposit.call(transaction)
       end
 
       def find_currency(currency_code)
         Currency.find_by!(code: currency_code)
-      end
-
-      def response(transaction)
-        OpenStruct.new(
-          url: ::Payments::Deposit.call(transaction),
-          message: I18n.t('payments.deposits.success_message')
-        )
       end
 
       def payment_error!(error)

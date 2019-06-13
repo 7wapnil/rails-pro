@@ -9,7 +9,7 @@ module Payments
       MANDATORY_FIELDS = %i[
         merchant_id merchant_site_id version time_stamp currency
         user_token_id item_name_1 item_number_1 item_amount_1
-        item_quantity_1 total_amount checksum
+        item_quantity_1 total_amount checksum payment_method
       ].freeze
 
       def initialize(url:, query_hash:)
@@ -69,18 +69,23 @@ module Payments
       def check_currency!
         return if currency_available?
 
-        raise error("`#{query.currency}` currency is not supported")
+        raise input_error(I18n.t('errors.messages.currency_not_supported'))
+      end
+
+      def input_error(message)
+        ::SafeCharge::InvalidInputError.new(message)
       end
 
       def currency_available?
         ::Payments::SafeCharge::Currency::AVAILABLE_CURRENCY_LIST
+          .fetch(query.payment_method, [])
           .include?(query.currency)
       end
 
       def check_amount!
         return if amounts_positive?
 
-        raise error('Amount has to be positive')
+        raise input_error(I18n.t('errors.messages.amount_negative'))
       end
 
       def amounts_positive?
@@ -123,15 +128,21 @@ module Payments
       end
 
       def check_country!
-        raise error 'Provided country is not supported' unless valid_country?
+        return if valid_country?
+
+        raise input_error(I18n.t('errors.messages.country_not_supported'))
       end
 
       def valid_country?
-        !query.country || Country::AVAILABLE_COUNTRIES.include?(query.country)
+        !query.country ||
+          Country::AVAILABLE_COUNTRIES.fetch(query.payment_method, [])
+                                      .include?(query.country)
       end
 
       def check_state!
-        raise error 'Provided state is not supported' unless valid_state?
+        return if valid_state?
+
+        raise input_error(I18n.t('errors.messages.state_not_supported'))
       end
 
       def valid_state?

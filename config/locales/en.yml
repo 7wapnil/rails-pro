@@ -392,11 +392,15 @@ en:
       repeated_bonus_activation: It seems you have already claimed this bonus, please enter a different code
       customer_account_kind_transit: Can't transit customer account kind
       customer_activated: Customer already activated
+      country_not_supported: Your country is not supported for this payment method
+      state_not_supported: Your state is not supported for this payment method
+      currency_not_supported: Your currency is not supported for this payment method
       email_verified: Email already verified
       deposit_limits: Deposit limit reached, please try again later
       document_type_not_supported: Document type not supported
       entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
       amount_greater_than_allowed: "Amount should be less than %{max_amount} %{currency}"
+      amount_negative: Amount should be more than zero
       amount_less_than_allowed: "Amount should be greater than %{min_amount} %{currency}"
       provider_disconnected: Provider is disconnected
       market_inactive: Bet market is inactive
