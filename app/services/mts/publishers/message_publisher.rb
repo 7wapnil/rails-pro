@@ -57,7 +57,8 @@ module Mts
       def create_exchange(conn)
         channel = conn.create_channel
         channel.queue(self.class::QUEUE_NAME, durable: true)
-               .bind(self.class::EXCHANGE_NAME)
+               .bind(self.class::CONSUMER_EXCHANGE_NAME,
+                     routing_key: self.class::ROUTING_KEY)
         channel.exchange(self.class::EXCHANGE_NAME,
                          type: self.class::EXCHANGE_TYPE,
                          durable: true)

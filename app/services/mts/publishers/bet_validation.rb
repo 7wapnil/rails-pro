@@ -4,6 +4,7 @@ module Mts
   module Publishers
     class BetValidation < MessagePublisher
       EXCHANGE_NAME = 'arcanebet_arcanebet-Submit'
+      CONSUMER_EXCHANGE_NAME = 'arcanebet_arcanebet-Confirm'
       QUEUE_NAME = ENV['MTS_MQ_QUEUE_CONFIRM']
       ROUTING_KEY = ENV['MTS_MQ_TICKET_CONFIRMATION_RK']
       EXCHANGE_TYPE = :fanout
