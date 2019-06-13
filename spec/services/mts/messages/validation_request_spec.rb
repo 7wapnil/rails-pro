@@ -23,7 +23,7 @@ describe Mts::Messages::ValidationRequest do
 
     let(:example_json) do
       <<-EXAMPLE_JSON
-      {"version": "2.1", "timestampUtc": 1486541079460000, "testSource": true,
+      {"version": "2.3", "timestampUtc": 1486541079460000, "testSource": true,
       "ticketId": "MTS_Test_1486541079460000",
       "sender": {"currency": "EUR",
        "channel": "internet", "bookmakerId": #{bookmaker_id},
@@ -40,7 +40,7 @@ describe Mts::Messages::ValidationRequest do
     end
 
     let(:customer) do
-      create(:customer, id: 123_456_78, last_sign_in_ip: '202.12.22.4')
+      create(:customer, id: 123_456_78, current_sign_in_ip: '202.12.22.4')
     end
     let(:base_currency_amount) { Faker::Number.decimal(2, 2).to_d }
     let(:euro) { create(:currency, code: 'EUR') }

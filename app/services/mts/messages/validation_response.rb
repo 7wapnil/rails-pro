@@ -1,7 +1,7 @@
 module Mts
   module Messages
     class ValidationResponse
-      SUPPORTED_VALIDATION_RESPONSE_VERSION = '2.1'.freeze
+      SUPPORTED_VALIDATION_RESPONSE_VERSION = '2.3'.freeze
 
       attr_reader :message
 
