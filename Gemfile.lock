@@ -125,6 +125,7 @@ GEM
     cryptocompare (0.14.0)
       faraday
       json
+    daemons (1.3.1)
     database_cleaner (1.7.0)
     devise (4.5.0)
       bcrypt (~> 3.0)
@@ -550,6 +551,7 @@ DEPENDENCIES
   chromedriver-helper
   countries
   cryptocompare
+  daemons
   database_cleaner
   devise
   dotenv-rails

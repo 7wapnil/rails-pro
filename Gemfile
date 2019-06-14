@@ -68,6 +68,7 @@ gem 'phonelib'
 gem 'cryptocompare'
 gem 'recaptcha'
 gem 'countries'
+gem 'daemons', require: false
 
 gem 'faker', github: 'stympy/faker', branch: 'master', require: false
 gem 'factory_bot_rails', require: false

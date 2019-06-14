@@ -5,7 +5,7 @@ module Listeners
     include Singleton
 
     def listen
-      ch = Mts::Session.instance.opened_connection.create_channel(nil, 3)
+      ch = Mts::Session.instance.opened_connection.create_channel(nil, 16)
       queue = ch.queue(ENV['MTS_MQ_QUEUE_CONFIRM'], durable: true)
 
       consumer = TicketAcceptanceConsumer.new(ch, queue)
