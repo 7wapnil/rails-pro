@@ -13,4 +13,4 @@ end
 
 ::Listeners::Daemon.start
 
-loop { ; }
+loop { sleep(0.5) }
