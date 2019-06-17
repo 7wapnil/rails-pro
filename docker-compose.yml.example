@@ -69,9 +69,9 @@ services:
       - db
       - redis
 
-  worker_bet_radar:
+  worker_odds_feed:
     image: arcanebet/arcanebet:dev
-    command: bundle exec sidekiq -C config/bet-radat.sidekiq.yml
+    command: bundle exec sidekiq -C config/odds-feed.sidekiq.yml
     stdin_open: true
     tty: true
     env_file:
