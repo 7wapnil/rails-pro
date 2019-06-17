@@ -8,6 +8,7 @@ module OddsFeed
       include Singleton
 
       DEFAULT_CACHE_TERM = 12.hours
+      WARNING_CODES = [500, 503].freeze
 
       base_uri ENV['RADAR_API_URL']
       headers 'x-access-token': ENV['RADAR_API_TOKEN']
@@ -147,6 +148,18 @@ module OddsFeed
 
       def request(path, method: :get, cache: nil, **options)
         ResponseReader.call(path: path, method: method, cache: cache, **options)
+      rescue HTTParty::ResponseError => error
+        raise unless warning_code?(error)
+
+        log_job_message(:warn,
+                        message: "#{error.response.code} response received")
+
+        raise SilentRetryJobError
+      end
+
+      def warning_code?(error)
+        error.response.is_a?(Net::HTTPResponse) &&
+          WARNING_CODES.include?(error.response.code.to_i)
       end
 
       def post(path)

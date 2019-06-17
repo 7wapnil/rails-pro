@@ -37,6 +37,14 @@ describe OddsFeed::Radar::Client do
       expect { object.who_am_i }.to raise_error(HTTParty::ResponseError)
     end
 
+    it 'raise SilentRetryJobError on 500' do
+      stub_request(:any, "#{api_domain}/users/whoami.xml")
+        .with(headers: headers)
+        .to_return(status: 500, body: forbidden_response)
+
+      expect { object.who_am_i }.to raise_error(SilentRetryJobError)
+    end
+
     it 'raises error on invalid xml' do
       stub_request(:any, "#{api_domain}/users/whoami.xml")
         .with(headers: headers)
