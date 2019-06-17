@@ -5,7 +5,7 @@ namespace :listeners do
   task start: :environment do
     path = File.join(Rails.root, 'lib', 'listeners', 'daemon_controller.rb')
 
-    system("bundle exec ruby #{path} start")
+    system("bundle exec ruby #{path} run")
   end
 
   task stop: :environment do
