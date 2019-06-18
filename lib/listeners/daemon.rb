@@ -6,11 +6,9 @@ module Listeners
       def start
         Listeners::TicketAcceptanceListener.instance.listen
         Listeners::TicketCancellationListener.instance.listen
+
+        loop { sleep(0.5) }
       end
     end
   end
 end
-
-::Listeners::Daemon.start
-
-loop { sleep(0.5) }
