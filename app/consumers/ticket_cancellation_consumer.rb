@@ -12,9 +12,9 @@ class TicketCancellationConsumer < Bunny::Consumer
     routing_key = ENV['MTS_MQ_TICKET_CANCELLATION_RK']
 
     channel = Mts::Session
-            .instance
-            .opened_connection
-            .create_channel
+              .instance
+              .opened_connection
+              .create_channel
 
     queue = channel.queue(ENV['MTS_MQ_QUEUE_REPLY'], durable: true)
     queue.bind(ENV['MTS_MQ_USER'] + '-Reply', routing_key: routing_key)
