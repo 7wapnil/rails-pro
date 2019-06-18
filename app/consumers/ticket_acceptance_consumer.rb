@@ -8,15 +8,17 @@ class TicketAcceptanceConsumer < Bunny::Consumer
   private
 
   def restore_queue
+    @channel.close
     routing_key = ENV['MTS_MQ_TICKET_CONFIRMATION_RK']
 
-    queue = Mts::Session
+    channel = Mts::Session
             .instance
             .opened_connection
             .create_channel
-            .queue(ENV['MTS_MQ_QUEUE_CONFIRM'], durable: true)
 
+    queue = channel.queue(ENV['MTS_MQ_QUEUE_CONFIRM'], durable: true)
     queue.bind(ENV['MTS_MQ_USER'] + '-Confirm', routing_key: routing_key)
+    channel.close
 
     Listeners::TicketAcceptanceListener.instance.listen
   end
