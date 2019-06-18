@@ -1,8 +1,6 @@
 :queues:
   - default
   - expired_bonuses
-  - radar_odds_feed_high
-  - radar_odds_feed_low
   - radar_live_coverage_booking
   - radar_markets_update
   - radar_missing_heartbeat
