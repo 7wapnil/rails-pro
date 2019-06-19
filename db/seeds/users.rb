@@ -38,5 +38,6 @@ users_payload.each do |payload|
     user.first_name = payload[:first_name]
     user.last_name = payload[:last_name]
     user.password = ENV['SEED_USER_DEFAULT_PASSWORD']
+    user.time_zone = 'Tallinn'
   end
 end
