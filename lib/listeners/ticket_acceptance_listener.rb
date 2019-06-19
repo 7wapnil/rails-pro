@@ -10,9 +10,10 @@ module Listeners
 
       consumer = TicketAcceptanceConsumer.new(ch, queue, '', false, true)
 
-      consumer.on_delivery do |_delivery_info, _metadata, payload|
+      consumer.on_delivery do |delivery_info, _metadata, payload|
         Rails.logger.debug payload
         ::Mts::ValidationResponseWorker.perform_async(payload)
+        ch.acknowledge(delivery_info.delivery_tag, false)
       end
 
       queue.subscribe_with(consumer)
