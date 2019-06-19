@@ -3,21 +3,9 @@
 module Customers
   module Summaries
     class BalanceUpdateWorker < ApplicationWorker
-      SERVICE = Customers::Summaries::Updater
-      def perform(day, balance_entry_id) # rubocop:disable Metrics/MethodLength
-        balance_entry = BalanceEntry.find(balance_entry_id)
-
-        attribute =
-          case balance_entry.balance_entry_request&.entry_request&.kind
-          when 'deposit'
-            :"#{balance_entry.balance_entry_request.kind}_deposit_amount"
-          when 'win'
-            :"#{balance_entry.balance_entry_request.kind}_payout_amount"
-          when 'withdraw'
-            :withdraw_amount
-          when 'bet'
-            :"#{balance_entry.balance_entry_request.kind}_wager_amount"
-          end
+      def perform(day, balance_entry_id)
+        @balance_entry = BalanceEntry.find(balance_entry_id)
+        attribute = summary_attribute
 
         return unless attribute
 
@@ -25,6 +13,33 @@ module Customers
           day,
           attribute => balance_entry.amount
         )
+      end
+
+      private
+
+      attr_reader :balance_entry
+
+      def summary_attribute # rubocop:disable Metrics/CyclomaticComplexity
+        case entry_kind
+        when 'deposit'
+          :"#{entry_request_kind}_deposit_amount"
+        when 'bonus_change'
+          :bonus_deposit_amount if balance_entry.amount.positive?
+        when 'win'
+          :"#{entry_request_kind}_payout_amount"
+        when 'withdraw'
+          :withdraw_amount
+        when 'bet'
+          :"#{entry_request_kind}_wager_amount"
+        end
+      end
+
+      def entry_kind
+        balance_entry.balance_entry_request&.entry_request&.kind
+      end
+
+      def entry_request_kind
+        balance_entry.balance_entry_request.kind
       end
     end
   end

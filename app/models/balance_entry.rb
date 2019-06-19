@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class BalanceEntry < ApplicationRecord
+  after_create :update_summary
+
   belongs_to :balance
   belongs_to :entry
 
@@ -13,5 +15,11 @@ class BalanceEntry < ApplicationRecord
   # scope :bonus
   Balance.kinds.keys.each do |kind|
     scope kind.to_sym, -> { joins(:balance).where(balances: { kind: kind }) }
+  end
+
+  private
+
+  def update_summary
+    Customers::Summaries::BalanceUpdateWorker.perform_async(Date.today, id)
   end
 end
