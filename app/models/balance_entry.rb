@@ -5,6 +5,7 @@ class BalanceEntry < ApplicationRecord
   belongs_to :entry
 
   has_one :customer_bonus, inverse_of: :balance_entry
+  has_one :balance_entry_request, inverse_of: :balance_entry
 
   validates :amount, presence: true
 
