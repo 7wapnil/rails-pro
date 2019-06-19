@@ -254,6 +254,22 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.index ["customer_bonus_id"], name: "index_customer_transactions_on_customer_bonus_id"
   end
 
+  create_table "customer_summaries", force: :cascade do |t|
+    t.date "day", null: false
+    t.decimal "bonus_wager_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "real_money_wager_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "bonus_payout_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "real_money_payout_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "bonus_deposit_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "real_money_deposit_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "withdraw_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.integer "signups_count", default: 0, null: false
+    t.integer "betting_customer_ids", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["day"], name: "index_customer_summaries_on_day", unique: true
+  end
+
   create_table "customers", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
