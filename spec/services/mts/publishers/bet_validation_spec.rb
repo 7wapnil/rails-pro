@@ -23,6 +23,8 @@ describe Mts::Publishers::BetValidation do
         .and_return(connection_double)
       allow(connection_double).to receive(:exchange)
         .and_return(connection_double)
+      allow(connection_double).to receive(:close)
+        .and_return(connection_double)
       allow(connection_double).to receive(:publish)
         .and_return(true)
       allow(connection_double).to receive(:queue)

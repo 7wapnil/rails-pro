@@ -47,11 +47,12 @@ module Mts
       private
 
       def send_message!
-        create_exchange(::Mts::Session.instance.opened_connection)
-          .publish(
+        create_exchange(::Mts::Session.instance.opened_connection) do |exchange|
+          exchange.publish(
             formatted_message,
             message_params
           )
+        end
       end
 
       def create_exchange(conn)
@@ -59,9 +60,12 @@ module Mts
         channel.queue(self.class::QUEUE_NAME, durable: true)
                .bind(self.class::CONSUMER_EXCHANGE_NAME,
                      routing_key: self.class::ROUTING_KEY)
-        channel.exchange(self.class::EXCHANGE_NAME,
-                         type: self.class::EXCHANGE_TYPE,
-                         durable: true)
+        exchange = channel.exchange(self.class::EXCHANGE_NAME,
+                                    type: self.class::EXCHANGE_TYPE,
+                                    durable: true)
+        yield exchange
+
+        channel.close
       end
 
       def message_params
