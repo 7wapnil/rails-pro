@@ -3,6 +3,7 @@
 module Listeners
   class TicketAcceptanceListener
     include Singleton
+    include JobLogger
 
     BATCH_SIZE = 10
 
@@ -20,6 +21,8 @@ module Listeners
 
       consumer.on_delivery do |delivery_info, _metadata, payload|
         Rails.logger.debug payload
+        log_job_message(:debug, message: 'Confirmation ticket received',
+                                id: JSON.parse(payload)['result']['ticketId'])
         ::Mts::ValidationResponseWorker.perform_async(payload)
 
         ch.ack(delivery_info.delivery_tag)

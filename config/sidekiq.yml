@@ -91,3 +91,9 @@
     queue: expired_prematch
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Sends cancellation message to MTS for all PRE-MATCH bets that reached timeout waiting for MTS status update"
+
+  mts_random_bet_placement:
+    every: <%= "#{ENV.fetch('MTS_RANDOM_BET_INTERVAL', 10)}s" %>
+    class: Mts::RandomBetPlacementWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Random bet placement for MTS testing"

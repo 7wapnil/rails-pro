@@ -3,6 +3,7 @@
 module Listeners
   class TicketCancellationListener
     include Singleton
+    include JobLogger
 
     BATCH_SIZE = 10
 
@@ -21,6 +22,8 @@ module Listeners
 
       consumer.on_delivery do |delivery_info, _metadata, payload|
         Rails.logger.debug payload
+        log_job_message(:debug, message: 'Cancellation ticket received',
+                                id: JSON.parse(payload)['result']['ticketId'])
         ::Mts::CancellationResponseWorker.perform_async(payload)
 
         ch.ack(delivery_info.delivery_tag)
