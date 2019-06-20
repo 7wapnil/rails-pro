@@ -5,4 +5,7 @@ namespace :dev do
   task prime: :environment do
     PrimeGenerator.new.generate
   end
+  task console: :environment do
+    byebug
+  end
 end

@@ -27,6 +27,7 @@
         = labels_selector(event, labels)
         %button.btn.btn-success.mt-2.save_labels{ disabled: true,
            data: { label_selector: "event_#{event.id}" } }= t(:save)
+    
     %tr
       %td= t('entities.bets')
       %td= event.bets.count
@@ -57,5 +58,11 @@
     %tr
       %td= t('attributes.visible')
       %td= visibility_toggle(event, update_visibility_event_path(event))
+    %tr
+      %td= t('attributes.score')
+      %td= display_score(event)
+    %tr
+      %td= t('attributes.ready')
+      %td= event.ready
   %hr
   = link_back
