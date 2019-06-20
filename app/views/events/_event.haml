@@ -26,7 +26,7 @@
       %td
         = labels_selector(event, labels)
         %button.btn.btn-success.mt-2.save_labels{ disabled: true,
-           data: { label_selector: "event_#{event.id}" } }= t(:save)    
+           data: { label_selector: "event_#{event.id}" } }= t(:save)
     %tr
       %td= t('entities.bets')
       %td= event.bets.count
