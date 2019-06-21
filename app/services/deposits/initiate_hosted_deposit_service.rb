@@ -11,14 +11,20 @@ module Deposits
 
     def call
       validate_ambiguous_input!
-      apply_bonus_code!
+      begin
+        apply_bonus_code!
+      rescue CustomerBonuses::ActivationError
+        entry_request.failed!
+        entry_request
+      end
 
-      initiate_entry_request
+      entry_request
     end
 
     private
 
-    attr_reader :customer, :currency, :amount, :bonus_code, :customer_bonus
+    attr_reader :customer, :currency, :amount,
+                :bonus_code, :customer_bonus
 
     def validate_ambiguous_input!
       return true if amount.is_a?(Numeric)
@@ -44,8 +50,8 @@ module Deposits
       @bonus ||= Bonus.find_by_code(bonus_code)
     end
 
-    def initiate_entry_request
-      EntryRequests::Factories::Deposit.call(
+    def entry_request
+      @entry_request ||= EntryRequests::Factories::Deposit.call(
         wallet: wallet,
         amount: amount,
         customer_bonus: customer_bonus,

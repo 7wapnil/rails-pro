@@ -15,18 +15,7 @@ describe Deposits::InitiateHostedDepositService do
     }
   end
 
-  describe '#initialize' do
-    subject(:initialized_class) { described_class.new(service_call_params) }
-
-    %w[customer currency amount bonus_code].each do |argument|
-      it "stores #{argument} as local variable" do
-        expect(initialized_class.instance_variable_get("@#{argument}"))
-          .not_to be nil
-      end
-    end
-  end
-
-  describe '.call' do
+  describe '#call' do
     subject { described_class.call(service_call_params) }
 
     it 'returns entry request' do
@@ -46,15 +35,27 @@ describe Deposits::InitiateHostedDepositService do
     end
 
     context 'when amount sent as a string' do
+      let(:amount) { '80.3' }
+
       it 'raises ArgumentError' do
-        expect do
-          described_class.call(
-            customer: 1,
-            currency: 1,
-            amount: '80.3',
-            bonus_code: 1
-          )
-        end.to raise_error(ArgumentError)
+        expect { subject }.to raise_error(ArgumentError)
+      end
+    end
+
+    context 'when bonus activation fails' do
+      before do
+        allow(CustomerBonuses::Create)
+          .to receive(:call)
+          .and_raise(CustomerBonuses::ActivationError)
+      end
+
+      it 'creates an entry request' do
+        expect { subject }.to change(EntryRequest, :count).by(1)
+      end
+
+      it 'fails the entry request right away' do
+        subject
+        expect(EntryRequest.last).to be_failed
       end
     end
   end
