@@ -28,4 +28,10 @@ class CustomerBonus < ApplicationRecord
   def locked?
     bets.pending.any?
   end
+
+  def time_exceeded?
+    return false unless active?
+
+    created_at + valid_for_days.days < Time.zone.now
+  end
 end

@@ -1,2 +1,4 @@
-= render 'customer_bonuses/customer_bonus',
-         customer_bonus: customer_bonus
+.row.mt-4
+  = link_back bonuses_customer_path(customer_bonus.customer)
+  = render 'customer_bonuses/customer_bonus',
+           customer_bonus: customer_bonus
