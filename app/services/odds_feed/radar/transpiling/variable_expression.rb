@@ -11,7 +11,11 @@ module OddsFeed
         def variables
           vars = {}
           vars['$event'] = event.name
-          event.competitors.order(id: :asc).each.with_index do |competitor, i|
+          event
+          .competitors
+          .joins(:event_competitor)
+          .order('event_competitors.id ASC')
+          .each.with_index do |competitor, i|
             vars["$competitor#{i + 1}"] = competitor['name']
           end
 

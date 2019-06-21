@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_05_28_131211) do
+ActiveRecord::Schema.define(version: 2019_06_21_143326) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -345,7 +345,7 @@ ActiveRecord::Schema.define(version: 2019_05_28_131211) do
     t.index ["origin_type", "origin_id"], name: "index_entry_requests_on_origin_type_and_origin_id"
   end
 
-  create_table "event_competitors", id: false, force: :cascade do |t|
+  create_table "event_competitors", force: :cascade do |t|
     t.bigint "event_id"
     t.bigint "competitor_id"
     t.index ["competitor_id"], name: "index_event_competitors_on_competitor_id"
