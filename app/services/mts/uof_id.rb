@@ -68,7 +68,7 @@ module Mts
     end
 
     def parse_odd_external_id
-      %r{[a-z]*:[a-z]*:([0-9]*):([0-9]*)[/]?([^:]*):([0-9]*)}
+      %r{[a-z]*:[a-z]*:([0-9]*):([0-9]*)[/]?([^w]*):([0-9]*)}
         .match(@odd.external_id)
     end
   end
