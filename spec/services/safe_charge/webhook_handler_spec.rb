@@ -30,6 +30,8 @@ describe SafeCharge::WebhookHandler do
       .and_return(entry_currency_rule)
   end
 
+  include_context 'base_currency'
+
   context 'webhook authentication' do
     let(:auth_error) { SafeCharge::DmnAuthenticationError }
 

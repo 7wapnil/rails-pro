@@ -143,6 +143,8 @@ describe Radar::BetCancelWorker do
     Bet.where(status: cancelled_status).pluck(:id)
   end
 
+  include_context 'base_currency'
+
   context 'market statuses' do
     before { subject }
 

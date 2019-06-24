@@ -28,6 +28,8 @@ describe Bonuses::ActivationService do
   end
   let(:found_entry) { found_entry_request.entry }
 
+  include_context 'base_currency'
+
   context 'adds money' do
     let!(:entry_currency_rule) do
       create(:entry_currency_rule, :bonus_change,
