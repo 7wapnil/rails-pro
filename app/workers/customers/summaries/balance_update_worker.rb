@@ -11,7 +11,7 @@ module Customers
 
         Customers::Summaries::Updater.call(
           day,
-          attribute => balance_entry.amount
+          attribute => balance_entry.base_currency_amount
         )
       end
 

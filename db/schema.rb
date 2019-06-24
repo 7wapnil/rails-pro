@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "balance_amount_after", precision: 8, scale: 2
+    t.decimal "base_currency_amount"
     t.index ["balance_id"], name: "index_balance_entries_on_balance_id"
     t.index ["entry_id"], name: "index_balance_entries_on_entry_id"
   end

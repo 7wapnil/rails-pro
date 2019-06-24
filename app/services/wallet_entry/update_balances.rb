@@ -52,11 +52,15 @@ module WalletEntry
     end
 
     def create_balance_entry!(balance, balance_request)
+      base_currency_amount = Exchanger::Converter.call(balance_request.amount,
+                                                       balance.currency.code)
+
       balance_entry = BalanceEntry.create!(
         balance_id: balance.id,
         entry_id: entry.id,
         amount: balance_request.amount,
-        balance_amount_after: balance.amount
+        balance_amount_after: balance.amount,
+        base_currency_amount: base_currency_amount
       )
       balance_request.update_attributes!(balance_entry_id: balance_entry.id)
     end

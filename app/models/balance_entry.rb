@@ -11,6 +11,8 @@ class BalanceEntry < ApplicationRecord
 
   validates :amount, presence: true
 
+  delegate :currency, to: :balance
+
   # scope :real_money
   # scope :bonus
   Balance.kinds.keys.each do |kind|
