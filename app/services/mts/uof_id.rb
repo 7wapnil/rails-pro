@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 module Mts
   class UofId
     include JobLogger
+
+    VARIANT = 'variant'
 
     def self.id(odd)
       new(odd).uof_id
@@ -40,7 +44,16 @@ module Mts
     end
 
     def specifiers_part
+      return variant_specifier if @odd.external_id.include?(VARIANT)
+
       specifiers.empty? ? nil : "?#{specifiers}"
+    end
+
+    def variant_specifier
+      parse = %r{.*\/(variant=sr.*\+):(sr.*\+:[0-9]*)}
+              .match(@odd.external_id)
+
+      [parse[2], '?', parse[1]].join
     end
 
     def product_id
@@ -52,7 +65,7 @@ module Mts
     end
 
     def outcome_id
-      parse_odd_external_id[4]
+      parse_odd_external_id[4] unless @odd.external_id.include?(VARIANT)
     end
 
     def market_id
@@ -68,7 +81,7 @@ module Mts
     end
 
     def parse_odd_external_id
-      %r{[a-z]*:[a-z]*:([0-9]*):([0-9]*)[/]?([^w]*):([0-9]*)}
+      %r{[a-z]*:[a-z]*:([0-9]*):([0-9]*)[\/]?(\S*):([0-9]*)}
         .match(@odd.external_id)
     end
   end

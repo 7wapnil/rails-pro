@@ -32,6 +32,14 @@ describe Mts::UofId do
         external_id: 'sr:match:15868492:186/setnr=1|gamenr=2:4',
         producer_id: '3',
         uof_id: 'uof:3/sr:sport:110/186/4?setnr=1&gamenr=2'
+      },
+      {
+        title: 'odd with variant specifiers',
+        external_id: 'sr:match:17790410:15/' \
+          'variant=sr:winning_margin:3+:sr:winning_margin:3+:113',
+        producer_id: '3',
+        uof_id: 'uof:3/sr:sport:110/15/' \
+          'sr:winning_margin:3+:113?variant=sr:winning_margin:3+'
       }
     ].each do |example|
       context example[:title] do
