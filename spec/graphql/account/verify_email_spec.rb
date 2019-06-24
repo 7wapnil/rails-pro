@@ -8,7 +8,10 @@ describe GraphQL, '#verify_email' do
 
   let(:query) do
     %(mutation($token: String!) {
-        verifyEmail(token: $token)
+        verifyEmail(token: $token) {
+          success
+          userID
+        }
       })
   end
 
@@ -37,18 +40,23 @@ describe GraphQL, '#verify_email' do
     end
   end
 
-  context 'emal verification' do
+  context 'email verification' do
     let(:token) { 'generated-token' }
     let(:variables) do
       { token: token }
     end
-
-    before do
+    let(:customer) do
       create(:customer, email_verification_token: token, email_verified: false)
     end
 
     it 'returns true on successful activation' do
-      expect(result['data']['verifyEmail']).to be_truthy
+      customer
+      expect(result['data']['verifyEmail']['success']).to be_truthy
+    end
+
+    it 'renders a userID' do
+      customer
+      expect(result['data']['verifyEmail']['userID']).to eq(customer.id.to_s)
     end
   end
 end
