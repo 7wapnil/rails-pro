@@ -333,6 +333,7 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.string "external_id"
     t.bigint "entry_request_id"
     t.decimal "balance_amount_after", precision: 8, scale: 2
+    t.decimal "base_currency_amount"
     t.index ["entry_request_id"], name: "index_entries_on_entry_request_id"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"

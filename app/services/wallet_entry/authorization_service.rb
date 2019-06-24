@@ -54,6 +54,8 @@ module WalletEntry
     end
 
     def create_entry!
+      base_currency_amount = Exchanger::Converter.call(amount,
+                                                       request.currency.code)
       @entry = Entry.create!(
         wallet_id: wallet.id,
         origin_type: request.origin_type,
@@ -61,6 +63,7 @@ module WalletEntry
         entry_request: request,
         kind: request.kind,
         amount: amount,
+        base_currency_amount: base_currency_amount,
         authorized_at: Time.zone.now
       )
     end
