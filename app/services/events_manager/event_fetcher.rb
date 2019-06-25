@@ -30,8 +30,12 @@ module EventsManager
       log :info, message: 'Event scopes updated', event_id: @external_id
 
       competitors.each do |competitor|
-        event_competitor = ::EventCompetitor.new(event: event,
-                                                 competitor: competitor)
+        # byebug
+        event_competitor = ::EventCompetitor.new(
+          event: event,
+          competitor: competitor,
+          qualifier: competitor_qualifier(competitor)
+        )
         ::EventCompetitor.create_or_ignore_on_duplicate(event_competitor)
       end
     end
@@ -78,6 +82,14 @@ module EventsManager
         liveodds: event_data.liveodds,
         title: title
       }
+    end
+
+    def competitor_qualifier(competitor)
+      event_data
+        .competitors
+        .select { |entity| entity.id == competitor.external_id }
+        .first
+        .qualifier
     end
   end
 end
