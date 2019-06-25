@@ -1,0 +1,5 @@
+= card header: t(:dashboard_report, class: 'dashboard-report mb-4') do
+  = render 'report/pending', filter: filter
+  = render 'report/date_filter', filter: filter
+  = render 'report/table', filter: filter
+%br

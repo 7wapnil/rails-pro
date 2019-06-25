@@ -1,0 +1,29 @@
+= search_form_for filter.search, url: dashboard_path,
+                                 as: :customer_summaries do |f|
+  %table.table.search
+    %thead
+      %tr
+        %th
+          .filter_title
+            #{t(:search, subject: t('from'))}:
+          .filter_field
+            = f.label :day_gteq, class: 'sr-only'
+            = f.search_field :day_gteq,
+                              as: :date_picker,
+                              class: 'form-control form_date',
+                              placeholder: t(:search, subject: t('from')),
+                              value: search_date_for(:day_gteq,
+                                                     :customer_summaries)
+        %th
+          .filter_title
+            #{t(:search, subject: t('to'))}:
+          .filter_field
+            = f.label :day_lteq, class: 'sr-only'
+            = f.search_field :day_lteq,
+                              as: :date_picker,
+                              class: 'form-control form_date',
+                              placeholder: t(:search, subject: t('to')),
+                              value: search_date_for(:day_lteq,
+                                                     :customer_summaries)
+        %th
+          = f.submit class: 'btn btn-outline-dark btn-block'
