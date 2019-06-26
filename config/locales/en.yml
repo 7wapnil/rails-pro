@@ -606,6 +606,7 @@ en:
       long: "%-d %B %Y %-k:%M:%S"
 
   dashboard_report:
+    title: Summary
     pending_bets_count: Pending bets number
     pending_bets_amount: Pending bets volume
     from: Start date
