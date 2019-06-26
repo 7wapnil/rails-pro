@@ -50,6 +50,15 @@ describe Mts::Publishers::BetValidation do
 
         subject_call
       end
+
+      it 'ensure chanel close' do
+        allow(connection_double).to receive(:queue)
+          .and_raise(StandardError)
+
+        expect(connection_double).to receive(:close)
+
+        subject.publish!
+      end
     end
   end
 end
