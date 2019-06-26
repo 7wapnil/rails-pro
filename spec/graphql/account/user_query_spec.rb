@@ -20,7 +20,7 @@ describe GraphQL, '#user' do
         username
         verified
         regular
-        availableWithdrawMethods
+        availableWithdrawalMethods
       }
     })
     end
@@ -34,7 +34,7 @@ describe GraphQL, '#user' do
         .to include('id' => customer.id.to_s,
                     'verified' => true,
                     'regular' => true,
-                    'availableWithdrawMethods' => [])
+                    'availableWithdrawalMethods' => [])
     end
   end
 end

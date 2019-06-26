@@ -232,9 +232,8 @@ describe Customer do
     it 'returns a list withdraw methods available for customer' do
       available_methods = [EntryRequest::CREDIT_CARD,
                            EntryRequest::NETELLER,
-                           EntryRequest::PAYSAFECARD,
                            EntryRequest::SKRILL]
-      expect(customer.available_withdraw_methods).to eq(available_methods)
+      expect(customer.available_withdrawal_methods).to eq(available_methods)
     end
   end
 end

@@ -163,10 +163,11 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
       .count
   end
 
-  def available_withdraw_methods
+  def available_withdrawal_methods
     entry_requests
       .deposit
       .succeeded
+      .where(mode: Payments::Withdraw::PAYMENT_METHODS)
       .order(created_at: :desc)
       .pluck(:mode)
       .uniq
