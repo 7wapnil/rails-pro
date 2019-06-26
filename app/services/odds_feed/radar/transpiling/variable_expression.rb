@@ -9,13 +9,24 @@ module OddsFeed
         private
 
         def variables
-          vars = {}
-          vars['$event'] = event.name
-          event.competitors.each.with_index do |competitor, i|
-            vars["$competitor#{i + 1}"] = competitor['name']
-          end
+          {
+            '$event'       => event.name,
+            '$competitor1' => competitors[EventCompetitor::HOME],
+            '$competitor2' => competitors[EventCompetitor::AWAY]
+          }
+        end
 
-          vars
+        def competitors
+          @competitors ||= ordered_competitors
+        end
+
+        def ordered_competitors
+          EventCompetitor
+            .joins(:competitor)
+            .where(event_id: event.id)
+            .select('event_competitors.qualifier, competitors.name')
+            .map { |competitor| [competitor.qualifier, competitor.name] }
+            .to_h
         end
       end
     end

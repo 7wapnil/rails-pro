@@ -13,7 +13,7 @@ describe EventsManager::EventFetcher do
 
     allow_any_instance_of(EventsManager::CompetitorLoader)
       .to receive(:call)
-      .and_return(create(:competitor, external_id: 'sr:competitor:1'))
+      .and_return(create(:competitor, external_id: 'sr:competitor:1860'))
   end
 
   context 'attributes building' do
@@ -70,7 +70,7 @@ describe EventsManager::EventFetcher do
                                    external_id: 'sr:season:12346')
 
       event.competitors << create(:competitor,
-                                  external_id: 'sr:competitor:1860')
+                                  external_id: 'sr:competitor:1')
       event.competitors << create(:competitor,
                                   external_id: 'sr:competitor:22356')
     end
