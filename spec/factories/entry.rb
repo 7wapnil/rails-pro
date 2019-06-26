@@ -18,6 +18,10 @@ FactoryBot.define do
       created_at { Date.current.yesterday.midday }
     end
 
+    trait :with_bonus_balances do
+      balance_entries { create_list(:balance_entry, 2, :bonus) }
+    end
+
     before(:create) do |entry|
       create(:entry_currency_rule,
              currency: entry.currency,

@@ -38,19 +38,28 @@ module Reports
     private
 
     def query_string
-      '(DATE(entries.created_at) = ? AND entries.kind = ?) OR
-       (DATE(entries.created_at) = ? AND entries.kind = ?) OR
-       (DATE(entries.created_at) = ? AND entries.kind = ?)'
+      "(#{date_range_query} AND entries.kind = ?) OR
+       (#{date_range_query} AND entries.kind = ?) OR
+       (#{date_range_query} AND entries.kind = ?)"
     end
 
     def query_params
-      [Date.current.yesterday, EntryKinds::BET,
-       Date.current.yesterday, EntryKinds::DEPOSIT,
-       Date.current.yesterday, EntryKinds::WIN]
+      [*date_range, EntryKinds::BET,
+       *date_range, EntryKinds::DEPOSIT,
+       *date_range, EntryKinds::WIN]
     end
 
     def primary_currency
       @primary_currency ||= Currency.primary
+    end
+
+    def date_range
+      [Time.zone.yesterday.beginning_of_day,
+       Time.zone.yesterday.end_of_day]
+    end
+
+    def date_range_query
+      'entries.created_at > ? AND entries.created_at < ?'
     end
   end
 end
