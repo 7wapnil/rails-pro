@@ -217,6 +217,38 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
   end
 
+  create_table "customer_data", force: :cascade do |t|
+    t.bigint "customer_id"
+    t.string "traffic_type_last"
+    t.string "utm_source_last"
+    t.string "utm_medium_last"
+    t.string "utm_campaign_last"
+    t.string "utm_content_last"
+    t.string "utm_term_last"
+    t.string "visitcount_last"
+    t.string "browser_last"
+    t.string "device_type_last"
+    t.string "device_platform_last"
+    t.string "ip_last"
+    t.string "registration_url_last"
+    t.string "timestamp_visit_last"
+    t.string "entrance_page_last"
+    t.string "referrer_last"
+    t.string "current_btag"
+    t.string "traffic_type_first"
+    t.string "utm_source_first"
+    t.string "utm_medium_first"
+    t.string "utm_campaign_first"
+    t.string "utm_term_first"
+    t.string "timestamp_visit_first"
+    t.string "entrance_page_first"
+    t.string "referrer_first"
+    t.string "gaClientID"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_customer_data_on_customer_id"
+  end
+
   create_table "customer_notes", force: :cascade do |t|
     t.bigint "customer_id"
     t.bigint "user_id"
@@ -592,6 +624,7 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
   add_foreign_key "competitor_players", "players", on_delete: :cascade
   add_foreign_key "crypto_addresses", "wallets"
   add_foreign_key "customer_bonuses", "balance_entries", on_delete: :cascade
+  add_foreign_key "customer_data", "customers"
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "customer_statistics", "customers"

@@ -11,8 +11,8 @@ describe GraphQL do
   end
 
   let(:query) do
-    %(mutation($input: RegisterInput!) {
-        signUp(input: $input) {
+    %(mutation($input: RegisterInput!, $customer_data: CustomerDataInput) {
+        signUp(input: $input, customer_data: $customer_data) {
           user { id }
           token
         }
@@ -66,8 +66,8 @@ describe GraphQL do
   end
 
   context 'successful sing up' do
-    let(:variables) do
-      { input: {
+    let(:input) do
+      {
         username: 'test',
         email: 'test@email.com',
         firstName: 'Test',
@@ -86,38 +86,90 @@ describe GraphQL do
         agreedWithPrivacy: true,
         bTag: 'AFFILIATE_ID',
         currency: 'EUR'
-      } }
+      }
     end
 
-    it 'returns user and token' do
-      expect(result['errors']).to be_nil
-      expect(result['data']['signUp']['user']).not_to be_nil
-      expect(result['data']['signUp']['token']).not_to be_nil
+    context 'without fe tracking' do
+      let(:variables) do
+        { input: input }
+      end
+
+      it 'returns user and token' do
+        expect(result['errors']).to be_nil
+        expect(result['data']['signUp']['user']).not_to be_nil
+        expect(result['data']['signUp']['token']).not_to be_nil
+      end
+
+      it 'creates new customer record' do
+        result
+        expect(Customer.find_by(email: 'test@email.com')).not_to be_nil
+      end
+
+      it 'creates customer related wallet' do
+        result
+        expect(Customer.find_by(email: 'test@email.com').wallets)
+          .not_to be_empty
+      end
+
+      it 'logs audit event on sign up' do
+        allow(Audit::Service).to receive(:call)
+        expect(result['errors']).to be_nil
+        expect(Audit::Service).to have_received(:call)
+      end
+
+      it 'stores received data for custom' do
+        result
+        expect(Customer.find_by(email: 'test@email.com'))
+          .to have_attributes(username: 'test',
+                              first_name: 'Test',
+                              last_name: 'User',
+                              b_tag: 'AFFILIATE_ID')
+      end
+
+      it 'creates no customer data record' do
+        expect { result }.not_to change(CustomerData, :count)
+      end
     end
 
-    it 'creates new customer record' do
-      result
-      expect(Customer.find_by(email: 'test@email.com')).not_to be_nil
-    end
+    context 'with fe tracking' do
+      let(:variables) do
+        { input: input, customer_data: customer_data }
+      end
+      let(:customer_data) do
+        {
+          traffic_type_last: Faker::Lorem.word,
+          utm_source_last: Faker::Lorem.word,
+          utm_medium_last: Faker::Lorem.word,
+          utm_campaign_last: Faker::Lorem.word,
+          utm_content_last: Faker::Lorem.word,
+          utm_term_last: Faker::Lorem.word,
+          visitcount_last: Faker::Lorem.word,
+          browser_last: Faker::Lorem.word,
+          device_type_last: Faker::Lorem.word,
+          device_platform_last: Faker::Lorem.word,
+          registration_url_last: Faker::Lorem.word,
+          timestamp_visit_last: Faker::Lorem.word,
+          entrance_page_last: Faker::Lorem.word,
+          referrer_last: Faker::Lorem.word,
+          current_btag: Faker::Lorem.word,
+          traffic_type_first: Faker::Lorem.word,
+          utm_source_first: Faker::Lorem.word,
+          utm_medium_first: Faker::Lorem.word,
+          utm_campaign_first: Faker::Lorem.word,
+          utm_term_first: Faker::Lorem.word,
+          timestamp_visit_first: Faker::Lorem.word,
+          entrance_page_first: Faker::Lorem.word,
+          referrer_first: Faker::Lorem.word,
+          gaClientID: Faker::Lorem.word
+        }
+      end
+      let(:customer) { Customer.find_by(email: input[:email]) }
+      let(:created_customer_data) { CustomerData.find_by(customer: customer) }
 
-    it 'creates customer related wallet' do
-      result
-      expect(Customer.find_by(email: 'test@email.com').wallets).not_to be_empty
-    end
-
-    it 'logs audit event on sign up' do
-      allow(Audit::Service).to receive(:call)
-      expect(result['errors']).to be_nil
-      expect(Audit::Service).to have_received(:call)
-    end
-
-    it 'stores received data for custom' do
-      result
-      expect(Customer.find_by(email: 'test@email.com'))
-        .to have_attributes(username: 'test',
-                            first_name: 'Test',
-                            last_name: 'User',
-                            b_tag: 'AFFILIATE_ID')
+      it 'creates a customer data record with passed values' do
+        result
+        expect(created_customer_data).to have_attributes(customer_data)
+      end
     end
   end
 
