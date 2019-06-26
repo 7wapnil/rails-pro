@@ -64,7 +64,7 @@ module Mts
                                     type: self.class::EXCHANGE_TYPE,
                                     durable: true)
         yield exchange
-
+      ensure
         channel.close
       end
 

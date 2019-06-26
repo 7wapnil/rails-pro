@@ -50,7 +50,7 @@ module Mts
     end
 
     def variant_specifier
-      parse = %r{.*\/(variant=sr.*\+):(sr.*\+:[0-9]*)}
+      parse = %r{.*\/(variant=sr.*):(sr.*\:[0-9]*)}
               .match(@odd.external_id)
 
       [parse[2], '?', parse[1]].join
