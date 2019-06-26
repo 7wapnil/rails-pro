@@ -30,7 +30,6 @@ module EventsManager
       log :info, message: 'Event scopes updated', event_id: @external_id
 
       competitors.each do |competitor|
-        # byebug
         event_competitor = ::EventCompetitor.new(
           event: event,
           competitor: competitor,
@@ -87,8 +86,7 @@ module EventsManager
     def competitor_qualifier(competitor)
       event_data
         .competitors
-        .select { |entity| entity.id == competitor.external_id }
-        .first
+        .find { |entity| entity.id == competitor.external_id }
         .qualifier
     end
   end

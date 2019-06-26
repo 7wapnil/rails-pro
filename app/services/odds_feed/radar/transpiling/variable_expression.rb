@@ -11,8 +11,8 @@ module OddsFeed
         def variables
           {
             '$event'       => event.name,
-            '$competitor1' => competitors['home'],
-            '$competitor2' => competitors['away']
+            '$competitor1' => competitors[EventCompetitor::HOME],
+            '$competitor2' => competitors[EventCompetitor::AWAY]
           }
         end
 

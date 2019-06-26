@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class EventCompetitor < ApplicationRecord
   include Importable
 
   enum qualifier: {
-    home: 'home',
-    away: 'away'
+    home: HOME = 'home',
+    away: AWAY = 'away'
   }
 
   belongs_to :event
