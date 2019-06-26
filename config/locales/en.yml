@@ -604,3 +604,26 @@ en:
       date_picker: "%-d %B %Y"
       default: "%-d %B %Y %-k:%M"
       long: "%-d %B %Y %-k:%M:%S"
+
+  dashboard_report:
+    pending_bets_count: Pending bets number
+    pending_bets_amount: Pending bets volume
+    from: Start date
+    to: End date
+    submit: Update
+    no_data_for_date_range: No data available for selected date range
+    bonus_wager_amount: Total bonus wager amount
+    real_money_wager_amount: Total wager cash amount
+    bonus_payout_amount: Total bonus payout amount
+    real_money_payout_amount: Total payout cash amount
+    total_wager_amount: Total wager amount
+    total_payout_amount: Total payout amount
+    bonus_deposit_amount: Total bonus awarded
+    real_money_deposit_amount: Total deposits amount
+    bonus_pnl_percentage: Bonus profit/loss %
+    real_money_pnl_percentage: Real money profit/loss %
+    total_pnl_percentage: Total profit/loss %
+    withdraw_amount: Total withdraw amount
+    signups_count: Total signups
+    active_customers_count: Total active users
+    bets_count: Total number of bets

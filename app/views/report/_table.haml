@@ -3,7 +3,7 @@
     - Customers::Summary::REPORT_FIELDS.each do |report_field|
       %tr
         %td
-          %b= t("attributes.dashboard_report.#{report_field}")
+          %b= t("dashboard_report.#{report_field}")
         %td= filter.summaries.send(report_field.to_sym)
 - else
   %tr

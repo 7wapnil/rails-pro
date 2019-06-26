@@ -5,25 +5,25 @@
       %tr
         %th
           .filter_title
-            #{t(:search, subject: t('from'))}:
+            #{t('dashboard_report.from')}:
           .filter_field
             = f.label :day_gteq, class: 'sr-only'
             = f.search_field :day_gteq,
                               as: :date_picker,
                               class: 'form-control form_date',
-                              placeholder: t(:search, subject: t('from')),
+                              placeholder: t('dashboard_report.from'),
                               value: search_date_for(:day_gteq,
                                                      :customer_summaries)
         %th
           .filter_title
-            #{t(:search, subject: t('to'))}:
+            #{t('dashboard_report.to')}:
           .filter_field
             = f.label :day_lteq, class: 'sr-only'
             = f.search_field :day_lteq,
                               as: :date_picker,
                               class: 'form-control form_date',
-                              placeholder: t(:search, subject: t('to')),
+                              placeholder: t('dashboard_report.to'),
                               value: search_date_for(:day_lteq,
                                                      :customer_summaries)
         %th
-          = f.submit class: 'btn btn-outline-dark btn-block'
+          = f.submit t('dashboard_report.submit'), class: 'btn btn-outline-dark btn-block'
