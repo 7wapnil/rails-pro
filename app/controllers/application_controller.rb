@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   include Findable
 
   before_action :authenticate_user!
+  around_action :process_in_time_zone, if: :current_user
 
   helper_method :query_params
 
@@ -17,5 +18,10 @@ class ApplicationController < ActionController::Base
     (params[key].dup || {}).transform_values do |value|
       value.is_a?(Array) ? value.map(&:squish) : value.squish
     end
+  end
+
+  def process_in_time_zone(&block)
+    time_zone = current_user.try(:time_zone) || 'Tallinn'
+    Time.use_zone(time_zone, &block)
   end
 end

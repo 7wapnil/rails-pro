@@ -11,14 +11,23 @@ describe Reports::SalesReportCollector do
   describe 'call' do
     context 'customer has deposit' do
       let(:count) { rand(1..3) }
+      let(:bonus_amount) do
+        deposits_with_bonus.sum { |b| b.balance_entries.bonus.sum(:amount) }
+      end
+
       let!(:deposits) do
         create_list(:entry, count, :recent, :deposit,
                     wallet: wallet,
                     balance_entries: create_list(:balance_entry, 2))
       end
 
+      let!(:deposits_with_bonus) do
+        create_list(:entry, count, :recent, :deposit, :with_bonus_balances,
+                    wallet: wallet)
+      end
+
       let!(:test_deposits) do
-        create_list(:entry, count, :deposit,
+        create_list(:entry, rand(1..3), :deposit,
                     wallet: wallet,
                     balance_entries: create_list(:balance_entry, 2))
       end
@@ -36,7 +45,7 @@ describe Reports::SalesReportCollector do
       end
 
       let!(:test_bets) do
-        create_list(:entry, count, :bet,
+        create_list(:entry, rand(1..3), :bet,
                     wallet: wallet,
                     balance_entries: create_list(:balance_entry, 2))
       end
@@ -44,7 +53,7 @@ describe Reports::SalesReportCollector do
       it 'returns correct number of deposits' do
         result = subject.send(:deposits_per_day).length
 
-        expect(result).to eq(count)
+        expect(result).to eq(deposits.length + deposits_with_bonus.length)
       end
 
       it 'returns correct deposit real money value' do
@@ -57,8 +66,7 @@ describe Reports::SalesReportCollector do
       it 'returns correct deposit bonus value' do
         result = subject.send(:deposit_bonus_converted)
 
-        expect(result)
-          .to eq(deposits.sum { |b| b.balance_entries.bonus.sum(:amount) })
+        expect(result).to eq(bonus_amount)
       end
 
       it 'returns correct gross revenue value' do
