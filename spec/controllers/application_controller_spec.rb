@@ -26,8 +26,8 @@ describe ApplicationController, type: :controller do
         .first['created_at']
     end
 
-    it 'is Tallinn' do
-      expect(Time.zone.name).to eq('Tallinn')
+    it 'is UTC' do
+      expect(Time.zone.name).to eq('UTC')
     end
 
     it 'store records without timezone marks' do
@@ -48,7 +48,7 @@ describe ApplicationController, type: :controller do
     let(:offset_str) { tallinn_offset.abs.to_s.rjust(2, '0') + ':00' }
 
     context 'when user time zone is not specified' do
-      let(:current_user) { create(:admin_user) }
+      let(:current_user) { create(:admin_user, time_zone: 'Tallinn') }
 
       it 'shows plain time in the default time zone' do
         expect(subject[:time].last(5)).to eq(offset_str)
