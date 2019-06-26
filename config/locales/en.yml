@@ -627,3 +627,4 @@ en:
     signups_count: Total signups
     active_customers_count: Total active users
     bets_count: Total number of bets
+    pending_withdrawals_amount: Pending withdraw amount

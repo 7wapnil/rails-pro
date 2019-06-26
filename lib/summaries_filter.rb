@@ -22,10 +22,14 @@ class SummariesFilter
     pending_bets = Bet.pending
     pending_bets_count = pending_bets.count
     pending_bets_amount = pending_bets.pluck(:amount).reduce(:+)
+    pending_withdrawals_amount =
+      Withdrawal
+      .includes(:entry)
+      .where(status: :pending)
+      .reduce(0) { |sum, w| sum + w.entry.base_currency_amount.to_f }
 
-    @pending = OpenStruct.new(
-      bets_count: pending_bets_count,
-      bets_amount: pending_bets_amount
-    )
+    @pending = OpenStruct.new(bets_count: pending_bets_count,
+                              bets_amount: pending_bets_amount,
+                              withdrawals_amount: pending_withdrawals_amount)
   end
 end
