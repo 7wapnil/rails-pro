@@ -45,7 +45,9 @@ module OddsFeed
                      event: @event,
                      name: data_object.name,
                      status: data_object.status,
-                     category: data_object.category)
+                     category: data_object.category,
+                     market_id: data_object.market_id,
+                     market_specifier: data_object.specifiers)
         end
 
         def market_template_find_by!(external_id:)

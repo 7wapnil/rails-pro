@@ -2,10 +2,11 @@
 
 FactoryBot.define do
   factory :odd do
-    name                   { 'MiTH' }
-    won                    { true }
-    value                  { Faker::Number.decimal(1, 2) }
-    status                 { Odd::INACTIVE }
+    name       { 'MiTH' }
+    won        { true }
+    value      { Faker::Number.decimal(1, 2) }
+    status     { Odd::INACTIVE }
+    outcome_id { '' }
 
     sequence(:external_id) do |n|
       "sr:match:#{n}:#{rand(0..10_000)}/hcp=0.5:#{n}"

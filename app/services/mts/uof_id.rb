@@ -28,32 +28,23 @@ module Mts
         market_id,
         '/',
         outcome_id,
-        specifiers_part
+        formatted_specifier
       ].join
     end
 
     private
 
+    attr_reader :odd
+
     delegate :producer, :title, to: :event
+    delegate :market_id, :market_specifier, to: :market
+    delegate :outcome_id, to: :odd
 
     def event_producer_failure!
       error = ArgumentError.new('Error with getting producer for event')
 
       log_job_failure(error)
       raise error
-    end
-
-    def specifiers_part
-      return variant_specifier if @odd.external_id.include?(VARIANT)
-
-      specifiers.empty? ? nil : "?#{specifiers}"
-    end
-
-    def variant_specifier
-      parse = %r{.*\/(variant=sr.*):(sr.*\:[0-9]*)}
-              .match(@odd.external_id)
-
-      [parse[2], '?', parse[1]].join
     end
 
     def product_id
@@ -64,25 +55,16 @@ module Mts
       @event ||= @odd.market.event
     end
 
-    def outcome_id
-      parse_odd_external_id[4] unless @odd.external_id.include?(VARIANT)
-    end
-
-    def market_id
-      parse_odd_external_id[2]
+    def market
+      @market ||= @odd.market
     end
 
     def sport_id
       title.external_id
     end
 
-    def specifiers
-      parse_odd_external_id[3].tr('|', '&')
-    end
-
-    def parse_odd_external_id
-      %r{[a-z]*:[a-z]*:([0-9]*):([0-9]*)[\/]?(\S*):([0-9]*)}
-        .match(@odd.external_id)
+    def formatted_specifier
+      "?#{market_specifier}".tr('|', '&') if market_specifier.present?
     end
   end
 end
