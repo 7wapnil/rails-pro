@@ -49,7 +49,7 @@ module OddsFeed
             TemplateLoader.new(@event, market_template, tokens['variant'])
         end
 
-        def market_id
+        def template_id
           @payload['id']
         end
 

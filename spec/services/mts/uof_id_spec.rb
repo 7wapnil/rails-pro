@@ -19,24 +19,24 @@ describe Mts::UofId do
     [
       {
         title: 'odd with specifiers',
-        market_id: '186',
-        market_specifier: 'setnr=1|gamenr=2',
+        template_id: '186',
+        template_specifiers: 'setnr=1|gamenr=2',
         outcome_id: '4',
         external_id: 'sr:match:15868492:186/setnr=1|gamenr=2:4',
         uof_id: 'uof:1/sr:sport:110/186/4?setnr=1&gamenr=2'
       },
       {
         title: 'odd without specifiers',
-        market_id: '186',
-        market_specifier: '',
+        template_id: '186',
+        template_specifiers: '',
         outcome_id: '4',
         external_id: 'sr:match:15868492:186:4',
         uof_id: 'uof:1/sr:sport:110/186/4'
       },
       {
         title: 'in respect with producer',
-        market_id: '186',
-        market_specifier: 'setnr=1|gamenr=2',
+        template_id: '186',
+        template_specifiers: 'setnr=1|gamenr=2',
         outcome_id: '4',
         external_id: 'sr:match:15868492:186/setnr=1|gamenr=2:4',
         producer_id: '3',
@@ -44,8 +44,8 @@ describe Mts::UofId do
       },
       {
         title: 'odd with variant specifiers',
-        market_id: '15',
-        market_specifier: 'variant=sr:winning_margin:3+',
+        template_id: '15',
+        template_specifiers: 'variant=sr:winning_margin:3+',
         outcome_id: 'sr:winning_margin:3+:113',
         external_id: 'sr:match:17790410:15/' \
           'variant=sr:winning_margin:3+:sr:winning_margin:3+:113',
@@ -68,8 +68,8 @@ describe Mts::UofId do
         end
         let(:market) do
           create(:market, event: event,
-                          market_id: example[:market_id],
-                          market_specifier: example[:market_specifier])
+                          template_id: example[:template_id],
+                          template_specifiers: example[:template_specifiers])
         end
         let(:odd) do
           create(:odd,

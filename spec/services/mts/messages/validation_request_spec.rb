@@ -53,8 +53,8 @@ describe Mts::Messages::ValidationRequest do
     end
     let(:market) do
       create(:market, event: event,
-                      market_specifier: 'setnr=1|gamenr=2',
-                      market_id: '186')
+                      template_specifiers: 'setnr=1|gamenr=2',
+                      template_id: '186')
     end
     let(:odd) do
       create(:odd,

@@ -25,7 +25,7 @@ module Mts
         '/',
         sport_id,
         '/',
-        market_id,
+        template_id,
         '/',
         outcome_id,
         formatted_specifier
@@ -37,7 +37,7 @@ module Mts
     attr_reader :odd
 
     delegate :producer, :title, to: :event
-    delegate :market_id, :market_specifier, to: :market
+    delegate :template_id, :template_specifiers, to: :market
     delegate :outcome_id, to: :odd
 
     def event_producer_failure!
@@ -64,7 +64,7 @@ module Mts
     end
 
     def formatted_specifier
-      "?#{market_specifier}".tr('|', '&') if market_specifier.present?
+      "?#{template_specifiers}".tr('|', '&') if template_specifiers.present?
     end
   end
 end
