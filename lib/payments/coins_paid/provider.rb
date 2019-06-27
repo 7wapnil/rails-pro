@@ -7,8 +7,12 @@ module Payments
         client.authorize_payment(transaction)
       end
 
-      def payment_response_handler
-        ::Payments::CoinsPaid::PaymentResponse
+      def deposit_response_handler
+        ::Payments::CoinsPaid::DepositResponse
+      end
+
+      def withdrawal_handler
+        ::Payments::CoinsPaid::WithdrawalHandler
       end
 
       private

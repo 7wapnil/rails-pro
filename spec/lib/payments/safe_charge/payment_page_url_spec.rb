@@ -4,11 +4,11 @@ describe ::Payments::SafeCharge::PaymentPageUrl do
   subject { described_class.call(transaction, **extra_query_params) }
 
   let(:transaction) do
-    ::Payments::Transaction.new(
+    ::Payments::Transactions::Deposit.new(
       id: entry_request.id,
       method: Payments::Methods::CREDIT_CARD,
       customer: entry_request.customer,
-      currency: entry_request.currency,
+      currency_code: entry_request.currency.code,
       amount: entry_request.amount
     )
   end

@@ -2,7 +2,7 @@
 
 module Payments
   module SafeCharge
-    class PaymentResponse < ::Payments::PaymentResponse
+    class DepositResponse < ::Payments::DepositResponse
       include ::Payments::SafeCharge::Statuses
 
       def initialize(response)

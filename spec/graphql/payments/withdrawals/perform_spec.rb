@@ -11,11 +11,9 @@ describe GraphQL, '#withdraw' do
     ]
   end
   let(:currency) { create(:currency, :with_withdrawal_rule) }
+  let(:currency_code) { currency.code }
   let(:wallet) do
     create(:wallet, :brick, customer: auth_customer, currency: currency)
-  end
-  let(:wallet_id) do
-    wallet.id.to_s
   end
   let!(:balance) { create(:balance, :real_money, wallet: wallet) }
   let(:password) { 'iamverysecure' }
@@ -31,7 +29,7 @@ describe GraphQL, '#withdraw' do
       input: {
         password: password,
         amount: amount,
-        walletId: wallet_id,
+        currencyCode: currency_code,
         paymentMethod: payment_method,
         paymentDetails: payload
       }
@@ -76,7 +74,7 @@ describe GraphQL, '#withdraw' do
     end
 
     context 'wallet' do
-      let(:wallet_id) { '1010101' }
+      let(:currency_code) { 'allo' }
 
       it 'returns wrong wallet error' do
         expect(response['errors']).not_to be_nil

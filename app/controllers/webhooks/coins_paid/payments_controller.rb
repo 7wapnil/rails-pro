@@ -9,7 +9,7 @@ module Webhooks
       def create
         ::Payments::CoinsPaid::Provider
           .new
-          .handle_payment_response(request.body.string)
+          .handle_deposit_response(request.body.string)
 
         head :ok
       rescue StandardError => _error

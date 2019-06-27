@@ -6,8 +6,12 @@ module Payments
         response['payment-redirect-url']
       end
 
-      def payment_response_handler
-        ::Payments::Wirecard::PaymentResponse
+      def deposit_response_handler
+        ::Payments::Wirecard::DepositResponse
+      end
+
+      def withdrawal_handler
+        ::Payments::Wirecard::WithdrawalHandler
       end
 
       def client

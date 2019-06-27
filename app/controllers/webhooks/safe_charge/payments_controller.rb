@@ -11,7 +11,7 @@ module Webhooks
       end
 
       def create
-        ::Payments::SafeCharge::Provider.new.handle_payment_response(params)
+        ::Payments::SafeCharge::Provider.new.handle_deposit_response(params)
 
         head :ok
       rescue ::Payments::FailedError

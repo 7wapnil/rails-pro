@@ -3,7 +3,7 @@
 module Payments
   module CoinsPaid
     class SignatureService < ApplicationService
-      SIGNATURE_ALGORITHM = 'sha256'
+      SIGNATURE_ALGORITHM = 'sha512'
 
       def initialize(data:)
         @data = data

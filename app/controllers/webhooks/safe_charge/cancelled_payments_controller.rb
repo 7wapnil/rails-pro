@@ -7,7 +7,7 @@ module Webhooks
       before_action :verify_payment_signature
 
       def show
-        ::Payments::SafeCharge::Provider.new.handle_payment_response(
+        ::Payments::SafeCharge::Provider.new.handle_deposit_response(
           cancellation_params
         )
 

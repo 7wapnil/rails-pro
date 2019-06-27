@@ -2,37 +2,28 @@
 
 module Payments
   module Withdrawals
-    class Perform < ::Base::Resolver
-      type !types.Boolean
-      description 'Create withdrawal request'
+    class Perform < ::Payments::Action
+      type !types.String
+      description 'Process withdrawal request'
 
       argument :input, Inputs::WithdrawInput
 
-      def resolve(_obj, args)
-        input = args['input']
-
-        raise '`input` has to be passed' unless input
-
-        withdrawal_data = input.to_h
-        withdrawal_data[:customer] = current_customer
-        Forms::WithdrawRequest.new(withdrawal_data).validate!
-
-        withdrawal_request = create_withdrawal_request!(input)
-        EntryRequests::WithdrawalWorker
-          .perform_async(withdrawal_request.entry_request.id)
-
-        true
-      end
-
       private
 
-      def create_withdrawal_request!(args)
-        wallet = current_customer.wallets.find(args['walletId'])
-        WithdrawalRequests::Create
-          .call(wallet: wallet,
-                payload: args['paymentDetails'],
-                payment_method: args['paymentMethod'],
-                amount: args['amount'])
+      def perform_transaction(input)
+        transaction = ::Payments::Transactions::Withdrawal.new(
+          method: input[:paymentMethod],
+          password: input[:password],
+          customer: current_customer,
+          currency_code: input[:currencyCode],
+          amount: input[:amount].to_d,
+          details: input[:paymentDetails]
+        )
+        ::Payments::Withdraw.call(transaction)
+      end
+
+      def successful_payment_response
+        I18n.t('payments.withdrawals.success_message')
       end
     end
   end

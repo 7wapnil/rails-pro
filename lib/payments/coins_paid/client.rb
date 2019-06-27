@@ -26,7 +26,7 @@ module Payments
 
       def body(transaction)
         {
-          currency: Currencies::BTC_CODE,
+          currency: ::Payments::CoinsPaid::Currency::BTC_CODE,
           foreign_id: transaction.id.to_s
         }.to_json
       end

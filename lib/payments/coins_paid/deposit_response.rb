@@ -2,7 +2,7 @@
 
 module Payments
   module CoinsPaid
-    class PaymentResponse < ::Payments::PaymentResponse
+    class DepositResponse < ::Payments::DepositResponse
       include Statuses
 
       M_BTC_MULTIPLIER = 1000

@@ -615,6 +615,7 @@ en:
 
   payments:
     withdrawals:
+      success_message: "Withdrawal has been sent to processing successfully"
       payment_methods:
         credit_card:
           title: Credit card (Visa, MasterCard, Maestro)

@@ -6,7 +6,7 @@ module Inputs
 
     argument :password, String, required: true
     argument :amount, Float, required: true
-    argument :walletId, ID, required: true
+    argument :currencyCode, String, required: true
     argument :paymentMethod, ::Payments::Withdrawals::PaymentMethodEnum,
              required: true
     argument :paymentDetails, [Inputs::PaymentMethodDetail], required: true

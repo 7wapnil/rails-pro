@@ -7,8 +7,12 @@ module Payments
         PaymentPageUrl.call(transaction)
       end
 
-      def payment_response_handler
-        ::Payments::SafeCharge::PaymentResponse
+      def deposit_response_handler
+        ::Payments::SafeCharge::DepositResponse
+      end
+
+      def withdrawal_handler
+        ::Payments::SafeCharge::WithdrawalHandler
       end
     end
   end

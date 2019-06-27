@@ -7,7 +7,7 @@ module Webhooks
       before_action :verify_payment_signature
 
       def create
-        ::Payments::Wirecard::Provider.new.handle_payment_response(params)
+        ::Payments::Wirecard::Provider.new.handle_deposit_response(params)
 
         callback_redirect_for(::Payments::Webhooks::Statuses::SUCCESS)
       rescue ::Payments::CancelledError

@@ -1,17 +1,5 @@
-# Part of code copied from old Mihail's solution and looks like not the best
-# one.
-# On execution entry request (initial or failed) are not saved, but must be!
-# So, I propose to update this code with following order:
-#
-# - Create initial request (status initial)
-# - Validate transaction
-# -- If invalid or error raised update request to FAILED with result message
-# - return payment page url
-#
-#
-# Validation of business rules (deposit amount limit, attempts) moved to
-# Transaction
-#
+# frozen_string_literal: true
+
 module Payments
   class Withdraw < Operation
     include Methods
@@ -22,5 +10,9 @@ module Payments
       ::Payments::Methods::SKRILL,
       ::Payments::Methods::BITCOIN
     ].freeze
+
+    def execute_operation
+      provider.process_withdrawal(transaction)
+    end
   end
 end

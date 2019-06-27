@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Payments
   class Operation < ApplicationService
     attr_reader :transaction
@@ -21,6 +23,10 @@ module Payments
       return if transaction.valid?
 
       raise Payments::InvalidTransactionError, transaction
+    end
+
+    def provider
+      find_method_provider(transaction.method).new
     end
   end
 end

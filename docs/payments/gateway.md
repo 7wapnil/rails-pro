@@ -3,11 +3,11 @@ Initial architecture for gateway. Usage example:
 
 ```ruby
 # Generating payment page url
-transaction = Payments::Transaction.new(
+transaction = Payments::Transactions::Deposit.new(
   method: :credit_card,
   customer: customer,
   amount: 1000,
-  currency: currency,
+  currency_code: currency_code,
   bonus_code: 'TEST_BONUS_CODE'
 )
 
@@ -15,7 +15,7 @@ Payments::Deposit.call(transaction)
 
 
 # Handling response on return
-Payments::Wirecard.new.handle_payment_response(params) 
+Payments::Wirecard.new.handle_deposit_response(params) 
 
 ```
 
