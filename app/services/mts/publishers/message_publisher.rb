@@ -16,9 +16,9 @@ module Mts
       def publish!
         log_message
 
-        send_message!
-
         update_bet
+
+        send_message!
       end
 
       protected
