@@ -184,9 +184,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     upcoming? && start_at < UPCOMING_DURATION.hours.from_now
   end
 
-  def in_play?(limited: false)
-    traded_live && start_at.past? && end_at.nil? &&
-      (!limited || start_at > START_AT_OFFSET_IN_HOURS.hours.ago)
+  def in_play?
+    traded_live && status.in?(IN_PLAY_STATUSES)
   end
 
   def update_from!(other)
@@ -201,7 +200,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def alive?
-    traded_live? && (in_play?(limited: true) || suspended?)
+    in_play?
   end
 
   def score
