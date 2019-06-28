@@ -69,7 +69,7 @@ module WebSocket
     def trigger_kind_event(event)
       return warn('Event has no title', event) unless event.title
 
-      return unless event.upcoming_for_time? || event.alive?
+      return unless event.upcoming_for_time? || event.in_play?
 
       trigger(
         SubscriptionFields::KIND_EVENT_UPDATED,
@@ -79,7 +79,8 @@ module WebSocket
     end
 
     def trigger_sport_event(event)
-      return unless event.title_id && (event.upcoming_for_time? || event.alive?)
+      return unless event.title_id &&
+                    (event.upcoming_for_time? || event.in_play?)
 
       trigger(
         SubscriptionFields::SPORT_EVENT_UPDATED,

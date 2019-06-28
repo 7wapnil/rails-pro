@@ -168,9 +168,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def start_status
-    return LIVE if alive?
+    return LIVE if in_play?
+    return UPCOMING if upcoming?
 
-    UPCOMING if upcoming?
+    nil
   end
 
   def upcoming?
@@ -194,10 +195,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
     save!
     self
-  end
-
-  def alive?
-    in_play?
   end
 
   def score
