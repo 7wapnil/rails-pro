@@ -48,6 +48,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     abandoned:   ABANDONED   = 'abandoned'
   }.freeze
 
+  IN_PLAY_STATUSES = [STARTED, SUSPENDED]
+
   BOOKABLE = 'bookable'
 
   START_STATUSES = [
@@ -136,16 +138,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def self.in_play
-    where(
-      [
-        'start_at < ? AND ',
-        'start_at > ? AND ',
-        'end_at IS NULL AND ',
-        'traded_live IS TRUE'
-      ].join,
-      Time.zone.now,
-      START_AT_OFFSET_IN_HOURS.hours.ago
-    )
+    where(status: IN_PLAY_STATUSES, traded_live: true)
   end
 
   def self.past

@@ -29,47 +29,34 @@ describe Event do
   end
 
   describe '.in_play' do
-    it 'includes started and not finished events that are traded live' do
-      event = create(:event,
-                     start_at: 5.minutes.ago,
-                     end_at: nil,
-                     traded_live: true)
+    it 'includes started and suspended events that are traded live' do
+      event = create(
+        :event,
+        status: Event::IN_PLAY_STATUSES.sample,
+        traded_live: true
+      )
 
       expect(described_class.in_play).to include(event)
     end
 
-    it 'doesn\'t include not started events' do
-      event = create(:event,
-                     start_at: 5.minutes.from_now,
-                     end_at: nil,
-                     traded_live: true)
-
-      expect(described_class.in_play).not_to include(event)
-    end
-
-    it 'doesn\'t include finished events' do
-      event = create(:event,
-                     start_at: 1.hour.ago,
-                     end_at: 5.minutes.ago,
-                     traded_live: true)
+    it 'doesn\'t include not started or suspended events' do
+      event_status =
+        Event::STATUSES.values.without(*Event::IN_PLAY_STATUSES).sample
+      event = create(
+        :event,
+        status: event_status,
+        traded_live: true
+      )
 
       expect(described_class.in_play).not_to include(event)
     end
 
     it 'doesn\'t include events that are not traded live' do
-      event = create(:event,
-                     start_at: 5.minutes.ago,
-                     end_at: nil,
-                     traded_live: false)
-
-      expect(described_class.in_play).not_to include(event)
-    end
-
-    it 'doesn\'t include events that started longer than 4 hours ago' do
-      event = create(:event,
-                     start_at: 245.minutes.ago,
-                     end_at: nil,
-                     traded_live: true)
+      event = create(
+        :event,
+        status: Event::IN_PLAY_STATUSES.sample,
+        traded_live: false
+      )
 
       expect(described_class.in_play).not_to include(event)
     end
