@@ -27,9 +27,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     liveodds
   ].freeze
 
-  # 4 hours ago is a temporary workaround to reduce amount of live events
-  # Will be removed when proper event ending logic is implemented
-  START_AT_OFFSET_IN_HOURS = 4
   UPCOMING_LIMIT = 16
   UPCOMING_DURATION = 6
 
@@ -48,7 +45,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     abandoned:   ABANDONED   = 'abandoned'
   }.freeze
 
-  IN_PLAY_STATUSES = [STARTED, SUSPENDED]
+  IN_PLAY_STATUSES = [STARTED, SUSPENDED].freeze
 
   BOOKABLE = 'bookable'
 
