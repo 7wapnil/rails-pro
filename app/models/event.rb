@@ -5,16 +5,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Importable
   include EventScopeAssociations
 
-  conflict_target :external_id
-  conflict_updatable :name,
-                     :status,
-                     :traded_live,
-                     :display_status,
-                     :home_score,
-                     :away_score,
-                     :time_in_seconds,
-                     :liveodds
-
   UPDATABLE_ATTRIBUTES = %w[
     name
     description
@@ -54,19 +44,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     LIVE = 'live'
   ].freeze
 
-  ransacker :markets_count do
-    Arel.sql('markets_count')
-  end
-
-  ransacker :bets_count do
-    Arel.sql('bets_count')
-  end
-
-  ransacker :wager do
-    Arel.sql('wager')
-  end
-
-  scope :active, -> { where(active: true) }
+  enum status: STATUSES
 
   belongs_to :title
   belongs_to :producer,
@@ -92,9 +70,31 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   validates :priority, inclusion: { in: PRIORITIES }
   validates :active, inclusion: { in: [true, false] }
 
-  enum status: STATUSES
+  conflict_target :external_id
+  conflict_updatable :name,
+                     :status,
+                     :traded_live,
+                     :display_status,
+                     :home_score,
+                     :away_score,
+                     :time_in_seconds,
+                     :liveodds
+
+  ransacker :markets_count do
+    Arel.sql('markets_count')
+  end
+
+  ransacker :bets_count do
+    Arel.sql('bets_count')
+  end
+
+  ransacker :wager do
+    Arel.sql('wager')
+  end
 
   delegate :name, to: :title, prefix: true
+
+  scope :active, -> { where(active: true) }
 
   def self.with_markets_count
     query = <<-SQL
