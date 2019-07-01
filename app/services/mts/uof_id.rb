@@ -48,7 +48,7 @@ module Mts
     end
 
     def product_id
-      producer.id
+      event.producer_by_start_status&.id || producer.id
     end
 
     def event

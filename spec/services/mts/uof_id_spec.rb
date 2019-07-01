@@ -58,7 +58,8 @@ describe Mts::UofId do
         subject { described_class.new(odd) }
 
         let(:producer) do
-          create(:producer, id: example[:producer_id] || '1')
+          create(:producer, id: example[:producer_id] || '1',
+                            code: Radar::Producer::PREMATCH_PROVIDER_CODE)
         end
         let(:title) { create(:title, external_id: 'sr:sport:110') }
         let(:event) do

@@ -206,4 +206,9 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   def bookable?
     liveodds == BOOKABLE
   end
+
+  # TODO: rework producer assignment flow in odd change and fixture change
+  def producer_by_start_status
+    status == NOT_STARTED ? Radar::Producer.prematch : Radar::Producer.live
+  end
 end
