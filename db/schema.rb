@@ -243,7 +243,7 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.string "timestamp_visit_first"
     t.string "entrance_page_first"
     t.string "referrer_first"
-    t.string "gaClientID"
+    t.string "ga_client_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_customer_data_on_customer_id"

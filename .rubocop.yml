@@ -47,7 +47,6 @@ AllCops:
     - 'db/schema.rb'
     - 'db/migrate/20180515113514_devise_create_customers.rb'
     - 'db/migrate/20180521120705_devise_create_users.rb'
-    - 'db/migrate/20190626113812_add_customer_data.rb'
     - 'log/**/*'
     - 'node_modules/**/*'
     - 'tmp/**/*'

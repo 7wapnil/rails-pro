@@ -1,7 +1,7 @@
 module Account
   class SignUp < ::Base::Resolver
     argument :input, !Account::RegisterInput
-    argument :customer_data,
+    argument :customerData,
              Account::CustomerDataInput,
              default_value: nil
 
@@ -29,9 +29,12 @@ module Account
     private
 
     def save_customer_data(args)
-      customer_data = args[:customer_data]&.to_h
-      return if customer_data.blank?
+      customer_data_attrs = args['customerData']&.to_h
+      return if customer_data_attrs.blank?
 
+      customer_data = customer_data_attrs.transform_keys! do |key|
+        key.to_s.underscore.to_sym
+      end
       CustomerData.create(customer_data.merge(customer: customer,
                                               ip_last: @request.remote_ip))
     end

@@ -11,8 +11,8 @@ describe GraphQL do
   end
 
   let(:query) do
-    %(mutation($input: RegisterInput!, $customer_data: CustomerDataInput) {
-        signUp(input: $input, customer_data: $customer_data) {
+    %(mutation($input: RegisterInput!, $customerData: CustomerDataInput) {
+        signUp(input: $input, customerData: $customerData) {
           user { id }
           token
         }
@@ -133,33 +133,33 @@ describe GraphQL do
 
     context 'with fe tracking' do
       let(:variables) do
-        { input: input, customer_data: customer_data }
+        { input: input, customerData: customer_data }
       end
       let(:customer_data) do
         {
-          traffic_type_last: Faker::Lorem.word,
-          utm_source_last: Faker::Lorem.word,
-          utm_medium_last: Faker::Lorem.word,
-          utm_campaign_last: Faker::Lorem.word,
-          utm_content_last: Faker::Lorem.word,
-          utm_term_last: Faker::Lorem.word,
-          visitcount_last: Faker::Lorem.word,
-          browser_last: Faker::Lorem.word,
-          device_type_last: Faker::Lorem.word,
-          device_platform_last: Faker::Lorem.word,
-          registration_url_last: Faker::Lorem.word,
+          trafficTypeLast: Faker::Lorem.word,
+          utmSourceLast: Faker::Lorem.word,
+          utmMediumLast: Faker::Lorem.word,
+          utmCampaignLast: Faker::Lorem.word,
+          utmContentLast: Faker::Lorem.word,
+          utmTermLast: Faker::Lorem.word,
+          visitcountLast: Faker::Lorem.word,
+          browserLast: Faker::Lorem.word,
+          deviceTypeLast: Faker::Lorem.word,
+          devicePlatformLast: Faker::Lorem.word,
+          registrationUrlLast: Faker::Lorem.word,
           timestamp_visit_last: Faker::Lorem.word,
-          entrance_page_last: Faker::Lorem.word,
-          referrer_last: Faker::Lorem.word,
-          current_btag: Faker::Lorem.word,
-          traffic_type_first: Faker::Lorem.word,
-          utm_source_first: Faker::Lorem.word,
-          utm_medium_first: Faker::Lorem.word,
-          utm_campaign_first: Faker::Lorem.word,
-          utm_term_first: Faker::Lorem.word,
-          timestamp_visit_first: Faker::Lorem.word,
-          entrance_page_first: Faker::Lorem.word,
-          referrer_first: Faker::Lorem.word,
+          entrancePageLast: Faker::Lorem.word,
+          referrerLast: Faker::Lorem.word,
+          currentBtag: Faker::Lorem.word,
+          trafficTypeFirst: Faker::Lorem.word,
+          utmSourceFirst: Faker::Lorem.word,
+          utmMediumFirst: Faker::Lorem.word,
+          utmCampaignFirst: Faker::Lorem.word,
+          utmTermFirst: Faker::Lorem.word,
+          timestampVisitFirst: Faker::Lorem.word,
+          entrancePageFirst: Faker::Lorem.word,
+          referrerFirst: Faker::Lorem.word,
           gaClientID: Faker::Lorem.word
         }
       end
@@ -168,7 +168,11 @@ describe GraphQL do
 
       it 'creates a customer data record with passed values' do
         result
-        expect(created_customer_data).to have_attributes(customer_data)
+        expect(created_customer_data).to have_attributes(
+          customer_data.transform_keys! do |key|
+            key.to_s.underscore.to_sym
+          end
+        )
       end
     end
   end

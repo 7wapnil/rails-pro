@@ -1,5 +1,5 @@
 class AddCustomerData < ActiveRecord::Migration[5.2]
-  def change
+  def change # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     create_table :customer_data do |t|
       t.references :customer, foreign_key: true
       t.string :traffic_type_last
@@ -26,7 +26,7 @@ class AddCustomerData < ActiveRecord::Migration[5.2]
       t.string :timestamp_visit_first
       t.string :entrance_page_first
       t.string :referrer_first
-      t.string :gaClientID
+      t.string :ga_client_id
       t.timestamps
     end
   end
