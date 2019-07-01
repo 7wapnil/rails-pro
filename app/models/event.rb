@@ -5,16 +5,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Importable
   include EventScopeAssociations
 
-  conflict_target :external_id
-  conflict_updatable :name,
-                     :status,
-                     :traded_live,
-                     :display_status,
-                     :home_score,
-                     :away_score,
-                     :time_in_seconds,
-                     :liveodds
-
   UPDATABLE_ATTRIBUTES = %w[
     name
     description
@@ -27,9 +17,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     liveodds
   ].freeze
 
-  # 4 hours ago is a temporary workaround to reduce amount of live events
-  # Will be removed when proper event ending logic is implemented
-  START_AT_OFFSET_IN_HOURS = 4
   UPCOMING_LIMIT = 16
   UPCOMING_DURATION = 6
 
@@ -48,6 +35,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     abandoned:   ABANDONED   = 'abandoned'
   }.freeze
 
+  IN_PLAY_STATUSES = [STARTED, SUSPENDED].freeze
+
   BOOKABLE = 'bookable'
 
   START_STATUSES = [
@@ -55,19 +44,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     LIVE = 'live'
   ].freeze
 
-  ransacker :markets_count do
-    Arel.sql('markets_count')
-  end
-
-  ransacker :bets_count do
-    Arel.sql('bets_count')
-  end
-
-  ransacker :wager do
-    Arel.sql('wager')
-  end
-
-  scope :active, -> { where(active: true) }
+  enum status: STATUSES
 
   belongs_to :title
   belongs_to :producer,
@@ -93,9 +70,31 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   validates :priority, inclusion: { in: PRIORITIES }
   validates :active, inclusion: { in: [true, false] }
 
-  enum status: STATUSES
+  conflict_target :external_id
+  conflict_updatable :name,
+                     :status,
+                     :traded_live,
+                     :display_status,
+                     :home_score,
+                     :away_score,
+                     :time_in_seconds,
+                     :liveodds
+
+  ransacker :markets_count do
+    Arel.sql('markets_count')
+  end
+
+  ransacker :bets_count do
+    Arel.sql('bets_count')
+  end
+
+  ransacker :wager do
+    Arel.sql('wager')
+  end
 
   delegate :name, to: :title, prefix: true
+
+  scope :active, -> { where(active: true) }
 
   def self.with_markets_count
     query = <<-SQL
@@ -136,16 +135,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def self.in_play
-    where(
-      [
-        'start_at < ? AND ',
-        'start_at > ? AND ',
-        'end_at IS NULL AND ',
-        'traded_live IS TRUE'
-      ].join,
-      Time.zone.now,
-      START_AT_OFFSET_IN_HOURS.hours.ago
-    )
+    where(status: IN_PLAY_STATUSES, traded_live: true)
   end
 
   def self.past
@@ -178,9 +168,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def start_status
-    return LIVE if alive?
+    return LIVE if in_play?
+    return UPCOMING if upcoming?
 
-    UPCOMING if upcoming?
+    nil
   end
 
   def upcoming?
@@ -191,9 +182,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     upcoming? && start_at < UPCOMING_DURATION.hours.from_now
   end
 
-  def in_play?(limited: false)
-    traded_live && start_at.past? && end_at.nil? &&
-      (!limited || start_at > START_AT_OFFSET_IN_HOURS.hours.ago)
+  def in_play?
+    traded_live && status.in?(IN_PLAY_STATUSES)
   end
 
   def update_from!(other)
@@ -205,10 +195,6 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
     save!
     self
-  end
-
-  def alive?
-    traded_live? && (in_play?(limited: true) || suspended?)
   end
 
   def score

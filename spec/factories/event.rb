@@ -30,7 +30,7 @@ FactoryBot.define do
     end
 
     trait :live do
-      end_at      {}
+      status { Event::IN_PLAY_STATUSES.sample }
       traded_live { true }
     end
 

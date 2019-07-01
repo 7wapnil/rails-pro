@@ -29,47 +29,34 @@ describe Event do
   end
 
   describe '.in_play' do
-    it 'includes started and not finished events that are traded live' do
-      event = create(:event,
-                     start_at: 5.minutes.ago,
-                     end_at: nil,
-                     traded_live: true)
+    it 'includes started and suspended events that are traded live' do
+      event = create(
+        :event,
+        status: Event::IN_PLAY_STATUSES.sample,
+        traded_live: true
+      )
 
       expect(described_class.in_play).to include(event)
     end
 
-    it 'doesn\'t include not started events' do
-      event = create(:event,
-                     start_at: 5.minutes.from_now,
-                     end_at: nil,
-                     traded_live: true)
-
-      expect(described_class.in_play).not_to include(event)
-    end
-
-    it 'doesn\'t include finished events' do
-      event = create(:event,
-                     start_at: 1.hour.ago,
-                     end_at: 5.minutes.ago,
-                     traded_live: true)
+    it 'doesn\'t include not started or suspended events' do
+      event_status =
+        Event::STATUSES.values.without(*Event::IN_PLAY_STATUSES).sample
+      event = create(
+        :event,
+        status: event_status,
+        traded_live: true
+      )
 
       expect(described_class.in_play).not_to include(event)
     end
 
     it 'doesn\'t include events that are not traded live' do
-      event = create(:event,
-                     start_at: 5.minutes.ago,
-                     end_at: nil,
-                     traded_live: false)
-
-      expect(described_class.in_play).not_to include(event)
-    end
-
-    it 'doesn\'t include events that started longer than 4 hours ago' do
-      event = create(:event,
-                     start_at: 245.minutes.ago,
-                     end_at: nil,
-                     traded_live: true)
+      event = create(
+        :event,
+        status: Event::IN_PLAY_STATUSES.sample,
+        traded_live: false
+      )
 
       expect(described_class.in_play).not_to include(event)
     end
@@ -191,28 +178,19 @@ describe Event do
   end
 
   describe '#in_play?' do
-    it 'is true when started, not finished and is traded live' do
+    it 'is true when started or suspended and is traded live' do
       event = create(:event,
-                     start_at: 5.minutes.ago,
-                     end_at: nil,
+                     status: Event::IN_PLAY_STATUSES.sample,
                      traded_live: true)
 
       expect(event.in_play?).to be true
     end
 
-    it 'is false when not started' do
+    it 'is false when not started or suspended' do
+      event_status =
+        Event::STATUSES.values.without(*Event::IN_PLAY_STATUSES).sample
       event = create(:event,
-                     start_at: 5.minutes.from_now,
-                     end_at: nil,
-                     traded_live: true)
-
-      expect(event.in_play?).not_to be true
-    end
-
-    it 'is false when finished' do
-      event = create(:event,
-                     start_at: 1.hour.ago,
-                     end_at: 5.minutes.ago,
+                     status: event_status,
                      traded_live: true)
 
       expect(event.in_play?).not_to be true
@@ -220,18 +198,7 @@ describe Event do
 
     it 'is false when not traded live' do
       event = create(:event,
-                     start_at: 5.minutes.ago,
-                     end_at: nil,
-                     traded_live: false)
-
-      expect(event.in_play?).not_to be true
-    end
-
-    it 'is false when start_at later than 4 hours' do
-      start_at = Event::START_AT_OFFSET_IN_HOURS.hours.ago - 1.minute
-      event = create(:event,
-                     start_at: start_at,
-                     end_at: nil,
+                     status: Event::IN_PLAY_STATUSES.sample,
                      traded_live: false)
 
       expect(event.in_play?).not_to be true
@@ -262,28 +229,6 @@ describe Event do
       updatable_attributes.each do |name, value|
         expect(subject_event.send(name)).to eq value
       end
-    end
-  end
-
-  describe '#alive?' do
-    context 'without TRADED_LIVE' do
-      let(:event) { build(:event, status: Event::SUSPENDED) }
-
-      it { expect(event).not_to be_alive }
-    end
-
-    context 'with SUSPENDED status' do
-      let(:event) do
-        build(:event, traded_live: true, status: Event::SUSPENDED)
-      end
-
-      it { expect(event).to be_alive }
-    end
-
-    context 'in play' do
-      let(:event) { build(:event, :live) }
-
-      it { expect(event).to be_alive }
     end
   end
 
