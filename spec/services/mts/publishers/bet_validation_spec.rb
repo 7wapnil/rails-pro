@@ -23,6 +23,8 @@ describe Mts::Publishers::BetValidation do
         .and_return(connection_double)
       allow(connection_double).to receive(:exchange)
         .and_return(connection_double)
+      allow(connection_double).to receive(:close)
+        .and_return(connection_double)
       allow(connection_double).to receive(:publish)
         .and_return(true)
       allow(connection_double).to receive(:queue)
@@ -47,6 +49,15 @@ describe Mts::Publishers::BetValidation do
           .and_return(connection_double)
 
         subject_call
+      end
+
+      it 'ensure chanel close' do
+        allow(connection_double).to receive(:queue)
+          .and_raise(StandardError)
+
+        expect(connection_double).to receive(:close)
+
+        subject.publish!
       end
     end
   end
