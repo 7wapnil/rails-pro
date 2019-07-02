@@ -1,13 +1,9 @@
 describe 'Withdrawals index page' do
   let(:per_page_count) { 10 }
-  let(:passing_validator) do
-    double('amount validator') # rubocop:disable RSpec/VerifiedDoubles
-  end
 
   before do
     login_as create(:admin_user), scope: :user
-    allow(passing_validator).to receive(:validate)
-    allow(EntryAmountValidator).to receive(:new).and_return(passing_validator)
+    allow_any_instance_of(EntryAmountValidator).to receive(:validate)
   end
 
   it 'displays not found message' do

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :deposit, parent: :customer_transaction do
+  factory :deposit, class: 'Deposit', parent: :customer_transaction do
     type   { Deposit }
     status { Deposit::PENDING }
 

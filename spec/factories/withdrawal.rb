@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :withdrawal, parent: :customer_transaction do
+  factory :withdrawal, class: 'Withdrawal', parent: :customer_transaction do
     association :entry_request, :withdraw, :with_entry, strategy: :build
     type   { Withdrawal }
     status { Withdrawal::PENDING }
