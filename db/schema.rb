@@ -188,6 +188,8 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.datetime "updated_at", null: false
     t.string "kind", default: "fiat", null: false
     t.decimal "exchange_rate", precision: 12, scale: 5
+    t.index ["code"], name: "index_currencies_on_code", unique: true
+    t.index ["name"], name: "index_currencies_on_name", unique: true
   end
 
   create_table "customer_bonuses", force: :cascade do |t|

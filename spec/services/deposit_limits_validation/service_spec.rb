@@ -1,8 +1,9 @@
 describe DepositLimitsValidation::Service do
   subject { described_class.new(entry_request) }
 
+  let!(:primary_currency) { create(:currency, :primary) }
   let!(:entry_request) do
-    build(:entry_request, currency: create(:currency, :primary))
+    build(:entry_request, currency: primary_currency)
   end
 
   it_behaves_like 'callable service'
@@ -13,7 +14,7 @@ describe DepositLimitsValidation::Service do
         create(
           :deposit_limit,
           customer: entry_request.customer,
-          currency: entry_request.currency
+          currency: primary_currency
         )
       end
 
@@ -29,7 +30,8 @@ describe DepositLimitsValidation::Service do
         create(
           :deposit_limit,
           :reached,
-          customer: entry_request.customer
+          customer: entry_request.customer,
+          currency: primary_currency
         )
       end
 

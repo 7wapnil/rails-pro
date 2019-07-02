@@ -3,7 +3,7 @@
 describe EntryRequestForm do
   let(:customer) { create(:customer) }
   let(:initiator) { create(:user) }
-  let!(:currency) { create(:currency, :primary, code: 'EUR', name: 'Euro') }
+  let!(:currency) { create(:currency, :primary) }
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
   let(:entry_request) { create(:entry_request, customer: customer) }
   let(:base_params) do

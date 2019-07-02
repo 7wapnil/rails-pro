@@ -1,3 +1,4 @@
+# rubocop:disable FactoryBot/CreateList
 describe Currency, '#index' do
   context 'signed in' do
     let(:per_page_count) { 10 }
@@ -21,7 +22,9 @@ describe Currency, '#index' do
 
     context 'pagination' do
       it 'is shown' do
-        create_list(:currency, 10)
+        10.times do |n|
+          create(:currency, code: "XX#{n}")
+        end
         visit currencies_path
         expect(page).to have_selector('ul.pagination')
       end
@@ -33,7 +36,7 @@ describe Currency, '#index' do
 
     context 'search' do
       let!(:euro) do
-        create(:currency, code: 'PAB', name: 'Seychelles Rupee')
+        create(:currency, code: 'PAB')
       end
 
       it 'searches by code contains' do
@@ -49,7 +52,7 @@ describe Currency, '#index' do
 
       it 'searches by name contains' do
         within 'table' do
-          fill_in :query_name_cont, with: 'chell'
+          fill_in :query_name_cont, with: 'ab cur'
           click_submit
         end
 
@@ -60,3 +63,4 @@ describe Currency, '#index' do
     end
   end
 end
+# rubocop:enable FactoryBot/CreateList

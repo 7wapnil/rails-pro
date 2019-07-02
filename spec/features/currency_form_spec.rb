@@ -37,7 +37,7 @@ describe Currency, '#form' do
 
   context 'existing label form' do
     let!(:existing_currency) do
-      create(:currency, code: 'EUR', name: 'Euro')
+      create(:currency, code: 'EUR')
     end
 
     before do

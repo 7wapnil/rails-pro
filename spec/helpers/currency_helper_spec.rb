@@ -2,7 +2,7 @@ describe CurrencyHelper, type: :helper do
   describe '#currencies_with_primary_for' do
     let(:customer) { create(:customer) }
     let!(:primary_currency) { create(:currency, :primary) }
-    let!(:not_included_currency) { create(:currency) }
+    let!(:not_included_currency) { create(:currency, code: 'XXX') }
 
     it 'returns only primary currency for customer without wallets' do
       expect(helper.currencies_with_primary_for(customer))

@@ -25,10 +25,14 @@ describe Customers::StatisticsController, '#show' do
 
     let!(:successful_deposits) do
       [
+        create(:entry, :with_real_money_balance_entry,
+               customer: customer),
         *create_list(:entry, rand(1..2), :with_real_money_balance_entry,
-                     customer: customer),
+                     customer: customer,
+                     wallet: customer.wallets.first),
         *create_list(:entry, rand(1..2), :with_balance_entries,
-                     customer: customer)
+                     customer: customer,
+                     wallet: customer.wallets.first)
       ]
     end
     let(:successful_deposit_real_money_balance_entries) do
@@ -42,9 +46,11 @@ describe Customers::StatisticsController, '#show' do
       [
         create(:entry, :withdraw, :with_real_money_balance_entry,
                customer: customer,
+               wallet: customer.wallets.first,
                origin: build(:withdrawal, :rejected)),
         create(:entry, :withdraw, :with_balance_entries,
                customer: customer,
+               wallet: customer.wallets.first,
                origin: build(:withdrawal))
       ]
     end
@@ -53,9 +59,11 @@ describe Customers::StatisticsController, '#show' do
         *create_list(:entry, rand(1..2),
                      :withdraw, :with_real_money_balance_entry,
                      customer: customer,
+                     wallet: customer.wallets.first,
                      origin: withdrawal),
         *create_list(:entry, rand(1..2), :withdraw, :with_balance_entries,
                      customer: customer,
+                     wallet: customer.wallets.first,
                      origin: withdrawal)
       ]
     end
@@ -84,10 +92,12 @@ describe Customers::StatisticsController, '#show' do
       [
         *create_list(:entry, rand(1..2),
                      :bonus_conversion, :with_real_money_balance_entry,
-                     customer: customer),
+                     customer: customer,
+                     wallet: customer.wallets.first),
         *create_list(:entry, rand(1..2),
                      :bonus_conversion, :with_balance_entries,
-                     customer: customer)
+                     customer: customer,
+                     wallet: customer.wallets.first)
       ]
     end
     let(:bonus_conversion_real_money_balance_entries) do
