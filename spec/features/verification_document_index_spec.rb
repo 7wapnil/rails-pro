@@ -158,7 +158,7 @@ describe VerificationDocument, '#index' do
               .reject(&:blank?)
         end
 
-        let(:input_name) { 'Type equals' }
+        let(:input_name) { 'Kind equals' }
         let!(:doc) { create(:verification_document, kind: :credit_card) }
 
         it 'found' do

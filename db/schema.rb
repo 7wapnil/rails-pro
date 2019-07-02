@@ -199,9 +199,9 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.decimal "rollover_balance", precision: 8, scale: 2
     t.decimal "rollover_initial_value", precision: 8, scale: 2
     t.string "status", default: "initial", null: false
+    t.bigint "balance_entry_id"
     t.datetime "activated_at"
     t.datetime "deactivated_at"
-    t.bigint "balance_entry_id"
     t.index ["balance_entry_id"], name: "index_customer_bonuses_on_balance_entry_id"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -238,6 +238,20 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_customer_statistics_on_customer_id"
+  end
+
+  create_table "customer_transactions", force: :cascade do |t|
+    t.string "type"
+    t.string "status"
+    t.string "external_id"
+    t.bigint "actioned_by_id"
+    t.bigint "customer_bonus_id"
+    t.jsonb "details"
+    t.datetime "finalized_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actioned_by_id"], name: "index_customer_transactions_on_actioned_by_id"
+    t.index ["customer_bonus_id"], name: "index_customer_transactions_on_customer_bonus_id"
   end
 
   create_table "customers", force: :cascade do |t|
@@ -287,13 +301,6 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.decimal "value"
     t.index ["currency_id"], name: "index_deposit_limits_on_currency_id"
     t.index ["customer_id"], name: "index_deposit_limits_on_customer_id"
-  end
-
-  create_table "deposit_requests", force: :cascade do |t|
-    t.bigint "customer_bonus_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["customer_bonus_id"], name: "index_deposit_requests_on_customer_bonus_id"
   end
 
   create_table "entries", force: :cascade do |t|
@@ -540,15 +547,6 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.index ["customer_id"], name: "index_wallets_on_customer_id"
   end
 
-  create_table "withdrawal_requests", force: :cascade do |t|
-    t.string "status", default: "pending"
-    t.jsonb "payment_details"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "actioned_by_id"
-    t.index ["actioned_by_id"], name: "index_withdrawal_requests_on_actioned_by_id"
-  end
-
   add_foreign_key "addresses", "customers"
   add_foreign_key "balance_entries", "balances"
   add_foreign_key "balance_entries", "entries"
@@ -564,9 +562,10 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "customer_statistics", "customers"
+  add_foreign_key "customer_transactions", "customer_bonuses"
+  add_foreign_key "customer_transactions", "users", column: "actioned_by_id"
   add_foreign_key "deposit_limits", "currencies"
   add_foreign_key "deposit_limits", "customers"
-  add_foreign_key "deposit_requests", "customer_bonuses"
   add_foreign_key "entries", "entry_requests"
   add_foreign_key "entries", "wallets"
   add_foreign_key "entry_currency_rules", "currencies"
@@ -586,5 +585,4 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
   add_foreign_key "verification_documents", "customers"
   add_foreign_key "wallets", "currencies"
   add_foreign_key "wallets", "customers"
-  add_foreign_key "withdrawal_requests", "users", column: "actioned_by_id"
 end

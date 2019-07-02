@@ -71,7 +71,7 @@ describe EntryRequests::DepositService do
   end
 
   context 'with customer bonus' do
-    let(:created_deposit_request) { entry_request.origin }
+    let(:created_deposit) { entry_request.origin }
 
     before { service_call }
 
@@ -81,7 +81,7 @@ describe EntryRequests::DepositService do
     end
 
     it 'creates deposit request with customer bonus assigned' do
-      expect(created_deposit_request.customer_bonus).to eq(customer_bonus)
+      expect(created_deposit.customer_bonus).to eq(customer_bonus)
     end
 
     it 'applies customer bonus only once' do

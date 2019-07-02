@@ -38,7 +38,7 @@ describe Forms::WithdrawRequest do
     end
 
     it 'validates holder name to be not longer than 100 chars' do
-      subject.payment_details = [
+      subject.details = [
         { code: 'holder_name', value: Faker::Lorem.characters(101) }
       ]
 
@@ -47,7 +47,7 @@ describe Forms::WithdrawRequest do
     end
 
     it 'passes valid holder name ' do
-      subject.payment_details = [
+      subject.details = [
         { code: 'holder_name', value: 'Test name' }
       ]
 
@@ -56,7 +56,7 @@ describe Forms::WithdrawRequest do
     end
 
     it 'validates last card number digits value is numerical' do
-      subject.payment_details = [
+      subject.details = [
         { code: 'last_four_digits', value: 'notnumber' }
       ]
 
@@ -65,7 +65,7 @@ describe Forms::WithdrawRequest do
     end
 
     it 'validates last card number digits value is 4 digits number' do
-      subject.payment_details = [
+      subject.details = [
         { code: 'last_four_digits', value: 123 }
       ]
 
@@ -74,7 +74,7 @@ describe Forms::WithdrawRequest do
     end
 
     it 'passes valid last card number digits value' do
-      subject.payment_details = [
+      subject.details = [
         { code: 'last_four_digits', value: 1234 }
       ]
 
