@@ -20,6 +20,8 @@ class WithdrawalFilter
   end
 
   def withdrawals
-    search.result.order(id: :desc).page(@page)
+    WithdrawalDecorator.decorate_collection(
+      search.result.order(id: :desc).page(@page)
+    )
   end
 end

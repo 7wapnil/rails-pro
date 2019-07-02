@@ -7,24 +7,31 @@
       %th= sort_link filter.search, :entry_request_amount, t('attributes.amount')
       %th= t('attributes.currency')
       %th= t('attributes.payment_method')
+      %th= t('attributes.payment_details')
       %th= t('entities.entry_request')
       %th= t('attributes.status')
       %th
   %tbody
     - if filter.withdrawals.any?
       - filter.withdrawals.each do |withdrawal|
-        - entry_request = withdrawal.entry_request
-        %tr{ id: "withdrawal-#{withdrawal.id}" }
+        %tr{ id: "withdrawalrequest-#{withdrawal.id}" }
           %td= withdrawal.id
-          %td= link_to entry_request.customer.username, customer_path(entry_request.customer)
+          %td= link_to withdrawal.customer.username, customer_path(withdrawal.customer)
           %td= l(withdrawal.created_at, format: :long)
-          %td= entry_request.amount
-          %td= entry_request.currency.name
+          %td= withdrawal.amount
+          %td= withdrawal.currency.name
           %td
             %label.col-form-label
-              %b= entry_request.mode
+              %b= withdrawal.mode
 
-          %td= link_to 'Entry request', entry_request_path(entry_request)
+          %td
+            %table.table
+              %tbody
+                - withdrawal.payment_details.to_h.each.with_index do |(label, property), i|
+                  %tr{ class: i.zero? && 'table-borderless' }
+                    %td= t("withdrawal_requests.payment_details.#{label}")
+                    %td= property
+          %td= link_to 'Entry request', entry_request_path(withdrawal.entry_request)
 
           %td
             %label.col-form-label

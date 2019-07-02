@@ -1,9 +1,12 @@
 describe 'Withdrawals index page' do
   let(:per_page_count) { 10 }
+  let(:rule) do
+    create(:entry_currency_rule, min_amount: -999_999, max_amount: 999_999)
+  end
 
   before do
     login_as create(:admin_user), scope: :user
-    allow_any_instance_of(EntryAmountValidator).to receive(:validate)
+    allow(EntryCurrencyRule).to receive(:find_by!).and_return(rule)
   end
 
   it 'displays not found message' do
@@ -123,7 +126,7 @@ describe 'Withdrawals index page' do
         fill_in(id_field, with: withdrawal.id)
         click_on('Search')
 
-        within 'table.table tbody' do
+        within 'table.table thead+tbody' do
           row_selector = resource_row_selector(withdrawal)
           expect(page).to have_selector(row_selector)
         end
@@ -134,7 +137,7 @@ describe 'Withdrawals index page' do
         fill_in(id_field, with: -1)
         click_on('Search')
 
-        within 'table.table tbody' do
+        within 'table.table thead+tbody' do
           expect(page).to have_content(
             I18n.t(:not_found, instance: I18n.t('entities.withdrawals'))
           )
@@ -151,7 +154,7 @@ describe 'Withdrawals index page' do
         select Withdrawal::PENDING, from: status_drop_down
         click_on('Search')
 
-        within 'table.table tbody' do
+        within 'table.table thead+tbody' do
           row_selector = resource_row_selector(withdrawal)
           expect(page).to have_selector(row_selector)
         end
@@ -162,7 +165,7 @@ describe 'Withdrawals index page' do
         select Withdrawal::REJECTED, from: status_drop_down
         click_on('Search')
 
-        within 'table.table tbody' do
+        within 'table.table thead+tbody' do
           expect(page).to have_content(
             I18n.t(:not_found, instance: I18n.t('entities.withdrawals'))
           )
@@ -181,7 +184,7 @@ describe 'Withdrawals index page' do
         fill_in(created_after, with: lower_bound)
         click_on('Search')
 
-        within 'table.table tbody' do
+        within 'table.table thead+tbody' do
           row_selector = resource_row_selector(withdrawal)
           expect(page).to have_selector(row_selector)
         end
@@ -194,7 +197,7 @@ describe 'Withdrawals index page' do
         fill_in(created_before, with: upper_bound)
         click_on('Search')
 
-        within 'table.table tbody' do
+        within 'table.table thead+tbody' do
           row_selector = resource_row_selector(withdrawal)
           expect(page).to have_selector(row_selector)
         end
@@ -207,7 +210,7 @@ describe 'Withdrawals index page' do
         fill_in(created_after, with: lower_bound)
         click_on('Search')
 
-        within 'table.table tbody' do
+        within 'table.table thead+tbody' do
           expect(page).to have_content(
             I18n.t(:not_found, instance: I18n.t('entities.withdrawals'))
           )
@@ -226,7 +229,7 @@ describe 'Withdrawals index page' do
         fill_in(actor_email, with: withdrawal.actioned_by.email)
         click_on('Search')
 
-        within 'table.table tbody' do
+        within 'table.table thead+tbody' do
           row_selector = resource_row_selector(withdrawal)
           expect(page).to have_selector(row_selector)
         end
@@ -237,7 +240,7 @@ describe 'Withdrawals index page' do
         fill_in(actor_email, with: Faker::Internet.email)
         click_on('Search')
 
-        within 'table.table tbody' do
+        within 'table.table thead+tbody' do
           expect(page).to have_content(
             I18n.t(:not_found, instance: I18n.t('entities.withdrawals'))
           )
@@ -257,7 +260,7 @@ describe 'Withdrawals index page' do
         fill_in(customer_name, with: username)
         click_on('Search')
 
-        within 'table.table tbody' do
+        within 'table.table thead+tbody' do
           row_selector = resource_row_selector(withdrawal)
           expect(page).to have_selector(row_selector)
         end
@@ -268,7 +271,7 @@ describe 'Withdrawals index page' do
         fill_in(customer_name, with: Faker::Lorem.word)
         click_on('Search')
 
-        within 'table.table tbody' do
+        within 'table.table thead+tbody' do
           expect(page).to have_content(
             I18n.t(:not_found, instance: I18n.t('entities.withdrawals'))
           )
@@ -285,7 +288,7 @@ describe 'Withdrawals index page' do
         select(withdrawal.entry_request.mode, from: payment_types)
         click_on('Search')
 
-        within 'table.table tbody' do
+        within 'table.table thead+tbody' do
           row_selector = resource_row_selector(withdrawal)
           expect(page).to have_selector(row_selector)
         end
@@ -296,7 +299,7 @@ describe 'Withdrawals index page' do
         select EntryRequest::BITCOIN, from: payment_types
         click_on('Search')
 
-        within 'table.table tbody' do
+        within 'table.table thead+tbody' do
           instance = I18n.t('entities.withdrawals')
           expect(page).to have_content(
             I18n.t(:not_found, instance: instance)
