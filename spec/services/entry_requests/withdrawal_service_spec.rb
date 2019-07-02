@@ -18,6 +18,7 @@ describe EntryRequests::WithdrawalService do
     create(:entry,
            currency: currency,
            customer: customer,
+           wallet: wallet,
            kind: EntryRequest::WITHDRAW)
   end
   let!(:balance) do

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_25_075223) do
+ActiveRecord::Schema.define(version: 2019_06_26_135605) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -199,9 +199,9 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.decimal "rollover_balance", precision: 8, scale: 2
     t.decimal "rollover_initial_value", precision: 8, scale: 2
     t.string "status", default: "initial", null: false
-    t.bigint "balance_entry_id"
     t.datetime "activated_at"
     t.datetime "deactivated_at"
+    t.bigint "balance_entry_id"
     t.index ["balance_entry_id"], name: "index_customer_bonuses_on_balance_entry_id"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -444,6 +444,8 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.boolean "visible", default: true
     t.string "category"
     t.string "previous_status"
+    t.string "template_id"
+    t.string "template_specifiers"
     t.index ["event_id"], name: "index_markets_on_event_id"
     t.index ["external_id"], name: "index_markets_on_external_id", unique: true
   end
@@ -457,6 +459,7 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.string "external_id"
     t.decimal "value"
     t.string "status"
+    t.string "outcome_id", default: ""
     t.index ["external_id"], name: "index_odds_on_external_id", unique: true
     t.index ["market_id"], name: "index_odds_on_market_id"
   end
@@ -544,12 +547,13 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
     t.datetime "updated_at", null: false
     t.bigint "currency_id"
     t.index ["currency_id"], name: "index_wallets_on_currency_id"
+    t.index ["customer_id", "currency_id"], name: "index_wallets_on_customer_id_and_currency_id", unique: true
     t.index ["customer_id"], name: "index_wallets_on_customer_id"
   end
 
   add_foreign_key "addresses", "customers"
   add_foreign_key "balance_entries", "balances"
-  add_foreign_key "balance_entries", "entries"
+  add_foreign_key "balance_entries", "entries", on_delete: :cascade
   add_foreign_key "balances", "wallets"
   add_foreign_key "bets", "currencies"
   add_foreign_key "bets", "customers"
@@ -558,7 +562,7 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
   add_foreign_key "betting_limits", "titles"
   add_foreign_key "competitor_players", "competitors", on_delete: :cascade
   add_foreign_key "competitor_players", "players", on_delete: :cascade
-  add_foreign_key "customer_bonuses", "balance_entries"
+  add_foreign_key "customer_bonuses", "balance_entries", on_delete: :cascade
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "customer_statistics", "customers"
@@ -566,7 +570,7 @@ ActiveRecord::Schema.define(version: 2019_06_25_075223) do
   add_foreign_key "customer_transactions", "users", column: "actioned_by_id"
   add_foreign_key "deposit_limits", "currencies"
   add_foreign_key "deposit_limits", "customers"
-  add_foreign_key "entries", "entry_requests"
+  add_foreign_key "entries", "entry_requests", on_delete: :cascade
   add_foreign_key "entries", "wallets"
   add_foreign_key "entry_currency_rules", "currencies"
   add_foreign_key "entry_requests", "currencies"
