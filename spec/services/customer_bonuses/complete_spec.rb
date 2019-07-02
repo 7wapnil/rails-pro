@@ -1,19 +1,20 @@
 # frozen_string_literal: true
 
 describe CustomerBonuses::Complete do
-  subject { described_class.call(customer_bonus: customer_bonus) }
+  subject { described_class.call(customer_bonus.id) }
 
   context 'with a non-active bonus' do
-    let(:customer_bonus) { build_stubbed(:customer_bonus) }
+    let(:customer_bonus) do
+      create(:customer_bonus,
+             status: CustomerBonus::EXPIRED)
+    end
 
     before do
-      allow(customer_bonus).to receive(:complete!)
-      allow(customer_bonus).to receive(:active?).and_return(false)
     end
 
     it 'does not complete the bonus' do
       subject
-      expect(customer_bonus).not_to have_received(:complete!)
+      expect(customer_bonus).not_to be_completed
     end
 
     it 'creates no new EntryRequests' do
@@ -25,14 +26,14 @@ describe CustomerBonuses::Complete do
     let(:bonus_balance) { create(:balance, :bonus) }
     let(:real_balance) { create(:balance, :real_money) }
     let(:wallet) { create(:wallet, balances: [bonus_balance, real_balance]) }
-    let!(:customer_bonus) do
+    let(:customer_bonus) do
       create(:customer_bonus, wallet: wallet,
                               rollover_balance: 0)
     end
 
     it 'completes the bonus' do
       subject
-      expect(customer_bonus).to be_completed
+      expect(customer_bonus.reload).to be_completed
     end
 
     it 'creates a bonus EntryRequest' do

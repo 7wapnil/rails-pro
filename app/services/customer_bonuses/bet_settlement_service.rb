@@ -37,7 +37,7 @@ module CustomerBonuses
 
     def complete_bonus
       CustomerBonuses::CompleteWorker
-        .perform_async(customer_bonus: customer_bonus)
+        .perform_async(customer_bonus.id)
     end
 
     def lose_bonus

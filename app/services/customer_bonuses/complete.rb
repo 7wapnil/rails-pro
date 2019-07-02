@@ -3,8 +3,8 @@ module CustomerBonuses
     delegate :wallet, to: :customer_bonus, allow_nil: true
     delegate :bonus_balance, to: :wallet, allow_nil: true
 
-    def initialize(customer_bonus:)
-      @customer_bonus = customer_bonus
+    def initialize(customer_bonus_id)
+      @customer_bonus_id = customer_bonus_id
     end
 
     def call
@@ -16,7 +16,9 @@ module CustomerBonuses
       submit_entry_requests
     end
 
-    attr_reader :customer_bonus
+    def customer_bonus
+      @customer_bonus ||= CustomerBonus.find_by(id: @customer_bonus_id)
+    end
 
     private
 
