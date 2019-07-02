@@ -41,7 +41,7 @@ module Deposits
     end
 
     def bonus
-      @bonus ||= Bonus.find_by_code(bonus_code)
+      @bonus ||= Bonus.from_code(bonus_code)
     end
 
     def initiate_entry_request

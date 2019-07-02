@@ -19,14 +19,5 @@ module CustomerBonuses
         )
       end
     end
-
-    private
-
-    def ended_at_sql_clause
-      <<~SQL
-        (customer_bonuses.created_at +
-         INTERVAL '1' DAY * customer_bonuses.valid_for_days) < NOW()
-      SQL
-    end
   end
 end

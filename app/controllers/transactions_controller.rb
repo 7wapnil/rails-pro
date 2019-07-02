@@ -1,8 +1,10 @@
 class TransactionsController < ApplicationController
   def index
-    @filter = EntryRequestsFilter.new(
-      source: EntryRequest.transactions.includes(:entry),
-      query_params: query_params(:entry_requests),
+    filter_source = CustomerTransaction
+                    .includes(entry_requests: %i[customer currency])
+    @filter = CustomerTransactionsFilter.new(
+      source: filter_source,
+      query_params: query_params(:customer_transactions),
       page: params[:page],
       per_page: 20
     )

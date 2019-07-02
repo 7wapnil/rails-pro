@@ -11,13 +11,13 @@
       %th= t('attributes.status')
       %th
   %tbody
-    - if filter.withdrawal_requests.any?
-      - filter.withdrawal_requests.each do |withdrawal_request|
-        - entry_request = withdrawal_request.entry_request
-        %tr{ id: "withdrawalrequest-#{withdrawal_request.id}" }
-          %td= withdrawal_request.id
+    - if filter.withdrawals.any?
+      - filter.withdrawals.each do |withdrawal|
+        - entry_request = withdrawal.entry_request
+        %tr{ id: "withdrawal-#{withdrawal.id}" }
+          %td= withdrawal.id
           %td= link_to entry_request.customer.username, customer_path(entry_request.customer)
-          %td= l(withdrawal_request.created_at, format: :long)
+          %td= l(withdrawal.created_at, format: :long)
           %td= entry_request.amount
           %td= entry_request.currency.name
           %td
@@ -28,15 +28,15 @@
 
           %td
             %label.col-form-label
-              %b= withdrawal_request.status
+              %b= withdrawal.status
 
-          - if withdrawal_request.pending?
+          - if withdrawal.pending?
             %td= link_to t('confirm'),
-              confirm_withdrawal_request_path(withdrawal_request),
+              confirm_withdrawal_path(withdrawal),
               method: :post,
               class: 'btn btn-success'
             %td
-              - rejection_path = reject_withdrawal_request_path(withdrawal_request)
+              - rejection_path = reject_withdrawal_path(withdrawal)
               = form_for :rejection, url: rejection_path, method: :post do |f|
                 .form-row
                   .col
@@ -50,7 +50,7 @@
                       class: 'btn btn-danger'
           - else
             %td{ colspan: 2 }
-              = actioned_by(withdrawal_request.actioned_by)
+              = actioned_by(withdrawal.actioned_by)
     - else
       %tr
-        %td{ colspan: 7 }= t(:not_found, instance: t('entities.withdrawal_requests'))
+        %td{ colspan: 7 }= t(:not_found, instance: t('entities.withdrawals'))

@@ -72,4 +72,13 @@ describe GraphQL, '#deposit_bonus' do
       expect(error_message).to eq('No bonus found')
     end
   end
+
+  describe 'code case' do
+    let!(:bonus) { create(:bonus, code: 'AbC') }
+    let(:code) { 'aBc' }
+
+    it 'is case insensitive to code' do
+      expect(result['errors']).to be_blank
+    end
+  end
 end

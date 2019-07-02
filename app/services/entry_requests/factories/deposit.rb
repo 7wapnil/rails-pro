@@ -15,7 +15,7 @@ module EntryRequests
       def call
         create_entry_request!
         create_balance_request!
-        create_deposit_request!
+        create_deposit!
         validate_entry_request!
 
         entry_request
@@ -82,8 +82,8 @@ module EntryRequests
         BalanceRequestBuilders::Deposit.call(entry_request, calculations)
       end
 
-      def create_deposit_request!
-        DepositRequest.create!(
+      def create_deposit!
+        ::Deposit.create!(
           entry_request: entry_request,
           customer_bonus: customer_bonus
         )
@@ -95,7 +95,7 @@ module EntryRequests
         check_deposit_limit!
 
         true
-      rescue *DepositRequest::BUSINESS_ERRORS => error
+      rescue *::Deposit::BUSINESS_ERRORS => error
         entry_request.register_failure!(error.message)
         customer_bonus&.fail!
       end

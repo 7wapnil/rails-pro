@@ -1,6 +1,10 @@
+# frozen_string_literal: true
+
 module Mts
   class UofId
     include JobLogger
+
+    VARIANT = 'variant'
 
     def self.id(odd)
       new(odd).uof_id
@@ -21,16 +25,20 @@ module Mts
         '/',
         sport_id,
         '/',
-        market_id,
+        template_id,
         '/',
         outcome_id,
-        specifiers_part
+        formatted_specifier
       ].join
     end
 
     private
 
+    attr_reader :odd
+
     delegate :producer, :title, to: :event
+    delegate :template_id, :template_specifiers, to: :market
+    delegate :outcome_id, to: :odd
 
     def event_producer_failure!
       error = ArgumentError.new('Error with getting producer for event')
@@ -39,37 +47,24 @@ module Mts
       raise error
     end
 
-    def specifiers_part
-      specifiers.empty? ? nil : "?#{specifiers}"
-    end
-
     def product_id
-      producer.id
+      event.producer_by_start_status&.id || producer.id
     end
 
     def event
       @event ||= @odd.market.event
     end
 
-    def outcome_id
-      parse_odd_external_id[4]
-    end
-
-    def market_id
-      parse_odd_external_id[2]
+    def market
+      @market ||= @odd.market
     end
 
     def sport_id
       title.external_id
     end
 
-    def specifiers
-      parse_odd_external_id[3].tr('|', '&')
-    end
-
-    def parse_odd_external_id
-      %r{[a-z]*:[a-z]*:([0-9]*):([0-9]*)[/]?([^:]*):([0-9]*)}
-        .match(@odd.external_id)
+    def formatted_specifier
+      "?#{template_specifiers}".tr('|', '&') if template_specifiers.present?
     end
   end
 end

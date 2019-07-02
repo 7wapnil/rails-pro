@@ -1,4 +1,4 @@
-class WithdrawalRequestFilter
+class WithdrawalFilter
   attr_reader :source, :query_params
 
   def initialize(source:, query_params: {}, page: nil)
@@ -8,7 +8,7 @@ class WithdrawalRequestFilter
   end
 
   def statuses
-    WithdrawalRequest.statuses
+    Withdrawal.statuses
   end
 
   def payment_methods
@@ -16,10 +16,10 @@ class WithdrawalRequestFilter
   end
 
   def search
-    @source.ransack(@query_params, search_key: :withdrawal_requests)
+    @source.ransack(@query_params, search_key: :withdrawals)
   end
 
-  def withdrawal_requests
+  def withdrawals
     search.result.order(id: :desc).page(@page)
   end
 end

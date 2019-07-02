@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module WithdrawalRequests
-  class Create < ApplicationService
+module Withdrawals
+  class CreateService < ApplicationService
     def initialize(wallet:, payload:, payment_method:, amount:)
       @wallet = wallet
       @payload = payload
@@ -12,24 +12,24 @@ module WithdrawalRequests
     def call
       validate_payload
 
+      create_entry_request!
+      fail_entry_request! if entry_request.failed?
       create_withdrawal!
-      fail_entry_request! if withdrawal.failed?
-      create_withdrawal_request!
     end
 
     private
 
-    attr_reader :wallet, :payload, :payment_method, :amount, :withdrawal
+    attr_reader :wallet, :payload, :payment_method, :amount, :entry_request
 
-    def create_withdrawal!
-      @withdrawal = EntryRequests::Factories::Withdrawal
-                    .call(wallet: wallet,
-                          amount: amount,
-                          mode: payment_method)
+    def create_entry_request!
+      @entry_request = EntryRequests::Factories::Withdrawal
+                       .call(wallet: wallet,
+                             amount: amount,
+                             mode: payment_method)
     end
 
     def fail_entry_request!
-      raise Withdrawals::WithdrawalError, withdrawal.result['message']
+      raise Withdrawals::WithdrawalError, entry_request.result['message']
     end
 
     def validate_payload
@@ -71,9 +71,9 @@ module WithdrawalRequests
                    payment_method: payment_method.humanize)
     end
 
-    def create_withdrawal_request!
-      WithdrawalRequest.create(entry_request: withdrawal,
-                               payment_details: payload_hash)
+    def create_withdrawal!
+      ::Withdrawal.create(entry_request: entry_request,
+                          details: payload_hash)
     end
   end
 end

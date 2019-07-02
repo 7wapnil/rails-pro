@@ -119,7 +119,9 @@ module StateMachines
         end
 
         event :register_failure do
-          transitions from: %i[initial sent_to_internal_validation],
+          transitions from: %i[initial
+                               sent_to_internal_validation
+                               sent_to_external_validation],
                       to: :failed,
                       after: :update_error_notification
         end
