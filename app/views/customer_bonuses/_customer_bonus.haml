@@ -71,7 +71,6 @@
                   %td= l(customer_bonus.deactivated_at)
 
       %hr
-        = link_back bonuses_customer_path(customer_bonus.customer)
         - if customer_bonus.active?
           = link_to t('actions.cancel'),
                     customer_bonus,
