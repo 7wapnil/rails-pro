@@ -11,13 +11,14 @@ describe Customers::RegistrationService do
       phone: '37258383943',
       password: '123456',
       password_confirmation: '123456',
+      agreed_with_privacy: true,
       currency: 'EUR' }
   end
 
   before { create(:currency, code: 'EUR') }
 
   it 'raises error on invalid customer data' do
-    expect { described_class.call({}) }
+    expect { described_class.call(agreed_with_privacy: true) }
       .to raise_error(ActiveRecord::RecordInvalid)
   end
 

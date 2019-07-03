@@ -6,8 +6,11 @@ module Customers
     end
 
     def call
+      prepared_data = prepared_attributes(customer_data)
+      ensure_tos_accepted!(prepared_data)
+
       ActiveRecord::Base.transaction do
-        @customer = Customer.create!(prepared_attributes(customer_data))
+        @customer = Customer.create!(prepared_data)
         attach_wallet!(customer)
       end
 
@@ -53,6 +56,12 @@ module Customers
 
     def currency
       Currency.find_by_code!(currency_code)
+    end
+
+    def ensure_tos_accepted!(data)
+      return if data[:agreed_with_privacy]
+
+      raise ArgumentError, I18n.t('errors.messages.tos_not_accepted')
     end
   end
 end
