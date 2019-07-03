@@ -18,8 +18,8 @@ describe Customers::RegistrationService do
   before { create(:currency, code: 'EUR') }
 
   it 'raises error on invalid customer data' do
-    expect { described_class.call(agreed_with_privacy: true) }
-      .to raise_error(ActiveRecord::RecordInvalid)
+    expect { described_class.call({}) }
+      .to raise_error(ActiveModel::ValidationError)
   end
 
   it 'returns customer on successful registration' do
