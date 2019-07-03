@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe CustomerBonuses::Complete do
-  subject { described_class.call(customer_bonus.id) }
+  subject { described_class.call(customer_bonus: customer_bonus) }
 
   context 'with a non-active bonus' do
     let(:customer_bonus) do
