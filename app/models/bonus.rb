@@ -38,4 +38,10 @@ class Bonus < ApplicationRecord
   def active?
     expires_at > Time.zone.now
   end
+
+  class << self
+    def from_code(code)
+      active.find_by('lower(code) = ?', code.downcase)
+    end
+  end
 end

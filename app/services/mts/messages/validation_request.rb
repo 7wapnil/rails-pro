@@ -5,7 +5,7 @@ module Mts
       include JobLogger
 
       SUPPORTED_BETS_PER_REQUEST = 1
-      MESSAGE_VERSION = '2.1'.freeze
+      MESSAGE_VERSION = '2.3'.freeze
       DEFAULT_STAKE_TYPE = 'total'.freeze
       CUSTOMER_DEFAULT_LANGUAGE = 'EN'.freeze
       DEFAULT_ODDS_CHANGE_BEHAVIOUR = 'none'.freeze
@@ -70,7 +70,7 @@ module Mts
 
       def end_customer
         {
-          ip: customer.last_sign_in_ip.to_s,
+          ip: Customers::RelevantIpAddressService.call(customer).to_s,
           language_id: CUSTOMER_DEFAULT_LANGUAGE,
           id: customer.id.to_s
         }

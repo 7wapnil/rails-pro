@@ -4,8 +4,8 @@ module Inputs
 
     argument :password, String, required: true
     argument :amount, Float, required: true
-    argument :wallet_id, ID, required: true
-    argument :payment_method, String, required: true
-    argument :payment_details, [Inputs::PaymentMethodDetail], required: true
+    argument :walletId, ID, required: true
+    argument :paymentMethod, String, required: true
+    argument :paymentDetails, [Inputs::PaymentMethodDetail], required: true
   end
 end

@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :event do
     visible                { true }
     active                 { true }
-    ready { true }
+    ready                  { true }
     name                   { "#{Faker::Esport.team} vs. #{Faker::Esport.team}" }
     description            { 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' } # rubocop:disable Metrics/LineLength
     start_at               { 2.hours.ago }
@@ -30,7 +30,7 @@ FactoryBot.define do
     end
 
     trait :live do
-      end_at      {}
+      status { Event::IN_PLAY_STATUSES.sample }
       traded_live { true }
     end
 

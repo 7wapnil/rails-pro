@@ -79,7 +79,7 @@ describe EntryRequests::Factories::Deposit do
     let(:total_amount) { amount + bonus }
     let(:wallet_attributes) do
       {
-        origin:   kind_of(DepositRequest),
+        origin:   kind_of(Deposit),
         currency: wallet.currency,
         customer: wallet.customer
       }
@@ -129,7 +129,7 @@ describe EntryRequests::Factories::Deposit do
     end
 
     it 'creates deposit request' do
-      expect { service_call }.to change(DepositRequest, :count).by(1)
+      expect { service_call }.to change(Deposit, :count).by(1)
     end
 
     it 'returns entry request with deposit attributes' do

@@ -3,7 +3,16 @@ describe OddsFeed::Radar::Transpiling::Interpreter do
     create_list(:competitor, 2, :with_players)
   end
   let(:event) do
-    create(:event, name: 'Immortals vs Cloud9', competitors: competitors)
+    create(:event, name: 'Immortals vs Cloud9').tap do |event|
+      create(:event_competitor,
+             qualifier: 'home',
+             competitor: competitors.first,
+             event: event)
+      create(:event_competitor,
+             qualifier: 'away',
+             competitor: competitors.last,
+             event: event)
+    end
   end
   let(:venue_id) { 'sr:venue:1234' }
 

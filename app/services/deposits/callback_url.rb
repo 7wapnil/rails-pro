@@ -1,9 +1,9 @@
 module Deposits
   class CallbackUrl
     REQUEST_FAILED_MESSAGE =
-      I18n.t('errors.messages.deposit_request_failed')
+      I18n.t('errors.messages.deposit_failed')
     REQUEST_MESSAGE_CANCELLED_MESSAGE =
-      I18n.t('errors.messages.deposit_request_cancelled')
+      I18n.t('errors.messages.deposit_cancelled')
     SOMETHING_WENT_WRONG_MESSAGE =
       I18n.t('errors.messages.technical_error_happened')
     FAILED_ENTRY_REQUEST_MESSAGE =

@@ -1,13 +1,7 @@
 describe 'Transaction', '#index' do
   let(:per_page_count) { 20 }
   let!(:the_transaction) do
-    create(
-      :entry_request,
-      :deposit,
-      status:     EntryRequest::SUCCEEDED,
-      mode:       EntryRequest::BITCOIN,
-      created_at: Faker::Time.backward(5)
-    )
+    create(:deposit, :with_customer)
   end
 
   before do
@@ -22,7 +16,7 @@ describe 'Transaction', '#index' do
 
   context 'pagination' do
     it 'is shown' do
-      create_list(:entry_request, 10, :withdraw)
+      create_list(:withdrawal, 20, :with_customer)
       visit transactions_path
       expect(page).to have_selector('ul.pagination')
     end

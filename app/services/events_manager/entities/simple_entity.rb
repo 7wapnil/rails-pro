@@ -8,6 +8,10 @@ module EventsManager
       def name
         attribute!(@payload, 'name')
       end
+
+      def qualifier
+        attribute!(@payload, 'qualifier')
+      end
     end
   end
 end

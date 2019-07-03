@@ -7,7 +7,8 @@ class Entry < ApplicationRecord
 
   belongs_to :wallet
   belongs_to :origin, polymorphic: true, optional: true
-  belongs_to :withdrawal_request, foreign_key: :origin_id, optional: true
+  belongs_to :customer_transaction, foreign_key: :origin_id, optional: true
+  belongs_to :withdrawal, foreign_key: :origin_id, optional: true
   belongs_to :entry_request, optional: true
 
   has_many :balance_entries, dependent: :destroy
@@ -30,7 +31,11 @@ class Entry < ApplicationRecord
 
   validates_with EntryAmountValidator
 
-  scope :recent, -> do
-    where('DATE(entries.created_at) = ?', Date.current.yesterday)
+  scope :recent, -> { where(created_at: recent_scope) }
+
+  class << self
+    def recent_scope
+      Time.zone.yesterday.beginning_of_day..Time.zone.yesterday.end_of_day
+    end
   end
 end

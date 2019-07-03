@@ -12,6 +12,8 @@ module Mts
 
     def call
       response.bets.each do |bet|
+        next if cancelled_statuses.include?(bet.status)
+
         bet.finish_external_validation_with_acceptance! if response.accepted?
         reject_bet!(bet) if response.rejected?
 
@@ -20,6 +22,10 @@ module Mts
     end
 
     private
+
+    def cancelled_statuses
+      ::StateMachines::BetStateMachine::CANCELLED_STATUSES_MASK
+    end
 
     def reject_bet!(bet)
       refund = EntryRequests::Factories::Refund.call(

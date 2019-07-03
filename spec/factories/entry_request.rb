@@ -57,6 +57,10 @@ FactoryBot.define do
       end
     end
 
+    trait :withdrawal do
+      kind { :withdraw }
+    end
+
     trait :win do
       kind { EntryKinds::WIN }
     end

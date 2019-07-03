@@ -2,8 +2,8 @@
   = render 'transactions/search',
            filter: @filter,
            search_path: transactions_customer_path(@customer)
-  = render 'transactions_table', filter: @filter
-  = paginate @filter.requests
+  = render 'transactions/table', filter: @filter, no_user: true
+  = paginate @filter.transactions
 
 - content_for :js do
   = javascript_pack_tag 'customers/navigation_links'

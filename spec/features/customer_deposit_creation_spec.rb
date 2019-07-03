@@ -32,7 +32,7 @@ describe 'creates deposit via entry request form' do
         fill_in 'Amount', with: amount
         fill_in 'Comment', with: 'comment text'
         select EntryRequest::SIMULATED.capitalize, from: 'Mode'
-        select EntryRequest::DEPOSIT.capitalize, from: 'Type'
+        select EntryRequest::DEPOSIT.capitalize, from: 'Kind'
         select currency.name.capitalize, from: 'Currency'
       end
     end
@@ -50,7 +50,7 @@ describe 'creates deposit via entry request form' do
         fill_in 'Amount', with: amount
         fill_in 'Comment', with: 'comment text'
         select EntryRequest::SIMULATED.capitalize, from: 'Mode'
-        select EntryRequest::DEPOSIT.capitalize, from: 'Type'
+        select EntryRequest::DEPOSIT.capitalize, from: 'Kind'
         select currency.name.capitalize, from: 'Currency'
         click_on 'Confirm'
       end

@@ -44,7 +44,8 @@ module Mts
         verify_peer: true,
         verify_peer_name: false,
         allow_self_signed: false,
-        network_recovery_interval: 20
+        network_recovery_interval: 20,
+        heartbeat: 30
       }
     end
 

@@ -32,7 +32,8 @@ module OddsFeed
           attributes = { external_id: external_id,
                          market: market,
                          name: odd_name,
-                         status: odd_status }
+                         status: odd_status,
+                         outcome_id: outcome_id }
           return attributes if odd_value.zero?
 
           attributes[:value] = odd_value
@@ -54,6 +55,10 @@ module OddsFeed
 
         def odd_name
           market_data.odd_name(odd_data['id'])
+        end
+
+        def outcome_id
+          odd_data['id']
         end
       end
     end

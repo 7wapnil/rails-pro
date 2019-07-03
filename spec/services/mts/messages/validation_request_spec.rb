@@ -23,7 +23,7 @@ describe Mts::Messages::ValidationRequest do
 
     let(:example_json) do
       <<-EXAMPLE_JSON
-      {"version": "2.1", "timestampUtc": 1486541079460000, "testSource": true,
+      {"version": "2.3", "timestampUtc": 1486541079460000, "testSource": true,
       "ticketId": "MTS_Test_1486541079460000",
       "sender": {"currency": "EUR",
        "channel": "internet", "bookmakerId": #{bookmaker_id},
@@ -40,7 +40,7 @@ describe Mts::Messages::ValidationRequest do
     end
 
     let(:customer) do
-      create(:customer, id: 123_456_78, last_sign_in_ip: '202.12.22.4')
+      create(:customer, id: 123_456_78, current_sign_in_ip: '202.12.22.4')
     end
     let(:base_currency_amount) { Faker::Number.decimal(2, 2).to_d }
     let(:euro) { create(:currency, code: 'EUR') }
@@ -51,12 +51,17 @@ describe Mts::Messages::ValidationRequest do
              producer_id: 3,
              external_id: 'sr:match:11050343')
     end
-    let(:market) { create(:market, event: event) }
+    let(:market) do
+      create(:market, event: event,
+                      template_specifiers: 'setnr=1|gamenr=2',
+                      template_id: '186')
+    end
     let(:odd) do
       create(:odd,
              market: market,
              value: 2.87,
-             external_id: 'sr:match:11050343:186/setnr=1|gamenr=2:4')
+             external_id: 'sr:match:11050343:186/setnr=1|gamenr=2:4',
+             outcome_id: '4')
     end
     let(:bet) do
       create(:bet, amount: 1, base_currency_amount: base_currency_amount,

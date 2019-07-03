@@ -13,7 +13,7 @@ module Forms
                   :password,
                   :wallet_id,
                   :payment_method,
-                  :payment_details,
+                  :details,
                   :customer
 
     validates :password,
@@ -34,14 +34,14 @@ module Forms
               }
     validate :validate_customer_status
     validate :validate_customer_password
-    validate :validate_payment_details
+    validate :validate_details
     validate :validate_no_pending_bets_with_bonus
 
-    def validate_payment_details
+    def validate_details
       return unless PAYMENT_METHOD_MODELS.key?(payment_method)
 
       method_model = PAYMENT_METHOD_MODELS[payment_method].new(
-        payment_details_map
+        details_map
       )
       return if method_model.valid?
 
@@ -57,8 +57,8 @@ module Forms
             customer: I18n.t('errors.messages.withdrawal.customer_not_verified')
     end
 
-    def payment_details_map
-      Array.wrap(payment_details).reduce({}) do |result, item|
+    def details_map
+      Array.wrap(details).reduce({}) do |result, item|
         result.merge(item[:code] => item[:value])
       end
     end

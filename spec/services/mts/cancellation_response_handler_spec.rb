@@ -16,7 +16,7 @@ describe Mts::CancellationResponseHandler do
           }
         },
         "signature": "NJ4dU508yDnDhPzDOiSlhxwxfsTWDOtyZ6TOaHZG2W4=",
-        "version": "2.1"
+        "version": "2.3"
       }
     EXAMPLE_JSON
   end

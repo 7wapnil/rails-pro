@@ -2,11 +2,13 @@
 
 FactoryBot.define do
   factory :market do
-    visible         { true }
-    name            { 'Winner Map (Train)' }
-    priority        { 2 }
-    status          { StateMachines::MarketStateMachine::ACTIVE }
-    previous_status { StateMachines::MarketStateMachine::ACTIVE }
+    visible             { true }
+    name                { 'Winner Map (Train)' }
+    priority            { 2 }
+    status              { StateMachines::MarketStateMachine::ACTIVE }
+    previous_status     { StateMachines::MarketStateMachine::ACTIVE }
+    template_id         { '' }
+    template_specifiers { '' }
 
     sequence :external_id do |n|
       "sr:match:#{n}:#{rand(0..10_000)}/setnr=2|gamenrX=#{n}|gamenrY=#{n}"

@@ -27,7 +27,6 @@ FactoryBot.define do
 
     trait :expired do
       created_at { (valid_for_days + 1).days.ago }
-      status { CustomerBonus::EXPIRED }
     end
 
     trait :with_balance_entry do

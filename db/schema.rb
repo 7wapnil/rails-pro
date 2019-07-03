@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_06_11_114343) do
+ActiveRecord::Schema.define(version: 2019_06_26_135605) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -240,6 +240,20 @@ ActiveRecord::Schema.define(version: 2019_06_11_114343) do
     t.index ["customer_id"], name: "index_customer_statistics_on_customer_id"
   end
 
+  create_table "customer_transactions", force: :cascade do |t|
+    t.string "type"
+    t.string "status"
+    t.string "external_id"
+    t.bigint "actioned_by_id"
+    t.bigint "customer_bonus_id"
+    t.jsonb "details"
+    t.datetime "finalized_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["actioned_by_id"], name: "index_customer_transactions_on_actioned_by_id"
+    t.index ["customer_bonus_id"], name: "index_customer_transactions_on_customer_bonus_id"
+  end
+
   create_table "customers", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -288,13 +302,6 @@ ActiveRecord::Schema.define(version: 2019_06_11_114343) do
     t.decimal "value"
     t.index ["currency_id"], name: "index_deposit_limits_on_currency_id"
     t.index ["customer_id"], name: "index_deposit_limits_on_customer_id"
-  end
-
-  create_table "deposit_requests", force: :cascade do |t|
-    t.bigint "customer_bonus_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["customer_bonus_id"], name: "index_deposit_requests_on_customer_bonus_id"
   end
 
   create_table "entries", force: :cascade do |t|
@@ -349,6 +356,7 @@ ActiveRecord::Schema.define(version: 2019_06_11_114343) do
   create_table "event_competitors", id: false, force: :cascade do |t|
     t.bigint "event_id"
     t.bigint "competitor_id"
+    t.string "qualifier"
     t.index ["competitor_id"], name: "index_event_competitors_on_competitor_id"
     t.index ["event_id", "competitor_id"], name: "index_event_competitors_on_event_id_and_competitor_id", unique: true
     t.index ["event_id"], name: "index_event_competitors_on_event_id"
@@ -437,6 +445,8 @@ ActiveRecord::Schema.define(version: 2019_06_11_114343) do
     t.boolean "visible", default: true
     t.string "category"
     t.string "previous_status"
+    t.string "template_id"
+    t.string "template_specifiers"
     t.index ["event_id"], name: "index_markets_on_event_id"
     t.index ["external_id"], name: "index_markets_on_external_id", unique: true
   end
@@ -450,6 +460,7 @@ ActiveRecord::Schema.define(version: 2019_06_11_114343) do
     t.string "external_id"
     t.decimal "value"
     t.string "status"
+    t.string "outcome_id", default: ""
     t.index ["external_id"], name: "index_odds_on_external_id", unique: true
     t.index ["market_id"], name: "index_odds_on_market_id"
   end
@@ -514,6 +525,7 @@ ActiveRecord::Schema.define(version: 2019_06_11_114343) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "failed_attempts", default: 0, null: false
+    t.string "time_zone"
     t.index ["email"], name: "index_users_on_email", unique: true
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true
   end
@@ -536,21 +548,13 @@ ActiveRecord::Schema.define(version: 2019_06_11_114343) do
     t.datetime "updated_at", null: false
     t.bigint "currency_id"
     t.index ["currency_id"], name: "index_wallets_on_currency_id"
+    t.index ["customer_id", "currency_id"], name: "index_wallets_on_customer_id_and_currency_id", unique: true
     t.index ["customer_id"], name: "index_wallets_on_customer_id"
-  end
-
-  create_table "withdrawal_requests", force: :cascade do |t|
-    t.string "status", default: "pending"
-    t.jsonb "payment_details"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.bigint "actioned_by_id"
-    t.index ["actioned_by_id"], name: "index_withdrawal_requests_on_actioned_by_id"
   end
 
   add_foreign_key "addresses", "customers"
   add_foreign_key "balance_entries", "balances"
-  add_foreign_key "balance_entries", "entries"
+  add_foreign_key "balance_entries", "entries", on_delete: :cascade
   add_foreign_key "balances", "wallets"
   add_foreign_key "bets", "currencies"
   add_foreign_key "bets", "customers"
@@ -559,14 +563,15 @@ ActiveRecord::Schema.define(version: 2019_06_11_114343) do
   add_foreign_key "betting_limits", "titles"
   add_foreign_key "competitor_players", "competitors", on_delete: :cascade
   add_foreign_key "competitor_players", "players", on_delete: :cascade
-  add_foreign_key "customer_bonuses", "balance_entries"
+  add_foreign_key "customer_bonuses", "balance_entries", on_delete: :cascade
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "customer_statistics", "customers"
+  add_foreign_key "customer_transactions", "customer_bonuses"
+  add_foreign_key "customer_transactions", "users", column: "actioned_by_id"
   add_foreign_key "deposit_limits", "currencies"
   add_foreign_key "deposit_limits", "customers"
-  add_foreign_key "deposit_requests", "customer_bonuses"
-  add_foreign_key "entries", "entry_requests"
+  add_foreign_key "entries", "entry_requests", on_delete: :cascade
   add_foreign_key "entries", "wallets"
   add_foreign_key "entry_currency_rules", "currencies"
   add_foreign_key "entry_requests", "currencies"
@@ -585,5 +590,4 @@ ActiveRecord::Schema.define(version: 2019_06_11_114343) do
   add_foreign_key "verification_documents", "customers"
   add_foreign_key "wallets", "currencies"
   add_foreign_key "wallets", "customers"
-  add_foreign_key "withdrawal_requests", "users", column: "actioned_by_id"
 end

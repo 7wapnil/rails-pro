@@ -5,10 +5,12 @@ describe Mts::Publishers::BetCancellation do
   let(:subject_call) { subject.publish! }
 
   let(:bet) { create(:bet, status: Bet::SENT_TO_EXTERNAL_VALIDATION) }
+  let(:ws) { WebSocket::Client.instance }
 
   describe '#publish!' do
     before do
       allow(subject).to receive(:send_message!).and_return(true)
+      allow(ws).to receive(:trigger_bet_update).with(bet)
     end
 
     context 'valid params' do
@@ -20,6 +22,12 @@ describe Mts::Publishers::BetCancellation do
         subject_call
 
         expect(bet.status).to eq(Bet::PENDING_CANCELLATION)
+      end
+
+      it 'emits a websocket message' do
+        expect(ws).to receive(:trigger_bet_update)
+
+        subject_call
       end
     end
   end

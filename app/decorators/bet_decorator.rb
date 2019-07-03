@@ -35,9 +35,10 @@ class BetDecorator < ApplicationDecorator
   end
 
   def human_notification_message
-    return unless notification_code
+    return notification_message unless notification_code
 
-    I18n.t("bets.notifications.#{notification_code}", default: nil)
+    I18n.t("bets.notifications.#{notification_code}",
+           default: notification_message)
   end
 
   private
