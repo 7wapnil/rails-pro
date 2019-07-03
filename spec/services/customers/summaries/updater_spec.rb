@@ -19,7 +19,7 @@ describe Customers::Summaries::Updater do
   context 'with decimal attributes' do
     DECIMAL_ATTRIBUTES.each do |attr|
       let(:attribute) { attr }
-      let(:value) { rand(0.1..2.0).round(2) }
+      let(:value) { rand(0.1..2.0).round(2).to_d }
 
       it "increments #{attr} correctly" do
         expect { subject }.to(
