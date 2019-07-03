@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_135605) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "balance_amount_after", precision: 8, scale: 2
+    t.decimal "base_currency_amount"
     t.index ["balance_id"], name: "index_balance_entries_on_balance_id"
     t.index ["entry_id"], name: "index_balance_entries_on_entry_id"
   end
@@ -254,6 +255,22 @@ ActiveRecord::Schema.define(version: 2019_06_26_135605) do
     t.index ["customer_bonus_id"], name: "index_customer_transactions_on_customer_bonus_id"
   end
 
+  create_table "customer_summaries", force: :cascade do |t|
+    t.date "day", null: false
+    t.decimal "bonus_wager_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "real_money_wager_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "bonus_payout_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "real_money_payout_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "bonus_deposit_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "real_money_deposit_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "withdraw_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.integer "signups_count", default: 0, null: false
+    t.integer "betting_customer_ids", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["day"], name: "index_customer_summaries_on_day", unique: true
+  end
+
   create_table "customers", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
@@ -316,6 +333,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_135605) do
     t.string "external_id"
     t.bigint "entry_request_id"
     t.decimal "balance_amount_after", precision: 8, scale: 2
+    t.decimal "base_currency_amount"
     t.index ["entry_request_id"], name: "index_entries_on_entry_request_id"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"

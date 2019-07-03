@@ -109,6 +109,8 @@ describe Radar::RollbackBetSettlementWorker do
     end
   end
 
+  include_context 'base_currency'
+
   context 'market statuses' do
     let(:active_market_ids) do
       markets.select { |market| market.reload.active? }.map(&:id)
