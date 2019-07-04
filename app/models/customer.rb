@@ -5,7 +5,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include LoginAttemptable
 
   after_update :log_account_transition
-  after_create :update_summary
+  after_commit :update_summary, on: :create
 
   has_secure_token :activation_token
   has_secure_token :email_verification_token

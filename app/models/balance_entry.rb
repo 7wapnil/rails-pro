@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class BalanceEntry < ApplicationRecord
-  after_create :update_summary
+  after_commit :update_summary, on: :create
 
   belongs_to :balance
   belongs_to :entry
