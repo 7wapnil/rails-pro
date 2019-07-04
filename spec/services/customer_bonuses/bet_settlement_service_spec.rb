@@ -33,7 +33,7 @@ describe CustomerBonuses::BetSettlementService do
       subject
       expect(CustomerBonuses::CompleteWorker)
         .to have_received(:perform_async)
-        .with(customer_bonus: customer_bonus)
+        .with(customer_bonus.id)
     end
   end
 
