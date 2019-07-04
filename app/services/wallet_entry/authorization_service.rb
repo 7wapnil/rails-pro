@@ -43,7 +43,7 @@ module WalletEntry
     end
 
     def update_wallet!
-      @wallet = Wallet.find_or_create_by!(
+      @wallet = Wallets::FindOrCreate.call(
         customer: request.customer,
         currency: request.currency
       )

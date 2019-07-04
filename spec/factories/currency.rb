@@ -13,6 +13,12 @@ FactoryBot.define do
       primary { true }
     end
 
+    trait :crypto do
+      name { Faker::CryptoCoin.coin_name }
+      code { Faker::CryptoCoin.acronym }
+      kind { Currency::CRYPTO }
+    end
+
     trait :with_bet_rule do
       after(:create) do |currency|
         bet_kind = EntryRequest::BET

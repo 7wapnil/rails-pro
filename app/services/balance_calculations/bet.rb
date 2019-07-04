@@ -37,7 +37,7 @@ module BalanceCalculations
     end
 
     def wallet
-      @wallet ||= Wallet.find_or_create_by(
+      @wallet ||= Wallets::FindOrCreate.call(
         customer_id: bet.customer_id,
         currency_id: bet.currency_id
       )
