@@ -16,11 +16,13 @@ class Wallet < ApplicationRecord
   has_one :bonus_balance, -> { bonus }, class_name: Balance.name
   has_one :real_money_balance, -> { real_money }, class_name: Balance.name
 
-  validates :amount, numericality: true
-
   scope :primary, -> { joins(:currency).where(currencies: { primary: true }) }
 
   delegate :name, :code, to: :currency, prefix: true
+
+  def self.fiat
+    joins(:currency).where(currencies: { kind: Currency::FIAT })
+  end
 
   def self.build_default
     new(amount: 0, currency: Currency.build_default)

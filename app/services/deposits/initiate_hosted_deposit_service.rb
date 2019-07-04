@@ -37,7 +37,7 @@ module Deposits
     end
 
     def wallet
-      Wallet.find_or_create_by!(customer: customer, currency: currency)
+      Wallets::FindOrCreate.call(customer: customer, currency: currency)
     end
 
     def bonus

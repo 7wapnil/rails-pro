@@ -31,11 +31,7 @@ describe EntryRequestForm do
     end
 
     context 'trigger deposit creation flow' do
-      let(:deposit_params) do
-        base_params.merge(mode: EntryRequest::SIMULATED)
-      end
-
-      let(:form) { described_class.new(deposit_params) }
+      let(:form) { described_class.new(base_params) }
 
       it 'calls EntryRequests::DepositService' do
         expect(EntryRequests::DepositWorker).to receive(:perform_async)
@@ -50,9 +46,9 @@ describe EntryRequestForm do
       end
     end
 
-    context 'entry creation flow' do
+    context 'withdrawal creation flow' do
       let(:entry_params) do
-        base_params.merge(mode: EntryRequest::CASHIER)
+        base_params.merge(kind: EntryRequest::WITHDRAW)
       end
 
       let(:form) { described_class.new(entry_params) }
@@ -87,16 +83,6 @@ describe EntryRequestForm do
       form.submit
 
       expect(form.errors).to eq(entry_request.errors.full_messages)
-    end
-
-    it 'returns deposit placement errors' do
-      allow(EntryRequests::DepositWorker)
-        .to receive(:perform_async)
-        .and_raise(RuntimeError)
-
-      form.submit
-
-      expect(form.errors).to eq([I18n.t('events.deposit_failed')])
     end
   end
 end

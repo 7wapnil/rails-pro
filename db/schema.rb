@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_135605) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "balance_amount_after", precision: 8, scale: 2
+    t.decimal "base_currency_amount"
     t.index ["balance_id"], name: "index_balance_entries_on_balance_id"
     t.index ["entry_id"], name: "index_balance_entries_on_entry_id"
   end
@@ -99,8 +100,8 @@ ActiveRecord::Schema.define(version: 2019_06_26_135605) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.string "settlement_status"
     t.datetime "validation_ticket_sent_at"
+    t.string "settlement_status"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"
@@ -199,9 +200,9 @@ ActiveRecord::Schema.define(version: 2019_06_26_135605) do
     t.decimal "rollover_balance", precision: 8, scale: 2
     t.decimal "rollover_initial_value", precision: 8, scale: 2
     t.string "status", default: "initial", null: false
+    t.bigint "balance_entry_id"
     t.datetime "activated_at"
     t.datetime "deactivated_at"
-    t.bigint "balance_entry_id"
     t.index ["balance_entry_id"], name: "index_customer_bonuses_on_balance_entry_id"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -238,6 +239,22 @@ ActiveRecord::Schema.define(version: 2019_06_26_135605) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["customer_id"], name: "index_customer_statistics_on_customer_id"
+  end
+
+  create_table "customer_summaries", force: :cascade do |t|
+    t.date "day", null: false
+    t.decimal "bonus_wager_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "real_money_wager_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "bonus_payout_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "real_money_payout_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "bonus_deposit_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "real_money_deposit_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "withdraw_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.integer "signups_count", default: 0, null: false
+    t.integer "betting_customer_ids", default: [], null: false, array: true
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["day"], name: "index_customer_summaries_on_day", unique: true
   end
 
   create_table "customer_transactions", force: :cascade do |t|
@@ -317,6 +334,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_135605) do
     t.string "external_id"
     t.bigint "entry_request_id"
     t.decimal "balance_amount_after", precision: 8, scale: 2
+    t.decimal "base_currency_amount"
     t.index ["entry_request_id"], name: "index_entries_on_entry_request_id"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
@@ -554,7 +572,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_135605) do
 
   add_foreign_key "addresses", "customers"
   add_foreign_key "balance_entries", "balances"
-  add_foreign_key "balance_entries", "entries", on_delete: :cascade
+  add_foreign_key "balance_entries", "entries"
   add_foreign_key "balances", "wallets"
   add_foreign_key "bets", "currencies"
   add_foreign_key "bets", "customers"
@@ -563,7 +581,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_135605) do
   add_foreign_key "betting_limits", "titles"
   add_foreign_key "competitor_players", "competitors", on_delete: :cascade
   add_foreign_key "competitor_players", "players", on_delete: :cascade
-  add_foreign_key "customer_bonuses", "balance_entries", on_delete: :cascade
+  add_foreign_key "customer_bonuses", "balance_entries"
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "customer_statistics", "customers"
@@ -571,7 +589,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_135605) do
   add_foreign_key "customer_transactions", "users", column: "actioned_by_id"
   add_foreign_key "deposit_limits", "currencies"
   add_foreign_key "deposit_limits", "customers"
-  add_foreign_key "entries", "entry_requests", on_delete: :cascade
+  add_foreign_key "entries", "entry_requests"
   add_foreign_key "entries", "wallets"
   add_foreign_key "entry_currency_rules", "currencies"
   add_foreign_key "entry_requests", "currencies"

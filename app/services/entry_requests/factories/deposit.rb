@@ -91,13 +91,17 @@ module EntryRequests
 
       def validate_entry_request!
         check_bonus_expiration!
-        verify_deposit_attempts!
-        check_deposit_limit!
+        perform_customer_validations! unless initiator.is_a?(User)
 
         true
       rescue *::Deposit::BUSINESS_ERRORS => error
         entry_request.register_failure!(error.message)
         customer_bonus&.fail!
+      end
+
+      def perform_customer_validations!
+        verify_deposit_attempts!
+        check_deposit_limit!
       end
 
       def check_bonus_expiration!

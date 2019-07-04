@@ -11,8 +11,6 @@ describe Wallet do
   it { is_expected.to delegate_method(:name).to(:currency).with_prefix }
   it { is_expected.to delegate_method(:code).to(:currency).with_prefix }
 
-  it { expect(wallet).to validate_numericality_of(:amount) }
-
   describe '.primary' do
     let!(:currency) { create(:currency) }
     let(:wallet) { create(:wallet, currency: currency) }

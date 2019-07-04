@@ -25,6 +25,8 @@ describe EntryRequests::WithdrawalService do
     create(:balance, :real_money, amount: balance_amount, wallet: wallet)
   end
 
+  include_context 'base_currency'
+
   context 'authorize entry request' do
     include_context 'frozen_time'
 

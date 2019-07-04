@@ -40,6 +40,7 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
   let(:currency) { create(:currency) }
 
   include_context 'asynchronous to synchronous'
+  include_context 'base_currency'
 
   before do
     create(:entry_currency_rule,

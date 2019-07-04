@@ -23,7 +23,7 @@ module Redirect
     rescue Deposits::DepositAttemptError
       Rails.logger.error 'Customer deposit attempts exceeded.'
       callback_redirect_for(Deposits::CallbackUrl::DEPOSIT_ATTEMPTS_EXCEEDED)
-    rescue CustomerBonuses::ActivationError => e
+    rescue CustomerBonuses::ActivationError, Wallets::ValidationError => e
       Rails.logger.error e.message
       callback_redirect_for(Deposits::CallbackUrl::SOMETHING_WENT_WRONG,
                             message: e.message)

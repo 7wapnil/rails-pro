@@ -1,5 +1,7 @@
 module Exchanger
   class Converter < ApplicationService
+    PRECISION = 2
+
     def initialize(value, origin_currency, target_currency = nil)
       @value = value
       @origin_code = origin_currency # origin_currency
@@ -10,7 +12,7 @@ module Exchanger
     end
 
     def call
-      return @value if @origin_code == @target_code
+      return @value.truncate(PRECISION) if @origin_code == @target_code
 
       convert
     end
@@ -18,7 +20,7 @@ module Exchanger
     private
 
     def convert
-      converted_value.truncate(4)
+      converted_value.truncate(PRECISION)
     end
 
     def converted_value

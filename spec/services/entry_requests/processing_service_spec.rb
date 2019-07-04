@@ -21,6 +21,8 @@ describe EntryRequests::ProcessingService do
            amount: refund_amount)
   end
 
+  include_context 'base_currency'
+
   context 'request authorization' do
     before do
       allow(WalletEntry::AuthorizationService).to receive(:call)
