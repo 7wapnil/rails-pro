@@ -3,14 +3,14 @@
 module Customers
   module Summaries
     class Updater < ApplicationService
-      INCREMENT_ATTRIBUTES = %i[bonus_wager_amount
-                                real_money_wager_amount
-                                bonus_payout_amount
+      INCREMENT_ATTRIBUTES = %i[bonus_payout_amount
                                 real_money_payout_amount
                                 bonus_deposit_amount
                                 real_money_deposit_amount
                                 withdraw_amount
                                 signups_count].freeze
+      NEGATIVE_INCREMENT_ATTRIBUTES = %i[bonus_wager_amount
+                                         real_money_wager_amount].freeze
       APPEND_ATTRIBUTES = [:betting_customer_ids].freeze
 
       def initialize(day, attributes)
@@ -32,6 +32,8 @@ module Customers
         case key.to_sym
         when *INCREMENT_ATTRIBUTES
           summary.increment!(key, value)
+        when *NEGATIVE_INCREMENT_ATTRIBUTES
+          summary.increment!(key, -value)
         when *APPEND_ATTRIBUTES
           Customers::Summary
             .where(id: summary.id)
