@@ -62,7 +62,7 @@ module StateMachines
         state :sent_to_internal_validation
         state :validated_internally
         state :sent_to_external_validation
-        state :accepted
+        state :accepted, after_enter: :update_summary
         state :rejected
         state :pending_cancellation
         state :pending_manual_cancellation
@@ -161,6 +161,13 @@ module StateMachines
 
       def default_error_code
         Bets::Notification::INTERNAL_SERVER_ERROR
+      end
+
+      def update_summary
+        Customers::Summaries::UpdateWorker.perform_async(
+          Date.today,
+          betting_customer_ids: customer_id
+        )
       end
     end
   end

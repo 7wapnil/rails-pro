@@ -5,6 +5,7 @@ class DashboardsController < ApplicationController
     bets_filter
     customers_filter
     entry_requests_filter
+    summaries_filter
   end
 
   private
@@ -32,6 +33,13 @@ class DashboardsController < ApplicationController
               .limit(ENTRY_REQUESTS_LIMIT),
       query_params: query_params(:entry_requests),
       page: params[:entry_requests_page]
+    )
+  end
+
+  def summaries_filter
+    @summaries_filter = SummariesFilter.new(
+      source: Customers::Summary,
+      query_params: query_params(:customer_summaries)
     )
   end
 end

@@ -50,6 +50,7 @@ describe CustomerBonuses::ExpiringBonusesHandler do
   end
 
   include_context 'asynchronous to synchronous'
+  include_context 'base_currency'
 
   it 'expires expired bonuses' do
     subject

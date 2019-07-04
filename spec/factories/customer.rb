@@ -28,7 +28,7 @@ FactoryBot.define do
 
     trait :ready_to_bet do
       after(:create) do |customer|
-        currency = create(:currency, :with_bet_rule)
+        currency = create(:currency, :with_bet_rule, :crypto)
         create(:wallet, customer: customer, currency: currency)
       end
     end

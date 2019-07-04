@@ -5,6 +5,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include LoginAttemptable
 
   after_update :log_account_transition
+  after_commit :update_summary, on: :create
 
   has_secure_token :activation_token
   has_secure_token :email_verification_token
@@ -179,6 +180,13 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     }
 
     log_event(:account_kind_transition, ctx) if saved_change_to_account_kind?
+  end
+
+  def update_summary
+    Customers::Summaries::UpdateWorker.perform_async(
+      Date.today,
+      signups_count: 1
+    )
   end
 
   def validate_account_transition

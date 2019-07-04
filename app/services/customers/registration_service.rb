@@ -48,7 +48,7 @@ module Customers
     end
 
     def attach_wallet!(customer)
-      Wallet.create!(customer: customer, currency: currency)
+      Wallets::FindOrCreate.call(customer: customer, currency: currency)
     end
 
     def currency
