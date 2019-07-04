@@ -304,6 +304,7 @@ ActiveRecord::Schema.define(version: 2019_06_26_135605) do
     t.boolean "verification_sent", default: false, null: false
     t.string "email_verification_token"
     t.string "b_tag"
+    t.boolean "agreed_with_privacy", default: true, null: false
     t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
     t.index ["email_verification_token"], name: "index_customers_on_email_verification_token", unique: true

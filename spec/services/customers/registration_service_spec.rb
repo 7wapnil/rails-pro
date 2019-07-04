@@ -11,6 +11,7 @@ describe Customers::RegistrationService do
       phone: '37258383943',
       password: '123456',
       password_confirmation: '123456',
+      agreed_with_privacy: true,
       currency: 'EUR' }
   end
 
@@ -18,7 +19,7 @@ describe Customers::RegistrationService do
 
   it 'raises error on invalid customer data' do
     expect { described_class.call({}) }
-      .to raise_error(ActiveRecord::RecordInvalid)
+      .to raise_error(ActiveModel::ValidationError)
   end
 
   it 'returns customer on successful registration' do
