@@ -13,13 +13,5 @@ module Payments
     def deposit_response_handler
       raise ::NotImplementedError
     end
-
-    def process_withdrawal(transaction)
-      withdrawal_handler.call(transaction: transaction)
-    end
-
-    def withdrawal_handler
-      raise ::NotImplementedError, 'Implement #withdrawal_handler'
-    end
   end
 end

@@ -23,7 +23,22 @@ module Payments
     end
   end
 
-  class BusinessRuleError < ::StandardError; end
+  class BusinessRuleError < ::StandardError
+    NO_ATTRIBUTE = 'base'
+
+    attr_reader :attribute
+
+    def initialize(message, attribute = nil)
+      super(message)
+      assign_attribute(attribute)
+    end
+
+    private
+
+    def assign_attribute(attribute)
+      @attribute = attribute unless attribute.to_s == NO_ATTRIBUTE
+    end
+  end
 
   class InvalidTransactionError < ::StandardError
     def initialize(transaction)

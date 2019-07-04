@@ -10,10 +10,6 @@ module Payments
       def deposit_response_handler
         ::Payments::SafeCharge::DepositResponse
       end
-
-      def withdrawal_handler
-        ::Payments::SafeCharge::WithdrawalHandler
-      end
     end
   end
 end

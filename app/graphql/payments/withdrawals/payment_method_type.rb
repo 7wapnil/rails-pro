@@ -18,6 +18,10 @@ module Payments
             end
 
       field :code, !types.String, property: :itself
+      field :currencyCode, types.String,
+            resolve: ->(obj, _args, _ctx) do
+              ::Payments::Methods::METHOD_PROVIDERS.dig(obj, :currency)
+            end
     end
   end
 end

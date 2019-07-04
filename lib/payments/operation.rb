@@ -15,6 +15,8 @@ module Payments
 
     protected
 
+    attr_reader :entry_request
+
     def execute_operation
       raise ::NotImplementedError
     end

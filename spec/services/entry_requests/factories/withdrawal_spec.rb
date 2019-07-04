@@ -1,10 +1,18 @@
+# frozen_string_literal: true
+
 describe EntryRequests::Factories::Withdrawal do
   subject(:service) do
-    described_class.new(wallet: wallet,
-                        amount: withdraw_amount,
-                        mode: EntryRequest::CASHIER)
+    described_class.new(transaction: transaction)
   end
 
+  let(:transaction) do
+    ::Payments::Transactions::Withdrawal.new(
+      customer: wallet.customer,
+      currency_code: currency.code,
+      amount: withdraw_amount,
+      method: EntryRequest::CASHIER
+    )
+  end
   let(:withdraw_amount) { 50 }
   let(:currency) { create(:currency, :with_withdrawal_rule) }
   let(:wallet) { create(:wallet, currency: currency) }
@@ -13,10 +21,6 @@ describe EntryRequests::Factories::Withdrawal do
   end
 
   context 'when success' do
-    before do
-      allow(Withdrawals::WithdrawalVerification).to receive(:call)
-    end
-
     let(:created_request) { service.call }
     let(:expected_attrs) do
       {
@@ -53,13 +57,21 @@ describe EntryRequests::Factories::Withdrawal do
 
   context 'with errors' do
     let(:entry_request) { create(:entry_request) }
-    let(:error_msg) { Faker::Lorem.sentence }
+    let(:error_message) { Faker::Lorem.sentence }
+    let(:error_attribute) { :password }
+    let(:form) do
+      instance_double(::Payments::Withdrawals::CreateForm.name,
+                      errors: { error_attribute => error_message })
+    end
 
     before do
       allow(EntryRequest).to receive(:create!).and_return(entry_request)
-      allow(Withdrawals::WithdrawalVerification)
-        .to receive(:call)
-        .and_raise(Withdrawals::WithdrawalError, error_msg)
+      allow(::Payments::Withdrawals::CreateForm)
+        .to receive(:new)
+        .and_return(form)
+      allow(form)
+        .to receive(:validate!)
+        .and_raise(ActiveModel::ValidationError, EntryRequest.new)
       allow(entry_request).to receive(:register_failure!)
     end
 
@@ -68,7 +80,7 @@ describe EntryRequests::Factories::Withdrawal do
 
       expect(entry_request)
         .to have_received(:register_failure!)
-        .with(error_msg)
+        .with(error_message, error_attribute)
     end
   end
 end

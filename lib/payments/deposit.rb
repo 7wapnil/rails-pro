@@ -25,7 +25,7 @@ module Payments
 
     private
 
-    attr_reader :entry_request, :customer_bonus
+    attr_reader :customer_bonus
 
     def execute_operation
       apply_bonus_code!

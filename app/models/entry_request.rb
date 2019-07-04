@@ -75,10 +75,10 @@ class EntryRequest < ApplicationRecord
       mode: mode }
   end
 
-  def register_failure!(message)
+  def register_failure!(message, attribute = nil)
     update_columns(
       status: EntryRequest::FAILED,
-      result: { message: message }
+      result: { message: message, attribute: attribute }.compact
     )
     false
   end

@@ -5,7 +5,8 @@ class CustomerTransaction < ApplicationRecord
     pending:   PENDING   = 'pending',
     approved:  APPROVED  = 'approved',
     succeeded: SUCCEEDED = 'succeeded',
-    rejected:  REJECTED  = 'rejected'
+    rejected:  REJECTED  = 'rejected',
+    failed:    FAILED    = 'failed'
   }.freeze
 
   TYPES = %w[Deposit Withdrawal].freeze

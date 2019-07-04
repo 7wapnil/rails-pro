@@ -402,6 +402,8 @@ en:
       amount_greater_than_allowed: "Amount should be less than %{max_amount} %{currency}"
       amount_negative: Amount should be more than zero
       amount_less_than_allowed: "Amount should be greater than %{min_amount} %{currency}"
+      minimum_withdrawal_amount_reached: "Minimal withdrawal amount is %{min_amount} %{currency}"
+      maximum_withdrawal_amount_reached: "Maximum withdrawal amount is %{max_amount} %{currency}"
       provider_disconnected: Provider is disconnected
       market_inactive: Bet market is inactive
       amount_not_negative: "%{subject} amount cannot beсome negative. Current amount: %{current_amount}, new amount: %{new_amount}."

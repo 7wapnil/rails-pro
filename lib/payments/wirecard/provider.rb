@@ -10,10 +10,6 @@ module Payments
         ::Payments::Wirecard::DepositResponse
       end
 
-      def withdrawal_handler
-        ::Payments::Wirecard::WithdrawalHandler
-      end
-
       def client
         @client ||= Client.new
       end

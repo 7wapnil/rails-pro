@@ -12,10 +12,12 @@ module Payments
       @transaction_result = perform_transaction(input)
 
       successful_payment_response
-    rescue ::Payments::GatewayError, ::Payments::BusinessRuleError => e
-      payment_error!(e)
-    rescue StandardError => e
-      system_error!(e)
+    rescue ::Payments::GatewayError => error
+      gateway_error!(error)
+    rescue ::Payments::BusinessRuleError => error
+      payment_error!(error)
+    rescue StandardError => error
+      system_error!(error)
     end
 
     protected
@@ -28,9 +30,17 @@ module Payments
       raise NotImplementedError, 'Implement #successful_payment_response!'
     end
 
-    def payment_error!(error)
+    def gateway_error!(error)
       Rails.logger.warn(message: "#{action_name} error", error: error.message)
       raise error.message
+    end
+
+    def payment_error!(error)
+      Rails.logger.warn(message: "#{action_name} error", error: error.message)
+
+      raise(error.message) unless error.attribute
+
+      raise ResolvingError, error.attribute => error.message
     end
 
     def action_name

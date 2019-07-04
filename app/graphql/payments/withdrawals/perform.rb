@@ -17,9 +17,13 @@ module Payments
           customer: current_customer,
           currency_code: input[:currencyCode],
           amount: input[:amount].to_d,
-          details: input[:paymentDetails]
+          details: extract_details(input)
         )
         ::Payments::Withdraw.call(transaction)
+      end
+
+      def extract_details(input)
+        input[:paymentDetails].to_a.map { |obj| [obj.code, obj.value] }.to_h
       end
 
       def successful_payment_response

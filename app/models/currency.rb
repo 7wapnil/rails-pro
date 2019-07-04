@@ -2,6 +2,7 @@
 
 class Currency < ApplicationRecord
   PRIMARY_CODE = 'EUR'
+  BITCOIN_CODE = 'BTC'
   PRIMARY_RATE = 1
 
   CACHED_ALL_KEY = 'cache/currencies/cached_all'

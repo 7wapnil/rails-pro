@@ -52,7 +52,8 @@ module Payments
       },
       BITCOIN => {
         provider: ::Payments::CoinsPaid::Provider,
-        name: 'bitcoin'
+        name: BITCOIN,
+        currency: Currency::BITCOIN_CODE
       }
     }.freeze
 

@@ -11,10 +11,6 @@ module Payments
         ::Payments::CoinsPaid::DepositResponse
       end
 
-      def withdrawal_handler
-        ::Payments::CoinsPaid::WithdrawalHandler
-      end
-
       private
 
       def client
