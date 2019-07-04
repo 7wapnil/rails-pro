@@ -11,8 +11,13 @@ module Forms
     validate do
       next if prepared_data[:agreed_with_privacy]
 
-      errors.add(:agreed_with_privacy,
-                 I18n.t('errors.messages.tos_not_accepted'))
+      errors.add(:agreed_with_privacy, I18n.t('errors.messages.tos_not_accepted'))
+    end
+
+    validate do
+      next if customer.valid?
+
+      errors.merge!(customer.errors)
     end
 
     def customer

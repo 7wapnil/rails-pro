@@ -50,14 +50,18 @@ describe GraphQL do
         streetAddress: 'Street Addr',
         phone: '1232132132',
         agreedWithPromotional: true,
-        agreedWithPrivacy: true,
+        agreedWithPrivacy: false,
         currency: 'EUR'
       } }
     end
 
+    it 'returns several validation errors' do
+      expect(result['errors'].size > 1).to be_truthy
+    end
+
     it 'returns collection of validation errors' do
-      expect(result['errors'][0]['path'][0]).to eq(:email)
-      expect(result['errors'][0]['message']).to eq('Email is invalid')
+      paths = result['errors'].map { |err| err['path'][0].to_sym }
+      expect(paths).to match_array(%i[signUp agreedWithPrivacy email])
     end
   end
 
