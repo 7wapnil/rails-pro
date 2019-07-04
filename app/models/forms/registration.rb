@@ -32,9 +32,9 @@ module Forms
 
       @currency_code = attrs.delete(:currency)
 
-      attrs.merge(address_attributes:
-                    attrs.extract!(:country, :city, :street_address,
-                                   :state, :zip_code))
+      address = attrs.extract!(:country, :city, :street_address,
+                               :state, :zip_code)
+      attrs.merge(address_attributes: address)
     end
 
     def currency

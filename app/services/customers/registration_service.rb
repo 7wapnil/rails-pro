@@ -12,9 +12,9 @@ module Customers
       ActiveRecord::Base.transaction do
         registration_form.customer.save!
         registration_form.wallet.save!
-        @customer = registration_form.customer
       end
 
+      @customer = registration_form.customer
       track_registration(customer)
       send_email_verification_email(customer)
 
