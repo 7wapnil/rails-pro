@@ -7,16 +7,16 @@ module Payments
         client.authorize_payment(transaction)
       end
 
-      def process_payout(transaction)
+      def perform_payout_api_call(transaction)
         client.authorize_payout(transaction)
-      end
-
-      def deposit_response_handler
-        ::Payments::CoinsPaid::DepositResponse
       end
 
       def response_handler
         ::Payments::CoinsPaid::ResponseHandler
+      end
+
+      def payout_response_handler
+        ::Payments::CoinsPaid::PayoutResponseHandler
       end
 
       private

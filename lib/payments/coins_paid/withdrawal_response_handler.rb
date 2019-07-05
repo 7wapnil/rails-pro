@@ -2,7 +2,7 @@
 
 module Payments
   module CoinsPaid
-    class WithdrawalResponse < ::Payments::WithdrawalResponse
+    class WithdrawalResponseHandler < ::Payments::WithdrawalResponseHandler
       include Statuses
 
       def initialize(response)
@@ -30,7 +30,7 @@ module Payments
       end
 
       def transactions_id
-        response.dig('transactions', 0, 'txid')
+        response.dig('transactions', 0, 'id')
       end
     end
   end

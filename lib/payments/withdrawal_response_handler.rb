@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 module Payments
-  class WithdrawalResponse < ::ApplicationService
+  class WithdrawalResponseHandler < ::ApplicationService
     delegate :entry_request, to: :withdrawal
+    delegate :entry, to: :withdrawal
 
     protected
 
@@ -17,7 +18,9 @@ module Payments
     end
 
     def withdrawal
-      @withdrawal ||= ::Withdrawal.find(request_id)
+      @withdrawal ||= ::Withdrawal
+                      .joins(:entry_request)
+                      .find_by(entry_requests: { id: request_id })
     end
 
     def succeeded!

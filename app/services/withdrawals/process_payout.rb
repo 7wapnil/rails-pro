@@ -8,41 +8,22 @@ module Withdrawals
     end
 
     def call
-      return if request.code.to_i == 201
-
-      withdraw.update(
-        transaction_message: error_message,
-        status: ::Withdrawal::PENDING
-      )
-      payout_failed!
+      ::Payments::Payout.call(transaction)
     end
 
     private
 
     attr_reader :withdraw, :entry_request
 
-    def request
-      @request ||= ::Payments::Payout.call(transaction)
-    end
-
     def transaction
       ::Payments::Transactions::Payout.new(
-        id: withdraw.id,
+        id: entry_request.id,
         method: entry_request.mode,
         customer: entry_request.customer,
         currency_code: entry_request.currency.code,
         amount: -entry_request.amount.to_d,
         details: withdraw.details
       )
-    end
-
-    def error_message
-      @error_message ||= JSON.parse(request.body)['errors']&.values&.first
-    end
-
-    def payout_failed!
-      raise Withdrawals::PayoutError,
-            "CoinsPaid: #{error_message}"
     end
   end
 end

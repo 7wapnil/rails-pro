@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Payments
-  class DepositResponse < ::ApplicationService
+  class DepositResponseHandler < ::ApplicationService
     delegate :origin, to: :entry_request, prefix: true
     delegate :customer_bonus, to: :entry_request_origin
 

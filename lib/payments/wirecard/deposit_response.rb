@@ -2,7 +2,7 @@
 
 module Payments
   module Wirecard
-    class DepositResponse < ::Payments::DepositResponse
+    class DepositResponse < ::Payments::DepositResponseHandler
       include ::Payments::Wirecard::Statuses
       include ::Payments::Wirecard::TransactionStates
 
