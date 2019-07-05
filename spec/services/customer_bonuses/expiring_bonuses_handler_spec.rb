@@ -6,7 +6,7 @@ describe CustomerBonuses::ExpiringBonusesHandler do
   let(:control_count) { rand(3..5) }
   let(:actual_bonuses) { create_list(:customer_bonus, rand(1..3)) }
   let(:expired_bonuses) do
-    create_list(:customer_bonus, control_count, :expired)
+    create_list(:customer_bonus, control_count, activated_at: 100.days.ago)
   end
   let(:expired_bonuses_with_balance) do
     expired_bonuses.take(control_count - 2)

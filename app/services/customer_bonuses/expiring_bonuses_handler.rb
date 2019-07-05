@@ -10,7 +10,7 @@ module CustomerBonuses
     def call
       expiring_bonuses = CustomerBonus.includes(PRELOAD_OPTIONS)
                                       .where(status: CustomerBonus::ACTIVE)
-      expiring_bonuses.each do |bonus|
+      expiring_bonuses.find_each(batch_size: BATCH_SIZE) do |bonus|
         next unless bonus.time_exceeded?
 
         CustomerBonuses::Deactivate.call(

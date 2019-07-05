@@ -25,12 +25,15 @@ describe CustomerBonuses::BetSettlementService do
 
     let(:bet) { create(:bet, :settled, :won, customer_bonus: customer_bonus) }
     let(:customer_bonus) do
-      create(:customer_bonus, rollover_initial_value: -100_000)
+      create(:customer_bonus, rollover_balance: -100_000,
+                              rollover_initial_value: -100_000)
     end
 
     it 'calls CustomerBonuses::Complete' do
       subject
-      expect(CustomerBonuses::CompleteWorker).to have_received(:perform_async)
+      expect(CustomerBonuses::CompleteWorker)
+        .to have_received(:perform_async)
+        .with(customer_bonus.id)
     end
   end
 

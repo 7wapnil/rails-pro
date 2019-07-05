@@ -62,7 +62,7 @@ describe EntryRequests::BetSettlementService do
       create(:customer_bonus, rollover_initial_value: -100_000)
     end
 
-    it 'calls CustomerBonuses::Complete' do
+    it 'calls CustomerBonuses::BetSettlementService' do
       subject
       expect(CustomerBonuses::BetSettlementService)
         .not_to have_received(:call)

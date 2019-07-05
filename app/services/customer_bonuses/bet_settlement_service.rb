@@ -10,9 +10,9 @@ module CustomerBonuses
       return unless customer_bonus&.active?
 
       recalculate_bonus_rollover
-      complete_bonus unless customer_bonus.rollover_balance.positive?
-
-      return if unsettled_bets_remaining || customer_bonus.completed?
+      complete_bonus unless customer_bonus.reload.rollover_balance.positive?
+      customer_bonus.reload
+      return if customer_bonus.locked? || customer_bonus.completed?
 
       bonus_money_left = customer_bonus.wallet.bonus_balance&.amount
 
@@ -30,14 +30,12 @@ module CustomerBonuses
     private
 
     def recalculate_bonus_rollover
-      ::CustomerBonuses::RolloverCalculationService.call(
-        customer_bonus: customer_bonus
-      )
+      ::CustomerBonuses::RolloverCalculationService.call(bet: bet)
     end
 
     def complete_bonus
       CustomerBonuses::CompleteWorker
-        .perform_async(customer_bonus: customer_bonus)
+        .perform_async(customer_bonus.id)
     end
 
     def lose_bonus
@@ -47,16 +45,6 @@ module CustomerBonuses
       # involve bonus balance confiscation. At this
       # point, there is nothing to confiscate.
       customer_bonus.lose!
-    end
-
-    def unsettled_bets_remaining
-      unsettled_bets = customer_bonus.bets.where(settlement_status: nil)
-      log_job_message(:info,
-                      message: 'Checking customer bonus unsettled bets',
-                      customer_bonus_id: customer_bonus.id,
-                      bet_ids: unsettled_bets.pluck(:id))
-
-      unsettled_bets.exists?
     end
   end
 end
