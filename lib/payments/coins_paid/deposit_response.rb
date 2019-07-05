@@ -10,10 +10,10 @@ module Payments
       FINISH_STATES = %w[succeeded failed].freeze
 
       TBTC = 'TBTC'
-      BTC = 'BTC'
+      BTC = 'mBTC'
 
       CURRENCIES_MAP = {
-        TBTC => 'mBTC',
+        TBTC => 'mTBTC',
         BTC => 'mBTC'
       }.freeze
 

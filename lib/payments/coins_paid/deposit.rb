@@ -3,7 +3,7 @@
 module Payments
   module CoinsPaid
     class Deposit < Operation
-      PROVIDER = ::Payments::CoinsPaid::Provider
+      include Payments::Methods
 
       BUSINESS_ERRORS = [
         ::Deposits::DepositLimitRestrictionError,
@@ -16,7 +16,7 @@ module Payments
 
       def execute_operation
         create_customer_bonus unless bonus.nil? || customer_bonus_active?
-        PROVIDER.new.payment_page_url(transaction)
+        provider.payment_page_url(transaction)
       end
 
       private

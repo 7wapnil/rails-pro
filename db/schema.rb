@@ -171,6 +171,14 @@ ActiveRecord::Schema.define(version: 2019_07_05_131512) do
     t.index ["external_id"], name: "index_competitors_on_external_id", unique: true
   end
 
+  create_table "crypto_addresses", force: :cascade do |t|
+    t.text "address", default: ""
+    t.bigint "wallet_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["wallet_id"], name: "index_crypto_addresses_on_wallet_id"
+  end
+
   create_table "currencies", force: :cascade do |t|
     t.string "name"
     t.string "code"
@@ -581,6 +589,7 @@ ActiveRecord::Schema.define(version: 2019_07_05_131512) do
   add_foreign_key "betting_limits", "titles"
   add_foreign_key "competitor_players", "competitors", on_delete: :cascade
   add_foreign_key "competitor_players", "players", on_delete: :cascade
+  add_foreign_key "crypto_addresses", "wallets"
   add_foreign_key "customer_bonuses", "balance_entries", on_delete: :cascade
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
