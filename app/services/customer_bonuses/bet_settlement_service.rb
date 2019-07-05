@@ -11,8 +11,8 @@ module CustomerBonuses
 
       recalculate_bonus_rollover
       complete_bonus unless customer_bonus.reload.rollover_balance.positive?
-
-      return if unsettled_bets_remaining || customer_bonus.completed?
+      customer_bonus.reload
+      return if customer_bonus.locked? || customer_bonus.completed?
 
       bonus_money_left = customer_bonus.wallet.bonus_balance&.amount
 
@@ -45,16 +45,6 @@ module CustomerBonuses
       # involve bonus balance confiscation. At this
       # point, there is nothing to confiscate.
       customer_bonus.lose!
-    end
-
-    def unsettled_bets_remaining
-      unsettled_bets = customer_bonus.bets.where(settlement_status: nil)
-      log_job_message(:info,
-                      message: 'Checking customer bonus unsettled bets',
-                      customer_bonus_id: customer_bonus.id,
-                      bet_ids: unsettled_bets.pluck(:id))
-
-      unsettled_bets.exists?
     end
   end
 end

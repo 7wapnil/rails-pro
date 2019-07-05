@@ -14,6 +14,7 @@ FactoryBot.define do
     rollover_balance     { rand(100..1000) }
     rollover_initial_value { rollover_balance }
     status                 { CustomerBonus::ACTIVE }
+    activated_at           { Time.zone.now + 1.minute }
 
     sequence(:code) { |n| "FOOBAR#{n}" }
 
@@ -26,7 +27,7 @@ FactoryBot.define do
     end
 
     trait :expired do
-      created_at { (valid_for_days + 1).days.ago }
+      activated_at { (valid_for_days + 1).days.ago }
     end
 
     trait :with_balance_entry do
