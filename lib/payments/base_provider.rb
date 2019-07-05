@@ -6,11 +6,15 @@ module Payments
       raise ::NotImplementedError
     end
 
-    def handle_deposit_response(params)
-      deposit_response_handler.call(params)
+    def handle_response(request)
+      response_handler.call(request)
     end
 
-    def deposit_response_handler
+    def response_handler
+      raise ::NotImplementedError
+    end
+
+    def process_payout
       raise ::NotImplementedError
     end
   end

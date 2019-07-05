@@ -56,6 +56,8 @@ describe 'Withdrawals index page' do
 
   context 'withdrawal confirmation' do
     before do
+      allow(Withdrawals::ProcessPayout).to receive(:call).and_return(true)
+
       create(:withdrawal)
       visit withdrawals_path
     end

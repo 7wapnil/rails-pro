@@ -8,8 +8,8 @@ module Payments
       M_BTC_MULTIPLIER = 1000
       FINISH_STATES = %w[succeeded failed].freeze
 
-      def initialize(params)
-        @response = JSON.parse(params)
+      def initialize(response)
+        @response = response
       end
 
       def call
