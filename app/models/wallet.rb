@@ -10,6 +10,7 @@ class Wallet < ApplicationRecord
   has_many :balance_entries, through: :balances
   has_many :entries
 
+  has_one :crypto_address, dependent: :destroy
   has_one :customer_bonus
   has_one :bonus_balance, -> { bonus }, class_name: Balance.name
   has_one :real_money_balance, -> { real_money }, class_name: Balance.name

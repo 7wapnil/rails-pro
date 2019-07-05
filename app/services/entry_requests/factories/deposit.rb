@@ -13,6 +13,7 @@ module EntryRequests
         @mode = attributes[:mode]
         @passed_initiator = attributes[:initiator]
         @passed_comment = attributes[:comment]
+        @external_id = attributes[:external_id]
       end
 
       def call
@@ -27,7 +28,7 @@ module EntryRequests
       private
 
       attr_reader :wallet, :amount, :customer_bonus, :passed_initiator,
-                  :mode, :passed_comment, :entry_request
+                  :mode, :passed_comment, :entry_request, :deposit, :external_id
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
@@ -42,7 +43,8 @@ module EntryRequests
           initiator: initiator,
           comment: comment,
           currency: wallet.currency,
-          customer: wallet.customer
+          customer: wallet.customer,
+          external_id: external_id
         }
       end
 
@@ -86,7 +88,8 @@ module EntryRequests
       end
 
       def create_deposit!
-        ::Deposit.create!(
+        @deposit = ::Deposit.create!(
+          status: ::CustomerTransaction::SUCCEEDED,
           entry_request: entry_request,
           customer_bonus: customer_bonus
         )
@@ -101,7 +104,7 @@ module EntryRequests
         true
       rescue *::Payments::Deposit::BUSINESS_ERRORS => error
         entry_request.register_failure!(error.message)
-        customer_bonus&.fail!
+        fail_related_entities
       end
 
       def check_currency_rule!
@@ -149,6 +152,11 @@ module EntryRequests
 
       def verify_deposit_attempts!
         ::Deposits::VerifyDepositAttempt.call(wallet.customer)
+      end
+
+      def fail_related_entities
+        customer_bonus&.fail!
+        deposit&.failed!
       end
     end
     # rubocop:enable Metrics/ClassLength

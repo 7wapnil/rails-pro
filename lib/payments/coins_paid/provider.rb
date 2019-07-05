@@ -4,7 +4,7 @@ module Payments
   module CoinsPaid
     class Provider < ::Payments::BaseProvider
       def payment_page_url(transaction)
-        client.authorize_payment(transaction)
+        ::CryptoAddresses::GetOrCreate.call(transaction)
       end
 
       def callback_handler
@@ -15,10 +15,8 @@ module Payments
         ::Payments::CoinsPaid::Payouts::RequestHandler
       end
 
-      private
-
-      def client
-        @client ||= Client.new
+      def withdrawal_handler
+        ::Payments::CoinsPaid::WithdrawalHandler
       end
     end
   end

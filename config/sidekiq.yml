@@ -105,3 +105,9 @@
     queue: expired_entry_requests
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Fails expired deposit requests and connected bonuses"
+
+  expiring_customer_bonus_worker:
+    every: <%= ENV.fetch('EXPIRING_ENTRY_REQUESTS_INTERVAL', '1h') %>
+    class: Scheduled::ExpiringCustomerBonusesWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Fails expired deposit requests and connected bonuses"

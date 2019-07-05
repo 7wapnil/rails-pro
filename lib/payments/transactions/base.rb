@@ -6,7 +6,7 @@ module Payments
       include ::ActiveModel::Model
 
       attr_accessor :id, :method, :customer, :amount, :currency_code,
-                    :initiator, :comment
+                    :initiator, :comment, :external_id
 
       validates :method, :customer, :amount, :currency_code, presence: true
       validates :amount, numericality: true

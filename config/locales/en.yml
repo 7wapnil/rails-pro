@@ -628,9 +628,10 @@ en:
         statuses:
           confirmed: You are safe to process this transaction
           not_confirmed: Transaction is not yet confirmed
-          error: Some error occurred, pls see “error” field
-          cancelled: This transaction is a double spend. Pay attention to this customer.
-          not_enough_fee: Not enough money to pay fee for transfers of ETH / ERC20 / USDT, when money are deposited transactions will try to transfer
+          cancelled: This transaction is a double spend. Pay attention to this transaction.
+
+        errors:
+          unknown_status: "Unknown status received: '%{status}'"
 
   webhooks:
     safe_charge:

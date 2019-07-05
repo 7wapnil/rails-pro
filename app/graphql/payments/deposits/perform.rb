@@ -18,6 +18,8 @@ module Payments
           amount: input[:amount].to_d,
           bonus_code: input[:bonusCode]
         )
+
+        CoinsPaid::Deposit.call(transaction) unless transaction.currency.fiat?
         ::Payments::Deposit.call(transaction)
       end
 
