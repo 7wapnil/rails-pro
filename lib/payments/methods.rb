@@ -53,7 +53,7 @@ module Payments
       BITCOIN => {
         provider: ::Payments::CoinsPaid::Provider,
         name: BITCOIN,
-        currency: Currency::BITCOIN_CODE
+        currency: ::Payments::CoinsPaid::Currency::MBTC_CODE
       }
     }.freeze
 
