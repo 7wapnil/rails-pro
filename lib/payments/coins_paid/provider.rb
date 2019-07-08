@@ -14,10 +14,6 @@ module Payments
       def payout_request_handler
         ::Payments::CoinsPaid::Payouts::RequestHandler
       end
-
-      def withdrawal_handler
-        ::Payments::CoinsPaid::WithdrawalHandler
-      end
     end
   end
 end

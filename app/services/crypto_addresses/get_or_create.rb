@@ -28,11 +28,14 @@ module CryptoAddresses
       @crypto_address =
         CryptoAddress.create(
           wallet: wallet,
-          address:
-            Payments::CoinsPaid::Client
-              .new
-              .generate_address(transaction.customer)
+          address: generate_address
         )
+    end
+
+    def generate_address
+      Payments::CoinsPaid::Client
+        .new
+        .generate_address(transaction.customer)
     end
   end
 end

@@ -15,17 +15,17 @@ module Payments
       format :json
       debug_output $stdout
 
-      def authorize_payment(transaction)
+      def generate_address(customer)
         self.class.headers(
-          'X-Processing-Signature': payment_signature(transaction)
+          'X-Processing-Signature': address_request_signature(customer)
         )
 
         request = self.class.post(
           DEPOSIT_ROUTE,
-          body: payment_body(transaction)
+          body: address_request_body(customer)
         )
 
-        payment_address(request)
+        crypto_address(request)
       end
 
       def authorize_payout(transaction)
@@ -51,10 +51,10 @@ module Payments
         }.to_json
       end
 
-      def payment_body(transaction)
+      def address_request_body(customer)
         {
           currency: ::Payments::CoinsPaid::Currency::BTC_CODE,
-          foreign_id: transaction.id.to_s
+          foreign_id: customer.id.to_s
         }.to_json
       end
 
@@ -64,13 +64,14 @@ module Payments
         )
       end
 
-      def payment_signature(transaction)
-        @payment_signature ||= Payments::CoinsPaid::SignatureService.call(
-          data: payment_body(transaction)
-        )
+      def address_request_signature(customer)
+        @address_request_signature ||=
+          Payments::CoinsPaid::SignatureService.call(
+            data: address_request_body(customer)
+          )
       end
 
-      def payment_address(response)
+      def crypto_address(response)
         JSON.parse(response.body).dig('data', 'address')
       end
     end

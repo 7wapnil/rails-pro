@@ -5,10 +5,7 @@ class CryptoAddressWorker < ApplicationWorker
     @crypto_address =
       CryptoAddress.create(
         wallet: find_wallet(wallet_id),
-        address:
-          Payments::CoinsPaid::Client
-            .new
-            .generate_address(wallet.customer)
+        address: generate_address
       )
   end
 
@@ -18,5 +15,11 @@ class CryptoAddressWorker < ApplicationWorker
 
   def find_wallet(wallet_id)
     @wallet = Wallet.find(wallet_id)
+  end
+
+  def generate_address
+    Payments::CoinsPaid::Client
+      .new
+      .generate_address(wallet.customer)
   end
 end

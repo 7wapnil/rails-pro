@@ -3,69 +3,112 @@
 module Payments
   module CoinsPaid
     module Deposits
+      # rubocop:disable Metrics/ClassLength
       class CallbackHandler < ::Payments::DepositCallbackHandler
         include Statuses
 
         M_BTC_MULTIPLIER = 1000
         FINISH_STATES = %w[succeeded failed].freeze
 
+        TBTC = 'TBTC'
+        BTC = 'BTC'
+
+        CURRENCIES_MAP = {
+          TBTC => 'mTBTC',
+          BTC => 'mBTC'
+        }.freeze
+
+        MODE_MAP = {
+          TBTC => EntryRequest::BITCOIN,
+          BTC => EntryRequest::BITCOIN
+        }.freeze
+
         def initialize(response)
           @response = response
         end
 
         def call
-          return if entry_finished_state?
           return if pending?
+          return if proceeded_transaction?
 
-          validate_currency!
-          update_amount_on_demand
-          return success_flow if confirmed?
+          create_deposit_entry_request
+          return cancel_entry_request if cancelled?
+          return create_deposit_entry! if confirmed?
 
-          cancel_flow
+          unknown_status!
         end
 
         private
 
-        def entry_finished_state?
-          FINISH_STATES.include?(entry_request.status)
-        end
+        delegate :min_deposit, to: :customer_bonus
 
         def pending?
-          response['status'] == NOT_CONFIRMED
+          status == NOT_CONFIRMED
         end
 
-        def update_amount_on_demand
-          return if entry_request.amount == converted_amount
+        def proceeded_transaction?
+          customer
+            .entry_requests
+            .deposit
+            .find_by(mode: MODE_MAP[response['crypto_address']['currency']],
+                     external_id: response['id'])
+            .present?
+        end
 
-          message =
-            "Amount has been changed from #{entry_request.amount}
-             to #{converted_amount}"
-
-          entry_request.update(
+        def create_deposit_entry_request
+          transaction = ::Payments::Transactions::Deposit.new(
+            method: ::Payments::Methods::BITCOIN,
+            customer: customer,
+            currency_code: currency_code,
             amount: converted_amount,
-            result: {
-              message: message
-            }
+            external_id: response['id'].to_s
           )
+          @entry_request =
+            ::Payments::CoinsPaid::DepositHandler
+            .call(transaction: transaction,
+                  customer_bonus: valid_customer_bonus)
         end
 
-        def validate_currency!
-          return if Currencies::BTC_CODE != response['currency']
-
-          entry_request.register_failure!('Wrong deposit currency')
-
-          raise StandardError
+        def customer
+          @customer ||=
+            Customer.find(response['crypto_address']['foreign_id'])
         end
 
-        def confirmed?
-          response['status'] == CONFIRMED
+        def currency_code
+          CURRENCIES_MAP[response['crypto_address']['currency']]
         end
 
-        def success_flow
-          EntryRequests::DepositService.call(entry_request: entry_request)
+        def converted_amount
+          response['currency_received']['amount'].to_f * M_BTC_MULTIPLIER
         end
 
-        def cancel_flow
+        def valid_customer_bonus
+          customer_bonus if valid_entry_for_customer_bonus?
+        end
+
+        def customer_bonus
+          @customer_bonus ||= customer
+                              .wallets
+                              .joins(:currency)
+                              .find_by(currencies: { code: currency_code })
+                              .customer_bonus
+        end
+
+        def valid_entry_for_customer_bonus?
+          return unless customer_bonus&.initial?
+
+          min_deposit.present? && converted_amount >= min_deposit
+        end
+
+        def cancelled?
+          status == CANCELLED
+        end
+
+        def status
+          @status ||= response['status']
+        end
+
+        def cancel_entry_request
           entry_request.register_failure!(message)
           fail_related_entities
         end
@@ -76,27 +119,36 @@ module Payments
             I18n.t('payments.deposits.coins_paid.statuses.confirmed')
           when NOT_CONFIRMED
             I18n.t('payments.deposits.coins_paid.statuses.not_confirmed')
-          when ERROR
-            I18n.t('payments.deposits.coins_paid.statuses.error')
           when CANCELLED
             I18n.t('payments.deposits.coins_paid.statuses.cancelled')
-          when NOT_ENOUGH_FEE
-            I18n.t('payments.deposits.coins_paid.statuses.not_enough_fee')
           end
         end
 
-        def request_id
-          response['foreign_id']
+        def confirmed?
+          status == CONFIRMED
         end
 
-        def status
-          response['status']
+        def create_deposit_entry!
+          return if entry_request.succeeded?
+
+          ::EntryRequests::DepositService.call(entry_request: entry_request)
         end
 
-        def converted_amount
-          response['amount'] * M_BTC_MULTIPLIER
+        def unknown_status!
+          message =
+            I18n.t('payments.deposits.coins_paid.errors.unknown_status',
+                   status: status)
+          error_message =
+            "#{message} for entry request with id #{entry_request.id}"
+
+          entry_request.register_failure!(message)
+          fail_bonus
+
+          raise message: 'CoinsPaid deposit callback error',
+                error: error_message
         end
       end
+      # rubocop:enable Metrics/ClassLength
     end
   end
 end

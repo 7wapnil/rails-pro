@@ -3,13 +3,6 @@
 module Payments
   module CoinsPaid
     class DepositHandler < ApplicationService
-      BUSINESS_ERRORS = [
-        ::Deposits::DepositLimitRestrictionError,
-        ::Deposits::DepositAttemptError,
-        ::Deposits::CurrencyRuleError,
-        ::CustomerBonuses::ActivationError
-      ].freeze
-
       def initialize(transaction:, customer_bonus:)
         @transaction = transaction
         @customer_bonus = customer_bonus

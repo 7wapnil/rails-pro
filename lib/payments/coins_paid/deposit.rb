@@ -15,7 +15,7 @@ module Payments
       protected
 
       def execute_operation
-        create_customer_bonus unless bonus.nil? || customer_bonus_active?
+        create_customer_bonus unless !bonus || customer_bonus_active?
         provider.payment_page_url(transaction)
       end
 
