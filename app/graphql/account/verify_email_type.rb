@@ -3,7 +3,7 @@ module Account
     name 'VerifyEmail'
 
     field :success, !types.Boolean
-    field :userID, !types.ID,
+    field :userId, !types.ID,
           property: :user_id
   end
 end

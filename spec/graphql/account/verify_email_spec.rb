@@ -10,7 +10,7 @@ describe GraphQL, '#verify_email' do
     %(mutation($token: String!) {
         verifyEmail(token: $token) {
           success
-          userID
+          userId
         }
       })
   end
@@ -54,9 +54,9 @@ describe GraphQL, '#verify_email' do
       expect(result['data']['verifyEmail']['success']).to be_truthy
     end
 
-    it 'renders a userID' do
+    it 'renders a userId' do
       customer
-      expect(result['data']['verifyEmail']['userID']).to eq(customer.id.to_s)
+      expect(result['data']['verifyEmail']['userId']).to eq(customer.id.to_s)
     end
   end
 end
