@@ -2,7 +2,7 @@ module Account
   class VerifyEmail < ::Base::Resolver
     argument :token, !types.String
 
-    type !types.Boolean
+    type Account::VerifyEmailType
 
     def auth_protected?
       false
@@ -16,7 +16,10 @@ module Account
       end
 
       customer.update(email_verified: true)
-      true
+      OpenStruct.new(
+        success: true,
+        user_id: customer.id
+      )
     end
   end
 end
