@@ -14,6 +14,8 @@ public/assets
 public/packs
 public/packs-test
 
+Procfile
+
 tags
 yarn-debug.log*
 yarn-error.log
