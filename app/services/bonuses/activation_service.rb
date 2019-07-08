@@ -36,7 +36,8 @@ module Bonuses
         wallet: wallet,
         bonus: bonus,
         amount: amount,
-        status: CustomerBonus::ACTIVE
+        status: CustomerBonus::ACTIVE,
+        activated_at: Time.zone.now
       )
     end
 

@@ -81,6 +81,18 @@ describe Bonuses::ActivationService do
     end
   end
 
+  context 'customer bonus' do
+    it 'sets status to active' do
+      expect(subject.status).to eq CustomerBonus::ACTIVE
+    end
+
+    it 'sets activated_at timestamp' do
+      Timecop.freeze do
+        expect(subject.activated_at).to eq Time.zone.now
+      end
+    end
+  end
+
   context 'when customer has an active bonus' do
     let!(:customer_bonus) do
       create(:customer_bonus, customer: customer, wallet: wallet)
