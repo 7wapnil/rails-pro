@@ -2,7 +2,7 @@
 
 module Payments
   module CoinsPaid
-    class ResponseHandler < ::ApplicationService
+    class CallbackHandler < ::ApplicationService
       DEPOSIT = 'deposit'
       WITHDRAWAL = 'withdrawal'
 
@@ -13,9 +13,9 @@ module Payments
       def call
         case payment_type
         when DEPOSIT
-          ::Payments::CoinsPaid::DepositResponseHandler.call(response)
+          ::Payments::CoinsPaid::Deposits::CallbackHandler.call(response)
         when WITHDRAWAL
-          ::Payments::CoinsPaid::WithdrawalResponseHandler.call(response)
+          ::Payments::CoinsPaid::Payouts::CallbackHandler.call(response)
         end
       end
 

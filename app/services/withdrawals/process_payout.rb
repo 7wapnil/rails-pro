@@ -2,9 +2,9 @@
 
 module Withdrawals
   class ProcessPayout < ApplicationService
-    def initialize(withdraw)
-      @withdraw = withdraw
-      @entry_request = withdraw.entry_request
+    def initialize(withdrawal)
+      @withdrawal = withdrawal
+      @entry_request = withdrawal.entry_request
     end
 
     def call
@@ -13,7 +13,7 @@ module Withdrawals
 
     private
 
-    attr_reader :withdraw, :entry_request
+    attr_reader :withdrawal, :entry_request
 
     def transaction
       ::Payments::Transactions::Payout.new(
@@ -22,7 +22,8 @@ module Withdrawals
         customer: entry_request.customer,
         currency_code: entry_request.currency.code,
         amount: -entry_request.amount.to_d,
-        details: withdraw.details
+        withdrawal: withdrawal,
+        details: withdrawal.details
       )
     end
   end

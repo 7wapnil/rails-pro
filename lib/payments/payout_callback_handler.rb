@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Payments
-  class WithdrawalResponseHandler < ::ApplicationService
+  class PayoutCallbackHandler < ::ApplicationService
     delegate :entry_request, to: :withdrawal
     delegate :entry, to: :withdrawal
 

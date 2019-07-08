@@ -6,15 +6,19 @@ module Payments
       raise ::NotImplementedError
     end
 
-    def handle_response(request)
-      response_handler.call(request)
+    def handle_callback(request)
+      callback_handler.call(request)
     end
 
     def handle_deposit_response(params)
       deposit_response_handler.call(params)
     end
 
-    def response_handler
+    def process_payout(transaction)
+      payout_request_handler.call(transaction)
+    end
+
+    def callback_handler
       raise ::NotImplementedError
     end
 
@@ -22,19 +26,7 @@ module Payments
       raise ::NotImplementedError
     end
 
-    def process_payout(transaction)
-      payout_request = perform_payout_api_call(transaction)
-
-      payout_response_handler.call(payout_request)
-    end
-
-    protected
-
-    def perform_payout_api_call
-      raise NotImplementedError
-    end
-
-    def payout_response_handler
+    def payout_request_handler
       raise NotImplementedError
     end
   end
