@@ -114,6 +114,7 @@ en:
     comment: Comment
     completed_at: Completed at
     contact_information: Contact information
+    counted_towards_rollover: Counted towards rollover
     country: Country
     created_at: Created at
     credit_card: Credit card
@@ -162,7 +163,8 @@ en:
     max_deposit_match: Max amount
     max_rollover_per_bet: Max rollover per bet
     message: Message
-    notification_message: Status message
+    notification_code: Notification code
+    notification_message: Notification message
     min_amount: Min amount
     min_deposit: Min deposit
     min_odds_per_bet: Min odds per bet
