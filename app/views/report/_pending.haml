@@ -1,14 +1,13 @@
-%table.table
-  %tr
-    %td
-      %b= t('dashboard_report.pending_bets_count')
-    %td= filter.pending.bets_count
-  %tr
-    %td
-      %b= t('dashboard_report.pending_bets_amount')
-    %td= filter.pending.bets_amount
-  %tr
-    %td
-      %b= t('dashboard_report.pending_withdrawals_amount')
-    %td= filter.pending.withdrawals_amount
+%tr
+  %td
+    %b= t('dashboard_report.pending_bets_count')
+  %td= filter.pending.bets_count
+%tr
+  %td
+    %b= t('dashboard_report.pending_bets_amount')
+  %td= number_to_currency(filter.pending.bets_amount)
+%tr
+  %td
+    %b= t('dashboard_report.pending_withdrawals_amount')
+  %td= number_to_currency(filter.pending.withdrawals_amount)
 

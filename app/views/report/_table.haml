@@ -4,7 +4,11 @@
       %tr
         %td
           %b= t("dashboard_report.#{report_field}")
-        %td= filter.summaries.send(report_field.to_sym)
+        %td
+          - if report_field.end_with?('_amount')
+            = number_to_currency(filter.summaries.send(report_field.to_sym))
+          - else
+            = filter.summaries.send(report_field.to_sym)
 - else
   %tr
     %td

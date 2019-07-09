@@ -26,27 +26,35 @@ module Customers
       end
 
       def bonus_pnl_percentage
-        (
+        format_pnl(
           100.0 *
           (bonus_wager_amount.to_f - bonus_payout_amount.to_f) /
           bonus_wager_amount.to_f
-        ).truncate(PNL_PRECISION).to_d
+        )
       end
 
       def real_money_pnl_percentage
-        (
+        format_pnl(
           100.0 *
           (real_money_wager_amount.to_f - real_money_payout_amount.to_f) /
           real_money_wager_amount.to_f
-        ).truncate(PNL_PRECISION).to_d
+        )
       end
 
       def total_pnl_percentage
-        (
+        format_pnl(
           100.0 *
           (total_wager_amount.to_f - total_payout_amount.to_f) /
           total_wager_amount.to_f
-        ).truncate(PNL_PRECISION).to_d
+        )
+      end
+
+      private
+
+      def format_pnl(value)
+        return '-' if value.nan? || value.infinite?
+
+        value.truncate(PNL_PRECISION).to_d
       end
     end
   end
