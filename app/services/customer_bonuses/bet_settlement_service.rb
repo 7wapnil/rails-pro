@@ -30,7 +30,7 @@ module CustomerBonuses
     private
 
     def recalculate_bonus_rollover
-      ::CustomerBonuses::RolloverCalculationService.call(bet: bet)
+      ::CustomerBonuses::RolloverCalculationService.call(bet)
     end
 
     def complete_bonus
