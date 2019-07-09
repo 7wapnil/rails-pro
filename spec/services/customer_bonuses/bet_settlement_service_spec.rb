@@ -1,39 +1,38 @@
 describe CustomerBonuses::BetSettlementService do
-  subject { described_class.call(bet: bet) }
+  subject { described_class.call(bet) }
 
-  context 'with positive rollover' do
-    before { allow(CustomerBonuses::CompleteWorker).to receive(:perform_async) }
+  context 'completion' do
+    it 'calls bonus completion when rollover becomes negative' do
+      allow(CustomerBonuses::RolloverCalculationService)
+        .to receive(:call)
 
-    let(:bet) { create(:bet, :settled, :won, customer_bonus: customer_bonus) }
-    let(:customer_bonus) do
-      create(:customer_bonus, rollover_initial_value: 100_000)
+      bonus = create(:customer_bonus, rollover_balance: -1)
+      bet = create(:bet, :settled, customer_bonus: bonus)
+
+      expect(CustomerBonuses::CompleteWorker).to receive(:perform_async)
+      described_class.call(bet)
     end
 
-    it 'does not call CustomerBonuses::Complete' do
-      subject
-      expect(CustomerBonuses::CompleteWorker)
-        .not_to have_received(:perform_async)
-    end
-  end
+    it 'calls bonus completion when rollover becomes zero' do
+      allow(CustomerBonuses::RolloverCalculationService)
+        .to receive(:call)
 
-  context 'with negative rollover' do
-    before do
-      allow(CustomerBonuses::CompleteWorker).to receive(:perform_async)
-      allow(WalletEntry::AuthorizationService)
-        .to receive(:call).and_return(create(:entry))
+      bonus = create(:customer_bonus, rollover_balance: 0)
+      bet = create(:bet, :settled, customer_bonus: bonus)
+
+      expect(CustomerBonuses::CompleteWorker).to receive(:perform_async)
+      described_class.call(bet)
     end
 
-    let(:bet) { create(:bet, :settled, :won, customer_bonus: customer_bonus) }
-    let(:customer_bonus) do
-      create(:customer_bonus, rollover_balance: -100_000,
-                              rollover_initial_value: -100_000)
-    end
+    it 'doesn\'t call bonus completion when rollover is positive' do
+      allow(CustomerBonuses::RolloverCalculationService)
+        .to receive(:call)
 
-    it 'calls CustomerBonuses::Complete' do
-      subject
-      expect(CustomerBonuses::CompleteWorker)
-        .to have_received(:perform_async)
-        .with(customer_bonus.id)
+      bonus = create(:customer_bonus, rollover_balance: 1)
+      bet = create(:bet, :settled, customer_bonus: bonus)
+
+      expect(CustomerBonuses::CompleteWorker).not_to receive(:perform_async)
+      described_class.call(bet)
     end
   end
 

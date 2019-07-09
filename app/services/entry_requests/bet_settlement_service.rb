@@ -17,7 +17,7 @@ module EntryRequests
 
       return unless entry
 
-      ::CustomerBonuses::BetSettlementService.call(bet: bet)
+      ::CustomerBonuses::BetSettlementService.call(bet)
     end
 
     delegate :customer_bonus, to: :bet
