@@ -64,7 +64,7 @@ module Payments
             external_id: response['id'].to_s
           )
           @entry_request =
-            ::Payments::CoinsPaid::DepositHandler
+            ::Payments::CoinsPaid::Deposits::RequestHandler
             .call(transaction: transaction,
                   customer_bonus: valid_customer_bonus)
         end

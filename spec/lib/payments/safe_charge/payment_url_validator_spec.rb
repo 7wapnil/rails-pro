@@ -18,20 +18,27 @@ describe ::Payments::SafeCharge::PaymentUrlValidator do
   let(:time_stamp) do
     Time.zone
         .now
-        .strftime(::Payments::SafeCharge::PaymentPageUrl::TIMESTAMP_FORMAT)
+        .strftime(
+          ::Payments::SafeCharge::Deposits::RequestHandler::TIMESTAMP_FORMAT
+        )
+  end
+  let(:item_quantity_1) do
+    ::Payments::SafeCharge::Deposits::RequestHandler::ITEM_QUANTITY
   end
 
   let(:date_of_birth) do
     customer
       .date_of_birth
-      .strftime(::Payments::SafeCharge::PaymentPageUrl::DATE_OF_BIRTH_FORMAT)
+      .strftime(
+        ::Payments::SafeCharge::Deposits::RequestHandler::DATE_OF_BIRTH_FORMAT
+      )
   end
 
   let(:query_params) do
     {
       merchant_id: merchant_id,
       merchant_site_id: merchant_site_id,
-      version: ::Payments::SafeCharge::PaymentPageUrl::API_VERSION,
+      version: ::Payments::SafeCharge::Deposits::RequestHandler::API_VERSION,
       encoding: Encoding::UTF_8.to_s,
       time_stamp: time_stamp,
       currency: currency.code,
@@ -41,7 +48,7 @@ describe ::Payments::SafeCharge::PaymentUrlValidator do
       item_name_1: Faker::WorldOfWarcraft.quote,
       item_number_1: entry_request.id,
       item_amount_1: entry_request.amount,
-      item_quantity_1: ::Payments::SafeCharge::PaymentPageUrl::ITEM_QUANTITY,
+      item_quantity_1: item_quantity_1,
       total_amount: entry_request.amount,
       first_name: customer.first_name,
       last_name: customer.last_name,

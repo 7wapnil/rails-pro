@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Payments::SafeCharge::PaymentPageUrl do
+describe ::Payments::SafeCharge::Deposits::RequestHandler do
   subject { described_class.call(transaction, **extra_query_params) }
 
   let(:transaction) do

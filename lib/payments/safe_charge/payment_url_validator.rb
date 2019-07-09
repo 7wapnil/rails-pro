@@ -94,8 +94,10 @@ module Payments
 
       def time_stamp_valid?
         Time
-          .strptime(query.time_stamp, PaymentPageUrl::TIMESTAMP_FORMAT)
-          .present?
+          .strptime(
+            query.time_stamp,
+            Deposits::RequestHandler::TIMESTAMP_FORMAT
+          ).present?
       rescue ArgumentError, TypeError
         false
       end
@@ -103,7 +105,7 @@ module Payments
       def date_of_birth_valid?
         query.dateOfBirth.nil? ||
           Date.strptime(query.dateOfBirth,
-                        PaymentPageUrl::DATE_OF_BIRTH_FORMAT).present?
+                        Deposits::RequestHandler::DATE_OF_BIRTH_FORMAT).present?
       rescue ArgumentError, TypeError
         false
       end

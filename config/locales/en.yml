@@ -633,6 +633,8 @@ en:
           title: Bitcoin
           range: 'Range: %{min_amount} - %{max_amount} %{code}'
           description: 'Bitcoin transactions have slight delays. It will be processed soon as possible'
+          errors:
+            address_format: Please, recheck address
 
     deposits:
       success_message: 'You will be redirected to the payment page in a while'
