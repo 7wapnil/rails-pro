@@ -1,12 +1,12 @@
 %tr
   %td
     %b= t('dashboard_report.real_money_balance_total')
-  %td= filter.balance_totals.real_money
+  %td= number_to_currency(filter.balance_totals.real_money)
 %tr
   %td
     %b= t('dashboard_report.bonus_balance_total')
-  %td= filter.balance_totals.bonus
+  %td= number_to_currency(filter.balance_totals.bonus)
 %tr
   %td
     %b= t('dashboard_report.balance_total')
-  %td= filter.balance_totals.total
+  %td= number_to_currency(filter.balance_totals.total)

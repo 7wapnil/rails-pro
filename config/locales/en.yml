@@ -636,3 +636,8 @@ en:
     real_money_balance_total: Cache balance total
     bonus_balance_total: Bonus balance total
     balance_total: Balance total
+  number:
+    currency:
+      format:
+        format: "%n %u"
+        unit: '€'
