@@ -159,6 +159,9 @@ GEM
     file_validators (2.3.0)
       activemodel (>= 3.2)
       mime-types (>= 1.0)
+    foreman (0.63.0)
+      dotenv (>= 0.7)
+      thor (>= 0.13.6)
     formatador (0.2.5)
     fugit (1.1.6)
       et-orbi (~> 1.1, >= 1.1.6)
@@ -557,6 +560,7 @@ DEPENDENCIES
   factory_bot_rails
   faker!
   file_validators
+  foreman
   goldiloader
   graphiql-rails
   graphql (~> 1.9)
@@ -623,4 +627,4 @@ RUBY VERSION
    ruby 2.5.1p57
 
 BUNDLED WITH
-   1.17.2
+   1.17.3
