@@ -11,10 +11,10 @@ module Payments
                      default: obj.humanize)
             end
 
-      field :note, !types.String,
+      field :note, types.String,
             resolve: ->(obj, _args, _ctx) do
               I18n.t("payments.deposit.payment_methods.#{obj}.note",
-                     default: obj.humanize)
+                     default: nil)
             end
 
       field :code, !types.String, property: :itself

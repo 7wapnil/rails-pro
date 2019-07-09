@@ -57,6 +57,10 @@ module Payments
       }
     }.freeze
 
+    ALTERNATIVE_PAYMENT_METHODS = [
+      SKRILL, NETELLER, PAYSAFECARD, SOFORT, IDEAL, WEBMONEY, YANDEX, QIWI
+    ].freeze
+
     def find_method_provider(method)
       find_provider_config(method)[:provider]
     end

@@ -74,6 +74,9 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   accepts_nested_attributes_for :address
 
   has_one :wallet, -> { order(:created_at) }
+  has_one :fiat_wallet,
+          -> { joins(:currency).where(currencies: { kind: Currency::FIAT }) },
+          class_name: Wallet.name
 
   has_many :bet_entries,
            -> { bet.recent },

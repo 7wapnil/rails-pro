@@ -22,7 +22,7 @@ describe GraphQL, '#payment_methods' do
   end
   let(:payment_method_note) do
     I18n.t("payments.deposit.payment_methods.#{payment_method_code}.note",
-           default: payment_method_code.humanize)
+           default: nil)
   end
 
   it 'returns list of all deposit methods' do

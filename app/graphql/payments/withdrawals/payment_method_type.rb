@@ -7,14 +7,25 @@ module Payments
 
       field :name, !types.String,
             resolve: ->(obj, _args, _ctx) do
-              I18n.t("payments.withdrawal.payment_methods.#{obj}.title",
+              I18n.t("payments.withdrawals.payment_methods.#{obj}.title",
                      default: obj.humanize)
             end
 
-      field :note, !types.String,
+      field :note, types.String,
+            resolve: ->(obj, _args, ctx) do
+              range = ::Withdrawals::PaymentMethodRangeSelector.call(
+                customer: ctx[:current_customer],
+                payment_method: obj
+              )
+
+              I18n.t("payments.withdrawals.payment_methods.#{obj}.range",
+                     **range, default: nil)
+            end
+
+      field :description, types.String,
             resolve: ->(obj, _args, _ctx) do
-              I18n.t("payments.withdrawal.payment_methods.#{obj}.note",
-                     default: obj.humanize)
+              I18n.t("payments.withdrawals.payment_methods.#{obj}.description",
+                     default: nil)
             end
 
       field :code, !types.String, property: :itself

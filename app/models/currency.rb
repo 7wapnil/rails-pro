@@ -14,6 +14,10 @@ class Currency < ApplicationRecord
   has_many :entry_currency_rules
   has_many :wallets
 
+  has_one :withdraw_currency_rule,
+          -> { where(kind: EntryKinds::WITHDRAW) },
+          class_name: EntryCurrencyRule.name
+
   enum kind: {
     fiat:   FIAT   = 'fiat',
     crypto: CRYPTO = 'crypto'

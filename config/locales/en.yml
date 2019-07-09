@@ -621,7 +621,19 @@ en:
       payment_methods:
         credit_card:
           title: Credit card (Visa, MasterCard, Maestro)
-          note: 'Range: 10 - 10 000€ / No service fee'
+          range: 'Range: %{min_amount} - %{max_amount} %{code} / No service fee'
+          description: 'Debit/Credit Card withdrawals come with a 0% withdrawal fee'
+        skrill:
+          title: Skrill
+          range: 'Range: %{min_amount} - %{max_amount} %{code}'
+        neteller:
+          title: Neteller
+          range: 'Range: %{min_amount} - %{max_amount} %{code}'
+        bitcoin:
+          title: Bitcoin
+          range: 'Range: %{min_amount} - %{max_amount} %{code}'
+          description: 'Bitcoin transactions have slight delays. It will be processed soon as possible'
+
     deposits:
       success_message: 'You will be redirected to the payment page in a while'
       coins_paid:
