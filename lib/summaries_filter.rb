@@ -32,4 +32,14 @@ class SummariesFilter
                               bets_amount: pending_bets_amount,
                               withdrawals_amount: pending_withdrawals_amount)
   end
+
+  def balance_totals
+    return @balance_totals if @balance_totals
+
+    totals_by_kind = BalanceCalculations::Totals.call
+
+    @balance_totals = OpenStruct.new(
+      totals_by_kind.merge(total: totals_by_kind.values.sum)
+    )
+  end
 end
