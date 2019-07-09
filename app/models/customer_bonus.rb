@@ -30,8 +30,8 @@ class CustomerBonus < ApplicationRecord
   end
 
   def time_exceeded?
-    return false unless active?
+    return false unless active? && activated_at
 
-    (Time.zone.today - activated_at.to_date).days > valid_for_days
+    Time.zone.today >= (activated_at.to_date + valid_for_days)
   end
 end

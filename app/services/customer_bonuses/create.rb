@@ -9,6 +9,7 @@ module CustomerBonuses
       @bonus = bonus
       @amount = amount.to_f
       @status = params.fetch(:status, CustomerBonus::INITIAL)
+      @activated_at = params[:activated_at]
     end
 
     def call
@@ -20,7 +21,7 @@ module CustomerBonuses
 
     private
 
-    attr_accessor :wallet, :bonus, :amount, :status
+    attr_accessor :wallet, :bonus, :amount, :status, :activated_at
 
     def customer_bonus
       @customer_bonus ||= CustomerBonus.new(new_bonus_attributes)
@@ -44,7 +45,8 @@ module CustomerBonuses
         valid_for_days: bonus.valid_for_days,
         percentage: bonus.percentage,
         expires_at: bonus.expires_at,
-        status: new_customer_bonus_status
+        status: new_customer_bonus_status,
+        activated_at: activated_at
       }
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize

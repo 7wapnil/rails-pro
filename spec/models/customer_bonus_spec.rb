@@ -9,28 +9,79 @@ describe CustomerBonus do
   it { is_expected.to have_one(:entry).through(:balance_entry) }
   it { is_expected.to have_one(:currency).through(:wallet) }
 
-  context 'instance methods' do
+  describe '.customer_history' do
     let(:wallet) { create(:wallet) }
     let(:customer_bonus) do
       create(:customer_bonus, wallet: wallet, customer: wallet.customer)
     end
+    let!(:customer) { create(:customer) }
+    let!(:expired_customer_bonus) do
+      create(:customer_bonus, customer: customer)
+    end
+    let!(:active_customer_bonus) do
+      create(:customer_bonus, customer: customer)
+    end
 
-    describe '.customer_history' do
-      let!(:customer) { create(:customer) }
-      let!(:expired_customer_bonus) do
-        create(:customer_bonus, customer: customer)
-      end
-      let!(:active_customer_bonus) do
-        create(:customer_bonus, customer: customer)
-      end
+    it 'returns all customer activated bonuses' do
+      expect(described_class.customer_history(customer))
+        .to match_array([
+                          active_customer_bonus,
+                          expired_customer_bonus
+                        ])
+    end
+  end
 
-      it 'returns all customer activated bonuses' do
-        expect(described_class.customer_history(customer))
-          .to match_array([
-                            active_customer_bonus,
-                            expired_customer_bonus
-                          ])
-      end
+  describe '#time_exceeded?' do
+    it 'is false when is not active' do
+      sample_status =
+        CustomerBonus::STATUSES.values.without(CustomerBonus::ACTIVE).sample
+
+      customer_bonus = build(
+        :customer_bonus,
+        status: sample_status
+      )
+
+      expect(customer_bonus.time_exceeded?).to be false
+    end
+
+    it 'is false when activated_at is not present' do
+      customer_bonus = build(
+        :customer_bonus,
+        status: CustomerBonus::ACTIVE,
+        activated_at: nil
+      )
+
+      expect(customer_bonus.time_exceeded?).to be false
+    end
+
+    it 'is false when due date is in future' do
+      customer_bonus = build(
+        :customer_bonus,
+        activated_at: 3.days.ago,
+        valid_for_days: 4
+      )
+
+      expect(customer_bonus.time_exceeded?).to be false
+    end
+
+    it 'is true when due date is today' do
+      customer_bonus = build(
+        :customer_bonus,
+        activated_at: 3.days.ago,
+        valid_for_days: 3
+      )
+
+      expect(customer_bonus.time_exceeded?).to be true
+    end
+
+    it 'is true when due date is in past' do
+      customer_bonus = build(
+        :customer_bonus,
+        activated_at: 4.days.ago,
+        valid_for_days: 3
+      )
+
+      expect(customer_bonus.time_exceeded?).to be true
     end
   end
 

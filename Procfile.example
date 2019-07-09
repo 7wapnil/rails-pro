@@ -1,0 +1,6 @@
+web:            bundle exec rails server -p $PORT
+ws:             bundle exec puma -p 28080 cable.ru
+worker:         bundle exec sidekiq -C config/sidekiq.yml
+listener:       bundle exec rake sneakers:run WORKERS=Radar::UnifiedOdds
+listener_mts:   bundle exec rake listeners:start
+worker_mts:     bundle exec sidekiq -C config/mts.sidekiq.yml
