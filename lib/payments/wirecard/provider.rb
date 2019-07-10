@@ -5,15 +5,11 @@ module Payments
     class Provider < ::Payments::BaseProvider
       def payment_page_url(transaction)
         ::Payments::Wirecard::Deposits::RequestHandler
-          .call(transaction: transaction, client: client)
+          .call(transaction: transaction)
       end
 
       def deposit_response_handler
         ::Payments::Wirecard::Deposits::CallbackHandler
-      end
-
-      def client
-        @client ||= Client.new
       end
     end
   end

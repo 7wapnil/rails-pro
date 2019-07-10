@@ -14,7 +14,7 @@ describe ::Payments::Withdrawals::CreateForm, type: :model do
   end
 
   let(:payment_method) { ::Payments::Methods::BITCOIN }
-  let(:payment_details) { { bitcoin_address: crypto_address } }
+  let(:payment_details) { { bitcoin_address: Faker::Bitcoin.address } }
   let(:withdrawal_amount) { 50 }
   let(:balance_amount) { withdrawal_amount + 100 }
   let(:customer) { create(:customer) }
@@ -22,12 +22,11 @@ describe ::Payments::Withdrawals::CreateForm, type: :model do
   let!(:balance) do
     create(:balance, :real_money, amount: balance_amount, wallet: wallet)
   end
-  let(:crypto_address) do
-    test = ENV.fetch('COINSPAID_MODE', 'test') == 'test'
 
-    return 'tb1qudnwa6n0w6hadefw0alzspas3lvnlud5t9twrs' if test
-
-    Faker::Bitcoin.address
+  before do
+    allow(ENV).to receive(:fetch)
+      .with('COINSPAID_MODE', 'test')
+      .and_return('prod')
   end
 
   it { is_expected.to validate_presence_of(:amount) }

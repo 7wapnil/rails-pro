@@ -16,14 +16,14 @@ module Payments
         validates :bitcoin_address, presence: true
         validates :bitcoin_address,
                   format: {
-                    with: ->(*) { validation_expression },
+                    with: ->(*) { validation_regex },
                     message: I18n.t(WRONG_FORMAT_MESSAGE)
                   }
 
         class << self
           private
 
-          def validation_expression
+          def validation_regex
             return TEST_BITCOIN_ADDRESS_FORMAT_REGEX if test_mode?
 
             BITCOIN_ADDRESS_FORMAT_REGEX

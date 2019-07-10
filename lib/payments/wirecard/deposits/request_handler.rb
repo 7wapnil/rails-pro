@@ -4,9 +4,8 @@ module Payments
   module Wirecard
     module Deposits
       class RequestHandler < ApplicationService
-        def initialize(transaction:, client:)
+        def initialize(transaction:)
           @transaction = transaction
-          @client = client
         end
 
         def call
@@ -15,7 +14,7 @@ module Payments
 
         private
 
-        attr_reader :transaction, :client
+        attr_reader :transaction
 
         def request_payment_session
           response = client.authorize_payment(transaction)
@@ -23,6 +22,10 @@ module Payments
         rescue ::HTTParty::ResponseError => error
           Rails.logger.error(error)
           raise ::Payments::GatewayError, 'Technical gateway error'
+        end
+
+        def client
+          @client ||= Client.new
         end
       end
     end
