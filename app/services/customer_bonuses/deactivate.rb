@@ -55,7 +55,7 @@ module CustomerBonuses
     end
 
     def positive_bonus_balance?
-      bonus_balance&.amount.to_f.positive?
+      bonus_balance.amount.positive?
     end
 
     def log_deactivation
