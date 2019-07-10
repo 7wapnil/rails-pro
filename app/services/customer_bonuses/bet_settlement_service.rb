@@ -30,12 +30,10 @@ module CustomerBonuses
     end
 
     def lose_bonus!
-      return unless customer_bonus.active?
-
-      # Other CustomerBonus deactivation processes
-      # involve bonus balance confiscation. At this
-      # point, there is nothing to confiscate.
-      customer_bonus.lose!
+      CustomerBonuses::Deactivate.call(
+        bonus: customer_bonus,
+        action: CustomerBonuses::Deactivate::LOSE
+      )
     end
 
     def complete_bonus?

@@ -7,7 +7,8 @@ module CustomerBonuses
 
     ACTIONS = [
       EXPIRE = :expire!,
-      CANCEL = :cancel!
+      CANCEL = :cancel!,
+      LOSE = :lose!
     ].freeze
 
     def initialize(bonus:, action:, **params)
