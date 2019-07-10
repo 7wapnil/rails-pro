@@ -2,7 +2,7 @@ module CustomerBonuses
   class BetSettlementService < ApplicationService
     include JobLogger
 
-    def initialize(bet:)
+    def initialize(bet)
       @bet = bet
     end
 
@@ -10,7 +10,7 @@ module CustomerBonuses
       return unless customer_bonus&.active?
 
       recalculate_bonus_rollover
-      complete_bonus unless customer_bonus.reload.rollover_balance.positive?
+      complete_bonus if customer_bonus.reload.rollover_balance <= 0
       customer_bonus.reload
       return if customer_bonus.locked? || customer_bonus.completed?
 
@@ -30,7 +30,7 @@ module CustomerBonuses
     private
 
     def recalculate_bonus_rollover
-      ::CustomerBonuses::RolloverCalculationService.call(bet: bet)
+      ::CustomerBonuses::RolloverCalculationService.call(bet)
     end
 
     def complete_bonus
