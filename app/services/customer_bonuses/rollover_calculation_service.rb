@@ -29,20 +29,14 @@ module CustomerBonuses
     end
 
     def recalculate_rollover!
-      customer_bonus.update_attributes(rollover_balance: rollover_balance)
+      customer_bonus.with_lock do
+        customer_bonus.rollover_balance -= bet_rollover_amount
+        customer_bonus.save!
+      end
     end
 
-    def rollover_balance
-      amounts = Bet.where(
-        customer_bonus: customer_bonus,
-        status: :settled,
-        counted_towards_rollover: true
-      ).pluck(:amount)
-
-      max_rollover = customer_bonus.max_rollover_per_bet
-
-      customer_bonus.rollover_initial_value -
-        amounts.map { |amount| [max_rollover, amount].min }.sum
+    def bet_rollover_amount
+      [customer_bonus.max_rollover_per_bet, bet.amount].min
     end
   end
 end
