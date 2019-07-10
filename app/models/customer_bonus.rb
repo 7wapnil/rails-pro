@@ -25,10 +25,6 @@ class CustomerBonus < ApplicationRecord
     includes(:balance_entry).where(customer: customer)
   end
 
-  def locked?
-    bets.pending.any?
-  end
-
   def time_exceeded?
     return false unless active? && activated_at
 
