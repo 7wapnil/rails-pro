@@ -3,89 +3,68 @@
     %tr.total_bet_count
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:total_bet_count)
-      %td= stats.total_bet_count
+      %td= stats.bet_count(Customers::StatisticDecorator::TOTAL)
 
     %tr.total_wager
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:total_wager)
-      %td
-        = number_with_precision stats.total_wager, precision: 2
-        &#8364;
+      %td= stats.wager(Customers::StatisticDecorator::TOTAL, human: true)
 
     %tr.total_payout
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:total_payout)
-      %td
-        = number_with_precision stats.total_payout, precision: 2
-        &#8364;
+      %td= stats.payout(Customers::StatisticDecorator::TOTAL, human: true)
 
   %table.table.vertical-with-labels
     %tr.prematch_bet_count
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:prematch_bet_count)
-      %td= stats.prematch_bet_count
+      %td= stats.bet_count(Customers::StatisticDecorator::PREMATCH)
 
     %tr.prematch_wager
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:prematch_wager)
-      %td
-        = number_with_precision stats.prematch_wager, precision: 2
-        &#8364;
+      %td= stats.wager(Customers::StatisticDecorator::PREMATCH, human: true)
 
     %tr.prematch_payout
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:prematch_payout)
-      %td
-        = number_with_precision stats.prematch_payout, precision: 2
-        &#8364;
+      %td= stats.payout(Customers::StatisticDecorator::PREMATCH, human: true)
 
   %table.table.vertical-with-labels
     %tr.live_bet_count
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:live_bet_count)
-      %td= stats.live_bet_count
+      %td= stats.bet_count(Customers::StatisticDecorator::LIVE)
 
     %tr.live_sports_wager
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:live_sports_wager)
-      %td
-        = number_with_precision stats.live_sports_wager, precision: 2
-        &#8364;
+      %td= stats.wager(Customers::StatisticDecorator::LIVE, human: true)
 
     %tr.live_sports_payout
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:live_sports_payout)
-      %td
-        = number_with_precision stats.live_sports_payout, precision: 2
-        &#8364;
+      %td= stats.payout(Customers::StatisticDecorator::LIVE, human: true)
 
   %table.table.vertical-with-labels
     %tr.average_total_bet_value
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:average_total_bet_value)
-      %td
-        = number_with_precision stats.average_bet_value(Customers::Statistic::TOTAL), precision: 2
-        &#8364;
+      %td= stats.average_bet_value(Customers::StatisticDecorator::TOTAL)
 
     %tr.average_prematch_bet_value
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:average_prematch_bet_value)
-      %td
-        = number_with_precision stats.average_bet_value(Customers::Statistic::PREMATCH),
-                                precision: 2
-        &#8364;
+      %td= stats.average_bet_value(Customers::StatisticDecorator::PREMATCH)
 
     %tr.average_live_bet_value
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:average_live_bet_value)
-      %td
-        = number_with_precision stats.average_bet_value(Customers::Statistic::LIVE), precision: 2
-        &#8364;
+      %td= stats.average_bet_value(Customers::StatisticDecorator::LIVE)
 
   %table.table.vertical-with-labels
     %tr.total_pending_bet_sum
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:total_pending_bet_sum)
-      %td
-        = number_with_precision stats.total_pending_bet_sum, precision: 2
-        &#8364;
+      %td= stats.total_pending_bet_sum(human: true)

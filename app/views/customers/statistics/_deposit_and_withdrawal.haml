@@ -9,9 +9,7 @@
     %tr.deposit_value
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:deposit_value)
-      %td
-        = number_with_precision stats.deposit_value, precision: 2
-        &#8364;
+      %td= stats.deposit_value(human: true)
 
     %tr.withdrawal_count
       %td{ colspan: 2 }
@@ -21,13 +19,9 @@
     %tr.withdrawal_value
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:withdrawal_value)
-      %td
-        = number_with_precision stats.withdrawal_value, precision: 2
-        &#8364;
+      %td= stats.withdrawal_value(human: true)
 
     %tr.hold_value
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:hold_value)
-      %td
-        = number_with_precision stats.hold_value, precision: 2
-        &#8364;
+      %td= stats.hold_value

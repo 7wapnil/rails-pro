@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe CustomerBonusDecorator, decorator: true do
+describe CustomerBonusDecorator, type: :decorator do
   subject { customer_bonus.decorate }
 
   let(:customer_bonus) { build(:customer_bonus, percentage: rand(100.0)) }

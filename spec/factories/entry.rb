@@ -35,5 +35,28 @@ FactoryBot.define do
         kind { kind }
       end
     end
+
+    trait :with_bonus_balance_entry do
+      association :bonus_balance_entry,
+                  factory: %i[balance_entry bonus],
+                  strategy: :build
+    end
+
+    trait :with_real_money_balance_entry do
+      association :real_money_balance_entry,
+                  factory: %i[balance_entry real_money],
+                  strategy: :build
+    end
+
+    trait :with_balance_entries do
+      after(:create) do |entry|
+        create(:balance_entry, :bonus,
+               amount: entry.amount / 2 - 500,
+               entry: entry)
+        create(:balance_entry, :real_money,
+               amount: entry.amount / 2 + 500,
+               entry: entry)
+      end
+    end
   end
 end

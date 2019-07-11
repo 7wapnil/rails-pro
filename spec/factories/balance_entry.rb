@@ -7,8 +7,10 @@ FactoryBot.define do
     entry
     association :balance, strategy: :build
 
-    trait :bonus do
-      association :balance, factory: %i[balance bonus], strategy: :build
+    Balance.kinds.keys.map(&:to_sym).each do |kind|
+      trait kind do
+        association :balance, factory: [:balance, kind], strategy: :build
+      end
     end
   end
 end

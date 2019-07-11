@@ -21,34 +21,80 @@ describe Customers::StatisticsController, '#show' do
     let(:attribute) {}
     let(:label) { Customers::Statistic.human_attribute_name(attribute) }
 
-    let!(:entries) do
+    # DEPOSITS
+
+    let!(:successful_deposits) do
       [
-        create(:entry, :win, customer: customer),
-        create(:entry, :withdraw, customer: customer),
-        create(:entry, :bet, customer: customer),
-        create(:entry, :refund, customer: customer)
+        *create_list(:entry, rand(1..2), :with_real_money_balance_entry,
+                     customer: customer),
+        *create_list(:entry, rand(1..2), :with_balance_entries,
+                     customer: customer)
       ]
     end
-    let!(:successful_deposits) do
-      create_list(:entry, rand(1..3), customer: customer)
+    let(:successful_deposit_real_money_balance_entries) do
+      successful_deposits.map(&:real_money_balance_entry)
     end
+
+    # WITHDRAWALS
 
     let(:withdrawal) { create(:withdrawal, :approved) }
     let!(:withdrawals) do
       [
-        create(:entry, :withdraw,
+        create(:entry, :withdraw, :with_real_money_balance_entry,
                customer: customer,
                origin: build(:withdrawal, :rejected)),
-        create(:entry, :withdraw,
+        create(:entry, :withdraw, :with_balance_entries,
                customer: customer,
                origin: build(:withdrawal))
       ]
     end
     let!(:successful_withdrawals) do
-      create_list(:entry, rand(1..3), :withdraw,
-                  customer: customer,
-                  origin: withdrawal)
+      [
+        *create_list(:entry, rand(1..2),
+                     :withdraw, :with_real_money_balance_entry,
+                     customer: customer,
+                     origin: withdrawal),
+        *create_list(:entry, rand(1..2), :withdraw, :with_balance_entries,
+                     customer: customer,
+                     origin: withdrawal)
+      ]
     end
+    let(:successful_withdrawal_real_money_balance_entries) do
+      successful_withdrawals.map(&:real_money_balance_entry)
+    end
+
+    # BONUSES
+
+    let!(:not_included_customer_bonuses) do
+      CustomerBonus
+        .statuses
+        .keys
+        .map(&:to_sym)
+        .map { |status| create(:customer_bonus, status, customer: customer) }
+    end
+    let!(:awarded_customer_bonuses) do
+      create_list(:customer_bonus, rand(1..3), :active, :with_balance_entry,
+                  customer: customer)
+    end
+    let(:awarded_customer_bonus_balance_entries) do
+      awarded_customer_bonuses.map(&:balance_entry)
+    end
+
+    let!(:bonus_conversion_entries) do
+      [
+        *create_list(:entry, rand(1..2),
+                     :bonus_conversion, :with_real_money_balance_entry,
+                     customer: customer),
+        *create_list(:entry, rand(1..2),
+                     :bonus_conversion, :with_balance_entries,
+                     customer: customer)
+      ]
+    end
+    let(:bonus_conversion_real_money_balance_entries) do
+      bonus_conversion_entries.map(&:real_money_balance_entry)
+    end
+
+    # BETS
 
     let(:event) { create(:event) }
     let(:market) { create(:market, event: event) }
@@ -66,7 +112,6 @@ describe Customers::StatisticsController, '#show' do
     end
     let!(:prematch_bets) do
       [
-        create(:bet, prematch_attributes),
         create(:bet, :cancelled, prematch_attributes),
         create(:bet, :rejected, prematch_attributes),
         create(:bet, :failed, prematch_attributes)
@@ -74,6 +119,7 @@ describe Customers::StatisticsController, '#show' do
     end
     let!(:pending_prematch_bets) do
       [
+        create(:bet, prematch_attributes),
         create(:bet, :sent_to_internal_validation, prematch_attributes),
         create(:bet, :validated_internally, prematch_attributes),
         create(:bet, status: external_validation_state, **prematch_attributes),
@@ -93,7 +139,6 @@ describe Customers::StatisticsController, '#show' do
     let(:live_attributes) { { market: market, customer: customer } }
     let!(:live_bets) do
       [
-        create(:bet, live_attributes),
         create(:bet, :cancelled, live_attributes),
         create(:bet, :rejected, live_attributes),
         create(:bet, :failed, live_attributes)
@@ -101,6 +146,7 @@ describe Customers::StatisticsController, '#show' do
     end
     let!(:pending_live_bets) do
       [
+        create(:bet, live_attributes),
         create(:bet, :sent_to_internal_validation, live_attributes),
         create(:bet, :validated_internally, live_attributes),
         create(:bet, status: external_validation_state, **live_attributes),
@@ -117,8 +163,20 @@ describe Customers::StatisticsController, '#show' do
       ].flatten
     end
 
-    let(:deposit_value) { successful_deposits.sum(&:amount) }
-    let(:withdrawal_value) { successful_withdrawals.sum(&:amount).abs }
+    # CALCULATED VALUES
+
+    let(:deposit_value) do
+      successful_deposit_real_money_balance_entries.sum(&:amount)
+    end
+    let(:withdrawal_value) do
+      successful_withdrawal_real_money_balance_entries.sum(&:amount).abs
+    end
+    let(:total_bonus_awarded) do
+      awarded_customer_bonus_balance_entries.sum(&:amount)
+    end
+    let(:total_bonus_completed) do
+      bonus_conversion_real_money_balance_entries.sum(&:amount)
+    end
     let(:prematch_wager) { settled_prematch_bets.sum(&:amount) }
     let(:prematch_payout) { won_prematch_bets.sum(&:amount) }
     let(:prematch_bet_count) { settled_prematch_bets.length }
@@ -145,10 +203,8 @@ describe Customers::StatisticsController, '#show' do
         withdrawal_count: successful_withdrawals.length,
         withdrawal_value: withdrawal_value,
         hold_value: deposit_value - withdrawal_value,
-        theoretical_bonus_cost: 0.0,
-        potential_bonus_cost: 0.0,
-        actual_bonus_cost: 0.0,
-        total_bonus_value: 0.0,
+        total_bonus_awarded: total_bonus_awarded,
+        total_bonus_completed: total_bonus_completed,
         prematch_bet_count: prematch_bet_count,
         prematch_wager: prematch_wager,
         prematch_payout: prematch_payout,
@@ -173,73 +229,86 @@ describe Customers::StatisticsController, '#show' do
 
     before { visit customer_statistics_path(customer) }
 
-    context 'with integer statistic fields' do
-      let(:attribute) do
-        %i[deposit_count withdrawal_count
-           prematch_bet_count live_bet_count].sample
-      end
-      let(:value) { stats[attribute] }
+    it 'page contains integer statistic fields' do
+      attributes = %i[deposit_count withdrawal_count
+                      prematch_bet_count live_bet_count]
+      attributes.each do |attribute|
+        label = Customers::Statistic.human_attribute_name(attribute)
+        value = stats[attribute]
 
-      it 'page contains them' do
-        expect(page).to have_css("tr.#{attribute}", text: "#{label} #{value}")
-      end
-    end
-
-    context 'with float statistic fields' do
-      let(:attribute) do
-        %i[
-          deposit_value withdrawal_value prematch_wager prematch_payout
-          live_sports_wager live_sports_payout total_pending_bet_sum
-          hold_value total_wager total_payout
-        ].sample
-      end
-      let(:value) do
-        number_with_precision(stats[attribute], precision: 2)
-      end
-
-      it 'page contains them' do
-        expect(page).to have_css("tr.#{attribute}", text: "#{label} #{value} €")
+        expect(page)
+          .to have_css("tr.#{attribute}", text: "#{label} #{value}")
       end
     end
 
-    context 'with calculated float statistic fields' do
-      let(:attribute) { :total_bet_count }
-      let(:value) { stats[attribute] }
+    it 'page contains aggregated integer statistic fields' do
+      attributes = %i[total_bet_count]
+      attributes.each do |attribute|
+        label = Customers::Statistic.human_attribute_name(attribute)
+        value = stats[attribute]
 
-      it 'page contains them' do
-        expect(page).to have_css("tr.#{attribute}", text: "#{label} #{value}")
+        expect(page)
+          .to have_css("tr.#{attribute}", text: "#{label} #{value}")
       end
     end
 
-    context 'with statistic fields aggregated with respective method' do
-      let(:attribute) do
-        %i[
-          total_gross_gaming_revenue prematch_gross_gaming_revenue
-          live_gross_gaming_revenue total_margin prematch_margin
-          live_margin average_total_bet_value average_prematch_bet_value
-          average_live_bet_value
-        ].sample
-      end
-      let(:value) { number_with_precision(stats[attribute], precision: 2) }
+    it 'page contains float statistic fields' do
+      attributes = %i[
+        deposit_value withdrawal_value prematch_wager prematch_payout
+        live_sports_wager live_sports_payout total_pending_bet_sum
+        hold_value total_bonus_awarded total_bonus_completed
+      ]
+      attributes.each do |attribute|
+        label = Customers::Statistic.human_attribute_name(attribute)
+        value = number_with_precision(stats[attribute], precision: 2)
 
-      it 'page contains them' do
         expect(page)
           .to have_css("tr.#{attribute}", text: "#{label} #{value} €")
       end
     end
 
-    context 'with bonus statistic fields' do
-      let(:attribute) do
-        %i[
-          theoretical_bonus_cost potential_bonus_cost
-          actual_bonus_cost total_bonus_value
-        ].sample
-      end
-      let(:label) { Customers::Statistic.human_attribute_name(attribute) }
+    it 'page contains aggregated float statistic fields' do
+      attributes = %i[
+        total_gross_gaming_revenue prematch_gross_gaming_revenue
+        live_gross_gaming_revenue total_margin prematch_margin
+        live_margin average_total_bet_value average_prematch_bet_value
+        average_live_bet_value total_wager total_payout
+      ]
+      attributes.each do |attribute|
+        label = Customers::Statistic.human_attribute_name(attribute)
+        value = number_with_precision(stats[attribute], precision: 2)
 
-      it 'they are shown as IN DEVELOPMENT' do
-        expect(page).to have_css("tr.#{attribute}", text: "#{label} -")
+        expect(page)
+          .to have_css("tr.#{attribute}", text: "#{label} #{value} €")
       end
+    end
+  end
+
+  context 'with last_updated_at' do
+    let(:label) do
+      Customers::Statistic.human_attribute_name(:last_updated_at)
+    end
+    let!(:stats) { create(:customer_statistic, customer: customer) }
+
+    before { visit customer_statistics_path(customer) }
+
+    it 'is shown on page' do
+      expect(page).to have_css(
+        'small.last_updated_at',
+        text: "#{label}: #{I18n.l(stats.updated_at)}"
+      )
+    end
+  end
+
+  context 'without last_updated_at' do
+    let(:label) do
+      Customers::Statistic.human_attribute_name(:last_updated_at)
+    end
+
+    before { visit customer_statistics_path(customer) }
+
+    it 'when stats has not been generated yet is shown on page' do
+      expect(page).to have_css('small.last_updated_at', text: "#{label}: N/A")
     end
   end
 end
