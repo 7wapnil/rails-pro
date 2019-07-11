@@ -1,14 +1,14 @@
 module CustomerBonuses
   class Complete < ApplicationService
-    delegate :wallet, to: :customer_bonus, allow_nil: true
-    delegate :bonus_balance, to: :wallet, allow_nil: true
+    delegate :wallet, to: :customer_bonus
+    delegate :bonus_balance, to: :wallet
 
     def initialize(customer_bonus:)
       @customer_bonus = customer_bonus
     end
 
     def call
-      return unless customer_bonus&.active?
+      return unless customer_bonus.active?
 
       return if customer_bonus.rollover_balance.positive?
 
@@ -21,11 +21,11 @@ module CustomerBonuses
     private
 
     def submit_entry_requests
-      request = remove_bonus_money_request
-      EntryRequests::BonusChangeWorker.perform_async(request.id)
+      subtract_request = remove_bonus_money_request
+      add_request = grant_real_money_request
 
-      request = grant_real_money_request
-      EntryRequests::BonusConversionWorker.perform_async(request.id)
+      EntryRequests::BonusChangeWorker.perform_async(subtract_request.id)
+      EntryRequests::BonusConversionWorker.perform_async(add_request.id)
     end
 
     def remove_bonus_money_request
