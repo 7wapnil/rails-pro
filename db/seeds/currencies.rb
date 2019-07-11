@@ -16,13 +16,14 @@ currency_mapping = [
 ]
 
 entry_currency_rule_ranges = {
-  EntryKinds::DEPOSIT => { min: 10, max: 1_000 },
-  EntryKinds::WIN => { min: 1, max: 10_000 },
-  EntryKinds::WITHDRAW => { min: -1_000, max: -10 },
-  EntryKinds::BET => { min: -1_000, max: -1 },
+  EntryKinds::DEPOSIT => { min: 0, max: 10_000 },
+  EntryKinds::WIN => { min: 0, max: 10_000 },
+  EntryKinds::WITHDRAW => { min: -10_000, max: 0 },
+  EntryKinds::BET => { min: -10_000, max: 0 },
   EntryKinds::REFUND => { min: 0, max: 10_000 },
   EntryKinds::ROLLBACK => { min: -10_000, max: 10_000 },
   EntryKinds::SYSTEM_BET_CANCEL => { min: -10_000, max: 10_000 },
+  EntryKinds::BONUS_CONVERSION => { min: 0, max: 10_000 },
   EntryKinds::BONUS_CHANGE => { min: -10_000, max: 10_000 }
 }.symbolize_keys
 
