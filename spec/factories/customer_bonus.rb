@@ -31,6 +31,18 @@ FactoryBot.define do
                                   strategy: :build
     end
 
+    trait :with_empty_bonus_balance do
+      after :create do |customer_bonus|
+        create(:balance, :bonus, wallet: customer_bonus.wallet, amount: 0)
+      end
+    end
+
+    trait :with_positive_bonus_balance do
+      after :create do |customer_bonus|
+        create(:balance, :bonus, wallet: customer_bonus.wallet, amount: 10)
+      end
+    end
+
     CustomerBonus.statuses.keys.each do |status|
       trait(status.to_sym) do
         status { status }

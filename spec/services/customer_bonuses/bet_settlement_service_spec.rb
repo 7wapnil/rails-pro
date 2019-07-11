@@ -1,11 +1,13 @@
 describe CustomerBonuses::BetSettlementService do
   subject { described_class.call(bet) }
 
+  before do
+    allow(CustomerBonuses::RolloverCalculationService)
+      .to receive(:call)
+  end
+
   context 'completion' do
     it 'calls bonus completion when rollover becomes negative' do
-      allow(CustomerBonuses::RolloverCalculationService)
-        .to receive(:call)
-
       bonus = create(:customer_bonus, rollover_balance: -1)
       bet = create(:bet, :settled, customer_bonus: bonus)
 
@@ -14,9 +16,6 @@ describe CustomerBonuses::BetSettlementService do
     end
 
     it 'calls bonus completion when rollover becomes zero' do
-      allow(CustomerBonuses::RolloverCalculationService)
-        .to receive(:call)
-
       bonus = create(:customer_bonus, rollover_balance: 0)
       bet = create(:bet, :settled, customer_bonus: bonus)
 
@@ -25,10 +24,9 @@ describe CustomerBonuses::BetSettlementService do
     end
 
     it 'doesn\'t call bonus completion when rollover is positive' do
-      allow(CustomerBonuses::RolloverCalculationService)
-        .to receive(:call)
-
-      bonus = create(:customer_bonus, rollover_balance: 1)
+      bonus = create(:customer_bonus,
+                     :with_positive_bonus_balance,
+                     rollover_balance: 1)
       bet = create(:bet, :settled, customer_bonus: bonus)
 
       expect(CustomerBonuses::CompleteWorker).not_to receive(:perform_async)
@@ -36,19 +34,61 @@ describe CustomerBonuses::BetSettlementService do
     end
   end
 
-  context 'with negative bonus balance amount' do
-    let(:bonus_balance) { create(:balance, :bonus, amount: -10) }
-    let(:wallet) { create(:wallet, bonus_balance: bonus_balance) }
-    let(:customer_bonus) { create(:customer_bonus, wallet: wallet) }
-    let(:bet) do
-      create(:bet, :settled, :won, customer_bonus: customer_bonus,
-                                   customer: wallet.customer)
+  context 'losing' do
+    it 'doesn\'t lose when bonus money balance is positive' do
+      customer_bonus = create(:customer_bonus, :with_positive_bonus_balance)
+      bet = create(:bet, :settled, customer_bonus: customer_bonus)
+
+      expect(customer_bonus)
+        .not_to receive(:lose!)
+
+      described_class.call(bet)
     end
 
-    before { subject }
+    it 'doesn\'t lose when customer bonus is not active' do
+      customer_bonus = create(:customer_bonus,
+                              :with_empty_bonus_balance,
+                              status: CustomerBonus::EXPIRED)
+      bet = create(:bet, :settled, customer_bonus: customer_bonus)
 
-    it 'marks customer bonus as lost' do
-      expect(customer_bonus).to be_lost
+      expect(customer_bonus)
+        .not_to receive(:lose!)
+
+      described_class.call(bet)
+    end
+
+    it 'doesn\'t lose when rollover requirements are reached' do
+      customer_bonus = create(:customer_bonus,
+                              :with_empty_bonus_balance,
+                              rollover_balance: 0)
+      bet = create(:bet, :settled, customer_bonus: customer_bonus)
+
+      expect(customer_bonus)
+        .not_to receive(:lose!)
+
+      described_class.call(bet)
+    end
+
+    it 'doesn\'t lose when customer bonus has pending bets' do
+      customer_bonus = create(:customer_bonus, :with_empty_bonus_balance)
+      bet = create(:bet, :settled, customer_bonus: customer_bonus)
+
+      create(:bet, :accepted, customer_bonus: customer_bonus) # pending bet
+
+      expect(customer_bonus)
+        .not_to receive(:lose!)
+
+      described_class.call(bet)
+    end
+
+    it 'loses when the criteria is met' do
+      customer_bonus = create(:customer_bonus, :with_empty_bonus_balance)
+      bet = create(:bet, :settled, customer_bonus: customer_bonus)
+
+      expect(customer_bonus)
+        .to receive(:lose!)
+
+      described_class.call(bet)
     end
   end
 end

@@ -1,50 +1,50 @@
 module CustomerBonuses
   class BetSettlementService < ApplicationService
-    include JobLogger
-
     def initialize(bet)
       @bet = bet
+      @customer_bonus = bet.customer_bonus
     end
 
     def call
       return unless customer_bonus&.active?
 
       recalculate_bonus_rollover
-      complete_bonus if customer_bonus.reload.rollover_balance <= 0
-      customer_bonus.reload
-      return if customer_bonus.locked? || customer_bonus.completed?
 
-      bonus_money_left = customer_bonus.wallet.bonus_balance&.amount
+      return complete_bonus! if complete_bonus?
 
-      log_job_message(:debug, message: 'checking wallet bonus balance',
-                              wallet_id: customer_bonus.wallet,
-                              bonus_money_left: bonus_money_left)
-
-      lose_bonus unless bonus_money_left&.positive?
+      lose_bonus! if lose_bonus?
     end
-
-    attr_reader :bet
-
-    delegate :customer_bonus, to: :bet
 
     private
 
+    attr_reader :bet, :customer_bonus
+
     def recalculate_bonus_rollover
       ::CustomerBonuses::RolloverCalculationService.call(bet)
+      customer_bonus.reload
     end
 
-    def complete_bonus
+    def complete_bonus!
       CustomerBonuses::CompleteWorker
         .perform_async(customer_bonus.id)
     end
 
-    def lose_bonus
-      return unless customer_bonus.active?
+    def lose_bonus!
+      CustomerBonuses::Deactivate.call(
+        bonus: customer_bonus,
+        action: CustomerBonuses::Deactivate::LOSE
+      )
+    end
 
-      # Other CustomerBonus deactivation processes
-      # involve bonus balance confiscation. At this
-      # point, there is nothing to confiscate.
-      customer_bonus.lose!
+    def complete_bonus?
+      customer_bonus.rollover_balance <= 0
+    end
+
+    def lose_bonus?
+      customer_bonus.wallet.bonus_balance.amount <= 0 &&
+        customer_bonus.active? &&
+        customer_bonus.rollover_balance.positive? &&
+        Bet.pending.where(customer_bonus: customer_bonus).none?
     end
   end
 end

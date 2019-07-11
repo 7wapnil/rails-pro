@@ -7,7 +7,8 @@ module CustomerBonuses
 
     ACTIONS = [
       EXPIRE = :expire!,
-      CANCEL = :cancel!
+      CANCEL = :cancel!,
+      LOSE = :lose!
     ].freeze
 
     def initialize(bonus:, action:, **params)
@@ -55,7 +56,7 @@ module CustomerBonuses
     end
 
     def positive_bonus_balance?
-      bonus_balance&.amount.to_f.positive?
+      bonus_balance.amount.positive?
     end
 
     def log_deactivation
