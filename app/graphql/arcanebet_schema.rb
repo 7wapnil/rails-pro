@@ -45,7 +45,6 @@ GraphQL::Errors.configure(ArcanebetSchema) do
       error.path = [camelize_symbol(attribute)]
       ctx.add_error(error)
     end
-    ctx.errors.pop
   end
 
   rescue_from StandardError do |exception|

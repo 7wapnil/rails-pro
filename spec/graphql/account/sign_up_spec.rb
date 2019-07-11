@@ -61,7 +61,7 @@ describe GraphQL do
 
     it 'returns collection of validation errors' do
       paths = result['errors'].map { |err| err['path'][0].to_sym }
-      expect(paths).to match_array(%i[signUp agreedWithPrivacy email])
+      expect(paths).to match_array(%i[signUp agreedWithPrivacy email phone])
     end
   end
 
