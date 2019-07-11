@@ -164,10 +164,14 @@ describe CustomerBonuses::Create do
 
   context 'with de-facto expired active bonus' do
     let!(:expiring_bonus) do
-      create(:customer_bonus, customer: customer,
-                              original_bonus: bonus,
-                              activated_at: 2.years.ago,
-                              status: CustomerBonus::ACTIVE)
+      create(
+        :customer_bonus,
+        :with_positive_bonus_balance,
+        customer: customer,
+        original_bonus: bonus,
+        activated_at: 2.years.ago,
+        status: CustomerBonus::ACTIVE
+      )
     end
 
     before { subject }
@@ -177,7 +181,6 @@ describe CustomerBonuses::Create do
     end
 
     it 'expires the old customer bonus' do
-      expiring_bonus
       expect(expiring_bonus.reload).to be_expired
     end
   end

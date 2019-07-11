@@ -46,11 +46,7 @@ describe CustomerBonuses::Deactivate do
 
   context 'lose' do
     let :customer_bonus do
-      customer = create(:customer)
-      wallet = create(:wallet, customer: customer)
-      create(:balance, :bonus, wallet: wallet, amount: 0)
-
-      create(:customer_bonus, customer: customer, wallet: wallet)
+      create(:customer_bonus, :with_empty_bonus_balance)
     end
 
     let(:action) { described_class::LOSE }

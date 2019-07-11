@@ -5,9 +5,16 @@ describe CustomerBonuses::ExpiringBonusesHandler do
 
   let(:control_count) { rand(3..5) }
   let(:actual_bonuses) { create_list(:customer_bonus, rand(1..3)) }
+
   let(:expired_bonuses) do
-    create_list(:customer_bonus, control_count, activated_at: 100.days.ago)
+    create_list(
+      :customer_bonus,
+      control_count,
+      :with_empty_bonus_balance,
+      activated_at: 100.days.ago
+    )
   end
+
   let(:expired_bonuses_with_balance) do
     expired_bonuses.take(control_count - 2)
   end
@@ -17,9 +24,11 @@ describe CustomerBonuses::ExpiringBonusesHandler do
       create(:balance, :bonus, wallet_id: bonus.wallet_id)
     end
   end
+
   let!(:expired_bonus_balances) do
     expired_bonuses_with_balance.map do |bonus|
-      create(:balance, :bonus, wallet_id: bonus.wallet_id)
+      balance = Balance.find_by(kind: Balance::BONUS, wallet: bonus.wallet)
+      balance.update_attributes(amount: 10)
     end
   end
 

@@ -24,15 +24,10 @@ describe CustomerBonuses::BetSettlementService do
     end
 
     it 'doesn\'t call bonus completion when rollover is positive' do
-      customer = create(:customer)
-      wallet = create(:wallet, customer: customer)
       bonus = create(:customer_bonus,
-                     wallet: wallet,
-                     customer: customer,
+                     :with_positive_bonus_balance,
                      rollover_balance: 1)
       bet = create(:bet, :settled, customer_bonus: bonus)
-
-      create(:balance, :bonus, wallet: wallet)
 
       expect(CustomerBonuses::CompleteWorker).not_to receive(:perform_async)
       described_class.call(bet)
@@ -41,14 +36,8 @@ describe CustomerBonuses::BetSettlementService do
 
   context 'losing' do
     it 'doesn\'t lose when bonus money balance is positive' do
-      customer = create(:customer)
-      wallet = create(:wallet, customer: customer)
-      customer_bonus = create(:customer_bonus,
-                              wallet: wallet,
-                              customer: customer)
+      customer_bonus = create(:customer_bonus, :with_positive_bonus_balance)
       bet = create(:bet, :settled, customer_bonus: customer_bonus)
-
-      create(:balance, :bonus, wallet: wallet, amount: 10)
 
       expect(customer_bonus)
         .not_to receive(:lose!)
@@ -57,15 +46,10 @@ describe CustomerBonuses::BetSettlementService do
     end
 
     it 'doesn\'t lose when customer bonus is not active' do
-      customer = create(:customer)
-      wallet = create(:wallet, customer: customer)
       customer_bonus = create(:customer_bonus,
-                              status: CustomerBonus::EXPIRED,
-                              wallet: wallet,
-                              customer: customer)
+                              :with_empty_bonus_balance,
+                              status: CustomerBonus::EXPIRED)
       bet = create(:bet, :settled, customer_bonus: customer_bonus)
-
-      create(:balance, :bonus, wallet: wallet, amount: 0)
 
       expect(customer_bonus)
         .not_to receive(:lose!)
@@ -74,15 +58,10 @@ describe CustomerBonuses::BetSettlementService do
     end
 
     it 'doesn\'t lose when rollover requirements are reached' do
-      customer = create(:customer)
-      wallet = create(:wallet, customer: customer)
       customer_bonus = create(:customer_bonus,
-                              wallet: wallet,
-                              customer: customer,
+                              :with_empty_bonus_balance,
                               rollover_balance: 0)
       bet = create(:bet, :settled, customer_bonus: customer_bonus)
-
-      create(:balance, :bonus, wallet: wallet, amount: 0)
 
       expect(customer_bonus)
         .not_to receive(:lose!)
@@ -91,14 +70,9 @@ describe CustomerBonuses::BetSettlementService do
     end
 
     it 'doesn\'t lose when customer bonus has pending bets' do
-      customer = create(:customer)
-      wallet = create(:wallet, customer: customer)
-      customer_bonus = create(:customer_bonus,
-                              wallet: wallet,
-                              customer: customer)
+      customer_bonus = create(:customer_bonus, :with_empty_bonus_balance)
       bet = create(:bet, :settled, customer_bonus: customer_bonus)
 
-      create(:balance, :bonus, wallet: wallet, amount: 0)
       create(:bet, :accepted, customer_bonus: customer_bonus) # pending bet
 
       expect(customer_bonus)
@@ -108,14 +82,8 @@ describe CustomerBonuses::BetSettlementService do
     end
 
     it 'loses when the criteria is met' do
-      customer = create(:customer)
-      wallet = create(:wallet, customer: customer)
-      customer_bonus = create(:customer_bonus,
-                              wallet: wallet,
-                              customer: customer)
+      customer_bonus = create(:customer_bonus, :with_empty_bonus_balance)
       bet = create(:bet, :settled, customer_bonus: customer_bonus)
-
-      create(:balance, :bonus, wallet: wallet, amount: 0)
 
       expect(customer_bonus)
         .to receive(:lose!)
