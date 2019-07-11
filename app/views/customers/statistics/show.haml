@@ -1,15 +1,18 @@
 - content_for :js do
   = javascript_pack_tag 'customers/navigation_links'
 
+- content_for :navigation_content do
+  %small.last_updated_at= stats.last_updated_at(human: true)
+
 - content_for :page_content do
   .mt-4
     .row
       .col-md-6.mb-3
-        = render 'deposit_and_withdrawal', stats: @stats
-        = render 'bonus', stats: @stats
-        = render 'profit_and_revenue', stats: @stats
+        = render 'deposit_and_withdrawal', stats: stats
+        = render 'bonus', stats: stats
+        = render 'profit_and_revenue', stats: stats
 
       .col-md-6.mb-3
-        = render 'sports_betting', stats: @stats
+        = render 'sports_betting', stats: stats
 
 = render 'customers/base_template', customer: @customer

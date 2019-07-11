@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe SafeCharge::WebhookHandler do
   let(:webhook_checksum) { SecureRandom.hex(10) }
   let(:service_call) { described_class.call(params) }
@@ -8,7 +10,7 @@ describe SafeCharge::WebhookHandler do
                                    amount: entry_request.amount * ratio,
                                    entry_request: entry_request)
   end
-  let(:entry_currency_rule) { create(:entry_currency_rule) }
+  let(:entry_currency_rule) { create(:entry_currency_rule, min_amount: 0) }
   let(:params) do
     {
       'ppp_status' => SafeCharge::Statuses::OK,

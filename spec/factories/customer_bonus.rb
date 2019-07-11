@@ -22,10 +22,6 @@ FactoryBot.define do
     wallet
     association :original_bonus, factory: :bonus, strategy: :build
 
-    trait :initial do
-      status { CustomerBonus::INITIAL }
-    end
-
     trait :expired do
       activated_at { (valid_for_days + 1).days.ago }
     end
@@ -44,6 +40,12 @@ FactoryBot.define do
     trait :with_positive_bonus_balance do
       after :create do |customer_bonus|
         create(:balance, :bonus, wallet: customer_bonus.wallet, amount: 10)
+      end
+    end
+
+    CustomerBonus.statuses.keys.each do |status|
+      trait(status.to_sym) do
+        status { status }
       end
     end
   end

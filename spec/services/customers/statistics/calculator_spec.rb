@@ -18,32 +18,89 @@ describe Customers::Statistics::Calculator do
   context 'statistic calculation' do
     let!(:entries) do
       [
-        create(:entry, :win, customer: customer),
-        create(:entry, :withdraw, customer: customer),
-        create(:entry, :bet, customer: customer),
-        create(:entry, :refund, customer: customer)
+        create(:entry, :win, :with_balance_entries, customer: customer),
+        create(:entry, :withdraw, :with_balance_entries, customer: customer),
+        create(:entry, :bet, :with_real_money_balance_entry,
+               customer: customer),
+        create(:entry, :refund, :with_real_money_balance_entry,
+               customer: customer)
       ]
     end
+
+    # DEPOSITS
+
     let!(:successful_deposits) do
-      create_list(:entry, rand(1..3), customer: customer)
+      [
+        *create_list(:entry, rand(1..2), :with_real_money_balance_entry,
+                     customer: customer),
+        *create_list(:entry, rand(1..2), :with_balance_entries,
+                     customer: customer)
+      ]
     end
+    let(:successful_deposit_real_money_balance_entries) do
+      successful_deposits.map(&:real_money_balance_entry)
+    end
+
+    # WITHDRAWALS
 
     let(:withdrawal) { create(:withdrawal, :approved) }
     let!(:withdrawals) do
       [
-        create(:entry, :withdraw,
+        create(:entry, :withdraw, :with_real_money_balance_entry,
                customer: customer,
                origin: build(:withdrawal, :rejected)),
-        create(:entry, :withdraw,
+        create(:entry, :withdraw, :with_balance_entries,
                customer: customer,
                origin: build(:withdrawal))
       ]
     end
     let!(:successful_withdrawals) do
-      create_list(:entry, rand(1..3), :withdraw,
-                  customer: customer,
-                  origin: withdrawal)
+      [
+        *create_list(:entry, rand(1..2),
+                     :withdraw, :with_real_money_balance_entry,
+                     customer: customer,
+                     origin: withdrawal),
+        *create_list(:entry, rand(1..2), :withdraw, :with_balance_entries,
+                     customer: customer,
+                     origin: withdrawal)
+      ]
     end
+    let(:successful_withdrawal_real_money_balance_entries) do
+      successful_withdrawals.map(&:real_money_balance_entry)
+    end
+
+    # BONUSES
+
+    let!(:not_included_customer_bonuses) do
+      CustomerBonus
+        .statuses
+        .keys
+        .map(&:to_sym)
+        .map { |status| create(:customer_bonus, status, customer: customer) }
+    end
+    let!(:awarded_customer_bonuses) do
+      create_list(:customer_bonus, rand(1..3), :active, :with_balance_entry,
+                  customer: customer)
+    end
+    let(:awarded_customer_bonus_balance_entries) do
+      awarded_customer_bonuses.map(&:balance_entry)
+    end
+
+    let!(:bonus_conversion_entries) do
+      [
+        *create_list(:entry, rand(1..2),
+                     :bonus_conversion, :with_real_money_balance_entry,
+                     customer: customer),
+        *create_list(:entry, rand(1..2),
+                     :bonus_conversion, :with_balance_entries,
+                     customer: customer)
+      ]
+    end
+    let(:bonus_conversion_real_money_balance_entries) do
+      bonus_conversion_entries.map(&:real_money_balance_entry)
+    end
+
+    # BETS
 
     let(:event) { create(:event) }
     let(:market) { create(:market, event: event) }
@@ -61,7 +118,6 @@ describe Customers::Statistics::Calculator do
     end
     let!(:prematch_bets) do
       [
-        create(:bet, prematch_attributes),
         create(:bet, :cancelled, prematch_attributes),
         create(:bet, :rejected, prematch_attributes),
         create(:bet, :failed, prematch_attributes)
@@ -70,6 +126,7 @@ describe Customers::Statistics::Calculator do
 
     let!(:pending_prematch_bets) do
       [
+        create(:bet, prematch_attributes),
         create(:bet, :sent_to_internal_validation, prematch_attributes),
         create(:bet, :validated_internally, prematch_attributes),
         create(:bet, status: external_validation_state, **prematch_attributes),
@@ -89,7 +146,6 @@ describe Customers::Statistics::Calculator do
     let(:live_attributes) { { market: market, customer: customer } }
     let!(:live_bets) do
       [
-        create(:bet, live_attributes),
         create(:bet, :cancelled, live_attributes),
         create(:bet, :rejected, live_attributes),
         create(:bet, :failed, live_attributes)
@@ -97,6 +153,7 @@ describe Customers::Statistics::Calculator do
     end
     let!(:pending_live_bets) do
       [
+        create(:bet, live_attributes),
         create(:bet, :sent_to_internal_validation, live_attributes),
         create(:bet, :validated_internally, live_attributes),
         create(:bet, status: external_validation_state, **live_attributes),
@@ -113,8 +170,20 @@ describe Customers::Statistics::Calculator do
       ].flatten
     end
 
-    let(:deposit_value) { successful_deposits.sum(&:amount) }
-    let(:withdrawal_value) { successful_withdrawals.sum(&:amount).abs }
+    # CALCULATED VALUES
+
+    let(:deposit_value) do
+      successful_deposit_real_money_balance_entries.sum(&:amount)
+    end
+    let(:withdrawal_value) do
+      successful_withdrawal_real_money_balance_entries.sum(&:amount).abs
+    end
+    let(:total_bonus_awarded) do
+      awarded_customer_bonus_balance_entries.sum(&:amount)
+    end
+    let(:total_bonus_completed) do
+      bonus_conversion_real_money_balance_entries.sum(&:amount)
+    end
     let(:prematch_wager) { settled_prematch_bets.sum(&:amount) }
     let(:prematch_payout) { won_prematch_bets.sum(&:amount) }
     let(:prematch_bet_count) { settled_prematch_bets.length }
@@ -137,9 +206,8 @@ describe Customers::Statistics::Calculator do
         deposit_value: deposit_value,
         withdrawal_count: successful_withdrawals.length,
         withdrawal_value: withdrawal_value,
-        theoretical_bonus_cost: 0.0,
-        potential_bonus_cost: 0.0,
-        actual_bonus_cost: 0.0,
+        total_bonus_awarded: total_bonus_awarded,
+        total_bonus_completed: total_bonus_completed,
         prematch_bet_count: prematch_bet_count,
         prematch_wager: prematch_wager,
         prematch_payout: prematch_payout,
@@ -147,7 +215,8 @@ describe Customers::Statistics::Calculator do
         live_sports_wager: live_sports_wager,
         live_sports_payout: live_sports_payout,
         total_pending_bet_sum: total_pending_bet_sum,
-        updated_at: current_time
+        updated_at: current_time,
+        last_updated_at: nil
       )
     end
 
@@ -158,8 +227,8 @@ describe Customers::Statistics::Calculator do
       let(:expected_withdrawal_count) do
         successful_withdrawals.length + stats.withdrawal_count
       end
-      let(:expected_total_pending_bet_sum) do
-        total_pending_bet_sum + stats.total_pending_bet_sum
+      let(:expected_total_bonus_completed) do
+        stats.total_bonus_completed + total_bonus_completed
       end
 
       it 'returns stats with expected numbers' do
@@ -168,18 +237,21 @@ describe Customers::Statistics::Calculator do
           deposit_value: deposit_value + stats.deposit_value,
           withdrawal_count: expected_withdrawal_count,
           withdrawal_value: withdrawal_value + stats.withdrawal_value,
-          theoretical_bonus_cost: stats.theoretical_bonus_cost,
-          potential_bonus_cost: stats.potential_bonus_cost,
-          actual_bonus_cost: stats.actual_bonus_cost,
+          total_bonus_awarded: stats.total_bonus_awarded + total_bonus_awarded,
+          total_bonus_completed: expected_total_bonus_completed,
           prematch_bet_count: prematch_bet_count + stats.prematch_bet_count,
           prematch_wager: prematch_wager + stats.prematch_wager,
           prematch_payout: prematch_payout + stats.prematch_payout,
           live_bet_count: live_bet_count + stats.live_bet_count,
           live_sports_wager: live_sports_wager + stats.live_sports_wager,
           live_sports_payout: live_sports_payout + stats.live_sports_payout,
-          total_pending_bet_sum: expected_total_pending_bet_sum,
+          total_pending_bet_sum: total_pending_bet_sum,
           updated_at: current_time
         )
+      end
+
+      it 'returns last_updated_at from previous updated_at' do
+        expect(subject.last_updated_at.to_s).to eq(stats.updated_at.to_s)
       end
     end
   end

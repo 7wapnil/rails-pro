@@ -74,17 +74,19 @@ en:
     attributes:
       customers/statistic:
         hold_value: Hold
-        total_bonus_value: Total bonus awarded
+        total_bonus_awarded: Total bonus awarded
+        total_bonus_completed: Total bonus completed
         total_bet_count: Total sports bet count
         total_payout: Total sports payout
         total_wager: Total sports wager
         total_gross_gaming_revenue: Gross Gaming Revenue (GGR)
         prematch_gross_gaming_revenue: Prematch Gross Gaming Revenue (GGR)
         live_gross_gaming_revenue: Live Gross Gaming Revenue (GGR)
-        total_margin: Sports marging
-        prematch_margin: Prematch marging
-        live_margin: Live marging
+        total_margin: Sports margin
+        prematch_margin: Prematch margin
+        live_margin: Live margin
         average_total_bet_value: Average sports bet value
+        last_updated_at: Last calculated at
 
   attributes:
     account_information: Account information
@@ -237,7 +239,7 @@ en:
       deposit_and_withdrawal:
         title: Financials - Deposits & Withdrawals category
       bonus:
-        title: Bonus (In development)
+        title: Bonus
       sports_betting:
         title: Sports Betting
       profit_and_revenue:

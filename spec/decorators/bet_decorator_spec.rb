@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe BetDecorator, decorator: true do
+describe BetDecorator, type: :decorator do
   subject { bet.decorate }
 
   let(:bet) { build(:bet) }
