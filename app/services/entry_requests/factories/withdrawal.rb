@@ -12,7 +12,7 @@ module EntryRequests
       def call
         create_entry_request!
         create_balance_entry_request!
-        create_withdrawal_request!
+        create_withdrawal!
         validate_entry_request!
 
         entry_request
@@ -21,7 +21,7 @@ module EntryRequests
       private
 
       attr_reader :transaction, :amount, :customer_rules,
-                  :entry_request, :withdrawal_request
+                  :entry_request, :withdrawal
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(
@@ -57,10 +57,11 @@ module EntryRequests
                                                 real_money: amount)
       end
 
-      def create_withdrawal_request!
-        @withdrawal_request = WithdrawalRequest.create!(
+      def create_withdrawal!
+        @withdrawal = ::Withdrawal.create!(
           entry_request: entry_request,
-          payment_details: transaction.details
+          status: CustomerTransaction::PENDING,
+          details: transaction.details
         )
       end
 
@@ -87,7 +88,7 @@ module EntryRequests
         attribute, message = form.errors.first
 
         entry_request.register_failure!(message, attribute)
-        withdrawal_request.failed!
+        withdrawal.failed!
       end
 
       def validate_customer_rules!

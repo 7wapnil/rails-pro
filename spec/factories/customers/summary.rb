@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :customers_summary, class: Customers::Summary.name do
-    day { Date.today }
+    day { Date.current }
     bonus_wager_amount { rand(0.0..10_000.00).round(2) }
     real_money_wager_amount { rand(0.0..10_000.00).round(2) }
     bonus_payout_amount { rand(0.0..10_000.00).round(2) }

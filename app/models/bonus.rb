@@ -41,7 +41,7 @@ class Bonus < ApplicationRecord
 
   class << self
     def from_code(code)
-      active.find_by('lower(code) = ?', code.downcase)
+      active.find_by('lower(code) = ?', code&.downcase)
     end
   end
 end

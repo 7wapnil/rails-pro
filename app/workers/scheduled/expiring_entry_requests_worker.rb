@@ -7,7 +7,7 @@ module Scheduled
     def perform
       EntryRequest.deposit.expired.find_each do |entry_request|
         entry_request.register_failure!('Entry request was expired')
-        entry_request.origin&.customer_bonus&.fail!
+        entry_request.deposit&.customer_bonus&.fail!
       end
     end
   end

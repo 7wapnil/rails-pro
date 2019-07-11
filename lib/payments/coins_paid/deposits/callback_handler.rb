@@ -91,7 +91,7 @@ module Payments
                               .wallets
                               .joins(:currency)
                               .find_by(currencies: { code: currency_code })
-                              .customer_bonus
+                              &.customer_bonus
         end
 
         def valid_entry_for_customer_bonus?
@@ -142,7 +142,7 @@ module Payments
             "#{message} for entry request with id #{entry_request.id}"
 
           entry_request.register_failure!(message)
-          fail_bonus
+          fail_related_entities
 
           raise message: 'CoinsPaid deposit callback error',
                 error: error_message

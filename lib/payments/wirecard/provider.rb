@@ -11,6 +11,10 @@ module Payments
       def deposit_response_handler
         ::Payments::Wirecard::Deposits::CallbackHandler
       end
+
+      def payout_request_handler
+        ::Payments::Wirecard::Payouts::RequestHandler
+      end
     end
   end
 end

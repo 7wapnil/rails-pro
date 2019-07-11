@@ -10,7 +10,7 @@ module Mts
             .joins(market: :event)
             .where(
               markets: { status: :active },
-              events: { start_at: [Time.zone.now..Date.today.end_of_day] }
+              events: { start_at: [Time.zone.now..Date.current.end_of_day] }
             )
             .sample
 

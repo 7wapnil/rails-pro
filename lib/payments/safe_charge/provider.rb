@@ -10,6 +10,10 @@ module Payments
       def deposit_response_handler
         ::Payments::SafeCharge::Deposits::CallbackHandler
       end
+
+      def payout_request_handler
+        ::Payments::SafeCharge::Payouts::RequestHandler
+      end
     end
   end
 end

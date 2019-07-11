@@ -14,7 +14,7 @@
   %tbody
     - if filter.withdrawals.any?
       - filter.withdrawals.each do |withdrawal|
-        %tr{ id: "withdrawalrequest-#{withdrawal.id}" }
+        %tr{ id: "withdrawal-#{withdrawal.id}" }
           %td= withdrawal.id
           %td= link_to withdrawal.customer.username, customer_path(withdrawal.customer)
           %td= l(withdrawal.created_at, format: :long)
@@ -27,9 +27,9 @@
           %td
             %table.table
               %tbody
-                - withdrawal.payment_details.to_h.each.with_index do |(label, property), i|
+                - withdrawal.details.to_h.each.with_index do |(label, property), i|
                   %tr{ class: i.zero? && 'table-borderless' }
-                    %td= t("withdrawal_requests.payment_details.#{label}")
+                    %td= t("withdrawals.payment_details.#{label}")
                     %td= property
           %td= link_to 'Entry request', entry_request_path(withdrawal.entry_request)
 

@@ -165,7 +165,7 @@ module StateMachines
 
       def update_summary
         Customers::Summaries::UpdateWorker.perform_async(
-          Date.today,
+          Date.current,
           betting_customer_ids: customer_id
         )
       end

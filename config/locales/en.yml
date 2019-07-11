@@ -426,8 +426,8 @@ en:
       payment_failed_with_reason_error: "Payment was failed: `%{reason}`"
       payment_cancelled_error: Payment was cancelled
       cancelled_by_customer: Payment was cancelled by customer
-      deposit_request_cancelled: Deposit was cancelled
-      deposit_request_failed: Your deposit was failed. Please, try again
+      deposit_cancelled: Deposit was cancelled
+      deposit_failed: Your deposit was failed. Please, try again
       unsupported_payment_method: "Payment method '%{code}' is not implemented"
       nonexistent_bet: "Bet with validation ticket does not exist"
       password_invalid: Incorrect password

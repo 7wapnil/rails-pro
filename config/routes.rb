@@ -112,10 +112,6 @@ Rails.application.routes.draw do
     end
   end
 
-  # TODO: remove after full coinspaid implementation
-  post '/payments/coinspaid/notification',
-       to: 'webhooks/coins_paid/payments#create'
-
   namespace :webhooks do
     namespace :safe_charge do
       resource :payment, only: %i[create show]

@@ -35,9 +35,9 @@ module Payments
         when ::Payments::Webhooks::Statuses::SUCCESS
           I18n.t('webhooks.safe_charge.redirections.success_message')
         when ::Payments::Webhooks::Statuses::CANCELLED
-          I18n.t('errors.messages.deposit_request_cancelled')
+          I18n.t('errors.messages.deposit_cancelled')
         when ::Payments::Webhooks::Statuses::FAILED
-          I18n.t('errors.messages.deposit_request_failed')
+          I18n.t('errors.messages.deposit_failed')
         when ::Payments::Webhooks::Statuses::SYSTEM_ERROR
           I18n.t('errors.messages.technical_error_happened')
         end

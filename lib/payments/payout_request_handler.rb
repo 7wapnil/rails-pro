@@ -12,6 +12,10 @@ module Payments
 
     attr_reader :transaction
 
+    def created?
+      raise NotImplementedError, 'Implement #created? method!'
+    end
+
     def payout_failed!
       withdrawal.update(
         transaction_message: error_message,

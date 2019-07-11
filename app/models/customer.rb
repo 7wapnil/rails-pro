@@ -189,7 +189,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   def update_summary
     Customers::Summaries::UpdateWorker.perform_async(
-      Date.today,
+      Date.current,
       signups_count: 1
     )
   end

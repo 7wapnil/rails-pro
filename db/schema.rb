@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_05_131512) do
+ActiveRecord::Schema.define(version: 2019_07_09_080430) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -105,6 +105,7 @@ ActiveRecord::Schema.define(version: 2019_07_05_131512) do
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"
+    t.boolean "counted_towards_rollover", default: false
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_bonus_id"], name: "index_bets_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
@@ -233,9 +234,6 @@ ActiveRecord::Schema.define(version: 2019_07_05_131512) do
     t.decimal "deposit_value", precision: 8, scale: 2, default: "0.0"
     t.integer "withdrawal_count", default: 0
     t.decimal "withdrawal_value", precision: 8, scale: 2, default: "0.0"
-    t.decimal "theoretical_bonus_cost", precision: 8, scale: 2, default: "0.0"
-    t.decimal "potential_bonus_cost", precision: 8, scale: 2, default: "0.0"
-    t.decimal "actual_bonus_cost", precision: 8, scale: 2, default: "0.0"
     t.integer "prematch_bet_count", default: 0
     t.decimal "prematch_wager", precision: 8, scale: 2, default: "0.0"
     t.decimal "prematch_payout", precision: 8, scale: 2, default: "0.0"
@@ -246,6 +244,9 @@ ActiveRecord::Schema.define(version: 2019_07_05_131512) do
     t.bigint "customer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "last_updated_at"
+    t.decimal "total_bonus_awarded", precision: 8, scale: 2, default: "0.0"
+    t.decimal "total_bonus_completed", precision: 8, scale: 2, default: "0.0"
     t.index ["customer_id"], name: "index_customer_statistics_on_customer_id"
   end
 

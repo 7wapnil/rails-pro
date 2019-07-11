@@ -18,7 +18,7 @@ module Payments
             'merchant-account-id': {
               'value': ENV['WIRECARD_MERCHANT_ACCOUNT_ID']
             },
-            'request-id': "{{$guid}}:#{transaction.id}",
+            'request-id': request_id,
             'transaction-type': 'authorization',
             'requested-amount': request_amount,
             'account-holder': account_holder,
@@ -29,6 +29,10 @@ module Payments
       end
 
       private
+
+      def request_id
+        "#{transaction.id}:#{Time.zone.now.to_i}"
+      end
 
       def webhook_url
         webhooks_wirecard_payment_url(

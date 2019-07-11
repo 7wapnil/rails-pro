@@ -6,7 +6,7 @@ module Payments
       attr_accessor :bonus_code
 
       def bonus
-        @bonus ||= Bonus.find_by(code: bonus_code)
+        @bonus ||= Bonus.from_code(bonus_code)
       end
     end
   end

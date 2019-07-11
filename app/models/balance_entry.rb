@@ -23,6 +23,6 @@ class BalanceEntry < ApplicationRecord
   private
 
   def update_summary
-    Customers::Summaries::BalanceUpdateWorker.perform_async(Date.today, id)
+    Customers::Summaries::BalanceUpdateWorker.perform_async(Date.current, id)
   end
 end

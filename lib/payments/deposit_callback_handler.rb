@@ -17,8 +17,9 @@ module Payments
       @entry_request ||= ::EntryRequest.find(request_id)
     end
 
-    def fail_bonus
+    def fail_related_entities
       customer_bonus&.fail!
+      entry_request&.origin&.failed!
     end
   end
 end

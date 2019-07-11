@@ -33,7 +33,7 @@ describe ::Payments::Webhooks::DepositRedirectionUrlBuilder do
   context 'when cancellation callback url requested' do
     let(:status) { ::Payments::Webhooks::Statuses::CANCELLED }
     let(:state) { :error }
-    let(:message) { I18n.t('errors.messages.deposit_request_cancelled') }
+    let(:message) { I18n.t('errors.messages.deposit_cancelled') }
 
     it 'generates correct url' do
       expect(subject).to eq(expected_url)
