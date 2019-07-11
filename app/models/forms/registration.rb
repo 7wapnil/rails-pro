@@ -21,6 +21,16 @@ module Forms
       errors.merge!(customer.errors)
     end
 
+    validate do
+      next if prepared_data[:address_attributes].values.all?(&:present?)
+
+      prepared_data[:address_attributes].each do |key, value|
+        next if value.present?
+
+        errors.add(key, I18n.t('errors.messages.blank'))
+      end
+    end
+
     def customer
       @customer ||= Customer.new(prepared_data)
     end
