@@ -8,7 +8,7 @@ module Bets
       end
 
       def call
-        ::CustomerBonuses::BetSettlementService.call(bet)
+        ::CustomerBonuses::BetSettlementService.call(bet) unless bet.void_factor
 
         create_entry_request!
         return unless entry_request
