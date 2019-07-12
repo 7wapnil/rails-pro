@@ -81,4 +81,43 @@ describe GraphQL, '#deposit_bonus' do
       expect(result['errors']).to be_blank
     end
   end
+
+  describe 'when customer already has active bonus' do
+    let(:bonus) { create(:bonus) }
+    let(:other_bonus) { create(:bonus) }
+    let(:code) { bonus.code }
+    let!(:customer_bonus) do
+      create(
+        :customer_bonus,
+        original_bonus: other_bonus,
+        customer: auth_customer,
+        status: 'active'
+      )
+    end
+
+    it 'returns an error on an already activated bonus' do
+      expect(error_message).to eq(
+        I18n.t('errors.messages.customer_has_active_bonus')
+      )
+    end
+  end
+
+  describe 'when bonus is non-repeatable' do
+    let(:bonus) { create(:bonus, repeatable: false) }
+    let(:code) { bonus.code }
+    let!(:customer_bonus) do
+      create(
+        :customer_bonus,
+        original_bonus: bonus,
+        customer: auth_customer,
+        status: 'completed'
+      )
+    end
+
+    it 'returns an error on repeated bonus activation' do
+      expect(error_message).to eq(
+        I18n.t('errors.messages.repeated_bonus_activation')
+      )
+    end
+  end
 end

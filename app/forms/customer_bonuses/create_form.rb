@@ -4,25 +4,29 @@ module CustomerBonuses
   class CreateForm
     include ActiveModel::Model
 
-    attr_accessor :subject
+    attr_reader :subject
 
     validate :ensure_no_active_bonus
     validate :validate_repeated_activation
 
     delegate :customer, :original_bonus, to: :subject
 
+    def initialize(bonus_attributes)
+      @subject = CustomerBonus.new(bonus_attributes)
+    end
+
     def submit!
       validate!
       subject.save!
     end
-
-    private
 
     def validate!
       return if valid?
 
       raise CustomerBonuses::ActivationError, displayed_error
     end
+
+    private
 
     def ensure_no_active_bonus
       return unless customer&.active_bonus
