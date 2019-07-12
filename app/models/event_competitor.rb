@@ -10,4 +10,6 @@ class EventCompetitor < ApplicationRecord
 
   belongs_to :event
   belongs_to :competitor
+
+  delegate :name, :external_id, to: :competitor
 end

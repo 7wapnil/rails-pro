@@ -13,7 +13,8 @@ module Events
     field :score, types.String
     field :timeInSeconds, types.Int,
           property: :time_in_seconds
-    field :competitors, !types[Events::EventCompetitorType]
+    field :competitors, !types[Events::EventCompetitorType],
+          property: :event_competitors
     field :markets, function: MarketsQuery.new
 
     field :priority, !types.Int
