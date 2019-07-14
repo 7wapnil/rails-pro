@@ -6,9 +6,9 @@ module Payments
       class NetellerForm
         include ActiveModel::Model
 
-        attr_accessor :neteller_account_id, :secure_id
+        attr_accessor :account_id, :secure_id
 
-        validates :neteller_account_id, :secure_id, presence: true
+        validates :account_id, :secure_id, presence: true
       end
     end
   end

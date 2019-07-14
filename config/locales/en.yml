@@ -620,7 +620,7 @@ en:
       success_message: "Withdrawal has been sent to processing successfully"
       payment_methods:
         credit_card:
-          title: Credit card (Visa, MasterCard, Maestro)
+          title: Credit card
           range: 'Range: %{min_amount} - %{max_amount} %{code} / No service fee'
           description: 'Debit/Credit Card withdrawals come with a 0% withdrawal fee'
         skrill:

@@ -6,9 +6,9 @@ module Payments
       class SkrillForm
         include ActiveModel::Model
 
-        attr_accessor :skrill_email_address
+        attr_accessor :email
 
-        validates :skrill_email_address, presence: true
+        validates :email, presence: true
       end
     end
   end

@@ -11,10 +11,10 @@ module Payments
         WRONG_FORMAT_MESSAGE =
           'payments.withdrawals.payment_methods.bitcoin.errors.address_format'
 
-        attr_accessor :bitcoin_address
+        attr_accessor :address
 
-        validates :bitcoin_address, presence: true
-        validates :bitcoin_address,
+        validates :address, presence: true
+        validates :address,
                   format: {
                     with: ->(*) { validation_regex },
                     message: I18n.t(WRONG_FORMAT_MESSAGE)

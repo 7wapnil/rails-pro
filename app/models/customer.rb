@@ -170,10 +170,12 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     entry_requests
       .deposit
       .succeeded
+      .joins(:deposit, :entry)
       .where(mode: Payments::Withdraw::PAYMENT_METHODS)
+      .where.not(customer_transactions: { details: nil })
       .order(created_at: :desc)
-      .pluck(:mode)
-      .uniq
+      .select('entry_requests.mode, customer_transactions.details')
+      .uniq(&:details)
   end
 
   private

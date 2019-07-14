@@ -190,50 +190,98 @@ describe Customer do
 
   describe 'available withdraw methods' do
     let(:customer) { create(:customer) }
+    let(:credit_card_deposit) { create(:deposit, :credit_card) }
+    let(:credit_card_entry_request) do
+      create(:entry_request, :with_entry,
+             customer: customer,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::CREDIT_CARD,
+             origin: credit_card_deposit)
+    end
+    let(:second_credit_card_entry_request) do
+      create(:entry_request, :with_entry,
+             customer: customer,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::CREDIT_CARD,
+             origin: create(:deposit, :credit_card))
+    end
+    let(:skrill_entry_request) do
+      create(:entry_request, :with_entry,
+             customer: customer,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::SKRILL,
+             origin: create(:deposit, :skrill))
+    end
+    let(:neteller_entry_request) do
+      create(:entry_request, :with_entry,
+             customer: customer,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::NETELLER,
+             origin: create(:deposit, :neteller))
+    end
+    let(:bitcoin_entry_request) do
+      create(:entry_request, :with_entry,
+             customer: customer,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::BITCOIN,
+             origin: create(:deposit, :bitcoin))
+    end
+
+    let!(:successful_entry_request) do
+      [
+        credit_card_entry_request,
+        second_credit_card_entry_request,
+        skrill_entry_request,
+        neteller_entry_request,
+        bitcoin_entry_request
+      ]
+    end
+
+    let!(:duplicated_credit_card_entry_request) do
+      create(:entry_request, :with_entry,
+             customer: customer,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::CREDIT_CARD,
+             origin: create(:deposit, details: credit_card_deposit.details))
+    end
+
+    let(:mapped_result) do
+      customer.available_withdrawal_methods
+              .map { |method| [method.mode, method.details] }
+    end
+
+    let(:expected_result) do
+      successful_entry_request.map do |entry_request|
+        [entry_request.mode, entry_request.deposit.details]
+      end
+    end
 
     before do
       create(:entry_request,
              customer: customer,
              status: EntryRequest::SUCCEEDED,
              mode: EntryRequest::CREDIT_CARD,
-             created_at: Time.new - 7.days)
-      create(:entry_request,
+             origin: create(:deposit, :credit_card))
+      create(:entry_request, :with_entry,
              customer: customer,
              status: EntryRequest::SUCCEEDED,
-             mode: EntryRequest::SKRILL,
-             created_at: Time.new - 6.days)
-      create(:entry_request,
+             mode: EntryRequest::CREDIT_CARD)
+      create(:entry_request, :with_entry,
              customer: customer,
              status: EntryRequest::SUCCEEDED,
-             mode: EntryRequest::PAYSAFECARD,
-             created_at: Time.new - 5.days)
-      create(:entry_request,
+             mode: EntryRequest::SKRILL)
+      create(:entry_request, :with_entry,
              customer: customer,
              status: EntryRequest::SUCCEEDED,
-             mode: EntryRequest::CREDIT_CARD,
-             created_at: Time.new - 4.days)
-      create(:entry_request,
-             customer: customer,
-             status: EntryRequest::FAILED,
-             mode: EntryRequest::CREDIT_CARD,
-             created_at: Time.new - 3.days)
-      create(:entry_request,
+             mode: EntryRequest::NETELLER)
+      create(:entry_request, :with_entry,
              customer: customer,
              status: EntryRequest::SUCCEEDED,
-             mode: EntryRequest::NETELLER,
-             created_at: Time.new - 2.days)
-      create(:entry_request,
-             customer: customer,
-             status: EntryRequest::SUCCEEDED,
-             mode: EntryRequest::CREDIT_CARD,
-             created_at: Time.new - 1.days)
+             mode: EntryRequest::BITCOIN)
     end
 
     it 'returns a list withdraw methods available for customer' do
-      available_methods = [EntryRequest::CREDIT_CARD,
-                           EntryRequest::NETELLER,
-                           EntryRequest::SKRILL]
-      expect(customer.available_withdrawal_methods).to eq(available_methods)
+      expect(mapped_result).to match_array(expected_result)
     end
   end
 end

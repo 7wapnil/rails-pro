@@ -8,6 +8,8 @@ class EntryRequest < ApplicationRecord
   belongs_to :currency
   belongs_to :initiator, polymorphic: true, optional: true
   belongs_to :origin, polymorphic: true, optional: true
+  belongs_to :deposit, foreign_key: :origin_id, optional: true
+
   has_many :balance_entry_requests, dependent: :destroy
 
   has_one :real_money_balance_entry_request, -> { real_money },

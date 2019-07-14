@@ -47,7 +47,7 @@ module Payments
           currency: ::Payments::CoinsPaid::Currency::BTC_CODE,
           foreign_id: transaction.id.to_s,
           amount: transaction.amount,
-          address: transaction.details['bitcoin_address']
+          address: transaction.details['address']
         }.to_json
       end
 

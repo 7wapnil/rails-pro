@@ -20,7 +20,7 @@ describe GraphQL, '#user' do
         username
         verified
         regular
-        availableWithdrawalMethods
+        availableWithdrawalMethods { note }
       }
     })
     end
