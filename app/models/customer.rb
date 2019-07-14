@@ -167,18 +167,8 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def available_withdrawal_methods
-    entry_requests
-      .deposit
-      .succeeded
-      .joins(:deposit, :entry)
-      .where(mode: Payments::Withdraw::PAYMENT_METHODS)
-      .where.not(customer_transactions: { details: nil })
-      .order(created_at: :desc)
-      .select('entry_requests.mode, customer_transactions.details')
-      .uniq(&:details)
+    ::Customers::AvailableWithdrawalMethods.call(customer: self)
   end
-
-  private
 
   def log_account_transition
     ctx = {

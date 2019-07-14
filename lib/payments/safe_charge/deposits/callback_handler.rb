@@ -16,6 +16,7 @@ module Payments
 
           save_transaction_id! unless entry_request.external_id
           update_entry_request_mode!
+          update_deposit_details!
 
           return if pending?
           return complete_entry_request! if approved?
@@ -68,6 +69,14 @@ module Payments
           ::Payments::SafeCharge::PaymentMethodService.call(
             payment_method_code: response[:payment_method],
             entry_request:       entry_request
+          )
+        end
+
+        # TODO: recheck what fields we will be storing in payment details
+        def update_deposit_details!
+          ::Payments::SafeCharge::DepositDetailsService.call(
+            entry_request: entry_request,
+            field: response[:userPaymentOptionId]
           )
         end
 

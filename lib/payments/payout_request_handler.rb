@@ -12,6 +12,8 @@ module Payments
 
     attr_reader :transaction
 
+    delegate :withdrawal, to: :transaction, allow_nil: true
+
     def created?
       raise NotImplementedError, 'Implement #created? method!'
     end
@@ -23,10 +25,6 @@ module Payments
       )
 
       raise ::Withdrawals::PayoutError, error_message
-    end
-
-    def withdrawal
-      transaction.withdrawal
     end
 
     def error_message

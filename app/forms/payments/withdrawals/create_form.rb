@@ -41,7 +41,12 @@ module Payments
       def validate_payment_details
         return if ::Payments::Withdraw::PAYMENT_METHODS.exclude?(payment_method)
 
-        form = payment_method_form_class.new(payment_details)
+        form = payment_method_form_class.new(
+          wallet: wallet,
+          customer: customer,
+          payment_method: payment_method,
+          **payment_details.symbolize_keys
+        )
 
         return if form.valid?
 

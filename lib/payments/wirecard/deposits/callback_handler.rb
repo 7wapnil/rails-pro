@@ -15,6 +15,7 @@ module Payments
           return cancel_entry_request if cancelled?
 
           save_transaction_id! unless entry_request.external_id
+          update_deposit_details!
 
           return complete_entry_request if approved?
 
@@ -61,6 +62,26 @@ module Payments
 
         def transaction_id
           response.dig('payment', 'transaction-id')
+        end
+
+        # TODO: recheck what fields we will be storing in payment details
+        def update_deposit_details!
+          entry_request.deposit.update(
+            details: {
+              last_four_digits: masked_account_number,
+              holder_name: holder_name
+            }
+          )
+        end
+
+        def masked_account_number
+          response.dig('payment', 'card-token', 'masked-account-number')
+        end
+
+        def holder_name
+          section = response.dig('payment', 'account-holder')
+
+          [section['first-name'], section['last-name']].join(' ')
         end
 
         def approved?

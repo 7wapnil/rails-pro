@@ -3,12 +3,18 @@
 module Payments
   module Withdrawals
     module Methods
-      class NetellerForm
-        include ActiveModel::Model
+      class NetellerForm < WithdrawalMethodForm
+        attr_accessor :account_id
 
-        attr_accessor :account_id, :secure_id
+        validates :account_id, presence: true
 
-        validates :account_id, :secure_id, presence: true
+        def identifier
+          :account_id
+        end
+
+        def consistency_error_message
+          I18n.t('errors.messages.payments.withdrawals.neteller.inconsistent')
+        end
       end
     end
   end

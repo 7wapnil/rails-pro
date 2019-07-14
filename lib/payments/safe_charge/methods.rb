@@ -24,6 +24,12 @@ module Payments
         APMGW_YANDEXMONEY => ::Payments::Methods::YANDEX,
         APMGW_QIWI => ::Payments::Methods::QIWI
       }.freeze
+
+      IDENTIFIERS_MAP = {
+        ::Payments::Methods::CREDIT_CARD => :last_four_digits,
+        ::Payments::Methods::SKRILL => :email,
+        ::Payments::Methods::NETELLER => :account_id
+      }.freeze
     end
   end
 end

@@ -455,6 +455,15 @@ en:
       entry_requests:
         bonus_expired: 'Customer bonus is expired!'
 
+      payments:
+        withdrawals:
+          credit_card:
+            inconsistent: Last four credit card digits should be the same as were used for deposit
+          skrill:
+            inconsistent: Skrill email address should be the same as was used for deposit
+          neteller:
+            inconsistent: Neteller account id should be the same as was used for deposit
+
       withdrawal:
         not_enough_money: Please check your available balance
         invalid_payment_method: "Invalid payment method: %{payment_method}"

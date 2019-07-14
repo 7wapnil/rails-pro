@@ -61,6 +61,9 @@ module Payments
       SKRILL, NETELLER, PAYSAFECARD, SOFORT, IDEAL, WEBMONEY, YANDEX, QIWI
     ].freeze
 
+    CHOSEN_PAYMENT_METHODS = [CREDIT_CARD, SKRILL, NETELLER].freeze
+    ENTERED_PAYMENT_METHODS = [BITCOIN].freeze
+
     def find_method_provider(method)
       find_provider_config(method)[:provider]
     end

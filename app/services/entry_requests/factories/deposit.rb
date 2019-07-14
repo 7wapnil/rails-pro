@@ -14,6 +14,7 @@ module EntryRequests
         @passed_initiator = attributes[:initiator]
         @passed_comment = attributes[:comment]
         @external_id = attributes[:external_id]
+        @payment_details = attributes[:payment_details]
       end
 
       def call
@@ -28,7 +29,8 @@ module EntryRequests
       private
 
       attr_reader :wallet, :amount, :customer_bonus, :passed_initiator,
-                  :mode, :passed_comment, :entry_request, :deposit, :external_id
+                  :mode, :passed_comment, :entry_request, :deposit,
+                  :external_id, :payment_details
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
@@ -91,7 +93,8 @@ module EntryRequests
         @deposit = ::Deposit.create!(
           status: ::CustomerTransaction::SUCCEEDED,
           entry_request: entry_request,
-          customer_bonus: customer_bonus
+          customer_bonus: customer_bonus,
+          details: payment_details
         )
       end
 

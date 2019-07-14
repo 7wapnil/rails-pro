@@ -4,10 +4,25 @@ describe GraphQL, '#withdraw' do
   let(:auth_customer) { create(:customer) }
   let(:amount) { Faker::Number.decimal(2, 2).to_d }
   let(:payment_method) { ::Payments::Methods::CREDIT_CARD }
+
+  let(:details) do
+    {
+      holder_name: Faker::Lorem.characters(25),
+      last_four_digits: '1234'
+    }
+  end
+  let(:successful_deposit) { create(:deposit, :credit_card, details: details) }
+  let!(:successful_deposit_entry_request) do
+    create(:entry_request, :deposit, :succeeded, :with_entry,
+           mode: ::Payments::Methods::CREDIT_CARD,
+           origin: successful_deposit,
+           customer: auth_customer)
+  end
+
   let(:payload) do
     [
-      { code: 'holder_name', value: Faker::Lorem.characters(25) },
-      { code: 'last_four_digits', value: 1234.to_s }
+      { code: 'holder_name', value: details[:holder_name] },
+      { code: 'last_four_digits', value: details[:last_four_digits] }
     ]
   end
   let(:currency) { create(:currency, :with_withdrawal_rule) }
@@ -46,7 +61,7 @@ describe GraphQL, '#withdraw' do
       allow(EntryRequests::WithdrawalWorker).to receive(:perform_async)
     end
 
-    it 'returns true ob success' do
+    it 'returns true on success' do
       expect(response['data']['withdraw']).to be_truthy
     end
 

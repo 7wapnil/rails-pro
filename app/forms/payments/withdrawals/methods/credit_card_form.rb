@@ -3,9 +3,7 @@
 module Payments
   module Withdrawals
     module Methods
-      class CreditCardForm
-        include ActiveModel::Model
-
+      class CreditCardForm < WithdrawalMethodForm
         DIGITS_LENGTH = 4
         MAX_HOLDER_NAME_LENGTH = 100
 
@@ -13,8 +11,16 @@ module Payments
 
         validates :holder_name, :last_four_digits, presence: true
         validates :holder_name, length: { maximum: MAX_HOLDER_NAME_LENGTH }
-        validates :last_four_digits, numericality: true,
-                                     length: { is: DIGITS_LENGTH }
+
+        def identifier
+          :last_four_digits
+        end
+
+        def consistency_error_message
+          I18n.t(
+            'errors.messages.payments.withdrawals.credit_card.inconsistent'
+          )
+        end
       end
     end
   end

@@ -34,12 +34,17 @@ module Payments
             amount: transaction.amount,
             mode: transaction.method,
             customer_bonus: customer_bonus,
-            external_id: transaction.external_id
+            external_id: transaction.external_id,
+            payment_details: payment_details
           )
         end
 
         def entry_request_failed!
           raise Payments::BusinessRuleError, entry_request.result['message']
+        end
+
+        def payment_details
+          { address: transaction.wallet.crypto_address.address }
         end
       end
     end

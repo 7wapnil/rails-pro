@@ -3,9 +3,7 @@
 module Payments
   module Withdrawals
     module Methods
-      class BitcoinForm
-        include ActiveModel::Model
-
+      class BitcoinForm < WithdrawalMethodForm
         BITCOIN_ADDRESS_FORMAT_REGEX = /\A(1|3)[a-zA-Z0-9]{26,34}\z/
         TEST_BITCOIN_ADDRESS_FORMAT_REGEX = /\A(tb1)[a-zA-Z0-9]{26,40}\z/
         WRONG_FORMAT_MESSAGE =

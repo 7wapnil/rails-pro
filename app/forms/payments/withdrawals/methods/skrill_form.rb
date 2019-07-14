@@ -3,12 +3,18 @@
 module Payments
   module Withdrawals
     module Methods
-      class SkrillForm
-        include ActiveModel::Model
-
+      class SkrillForm < WithdrawalMethodForm
         attr_accessor :email
 
         validates :email, presence: true
+
+        def identifier
+          :email
+        end
+
+        def consistency_error_message
+          I18n.t('errors.messages.payments.withdrawals.skrill.inconsistent')
+        end
       end
     end
   end

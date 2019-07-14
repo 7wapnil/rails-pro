@@ -11,6 +11,10 @@ FactoryBot.define do
       amount { 100_000 }
     end
 
+    trait :fiat do
+      association :currency
+    end
+
     trait :crypto do
       association :currency, :crypto
     end

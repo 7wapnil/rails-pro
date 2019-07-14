@@ -13,12 +13,27 @@ describe ::Payments::Withdrawals::CreateForm, type: :model do
     }
   end
 
+  let(:successful_deposit) do
+    create(:deposit, :credit_card, details: payment_details)
+  end
+  let!(:successful_deposit_entry_request) do
+    create(:entry_request, :deposit, :succeeded, :with_entry,
+           mode: payment_method,
+           origin: successful_deposit,
+           customer: customer)
+  end
+
   let(:payment_method) { ::Payments::Methods::BITCOIN }
   let(:payment_details) { { address: Faker::Bitcoin.address } }
+  let(:wallet_type) { Currency::CRYPTO }
   let(:withdrawal_amount) { 50 }
   let(:balance_amount) { withdrawal_amount + 100 }
   let(:customer) { create(:customer) }
-  let(:wallet) { create(:wallet, amount: balance_amount, customer: customer) }
+  let(:wallet) do
+    create(:wallet, wallet_type.to_sym,
+           amount: balance_amount,
+           customer: customer)
+  end
   let!(:balance) do
     create(:balance, :real_money, amount: balance_amount, wallet: wallet)
   end
@@ -56,6 +71,7 @@ describe ::Payments::Withdrawals::CreateForm, type: :model do
   context 'credit card' do
     let(:payment_method) { ::Payments::Methods::CREDIT_CARD }
     let(:payment_details) { {} }
+    let(:wallet_type) { Currency::FIAT }
 
     it 'validates presence of holder name and cvv' do
       subject.valid?
@@ -79,36 +95,6 @@ describe ::Payments::Withdrawals::CreateForm, type: :model do
 
       it 'and has no errors' do
         expect(subject.errors).not_to include(:holder_name)
-      end
-    end
-
-    context 'validates last card number digits value is numerical' do
-      let(:payment_details) { { last_four_digits: 'notnumber' } }
-
-      before { subject.valid? }
-
-      it 'and has an error' do
-        expect(subject.errors).to include(:last_four_digits)
-      end
-    end
-
-    context 'validates last card number digits value is 4 digits number' do
-      let(:payment_details) { { last_four_digits: 123 } }
-
-      before { subject.valid? }
-
-      it 'and has an error' do
-        expect(subject.errors).to include(:last_four_digits)
-      end
-    end
-
-    context 'passes valid last card number digits value' do
-      let(:payment_details) { { last_four_digits: 1234 } }
-
-      before { subject.valid? }
-
-      it 'and has no errors' do
-        expect(subject.errors).not_to include(:last_four_digits)
       end
     end
   end
