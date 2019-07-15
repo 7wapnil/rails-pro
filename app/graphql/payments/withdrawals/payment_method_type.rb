@@ -5,6 +5,7 @@ module Payments
     PaymentMethodType = GraphQL::ObjectType.define do
       name 'WithdrawalsPaymentMethod'
 
+      field :id, !types.ID
       field :name, !types.String,
             resolve: ->(obj, _args, _ctx) do
               I18n.t("payments.withdrawals.payment_methods.#{obj.mode}.title",
@@ -34,8 +35,11 @@ module Payments
 
       field :details, ::Payments::Withdrawals::PaymentMethodDetailsUnion,
             resolve: ->(obj, _args, _ctx) do
-              OpenStruct
-                .new(payment_method: obj.mode, **obj.details.symbolize_keys)
+              OpenStruct.new(
+                id: obj.id,
+                payment_method: obj.mode,
+                **obj.details.symbolize_keys
+              )
             end
 
       field :currencyCode, types.String,

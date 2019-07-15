@@ -5,6 +5,7 @@ module Payments
     NetellerType = GraphQL::ObjectType.define do
       name 'PaymentMethodNeteller'
 
+      field :id, !types.ID
       field :title, !types.String, property: :account_id
       field :accountId, !types.String, property: :account_id
     end

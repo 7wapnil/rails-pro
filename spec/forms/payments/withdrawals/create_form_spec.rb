@@ -75,7 +75,11 @@ describe ::Payments::Withdrawals::CreateForm, type: :model do
 
     it 'validates presence of holder name and cvv' do
       subject.valid?
-      expect(subject.errors).to include(:holder_name, :last_four_digits)
+      expect(subject.errors).to include(
+        :holder_name,
+        :masked_account_number,
+        :token_id
+      )
     end
 
     context 'validates holder name to be not longer than 100 chars' do

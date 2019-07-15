@@ -24,10 +24,6 @@ module Payments
           ::Payments::CoinsPaid::Client.new
         end
 
-        def withdrawal
-          transaction.withdrawal
-        end
-
         def request
           @request ||= client.authorize_payout(transaction)
         end

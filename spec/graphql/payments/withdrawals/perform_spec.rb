@@ -8,9 +8,17 @@ describe GraphQL, '#withdraw' do
   let(:details) do
     {
       holder_name: Faker::Lorem.characters(25),
-      last_four_digits: '1234'
+      masked_account_number: '1234******1234',
+      token_id: '1234'
     }
   end
+
+  let(:currency) { create(:currency, :with_withdrawal_rule) }
+  let(:currency_code) { currency.code }
+  let!(:wallet) do
+    create(:wallet, :brick, customer: auth_customer, currency: currency)
+  end
+
   let(:successful_deposit) { create(:deposit, :credit_card, details: details) }
   let!(:successful_deposit_entry_request) do
     create(:entry_request, :deposit, :succeeded, :with_entry,
@@ -22,13 +30,9 @@ describe GraphQL, '#withdraw' do
   let(:payload) do
     [
       { code: 'holder_name', value: details[:holder_name] },
-      { code: 'last_four_digits', value: details[:last_four_digits] }
+      { code: 'masked_account_number', value: details[:masked_account_number] },
+      { code: 'token_id', value: details[:token_id] }
     ]
-  end
-  let(:currency) { create(:currency, :with_withdrawal_rule) }
-  let(:currency_code) { currency.code }
-  let(:wallet) do
-    create(:wallet, :brick, customer: auth_customer, currency: currency)
   end
   let!(:balance) { create(:balance, :real_money, wallet: wallet) }
   let(:password) { 'iamverysecure' }

@@ -7,13 +7,16 @@ module Payments
         DIGITS_LENGTH = 4
         MAX_HOLDER_NAME_LENGTH = 100
 
-        attr_accessor :holder_name, :last_four_digits
+        attr_accessor :holder_name, :masked_account_number, :token_id
 
-        validates :holder_name, :last_four_digits, presence: true
+        validates :holder_name,
+                  :masked_account_number,
+                  :token_id,
+                  presence: true
         validates :holder_name, length: { maximum: MAX_HOLDER_NAME_LENGTH }
 
         def identifier
-          :last_four_digits
+          :masked_account_number
         end
 
         def consistency_error_message

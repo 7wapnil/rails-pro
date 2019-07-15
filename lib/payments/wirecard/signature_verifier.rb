@@ -11,6 +11,8 @@ module Payments
       end
 
       def call
+        return true unless data
+
         encode_signature == decoded_response_signature
       end
 

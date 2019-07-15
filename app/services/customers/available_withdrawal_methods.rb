@@ -10,7 +10,7 @@ module Customers
       method_for_choosing
         .or(methods_for_entering)
         .order(created_at: :desc)
-        .select('entry_requests.mode, customer_transactions.details')
+        .select(:id, :mode, 'customer_transactions.details')
         .uniq(&:details)
     end
 

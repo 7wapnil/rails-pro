@@ -8,12 +8,12 @@ module Payments
           .call(transaction: transaction)
       end
 
-      def deposit_response_handler
-        ::Payments::Wirecard::Deposits::CallbackHandler
-      end
-
       def payout_request_handler
         ::Payments::Wirecard::Payouts::RequestHandler
+      end
+
+      def callback_handler
+        ::Payments::Wirecard::CallbackHandler
       end
     end
   end

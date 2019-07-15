@@ -8,14 +8,13 @@ module Payments
         include ::Payments::Wirecard::TransactionStates
 
         def initialize(params)
-          @response = JSON.parse(Base64.decode64(params['response-base64']))
+          @response = params
         end
 
         def call
           return cancel_entry_request if cancelled?
 
           save_transaction_id! unless entry_request.external_id
-          update_deposit_details!
 
           return complete_entry_request if approved?
 
@@ -32,6 +31,26 @@ module Payments
         def status_details
           @status_details ||=
             response.dig('payment', 'statuses', 'status').to_a.last.to_h
+        end
+
+        def payment_details
+          @payment_details ||= {
+            token_id: card_token_details['token-id'],
+            masked_account_number: card_token_details['masked-account-number'],
+            holder_name: holder_name
+          }
+        end
+
+        def card_token_details
+          response.dig('payment', 'card-token')
+        end
+
+        def holder_name
+          response
+            .dig('payment', 'account-holder')
+            .slice('first-name', 'last-name')
+            .values
+            .join(' ')
         end
 
         def transaction_state
@@ -64,32 +83,13 @@ module Payments
           response.dig('payment', 'transaction-id')
         end
 
-        # TODO: recheck what fields we will be storing in payment details
-        def update_deposit_details!
-          entry_request.deposit.update(
-            details: {
-              last_four_digits: masked_account_number,
-              holder_name: holder_name
-            }
-          )
-        end
-
-        def masked_account_number
-          response.dig('payment', 'card-token', 'masked-account-number')
-        end
-
-        def holder_name
-          section = response.dig('payment', 'account-holder')
-
-          [section['first-name'], section['last-name']].join(' ')
-        end
-
         def approved?
           status_details['code'].match?(APPROVED_STATUSES_REGEX) &&
             transaction_state == SUCCESSFUL
         end
 
         def complete_entry_request
+          entry_request.deposit.update(details: payment_details)
           ::EntryRequests::DepositWorker.perform_async(entry_request.id)
         end
 
