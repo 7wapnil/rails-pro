@@ -139,7 +139,7 @@ module OddsFeed
 
       def proceed_bets(external_id)
         get_settled_bets(external_id)
-          .each { |bet| Bets::Settlement::Proceed.call(bet: bet) }
+          .each { |bet| Bets::SettlementWorker.perform_async(bet.id) }
       end
 
       def bets_by_external_id(external_id)

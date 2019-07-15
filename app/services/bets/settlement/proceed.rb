@@ -8,12 +8,13 @@ module Bets
       end
 
       def call
-        ::CustomerBonuses::BetSettlementService.call(bet) unless bet.void_factor
-
         create_entry_request!
-        return unless entry_request
 
-        ::EntryRequests::BetSettlementWorker.perform_async(entry_request.id)
+        if entry_request
+          EntryRequests::BetSettlementService.call(entry_request: entry_request)
+        end
+
+        CustomerBonuses::BetSettlementService.call(bet) unless bet.void_factor
       end
 
       private

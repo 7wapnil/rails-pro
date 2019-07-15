@@ -212,21 +212,17 @@ describe OddsFeed::Radar::BetSettlementHandler do
     end
 
     it 'calls Proceed service to process all affected bets' do
-      allow(Bets::Settlement::Proceed).to receive(:call)
+      allow(Bets::SettlementWorker).to receive(:perform_async)
 
       subject_with_input.handle
 
-      expect(Bets::Settlement::Proceed)
-        .to have_received(:call)
+      expect(Bets::SettlementWorker)
+        .to have_received(:perform_async)
         .exactly(total_bets_count)
         .times
     end
 
     context 'market status' do
-      before do
-        allow(Bets::Settlement::Proceed).to receive(:call)
-      end
-
       it 'updates to SETTLED and creates snapshot' do
         subject_with_input.handle
 
