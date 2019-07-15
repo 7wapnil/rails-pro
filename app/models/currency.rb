@@ -2,6 +2,7 @@
 
 class Currency < ApplicationRecord
   PRIMARY_CODE = 'EUR'
+  BITCOIN_CODE = 'BTC'
   PRIMARY_RATE = 1
 
   CACHED_ALL_KEY = 'cache/currencies/cached_all'
@@ -12,6 +13,10 @@ class Currency < ApplicationRecord
 
   has_many :entry_currency_rules
   has_many :wallets
+
+  has_one :withdraw_currency_rule,
+          -> { where(kind: EntryKinds::WITHDRAW) },
+          class_name: EntryCurrencyRule.name
 
   enum kind: {
     fiat:   FIAT   = 'fiat',

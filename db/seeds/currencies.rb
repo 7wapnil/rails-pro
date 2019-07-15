@@ -3,7 +3,13 @@
 puts 'Checking currencies ...'
 
 currency_mapping = [
-  { name: 'Euro', code: 'EUR', primary: true, kind: Currency::FIAT },
+  {
+    name: 'Euro',
+    code: 'EUR',
+    primary: true,
+    kind: Currency::FIAT,
+    exchange_rate: 1
+  },
   { name: 'US dollar', code: 'USD', kind: Currency::FIAT },
   { name: 'Pound sterling', code: 'GBP', kind: Currency::FIAT },
   { name: 'Australian dollar', code: 'AUD', kind: Currency::FIAT },
@@ -12,7 +18,13 @@ currency_mapping = [
   { name: 'Swedish Kronor', code: 'SEK', kind: Currency::FIAT },
   { name: 'Canadian dollar', code: 'CAD', kind: Currency::FIAT },
   { name: 'Russian rouble', code: 'RUB', kind: Currency::FIAT },
-  { name: 'BitCoin', code: 'mBTC', kind: Currency::CRYPTO }
+  { name: 'BitCoin', code: 'mBTC', kind: Currency::CRYPTO },
+  {
+    name: 'Testnet BitCoin',
+    code: 'mTBTC',
+    kind: Currency::CRYPTO,
+    exchange_rate: 1
+  }
 ]
 
 entry_currency_rule_ranges = {
@@ -33,6 +45,7 @@ currency_mapping.each do |payload|
     currency.name = payload[:name]
     currency.primary = payload[:primary] || false
     currency.kind = payload[:kind]
+    currency.exchange_rate = payload[:exchange_rate]
   end
 end
 

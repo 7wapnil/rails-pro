@@ -74,6 +74,9 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   accepts_nested_attributes_for :address
 
   has_one :wallet, -> { order(:created_at) }
+  has_one :fiat_wallet,
+          -> { joins(:currency).where(currencies: { kind: Currency::FIAT }) },
+          class_name: Wallet.name
 
   has_many :bet_entries,
            -> { bet.recent },
@@ -163,16 +166,9 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
       .count
   end
 
-  def available_withdraw_methods
-    entry_requests
-      .deposit
-      .succeeded
-      .order(created_at: :desc)
-      .pluck(:mode)
-      .uniq
+  def available_withdrawal_methods
+    ::Customers::AvailableWithdrawalMethods.call(customer: self)
   end
-
-  private
 
   def log_account_transition
     ctx = {
@@ -185,7 +181,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   def update_summary
     Customers::Summaries::UpdateWorker.perform_async(
-      Date.today,
+      Date.current,
       signups_count: 1
     )
   end

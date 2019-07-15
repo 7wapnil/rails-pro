@@ -46,8 +46,13 @@ FactoryBot.define do
 
     trait :allowed_by_safe_charge do
       code do
-        (Currency.available_currency_codes &
-          SafeCharge::Currency::AVAILABLE_CURRENCY_LIST).sample
+        allowed_currencies =
+          Currency.available_currency_codes &
+          ::Payments::SafeCharge::Currency::AVAILABLE_CURRENCY_LIST[
+            ::Payments::SafeCharge::Methods::CC_CARD
+          ]
+
+        allowed_currencies.sample
       end
     end
   end

@@ -14,14 +14,16 @@ FactoryBot.define do
     trait :with_state do
       country do
         ISO3166::Country.new(
-          SafeCharge::State::AVAILABLE_STATES.keys.sample
+          ::Payments::SafeCharge::State::AVAILABLE_STATES.keys.sample
         ).to_s
       end
 
       state do
         country_details = ISO3166::Country.find_country_by_name(country)
         country_details.subdivision_names_with_codes.to_h.key(
-          SafeCharge::State::AVAILABLE_STATES[country_details.alpha2].first
+          ::Payments::SafeCharge::State::AVAILABLE_STATES
+            .fetch(country_details.alpha2)
+            .first
         )
       end
     end

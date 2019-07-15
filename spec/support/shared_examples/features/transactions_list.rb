@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_examples 'transactions list' do
   it 'shows transactions list' do
     within 'table.table.entities' do
@@ -22,7 +24,7 @@ shared_examples 'transactions list' do
 
     it 'is not found' do
       within 'table.search' do
-        select EntryRequest::CASHIER,
+        select EntryRequest::CREDIT_CARD,
                from: :customer_transactions_entry_requests_mode_eq
         click_submit
       end

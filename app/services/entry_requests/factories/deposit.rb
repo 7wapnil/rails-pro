@@ -2,7 +2,10 @@
 
 module EntryRequests
   module Factories
+    # rubocop:disable Metrics/ClassLength
     class Deposit < ApplicationService
+      delegate :currency, to: :entry_request
+
       def initialize(wallet:, amount:, customer_bonus: nil, **attributes)
         @wallet = wallet
         @amount = amount
@@ -10,6 +13,8 @@ module EntryRequests
         @mode = attributes[:mode]
         @passed_initiator = attributes[:initiator]
         @passed_comment = attributes[:comment]
+        @external_id = attributes[:external_id]
+        @payment_details = attributes[:payment_details]
       end
 
       def call
@@ -24,7 +29,8 @@ module EntryRequests
       private
 
       attr_reader :wallet, :amount, :customer_bonus, :passed_initiator,
-                  :mode, :passed_comment, :entry_request
+                  :mode, :passed_comment, :entry_request, :deposit,
+                  :external_id, :payment_details
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
@@ -39,7 +45,8 @@ module EntryRequests
           initiator: initiator,
           comment: comment,
           currency: wallet.currency,
-          customer: wallet.customer
+          customer: wallet.customer,
+          external_id: external_id
         }
       end
 
@@ -79,29 +86,54 @@ module EntryRequests
       end
 
       def create_balance_request!
-        BalanceRequestBuilders::Deposit.call(entry_request, calculations)
+        ::BalanceRequestBuilders::Deposit.call(entry_request, calculations)
       end
 
       def create_deposit!
-        ::Deposit.create!(
+        @deposit = ::Deposit.create!(
+          status: ::CustomerTransaction::SUCCEEDED,
           entry_request: entry_request,
-          customer_bonus: customer_bonus
+          customer_bonus: customer_bonus,
+          details: payment_details
         )
       end
 
+      # TODO: extract to form object
       def validate_entry_request!
+        check_currency_rule!
         check_bonus_expiration!
         perform_customer_validations! unless initiator.is_a?(User)
 
         true
-      rescue *::Deposit::BUSINESS_ERRORS => error
+      rescue *::Payments::Deposit::BUSINESS_ERRORS => error
         entry_request.register_failure!(error.message)
-        customer_bonus&.fail!
+        fail_related_entities
       end
 
-      def perform_customer_validations!
-        verify_deposit_attempts!
-        check_deposit_limit!
+      def check_currency_rule!
+        return true unless currency_rule
+        return amount_greater_than_allowed! if amount > currency_rule.max_amount
+
+        amount_less_than_allowed! if amount < currency_rule.min_amount
+      end
+
+      def currency_rule
+        @currency_rule ||= EntryCurrencyRule.find_by(currency: wallet.currency,
+                                                     kind: EntryKinds::DEPOSIT)
+      end
+
+      def amount_less_than_allowed!
+        raise ::Deposits::CurrencyRuleError,
+              I18n.t('errors.messages.amount_less_than_allowed',
+                     min_amount: currency_rule.min_amount,
+                     currency: currency.to_s)
+      end
+
+      def amount_greater_than_allowed!
+        raise ::Deposits::CurrencyRuleError,
+              I18n.t('errors.messages.amount_greater_than_allowed',
+                     max_amount: currency_rule.max_amount,
+                     currency: currency.to_s)
       end
 
       def check_bonus_expiration!
@@ -109,6 +141,11 @@ module EntryRequests
 
         raise CustomerBonuses::ActivationError,
               I18n.t('errors.messages.entry_requests.bonus_expired')
+      end
+
+      def perform_customer_validations!
+        verify_deposit_attempts!
+        check_deposit_limit!
       end
 
       def check_deposit_limit!
@@ -119,6 +156,12 @@ module EntryRequests
       def verify_deposit_attempts!
         ::Deposits::VerifyDepositAttempt.call(wallet.customer)
       end
+
+      def fail_related_entities
+        customer_bonus&.fail!
+        deposit&.failed!
+      end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end

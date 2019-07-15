@@ -152,7 +152,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def self.today
-    where(start_at: [Date.today.beginning_of_day..Date.today.end_of_day])
+    where(start_at: [Date.current.beginning_of_day..Date.current.end_of_day])
   end
 
   def to_s

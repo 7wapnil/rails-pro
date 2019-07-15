@@ -10,6 +10,8 @@ ArcanebetSchema = GraphQL::Schema.define do
   mutation(MutationType)
   query(QueryType)
   subscription(SubscriptionType)
+
+  resolve_type ->(*) {}
 end
 
 GraphQL::Errors.configure(ArcanebetSchema) do

@@ -392,10 +392,18 @@ en:
       repeated_bonus_activation: It seems you have already claimed this bonus, please enter a different code
       customer_account_kind_transit: Can't transit customer account kind
       customer_activated: Customer already activated
+      country_not_supported: Your country is not supported for this payment method
+      state_not_supported: Your state is not supported for this payment method
+      currency_not_supported: Your currency is not supported for this payment method
       email_verified: Email already verified
       deposit_limits: Deposit limit reached, please try again later
       document_type_not_supported: Document type not supported
       entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
+      amount_greater_than_allowed: "Amount should be less than %{max_amount} %{currency}"
+      amount_negative: Amount should be more than zero
+      amount_less_than_allowed: "Amount should be greater than %{min_amount} %{currency}"
+      minimum_withdrawal_amount_reached: "Minimal withdrawal amount is %{min_amount} %{currency}"
+      maximum_withdrawal_amount_reached: "Maximum withdrawal amount is %{max_amount} %{currency}"
       provider_disconnected: Provider is disconnected
       market_inactive: Bet market is inactive
       amount_not_negative: "%{subject} amount cannot beсome negative. Current amount: %{current_amount}, new amount: %{new_amount}."
@@ -414,6 +422,12 @@ en:
       technical_error_happened: Technical error happened
       deposit_cancelled: Deposit request canceled
       deposit_failed: Deposit request failed
+      payment_failed_error: Payment was failed
+      payment_failed_with_reason_error: "Payment was failed: `%{reason}`"
+      payment_cancelled_error: Payment was cancelled
+      cancelled_by_customer: Payment was cancelled by customer
+      deposit_cancelled: Deposit was cancelled
+      deposit_failed: Your deposit was failed. Please, try again
       unsupported_payment_method: "Payment method '%{code}' is not implemented"
       nonexistent_bet: "Bet with validation ticket does not exist"
       password_invalid: Incorrect password
@@ -440,6 +454,15 @@ en:
 
       entry_requests:
         bonus_expired: 'Customer bonus is expired!'
+
+      payments:
+        withdrawals:
+          credit_card:
+            inconsistent: Last four credit card digits should be the same as were used for deposit
+          skrill:
+            inconsistent: Skrill email address should be the same as was used for deposit
+          neteller:
+            inconsistent: Neteller account id should be the same as was used for deposit
 
       withdrawal:
         not_enough_money: Please check your available balance
@@ -601,11 +624,42 @@ en:
     cancelled: Cancelled
     rejected: Rejected
 
-  payment_methods:
-    credit_card:
-      title: Credit card (Visa, MasterCard, Maestro)
-      note: 'Range: 10 - 10 000€ / No service fee'
+  payments:
+    withdrawals:
+      success_message: "Withdrawal has been sent to processing successfully"
+      payment_methods:
+        credit_card:
+          title: Credit card
+          range: 'Range: %{min_amount} - %{max_amount} %{code} / No service fee'
+          description: 'Debit/Credit Card withdrawals come with a 0% withdrawal fee'
+        skrill:
+          title: Skrill
+          range: 'Range: %{min_amount} - %{max_amount} %{code}'
+        neteller:
+          title: Neteller
+          range: 'Range: %{min_amount} - %{max_amount} %{code}'
+        bitcoin:
+          title: Bitcoin
+          range: 'Range: %{min_amount} - %{max_amount} %{code}'
+          description: 'Bitcoin transactions have slight delays. It will be processed soon as possible'
+          errors:
+            address_format: Please, recheck address
 
+    deposits:
+      success_message: 'You will be redirected to the payment page in a while'
+      coins_paid:
+        statuses:
+          confirmed: You are safe to process this transaction
+          not_confirmed: Transaction is not yet confirmed
+          cancelled: This transaction is a double spend. Pay attention to this transaction.
+
+        errors:
+          unknown_status: "Unknown status received: '%{status}'"
+
+  webhooks:
+    safe_charge:
+      redirections:
+        success_message: 'Deposit was proceeded successfully'
   time:
     formats:
       date_picker: "%-d %B %Y"

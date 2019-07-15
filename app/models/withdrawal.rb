@@ -8,6 +8,7 @@ class Withdrawal < CustomerTransaction
   def confirm!(user)
     review!(user, APPROVED)
     entry.update!(confirmed_at: Time.zone.now)
+    Withdrawals::ProcessPayout.call(self)
   end
 
   def reject!(user, comment)

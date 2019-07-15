@@ -30,7 +30,8 @@ module Account
           property: :address_state
     field :regular, types.Boolean,
           property: :regular?
-    field :availableWithdrawMethods, types[types.String],
-          property: :available_withdraw_methods
+    field :availableWithdrawalMethods,
+          types[::Payments::Withdrawals::PaymentMethodType],
+          property: :available_withdrawal_methods
   end
 end

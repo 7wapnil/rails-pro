@@ -172,6 +172,14 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.index ["external_id"], name: "index_competitors_on_external_id", unique: true
   end
 
+  create_table "crypto_addresses", force: :cascade do |t|
+    t.text "address", default: ""
+    t.bigint "wallet_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["wallet_id"], name: "index_crypto_addresses_on_wallet_id"
+  end
+
   create_table "currencies", force: :cascade do |t|
     t.string "name"
     t.string "code"
@@ -261,13 +269,13 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
   create_table "customer_transactions", force: :cascade do |t|
     t.string "type"
     t.string "status"
-    t.string "external_id"
     t.bigint "actioned_by_id"
     t.bigint "customer_bonus_id"
     t.jsonb "details"
     t.datetime "finalized_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "transaction_message"
     t.index ["actioned_by_id"], name: "index_customer_transactions_on_actioned_by_id"
     t.index ["customer_bonus_id"], name: "index_customer_transactions_on_customer_bonus_id"
   end
@@ -305,7 +313,7 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.boolean "verification_sent", default: false, null: false
     t.string "email_verification_token"
     t.string "b_tag"
-    t.boolean "agreed_with_privacy", default: true, null: false
+    t.boolean "agreed_with_privacy"
     t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
     t.index ["email_verification_token"], name: "index_customers_on_email_verification_token", unique: true
@@ -573,7 +581,7 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
 
   add_foreign_key "addresses", "customers"
   add_foreign_key "balance_entries", "balances"
-  add_foreign_key "balance_entries", "entries"
+  add_foreign_key "balance_entries", "entries", on_delete: :cascade
   add_foreign_key "balances", "wallets"
   add_foreign_key "bets", "currencies"
   add_foreign_key "bets", "customers"
@@ -582,15 +590,16 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
   add_foreign_key "betting_limits", "titles"
   add_foreign_key "competitor_players", "competitors", on_delete: :cascade
   add_foreign_key "competitor_players", "players", on_delete: :cascade
-  add_foreign_key "customer_bonuses", "balance_entries"
+  add_foreign_key "crypto_addresses", "wallets"
+  add_foreign_key "customer_bonuses", "balance_entries", on_delete: :cascade
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"
   add_foreign_key "customer_statistics", "customers"
-  add_foreign_key "customer_transactions", "customer_bonuses"
+  add_foreign_key "customer_transactions", "customer_bonuses", on_delete: :cascade
   add_foreign_key "customer_transactions", "users", column: "actioned_by_id"
   add_foreign_key "deposit_limits", "currencies"
   add_foreign_key "deposit_limits", "customers"
-  add_foreign_key "entries", "entry_requests"
+  add_foreign_key "entries", "entry_requests", on_delete: :cascade
   add_foreign_key "entries", "wallets"
   add_foreign_key "entry_currency_rules", "currencies"
   add_foreign_key "entry_requests", "currencies"

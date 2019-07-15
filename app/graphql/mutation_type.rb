@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 MutationType = GraphQL::ObjectType.define do
   name 'Mutation'
 
@@ -12,6 +14,8 @@ MutationType = GraphQL::ObjectType.define do
   field :placeBets, function: Betting::Place.new
   field :deleteFile, function: Documents::DeleteFile.new
 
-  field :withdraw, function: Withdrawals::Create.new
   field :depositBonus, function: Deposits::DepositBonusQuery.new
+
+  field :deposit, function: ::Payments::Deposits::Perform.new
+  field :withdraw, function: ::Payments::Withdrawals::Perform.new
 end

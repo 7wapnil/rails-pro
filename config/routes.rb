@@ -112,16 +112,18 @@ Rails.application.routes.draw do
     end
   end
 
-  namespace :redirect do
-    resources :deposits, only: [] do
-      collection do
-        get :initiate
-        get :success
-        get :error
-        get :pending
-        get :back
-        post :webhook
-      end
+  namespace :webhooks do
+    namespace :safe_charge do
+      resource :payment, only: %i[create show]
+      get 'payment/cancel', to: 'cancelled_payments#show'
+    end
+
+    namespace :coins_paid do
+      match :payment, to: 'payments#create', via: %i[get post]
+    end
+
+    namespace :wirecard do
+      match :payment, to: 'payments#create', via: %i[get post]
     end
   end
 

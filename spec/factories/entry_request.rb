@@ -3,7 +3,7 @@
 FactoryBot.define do
   factory :entry_request do
     status  { EntryRequest::INITIAL }
-    mode    { EntryRequest::CASHIER }
+    mode    { EntryRequest::CREDIT_CARD }
     kind    { EntryRequest::DEPOSIT }
     amount  { Random.new.rand(1.00..200.00).round(2) }
     comment { Faker::Lorem.paragraph }
@@ -28,11 +28,16 @@ FactoryBot.define do
           min_amount: -entry_request.amount.abs,
           max_amount: entry_request.amount.abs
         )
-        wallet = create(
-          :wallet,
-          customer: entry_request.customer,
-          currency: entry_request.currency
-        )
+        currency = Currency.find_by(code: entry_request.currency&.code)
+        found_wallet = entry_request.customer
+                                    &.wallets
+                                    &.find_by(
+                                      customer: entry_request.customer,
+                                      currency: currency
+                                    )
+        wallet = found_wallet || create(:wallet,
+                                        customer: entry_request.customer,
+                                        currency: entry_request.currency)
         create(
           :entry,
           wallet: wallet,

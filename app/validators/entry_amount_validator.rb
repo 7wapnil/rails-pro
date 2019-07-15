@@ -1,9 +1,10 @@
 class EntryAmountValidator < ActiveModel::Validator
   # requires a record to be Entry instance
   def validate(record)
-    rule = EntryCurrencyRule.find_by!(currency: record.currency,
-                                      kind: record.kind)
+    rule = EntryCurrencyRule.find_by(currency: record.currency,
+                                     kind: record.kind)
 
+    return unless rule
     return if record.amount.in?(rule.min_amount..rule.max_amount)
 
     record.errors[:amount] << I18n.t('errors.messages.entry_amount_between',

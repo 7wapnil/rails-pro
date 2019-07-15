@@ -16,7 +16,7 @@
       - filter.transactions.each do |transaction|
         %tr{ id: "customertransaction-#{transaction.id}" }
           %td.id= transaction.id
-          %td= transaction.external_id
+          %td= transaction.entry_request.external_id
           %td
             %b= t("kinds.#{transaction.type}")
           %td= status_badge(transaction.status)

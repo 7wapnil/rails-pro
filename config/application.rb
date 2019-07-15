@@ -27,8 +27,10 @@ module Arcanebet
     config.eager_load_paths << Rails.root.join('lib/xml_parser')
     config.eager_load_paths << Rails.root.join('lib/logger')
     config.eager_load_paths << Rails.root.join('lib/errors')
+    config.eager_load_paths << Rails.root.join('lib/payments')
     config.eager_load_paths << Rails.root.join('app/workers/sneakers')
     config.eager_load_paths << Rails.root.join('app/graphql/enums')
+    config.eager_load_paths << Rails.root.join('app/graphql/unions')
 
     # Exclude Sneakers workers
     unless Rails.env.test? || ENV['WORKERS']

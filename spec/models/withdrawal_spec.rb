@@ -15,6 +15,10 @@ describe Withdrawal, type: :model do
   context '#confirm!' do
     subject { withdrawal.confirm!(user) }
 
+    before do
+      allow(Withdrawals::ProcessPayout).to receive(:call).and_return(true)
+    end
+
     context 'on pending request' do
       let(:withdrawal) { create(:withdrawal) }
 

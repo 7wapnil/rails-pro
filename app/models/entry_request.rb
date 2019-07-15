@@ -8,6 +8,8 @@ class EntryRequest < ApplicationRecord
   belongs_to :currency
   belongs_to :initiator, polymorphic: true, optional: true
   belongs_to :origin, polymorphic: true, optional: true
+  belongs_to :deposit, foreign_key: :origin_id, optional: true
+
   has_many :balance_entry_requests, dependent: :destroy
 
   has_one :real_money_balance_entry_request, -> { real_money },
@@ -18,10 +20,6 @@ class EntryRequest < ApplicationRecord
   has_one :entry, inverse_of: :entry_request, dependent: :nullify
 
   default_scope { order(created_at: :desc) }
-
-  scope :transactions, -> {
-    where(kind: [DEPOSIT, WITHDRAW, REFUND]).order(created_at: :desc)
-  }
 
   enum status: {
     initial:   INITIAL = 'initial',
@@ -79,12 +77,20 @@ class EntryRequest < ApplicationRecord
       mode: mode }
   end
 
-  def register_failure!(message)
+  def register_failure!(message, attribute = nil)
     update_columns(
       status: EntryRequest::FAILED,
-      result: { message: message }
+      result: { message: message, attribute: attribute }.compact
     )
     false
+  end
+
+  def self.expired
+    initial.where('created_at > ?', Time.zone.yesterday.midnight)
+  end
+
+  def self.transactions
+    where(kind: [DEPOSIT, WITHDRAW, REFUND]).order(created_at: :desc)
   end
 
   private

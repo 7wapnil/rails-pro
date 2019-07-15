@@ -55,15 +55,15 @@ describe EntryRequests::DepositService do
   end
 
   context "don't affect bonus balance" do
-    let(:deposit_limit) do
+    let!(:deposit_limit) do
       create(:deposit_limit, currency: wallet.currency,
                              customer: customer,
                              value: amount - 1)
     end
 
     it 'when do not pass deposit limit' do
-      deposit_limit
       service_call
+    rescue ::Payments::FailedError
       wallet.reload
 
       expect(wallet.bonus_balance).to be_nil
@@ -117,12 +117,13 @@ describe EntryRequests::DepositService do
 
     it 'does not proceed' do
       service_call
+    rescue ::Payments::FailedError
       expect(WalletEntry::AuthorizationService).not_to receive(:call)
     end
 
     it 'fails customer bonus' do
       service_call
-
+    rescue ::Payments::FailedError
       expect(customer_bonus.reload).to have_attributes(
         balance_entry_id: nil,
         status: CustomerBonus::FAILED

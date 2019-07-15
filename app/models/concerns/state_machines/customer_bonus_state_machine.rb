@@ -56,7 +56,7 @@ module StateMachines
         end
 
         event :expire do
-          transitions from: :active,
+          transitions from: %i[active initial],
                       to: :expired,
                       after: :set_deactivated_at
         end

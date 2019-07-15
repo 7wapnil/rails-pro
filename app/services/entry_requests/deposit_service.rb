@@ -31,6 +31,8 @@ module EntryRequests
 
     def failure
       customer_bonus&.fail!
+
+      raise ::Payments::FailedError
     end
   end
 end
