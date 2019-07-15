@@ -18,6 +18,9 @@ module Deposits
 
     def resolve(_obj, args)
       bonus = find_bonus!(args)
+      form = CustomerBonuses::CreateForm.new(customer: current_customer,
+                                             original_bonus: bonus)
+      form.validate!
       bonus_hash = BalanceCalculations::Deposit.call(args[:amount], bonus)
       CalculatedBonus.new(bonus_hash)
     end

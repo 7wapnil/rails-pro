@@ -14,18 +14,15 @@ module CustomerBonuses
 
     def call
       check_bonus_expiration!
-      CustomerBonuses::CreateForm.new(subject: customer_bonus).submit!
+      form = CustomerBonuses::CreateForm.new(new_bonus_attributes)
+      form.submit!
 
-      customer_bonus
+      form.subject
     end
 
     private
 
     attr_accessor :wallet, :bonus, :amount, :status, :activated_at
-
-    def customer_bonus
-      @customer_bonus ||= CustomerBonus.new(new_bonus_attributes)
-    end
 
     # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def new_bonus_attributes

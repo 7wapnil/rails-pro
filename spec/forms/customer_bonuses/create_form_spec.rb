@@ -2,16 +2,20 @@
 
 describe CustomerBonuses::CreateForm do
   context '#submit!' do
-    subject { described_class.new(subject: customer_bonus).submit! }
+    subject { form.submit! }
 
+    let(:form) { described_class.new(customer_bonus.attributes) }
     let(:customer) { create(:customer) }
-    let(:customer_bonus) { build(:customer_bonus, customer: customer) }
+    let(:bonus) { create(:bonus) }
+    let(:customer_bonus) do
+      build(:customer_bonus, customer: customer, original_bonus: bonus)
+    end
 
     context 'without an active bonus' do
       before { subject }
 
       it 'creates bonus' do
-        expect(customer_bonus).to be_persisted
+        expect(form.subject).to be_persisted
       end
     end
 
