@@ -20,19 +20,18 @@ module CustomerBonuses
     attr_reader :bet, :customer_bonus
 
     def recalculate_bonus_rollover
-      ::CustomerBonuses::RolloverCalculationService.call(bet)
+      RolloverCalculationService.call(bet)
       customer_bonus.reload
     end
 
     def complete_bonus!
-      CustomerBonuses::CompleteWorker
-        .perform_async(customer_bonus.id)
+      Complete.call(customer_bonus: customer_bonus)
     end
 
     def lose_bonus!
-      CustomerBonuses::Deactivate.call(
+      Deactivate.call(
         bonus: customer_bonus,
-        action: CustomerBonuses::Deactivate::LOSE
+        action: Deactivate::LOSE
       )
     end
 

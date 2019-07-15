@@ -8,18 +8,28 @@ describe CustomerBonuses::BetSettlementService do
 
   context 'completion' do
     it 'calls bonus completion when rollover becomes negative' do
-      bonus = create(:customer_bonus, rollover_balance: -1)
+      bonus = create(:customer_bonus,
+                     :with_empty_bonus_balance,
+                     rollover_balance: -1)
       bet = create(:bet, :settled, customer_bonus: bonus)
 
-      expect(CustomerBonuses::CompleteWorker).to receive(:perform_async)
+      expect(CustomerBonuses::Complete)
+        .to receive(:call)
+        .with(customer_bonus: bonus)
+
       described_class.call(bet)
     end
 
     it 'calls bonus completion when rollover becomes zero' do
-      bonus = create(:customer_bonus, rollover_balance: 0)
+      bonus = create(:customer_bonus,
+                     :with_empty_bonus_balance,
+                     rollover_balance: 0)
       bet = create(:bet, :settled, customer_bonus: bonus)
 
-      expect(CustomerBonuses::CompleteWorker).to receive(:perform_async)
+      expect(CustomerBonuses::Complete)
+        .to receive(:call)
+        .with(customer_bonus: bonus)
+
       described_class.call(bet)
     end
 
@@ -29,7 +39,10 @@ describe CustomerBonuses::BetSettlementService do
                      rollover_balance: 1)
       bet = create(:bet, :settled, customer_bonus: bonus)
 
-      expect(CustomerBonuses::CompleteWorker).not_to receive(:perform_async)
+      expect(CustomerBonuses::Complete)
+        .not_to receive(:call)
+        .with(customer_bonus: bonus)
+
       described_class.call(bet)
     end
   end
