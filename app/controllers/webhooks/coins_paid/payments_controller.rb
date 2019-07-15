@@ -20,7 +20,7 @@ module Webhooks
 
       def verify_payment_signature
         signature = Payments::CoinsPaid::SignatureService.call(
-          data: request.body.string
+          data: request.body.try(:string).to_s
         )
 
         valid = signature.present? &&

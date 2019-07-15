@@ -22,7 +22,16 @@ module Payments
         webhooks_wirecard_payment_url(
           host: ENV['APP_HOST'],
           protocol: :https,
-          request_id: transaction.id
+          request_id: transaction.id,
+          signature: signature
+        )
+      end
+
+      def signature
+        OpenSSL::HMAC.hexdigest(
+          SignatureVerifier::SIGNATURE_ALGORITHM,
+          ENV['WIRECARD_SECRET_KEY'],
+          transaction.id.to_s
         )
       end
 
