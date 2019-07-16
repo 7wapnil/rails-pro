@@ -12,7 +12,7 @@ local: &local
 development:
   <<: *local
   database: arcanebet_development
-  
+
 test:
   <<: *local
   database: arcanebet_test

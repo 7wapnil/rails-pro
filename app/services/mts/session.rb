@@ -1,8 +1,12 @@
+# frozen_string_literal: true
+
 module Mts
   class Session
     include Singleton
 
     MTS_MQ_CONNECTION_PORT = 5671
+    MAX_CONNECTION_ATTEMPTS = 5
+    RECONNECTION_DELAY = 0.5
 
     BUNNY_CONNECTION_EXCEPTIONS = [
       Bunny::NetworkFailure,
@@ -11,10 +15,20 @@ module Mts
       Bunny::PossibleAuthenticationFailureError
     ].freeze
 
-    def opened_connection
-      return connection if connection_open?
+    NETWORK_CONNECTION_EXCEPTIONS = [
+      OpenSSL::SSL::SSLErrorWaitReadable,
+      IOError,
+      Errno::ECONNRESET
+    ].freeze
 
-      start_connection
+    def opened_connection
+      lock.synchronize do
+        @connection_attempts = 0
+
+        break connection if connection_open?
+
+        start_connection!
+      end
     end
 
     def connection
@@ -23,14 +37,29 @@ module Mts
 
     private
 
+    attr_reader :connection_attempts
+
     delegate :open?, to: :connection, prefix: true, allow_nil: true
 
-    def start_connection
+    def start_connection!
       connection.start
+    rescue *NETWORK_CONNECTION_EXCEPTIONS
+      update_mts_connection_state
+
+      @connection_attempts += 1
+      sleep RECONNECTION_DELAY
+
+      retry unless connection_attempts > MAX_CONNECTION_ATTEMPTS
+
+      raise 'MTS connection cannot be established'
     rescue *BUNNY_CONNECTION_EXCEPTIONS => error
       update_mts_connection_state
 
       raise error.class
+    end
+
+    def lock
+      @lock ||= Mutex.new
     end
 
     def default_config

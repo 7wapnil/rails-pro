@@ -12,6 +12,7 @@ module Listeners
       ch.prefetch(BATCH_SIZE)
 
       queue = ch.queue(ENV['MTS_MQ_QUEUE_CONFIRM'], durable: true)
+
       consumer = TicketAcceptanceConsumer
                  .new(ch,
                       queue,

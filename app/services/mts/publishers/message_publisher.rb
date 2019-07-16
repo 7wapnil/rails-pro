@@ -71,7 +71,7 @@ module Mts
           log_job_message(:error, e)
         end
       ensure
-        channel.close
+        channel&.close
       end
 
       def message_params

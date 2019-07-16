@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Mts::Session do
   let(:example_config) { { Faker::Lorem.word => Faker::Lorem.word } }
 
@@ -10,9 +12,7 @@ describe Mts::Session do
       let(:connection_double) { double }
 
       before do
-        allow(subject).to receive(:connection_open?)
-          .and_return(true)
-
+        allow(subject).to receive(:connection_open?).and_return(true)
         allow(subject).to receive(:connection).and_return(connection_double)
       end
 
@@ -36,7 +36,7 @@ describe Mts::Session do
       end
 
       it 'calls #start_connection' do
-        expect(subject).to receive(:start_connection)
+        expect(subject).to receive(:start_connection!)
         subject.opened_connection
       end
     end
