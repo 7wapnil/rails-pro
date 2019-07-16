@@ -1,108 +1,158 @@
-# arcanebet
-
-[![wercker status](https://app.wercker.com/status/bd58fc9e4800e174aa4a6a9216d83d0c/s/master "wercker status")](https://app.wercker.com/project/byKey/bd58fc9e4800e174aa4a6a9216d83d0c)
+# arcanebet/backend [![wercker status](https://app.wercker.com/status/bd58fc9e4800e174aa4a6a9216d83d0c/s/master "wercker status")](https://app.wercker.com/project/byKey/bd58fc9e4800e174aa4a6a9216d83d0c)
 
 ArcaneBet betting backend
 
 ## Project documentation
 
-- Odds feed
-    - [WebSocket signals documentation](docs/odds-feed/websocket-emits.md)
+Project docs can be found in the [docs directory](./docs).
 
+## Project setup
 
-## Development
+### With docker-compose
 
 The project ships with `docker-compose.example.yml` file meant for local development. In order to use it you need to have Docker and Docker Compose installed on your machine.
 
 1. Copy example docker-compose file and adjust it to your taste:
 
-```
-$ cp docker-compose.yml.example docker-compose.yml
+```sh
+cp docker-compose.yml.example docker-compose.yml
 ```
 
 2. Copy example .env file and adjust it to your taste:
 
-```
-$ cp .env.example .env
+```sh
+cp .env.example .env
 ```
 
-Put the values you got from the development team into .env
+3. Replace the placeholders and blank variables in the `.env` file with values you got from the development team.
 
-Connect to web container's bash and install the dependencies in the volume
-```
+4. Connect to web container's bash and install the dependencies in the volume.
+
+```sh
 docker-compose run --rm web bash
 bundle install
+yarn install
 exit
 ```
 
-To launch the application stack run:
+### Directly on the host
 
+1. Install all the necessary databases (postgres, mongodb, redis) with Homebrew:
+
+```sh
+brew install \
+  postgresql \
+  mongodb \
+  redis
 ```
-$ docker-compose up -d
+
+2. Install Ruby with tools of your choice (this guide will cover rbenv)
+
+```sh
+brew install rbenv
+rbenv init
+echo 'eval "$(rbenv init -)"' >> ~/.profile
+source ~/.profile
+
+rbenv install 2.5.1
+rbenv local 2.5.1
+echo "RBENV_VERSION=2.5.1" >> .env
+
+gem install bundler
+gem update --system
 ```
 
-To attach to container and interact with byebug/pry debugger console (given that your web container name is `arcanebet_web_1`) run:
+3. install Node.js and Yarn
 
+```sh
+brew install node@8
+npm install -g yarn
 ```
-$ docker attach arcanebet_web_1
+
+4. Install project dependencies
+
+```sh
+bundle install
+yarn install
 ```
 
-To detach without terminating process use shortcut: `Ctrl + P + Q`.
-
-### Database setup
+## Database setup
 
 Setting up development database comes in following steps:
 
 1. Create database instance and initialize the schema"
 
-```
-$ rake db:create db:schema:load
-```
-
-or alternatively (which does the same with one step):
-
-```
-$ rake db:setup
+```sh
+rake db:create db:schema:load
 ```
 
 2. Populate the database with seed and develoment (prime) data:
 
-Initial data for all environments (i.e. backoffice users) (is automatically executed by `rake db:setup`)
+Initial data for all environments (currencies, backoffice users, etc)
 
-```
-$ rake db:seed
-```
-
-Development fixture data that simulates production (i.e. events and markets, customers, etc.). More on prime and how it works [here](prime.md).
-
-```
-$ rake dev:prime
+```sh
+rake db:seed
 ```
 
-## Back-office frontend setup
-Launch web container's bash and execute the following:
+or alternatively (which does the same with one step):
 
-```bash
-yarn install
-./bin/webpack-dev-server
+```sh
+rake db:setup
 ```
 
-This process has to keep running while you work with the admin panel
+Development fixture data, such as dummy customers can be populated with prime command:
 
-## Set up the listener service
-1. Comment out the listener service section in `docker-compose.yml`
-2. Run `docker-compose up -d`
-3. Connect to postgres (docker-compose exposes 5432 port, everything else you need is in `config/database.yml` and `.env`)
-4. Go to the admin panel which is on `localhost:3000/users/sign_in`
-    1. `select * from users`, pick any email
-    2. Password can be found in `.env` under `SEED_USER_DEFAULT_PASSWORD` key
-5. Go to `http://localhost:3000/sidekiq/recurring-jobs` and enqueue `radar_market_templates_update` and `mts_live_validation` jobs
-6. Run this against the database
-`
-update market_templates set category = 'popular'; update markets set category = 'popular';
-`
-7. Uncomment the listener service in `docker-compose.yml` and restart the entire thing.
-8. Events should appear in the responses shortly after listener works for some time. If they don't, double check the RADAR section of current `.env` file.
+```sh
+rake dev:prime
+```
+
+3. Load sports and market templates data required for odds feed processing:
+
+```sh
+rake radar:titles:load
+rake odds_feed:markets:update
+rake odds_feed:markets:categorize
+```
+
+## Running the project in develoment
+
+### With docker-compose
+
+After all dependencies and data is set up, you can run the entire stack With
+
+```sh
+docker-compose up
+```
+
+### Directly on the host
+
+This project has a handful of services that can be tricky to run each in a separate terminal tab or window. Managing multiple processes is easier with tools like [foreman](https://github.com/ddollar/foreman).
+
+To run the entire stack with foreman, first copy the Procfile example file:
+
+```sh
+cp Procfile.example Procfile
+```
+
+Then run the whole stack with foreman:
+
+```sh
+foreman start
+```
+
+## Debugging
+
+If the application is running in Docker or with a process manager like foreman, it can be not so trivial to debug it.
+
+With docker-compose accessing the debugger context is possible by attaching to the container where the code execution is stopped by the debugger. For example, if you called `byebug` or `binding.pry` in web container, to access the context you would need to attach to web container:
+
+```sh
+docker attach arcanebet_web_1
+```
+
+[Rails web console](https://github.com/rails/web-console) is a powerful tool that allows debugging context without stopping the code execution.
+
+Debugging remote sessions managed by foreman is possible with [pry-remote](https://github.com/pry/pry/wiki/Remote-sessions).
 
 ## Sanity Checks
 
