@@ -1,14 +1,7 @@
+:concurrency: 1
 :queues:
-  - default
-  - expired_bonuses
-  - radar_live_coverage_booking
-  - radar_markets_update
-  - radar_missing_heartbeat
-  - radar_events_preloading
-  - mq
-  - mailers
-  - exchange_rates
-  - expired_entry_requests
+  - radar_odds_feed_high
+  - radar_odds_feed_low
 
 :schedule:
   expiring_bonuses:
@@ -90,22 +83,3 @@
     queue: expired_prematch
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Sends cancellation message to MTS for all PRE-MATCH bets that reached timeout waiting for MTS status update"
-
-  mts_random_bet_placement:
-    every: <%= "#{ENV.fetch('MTS_RANDOM_BET_INTERVAL', 10)}s" %>
-    class: Mts::RandomBetPlacementWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Random bet placement for MTS testing"
-
-  expirining_entry_requests_worker:
-    every: <%= ENV.fetch('EXPIRING_ENTRY_REQUESTS_INTERVAL', '1d') %>
-    class: Scheduled::ExpiringEntryRequestsWorker
-    queue: expired_entry_requests
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Fails expired deposit requests and connected bonuses"
-
-  expiring_customer_bonus_worker:
-    every: <%= ENV.fetch('EXPIRING_ENTRY_REQUESTS_INTERVAL', '1h') %>
-    class: Scheduled::ExpiringCustomerBonusesWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Fails expired deposit requests and connected bonuses"
