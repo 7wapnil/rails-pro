@@ -78,7 +78,7 @@ deploy:
       code: apk add -qU openssh git curl jq
 
     - capgemini/terraform-install:
-      version: "0.11.11"
+      version: "0.11.14"
 
     - edgecaseadmin/install-aws-cli:
       key: $AWS_ACCESS_KEY_ID
