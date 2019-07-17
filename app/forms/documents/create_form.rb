@@ -4,7 +4,7 @@ module Documents
   class CreateForm
     include ActiveModel::Model
 
-    MAX_ATTACHMENT_SIZE = 2.megabytes.freeze
+    MAX_ATTACHMENT_SIZE = 10.megabytes.freeze
     ALLOWED_FORMATS = %w[image/jpeg
                          image/png
                          image/jpg
