@@ -335,6 +335,7 @@ en:
       one: 1 event
       other: "%{count} events"
     event_scopes: Event Scopes
+    exchange_rate: "Exchange rate (against %{code})"
     global_betting_limit: Global betting limit
     global_betting_limits: Global betting limits
     label: Label

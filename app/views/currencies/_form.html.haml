@@ -8,6 +8,10 @@
       .col
         = f.input :name, required: true
         = f.input :code, required: true
+        = f.input :exchange_rate,
+            label: t('entities.exchange_rate', code: Currency.primary&.code),
+            required: true,
+            disabled: true
         = f.select :kind,
             Currency.kinds,
             { include_blank: false, required: true },
