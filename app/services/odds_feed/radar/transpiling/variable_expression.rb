@@ -24,8 +24,7 @@ module OddsFeed
           EventCompetitor
             .joins(:competitor)
             .where(event_id: event.id)
-            .select('event_competitors.qualifier, competitors.name')
-            .map { |competitor| [competitor.qualifier, competitor.name] }
+            .pluck('event_competitors.qualifier, competitors.name')
             .to_h
         end
       end
