@@ -8,7 +8,7 @@ module Currencies
     end
 
     def call
-      validate_currency_rules! if currency.crypto?
+      validate_deposit_currency_rule! if currency.crypto?
 
       log_event if currency.errors.empty? && currency.save
 
@@ -19,16 +19,18 @@ module Currencies
 
     attr_reader :params, :current_user
 
-    def validate_currency_rules!
-      Currencies::CurrencyRules::CryptoLimitValidator
-        .call(currency: currency, params: currency_rule_params)
+    def validate_deposit_currency_rule!
+      ::EntryCurrencyRules::Crypto::DepositRuleForm.new(
+        currency: currency,
+        params: deposit_currency_rule_params
+      ).validate!
     end
 
     def currency
       @currency ||= Currency.new(params)
     end
 
-    def currency_rule_params
+    def deposit_currency_rule_params
       params[:entry_currency_rules_attributes]
         .to_h
         .values

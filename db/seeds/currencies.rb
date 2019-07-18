@@ -18,10 +18,10 @@ currency_mapping = [
   { name: 'Swedish Kronor', code: 'SEK', kind: Currency::FIAT },
   { name: 'Canadian dollar', code: 'CAD', kind: Currency::FIAT },
   { name: 'Russian rouble', code: 'RUB', kind: Currency::FIAT },
-  { name: 'BitCoin', code: 'mBTC', kind: Currency::CRYPTO },
+  { name: 'BitCoin', code: Currencies::Crypto::M_BTC, kind: Currency::CRYPTO },
   {
     name: 'Testnet BitCoin',
-    code: 'mTBTC',
+    code: Currencies::Crypto::M_TBTC,
     kind: Currency::CRYPTO,
     exchange_rate: 1
   }

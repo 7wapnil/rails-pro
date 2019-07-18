@@ -136,7 +136,7 @@ describe ::Payments::Fiat::SafeCharge::PaymentUrlValidator do
   end
 
   context 'on invalid currency' do
-    let(:value) { 'BTC' }
+    let(:value) { Currencies::Crypto::BTC }
     let(:query_hash) { query_params.merge(currency: value) }
 
     it 'receives failure' do

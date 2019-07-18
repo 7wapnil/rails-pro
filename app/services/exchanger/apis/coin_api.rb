@@ -1,8 +1,7 @@
 module Exchanger
   module Apis
     class CoinApi < BaseApi
-      BTC = 'BTC'.freeze
-      MBTC = 'mBTC'.freeze
+      include ::Currencies::Crypto
 
       base_uri 'https://rest.coinapi.io/v1'
       headers 'X-CoinAPI-Key': ENV['COIN_API_KEY']
@@ -29,7 +28,7 @@ module Exchanger
         btc = rates.detect { |rate| rate.code == BTC }
         return unless btc.present?
 
-        Rate.new(MBTC, btc.value * 1000)
+        Rate.new(M_BTC, btc.value * 1000)
       end
 
       def build_rates(rate_data)
@@ -47,7 +46,7 @@ module Exchanger
       end
 
       def mbtc_requested?
-        @currencies.any? { |item| item == MBTC }
+        @currencies.any? { |item| item == M_BTC }
       end
     end
   end

@@ -1,28 +1,14 @@
 # frozen_string_literal: true
 
-module Currencies
-  module CurrencyRules
-    class CryptoLimitValidator < ApplicationService
-      M_BTC_MULTIPLIER = 1000
-      CURRENCY_MAP = {
-        'mBTC' => 'BTC',
-        'mTBTC' => 'TBTC'
-      }.freeze
+module EntryCurrencyRules
+  module Crypto
+    class DepositRuleForm
+      include ActiveModel::Model
+      include Currencies::Crypto
 
-      def initialize(currency:, params:)
-        @currency = currency
-        @params = params
-      end
+      attr_accessor :currency, :params
 
-      def call
-        check_limits!
-      end
-
-      private
-
-      attr_reader :currency, :params
-
-      def check_limits!
+      def validate!
         return unless external_response.present?
         return if new_min_limit_valid?
 
@@ -34,13 +20,15 @@ module Currencies
           .add(:min_amount, limit_error)
       end
 
+      private
+
       def new_min_limit_valid?
         params['min_amount'].to_f > min_deposit_limit
       end
 
       def min_deposit_limit
         @min_deposit_limit ||=
-          external_response.dig('minimum_amount').to_f * M_BTC_MULTIPLIER
+          multiply_amount(external_response.dig('minimum_amount').to_f)
       end
 
       def external_response
@@ -51,11 +39,12 @@ module Currencies
       end
 
       def limit_error
-        I18n.t('errors.messages.crypto_deposit_limit', limit: min_deposit_limit)
+        I18n.t('errors.messages.crypto_deposit_limit',
+               limit: min_deposit_limit)
       end
 
       def condition(object)
-        object['currency'] == CURRENCY_MAP[currency.code]
+        object['currency'] == CURRENCY_CONVERTING_MAP[currency.code]
       end
     end
   end

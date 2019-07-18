@@ -6,18 +6,10 @@ module Payments
       module Deposits
         # rubocop:disable Metrics/ClassLength
         class CallbackHandler < Handlers::DepositCallbackHandler
+          include Currencies::Crypto
           include Statuses
 
-          M_BTC_MULTIPLIER = 1000
           FINISH_STATES = %w[succeeded failed].freeze
-
-          TBTC = 'TBTC'
-          BTC = 'BTC'
-
-          CURRENCIES_MAP = {
-            TBTC => 'mTBTC',
-            BTC => 'mBTC'
-          }.freeze
 
           MODE_MAP = {
             TBTC => EntryRequest::BITCOIN,
@@ -72,11 +64,11 @@ module Payments
           end
 
           def currency_code
-            CURRENCIES_MAP[response['crypto_address']['currency']]
+            CURRENCY_CONVERTING_MAP[response['crypto_address']['currency']]
           end
 
           def converted_amount
-            response['currency_received']['amount'].to_f * M_BTC_MULTIPLIER
+            multiply_amount(response['currency_received']['amount'].to_f)
           end
 
           def valid_customer_bonus

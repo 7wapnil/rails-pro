@@ -5,6 +5,7 @@ module Payments
     module CoinsPaid
       class Client
         include HTTParty
+        include Currencies::Crypto
 
         DEPOSIT_ROUTE = '/addresses/take'
         WITHDRAW_ROUTE = '/withdrawal/crypto'
@@ -57,7 +58,7 @@ module Payments
           {
             currency: ::Payments::Crypto::CoinsPaid::Currency::BTC_CODE,
             foreign_id: transaction.id.to_s,
-            amount: transaction.amount / M_BTC_MULTIPLIER,
+            amount: divide_amount(transaction.amount),
             address: transaction.details['address']
           }.to_json
         end
