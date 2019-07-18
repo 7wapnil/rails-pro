@@ -144,6 +144,11 @@ deploy:
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
 
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-worker-odds-feed
+        terraform init
+        terraform workspace select $TARGET_ENV
+        terraform apply -auto-approve
+
         cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-worker-mts
         terraform init
         terraform workspace select $TARGET_ENV
