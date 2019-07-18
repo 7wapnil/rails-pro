@@ -11,7 +11,7 @@ module Webhooks
       end
 
       def create
-        ::Payments::SafeCharge::Provider.new.handle_deposit_response(params)
+        ::Payments::Fiat::SafeCharge::CallbackHandler.call(params)
 
         head :ok
       rescue ::Payments::FailedError
@@ -26,7 +26,7 @@ module Webhooks
       private
 
       def verify_payment_signature
-        return if ::Payments::SafeCharge::SignatureVerifier.call(params)
+        return if ::Payments::Fiat::SafeCharge::SignatureVerifier.call(params)
 
         raise ::Deposits::AuthenticationError,
               'Malformed SafeCharge deposit request!'

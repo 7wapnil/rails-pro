@@ -15,45 +15,45 @@ module Payments
 
     METHOD_PROVIDERS = {
       CREDIT_CARD => {
-        provider: ::Payments::Wirecard::Provider,
-        name: Wirecard::Methods::CREDIT_CARD
+        provider: ::Payments::Fiat::Wirecard::Provider,
+        name: ::Payments::Fiat::Wirecard::Methods::CREDIT_CARD
       },
       NETELLER => {
-        provider: ::Payments::SafeCharge::Provider,
-        name: SafeCharge::Methods::APMGW_NETELLER
+        provider: ::Payments::Fiat::SafeCharge::Provider,
+        name: ::Payments::Fiat::SafeCharge::Methods::APMGW_NETELLER
       },
       SKRILL => {
-        provider: ::Payments::SafeCharge::Provider,
-        name: SafeCharge::Methods::APMGW_MONEYBOOKERS
+        provider: ::Payments::Fiat::SafeCharge::Provider,
+        name: ::Payments::Fiat::SafeCharge::Methods::APMGW_MONEYBOOKERS
       },
       PAYSAFECARD => {
-        provider: ::Payments::SafeCharge::Provider,
-        name: SafeCharge::Methods::APMGW_PAYSAFECARD
+        provider: ::Payments::Fiat::SafeCharge::Provider,
+        name: ::Payments::Fiat::SafeCharge::Methods::APMGW_PAYSAFECARD
       },
       SOFORT => {
-        provider: ::Payments::SafeCharge::Provider,
-        name: SafeCharge::Methods::APMGW_SOFORT
+        provider: ::Payments::Fiat::SafeCharge::Provider,
+        name: ::Payments::Fiat::SafeCharge::Methods::APMGW_SOFORT
       },
       IDEAL => {
-        provider: ::Payments::SafeCharge::Provider,
-        name: SafeCharge::Methods::APMGW_IDEAL
+        provider: ::Payments::Fiat::SafeCharge::Provider,
+        name: ::Payments::Fiat::SafeCharge::Methods::APMGW_IDEAL
       },
       WEBMONEY => {
-        provider: ::Payments::SafeCharge::Provider,
-        name: SafeCharge::Methods::APMGW_WEBMONEY
+        provider: ::Payments::Fiat::SafeCharge::Provider,
+        name: ::Payments::Fiat::SafeCharge::Methods::APMGW_WEBMONEY
       },
       YANDEX => {
-        provider: ::Payments::SafeCharge::Provider,
-        name: SafeCharge::Methods::APMGW_YANDEXMONEY
+        provider: ::Payments::Fiat::SafeCharge::Provider,
+        name: ::Payments::Fiat::SafeCharge::Methods::APMGW_YANDEXMONEY
       },
       QIWI => {
-        provider: ::Payments::SafeCharge::Provider,
-        name: SafeCharge::Methods::APMGW_QIWI
+        provider: ::Payments::Fiat::SafeCharge::Provider,
+        name: ::Payments::Fiat::SafeCharge::Methods::APMGW_QIWI
       },
       BITCOIN => {
-        provider: ::Payments::CoinsPaid::Provider,
+        provider: ::Payments::Crypto::CoinsPaid::Provider,
         name: BITCOIN,
-        currency: ::Payments::CoinsPaid::Currency::MBTC_CODE
+        currency: ::Payments::Crypto::CoinsPaid::Currency::MBTC_CODE
       }
     }.freeze
 

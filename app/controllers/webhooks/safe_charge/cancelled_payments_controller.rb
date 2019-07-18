@@ -7,7 +7,7 @@ module Webhooks
       before_action :verify_payment_signature
 
       def show
-        ::Payments::SafeCharge::Provider.new.handle_deposit_response(
+        ::Payments::Fiat::SafeCharge::CallbackHandler.call(
           cancellation_params
         )
 
@@ -17,7 +17,7 @@ module Webhooks
       private
 
       def verify_payment_signature
-        valid = ::Payments::SafeCharge::CancellationSignatureVerifier
+        valid = ::Payments::Fiat::SafeCharge::CancellationSignatureVerifier
                 .call(params)
 
         return if valid

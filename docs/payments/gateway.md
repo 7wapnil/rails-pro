@@ -15,7 +15,7 @@ Payments::Deposit.call(transaction)
 
 
 # Handling response on return
-Payments::Wirecard.new.handle_deposit_response(params) 
+Payments::Fiat::WireCard::CallbackHandler.call(request)
 
 ```
 

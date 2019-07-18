@@ -7,9 +7,7 @@ module Webhooks
       skip_before_action :verify_authenticity_token
 
       def create
-        ::Payments::CoinsPaid::Provider
-          .new
-          .handle_callback(request)
+        ::Payments::Crypto::CoinsPaid::CallbackHandler.call(request)
 
         head :ok
       rescue StandardError => _error
@@ -19,7 +17,7 @@ module Webhooks
       private
 
       def verify_payment_signature
-        signature = Payments::CoinsPaid::SignatureService.call(
+        signature = Payments::Crypto::CoinsPaid::SignatureService.call(
           data: request.body.try(:string).to_s
         )
 

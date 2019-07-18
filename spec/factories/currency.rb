@@ -48,8 +48,8 @@ FactoryBot.define do
       code do
         allowed_currencies =
           Currency.available_currency_codes &
-          ::Payments::SafeCharge::Currency::AVAILABLE_CURRENCY_LIST[
-            ::Payments::SafeCharge::Methods::CC_CARD
+          ::Payments::Fiat::SafeCharge::Currency::AVAILABLE_CURRENCY_LIST[
+            ::Payments::Fiat::SafeCharge::Methods::CC_CARD
           ]
 
         allowed_currencies.sample
