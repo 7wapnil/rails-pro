@@ -8,7 +8,7 @@ module Payments
 
         DEPOSIT_ROUTE = '/addresses/take'
         WITHDRAW_ROUTE = '/withdrawal/crypto'
-        M_BTC_MULTIPLIER = 1000
+        LIMITS_ROUTE = '/currencies/list'
 
         base_uri ENV['COINSPAID_API_ENDPOINT']
         raise_on [400, 401, 403, 500]
@@ -40,6 +40,15 @@ module Payments
           )
         rescue HTTParty::Error => e
           e.response
+        end
+
+        def fetch_limits
+          self.class.headers(
+            'X-Processing-Signature':
+              Payments::Crypto::CoinsPaid::SignatureService.call
+          )
+
+          JSON.parse(self.class.post(LIMITS_ROUTE).body)['data']
         end
 
         private

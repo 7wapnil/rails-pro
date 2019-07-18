@@ -441,6 +441,7 @@ en:
       unsupported_event_type: Event type is not supported
       unexpected_customer_bonus: Unexpected customer bonus for bet
       tos_not_accepted: You have to accept T&C and privacy policy
+      crypto_deposit_limit: "External service requires amount higher than %{limit}"
 
       mts:
         internal_server_error: "Betting service is experiencing some issues now. Bet was not accepted."

@@ -6,7 +6,7 @@ module Payments
       class SignatureService < ApplicationService
         SIGNATURE_ALGORITHM = 'sha512'
 
-        def initialize(data:)
+        def initialize(data: '')
           @data = data
         end
 
