@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WithdrawalFilter
   attr_reader :source, :query_params
 

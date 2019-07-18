@@ -7,7 +7,7 @@ module EntryRequests
         @entry = entry
         @comment = attributes[:comment]
         @initiator = attributes[:initiator] || entry.customer
-        @mode = attributes[:mode] || EntryRequest::CASHIER
+        @mode = attributes.fetch(:mode) { populate_mode }
       end
 
       def call
@@ -19,6 +19,10 @@ module EntryRequests
       private
 
       attr_reader :entry, :entry_request, :comment, :mode, :initiator
+
+      def populate_mode
+        entry.entry_request&.mode || EntryRequest::CASHIER
+      end
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(
