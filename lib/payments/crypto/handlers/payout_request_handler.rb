@@ -4,6 +4,10 @@ module Payments
   module Crypto
     module Handlers
       class PayoutRequestHandler < ::ApplicationService
+        def initialize(transaction)
+          @transaction = transaction
+        end
+
         def call
           return if created?
 

@@ -7,10 +7,6 @@ module Payments
         class RequestHandler < Handlers::PayoutRequestHandler
           include Statuses
 
-          def initialize(transaction)
-            @transaction = transaction
-          end
-
           private
 
           def created?

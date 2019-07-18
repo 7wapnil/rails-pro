@@ -7,6 +7,10 @@ module Payments
         delegate :origin, to: :entry_request, prefix: true
         delegate :customer_bonus, to: :entry_request_origin
 
+        def initialize(response)
+          @response = response
+        end
+
         protected
 
         attr_reader :response

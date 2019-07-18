@@ -24,10 +24,6 @@ module Payments
             BTC => EntryRequest::BITCOIN
           }.freeze
 
-          def initialize(response)
-            @response = response
-          end
-
           def call
             return if pending?
             return if proceeded_transaction?

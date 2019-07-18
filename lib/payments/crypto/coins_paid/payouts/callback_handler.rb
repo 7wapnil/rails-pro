@@ -7,10 +7,6 @@ module Payments
         class CallbackHandler < Handlers::PayoutCallbackHandler
           include Statuses
 
-          def initialize(response)
-            @response = response
-          end
-
           def call
             return succeeded! if confirmed?
 
@@ -31,7 +27,7 @@ module Payments
             response['foreign_id']
           end
 
-          def transactions_id
+          def transaction_id
             response.dig('transactions', 0, 'id')
           end
         end

@@ -5,12 +5,9 @@ module Payments
     module SafeCharge
       module Payouts
         class RequestHandler < Handlers::PayoutCallbackHandler
-          def initialize(response)
-            @response = response
-          end
-
+          # TODO: add functionality for programmatic payout
           def call
-            # TODO: add functionality for programmatic payout
+            withdrawal.succeeded!
           end
         end
       end

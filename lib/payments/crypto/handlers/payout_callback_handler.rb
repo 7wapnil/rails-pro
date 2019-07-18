@@ -7,6 +7,10 @@ module Payments
         delegate :entry_request, to: :withdrawal
         delegate :entry, to: :withdrawal
 
+        def initialize(response)
+          @response = response
+        end
+
         protected
 
         attr_reader :response
@@ -15,8 +19,8 @@ module Payments
           raise NotImplementedError, 'Implement #request_id method!'
         end
 
-        def transactions_id
-          raise NotImplementedError, 'Implement #transactions_id method!'
+        def transaction_id
+          raise NotImplementedError, 'Implement #transaction_id method!'
         end
 
         def withdrawal
@@ -27,7 +31,7 @@ module Payments
 
         def succeeded!
           withdrawal.succeeded!
-          entry_request.update(external_id: transactions_id)
+          entry_request.update(external_id: transaction_id)
         end
 
         def cancelled!(message)

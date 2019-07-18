@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module WithdrawalHelper
   def withdrawal_statuses(filter)
     selected_status = query_params(:withdrawals)['status_eq']
@@ -12,6 +14,8 @@ module WithdrawalHelper
   end
 
   def actioned_by(user)
+    return unless user
+
     "#{t('attributes.actioned_by')} #{user.email}"
   end
 end

@@ -7,10 +7,6 @@ module Payments
         class CallbackHandler < Handlers::DepositCallbackHandler
           include ::Payments::Fiat::SafeCharge::Statuses
 
-          def initialize(response)
-            @response = response
-          end
-
           def call
             return cancel_entry_request if cancelled?
             return if failed_attempt?

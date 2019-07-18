@@ -8,10 +8,6 @@ module Payments
           include ::Payments::Fiat::Wirecard::Statuses
           include ::Payments::Fiat::Wirecard::TransactionStates
 
-          def initialize(params)
-            @response = params
-          end
-
           def call
             return cancel_entry_request if cancelled?
 
