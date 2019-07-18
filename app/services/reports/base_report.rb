@@ -51,7 +51,7 @@ module Reports
     end
 
     def report_date
-      Date.current.yesterday.strftime('%d_%m_%Y')
+      Date.current.yesterday.strftime('%Y%m%d')
     end
   end
 end
