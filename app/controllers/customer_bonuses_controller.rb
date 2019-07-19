@@ -12,16 +12,19 @@ class CustomerBonusesController < ApplicationController
   decorates_assigned :customer_bonus
 
   def create
-    @customer_bonus = Bonuses::ActivationService.call(
+    form = CustomerBonuses::Backoffice::CreateForm.new(
       wallet: @wallet,
       bonus: @original_bonus,
       amount: payload_params[:amount],
       initiator: current_user
     )
 
+    @customer_bonus = form.submit!
+
     redirect_to bonuses_customer_path(@customer_bonus.customer),
                 notice: t(:activated, instance: t('entities.bonus'))
-  rescue CustomerBonuses::ActivationError => error
+  rescue CustomerBonuses::ActivationError,
+         ActiveModel::ValidationError => error
     redirect_to bonuses_customer_path(@wallet.customer), alert: error.message
   end
 
