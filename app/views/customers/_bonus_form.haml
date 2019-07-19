@@ -18,7 +18,7 @@
         = f.input :amount,
                   as: :decimal,
                   required: true,
-                  input_html: { min: 0 }
+                  input_html: { min: 0.01 }
       .col-4
         = f.input :wallet_id,
                   collection: customer.wallets,
