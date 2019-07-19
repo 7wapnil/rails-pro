@@ -83,6 +83,7 @@ group :development, :test do
   gem 'rubocop-rspec', require: false
   gem 'awesome_print'
   gem 'pry-rails'
+  gem 'pry-remote'
   gem 'foreman'
 end
 
