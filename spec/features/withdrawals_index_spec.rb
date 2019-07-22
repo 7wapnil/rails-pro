@@ -225,9 +225,9 @@ describe 'Withdrawals index page' do
       let(:status_drop_down) { 'withdrawals_status_eq' }
 
       it 'found' do
-        withdrawal = create(:withdrawal, :approved)
+        withdrawal = create(:withdrawal, :processing)
         visit withdrawals_path
-        select Withdrawal::APPROVED, from: status_drop_down
+        select Withdrawal::PROCESSING, from: status_drop_down
         fill_in(actor_email, with: withdrawal.actioned_by.email)
         click_on('Search')
 

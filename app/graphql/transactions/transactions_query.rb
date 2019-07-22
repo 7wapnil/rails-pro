@@ -17,7 +17,10 @@ module Transactions
     private
 
     def customer_transactions
-      EntryRequest.transactions.where(customer_id: current_customer)
+      EntryRequest
+        .transactions
+        .where(customer_id: current_customer)
+        .includes(:origin, :currency)
     end
   end
 end

@@ -28,8 +28,8 @@ describe Withdrawal, type: :model do
         expect(withdrawal.actioned_by).to eq user
       end
 
-      it 'sets the status to approved' do
-        expect(withdrawal.status).to eq Withdrawal::APPROVED
+      it 'sets the status to processing' do
+        expect(withdrawal.status).to eq Withdrawal::PROCESSING
       end
     end
 
@@ -42,7 +42,7 @@ describe Withdrawal, type: :model do
     end
 
     context 'on confirmed requests' do
-      let(:withdrawal) { create(:withdrawal, :approved) }
+      let(:withdrawal) { create(:withdrawal, :processing) }
 
       it 'throws an exception' do
         expect { subject }.to raise_error(error_message)
@@ -62,7 +62,7 @@ describe Withdrawal, type: :model do
         expect(withdrawal.actioned_by).to eq user
       end
 
-      it 'sets the status to approved' do
+      it 'sets the status to rejected' do
         expect(withdrawal.status).to eq Withdrawal::REJECTED
       end
     end
@@ -76,7 +76,7 @@ describe Withdrawal, type: :model do
     end
 
     context 'on confirmed requests' do
-      let(:withdrawal) { create(:withdrawal, :approved) }
+      let(:withdrawal) { create(:withdrawal, :processing) }
 
       it 'throws an exception' do
         expect { subject }.to raise_error(error_message)

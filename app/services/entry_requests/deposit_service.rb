@@ -26,10 +26,12 @@ module EntryRequests
     end
 
     def success
+      entry_request.deposit.succeeded!
       customer_bonus&.activate!(entry.bonus_balance_entry)
     end
 
     def failure
+      entry_request.deposit.failed!
       customer_bonus&.fail!
 
       raise ::Payments::FailedError

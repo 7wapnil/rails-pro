@@ -2,11 +2,11 @@
 
 class CustomerTransaction < ApplicationRecord
   STATUSES = {
-    pending:   PENDING   = 'pending',
-    approved:  APPROVED  = 'approved',
-    succeeded: SUCCEEDED = 'succeeded',
-    rejected:  REJECTED  = 'rejected',
-    failed:    FAILED    = 'failed'
+    pending:     PENDING = 'pending',
+    processing:  PROCESSING = 'processing',
+    succeeded:   SUCCEEDED = 'succeeded',
+    rejected:    REJECTED = 'rejected',
+    failed:      FAILED = 'failed'
   }.freeze
 
   TYPES = %w[Deposit Withdrawal].freeze

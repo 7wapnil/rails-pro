@@ -43,7 +43,7 @@ describe Customers::Statistics::Calculator do
 
     # WITHDRAWALS
 
-    let(:withdrawal) { create(:withdrawal, :approved) }
+    let(:withdrawal) { create(:withdrawal, :succeeded) }
     let!(:withdrawals) do
       [
         create(:entry, :withdraw, :with_real_money_balance_entry,
