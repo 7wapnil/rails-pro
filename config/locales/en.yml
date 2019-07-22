@@ -376,7 +376,6 @@ en:
     wallet_name: "%{currency} wallet"
     balance_entries: Balance entries
     balance_entry_requests: Balance entry requests
-    withdrawals: Withdrawals
     withdrawals: Withdrawal requests
 
   errors:
@@ -389,6 +388,7 @@ en:
       betting_limits: Betting limits validation failed
       bet_odd_inactive: Odd for bet became inactive
       bonus_activation_failed: Bonus activation failed, please try later
+      bonus_minimum_requirements_failed: Please ensure your deposit meets the minimum requirements
       customer_has_active_bonus: It seems you already have an active bonus, please remove bonus code to deposit
       repeated_bonus_activation: It seems you have already claimed this bonus, please enter a different code
       customer_account_kind_transit: Can't transit customer account kind

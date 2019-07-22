@@ -4,7 +4,13 @@ describe CustomerBonuses::CreateForm do
   context '#submit!' do
     subject { form.submit! }
 
-    let(:form) { described_class.new(customer_bonus.attributes) }
+    let(:form) do
+      described_class.new(
+        amount: customer_bonus.min_deposit,
+        **customer_bonus.attributes.symbolize_keys
+      )
+    end
+
     let(:customer) { create(:customer) }
     let(:bonus) { create(:bonus) }
     let(:customer_bonus) do

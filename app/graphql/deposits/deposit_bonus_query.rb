@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Deposits
   class CalculatedBonus
     attr_reader :real_money, :bonus
@@ -19,7 +21,8 @@ module Deposits
     def resolve(_obj, args)
       bonus = find_bonus!(args)
       form = CustomerBonuses::CreateForm.new(customer: current_customer,
-                                             original_bonus: bonus)
+                                             original_bonus: bonus,
+                                             amount: args[:amount])
       form.validate!
       bonus_hash = BalanceCalculations::Deposit.call(args[:amount], bonus)
       CalculatedBonus.new(bonus_hash)
