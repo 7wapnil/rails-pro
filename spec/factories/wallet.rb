@@ -21,6 +21,8 @@ FactoryBot.define do
 
     trait :crypto do
       association :currency, :crypto
+
+      after(:create) { |wallet| create(:crypto_address, wallet: wallet) }
     end
   end
 end

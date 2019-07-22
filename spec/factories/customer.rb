@@ -2,6 +2,10 @@
 
 FactoryBot.define do
   factory :customer do
+    transient do
+      type { :fiat }
+    end
+
     first_name          { Faker::Name.first_name }
     last_name           { Faker::Name.last_name }
     date_of_birth       { rand(18..50).years.ago }
@@ -27,9 +31,9 @@ FactoryBot.define do
     sequence(:username) { |n| "#{Faker::Internet.user_name}#{n}" }
 
     trait :ready_to_bet do
-      after(:create) do |customer|
+      after(:create) do |customer, params|
         currency = create(:currency, :with_bet_rule, :crypto)
-        create(:wallet, customer: customer, currency: currency)
+        create(:wallet, params.type, customer: customer, currency: currency)
       end
     end
 

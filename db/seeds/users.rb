@@ -30,6 +30,11 @@ users_payload = [
     first_name: 'Tanel',
     last_name: 'Liinak',
     email: 'tanel@arcanebet.com'
+  },
+  {
+    first_name: 'Oleksii',
+    last_name: 'Ostashchenko',
+    email: 'oostashchenko@leobit.com'
   }
 ]
 
