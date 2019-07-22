@@ -1,20 +1,9 @@
 # frozen_string_literal: true
 
 describe ::Payments::Crypto::CoinsPaid::Provider do
+  include_context 'crypto_deposit_transaction'
+
   subject { described_class.new(transaction) }
-
-  let(:customer) { create(:customer, :ready_to_bet, type: :crypto) }
-  let(:bonus_code) { nil }
-
-  def transaction
-    @transaction ||= ::Payments::Transactions::Deposit.new(
-      method: Payments::Methods::BITCOIN,
-      customer: customer,
-      currency_code: customer.wallet.currency.code,
-      amount: rand(10..100),
-      bonus_code: bonus_code
-    )
-  end
 
   before do
     allow(::CryptoAddresses::GetOrCreate).to receive(:call)
