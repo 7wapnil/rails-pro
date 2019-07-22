@@ -10,7 +10,7 @@ module Payments
       ].freeze
 
       def execute_operation
-        provider.process_payout(transaction)
+        provider.process_payout
       end
     end
   end

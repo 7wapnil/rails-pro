@@ -39,7 +39,7 @@ module Payments
         end
 
         def non_supported_payment_type!
-          raise ::Payments::NotSupportedError, 'Non supported payment type'
+          raise ::Payments::GatewayError, 'Non supported payment type'
         end
       end
     end

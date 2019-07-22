@@ -141,8 +141,7 @@ module Payments
             entry_request.register_failure!(message)
             fail_related_entities
 
-            raise message: 'CoinsPaid deposit callback error',
-                  error: error_message
+            raise ::Payments::GatewayError, error_message
           end
         end
         # rubocop:enable Metrics/ClassLength

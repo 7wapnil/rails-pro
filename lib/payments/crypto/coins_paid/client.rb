@@ -8,6 +8,7 @@ module Payments
 
         DEPOSIT_ROUTE = '/addresses/take'
         WITHDRAW_ROUTE = '/withdrawal/crypto'
+        M_BTC_MULTIPLIER = 1000
 
         base_uri ENV['COINSPAID_API_ENDPOINT']
         raise_on [400, 401, 403, 500]
@@ -47,7 +48,7 @@ module Payments
           {
             currency: ::Payments::Crypto::CoinsPaid::Currency::BTC_CODE,
             foreign_id: transaction.id.to_s,
-            amount: transaction.amount,
+            amount: transaction.amount / M_BTC_MULTIPLIER,
             address: transaction.details['address']
           }.to_json
         end
