@@ -1,0 +1,22 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "type": "crypto",
+      "currency": "BTC",
+      "minimum_amount": "0.00010000",
+      "deposit_fee_percent": "0.004",
+      "withdrawal_fee_percent": "0",
+      "precision": 8
+    },
+    {
+      "id": 14,
+      "type": "crypto",
+      "currency": "TBTC",
+      "minimum_amount": "0.00030000",
+      "deposit_fee_percent": "0.004",
+      "withdrawal_fee_percent": "0",
+      "precision": 8
+    }
+  ]
+}
