@@ -7,7 +7,7 @@ module Payments
         include SuppliedCurrencies
 
         COINSPAID_MODE = ENV.fetch('COINSPAID_MODE', 'test')
-        BTC_CODE = COINSPAID_MODE == 'test' ? M_BTC : BTC
+        BTC_CODE = COINSPAID_MODE == 'test' ? TBTC : BTC
         MBTC_CODE = "m#{BTC_CODE}"
       end
     end
