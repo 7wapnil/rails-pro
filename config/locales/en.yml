@@ -466,6 +466,11 @@ en:
           neteller:
             inconsistent: Neteller account id should be the same as was used for deposit
 
+      backoffice:
+        not_enough_money: Please check customer available balance
+        pending_bets_with_bonus: Customer has pending bets containing bonus
+      deposit:
+        method_not_supported: Deposit method is not supported
       withdrawal:
         not_enough_money: Please check your available balance
         invalid_payment_method: "Invalid payment method: %{payment_method}"

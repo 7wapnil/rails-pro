@@ -9,22 +9,13 @@ module Deposits
     end
 
     def call
-      verify_max_deposit_attempts!
+      return true if customer.deposit_attempts <= MAX_DEPOSIT_ATTEMPTS
+
+      false
     end
 
     private
 
     attr_reader :customer
-
-    def verify_max_deposit_attempts!
-      return if customer.deposit_attempts <= MAX_DEPOSIT_ATTEMPTS
-
-      attempts_exceeded_error!
-    end
-
-    def attempts_exceeded_error!
-      raise DepositAttemptError,
-            I18n.t('errors.messages.deposit_attempts_exceeded')
-    end
   end
 end

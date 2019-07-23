@@ -20,13 +20,23 @@ describe EntryRequests::Factories::Deposit do
            rollover_multiplier: rollover_multiplier,
            original_bonus: original_bonus)
   end
-
+  let(:comment) { Faker::Lorem.sentence }
+  let(:initiator) { customer }
+  let(:mode) { EntryRequest::SKRILL }
+  let(:transaction) do
+    Payments::Transactions::Deposit.new(
+      method: mode,
+      customer: customer,
+      amount: amount,
+      comment: comment,
+      initiator: initiator,
+      currency_code: currency.code
+    )
+  end
   let(:service_call) do
     described_class.call(
-      wallet: wallet,
-      amount: amount,
-      customer_bonus: customer_bonus,
-      mode: EntryRequest::SKRILL
+      transaction: transaction,
+      customer_bonus: customer_bonus
     )
   end
 
@@ -85,7 +95,6 @@ describe EntryRequests::Factories::Deposit do
       }
     end
 
-    let(:comment) { Faker::Lorem.sentence }
     let(:mode) { EntryRequest.modes.keys.sample }
     let(:admin) { create(:user) }
 
@@ -100,20 +109,12 @@ describe EntryRequests::Factories::Deposit do
       }
     end
 
-    let(:attributes) do
-      {
-        comment: comment,
-        mode: mode,
-        initiator: admin
-      }
-    end
+    let(:initiator) { admin }
 
     let(:service_call) do
       described_class.call(
-        wallet: wallet,
-        amount: amount,
-        customer_bonus: customer_bonus,
-        **attributes
+        transaction: transaction,
+        customer_bonus: customer_bonus
       )
     end
 
@@ -147,13 +148,10 @@ describe EntryRequests::Factories::Deposit do
 
   context 'with initiator and without passed comment' do
     let(:admin) { create(:user) }
+    let(:comment) { nil }
+    let(:initiator) { admin }
     let(:service_call) do
-      described_class.call(
-        wallet: wallet,
-        amount: amount,
-        initiator: admin,
-        mode: EntryRequest::SKRILL
-      )
+      described_class.call(transaction: transaction)
     end
 
     let(:message) do
@@ -175,13 +173,14 @@ describe EntryRequests::Factories::Deposit do
   end
 
   context 'without impersonated person and passed comment' do
-    let(:impersonated_by) {}
     let(:message) do
       "Deposit #{amount} #{currency} real money " \
       "and 0 #{customer_bonus.wallet.currency.code} bonus money " \
       "(#{customer_bonus.code} bonus code) " \
       "for #{customer}"
     end
+    let(:comment) { nil }
+    let(:initiator) {}
 
     before do
       allow(BalanceCalculations::Deposit)
@@ -219,6 +218,7 @@ describe EntryRequests::Factories::Deposit do
       expect(service_call).to have_attributes(
         status: EntryRequest::FAILED,
         result: {
+          'attribute' => 'attempts',
           'message' => I18n.t('errors.messages.deposit_attempts_exceeded')
         }
       )
@@ -236,6 +236,7 @@ describe EntryRequests::Factories::Deposit do
       expect(service_call).to have_attributes(
         status: EntryRequest::FAILED,
         result: {
+          'attribute' => 'limit',
           'message' => I18n.t('errors.messages.deposit_limit_exceeded')
         }
       )

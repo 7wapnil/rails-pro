@@ -75,8 +75,8 @@ describe Deposits::DepositLimitCheckService do
                  .merge(amount: over_deposit_limit))
       end
 
-      it 'raises DepositLimitRestrictionError exception' do
-        expect { service_call }.to raise_error(business_error)
+      it 'return false' do
+        expect(service_call).to be_falsey
       end
     end
 
@@ -96,8 +96,8 @@ describe Deposits::DepositLimitCheckService do
                  ))
       end
 
-      it 'raises DepositLimitRestrictionError exception' do
-        expect { service_call }.to raise_error(business_error)
+      it 'return false' do
+        expect(service_call).to be_falsey
       end
     end
 

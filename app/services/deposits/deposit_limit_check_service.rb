@@ -11,8 +11,7 @@ module Deposits
     def call
       return true if available_deposit_limit?
 
-      raise Deposits::DepositLimitRestrictionError,
-            I18n.t('errors.messages.deposit_limit_exceeded')
+      false
     end
 
     private
