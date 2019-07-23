@@ -14,7 +14,10 @@ module CustomerBonuses
 
     def call
       check_bonus_expiration!
-      form = CustomerBonuses::CreateForm.new(new_bonus_attributes)
+      form = CustomerBonuses::CreateForm.new(
+        amount: amount,
+        **new_bonus_attributes
+      )
       form.submit!
 
       form.subject

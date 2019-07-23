@@ -4,14 +4,16 @@ module CustomerBonuses
   class CreateForm
     include ActiveModel::Model
 
-    attr_reader :subject
+    attr_reader :subject, :amount
 
     validate :ensure_no_active_bonus
     validate :validate_repeated_activation
+    validate :minimal_bonus_amount
 
     delegate :customer, :original_bonus, to: :subject
 
-    def initialize(bonus_attributes)
+    def initialize(amount:, **bonus_attributes)
+      @amount = amount
       @subject = CustomerBonus.new(bonus_attributes)
     end
 
@@ -27,6 +29,13 @@ module CustomerBonuses
     end
 
     private
+
+    def minimal_bonus_amount
+      return if amount.present? && amount >= original_bonus.min_deposit
+
+      errors.add(:bonus,
+                 I18n.t('errors.messages.bonus_minimum_requirements_failed'))
+    end
 
     def ensure_no_active_bonus
       return unless customer&.active_bonus

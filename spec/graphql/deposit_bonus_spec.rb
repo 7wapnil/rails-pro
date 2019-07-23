@@ -36,8 +36,10 @@ describe GraphQL, '#deposit_bonus' do
     describe 'when amount is too low' do
       let(:amount) { bonus.min_deposit - 1.0 }
 
-      it 'returns zero bonus' do
-        expect(deposit_bonus['bonus']).to be_zero
+      it 'returns error message' do
+        expect(error_message).to eq(
+          I18n.t('errors.messages.bonus_minimum_requirements_failed')
+        )
       end
     end
 
