@@ -16,6 +16,7 @@ module StateMachines
     SETTLED = 'settled'
     REJECTED = 'rejected'
     FAILED = 'failed'
+    VOIDED = 'voided'
 
     BET_STATUSES = {
       initial: INITIAL,

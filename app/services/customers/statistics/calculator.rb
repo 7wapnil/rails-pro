@@ -94,7 +94,7 @@ module Customers
           entries
           .includes(:withdrawal)
           .withdraw
-          .where(customer_transactions: { status: Withdrawal::APPROVED })
+          .where(customer_transactions: { status: Withdrawal::SUCCEEDED })
       end
 
       def withdrawal_value

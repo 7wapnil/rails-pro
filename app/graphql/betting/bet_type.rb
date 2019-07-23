@@ -22,6 +22,12 @@ module Betting
 
     field :status, !types.String
     field :message, types.String, property: :human_notification_message
-    field :displayStatus, !types.String, property: :display_status
+    field :displayStatus, types.String,
+          resolve: ->(obj, *) do
+            break obj.display_status unless obj.settled?
+            break ::StateMachines::BetStateMachine::VOIDED if obj.void_factor
+
+            obj.settlement_status
+          end
   end
 end

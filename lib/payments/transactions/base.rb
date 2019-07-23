@@ -5,7 +5,7 @@ module Payments
     class Base
       include ::ActiveModel::Model
 
-      attr_accessor :id, :method, :customer, :amount, :currency_code,
+      attr_accessor :id, :method, :amount, :customer, :currency_code,
                     :initiator, :comment, :external_id
 
       validates :method, :customer, :amount, :currency_code, presence: true

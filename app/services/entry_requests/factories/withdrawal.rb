@@ -45,7 +45,7 @@ module EntryRequests
 
       def default_comment
         "Withdrawal #{amount.abs} #{transaction.currency}" \
-        "for #{transaction.customer}#{initiator_comment_suffix}"
+        " for #{transaction.customer}#{initiator_comment_suffix}"
       end
 
       def initiator_comment_suffix

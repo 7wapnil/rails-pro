@@ -91,7 +91,7 @@ module EntryRequests
 
       def create_deposit!
         @deposit = ::Deposit.create!(
-          status: ::CustomerTransaction::SUCCEEDED,
+          status: ::CustomerTransaction::PENDING,
           entry_request: entry_request,
           customer_bonus: customer_bonus,
           details: payment_details

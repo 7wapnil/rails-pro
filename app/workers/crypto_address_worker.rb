@@ -18,7 +18,7 @@ class CryptoAddressWorker < ApplicationWorker
   end
 
   def generate_address
-    Payments::CoinsPaid::Client
+    Payments::Crypto::CoinsPaid::Client
       .new
       .generate_address(wallet.customer)
   end

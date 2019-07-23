@@ -6,21 +6,30 @@ module Webhooks
       before_action :verify_payment_signature, only: :create
       skip_before_action :verify_authenticity_token
 
+      NO_LOGS_ERRORS = [
+        ::Payments::BusinessRuleError,
+        ::Payments::InvalidTransactionError
+      ].freeze
+
       def create
-        ::Payments::CoinsPaid::Provider
-          .new
-          .handle_callback(request)
+        ::Payments::Crypto::CoinsPaid::CallbackHandler.call(request)
 
         head :ok
-      rescue StandardError => _error
+      rescue ::Payments::GatewayError => error
+        Rails.logger.error(message: error.message)
         head :internal_server_error
+      rescue *NO_LOGS_ERRORS
+        head :ok
+      rescue StandardError => error
+        Rails.logger.error(message: error.message)
+        head :ok
       end
 
       private
 
       def verify_payment_signature
-        signature = Payments::CoinsPaid::SignatureService.call(
-          data: request.body.string
+        signature = Payments::Crypto::CoinsPaid::SignatureService.call(
+          data: request.body.try(:string).to_s
         )
 
         valid = signature.present? &&

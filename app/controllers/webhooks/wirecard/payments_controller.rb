@@ -7,7 +7,7 @@ module Webhooks
       before_action :verify_payment_signature
 
       def create
-        ::Payments::Wirecard::Provider.new.handle_callback(request)
+        ::Payments::Fiat::Wirecard::CallbackHandler.call(request)
 
         callback_redirect_for(::Payments::Webhooks::Statuses::SUCCESS)
       rescue ::Payments::CancelledError
@@ -24,7 +24,7 @@ module Webhooks
       private
 
       def verify_payment_signature
-        return if ::Payments::Wirecard::SignatureVerifier.call(params)
+        return if ::Payments::Fiat::Wirecard::SignatureVerifier.call(params)
 
         raise ::Deposits::AuthenticationError,
               'Malformed Wirecard deposit request!'

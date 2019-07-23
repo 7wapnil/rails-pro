@@ -11,8 +11,13 @@ FactoryBot.define do
       actioned_by { create(:admin_user) }
     end
 
-    trait :approved do
-      status { Withdrawal::APPROVED }
+    trait :processing do
+      status { Withdrawal::PROCESSING }
+      actioned_by { create(:admin_user) }
+    end
+
+    trait :succeeded do
+      status { Withdrawal::SUCCEEDED }
       actioned_by { create(:admin_user) }
     end
   end

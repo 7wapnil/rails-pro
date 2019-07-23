@@ -6,6 +6,12 @@ module Payments
       attr_accessor :password, :details
 
       validates :password, :details, presence: true
+
+      def amount
+        return @amount unless @amount.is_a?(Numeric)
+
+        -@amount.abs
+      end
     end
   end
 end

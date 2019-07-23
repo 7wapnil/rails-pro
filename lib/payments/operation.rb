@@ -28,7 +28,7 @@ module Payments
     end
 
     def provider
-      find_method_provider(transaction.method).new
+      find_method_provider(transaction.method).new(transaction)
     end
   end
 end

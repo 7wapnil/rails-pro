@@ -25,25 +25,23 @@ class CurrenciesController < ApplicationController
   end
 
   def create
-    @currency = Currency.new(currency_params)
+    @currency =
+      Currencies::Create.call(params: currency_params,
+                              current_user: current_user)
 
-    if @currency.save
-      current_user.log_event :currency_created, @currency
-      redirect_to currencies_path
-    else
-      render 'new'
-    end
+    return redirect_to currencies_path if @currency.errors.empty?
+
+    render 'new'
   end
 
   def update
-    @currency = Currency.find(params[:id])
+    @currency =
+      Currencies::Update.call(params: currency_params,
+                              current_user: current_user)
 
-    if @currency.update(currency_params)
-      current_user.log_event :currency_updated, @currency
-      redirect_to currencies_path
-    else
-      render 'edit'
-    end
+    return redirect_to currencies_path if @currency.errors.empty?
+
+    render 'edit'
   end
 
   private
@@ -51,7 +49,8 @@ class CurrenciesController < ApplicationController
   def currency_params
     params
       .require(:currency)
-      .permit(:code,
+      .permit(:id,
+              :code,
               :name,
               :kind,
               entry_currency_rules_attributes: %i[id

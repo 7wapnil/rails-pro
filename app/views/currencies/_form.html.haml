@@ -6,6 +6,7 @@
     %hr
     .row
       .col
+        = f.hidden_field :id, hidden: true
         = f.input :name, required: true
         = f.input :code, required: true
         = f.input :exchange_rate,
