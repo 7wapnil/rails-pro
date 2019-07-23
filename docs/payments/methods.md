@@ -8,13 +8,18 @@
 
 ```
 {
-    name: "Holder's full name",
+    description: "Holder's full name",
     code: :holder_name,
+    type: :string,
+},
+{
+    description: "Masked account number (e.g. 5937 **** 9992)",
+    code: :masked_account_number,
     type: :string
 },
 {
-    name: "Card's last four digits",
-    code: :last_four_digits,
+    description: "Token, which represents encrypted credit card data",
+    code: :token_id,
     type: :string
 }
 ```
@@ -27,13 +32,8 @@
 
 ```
 {
-    name: 'Neteller account id',
+    description: 'Neteller account id',
     code: :account_id,
-    type: :string
-},
-{
-    name: 'Secure ID',
-    code: :secure_id,
     type: :string
 }
 ```
@@ -46,7 +46,7 @@
 
 ```
 {
-    name: 'Skrill email address',
+    description: 'Skrill email address',
     code: :email,
     type: :string
 }
@@ -66,7 +66,7 @@
 
 ```
 {
-    name: 'Bitcoin address',
+    description: 'Bitcoin address',
     code: :address,
     type: :string
 }
