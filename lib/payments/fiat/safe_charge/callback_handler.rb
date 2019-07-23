@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Payments
-  module Crypto
+  module Fiat
     module SafeCharge
       class CallbackHandler < ::ApplicationService
         def initialize(response)
@@ -17,7 +17,7 @@ module Payments
         attr_reader :response
 
         def callback_handler
-          ::Payments::Crypto::SafeCharge::Deposits::CallbackHandler
+          ::Payments::Fiat::SafeCharge::Deposits::CallbackHandler
         end
       end
     end
