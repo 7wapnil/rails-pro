@@ -4,7 +4,7 @@ module Payments
   module Fiat
     module SafeCharge
       module Payouts
-        class RequestHandler < Handlers::PayoutCallbackHandler
+        class RequestHandler < Handlers::PayoutRequestHandler
           # TODO: add functionality for programmatic payout
           def call
             withdrawal.succeeded!
