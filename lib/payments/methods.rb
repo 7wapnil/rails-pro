@@ -11,6 +11,7 @@ module Payments
     WEBMONEY = 'webmoney'
     YANDEX = 'yandex'
     QIWI = 'qiwi'
+    NEOSURF = 'neosurf'
     BITCOIN = 'bitcoin'
 
     METHOD_PROVIDERS = {
@@ -59,6 +60,11 @@ module Payments
         name: ::Payments::Fiat::SafeCharge::Methods::APMGW_QIWI,
         currency_kind: ::Currency::FIAT
       },
+      NEOSURF => {
+        provider: ::Payments::Fiat::SafeCharge::Provider,
+        name: ::Payments::Fiat::SafeCharge::Methods::APMGW_NEOSURF,
+        currency_kind: ::Currency::FIAT
+      },
       BITCOIN => {
         provider: ::Payments::Crypto::CoinsPaid::Provider,
         name: BITCOIN,
@@ -68,10 +74,13 @@ module Payments
     }.freeze
 
     ALTERNATIVE_PAYMENT_METHODS = [
-      SKRILL, NETELLER, PAYSAFECARD, SOFORT, IDEAL, WEBMONEY, YANDEX, QIWI
+      SKRILL, NETELLER, PAYSAFECARD, SOFORT, IDEAL, WEBMONEY, YANDEX, QIWI,
+      NEOSURF
     ].freeze
 
-    CHOSEN_PAYMENT_METHODS = [CREDIT_CARD, SKRILL, NETELLER].freeze
+    CHOSEN_PAYMENT_METHODS = [
+      CREDIT_CARD, SKRILL, NETELLER, NEOSURF
+    ].freeze
     ENTERED_PAYMENT_METHODS = [BITCOIN].freeze
 
     def find_method_provider(method)

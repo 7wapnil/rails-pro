@@ -42,7 +42,8 @@ class EntryRequest < ApplicationRecord
     bitcoin: BITCOIN = 'bitcoin',
     webmoney: WEBMONEY = 'webmoney',
     yandex: YANDEX = 'yandex',
-    qiwi: QIWI = 'qiwi'
+    qiwi: QIWI = 'qiwi',
+    neosurf: NEOSURF = 'neosurf'
   }
 
   validates :amount,

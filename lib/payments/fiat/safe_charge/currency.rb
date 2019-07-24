@@ -69,6 +69,13 @@ module Payments
             USD
             ZAR
           ].freeze,
+          ::Payments::Fiat::SafeCharge::Methods::APMGW_NEOSURF => %w[
+            AUD
+            CAD
+            EUR
+            GBP
+            PLN
+          ].freeze,
           ::Payments::Fiat::SafeCharge::Methods::APMGW_PAYSAFECARD => %w[
             AUD
             BGN
