@@ -207,7 +207,7 @@ describe EntryRequests::Factories::Deposit do
     let!(:deposit_attempts) do
       create_list(
         :entry_request,
-        Deposits::VerifyDepositAttempt::MAX_DEPOSIT_ATTEMPTS,
+        Payments::Deposits::CustomerRulesForm::MAX_DEPOSIT_ATTEMPTS,
         :deposit,
         customer: customer,
         created_at: 2.hours.ago

@@ -9,18 +9,12 @@ module Deposits
     end
 
     def call
-      return true if available_deposit_limit?
-
-      false
-    end
-
-    private
-
-    def available_deposit_limit?
       return true unless deposit_limits
 
       potential_new_deposits_total < deposit_limits.value
     end
+
+    private
 
     def potential_new_deposits_total
       existing_deposits_volume + @amount

@@ -3,17 +3,19 @@
 describe EntryRequests::Factories::Withdrawal do
   subject(:service) do
     described_class.new(
-      transaction: transaction,
-      customer_rules: customer_rules
+      transaction: transaction
     )
   end
+
+  let(:initiator) { create(:user) }
 
   let(:transaction) do
     ::Payments::Transactions::Withdrawal.new(
       customer: wallet.customer,
       currency_code: currency.code,
       amount: withdraw_amount,
-      method: EntryRequest::BITCOIN
+      method: EntryRequest::BITCOIN,
+      initiator: initiator
     )
   end
   let(:withdraw_amount) { 50 }
@@ -24,7 +26,6 @@ describe EntryRequests::Factories::Withdrawal do
   end
 
   context 'when success' do
-    let(:customer_rules) {}
     let(:created_request) { service.call }
     let(:expected_attrs) do
       {
@@ -60,8 +61,8 @@ describe EntryRequests::Factories::Withdrawal do
   end
 
   context 'with errors' do
-    let(:customer_rules) { true }
     let(:entry_request) { create(:entry_request) }
+    let(:initiator) { entry_request.customer }
     let(:error_message) { "can't be blank" }
     let(:error_attribute) { :password }
 

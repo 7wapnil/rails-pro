@@ -3,9 +3,8 @@
 module EntryRequests
   module Factories
     class Withdrawal < ApplicationService
-      def initialize(transaction:, customer_rules: false)
+      def initialize(transaction:)
         @transaction = transaction
-        @customer_rules = customer_rules
         @amount = -transaction.amount.abs
       end
 
@@ -20,8 +19,7 @@ module EntryRequests
 
       private
 
-      attr_reader :transaction, :amount, :customer_rules,
-                  :entry_request, :withdrawal
+      attr_reader :transaction, :amount, :entry_request, :withdrawal
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(
@@ -49,7 +47,7 @@ module EntryRequests
       end
 
       def initiator_comment_suffix
-        " by #{passed_initiator}" if transaction.initiator
+        " by #{transaction.initiator}" if transaction.initiator
       end
 
       def create_balance_entry_request!
@@ -112,12 +110,10 @@ module EntryRequests
       end
 
       def validate_customer_rules?
-        customer_rules.present?
+        transaction.initiator.is_a?(Customer)
       end
 
-      def validate_payment_details?
-        customer_rules.present?
-      end
+      alias_method :validate_payment_details?, :validate_customer_rules?
     end
   end
 end

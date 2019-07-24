@@ -21,7 +21,7 @@ module Withdrawals
         method: entry_request.mode,
         customer: entry_request.customer,
         currency_code: entry_request.currency.code,
-        amount: -entry_request.amount.to_d,
+        amount: entry_request.amount.abs.to_d,
         withdrawal: withdrawal,
         details: withdrawal.details
       )

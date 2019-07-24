@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EntryRequests
   class BackofficeEntryRequestService < ApplicationService
     def initialize(entry_request_params)
@@ -20,14 +22,6 @@ module EntryRequests
       params[:kind] == EntryRequest::DEPOSIT
     end
 
-    def create_and_proceed_withdrawal
-      create_withdrawal_entry_request
-      return if entry_request.failed?
-
-      process_withdraw_entry_request
-      entry_request.withdrawal.succeeded!
-    end
-
     def create_and_proceed_deposit
       create_deposit_entry_request
       return if entry_request.failed?
@@ -36,12 +30,16 @@ module EntryRequests
       entry_request.deposit.succeeded!
     end
 
-    def process_deposit_entry_request
-      ::EntryRequests::DepositWorker.perform_async(entry_request.id)
+    def create_and_proceed_withdrawal
+      create_withdrawal_entry_request
+      return if entry_request.failed?
+
+      process_withdraw_entry_request
+      entry_request.withdrawal.succeeded!
     end
 
-    def process_withdraw_entry_request
-      ::EntryRequestProcessingWorker.perform_async(entry_request.id)
+    def entry_request_error!
+      raise EntryRequests::ValidationError, entry_request.result['message']
     end
 
     def create_deposit_entry_request
@@ -50,36 +48,37 @@ module EntryRequests
       )
     end
 
+    def process_deposit_entry_request
+      ::EntryRequests::DepositWorker.perform_async(entry_request.id)
+    end
+
+    def deposit_transaction
+      ::Payments::Transactions::Deposit.new(transaction_params)
+    end
+
     def create_withdrawal_entry_request
       @entry_request = EntryRequests::Factories::Withdrawal.call(
         transaction: withdrawal_transaction
       )
     end
 
-    def deposit_transaction
-      ::Payments::Transactions::Deposit.new(
-        method: params[:mode],
-        customer: Customer.find_by(id: params[:customer_id]),
-        amount: amount,
-        comment: params[:comment],
-        initiator: params[:initiator],
-        currency_code: Currency.find_by(id: params[:currency_id])&.code
-      )
+    def process_withdraw_entry_request
+      ::EntryRequestProcessingWorker.perform_async(entry_request.id)
     end
 
     def withdrawal_transaction
-      ::Payments::Transactions::Withdrawal.new(
+      ::Payments::Transactions::Withdrawal.new(transaction_params)
+    end
+
+    def transaction_params
+      {
         method: params[:mode],
         customer: Customer.find_by(id: params[:customer_id]),
         amount: amount,
         comment: params[:comment],
         initiator: params[:initiator],
         currency_code: Currency.find_by(id: params[:currency_id])&.code
-      )
-    end
-
-    def entry_request_error!
-      raise EntryRequests::ValidationError, entry_request.result['message']
+      }
     end
   end
 end

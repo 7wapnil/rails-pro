@@ -5,6 +5,8 @@ module Payments
     class CustomerRulesForm
       include ActiveModel::Model
 
+      MAX_DEPOSIT_ATTEMPTS = ENV.fetch('MAX_DEPOSIT_ATTEMPTS', 5).to_i
+
       attr_accessor :customer, :amount, :wallet
 
       validates :customer, presence: true
@@ -19,7 +21,7 @@ module Payments
       end
 
       def validate_attempts
-        return if ::Deposits::VerifyDepositAttempt.call(customer)
+        return if customer.deposit_attempts <= MAX_DEPOSIT_ATTEMPTS
 
         attempts_exceeded!
       end
