@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ModuleLength
 module Payments
   module Fiat
     module SafeCharge
@@ -110,3 +111,4 @@ module Payments
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength
