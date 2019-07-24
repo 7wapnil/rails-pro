@@ -6,7 +6,7 @@ describe 'creates deposit via entry request form' do
   let(:amount) { 200 }
   let(:entries_count) { BalanceEntryRequest.count }
   let(:entries_amounts) { BalanceEntryRequest.pluck(:amount) }
-  let!(:currency) { create(:currency, :primary, code: 'EUR', name: 'Euro') }
+  let!(:currency) { create(:currency, :primary) }
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
   let(:deposit_form) { '.card.customer-entry-request-form form' }
 
@@ -33,7 +33,7 @@ describe 'creates deposit via entry request form' do
         fill_in 'Comment', with: 'comment text'
         select EntryRequest::SIMULATED.capitalize, from: 'Mode'
         select EntryRequest::DEPOSIT.capitalize, from: 'Kind'
-        select currency.name.capitalize, from: 'Currency'
+        select currency.name, from: 'Currency'
       end
     end
 
@@ -51,7 +51,7 @@ describe 'creates deposit via entry request form' do
         fill_in 'Comment', with: 'comment text'
         select EntryRequest::SIMULATED.capitalize, from: 'Mode'
         select EntryRequest::DEPOSIT.capitalize, from: 'Kind'
-        select currency.name.capitalize, from: 'Currency'
+        select currency.name, from: 'Currency'
         click_on 'Confirm'
       end
 

@@ -5,10 +5,11 @@ describe Wallets::CreateForm do
     subject { described_class.new(subject: wallet).submit! }
 
     let(:wallet) { build(:wallet) }
+    let!(:crypto_currency) { create :currency, :crypto }
 
     context 'when there is a duplicate, but that is crypto-wallet' do
       let!(:second_wallet) do
-        create(:wallet, :crypto, customer: wallet.customer)
+        create(:wallet, customer: wallet.customer, currency: crypto_currency)
       end
 
       it 'creates the wallet' do
@@ -20,7 +21,10 @@ describe Wallets::CreateForm do
     context 'when created wallet is crypto-wallet and has another crypto' do
       let(:wallet) { build(:wallet, :crypto) }
       let!(:second_wallet) do
-        create(:wallet, :crypto, customer: wallet.customer)
+        other_crypto_currency = create(:currency, :crypto, code: 'CCC')
+        create(:wallet,
+               customer: wallet.customer,
+               currency: other_crypto_currency)
       end
 
       it 'creates the wallet' do
@@ -72,7 +76,10 @@ describe Wallets::CreateForm do
 
     context 'when there is a duplicate, but that is FIAT wallet' do
       let!(:second_wallet) do
-        create(:wallet, customer: wallet.customer)
+        other_fiat_currency = create(:currency, code: 'XXX')
+        create(:wallet,
+               customer: wallet.customer,
+               currency: other_fiat_currency)
       end
 
       it 'raises an error' do

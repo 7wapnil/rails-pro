@@ -13,8 +13,9 @@ describe Customer, '#account_management' do
     end
 
     it 'shows available balances' do
-      wallets = create_list(:wallet, 3, customer: customer)
-      wallets.each do |wallet|
+      3.times do |n|
+        currency = create(:currency, code: "XX#{n}")
+        wallet = create(:wallet, currency: currency, customer: customer)
         create(:balance, :bonus, wallet: wallet)
         create(:balance, :real_money, wallet: wallet)
       end

@@ -12,7 +12,10 @@ describe GraphQL, '#wallets' do
     let(:query) { %({ wallets { id amount currency { code name } } }) }
 
     it 'returns list of auth customer wallets' do
-      create_list(:wallet, 5, customer: auth_customer)
+      5.times do |n|
+        currency = create(:currency, code: "XX#{n}")
+        create(:wallet, customer: auth_customer, currency: currency)
+      end
       create_list(:wallet, 2)
       expect(result['data']['wallets'].count).to eq(5)
     end

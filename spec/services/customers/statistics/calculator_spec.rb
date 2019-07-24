@@ -18,12 +18,17 @@ describe Customers::Statistics::Calculator do
   context 'statistic calculation' do
     let!(:entries) do
       [
-        create(:entry, :win, :with_balance_entries, customer: customer),
-        create(:entry, :withdraw, :with_balance_entries, customer: customer),
-        create(:entry, :bet, :with_real_money_balance_entry,
+        create(:entry, :win,
                customer: customer),
-        create(:entry, :refund, :with_real_money_balance_entry,
-               customer: customer)
+        create(:entry, :withdraw,
+               customer: customer,
+               wallet: customer.wallets.first),
+        create(:entry, :bet,
+               customer: customer,
+               wallet: customer.wallets.first),
+        create(:entry, :refund,
+               customer: customer,
+               wallet: customer.wallets.first)
       ]
     end
 
@@ -32,9 +37,11 @@ describe Customers::Statistics::Calculator do
     let!(:successful_deposits) do
       [
         *create_list(:entry, rand(1..2), :with_real_money_balance_entry,
-                     customer: customer),
+                     customer: customer,
+                     wallet: customer.wallets.first),
         *create_list(:entry, rand(1..2), :with_balance_entries,
-                     customer: customer)
+                     customer: customer,
+                     wallet: customer.wallets.first)
       ]
     end
     let(:successful_deposit_real_money_balance_entries) do
@@ -48,9 +55,11 @@ describe Customers::Statistics::Calculator do
       [
         create(:entry, :withdraw, :with_real_money_balance_entry,
                customer: customer,
+               wallet: customer.wallets.first,
                origin: build(:withdrawal, :rejected)),
         create(:entry, :withdraw, :with_balance_entries,
                customer: customer,
+               wallet: customer.wallets.first,
                origin: build(:withdrawal))
       ]
     end
@@ -59,9 +68,11 @@ describe Customers::Statistics::Calculator do
         *create_list(:entry, rand(1..2),
                      :withdraw, :with_real_money_balance_entry,
                      customer: customer,
+                     wallet: customer.wallets.first,
                      origin: withdrawal),
         *create_list(:entry, rand(1..2), :withdraw, :with_balance_entries,
                      customer: customer,
+                     wallet: customer.wallets.first,
                      origin: withdrawal)
       ]
     end
@@ -88,12 +99,15 @@ describe Customers::Statistics::Calculator do
 
     let!(:bonus_conversion_entries) do
       [
+
         *create_list(:entry, rand(1..2),
                      :bonus_conversion, :with_real_money_balance_entry,
-                     customer: customer),
+                     customer: customer,
+                     wallet: customer.wallets.first),
         *create_list(:entry, rand(1..2),
                      :bonus_conversion, :with_balance_entries,
-                     customer: customer)
+                     customer: customer,
+                     wallet: customer.wallets.first)
       ]
     end
     let(:bonus_conversion_real_money_balance_entries) do

@@ -11,7 +11,11 @@ describe GraphQL, '#currencies' do
     let(:query) { %({ currencies { id name code primary kind } }) }
 
     let(:currencies_in_system) { 2 }
-    let(:currencies) { create_list(:currency, currencies_in_system) }
+    let(:currencies) do
+      (1..currencies_in_system).map do |n|
+        create(:currency, code: "XX#{n}")
+      end
+    end
 
     let!(:expected_result_array) do
       currencies.map do |currency|
