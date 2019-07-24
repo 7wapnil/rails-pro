@@ -14,7 +14,8 @@ module Payments
         base_uri ENV['COINSPAID_API_ENDPOINT']
         raise_on [400, 401, 403, 500]
         headers 'X-Processing-Key': ENV['COINSPAID_KEY'],
-                'Accept': 'application/json'
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
         format :json
         debug_output $stdout
 
