@@ -13,17 +13,15 @@ class EntryRequestsController < ApplicationController
 
   def create
     customer = Customer.find(payload_params[:customer_id])
-    form = EntryRequestForm.new(payload_params)
-    entry_request = form.submit
+    entry_request = EntryRequests::BackofficeEntryRequestService
+                    .call(payload_params)
 
-    if entry_request
-      current_user.log_event :entry_request_created, entry_request, customer
-      flash[:success] = t('messages.entry_request.flash')
-      redirect_to account_management_customer_path(customer)
-    else
-      flash[:error] = form.errors
-      redirect_back fallback_location: root_path
-    end
+    current_user.log_event :entry_request_created, entry_request, customer
+    flash[:success] = t('messages.entry_request.flash')
+    redirect_to account_management_customer_path(customer)
+  rescue Wallets::ValidationError, EntryRequests::ValidationError => error
+    flash[:error] = error.message
+    redirect_back fallback_location: root_path
   end
 
   private

@@ -54,6 +54,7 @@ describe Customer, '#account_management' do
 
       within 'form#new_entry_request' do
         select I18n.t('kinds.deposit'), from: :entry_request_kind
+        select 'Credit Card', from: :entry_request_mode
         fill_in :entry_request_amount, with: 200.00
         fill_in :entry_request_comment, with: 'A reason'
         click_submit

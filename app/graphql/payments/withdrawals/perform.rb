@@ -17,7 +17,8 @@ module Payments
           customer: current_customer,
           currency_code: input[:currencyCode],
           amount: input[:amount].to_d,
-          details: extract_details(input)
+          details: extract_details(input),
+          initiator: current_customer
         )
         ::Payments::Withdraw.call(transaction)
       end

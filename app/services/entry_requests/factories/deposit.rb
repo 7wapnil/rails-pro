@@ -6,15 +6,9 @@ module EntryRequests
     class Deposit < ApplicationService
       delegate :currency, to: :entry_request
 
-      def initialize(wallet:, amount:, customer_bonus: nil, **attributes)
-        @wallet = wallet
-        @amount = amount
+      def initialize(transaction:, customer_bonus: nil)
+        @transaction = transaction
         @customer_bonus = customer_bonus
-        @mode = attributes[:mode]
-        @passed_initiator = attributes[:initiator]
-        @passed_comment = attributes[:comment]
-        @external_id = attributes[:external_id]
-        @payment_details = attributes[:payment_details]
       end
 
       def call
@@ -28,9 +22,7 @@ module EntryRequests
 
       private
 
-      attr_reader :wallet, :amount, :customer_bonus, :passed_initiator,
-                  :mode, :passed_comment, :entry_request, :deposit,
-                  :external_id, :payment_details
+      attr_reader :transaction, :customer_bonus, :entry_request, :deposit
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
@@ -40,13 +32,13 @@ module EntryRequests
         {
           status: EntryRequest::INITIAL,
           amount: amount_value,
-          mode: mode,
+          mode: transaction.method,
           kind: EntryRequest::DEPOSIT,
           initiator: initiator,
           comment: comment,
-          currency: wallet.currency,
-          customer: wallet.customer,
-          external_id: external_id
+          currency: transaction.wallet.currency,
+          customer: transaction.customer,
+          external_id: transaction.external_id
         }
       end
 
@@ -56,7 +48,7 @@ module EntryRequests
 
       def calculations
         @calculations ||= BalanceCalculations::Deposit.call(
-          amount,
+          transaction.amount,
           customer_bonus&.original_bonus,
           no_bonus: bonus_not_applied?
         )
@@ -67,22 +59,23 @@ module EntryRequests
       end
 
       def initiator
-        @initiator ||= passed_initiator || wallet.customer
+        @initiator ||= transaction.initiator || transaction.customer
       end
 
       def comment
-        passed_comment.presence || default_comment
+        transaction.comment.presence || default_comment
       end
 
       def default_comment
-        "Deposit #{calculations[:real_money]} #{wallet.currency} real money " \
-        "and #{calculations[:bonus] || 0} #{wallet.currency} bonus money " \
-        "(#{wallet.customer&.pending_bonus&.code || 'no'} bonus code) " \
-        "for #{wallet.customer}#{initiator_comment_suffix}"
+        "Deposit #{calculations[:real_money]} #{transaction.currency_code}" \
+        " real money and #{calculations[:bonus] || 0} " \
+        "#{transaction.currency_code} bonus money " \
+        "(#{transaction.customer&.pending_bonus&.code || 'no'} bonus code) " \
+        "for #{transaction.customer}#{initiator_comment_suffix}"
       end
 
       def initiator_comment_suffix
-        " by #{passed_initiator}" if passed_initiator
+        " by #{transaction.initiator}" if transaction.initiator
       end
 
       def create_balance_request!
@@ -93,71 +86,51 @@ module EntryRequests
         @deposit = ::Deposit.create!(
           status: ::CustomerTransaction::PENDING,
           entry_request: entry_request,
-          customer_bonus: customer_bonus,
-          details: payment_details
+          customer_bonus: customer_bonus
         )
       end
 
-      # TODO: extract to form object
       def validate_entry_request!
-        check_currency_rule!
-        check_bonus_expiration!
-        perform_customer_validations! unless initiator.is_a?(User)
-
-        true
-      rescue *::Payments::Deposit::BUSINESS_ERRORS => error
-        entry_request.register_failure!(error.message)
-        fail_related_entities
+        validate_customer_rules! && validate_business_rules!
       end
 
-      def check_currency_rule!
-        return true unless currency_rule
-        return amount_greater_than_allowed! if amount > currency_rule.max_amount
+      def validate_business_rules!
+        form = ::Payments::Deposits::CreateForm.new(
+          amount: transaction.amount,
+          wallet: transaction.wallet,
+          payment_method: transaction.method,
+          bonus: customer_bonus
+        )
+        form.validate!
+      rescue ActiveModel::ValidationError
+        validation_failed(form)
 
-        amount_less_than_allowed! if amount < currency_rule.min_amount
+        false
       end
 
-      def currency_rule
-        @currency_rule ||= EntryCurrencyRule.find_by(currency: wallet.currency,
-                                                     kind: EntryKinds::DEPOSIT)
+      def validate_customer_rules!
+        return true if initiator.is_a?(User)
+
+        form = ::Payments::Deposits::CustomerRulesForm.new(
+          customer: transaction.customer,
+          amount: transaction.amount,
+          wallet: transaction.wallet
+        )
+        form.validate!
+      rescue ActiveModel::ValidationError
+        validation_failed(form)
+
+        false
       end
 
-      def amount_less_than_allowed!
-        raise ::Deposits::CurrencyRuleError,
-              I18n.t('errors.messages.amount_less_than_allowed',
-                     min_amount: currency_rule.min_amount,
-                     currency: currency.to_s)
+      def validation_failed(form)
+        attribute, message = form.errors.first
+
+        entry_request.register_failure!(message, attribute)
+        fail_related_entities!
       end
 
-      def amount_greater_than_allowed!
-        raise ::Deposits::CurrencyRuleError,
-              I18n.t('errors.messages.amount_greater_than_allowed',
-                     max_amount: currency_rule.max_amount,
-                     currency: currency.to_s)
-      end
-
-      def check_bonus_expiration!
-        return true unless customer_bonus&.expired?
-
-        raise CustomerBonuses::ActivationError,
-              I18n.t('errors.messages.entry_requests.bonus_expired')
-      end
-
-      def perform_customer_validations!
-        verify_deposit_attempts!
-        check_deposit_limit!
-      end
-
-      def check_deposit_limit!
-        ::Deposits::DepositLimitCheckService
-          .call(wallet.customer, amount, wallet.currency)
-      end
-
-      def verify_deposit_attempts!
-        ::Deposits::VerifyDepositAttempt.call(wallet.customer)
-      end
-
-      def fail_related_entities
+      def fail_related_entities!
         customer_bonus&.fail!
         deposit&.failed!
       end

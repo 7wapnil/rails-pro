@@ -2,15 +2,20 @@
 
 describe EntryRequests::Factories::Withdrawal do
   subject(:service) do
-    described_class.new(transaction: transaction)
+    described_class.new(
+      transaction: transaction
+    )
   end
+
+  let(:initiator) { create(:user) }
 
   let(:transaction) do
     ::Payments::Transactions::Withdrawal.new(
       customer: wallet.customer,
       currency_code: currency.code,
       amount: withdraw_amount,
-      method: EntryRequest::CASHIER
+      method: EntryRequest::BITCOIN,
+      initiator: initiator
     )
   end
   let(:withdraw_amount) { 50 }
@@ -27,7 +32,7 @@ describe EntryRequests::Factories::Withdrawal do
         amount: -withdraw_amount,
         currency_id: wallet.currency_id,
         customer_id: wallet.customer_id,
-        mode: EntryRequest::CASHIER
+        mode: EntryRequest::BITCOIN
       }
     end
 
@@ -57,21 +62,12 @@ describe EntryRequests::Factories::Withdrawal do
 
   context 'with errors' do
     let(:entry_request) { create(:entry_request) }
-    let(:error_message) { Faker::Lorem.sentence }
+    let(:initiator) { entry_request.customer }
+    let(:error_message) { "can't be blank" }
     let(:error_attribute) { :password }
-    let(:form) do
-      instance_double(::Payments::Withdrawals::CreateForm.name,
-                      errors: { error_attribute => error_message })
-    end
 
     before do
       allow(EntryRequest).to receive(:create!).and_return(entry_request)
-      allow(::Payments::Withdrawals::CreateForm)
-        .to receive(:new)
-        .and_return(form)
-      allow(form)
-        .to receive(:validate!)
-        .and_raise(ActiveModel::ValidationError, EntryRequest.new)
       allow(entry_request).to receive(:register_failure!)
     end
 

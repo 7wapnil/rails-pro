@@ -25,8 +25,7 @@ module Payments
 
     def create_entry_request!
       @entry_request = EntryRequests::Factories::Withdrawal.call(
-        transaction: transaction,
-        customer_rules: true
+        transaction: transaction
       )
     end
 

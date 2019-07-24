@@ -53,9 +53,7 @@ module Payments
 
       def create_entry_request
         @entry_request = EntryRequests::Factories::Deposit.call(
-          wallet: transaction.wallet,
-          amount: transaction.amount,
-          mode: transaction.method,
+          transaction: transaction,
           customer_bonus: customer_bonus
         )
       end

@@ -20,12 +20,20 @@ describe EntryRequests::DepositService do
            rollover_multiplier: rollover_multiplier,
            original_bonus: original_bonus)
   end
+  let(:transaction) do
+    Payments::Transactions::Deposit.new(
+      method: EntryRequest::SKRILL,
+      customer: customer,
+      amount: amount,
+      comment: Faker::Lorem.sentence,
+      initiator: customer,
+      currency_code: currency.code
+    )
+  end
   let(:entry_request) do
     EntryRequests::Factories::Deposit.call(
-      wallet: wallet,
-      amount: amount,
-      customer_bonus: customer_bonus,
-      mode: EntryRequest::SKRILL
+      transaction: transaction,
+      customer_bonus: customer_bonus
     )
   end
   let(:service_call) { described_class.call(entry_request: entry_request) }
