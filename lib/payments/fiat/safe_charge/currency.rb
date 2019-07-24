@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable Metrics/ModuleLength
 module Payments
   module Fiat
     module SafeCharge
@@ -69,6 +70,13 @@ module Payments
             USD
             ZAR
           ].freeze,
+          ::Payments::Fiat::SafeCharge::Methods::APMGW_NEOSURF => %w[
+            AUD
+            CAD
+            EUR
+            GBP
+            PLN
+          ].freeze,
           ::Payments::Fiat::SafeCharge::Methods::APMGW_PAYSAFECARD => %w[
             AUD
             BGN
@@ -103,3 +111,4 @@ module Payments
     end
   end
 end
+# rubocop:enable Metrics/ModuleLength

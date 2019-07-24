@@ -87,6 +87,20 @@ module Payments
             YE YT
             ZA ZM ZW
           ].freeze,
+          ::Payments::Fiat::SafeCharge::Methods::APMGW_NEOSURF => %w[
+            AU AT
+            BE
+            CA CO CH
+            DE
+            ES
+            FR
+            GB
+            IT
+            JP
+            NL
+            PL
+            SE
+          ].freeze,
           ::Payments::Fiat::SafeCharge::Methods::APMGW_PAYSAFECARD => %w[
             AD AE AR AT AU
             BE BG
