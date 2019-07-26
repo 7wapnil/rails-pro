@@ -46,12 +46,13 @@ module OddsFeed
       end
 
       def cancel_bets
-        bets.find_each(batch_size: batch_size)
-            .each { |bet| cancel_bet(bet) }
+        bets.find_each(batch_size: batch_size) { |bet| cancel_bet(bet) }
       end
 
       def bets
-        @bets ||= Bet.joins(odd: :market)
+        @bets ||= Bet.accepted
+                     .or(Bet.settled.won)
+                     .joins(odd: :market)
                      .includes(:winning, :placement_entry)
                      .where(markets: { external_id: market_external_ids })
                      .merge(bets_with_start_time)

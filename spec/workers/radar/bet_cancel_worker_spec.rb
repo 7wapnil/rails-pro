@@ -3,7 +3,7 @@
 describe Radar::BetCancelWorker do
   subject { described_class.new.perform(payload) }
 
-  let(:pending_status) { StateMachines::BetStateMachine::VALIDATED_INTERNALLY }
+  let(:pending_status) { StateMachines::BetStateMachine::ACCEPTED }
   let(:cancelled_status) { StateMachines::BetStateMachine::CANCELLED_BY_SYSTEM }
 
   let(:payload) do
