@@ -21,7 +21,7 @@ module Mts
     def uof_id
       [
         'uof:',
-        product_id,
+        producer.id,
         '/',
         sport_id,
         '/',
@@ -45,10 +45,6 @@ module Mts
 
       log_job_failure(error)
       raise error
-    end
-
-    def product_id
-      event.producer_by_start_status&.id || producer.id
     end
 
     def event

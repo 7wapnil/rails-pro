@@ -38,9 +38,13 @@ describe OddsFeed::Radar::FixtureChangeHandler do
   end
 
   describe 'update event data' do
-    it 'updates event producer if changed' do
-      subject.handle
-      expect(event.reload.producer_id).to eq(prematch_producer.id)
+    context 'updates from prematch to liveodds' do
+      before { payload['fixture_change']['product'] = liveodds_producer.id }
+
+      it 'updates event producer if changed' do
+        subject.handle
+        expect(event.reload.producer_id).to eq(liveodds_producer.id)
+      end
     end
 
     context 'cancelled message type' do
@@ -67,6 +71,19 @@ describe OddsFeed::Radar::FixtureChangeHandler do
                                                     id: producer_id)
 
         subject.handle
+      end
+    end
+
+    context 'invalid producer change' do
+      let!(:event) do
+        create(:event, external_id: external_event_id,
+                       producer_id: liveodds_producer.id.to_s)
+      end
+
+      it 'does not change producer id' do
+        producer_id_before_call = event.producer_id
+        subject.handle
+        expect(event.reload.producer_id).to eq(producer_id_before_call)
       end
     end
   end

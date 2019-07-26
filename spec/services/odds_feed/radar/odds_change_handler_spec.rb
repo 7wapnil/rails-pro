@@ -78,16 +78,28 @@ describe OddsFeed::Radar::OddsChangeHandler do
         subject.handle
       end
     end
+
+    context 'invalid producer' do
+      before do
+        payload['odds_change']['product'] = prematch_producer.id.to_s
+      end
+
+      let!(:event) do
+        create(:event,
+               external_id: external_id,
+               remote_updated_at: nil,
+               producer: liveodds_producer)
+      end
+
+      it 'does not update to producer with lower priority' do
+        expect(event.reload.producer_id).to eq(liveodds_producer.id)
+      end
+    end
   end
 
   # Update event attributes in DB
   describe 'event update' do
     context 'attributes' do
-      before do
-        subject.handle
-        event.reload
-      end
-
       it 'updates event producer' do
         subject.handle
         event.reload

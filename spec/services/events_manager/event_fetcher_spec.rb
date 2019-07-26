@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe EventsManager::EventFetcher do
   subject { described_class.new(external_id) }
 
