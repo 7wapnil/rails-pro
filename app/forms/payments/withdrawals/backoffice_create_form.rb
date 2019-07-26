@@ -23,13 +23,6 @@ module Payments
       validates :amount,
                 numericality: { greater_than: MIN_AMOUNT },
                 format: { with: AMOUNT_FORMAT_REGEX }
-      validates :payment_method,
-                inclusion: {
-                  in: ::Payments::Withdraw::PAYMENT_METHODS,
-                  message: I18n.t(
-                    'errors.messages.withdrawal.method_not_supported'
-                  )
-                }
 
       validate :validate_no_pending_bets_with_bonus
       validate :validate_amount

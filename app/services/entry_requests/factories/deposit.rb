@@ -95,7 +95,7 @@ module EntryRequests
       end
 
       def validate_business_rules!
-        form = ::Payments::Deposits::CreateForm.new(
+        form = business_rules_form.new(
           amount: transaction.amount,
           wallet: transaction.wallet,
           payment_method: transaction.method,
@@ -106,6 +106,16 @@ module EntryRequests
         validation_failed(form)
 
         false
+      end
+
+      def business_rules_form
+        return ::Payments::Deposits::CreateForm if validate_customer_rules?
+
+        ::Payments::Deposits::BackofficeCreateForm
+      end
+
+      def validate_customer_rules?
+        transaction.initiator.is_a?(Customer)
       end
 
       def validate_customer_rules!

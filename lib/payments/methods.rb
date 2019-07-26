@@ -79,7 +79,7 @@ module Payments
     ].freeze
 
     CHOSEN_PAYMENT_METHODS = [
-      CREDIT_CARD, SKRILL, NETELLER, NEOSURF
+      CREDIT_CARD, SKRILL, NETELLER
     ].freeze
     ENTERED_PAYMENT_METHODS = [BITCOIN].freeze
 
