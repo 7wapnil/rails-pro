@@ -36,6 +36,7 @@ module OddsFeed
                                event_id: event_id,
                                change_type: change_type)
 
+        update_event_start_time!
         update_event_producer!
         update_event_payload!
       end
@@ -52,6 +53,31 @@ module OddsFeed
           message: I18n.t('errors.messages.nonexistent_producer'),
           id: e.id
         )
+      end
+
+      def update_event_start_time!
+        EventStartTimeUpdateService.call(event: event)
+      end
+
+      def replay_mode?
+        ENV['RADAR_MQ_IS_REPLAY'] == 'true'
+      end
+
+      def patched_start_time
+        start_at_field = fixture['start_time'] || fixture['scheduled']
+        original_start_time = DateTime.parse(start_at_field)
+        today = Date.tomorrow
+
+        original_start_time.change(
+          year: today.year,
+          month: today.month,
+          day: today.day
+        )
+      end
+
+      def start_at
+        start_at_field = fixture['start_time'] || fixture['scheduled']
+        start_at_field.to_time
       end
 
       def update_event_payload!

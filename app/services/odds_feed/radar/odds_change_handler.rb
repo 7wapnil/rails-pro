@@ -147,8 +147,8 @@ module OddsFeed
       def event_status
         raise KeyError unless event_status_payload
 
-        status = event_status_payload.fetch('status')
-        event_statuses_map[status] || Event::NOT_STARTED
+        @event_status ||=
+          EventStatusConverter.call(event_status_payload.fetch('status'))
       rescue KeyError
         log_job_message(
           :warn,
@@ -166,21 +166,6 @@ module OddsFeed
         return nil unless event_status == Event::ENDED
 
         timestamp
-      end
-
-      def event_statuses_map
-        {
-          0 => Event::NOT_STARTED,
-          1 => Event::STARTED,
-          2 => Event::SUSPENDED,
-          3 => Event::ENDED,
-          4 => Event::CLOSED,
-          5 => Event::CANCELLED,
-          6 => Event::DELAYED,
-          7 => Event::INTERRUPTED,
-          8 => Event::POSTPONED,
-          9 => Event::ABANDONED
-        }.stringify_keys
       end
 
       def event_display_status

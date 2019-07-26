@@ -10,6 +10,7 @@ describe OddsFeed::Radar::FixtureChangeHandler do
   let!(:event) { create(:event, external_id: external_event_id) }
   let(:producer_id) { prematch_producer.id.to_s }
   let(:change_type) { '4' }
+  let(:client_double) { double }
 
   let(:payload) do
     {
@@ -23,6 +24,10 @@ describe OddsFeed::Radar::FixtureChangeHandler do
 
   before do
     allow(EventsManager::EventLoader).to receive(:call).and_return(event)
+    allow_any_instance_of(OddsFeed::Radar::Client)
+      .to receive(:event).and_return(client_double)
+    allow(client_double)
+      .to receive(:payload).and_return('start_time' => Time.now)
   end
 
   describe 'validation' do
