@@ -8,6 +8,7 @@ describe GraphQL, '#transactions' do
     create_list(:entry_request,
                 5,
                 customer: customer,
+                origin_type: 'CustomerTransaction',
                 kind: EntryRequest::WITHDRAW)
   end
 
@@ -15,6 +16,7 @@ describe GraphQL, '#transactions' do
     create_list(:entry_request,
                 5,
                 customer: customer,
+                origin_type: 'CustomerTransaction',
                 kind: EntryRequest::DEPOSIT)
   end
 
