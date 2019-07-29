@@ -5,6 +5,7 @@ module Reports
     AMOUNT_INITIAL_VALUE = 0
     BONUS = :bonus
     REAL_MONEY = :real_money
+    REPORT_CURRENCY = 'EUR'
 
     def initialize(subject:, target_currency:)
       @subject = subject
@@ -25,7 +26,7 @@ module Reports
         ENV['BRAND'],
         Date.current.yesterday.strftime('%Y-%m-%d'),
         subject.id,
-        subject_currency,
+        REPORT_CURRENCY,
         0, # should be implemented in future
         deposit_real_money_converted,
         deposits_per_day.length,
