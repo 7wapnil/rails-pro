@@ -13,7 +13,7 @@ module Account
     argument :deviceTypeLast, !types.String
     argument :devicePlatformLast, !types.String
     argument :registrationUrlLast, !types.String
-    argument :timestamp_visit_last, !types.String
+    argument :timestampVisitLast, !types.String
     argument :entrancePageLast, !types.String
     argument :referrerLast, !types.String
     argument :currentBtag, types.String
