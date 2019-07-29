@@ -31,11 +31,7 @@ module Deposits
     private
 
     def find_bonus!(args)
-      bonus = Bonus.from_code(args[:code])
-      return bonus if bonus
-
-      message = format(I18n.t('not_found'), instance: 'bonus')
-      raise ActiveRecord::RecordNotFound.new, message
+      Bonus.from_code(args[:code])
     end
   end
 end
