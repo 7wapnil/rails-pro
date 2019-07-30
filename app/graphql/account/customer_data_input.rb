@@ -9,6 +9,7 @@ module Account
     argument :utmContentLast, types.String
     argument :utmTermLast, types.String
     argument :visitcountLast, types.String
+    argument :ipLast, types.String
     argument :browserLast, types.String
     argument :deviceTypeLast, types.String
     argument :devicePlatformLast, types.String
