@@ -92,7 +92,10 @@ class EntryRequest < ApplicationRecord
   end
 
   def self.transactions
-    where(kind: [DEPOSIT, WITHDRAW, REFUND]).order(created_at: :desc)
+    where(
+      origin_type: CustomerTransaction.to_s,
+      kind: [DEPOSIT, WITHDRAW, REFUND]
+    )
   end
 
   private
