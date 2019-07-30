@@ -96,6 +96,8 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
            source: :entries,
            class_name: Entry.name
 
+  has_one :customer_data
+
   delegate :street_address,
            :zip_code,
            :country,

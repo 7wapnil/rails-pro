@@ -41,7 +41,12 @@ class Bonus < ApplicationRecord
 
   class << self
     def from_code(code)
-      active.find_by('lower(code) = ?', code&.downcase)
+      return unless code.present?
+
+      active.find_by!('lower(code) = ?', code&.downcase)
+    rescue ActiveRecord::RecordNotFound
+      message = format(I18n.t('not_found'), instance: 'bonus')
+      raise ActiveRecord::RecordNotFound.new, message
     end
   end
 end
