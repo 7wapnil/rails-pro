@@ -7,15 +7,14 @@ describe EntryRequests::Factories::WinPayout do
   let(:amount) { rand(10..100).to_d }
   let(:ratio) { 0.75 }
 
-  let(:placement_entry) { create(:entry, :bet, amount: amount, origin: bet) }
   let!(:real_money_balance_entry) do
     create(:balance_entry, amount: amount * ratio,
-                           entry: placement_entry,
+                           entry: bet.placement_entry,
                            balance: create(:balance, :real_money))
   end
   let!(:bonus_balance_entry) do
     create(:balance_entry, amount: amount * (1 - ratio),
-                           entry: placement_entry,
+                           entry: bet.placement_entry,
                            balance: create(:balance, :bonus))
   end
 

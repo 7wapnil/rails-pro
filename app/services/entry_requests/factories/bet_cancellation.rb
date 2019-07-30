@@ -23,6 +23,11 @@ module EntryRequests
       def create_bet_cancel_request!
         @bet_cancel_request = EntryRequest
                               .create!(bet_cancel_request_attributes)
+
+        create_balance_entry_requests_for!(
+          original_entry: bet_entry,
+          entry_request: bet_cancel_request
+        )
       end
 
       def bet_cancel_request_attributes
@@ -45,6 +50,11 @@ module EntryRequests
       def create_win_cancel_request!
         @win_cancel_request = EntryRequest
                               .create!(win_cancel_request_attributes)
+
+        create_balance_entry_requests_for!(
+          original_entry: winning_entry,
+          entry_request: win_cancel_request
+        )
       end
 
       def win_cancel_request_attributes
@@ -63,9 +73,28 @@ module EntryRequests
         @winning_entry ||= bet.winning
       end
 
+      def bet_entry
+        @bet_entry ||= bet.entry
+      end
+
       def win_cancel_comment
         "Cancel winnings - #{winning_entry.amount} #{bet.currency} " \
         "for #{bet.customer} on #{bet.event}."
+      end
+
+      def create_balance_entry_requests_for!(original_entry:, entry_request:)
+        balance_entries = original_entry.balance_entries.includes(:balance)
+
+        balance_entry_amounts = balance_entries.map do |balance_entry|
+          [balance_entry.balance.kind, balance_entry.amount.abs]
+        end
+
+        balance_entry_amounts = balance_entry_amounts.to_h.symbolize_keys!
+
+        BalanceRequestBuilders::Refund.call(
+          entry_request,
+          balance_entry_amounts
+        )
       end
     end
   end
