@@ -148,7 +148,7 @@ describe GraphQL do
           deviceTypeLast: Faker::Lorem.word,
           devicePlatformLast: Faker::Lorem.word,
           registrationUrlLast: Faker::Lorem.word,
-          timestamp_visit_last: Faker::Lorem.word,
+          timestampVisitLast: Faker::Lorem.word,
           entrancePageLast: Faker::Lorem.word,
           referrerLast: Faker::Lorem.word,
           currentBtag: Faker::Lorem.word,
