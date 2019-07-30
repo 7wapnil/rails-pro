@@ -15,12 +15,8 @@ module Payments
 
         attr_reader :response
 
-        def request_id
-          raise NotImplementedError, 'Implement #request_id method!'
-        end
-
         def entry_request
-          @entry_request ||= ::EntryRequest.find(request_id)
+          raise NotImplementedError, 'Implement #entry_request method!'
         end
 
         def fail_related_entities

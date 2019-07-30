@@ -109,9 +109,17 @@ module EntryRequests
       end
 
       def business_rules_form
-        return ::Payments::Deposits::CreateForm if validate_customer_rules?
+        return customers_create_form if validate_customer_rules?
 
-        ::Payments::Deposits::BackofficeCreateForm
+        backoffice_create_form
+      end
+
+      def customers_create_form
+        ::Payments::Deposits::Customers::CreateForm
+      end
+
+      def backoffice_create_form
+        ::Payments::Deposits::Backoffice::CreateForm
       end
 
       def validate_customer_rules?
@@ -121,7 +129,7 @@ module EntryRequests
       def validate_customer_rules!
         return true if initiator.is_a?(User)
 
-        form = ::Payments::Deposits::CustomerRulesForm.new(
+        form = ::Payments::Deposits::Customers::RulesForm.new(
           customer: transaction.customer,
           amount: transaction.amount,
           wallet: transaction.wallet

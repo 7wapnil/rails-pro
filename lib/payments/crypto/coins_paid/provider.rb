@@ -5,7 +5,8 @@ module Payments
     module CoinsPaid
       class Provider < ::Payments::Crypto::Provider
         def receive_deposit_address
-          ::CryptoAddresses::GetOrCreate.call(transaction)
+          ::Payments::Crypto::CoinsPaid::Deposits::RequestHandler
+            .call(transaction)
         end
 
         def payout_request_handler
