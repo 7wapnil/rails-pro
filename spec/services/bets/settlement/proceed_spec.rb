@@ -9,7 +9,7 @@ describe Bets::Settlement::Proceed do
   before { allow(EntryRequests::BetSettlementService).to receive(:call) }
 
   context 'with entire win bet' do
-    let(:bet) { create(:bet, :settled, :won) }
+    let!(:bet) { create(:bet, :settled, :won) }
 
     let(:win_entry_request_attributes) do
       {
@@ -44,7 +44,7 @@ describe Bets::Settlement::Proceed do
   end
 
   context 'half win bet, half refund' do
-    let(:bet) { create(:bet, :settled, :won, void_factor: 0.5) }
+    let!(:bet) { create(:bet, :settled, :won, void_factor: 0.5) }
 
     let(:win_entry_request_attributes) do
       {
@@ -80,7 +80,7 @@ describe Bets::Settlement::Proceed do
   end
 
   context 'bet lose, half refund' do
-    let(:bet) { create(:bet, :settled, :lost, void_factor: 0.5) }
+    let!(:bet) { create(:bet, :settled, :lost, void_factor: 0.5) }
 
     let(:refund_entry_request_attributes) do
       {
@@ -116,7 +116,7 @@ describe Bets::Settlement::Proceed do
   end
 
   context 'bet lose, without refund' do
-    let(:bet) { create(:bet, :settled, :lost) }
+    let!(:bet) { create(:bet, :settled, :lost) }
 
     it 'does not create entry request' do
       expect { subject }.not_to change(EntryRequest, :count)

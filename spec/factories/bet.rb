@@ -10,6 +10,7 @@ FactoryBot.define do
     association :odd, factory: %i[odd active]
     currency
     association :customer, :ready_to_bet
+    association :placement_entry, factory: %i[entry bet]
 
     trait :sent_to_external_validation do
       status { StateMachines::BetStateMachine::SENT_TO_EXTERNAL_VALIDATION }
@@ -24,6 +25,7 @@ FactoryBot.define do
     trait :won do
       status            { StateMachines::BetStateMachine::SETTLED }
       settlement_status { :won }
+      association :winning, factory: %i[entry win]
     end
 
     trait :lost do

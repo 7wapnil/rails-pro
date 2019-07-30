@@ -30,9 +30,16 @@ FactoryBot.define do
              max_amount: entry.amount.abs * 2)
     end
 
-    EntryKinds::KINDS.keys.each do |kind|
+    EntryKinds::DEBIT_KINDS.each do |kind|
       trait(kind.to_sym) do
         kind { kind }
+      end
+    end
+
+    EntryKinds::CREDIT_KINDS.each do |kind|
+      trait(kind.to_sym) do
+        kind { kind }
+        amount { Faker::Number.negative.round(2) }
       end
     end
 
@@ -51,10 +58,10 @@ FactoryBot.define do
     trait :with_balance_entries do
       after(:create) do |entry|
         create(:balance_entry, :bonus,
-               amount: entry.amount / 2 - 500,
+               amount: entry.amount / 2,
                entry: entry)
         create(:balance_entry, :real_money,
-               amount: entry.amount / 2 + 500,
+               amount: entry.amount / 2,
                entry: entry)
       end
     end

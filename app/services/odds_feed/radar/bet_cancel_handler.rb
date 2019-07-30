@@ -50,8 +50,7 @@ module OddsFeed
       end
 
       def bets
-        @bets ||= Bet.accepted
-                     .or(Bet.settled.won)
+        @bets ||= Bet.accepted.or(Bet.settled)
                      .joins(odd: :market)
                      .includes(:winning, :placement_entry)
                      .where(markets: { external_id: market_external_ids })
