@@ -21,8 +21,12 @@ module OddsFeed
       end
 
       def call
-        STATUSES_MAP[@status_number] || Event::NOT_STARTED
+        STATUSES_MAP[status_number] || Event::NOT_STARTED
       end
+
+      private
+
+      attr_reader :status_number
     end
   end
 end
