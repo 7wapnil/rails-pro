@@ -48,7 +48,7 @@ describe EntryRequests::BackofficeEntryRequestService do
       let(:entry_params) do
         base_params.merge(
           kind: EntryRequest::WITHDRAW,
-          mode: EntryRequest::SIMULATED
+          amount: 0
         )
       end
 

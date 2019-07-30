@@ -45,17 +45,20 @@ module Payments
           end
 
           def create_deposit_entry_request
-            transaction = ::Payments::Transactions::Deposit.new(
+            @entry_request = EntryRequests::Factories::Deposit.call(
+              transaction: deposit_transaction,
+              customer_bonus: valid_customer_bonus
+            )
+          end
+
+          def deposit_transaction
+            @deposit_transaction ||= ::Payments::Transactions::Deposit.new(
               method: ::Payments::Methods::BITCOIN,
               customer: customer,
               currency_code: currency_code,
               amount: converted_amount,
               external_id: response['id'].to_s
             )
-            @entry_request =
-              ::Payments::Crypto::CoinsPaid::Deposits::RequestHandler
-              .call(transaction: transaction,
-                    customer_bonus: valid_customer_bonus)
           end
 
           def customer
@@ -120,7 +123,12 @@ module Payments
           def create_deposit_entry!
             return if entry_request.succeeded?
 
+            entry_request.deposit.update(details: payment_details)
             ::EntryRequests::DepositService.call(entry_request: entry_request)
+          end
+
+          def payment_details
+            { address: deposit_transaction.wallet.crypto_address.address }
           end
 
           def unknown_status!

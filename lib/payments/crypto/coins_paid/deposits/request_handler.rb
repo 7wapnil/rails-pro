@@ -5,47 +5,42 @@ module Payments
     module CoinsPaid
       module Deposits
         class RequestHandler < ApplicationService
-          def initialize(transaction:, customer_bonus:)
+          def initialize(transaction)
             @transaction = transaction
-            @customer_bonus = customer_bonus
           end
 
           def call
-            validate_transaction!
-            create_entry_request
+            return wallet_crypto_address.address if crypto_address?
 
-            entry_request_failed! if entry_request.failed?
-
-            entry_request
+            create_crypto_address!
+            crypto_address.address
           end
 
           private
 
-          attr_reader :transaction, :customer_bonus, :entry_request
+          attr_reader :transaction, :crypto_address
 
-          def validate_transaction!
-            return if transaction.valid?
+          delegate :wallet, to: :transaction
+          delegate :crypto_address, to: :wallet, prefix: true
 
-            raise Payments::InvalidTransactionError, transaction
+          def crypto_address?
+            wallet_crypto_address.present?
           end
 
-          def create_entry_request
-            @entry_request = EntryRequests::Factories::Deposit.call(
-              wallet: transaction.wallet,
-              amount: transaction.amount,
-              mode: transaction.method,
-              customer_bonus: customer_bonus,
-              external_id: transaction.external_id,
-              payment_details: payment_details
-            )
+          def create_crypto_address!
+            @crypto_address =
+              CryptoAddress.create(
+                wallet: wallet,
+                address: generate_address
+              )
           end
 
-          def entry_request_failed!
-            raise Payments::BusinessRuleError, entry_request.result['message']
+          def generate_address
+            client.generate_address(transaction.customer)
           end
 
-          def payment_details
-            { address: transaction.wallet.crypto_address.address }
+          def client
+            Payments::Crypto::CoinsPaid::Client.new
           end
         end
       end

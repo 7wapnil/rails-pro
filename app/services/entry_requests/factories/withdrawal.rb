@@ -83,9 +83,17 @@ module EntryRequests
       end
 
       def business_rules_validation_form
-        return ::Payments::Withdrawals::CreateForm if validate_payment_details?
+        return customers_create_form if validate_payment_details?
 
-        ::Payments::Withdrawals::BackofficeCreateForm
+        backoffice_create_form
+      end
+
+      def customers_create_form
+        ::Payments::Withdrawals::Customers::CreateForm
+      end
+
+      def backoffice_create_form
+        ::Payments::Withdrawals::Backoffice::CreateForm
       end
 
       def validation_failed(form)
@@ -98,7 +106,7 @@ module EntryRequests
       def validate_customer_rules!
         return true unless validate_customer_rules?
 
-        form = ::Payments::Withdrawals::CustomerRulesForm.new(
+        form = ::Payments::Withdrawals::Customers::RulesForm.new(
           password: transaction.password,
           customer: transaction.customer
         )

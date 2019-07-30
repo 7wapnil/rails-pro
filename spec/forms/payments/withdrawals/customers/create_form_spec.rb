@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Payments::Withdrawals::CreateForm, type: :model do
+describe ::Payments::Withdrawals::Customers::CreateForm, type: :model do
   subject { described_class.new(params) }
 
   let(:params) do
