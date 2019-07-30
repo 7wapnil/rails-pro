@@ -33,5 +33,6 @@ module Account
     field :availableWithdrawalMethods,
           types[::Payments::Withdrawals::PaymentMethodType],
           property: :available_withdrawal_methods
+    field :wallets, types[::Wallets::WalletType]
   end
 end
