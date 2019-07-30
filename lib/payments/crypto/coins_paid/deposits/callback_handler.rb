@@ -29,6 +29,8 @@ module Payments
 
           private
 
+          attr_accessor :entry_request
+
           delegate :min_deposit, to: :customer_bonus
 
           def pending?
