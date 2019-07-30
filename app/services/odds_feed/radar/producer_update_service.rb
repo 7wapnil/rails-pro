@@ -14,22 +14,17 @@ module OddsFeed
       end
 
       def call
-        update_producer
+        old_priority = PRODUCER_PRIORITY[event.producer_id]
+        new_priority = PRODUCER_PRIORITY[producer_id]
+
+        return if old_priority >= new_priority
+
+        event.assign_attributes(producer_id: producer_id)
       end
 
       private
 
       attr_accessor :event, :producer_id
-
-      def update_producer
-        old_priority = PRODUCER_PRIORITY[event.producer_id]
-        new_priority = PRODUCER_PRIORITY[producer_id]
-
-        return event if old_priority >= new_priority
-
-        event.assign_attributes(producer_id: producer_id)
-        event
-      end
     end
   end
 end
