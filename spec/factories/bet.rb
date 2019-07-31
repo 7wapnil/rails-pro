@@ -8,9 +8,9 @@ FactoryBot.define do
     status    { StateMachines::BetStateMachine::INITIAL }
 
     association :odd, factory: %i[odd active]
-    currency
     association :customer, :ready_to_bet
     association :placement_entry, factory: %i[entry bet]
+    currency { placement_entry.wallet.currency }
 
     trait :sent_to_external_validation do
       status { StateMachines::BetStateMachine::SENT_TO_EXTERNAL_VALIDATION }
