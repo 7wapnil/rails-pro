@@ -39,7 +39,9 @@ describe OddsFeed::Radar::FixtureChangeHandler do
 
   describe 'update event data' do
     context 'updates from prematch to liveodds' do
-      before { payload['fixture_change']['product'] = liveodds_producer.id }
+      before do
+        payload['fixture_change']['product'] = liveodds_producer.id.to_s
+      end
 
       it 'updates event producer if changed' do
         subject.handle
