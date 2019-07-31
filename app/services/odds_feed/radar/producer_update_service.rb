@@ -10,7 +10,7 @@ module OddsFeed
 
       def initialize(event:, producer_id:)
         @event = event
-        @producer_id = producer_id
+        @producer_id = producer_id.to_i
       end
 
       def call
