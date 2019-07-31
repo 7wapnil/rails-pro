@@ -64,6 +64,7 @@ module OddsFeed
 
       def update_event!
         update_event_attributes
+        update_producer
         event.save!
       end
 
@@ -73,7 +74,6 @@ module OddsFeed
           status: event_status,
           end_at: event_end_time,
           active: event_active?,
-          producer: ::Radar::Producer.find(input_data['product']),
           display_status: event_display_status,
           home_score: event_home_score,
           away_score: event_away_score,
@@ -205,6 +205,13 @@ module OddsFeed
         minutes = match_time.to_i
         seconds = match_time.split(':').second.to_i
         (minutes.minutes + seconds.seconds).to_i
+      end
+
+      def update_producer
+        ProducerUpdateService.call(
+          event: event,
+          producer_id: ::Radar::Producer.find(input_data['product']).id
+        )
       end
 
       def timestamp

@@ -45,7 +45,10 @@ module OddsFeed
 
         log_job_message(:info, message: 'Updating producer',
                                event_id: event_id)
-        event.update(producer: producer)
+
+        ProducerUpdateService.call(event: event, producer_id: producer.id)
+
+        event.save!
       rescue ActiveRecord::RecordNotFound => e
         log_job_message(
           :warn,

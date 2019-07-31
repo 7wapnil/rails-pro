@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EventsManager
   class EventFetcher < BaseEntityLoader
     MATCH_TYPE_REGEXP = /:match:/
