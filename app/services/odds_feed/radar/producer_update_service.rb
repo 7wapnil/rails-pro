@@ -10,14 +10,14 @@ module OddsFeed
 
       def initialize(event:, producer_id:)
         @event = event
-        @producer_id = producer_id.to_i
+        @producer_id = producer_id
       end
 
       def call
         old_priority = PRODUCER_PRIORITY[event.producer_id]
         new_priority = PRODUCER_PRIORITY[producer_id]
 
-        return if old_priority >= new_priority
+        return if old_priority && old_priority >= new_priority
 
         event.assign_attributes(producer_id: producer_id)
       end

@@ -28,4 +28,15 @@ describe OddsFeed::Radar::ProducerUpdateService do
       expect(event.producer_id).to eq(liveodds_producer.id)
     end
   end
+
+  context 'when event has no producer' do
+    let(:producer_id) { nil }
+    let(:new_producer_id) { prematch_producer.id }
+
+    it 'changes event producer' do
+      subject
+
+      expect(event.producer_id).to eq(prematch_producer.id)
+    end
+  end
 end
