@@ -1,5 +1,7 @@
 describe GraphQL, '#deposit_bonus' do
-  let(:auth_customer) { create(:customer) }
+  let!(:auth_customer) { create(:customer) }
+  let!(:wallet) { create(:wallet, customer: auth_customer) }
+  let!(:primary_currency) { create(:currency, :primary) }
   let(:context) { { current_customer: auth_customer } }
   let(:variables) { { amount: amount, code: code } }
   let(:amount) { 100.0 }

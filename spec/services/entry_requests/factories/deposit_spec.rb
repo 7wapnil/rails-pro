@@ -121,7 +121,7 @@ describe EntryRequests::Factories::Deposit do
     before do
       allow(BalanceCalculations::Deposit)
         .to receive(:call)
-        .with(amount, original_bonus, no_bonus: false)
+        .with(amount, currency, original_bonus, no_bonus: false)
         .and_return(real_money: amount, bonus: bonus)
     end
 

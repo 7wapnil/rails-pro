@@ -24,7 +24,11 @@ module Deposits
                                              original_bonus: bonus,
                                              amount: args[:amount])
       form.validate!
-      bonus_hash = BalanceCalculations::Deposit.call(args[:amount], bonus)
+      bonus_hash = BalanceCalculations::Deposit.call(
+        args[:amount],
+        current_customer.wallet.currency,
+        bonus
+      )
       CalculatedBonus.new(bonus_hash)
     end
 

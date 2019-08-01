@@ -3,6 +3,7 @@
 module CustomerBonuses
   class Create < ApplicationService
     delegate :customer, to: :wallet, allow_nil: true
+    delegate :currency, to: :wallet, allow_nil: true
 
     def initialize(wallet:, bonus:, amount:, **params)
       @wallet = wallet
@@ -62,7 +63,7 @@ module CustomerBonuses
     end
 
     def bonus_amount
-      BalanceCalculations::Deposit.call(amount, bonus)[:bonus]
+      BalanceCalculations::Deposit.call(amount, currency, bonus)[:bonus]
     end
 
     def check_bonus_expiration!
