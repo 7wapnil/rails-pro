@@ -3,6 +3,8 @@
 describe CustomerBonuses::Create do
   subject { described_class.call(params) }
 
+  let!(:primary_currency) { create(:currency, :primary) }
+
   let(:params) do
     {
       wallet: wallet,

@@ -4,7 +4,8 @@ module EntryRequests
   module Factories
     # rubocop:disable Metrics/ClassLength
     class Deposit < ApplicationService
-      delegate :currency, to: :entry_request
+      delegate :wallet, to: :transaction
+      delegate :currency, to: :wallet
 
       def initialize(transaction:, customer_bonus: nil)
         @transaction = transaction
@@ -49,6 +50,7 @@ module EntryRequests
       def calculations
         @calculations ||= BalanceCalculations::Deposit.call(
           transaction.amount,
+          currency,
           customer_bonus&.original_bonus,
           no_bonus: bonus_not_applied?
         )

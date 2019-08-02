@@ -4,8 +4,9 @@ module BalanceCalculations
   class Deposit < ApplicationService
     delegate :min_deposit, to: :bonus, allow_nil: true
 
-    def initialize(deposit_amount, bonus, **params)
+    def initialize(deposit_amount, currency, bonus, **params)
       @amount = deposit_amount
+      @currency = currency
       @bonus = bonus
       @no_bonus = params[:no_bonus] || false
     end
@@ -19,7 +20,7 @@ module BalanceCalculations
 
     private
 
-    attr_reader :bonus, :amount, :no_bonus
+    attr_reader :bonus, :amount, :currency, :no_bonus
 
     def calculate_bonus_amount
       return 0.0 if no_bonus?
@@ -41,7 +42,11 @@ module BalanceCalculations
     end
 
     def max_deposit_bonus
-      @max_deposit_bonus ||= bonus.max_deposit_match
+      @max_deposit_bonus ||= Exchanger::Converter.call(
+        bonus.max_deposit_match,
+        currency,
+        Currency.primary
+      )
     end
   end
 end
