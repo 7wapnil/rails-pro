@@ -54,4 +54,27 @@ describe BalanceCalculations::Deposit do
 
     expect(bonus).to be_zero
   end
+
+  context 'with exchange_rate == 2' do
+    let(:exchange_rate) { 2 }
+    let(:non_primary_currency) do
+      create(:currency, code: 'USD', exchange_rate: exchange_rate)
+    end
+    let(:customer_bonus) do
+      create(:customer_bonus,
+             customer: customer,
+             percentage: 100,
+             max_deposit_match: max_deposit_bonus)
+    end
+
+    it 'corrects the max_deposit_bonus with the currency exchange_rate' do
+      bonus = described_class.call(
+        amount,
+        non_primary_currency,
+        customer_bonus
+      )[:bonus]
+
+      expect(bonus).to eq(max_deposit_bonus / exchange_rate)
+    end
+  end
 end
