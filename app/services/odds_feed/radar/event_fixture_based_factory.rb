@@ -1,7 +1,9 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     class EventFixtureBasedFactory
-      BOOKED_FIXTURE_STATUS = 'booked'.freeze
+      BOOKED_FIXTURE_STATUS = 'booked'
 
       attr_reader :fixture
 
@@ -22,7 +24,8 @@ module OddsFeed
           name: event_name,
           description: event_name,
           traded_live: event_traded_live?,
-          liveodds: liveodds
+          liveodds: liveodds,
+          status: fixture['status']
         }
       end
 

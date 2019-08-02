@@ -36,6 +36,7 @@ module OddsFeed
                                event_id: event_id,
                                change_type: change_type)
 
+        update_event_start_time!
         update_event_producer!
         update_event_payload!
       end
@@ -57,6 +58,21 @@ module OddsFeed
         )
       end
 
+      def update_event_start_time!
+        # return unless change_type == :datetime TODO uncomment after testing
+
+        EventStartTimeUpdateService
+          .call(event: event, payload_time: start_time)
+      end
+
+      def start_time
+        payload['start_time']
+      end
+
+      def payload
+        @payload['fixture_change']
+      end
+
       def update_event_payload!
         log_job_message(:info, message: 'Updating payload', event_id: event_id)
 
@@ -65,10 +81,6 @@ module OddsFeed
 
       def event_id
         payload['event_id']
-      end
-
-      def payload
-        @payload['fixture_change']
       end
 
       def change_type

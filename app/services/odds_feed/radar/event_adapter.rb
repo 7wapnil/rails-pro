@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     class EventAdapter < BaseAdapter
