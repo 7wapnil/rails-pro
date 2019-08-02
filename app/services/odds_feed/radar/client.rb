@@ -12,6 +12,7 @@ module OddsFeed
 
       base_uri ENV['RADAR_API_URL']
       headers 'x-access-token': ENV['RADAR_API_TOKEN']
+      parser ::HTTParty::ImprovedXmlParser
       format :xml
       raise_on [403, 404, 409, 500, 503]
 

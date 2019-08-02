@@ -90,7 +90,7 @@ describe Findable::Find do
     end
 
     context 'with invalid resource class' do
-      let(:resource_class) { Faker::Lorem.word.capitalize }
+      let(:resource_class) { "#{Faker::Lorem.word.capitalize}aa" }
       let(:message) do
         "You haven't defined such resource class: `#{resource_class}`."
       end
