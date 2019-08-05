@@ -84,13 +84,13 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
            source: :entries,
            class_name: Entry.name
 
-  has_many :deposit_entries,
-           -> { deposit.recent },
+  has_many :income_entries,
+           -> { where(kind: EntryKinds::INCOME_ENTRY_KINDS).positive.recent },
            through: :wallets,
            source: :entries,
            class_name: Entry.name
 
-  has_many :win_bet_entries,
+  has_many :win_entries,
            -> { win.recent },
            through: :wallets,
            source: :entries,

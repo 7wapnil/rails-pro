@@ -2,7 +2,7 @@
 
 describe Reports::SalesReportCollector do
   subject do
-    described_class.new(subject: customer, target_currency: wallet.currency)
+    described_class.new(subject: customer)
   end
 
   let(:customer) { create(:customer, :ready_to_bet, b_tag: '123123') }
@@ -12,7 +12,19 @@ describe Reports::SalesReportCollector do
     context 'customer has deposit' do
       let(:count) { rand(1..3) }
       let(:bonus_amount) do
-        deposits_with_bonus.sum { |b| b.balance_entries.bonus.sum(:amount) }
+        deposits_with_bonus.sum do |b|
+          b.balance_entries.bonus.sum(:base_currency_amount)
+        end
+      end
+      let(:gross_revenue) do
+        bets.sum(&:base_currency_amount).abs -
+          win_bets.sum(&:base_currency_amount).abs
+      end
+
+      let(:deposit_real_money_value) do
+        deposits.sum do |b|
+          b.balance_entries.real_money.sum(:base_currency_amount)
+        end
       end
 
       let!(:deposits) do
@@ -30,6 +42,13 @@ describe Reports::SalesReportCollector do
         create_list(:entry, rand(1..3), :deposit,
                     wallet: wallet,
                     balance_entries: create_list(:balance_entry, 2))
+      end
+
+      let!(:deposits_with_negative_amount) do
+        create_list(:entry, count, :recent, :deposit, :with_bonus_balances,
+                    wallet: wallet,
+                    base_currency_amount: -rand(1..5),
+                    amount: -rand(1..5))
       end
 
       let!(:bets) do
@@ -51,7 +70,7 @@ describe Reports::SalesReportCollector do
       end
 
       it 'returns correct number of deposits' do
-        result = subject.send(:deposits_per_day).length
+        result = subject.send(:deposits_count)
 
         expect(result).to eq(deposits.length + deposits_with_bonus.length)
       end
@@ -59,8 +78,7 @@ describe Reports::SalesReportCollector do
       it 'returns correct deposit real money value' do
         result = subject.send(:deposit_real_money_converted)
 
-        expect(result)
-          .to eq(deposits.sum { |b| b.balance_entries.real_money.sum(:amount) })
+        expect(result).to eq(deposit_real_money_value)
       end
 
       it 'returns correct deposit bonus value' do
@@ -72,15 +90,13 @@ describe Reports::SalesReportCollector do
       it 'returns correct gross revenue value' do
         result = subject.send(:gross_revenue)
 
-        expect(result)
-          .to eq(bets.sum(&:amount).abs - win_bets.sum(&:amount).abs)
+        expect(result).to eq(gross_revenue)
       end
 
       it 'returns correct stake amount value' do
         result = subject.send(:stake_amount)
 
-        expect(result)
-          .to eq(bets.sum(&:amount).abs)
+        expect(result).to eq(bets.sum(&:base_currency_amount).abs)
       end
     end
   end
