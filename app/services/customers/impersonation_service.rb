@@ -28,7 +28,7 @@ module Customers
     end
 
     def wallets_payload
-      customer.wallets.map do |wallet|
+      customer.wallets.preload(:currency).map do |wallet|
         {
           id: wallet.id,
           amount: wallet.amount.to_f,

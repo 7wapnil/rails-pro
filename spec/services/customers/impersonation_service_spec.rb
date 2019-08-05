@@ -7,13 +7,14 @@ describe Customers::ImpersonationService do
       id: customer.id,
       impersonated_by: user.id,
       email: customer.email,
-      username: customer.username
+      username: customer.username,
+      wallets: []
     }
   end
 
   it 'returns link to frontend app to login as impersonated customer' do
     allow(JwtService).to receive(:encode).with(payload).and_return(token)
-    customer_params = payload.slice(:email, :username, :id)
+    customer_params = payload.slice(:email, :username, :id, :wallets)
     params = "#{token}?customer=#{customer_params.to_json}"
     impersonation_link = "#{ENV['FRONTEND_URL']}/impersonate/#{params}"
     link = described_class.call(user, customer)
