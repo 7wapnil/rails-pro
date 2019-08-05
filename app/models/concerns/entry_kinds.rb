@@ -15,6 +15,7 @@ module EntryKinds
     bonus_change: BONUS_CHANGE = 'bonus_change'
   }.freeze
 
+  INCOME_ENTRY_KINDS = [DEPOSIT, BONUS_CHANGE].freeze
   FUND_KINDS = [DEPOSIT, WITHDRAW].freeze
   TRADING_KINDS = [WIN, BET, REFUND].freeze
   DEBIT_KINDS = [

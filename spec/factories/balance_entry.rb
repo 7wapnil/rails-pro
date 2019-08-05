@@ -3,6 +3,7 @@
 FactoryBot.define do
   factory :balance_entry do
     amount { Faker::Number.decimal(3, 2) }
+    base_currency_amount { Faker::Number.decimal(3, 2) }
 
     entry
     association :balance, strategy: :build

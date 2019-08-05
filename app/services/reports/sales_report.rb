@@ -3,15 +3,14 @@
 module Reports
   class SalesReport < BaseReport
     REPORT_TYPE = 'sales'
-    HEADERS = %w[BTAG	BRAND	TRANSACTION_DATE	PLAYER_ID	CURRENCY	Chargeback
-                 DEPOSITS	DEPOSITS_Count	CASINO_Bets	CASINO_revenue
-                 CASINO_bonuses	CASINO_stake	CASINO_NGR SPORTS_BONUSES
+    HEADERS = %w[BTAG	BRAND	TRANSACTION_DATE PLAYER_ID CURRENCY	Chargeback
+                 DEPOSITS	DEPOSITS_Count CASINO_Bets CASINO_revenue
+                 CASINO_bonuses	CASINO_stake CASINO_NGR SPORTS_BONUSES
                  SPORTS_REVENUE SPORTS_BETS	SPORTS_STAKE SPORTS_NGR].freeze
 
     PRELOAD_OPTIONS = [
       bet_entries: :bet,
       win_entries: :bet,
-      wallet: :currency,
       income_entries: {
         balance_entries: :balance
       }
@@ -20,8 +19,7 @@ module Reports
     protected
 
     def subject_fields(subject)
-      SalesReportCollector.call(subject: subject,
-                                target_currency: primary_currency)
+      SalesReportCollector.call(subject: subject)
     end
 
     def subjects
@@ -63,10 +61,6 @@ module Reports
       [EntryKinds::BET,
        EntryKinds::WIN,
        EntryKinds::DEPOSIT, EntryKinds::BONUS_CHANGE]
-    end
-
-    def primary_currency
-      @primary_currency ||= Currency.primary
     end
   end
 end

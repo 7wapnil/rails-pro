@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Reports
-  # rubocop:disable Metrics/ClassLength
   class SalesReportCollector < ApplicationService
     AMOUNT_INITIAL_VALUE = 0
     FEES = 17.5
@@ -9,10 +8,10 @@ module Reports
     REAL_MONEY = :real_money
     REPORT_CURRENCY = 'EUR'
     PERCENT_MULTIPLIER = 100
+    PRECISION = 2
 
-    def initialize(subject:, target_currency:)
+    def initialize(subject:)
       @subject = subject
-      @target_currency = target_currency
     end
 
     def call
@@ -21,7 +20,7 @@ module Reports
 
     private
 
-    attr_reader :subject, :target_currency
+    attr_reader :subject
 
     def report_fields # rubocop:disable Metrics/MethodLength
       [
@@ -31,18 +30,18 @@ module Reports
         subject.id,
         REPORT_CURRENCY,
         0, # should be implemented in future
-        deposit_real_money_converted,
+        deposit_real_money_converted.round(PRECISION),
         deposits_count,
         0, # should be implemented in future
         0, # should be implemented in future
         0, # should be implemented in future
         0, # should be implemented in future
         0, # should be implemented in future
-        deposit_bonus_converted,
-        gross_revenue,
+        deposit_bonus_converted.round(PRECISION),
+        gross_revenue.round(PRECISION),
         bets_per_day.length,
-        stake_amount,
-        net_revenue
+        stake_amount.round(PRECISION),
+        net_revenue.round(PRECISION)
       ]
     end
 
@@ -58,38 +57,16 @@ module Reports
       @win_bets_per_day ||= subject.win_entries
     end
 
-    def subject_currency
-      @subject_currency ||= subject.wallet.currency
-    end
-
-    def deposit_amount
-      Exchanger::Converter.call(
-        income_entries_per_day.sum(&:amount), subject_currency, target_currency
-      )
-    end
-
     def stake_amount
-      Exchanger::Converter.call(
-        bets_per_day.sum(&:amount).abs,
-        subject_currency,
-        target_currency
-      )
+      @stake_amount ||= bets_per_day.sum(&:base_currency_amount).abs
     end
 
     def deposit_bonus_converted
-      Exchanger::Converter.call(
-        balances_calculation[BONUS],
-        subject_currency,
-        target_currency
-      )
+      @deposit_bonus_converted ||= balances_calculation[BONUS]
     end
 
     def deposit_real_money_converted
-      Exchanger::Converter.call(
-        balances_calculation[REAL_MONEY],
-        subject_currency,
-        target_currency
-      )
+      @deposit_real_money_converted ||= balances_calculation[REAL_MONEY]
     end
 
     def deposits_count
@@ -113,23 +90,16 @@ module Reports
     def fill_hash_with_entries_amounts(balance_entry)
       kind = balance_entry.balance.kind.to_sym
 
-      @balances_calculation[kind] += balance_entry.amount
+      @balances_calculation[kind] += balance_entry.base_currency_amount
     end
 
     def gross_revenue
-      @gross_revenue ||=
-        Exchanger::Converter
-        .call(gross_revenue_amount, subject_currency, target_currency)
-    end
-
-    def gross_revenue_amount
-      bets_per_day.sum(&:amount).abs - win_bets_per_day.sum(&:amount)
+      stake_amount - win_bets_per_day.sum(&:base_currency_amount)
     end
 
     def net_revenue
       gross_revenue - (deposit_bonus_converted +
         (deposit_real_money_converted * FEES / PERCENT_MULTIPLIER))
     end
-    # rubocop:enable Metrics/ClassLength
   end
 end
