@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Monkey-patch to original Scheduler https://bit.ly/2PKAlgy
 # Line 144 removed, everything else is the same
 

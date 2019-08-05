@@ -60,11 +60,6 @@
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Queries events that will start in the future and stores them in local database"
 
-  mts_connection_establish:
-    every: <%= ENV.fetch('MTS_RECONNECTION_INTERVAL', '30s') %>
-    class: Mts::ReconnectionWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-
   registration_reports_sending:
     every: <%= ENV.fetch('REG_REPORT_INTERVAL', '1d') %>
     class: Scheduled::RegistrationReportWorker
@@ -76,20 +71,6 @@
     class: Scheduled::SalesReportWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Sends sales reports to FTP server"
-
-  mts_live_validation:
-    every: <%= "#{ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10)}s" %>
-    class: Scheduled::ExpiringLiveWorker
-    queue: expired_live
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Sends cancellation message to MTS for all LIVE bets that reached timeout waiting for MTS status update"
-
-  mts_prematch_validation:
-    every: <%= "#{ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT_SECONDS', 3)}s" %>
-    class: Scheduled::ExpiringPrematchWorker
-    queue: expired_prematch
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Sends cancellation message to MTS for all PRE-MATCH bets that reached timeout waiting for MTS status update"
 
   mts_random_bet_placement:
     every: <%= "#{ENV.fetch('MTS_RANDOM_BET_INTERVAL', 10)}s" %>

@@ -5,71 +5,10 @@
   - expired_prematch
 
 :schedule:
-  expiring_bonuses:
-    every: <%= ENV.fetch('EXPIRING_BONUSES_INTERVAL', '1d') %>
-    class: Scheduled::ExpiringBonusesWorker
-    queue: expired_bonuses
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Closes expired bonuses. Bonus expiration defined by deleted state or and time which must less then current time"
-
-  missing_heartbeat_check:
-    include_metadata: true
-    every: <%= ENV.fetch('MISSING_HEARTBEAT_CHECK_INTERVAL', '20s') %>
-    class: Radar::MissingHeartbeatWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Checks if any Radar producers connection status expired and sends recovery requests"
-
-  radar_market_templates_update:
-    every: <%= ENV.fetch('RADAR_MARKET_TEMPLATES_UPDATE_INTERVAL', '1w') %>
-    class: Radar::MarketsUpdateWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Updates a list of market templates in database"
-
-  unpopular_events_clean_up:
-    every: <%= ENV.fetch('UNPOPULAR_EVENTS_CLEAN_UP_INTERVAL', '1h') %>
-    class: UnpopularEventsCleanUpWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Deletes all events that were finished, but have no bets placed"
-
-  customer_lock_table_clean_up:
-    every: <%= ENV.fetch('CUSTOMER_LOCK_TABLE_CLEAN_UP_INTERVAL', '1d') %>
-    class: CustomerLockTableCleanupWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Checks for customer lock expiration and unlocks if needed"
-
-  event_archivation:
-    every: <%= ENV.fetch('EVENT_ARCHIVATION_INTERVAL', '1d') %>
-    class: EventArchivationWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Creates every event data copies in archivation database"
-
-  radar_events_preloading:
-    every: <%= ENV.fetch('RADAR_EVENTS_PROLOADER_INTERVAL', '1d') %>
-    class: Radar::ScheduledEvents::EventScheduleLoadingWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-
-  exchange_rates_update:
-    every: <%= ENV.fetch('EXCHANGE_RATES_UPDATE_INTERVAL', '1h') %>
-    class: Scheduled::ExchangeRatesWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Queries events that will start in the future and stores them in local database"
-
   mts_connection_establish:
     every: <%= ENV.fetch('MTS_RECONNECTION_INTERVAL', '30s') %>
     class: Mts::ReconnectionWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-
-  registration_reports_sending:
-    every: <%= ENV.fetch('REG_REPORT_INTERVAL', '1d') %>
-    class: Scheduled::RegistrationReportWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Sends registration reports to FTP server"
-
-  sales_reports_sending:
-    every: <%= ENV.fetch('SALES_REPORT_INTERVAL', '1d') %>
-    class: Scheduled::SalesReportWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Sends sales reports to FTP server"
 
   mts_live_validation:
     every: <%= "#{ENV.fetch('MTS_LIVE_VALIDATION_TIMEOUT_SECONDS', 10)}s" %>
@@ -84,9 +23,3 @@
     queue: expired_prematch
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Sends cancellation message to MTS for all PRE-MATCH bets that reached timeout waiting for MTS status update"
-
-  mts_random_bet_placement:
-    every: <%= "#{ENV.fetch('MTS_RANDOM_BET_INTERVAL', 10)}s" %>
-    class: Mts::RandomBetPlacementWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Random bet placement for MTS testing"
