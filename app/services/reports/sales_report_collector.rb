@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
 module Reports
+  # rubocop:disable Metrics/ClassLength
   class SalesReportCollector < ApplicationService
     AMOUNT_INITIAL_VALUE = 0
+    FEES = 17.5
     BONUS = :bonus
     REAL_MONEY = :real_money
     REPORT_CURRENCY = 'EUR'
+    PERCENT_MULTIPLIER = 100
 
     def initialize(subject:, target_currency:)
       @subject = subject
@@ -29,7 +32,7 @@ module Reports
         REPORT_CURRENCY,
         0, # should be implemented in future
         deposit_real_money_converted,
-        deposits_per_day.length,
+        deposits_count,
         0, # should be implemented in future
         0, # should be implemented in future
         0, # should be implemented in future
@@ -39,12 +42,12 @@ module Reports
         gross_revenue,
         bets_per_day.length,
         stake_amount,
-        gross_revenue - deposit_bonus_converted
+        net_revenue
       ]
     end
 
-    def deposits_per_day
-      @deposits_per_day ||= subject.deposit_entries
+    def income_entries_per_day
+      @income_entries_per_day ||= subject.income_entries
     end
 
     def bets_per_day
@@ -52,7 +55,7 @@ module Reports
     end
 
     def win_bets_per_day
-      @win_bets_per_day ||= subject.win_bet_entries
+      @win_bets_per_day ||= subject.win_entries
     end
 
     def subject_currency
@@ -61,7 +64,7 @@ module Reports
 
     def deposit_amount
       Exchanger::Converter.call(
-        deposits_per_day.sum(&:amount), subject_currency, target_currency
+        income_entries_per_day.sum(&:amount), subject_currency, target_currency
       )
     end
 
@@ -89,12 +92,16 @@ module Reports
       )
     end
 
+    def deposits_count
+      income_entries_per_day.select(&:deposit?).length
+    end
+
     def balances_calculation
       return @balances_calculation if @balances_calculation
 
       @balances_calculation = Hash.new(AMOUNT_INITIAL_VALUE)
 
-      deposits_per_day.each(&method(:iterate_balance_entries))
+      income_entries_per_day.each(&method(:iterate_balance_entries))
 
       @balances_calculation
     end
@@ -110,12 +117,19 @@ module Reports
     end
 
     def gross_revenue
-      Exchanger::Converter
+      @gross_revenue ||=
+        Exchanger::Converter
         .call(gross_revenue_amount, subject_currency, target_currency)
     end
 
     def gross_revenue_amount
       bets_per_day.sum(&:amount).abs - win_bets_per_day.sum(&:amount)
     end
+
+    def net_revenue
+      gross_revenue - (deposit_bonus_converted +
+        (deposit_real_money_converted * FEES / PERCENT_MULTIPLIER))
+    end
+    # rubocop:enable Metrics/ClassLength
   end
 end

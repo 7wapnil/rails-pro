@@ -31,6 +31,8 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     fraud:             FRAUD             = 'fraud'
   }
 
+  INCOME_ENTRIES = [Entry::DEPOSIT, Entry::BONUS_CHANGE].freeze
+
   devise :database_authenticatable, :registerable, :validatable,
          :recoverable, :rememberable, :trackable,
          authentication_keys: %i[login], password_length: 6..32
@@ -84,13 +86,13 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
            source: :entries,
            class_name: Entry.name
 
-  has_many :deposit_entries,
-           -> { deposit.recent },
+  has_many :income_entries,
+           -> { where(kind: INCOME_ENTRIES).positive.recent },
            through: :wallets,
            source: :entries,
            class_name: Entry.name
 
-  has_many :win_bet_entries,
+  has_many :win_entries,
            -> { win.recent },
            through: :wallets,
            source: :entries,

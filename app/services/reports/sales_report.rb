@@ -5,17 +5,17 @@ module Reports
     REPORT_TYPE = 'sales'
     HEADERS = %w[BTAG	BRAND	TRANSACTION_DATE	PLAYER_ID	CURRENCY	Chargeback
                  DEPOSITS	DEPOSITS_Count	CASINO_Bets	CASINO_revenue
-                 CASINO_bonuses	CASINO_stake	CASINO_NGR	SPORTS_BONUSES
-                 SPORTS_REVENUE	SPORTS_BETS	SPORTS_STAKE	SPORTS_NGR].freeze
+                 CASINO_bonuses	CASINO_stake	CASINO_NGR SPORTS_BONUSES
+                 SPORTS_REVENUE SPORTS_BETS	SPORTS_STAKE SPORTS_NGR].freeze
 
-    PRELOAD_OPTIONS = %i[bet_entries win_bet_entries].freeze
-    INCLUDES_OPTIONS = {
+    PRELOAD_OPTIONS = [
+      bet_entries: :bet,
+      win_entries: :bet,
       wallet: :currency,
-      deposit_entries:
-       {
-         balance_entries: :balance
-       }
-    }.freeze
+      income_entries: {
+        balance_entries: :balance
+      }
+    ].freeze
 
     protected
 
@@ -25,41 +25,48 @@ module Reports
     end
 
     def subjects
-      Customer
-        .where
-        .not(b_tag: nil)
-        .left_joins(*PRELOAD_OPTIONS)
-        .includes(**INCLUDES_OPTIONS)
-        .references(:deposit_entries)
-        .where(query_string, *query_params)
-        .distinct
+      @subjects ||= Customer
+                    .where
+                    .not(b_tag: nil)
+                    .eager_load(*PRELOAD_OPTIONS)
+                    .where(query_string, *query_params)
+                    .distinct
     end
 
     private
 
     def query_string
-      "(#{date_range_query} AND entries.kind = ?) OR
-       (#{date_range_query} AND entries.kind = ?) OR
-       (#{date_range_query} AND entries.kind = ?)"
+      "(#{bet_entries_table}.kind = ? AND
+        bets.status = 'settled') OR
+       (#{win_entries_table}.kind = ? AND
+        bets_entries.status = 'settled') OR
+       ((bets_entries.id IS NULL AND bets.id IS NULL) AND
+       (#{income_entries_table}.kind = ? OR
+       #{income_entries_table}.kind = ?))"
+    end
+
+    # This methods should be used to specify correct table name
+
+    def bet_entries_table
+      'entries'
+    end
+
+    def win_entries_table
+      'win_entries_customers'
+    end
+
+    def income_entries_table
+      'income_entries_customers'
     end
 
     def query_params
-      [*date_range, EntryKinds::BET,
-       *date_range, EntryKinds::DEPOSIT,
-       *date_range, EntryKinds::WIN]
+      [EntryKinds::BET,
+       EntryKinds::WIN,
+       EntryKinds::DEPOSIT, EntryKinds::BONUS_CHANGE]
     end
 
     def primary_currency
       @primary_currency ||= Currency.primary
-    end
-
-    def date_range
-      [Time.zone.yesterday.beginning_of_day,
-       Time.zone.yesterday.end_of_day]
-    end
-
-    def date_range_query
-      'entries.created_at > ? AND entries.created_at < ?'
     end
   end
 end

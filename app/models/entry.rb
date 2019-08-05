@@ -9,6 +9,7 @@ class Entry < ApplicationRecord
   belongs_to :origin, polymorphic: true, optional: true
   belongs_to :customer_transaction, foreign_key: :origin_id, optional: true
   belongs_to :withdrawal, foreign_key: :origin_id, optional: true
+  belongs_to :bet, foreign_key: :origin_id, optional: true
   belongs_to :entry_request, optional: true
 
   has_many :balance_entries, dependent: :destroy
@@ -32,6 +33,9 @@ class Entry < ApplicationRecord
   validates_with EntryAmountValidator
 
   scope :recent, -> { where(created_at: recent_scope) }
+
+  # Hack to avoid collision after joins for sales report
+  scope :positive, -> { where(amount: [0..Float::INFINITY]) }
 
   class << self
     def recent_scope

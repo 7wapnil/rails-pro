@@ -32,6 +32,12 @@ describe Reports::SalesReportCollector do
                     balance_entries: create_list(:balance_entry, 2))
       end
 
+      let!(:deposits_with_negative_amount) do
+        create_list(:entry, count, :recent, :deposit, :with_bonus_balances,
+                    wallet: wallet,
+                    amount: -rand(1..5))
+      end
+
       let!(:bets) do
         create_list(:entry, count, :recent, :bet,
                     wallet: wallet,
@@ -51,7 +57,7 @@ describe Reports::SalesReportCollector do
       end
 
       it 'returns correct number of deposits' do
-        result = subject.send(:deposits_per_day).length
+        result = subject.send(:deposits_count)
 
         expect(result).to eq(deposits.length + deposits_with_bonus.length)
       end
