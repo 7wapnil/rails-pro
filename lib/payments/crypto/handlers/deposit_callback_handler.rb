@@ -5,7 +5,6 @@ module Payments
     module Handlers
       class DepositCallbackHandler < ::ApplicationService
         delegate :origin, to: :entry_request, prefix: true
-        delegate :customer_bonus, to: :entry_request_origin
 
         def initialize(response)
           @response = response

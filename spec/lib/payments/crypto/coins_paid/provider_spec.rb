@@ -6,7 +6,8 @@ describe ::Payments::Crypto::CoinsPaid::Provider do
   subject { described_class.new(transaction) }
 
   before do
-    allow(::CryptoAddresses::GetOrCreate).to receive(:call)
+    allow(::Payments::Crypto::CoinsPaid::Deposits::RequestHandler)
+      .to receive(:call)
     allow(::Payments::Crypto::CoinsPaid::Payouts::RequestHandler)
       .to receive(:call)
   end

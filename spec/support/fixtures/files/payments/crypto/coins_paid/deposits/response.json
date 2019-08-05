@@ -1,0 +1,42 @@
+{
+  "id": 1,
+  "type": "deposit",
+  "crypto_address": {
+    "id": 1,
+    "currency": "BTC",
+    "address": "39mFf3X46YzUtfdwVQpYXPCMydc74ccbAZ",
+    "foreign_id": "user-id:2048",
+    "tag": null
+  },
+  "currency_sent": {
+    "currency": "BTC",
+    "amount": "6.53157512"
+  },
+  "currency_received": {
+    "currency": "BTC",
+    "amount": "6.53157512",
+    "amount_minus_fee": "6.5119800"
+  },
+  "transactions": [
+    {
+      "id": 1,
+      "currency": "BTC",
+      "transaction_type": "blockchain",
+      "type": "deposit",
+      "address": "39mFf3X46YzUtfdwVQpYXPCMydc74ccbAZ",
+      "tag": null,
+      "amount": "6.53157512",
+      "txid": "3950ad8149421a850d01dff88f024810e363ac18c9e8dd9bc0b9116e7937ad93",
+      "confirmations": 3
+    }
+  ],
+  "fees": [
+    {
+      "type": "deposit",
+      "currency": "BTC",
+      "amount": "0.01959472"
+    }
+  ],
+  "error": "",
+  "status": "confirmed"
+}

@@ -7,7 +7,7 @@ shared_context 'crypto_deposit_transaction' do
   let(:amount) { rand(10..100) }
   let(:currency_code) { wallet&.currency&.code }
   let!(:wallet) do
-    create(:wallet, :crypto, :with_crypto_address, customer: customer)
+    create(:wallet, :crypto_btc, :with_crypto_address, customer: customer)
   end
 
   let(:transaction) do

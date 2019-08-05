@@ -9,8 +9,6 @@ module Payments
           include Currencies::Crypto
           include Statuses
 
-          FINISH_STATES = %w[succeeded failed].freeze
-
           MODE_MAP = {
             TBTC => EntryRequest::BITCOIN,
             BTC => EntryRequest::BITCOIN
