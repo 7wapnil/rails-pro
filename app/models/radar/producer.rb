@@ -107,13 +107,16 @@ module Radar
     end
 
     def expired?
+      return true unless last_successful_subscribed_at
+
       last_successful_subscribed_at <=
         HEARTBEAT_EXPIRATION_TIME_IN_SECONDS.seconds.ago
     end
 
     def timestamp_update_required(subscribed_at)
-      !last_successful_subscribed_at ||
-        last_successful_subscribed_at < subscribed_at
+      return true unless last_successful_subscribed_at
+
+      last_successful_subscribed_at < subscribed_at
     end
 
     def notify_application

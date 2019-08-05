@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     module Alive
@@ -15,6 +17,8 @@ module OddsFeed
         end
 
         def expired?
+          return true unless product.last_successful_subscribed_at
+
           received_at < product.last_successful_subscribed_at
         end
 

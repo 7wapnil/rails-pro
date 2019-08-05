@@ -14,11 +14,12 @@ module JobLogger
 
     Rails.logger.send(
       level,
-      jid:          job_id,
-      class_name:   self.class.name,
+      jid: job_id,
+      class_name: self.class.name,
       current_time: current_time,
-      thread_id:    thread_id,
-      **data
+      thread_id: thread_id,
+      **data,
+      **extra_log_info
     )
   end
 
@@ -34,19 +35,17 @@ module JobLogger
   private
 
   def log_process(level, message = nil)
-    Rails.logger.send(
-      level,
-      jid:                     job_id,
-      worker:                  self.class.name,
-      message:                 message,
-      current_time:            current_time,
-      job_enqueued_at:         enqueued_at,
-      job_performing_time:     performing_time.round(3),
-      job_execution_time:      execution_time.round(3),
-      overall_processing_time: processing_time.round(3),
-      thread_id:               thread_id,
-      event_id:                event_id
-    )
+    Rails.logger.send(level,
+                      jid: job_id,
+                      worker: self.class.name,
+                      message: message,
+                      current_time: current_time,
+                      job_enqueued_at: enqueued_at,
+                      job_performing_time: performing_time.round(3),
+                      job_execution_time: execution_time.round(3),
+                      overall_processing_time: processing_time.round(3),
+                      thread_id: thread_id,
+                      event_id: event_id)
   end
 
   def event_id
@@ -66,8 +65,8 @@ module JobLogger
 
   def log_thread_info_missing(option)
     Rails.logger.warn(
-      jid:     job_id,
-      worker:  self.class.name,
+      jid: job_id,
+      worker: self.class.name,
       message: "`#{option}` is missing in thread"
     )
   end
@@ -94,5 +93,9 @@ module JobLogger
 
   def processing_time
     performing_time + execution_time
+  end
+
+  def extra_log_info
+    {}
   end
 end

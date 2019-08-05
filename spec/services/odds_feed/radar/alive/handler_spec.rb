@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::Alive::Handler do
   let(:product) { create(:producer) }
   let(:timestamp) { (Time.zone.now.to_f * 1000).to_i }
@@ -37,8 +39,9 @@ describe OddsFeed::Radar::Alive::Handler do
           :debug,
           message: "Radar Producer #{product.code} status",
           received_at: message_received_at,
-          producer_code: product.code,
-          subscription_state: true,
+          producer_id: product.id,
+          producer_subscription_state: product.subscribed?,
+          message_subscription_state: message.subscribed?,
           expired: false
         ).once
 

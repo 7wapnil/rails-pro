@@ -81,7 +81,9 @@ module OddsFeed
       end
 
       def use_max_available_recovery?
-        !last_disconnection_at || last_disconnection_at < oldest_recovery_at
+        return true unless last_disconnection_at
+
+        last_disconnection_at < oldest_recovery_at
       end
 
       def oldest_recovery_at

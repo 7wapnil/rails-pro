@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::Alive::Message do
   let(:timestamp) { 1_532_353_934_098 }
   let(:message_received_at) { Time.zone.strptime(timestamp.to_s, '%Q') }
@@ -57,9 +59,8 @@ describe OddsFeed::Radar::Alive::Message do
     context 'when non-expired' do
       before do
         allow(product)
-          .to receive(:last_successful_subscribed_at) {
-            message_received_at - 1.minute
-          }
+          .to receive(:last_successful_subscribed_at)
+          .and_return(message_received_at - 1.minute)
       end
 
       it 'returns false' do
@@ -70,10 +71,17 @@ describe OddsFeed::Radar::Alive::Message do
     context 'when expired' do
       before do
         allow(product)
-          .to receive(:last_successful_subscribed_at) {
-                message_received_at + 1.minute
-              }
+          .to receive(:last_successful_subscribed_at)
+          .and_return(message_received_at + 1.minute)
       end
+
+      it 'returns true' do
+        expect(unsubscribed_message).to be_expired
+      end
+    end
+
+    context 'when there is no last_successful_subscribed_at' do
+      before { allow(product).to receive(:last_successful_subscribed_at) }
 
       it 'returns true' do
         expect(unsubscribed_message).to be_expired

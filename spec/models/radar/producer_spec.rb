@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Radar::Producer do
   let(:snapshot_id) { Faker::Number.number(8).to_i }
   let(:node_id) { Faker::Number.number(4).to_i }
@@ -114,6 +116,28 @@ describe Radar::Producer do
       allow(producer)
         .to receive(:last_successful_subscribed_at) { limit + 1.second }
       expect(producer.unsubscribe_expired!).to be_falsey
+    end
+
+    context 'when there is no last_successful_subscribed_at' do
+      let(:recover_requested_at) do
+        (::Radar::Producer::RECOVERY_WAIT_TIME_IN_SECONDS - 2).seconds.ago
+      end
+
+      before { allow(producer).to receive(:last_successful_subscribed_at) }
+
+      it 'calls unsubscribe! when there is no recover_requested_at' do
+        allow(producer).to receive(:recover_requested_at)
+        producer.unsubscribe_expired!
+        expect(producer.reload.state).to eq(::Radar::Producer::UNSUBSCRIBED)
+      end
+
+      it 'do not set as uns when recover_requested_at is very fresh' do
+        allow(producer)
+          .to receive(:recover_requested_at)
+          .and_return(recover_requested_at)
+        producer.unsubscribe_expired!
+        expect(producer.reload.state).not_to eq(::Radar::Producer::UNSUBSCRIBED)
+      end
     end
 
     it 'calls unsubscribe! when subscription expires' do
