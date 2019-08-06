@@ -594,6 +594,11 @@ en:
       recently_actioned: Recently actioned
     documents: Documents
 
+  account:
+    request_password_reset:
+      not_found_error: "You've entered a wrong email address. There is no such customer"
+      technical_error: 'Technical error happened. Feel free to contact administration to help you'
+
   origins:
     cashier: Cashier
 

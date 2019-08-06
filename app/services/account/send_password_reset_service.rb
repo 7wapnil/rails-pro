@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Account
   class SendPasswordResetService < ApplicationService
     attr_reader :customer
@@ -8,7 +10,7 @@ module Account
     end
 
     def call
-      return unless customer&.email_verified?
+      return unless customer
 
       update_reset_password_token
       send_reset_password_mail
