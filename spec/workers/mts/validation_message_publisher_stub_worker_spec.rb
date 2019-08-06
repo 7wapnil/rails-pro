@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 describe Mts::ValidationMessagePublisherStubWorker do
-  let(:bet) { create(:bet, :sent_to_external_validation) }
+  let(:bet) do
+    create(:bet, :with_placement_entry, :sent_to_external_validation)
+  end
 
   before { allow_any_instance_of(described_class).to receive(:sleep) }
 

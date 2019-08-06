@@ -6,7 +6,7 @@ describe BalanceCalculations::BetCompensation do
   end
 
   let(:winning) { rand(100..500).to_f }
-  let(:bet) { create(:bet, amount: winning) }
+  let(:bet) { create(:bet, :with_placement_entry, amount: winning) }
   let(:win_entry_request) do
     create(:entry_request, :win, amount: winning, origin: bet)
   end

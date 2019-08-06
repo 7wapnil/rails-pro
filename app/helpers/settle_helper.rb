@@ -1,7 +1,10 @@
+# frozen_string_literal: true
+
 module SettleHelper
   SETTLE_MAPPING = {
     'won' => 'success',
-    'lost' => 'danger'
+    'lost' => 'danger',
+    'voided' => 'primary'
   }.freeze
 
   def settle_badge(settle)

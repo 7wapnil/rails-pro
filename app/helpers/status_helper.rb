@@ -17,6 +17,7 @@ module StatusHelper
     'pending_manual_cancellation' => 'danger',
     'cancelled' => 'danger',
     'cancelled_by_system' => 'danger',
+    'pending_manual_settlement' => 'warning',
     'settled' => 'info',
     'rejected' => 'danger',
     'failed' => 'danger'

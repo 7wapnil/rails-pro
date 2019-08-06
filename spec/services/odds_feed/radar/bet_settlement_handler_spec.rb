@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::BetSettlementHandler do
   subject { described_class.new(payload) }
 
@@ -14,6 +16,8 @@ describe OddsFeed::Radar::BetSettlementHandler do
             '<outcome id="sr:player:111" result="0" void_factor="1"/>'\
             '<outcome id="sr:player:222" result="1" void_factor="0.5"/>'\
             '<outcome id="sr:player:456" result="0" void_factor="0.5"/>'\
+            '<outcome id="sr:player:333" result="1" void_factor="1"/>'\
+            '<outcome id="sr:player:444" result="0" void_factor="1"/>'\
           '</market>'\
         '</outcomes>'\
       '</bet_settlement>'
@@ -42,6 +46,14 @@ describe OddsFeed::Radar::BetSettlementHandler do
   let(:odd_fifth) do
     create(:odd, market: market,
                  external_id: 'sr:match:3432:13/hcp=3.5:sr:player:456')
+  end
+  let(:odd_sixth) do
+    create(:odd, market: market,
+                 external_id: 'sr:match:3432:13/hcp=3.5:sr:player:333')
+  end
+  let(:odd_seventh) do
+    create(:odd, market: market,
+                 external_id: 'sr:match:3432:13/hcp=3.5:sr:player:444')
   end
   let(:odd_not_from_payload) do
     create(:odd, market: market,
@@ -199,11 +211,13 @@ describe OddsFeed::Radar::BetSettlementHandler do
              kind: EntryRequest::WIN,
              min_amount: 10,
              max_amount: 1000)
-      create_list(:bet, 6, :accepted, odd: odd, currency: currency)
+      create_list(:bet, 2, :accepted, odd: odd, currency: currency)
       create_list(:bet, 4, :accepted, odd: odd_secondary, currency: currency)
       create_list(:bet, 7, :accepted, odd: odd_third, currency: currency)
       create_list(:bet, 3, :accepted, odd: odd_fourth, currency: currency)
-      create_list(:bet, 5, :accepted, odd: odd_fifth, currency: currency)
+      create_list(:bet, 1, :accepted, odd: odd_fifth, currency: currency)
+      create_list(:bet, 6, :accepted, odd: odd_sixth, currency: currency)
+      create_list(:bet, 5, :accepted, odd: odd_seventh, currency: currency)
 
       create_list(:bet, 8, :accepted,
                   odd: odd_not_from_payload, currency: currency)
@@ -248,18 +262,72 @@ describe OddsFeed::Radar::BetSettlementHandler do
   it 'settles odd bets with result and void factor' do
     allow(subject_with_input).to receive(:skip_uncertain_settlement?)
     allow(subject_with_input).to receive(:proceed_bets)
-    create_list(:bet, 5,
-                odd: odd,
+    create_list(:bet, 3,
+                odd: odd_sixth,
                 status: StateMachines::BetStateMachine::ACCEPTED)
     # other bets
-    create_list(:bet, 5, status: StateMachines::BetStateMachine::ACCEPTED)
+    create_list(:bet, 3, status: StateMachines::BetStateMachine::ACCEPTED)
     subject_with_input.handle
 
     expected_result = Bet.where(
       status: StateMachines::BetStateMachine::SETTLED,
-      settlement_status: StateMachines::BetStateMachine::WON,
-      void_factor: 0.5
+      settlement_status: StateMachines::BetStateMachine::VOIDED,
+      void_factor: 1
     )
-    expect(expected_result.count).to eq(5)
+    expect(expected_result.count).to eq(3)
+  end
+
+  it 'does not settle odd bets with result and half void factor' do
+    allow(subject_with_input).to receive(:skip_uncertain_settlement?)
+    allow(subject_with_input).to receive(:proceed_bets)
+    create_list(:bet, 3,
+                odd: odd,
+                status: StateMachines::BetStateMachine::ACCEPTED)
+    # other bets
+    create_list(:bet, 3, status: StateMachines::BetStateMachine::ACCEPTED)
+    subject_with_input.handle
+
+    expected_result = Bet.where(
+      status: StateMachines::BetStateMachine::PENDING_MANUAL_SETTLEMENT,
+      settlement_status: nil,
+      void_factor: nil
+    )
+    expect(expected_result.count).to eq(3)
+  end
+
+  it 'settles odd bets without result, but with void factor' do
+    allow(subject_with_input).to receive(:skip_uncertain_settlement?)
+    allow(subject_with_input).to receive(:proceed_bets)
+    create_list(:bet, 3,
+                odd: odd_seventh,
+                status: StateMachines::BetStateMachine::ACCEPTED)
+    # other bets
+    create_list(:bet, 3, status: StateMachines::BetStateMachine::ACCEPTED)
+    subject_with_input.handle
+
+    expected_result = Bet.where(
+      status: StateMachines::BetStateMachine::SETTLED,
+      settlement_status: StateMachines::BetStateMachine::VOIDED,
+      void_factor: 1
+    )
+    expect(expected_result.count).to eq(3)
+  end
+
+  it 'does not settle odd bets without result, but with half void factor' do
+    allow(subject_with_input).to receive(:skip_uncertain_settlement?)
+    allow(subject_with_input).to receive(:proceed_bets)
+    create_list(:bet, 3,
+                odd: odd_fifth,
+                status: StateMachines::BetStateMachine::ACCEPTED)
+    # other bets
+    create_list(:bet, 3, status: StateMachines::BetStateMachine::ACCEPTED)
+    subject_with_input.handle
+
+    expected_result = Bet.where(
+      status: StateMachines::BetStateMachine::PENDING_MANUAL_SETTLEMENT,
+      settlement_status: nil,
+      void_factor: nil
+    )
+    expect(expected_result.count).to eq(3)
   end
 end

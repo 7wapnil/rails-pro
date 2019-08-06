@@ -14,7 +14,8 @@ describe Mts::ValidationResponseHandler do
       let(:refund_double) { double }
       let(:comment) { 'Bet failed external validation.' }
       let!(:bet) do
-        create(:bet, :sent_to_external_validation, validation_ticket_id: '1')
+        create(:bet, :with_placement_entry, :sent_to_external_validation,
+               validation_ticket_id: '1')
       end
       let(:payload) do
         %({"version":"2.3","result":{"status":"rejected","ticketId":"1"}})
@@ -44,8 +45,10 @@ describe Mts::ValidationResponseHandler do
 
     context 'accepted bet' do
       let!(:bet) do
-        create(:bet, :sent_to_external_validation, validation_ticket_id: '1')
+        create(:bet, :with_placement_entry, :sent_to_external_validation,
+               validation_ticket_id: '1')
       end
+
       let(:payload) do
         %({"version":"2.3","result":{"status":"accepted","ticketId":"1"}})
       end

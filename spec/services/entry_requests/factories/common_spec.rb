@@ -3,7 +3,7 @@
 describe EntryRequests::Factories::Common do
   subject { described_class.call(origin: bet, **attributes) }
 
-  let(:bet) { create(:bet) }
+  let(:bet) { create(:bet, :with_placement_entry) }
   let(:winning) { rand(100..500).to_f }
   let(:amount) { rand(10..100).to_f }
   let(:ratio) { 0.75 }

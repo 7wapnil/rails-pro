@@ -3,7 +3,8 @@
 describe Mts::CancellationResponseHandler do
   let(:subject_call) { described_class.call(message: message) }
   let!(:bet) do
-    create(:bet, :sent_to_external_validation, validation_ticket_id: ticket_id)
+    create(:bet, :with_placement_entry, :sent_to_external_validation,
+           validation_ticket_id: ticket_id)
   end
   let!(:ticket_id) { "MTS_Test_#{Faker::Number.number(13)}" }
   let(:message) do

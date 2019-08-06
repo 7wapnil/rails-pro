@@ -1,8 +1,13 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     # rubocop:disable Metrics/ClassLength
     class BetSettlementHandler < RadarMessageHandler
       include WebsocketEventEmittable
+
+      ACTIVE_VOID_FACTOR = '1'
+      WIN_RESULT = '1'
 
       def initialize(payload)
         super(payload)
@@ -125,13 +130,39 @@ module OddsFeed
       end
 
       def settle_bet(bet, outcome)
+        validate_void_factor!(outcome)
+
         bet.settle!(
-          settlement_status: outcome['result'] == '1' ? :won : :lost,
+          settlement_status: build_settlement_status(outcome),
           void_factor: outcome['void_factor']
         )
-      rescue StandardError => error
-        invalid_bet_ids.push(bet.id)
+      rescue ::Bets::NotSupportedError => error
+        bet.pending_manual_settlement!
 
+        settlement_error!(bet, error)
+      rescue StandardError => error
+        settlement_error!(bet, error)
+      end
+
+      def validate_void_factor!(outcome)
+        return if outcome['void_factor'].nil? || active_void_factor?(outcome)
+
+        raise ::Bets::NotSupportedError,
+              "Void factor: '#{outcome['void_factor']}' is not supported!"
+      end
+
+      def active_void_factor?(outcome)
+        outcome['void_factor'].to_s == ACTIVE_VOID_FACTOR
+      end
+
+      def build_settlement_status(outcome)
+        return Bet::VOIDED if active_void_factor?(outcome)
+
+        outcome['result'] == WIN_RESULT ? Bet::WON : Bet::LOST
+      end
+
+      def settlement_error!(bet, error)
+        invalid_bet_ids.push(bet.id)
         log_job_message(:error, message: 'Bet cannot be settled',
                                 bet_id: bet.id,
                                 reason: error.message)

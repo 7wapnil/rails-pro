@@ -13,10 +13,10 @@ module StateMachines
     PENDING_MANUAL_CANCELLATION = 'pending_manual_cancellation'
     CANCELLED = 'cancelled'
     CANCELLED_BY_SYSTEM = 'cancelled_by_system'
+    PENDING_MANUAL_SETTLEMENT = 'pending_manual_settlement'
     SETTLED = 'settled'
     REJECTED = 'rejected'
     FAILED = 'failed'
-    VOIDED = 'voided'
 
     BET_STATUSES = {
       initial: INITIAL,
@@ -28,6 +28,7 @@ module StateMachines
       pending_manual_cancellation: PENDING_MANUAL_CANCELLATION,
       cancelled: CANCELLED,
       cancelled_by_system: CANCELLED_BY_SYSTEM,
+      pending_manual_settlement: PENDING_MANUAL_SETTLEMENT,
       settled: SETTLED,
       rejected: REJECTED,
       failed: FAILED
@@ -35,14 +36,16 @@ module StateMachines
 
     BET_SETTLEMENT_STATUSES = {
       lost: LOST = 'lost',
-      won: WON = 'won'
+      won: WON = 'won',
+      voided: VOIDED = 'voided'
     }.freeze
 
     PENDING_STATUSES_MASK = [
       SENT_TO_INTERNAL_VALIDATION,
       VALIDATED_INTERNALLY,
       SENT_TO_EXTERNAL_VALIDATION,
-      ACCEPTED
+      ACCEPTED,
+      PENDING_MANUAL_SETTLEMENT
     ].freeze
 
     CANCELLED_STATUSES_MASK = [
@@ -70,6 +73,7 @@ module StateMachines
         state :cancelled
         state :cancelled_by_system
         state :failed
+        state :pending_manual_settlement
         state :settled
 
         event :send_to_internal_validation do
@@ -109,7 +113,8 @@ module StateMachines
           transitions from: %i[pending_cancellation
                                sent_to_external_validation
                                accepted
-                               rejected],
+                               rejected
+                               pending_manual_settlement],
                       to: :pending_manual_cancellation,
                       after: :update_error_notification
         end
@@ -122,13 +127,14 @@ module StateMachines
         event :register_failure do
           transitions from: %i[initial
                                sent_to_internal_validation
-                               sent_to_external_validation],
+                               sent_to_external_validation
+                               pending_manual_settlement],
                       to: :failed,
                       after: :update_error_notification
         end
 
         event :settle do
-          transitions from: :accepted,
+          transitions from: %i[accepted pending_manual_settlement],
                       to: :settled,
                       after: proc { |args| settle_as(args) }
         end

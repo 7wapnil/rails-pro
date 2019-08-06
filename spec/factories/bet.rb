@@ -7,19 +7,20 @@ FactoryBot.define do
     odd_value { odd.value }
     status    { StateMachines::BetStateMachine::INITIAL }
 
+    currency
     association :odd, factory: %i[odd active]
     association :customer, :ready_to_bet
-    association :placement_entry, factory: %i[entry bet]
-    currency { placement_entry.wallet.currency }
+
+    trait :with_placement_entry do
+      after(:create) do |bet|
+        wallet = bet.customer.wallets.take
+        bet.update(currency: wallet.currency)
+        create(:entry, :bet, origin: bet, wallet: wallet)
+      end
+    end
 
     trait :sent_to_external_validation do
       status { StateMachines::BetStateMachine::SENT_TO_EXTERNAL_VALIDATION }
-
-      after(:create) do |bet|
-        bet_kind = EntryRequest::BET
-        wallet = bet.customer.wallets.take
-        create(:entry, kind: bet_kind, origin: bet, wallet: wallet)
-      end
     end
 
     trait :won do

@@ -24,7 +24,7 @@ module Bets
       def create_entry_request!
         return create_win_entry_request! if bet.won?
 
-        create_refund_entry_request! if bet.void_factor
+        create_refund_entry_request! if bet.voided?
       end
 
       def create_win_entry_request!

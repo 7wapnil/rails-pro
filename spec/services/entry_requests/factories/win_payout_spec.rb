@@ -7,6 +7,8 @@ describe EntryRequests::Factories::WinPayout do
   let(:amount) { rand(10..100).to_d }
   let(:ratio) { 0.75 }
 
+  let(:customer) { create(:customer, :ready_to_bet) }
+
   let!(:real_money_balance_entry) do
     create(:balance_entry, amount: amount * ratio,
                            entry: bet.placement_entry,
@@ -30,7 +32,11 @@ describe EntryRequests::Factories::WinPayout do
   let(:bonus_winning) { (winning * (1 - ratio)).round(2) }
 
   context 'with valid attributes' do
-    let(:bet) { create(:bet, customer_bonus: create(:customer_bonus)) }
+    let(:bet) do
+      create(:bet, :with_placement_entry,
+             customer_bonus: create(:customer_bonus))
+    end
+
     let(:origin_attributes) do
       {
         currency: bet.currency,
@@ -69,7 +75,7 @@ describe EntryRequests::Factories::WinPayout do
 
   context 'with invalid attributes' do
     let(:attributes) { {} }
-    let(:bet) { create(:bet) }
+    let(:bet) { create(:bet, :with_placement_entry) }
 
     it 'raises validation error' do
       expect { subject }.to raise_error(ActiveRecord::RecordInvalid)
@@ -78,11 +84,13 @@ describe EntryRequests::Factories::WinPayout do
 
   context 'with expired origin.customer_bonus' do
     let(:bet) do
-      create(:bet, customer: customer_bonus.customer,
-                   customer_bonus: customer_bonus)
+      create(:bet, :with_placement_entry,
+             customer: customer,
+             customer_bonus: customer_bonus)
     end
     let(:customer_bonus) do
-      create(:customer_bonus, status: CustomerBonus::EXPIRED)
+      create(:customer_bonus, status: CustomerBonus::EXPIRED,
+                              customer: customer)
     end
 
     it 'does not create a bonus balance request' do
@@ -97,11 +105,13 @@ describe EntryRequests::Factories::WinPayout do
 
   context 'with complete bonus bet' do
     let(:bet) do
-      create(:bet, customer: customer_bonus.customer,
-                   customer_bonus: customer_bonus)
+      create(:bet, :with_placement_entry,
+             customer: customer,
+             customer_bonus: customer_bonus)
     end
     let(:customer_bonus) do
-      create(:customer_bonus, status: CustomerBonus::COMPLETED)
+      create(:customer_bonus, status: CustomerBonus::COMPLETED,
+                              customer: customer)
     end
 
     it 'does not create a bonus balance request' do

@@ -66,13 +66,7 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
       win: nil, refund: nil, records_count: 0 },
     { name: 'full refund', odd_name: 'odd_full_refund',
       odd_value: 1.65, stake: 22.4,
-      win: nil, refund: 22.4, records_count: 1 },
-    { name: 'half win, half refund', odd_name: 'odd_half_win',
-      odd_value: 1.5, stake: 100,
-      win: 75, refund: 50, records_count: 1 },
-    { name: 'lose, half refund', odd_name: 'odd_lose_half_refund',
-      odd_value: 1.65, stake: 22.4,
-      win: nil, refund: 11.2, records_count: 1 }
+      win: nil, refund: 22.4, records_count: 1 }
   ].freeze
 
   context 'single bets map checks, wins only' do
@@ -102,6 +96,56 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
             expect(BalanceEntry.find_by(amount: state[:refund])).to be_truthy
           end
         end
+      end
+    end
+
+    context 'half win, half refund' do
+      let(:odd) { odd_half_win }
+      let(:bet) do
+        create(:bet, :accepted, odd: odd, amount: 100, currency: currency)
+      end
+
+      before do
+        odd.value = 1.5
+        bet
+      end
+
+      it 'does not create balance entry requests' do
+        expect { subject.handle }.not_to change(BalanceEntryRequest, :count)
+      end
+
+      it 'does not create balance entries' do
+        expect { subject.handle }.not_to change(BalanceEntry, :count)
+      end
+
+      it 'moves bet to pending manual settlement status' do
+        subject.handle
+        expect(bet.reload.status).to eq(Bet::PENDING_MANUAL_SETTLEMENT)
+      end
+    end
+
+    context 'lose, half refund' do
+      let(:odd) { odd_lose_half_refund }
+      let(:bet) do
+        create(:bet, :accepted, odd: odd, amount: 22.4, currency: currency)
+      end
+
+      before do
+        odd.value = 1.65
+        bet
+      end
+
+      it 'does not create balance entry requests' do
+        expect { subject.handle }.not_to change(BalanceEntryRequest, :count)
+      end
+
+      it 'does not create balance entries' do
+        expect { subject.handle }.not_to change(BalanceEntry, :count)
+      end
+
+      it 'moves bet to pending manual settlement status' do
+        subject.handle
+        expect(bet.reload.status).to eq(Bet::PENDING_MANUAL_SETTLEMENT)
       end
     end
   end

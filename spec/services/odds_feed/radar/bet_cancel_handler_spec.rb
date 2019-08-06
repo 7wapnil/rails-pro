@@ -17,20 +17,20 @@ describe OddsFeed::Radar::BetCancelHandler do
   end
 
   it 'cancels accepted bet' do
-    bet = create(:bet, :accepted, odd: odds.sample)
+    bet = create(:bet, :with_placement_entry, :accepted, odd: odds.sample)
     subject.handle
     expect(bet.reload.status).to eq Bet::CANCELLED_BY_SYSTEM
   end
 
   it 'cancels settled bet' do
-    bet = create(:bet, :settled, odd: odds.sample)
+    bet = create(:bet, :with_placement_entry, :settled, odd: odds.sample)
     subject.handle
     expect(bet.reload.status).to eq Bet::CANCELLED_BY_SYSTEM
   end
 
   it 'issues bet refund' do
     Sidekiq::Testing.inline! do
-      bet = create(:bet, :accepted, odd: odds.sample)
+      bet = create(:bet, :with_placement_entry, :accepted, odd: odds.sample)
       subject.handle
       cancellation_entry = Entry.find_by(origin: bet, kind: entry_kind_cancel)
       expect(cancellation_entry).to be_present
@@ -39,7 +39,7 @@ describe OddsFeed::Radar::BetCancelHandler do
 
   it 'refunds the bet stake' do
     Sidekiq::Testing.inline! do
-      bet = create(:bet, :accepted, odd: odds.sample)
+      bet = create(:bet, :with_placement_entry, :accepted, odd: odds.sample)
       subject.handle
       cancellation_entry = Entry.find_by(origin: bet, kind: entry_kind_cancel)
       expect(cancellation_entry.amount).to eq(-bet.placement_entry.amount)
@@ -48,7 +48,7 @@ describe OddsFeed::Radar::BetCancelHandler do
 
   it 'refunds the bet stake and subtracts the winning' do
     Sidekiq::Testing.inline! do
-      bet = create(:bet, :won, odd: odds.sample)
+      bet = create(:bet, :with_placement_entry, :won, odd: odds.sample)
       subject.handle
       cancellation_entries = Entry.where(origin: bet, kind: entry_kind_cancel)
       stake_rollback = cancellation_entries.where('amount > ?', 0).take
@@ -74,7 +74,8 @@ describe OddsFeed::Radar::BetCancelHandler do
   end
 
   it 'doesn\'t cancel bets that are already cancelled' do
-    bet = create(:bet, :cancelled_by_system, odd: odds.sample)
+    bet = create(:bet, :with_placement_entry, :cancelled_by_system,
+                 odd: odds.sample)
     expect(bet).not_to receive :cancelled_by_system!
     subject.handle
   end
@@ -89,7 +90,8 @@ describe OddsFeed::Radar::BetCancelHandler do
       created_at =
         DateTime.strptime(message.dig('bet_cancel', 'start_time'), '%s') +
         5.minutes
-      bet = create(:bet, :accepted, odd: odds.sample, created_at: created_at)
+      bet = create(:bet, :with_placement_entry, :accepted,
+                   odd: odds.sample, created_at: created_at)
       subject.handle
       expect(bet.reload.status).to eq Bet::CANCELLED_BY_SYSTEM
     end
@@ -98,7 +100,8 @@ describe OddsFeed::Radar::BetCancelHandler do
       created_at =
         DateTime.strptime(message.dig('bet_cancel', 'start_time'), '%s') -
         5.minutes
-      bet = create(:bet, :accepted, odd: odds.sample, created_at: created_at)
+      bet = create(:bet, :with_placement_entry, :accepted,
+                   odd: odds.sample, created_at: created_at)
       subject.handle
       expect(bet.reload.status).to eq Bet::ACCEPTED
     end
@@ -107,7 +110,8 @@ describe OddsFeed::Radar::BetCancelHandler do
       created_at =
         DateTime.strptime(message.dig('bet_cancel', 'end_time'), '%s') -
         5.minutes
-      bet = create(:bet, :accepted, odd: odds.sample, created_at: created_at)
+      bet = create(:bet, :with_placement_entry, :accepted,
+                   odd: odds.sample, created_at: created_at)
       subject.handle
       expect(bet.reload.status).to eq Bet::CANCELLED_BY_SYSTEM
     end
@@ -116,7 +120,8 @@ describe OddsFeed::Radar::BetCancelHandler do
       created_at =
         DateTime.strptime(message.dig('bet_cancel', 'end_time'), '%s') +
         5.minutes
-      bet = create(:bet, :accepted, odd: odds.sample, created_at: created_at)
+      bet = create(:bet, :with_placement_entry, :accepted,
+                   odd: odds.sample, created_at: created_at)
       subject.handle
       expect(bet.reload.status).to eq Bet::ACCEPTED
     end
