@@ -199,10 +199,10 @@ describe Customers::Statistics::Calculator do
       bonus_conversion_real_money_balance_entries.sum(&:amount)
     end
     let(:prematch_wager) { settled_prematch_bets.sum(&:amount) }
-    let(:prematch_payout) { won_prematch_bets.sum(&:amount) }
+    let(:prematch_payout) { won_prematch_bets.sum(&:win_amount).round(2) }
     let(:prematch_bet_count) { settled_prematch_bets.length }
     let(:live_sports_wager) { settled_live_bets.sum(&:amount) }
-    let(:live_sports_payout) { won_live_bets.sum(&:amount) }
+    let(:live_sports_payout) { won_live_bets.sum(&:win_amount).round(2) }
     let(:live_bet_count) { settled_live_bets.length }
     let(:total_pending_bet_sum) do
       [pending_prematch_bets, pending_live_bets].flatten.sum(&:amount)
@@ -212,6 +212,11 @@ describe Customers::Statistics::Calculator do
 
     include_context 'frozen_time' do
       let(:frozen_time) { current_time }
+    end
+
+    before do
+      allow(::Exchanger::Converter)
+        .to receive(:call).with(any_args) { |amount, *| amount }
     end
 
     it 'returns stats with expected numbers' do
@@ -251,7 +256,7 @@ describe Customers::Statistics::Calculator do
           deposit_value: deposit_value + stats.deposit_value,
           withdrawal_count: expected_withdrawal_count,
           withdrawal_value: withdrawal_value + stats.withdrawal_value,
-          total_bonus_awarded: stats.total_bonus_awarded + total_bonus_awarded,
+          total_bonus_awarded: total_bonus_awarded,
           total_bonus_completed: expected_total_bonus_completed,
           prematch_bet_count: prematch_bet_count + stats.prematch_bet_count,
           prematch_wager: prematch_wager + stats.prematch_wager,

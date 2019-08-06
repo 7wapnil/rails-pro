@@ -3,6 +3,8 @@
 module Customers
   class StatisticDecorator < ApplicationDecorator
     PRECISION = 2
+    FULL_PERCENTAGE = 1
+    PERCENTS_MULTIPLIER = 100
     CATEGORIES = [
       TOTAL = :total,
       PREMATCH = :prematch,
@@ -43,9 +45,10 @@ module Customers
     end
 
     def margin(category)
-      return money_field(0.0) if wager(category).zero?
+      return percentage_field(0) if gross_gaming_revenue(category).zero?
+      return percentage_field(FULL_PERCENTAGE) if wager(category).zero?
 
-      money_field(gross_gaming_revenue(category) / wager(category))
+      percentage_field(gross_gaming_revenue(category) / wager(category))
     end
 
     def wager(category, human: false)
@@ -90,6 +93,10 @@ module Customers
     end
 
     private
+
+    def percentage_field(value)
+      number_to_percentage(value * PERCENTS_MULTIPLIER, precision: PRECISION)
+    end
 
     def money_field(value)
       "#{number_with_precision(value, precision: PRECISION)} &#8364;".html_safe

@@ -11,9 +11,11 @@ class BetDecorator < ApplicationDecorator
 
   delegate :name, to: :market, allow_nil: true, prefix: true
 
-  delegate :name, to: :event, allow_nil: true, prefix: true
+  delegate :name, :start_at, to: :event, allow_nil: true, prefix: true
 
   delegate :username, to: :customer, allow_nil: true, prefix: true
+
+  delegate :code, to: :customer_bonus, allow_nil: true, prefix: true
 
   def display_status
     return PENDING if state_machine::PENDING_STATUSES_MASK.include?(status)
@@ -34,11 +36,26 @@ class BetDecorator < ApplicationDecorator
     human ? l(created_at, format: :long) : super()
   end
 
+  def winning_amount(human: false)
+    human ? number_with_precision(super(), precision: PRECISION) : super()
+  end
+
+  def actual_payout(human: false)
+    human ? number_with_precision(super(), precision: PRECISION) : super()
+  end
+
   def human_notification_message
     return notification_message unless notification_code
 
     I18n.t("bets.notifications.#{notification_code}",
            default: notification_message)
+  end
+
+  def bet_type
+    return unless event
+    return t('bets.bet_types.live') if created_at > event_start_at
+
+    t('bets.bet_types.prematch')
   end
 
   private

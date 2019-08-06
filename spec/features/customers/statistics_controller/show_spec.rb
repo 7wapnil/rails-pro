@@ -188,10 +188,10 @@ describe Customers::StatisticsController, '#show' do
       bonus_conversion_real_money_balance_entries.sum(&:amount)
     end
     let(:prematch_wager) { settled_prematch_bets.sum(&:amount) }
-    let(:prematch_payout) { won_prematch_bets.sum(&:amount) }
+    let(:prematch_payout) { won_prematch_bets.sum(&:win_amount) }
     let(:prematch_bet_count) { settled_prematch_bets.length }
     let(:live_sports_wager) { settled_live_bets.sum(&:amount) }
-    let(:live_sports_payout) { won_live_bets.sum(&:amount) }
+    let(:live_sports_payout) { won_live_bets.sum(&:win_amount) }
     let(:live_bet_count) { settled_live_bets.length }
     let(:total_wager) { prematch_wager + live_sports_wager }
     let(:total_payout) { prematch_payout + live_sports_payout }
@@ -237,7 +237,11 @@ describe Customers::StatisticsController, '#show' do
       }
     end
 
-    before { visit customer_statistics_path(customer) }
+    before do
+      allow(::Exchanger::Converter)
+        .to receive(:call).with(any_args) { |amount, *| amount }
+      visit customer_statistics_path(customer)
+    end
 
     it 'page contains integer statistic fields' do
       attributes = %i[deposit_count withdrawal_count
@@ -262,6 +266,17 @@ describe Customers::StatisticsController, '#show' do
       end
     end
 
+    it 'page contains percentage statistic fields' do
+      attributes = %i[total_margin prematch_margin live_margin]
+      attributes.each do |attribute|
+        label = Customers::Statistic.human_attribute_name(attribute)
+        value = number_with_precision(stats[attribute] * 100, precision: 2)
+
+        expect(page)
+          .to have_css("tr.#{attribute}", text: "#{label} #{value}%")
+      end
+    end
+
     it 'page contains float statistic fields' do
       attributes = %i[
         deposit_value withdrawal_value prematch_wager prematch_payout
@@ -280,9 +295,9 @@ describe Customers::StatisticsController, '#show' do
     it 'page contains aggregated float statistic fields' do
       attributes = %i[
         total_gross_gaming_revenue prematch_gross_gaming_revenue
-        live_gross_gaming_revenue total_margin prematch_margin
-        live_margin average_total_bet_value average_prematch_bet_value
-        average_live_bet_value total_wager total_payout
+        live_gross_gaming_revenue average_total_bet_value
+        average_prematch_bet_value average_live_bet_value
+        total_wager total_payout
       ]
       attributes.each do |attribute|
         label = Customers::Statistic.human_attribute_name(attribute)

@@ -209,6 +209,7 @@ en:
     street_address: Street address
     text: Text
     tournament: Tournament
+    bet_type: Bet type
     updated_at: Updated at
     username: Username
     utility_bill: Utility bill
@@ -226,6 +227,9 @@ en:
     balance_kind: Balance type
 
   bets:
+    bet_types:
+      live: Live
+      prematch: Prematch
     notifications:
       internal_server_error: "Betting service is experiencing some issues now. Bet was not accepted"
       placement_error: "Oops! Bet cannot be accepted. Feel free to contact administration or try again later"

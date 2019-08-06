@@ -72,12 +72,15 @@ describe Customers::StatisticDecorator, type: :decorator do
     Customers::StatisticDecorator::CATEGORIES.each do |category|
       context(category) do
         let(:control_category) { category }
+        let(:expected_amount) do
+          helpers.number_to_percentage(
+            value * Customers::StatisticDecorator::PERCENTS_MULTIPLIER,
+            precision: Customers::StatisticDecorator::PRECISION
+          )
+        end
 
-        it_behaves_like 'decorated amount' do
-          let(:amount) { decorated_amount }
-          let(:control_amount) { value }
-          let(:precision) { Customers::StatisticDecorator::PRECISION }
-          let(:currency_symbol) { '&#8364;' }
+        it 'works' do
+          expect(decorated_amount).to eq(expected_amount)
         end
       end
     end
@@ -86,7 +89,7 @@ describe Customers::StatisticDecorator, type: :decorator do
       let(:object) { build(:customer_statistic, :empty) }
 
       it 'returns decorated zero' do
-        expect(decorated_amount).to eq('0.00 &#8364;')
+        expect(decorated_amount).to eq('0.00%')
       end
     end
 
@@ -94,7 +97,7 @@ describe Customers::StatisticDecorator, type: :decorator do
       let(:control_category) { 'allo' }
 
       it 'returns decorated zero' do
-        expect(decorated_amount).to eq('0.00 &#8364;')
+        expect(decorated_amount).to eq('0.00%')
       end
     end
   end

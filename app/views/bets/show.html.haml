@@ -5,66 +5,70 @@
         %table.table
           %tr
             %td= t('attributes.id')
-            %td= @bet.id
+            %td= bet.id
           %tr
             %td= t('attributes.customer')
-            %td= link_to @bet.customer.username, @bet.customer
+            %td= link_to bet.customer_username, bet.customer
           %tr
             %td= t('entities.bonus')
-            %td= link_to_if @bet.customer_bonus, @bet.customer_bonus&.code, @bet.customer_bonus
+            %td= link_to_if bet.customer_bonus, bet.customer_bonus_code, bet.customer_bonus
           %tr
             %td= t('attributes.event')
-            %td= link_to @bet.odd.market.event.name, @bet.odd.market.event
+            %td= link_to bet.event_name, bet.event
           %tr
             %td= t('attributes.market')
-            %td= @bet.odd.market.name
+            %td= bet.market_name
           %tr
             %td= t('attributes.selection')
-            %td= @bet.odd.name
+            %td= bet.odd_name
           %tr
             %td= t('attributes.odd_value')
-            %td= @bet.odd_value
+            %td= bet.odd_value
           %tr
             %td= t('attributes.counted_towards_rollover')
-            %td= @bet.counted_towards_rollover
+            %td= bet.counted_towards_rollover
+          %tr
+            %td= t('attributes.bet_type')
+            %td
+              %span.badge.badge-primary= bet.bet_type
       .col
         %table.table
           %tr
             %td= t('attributes.stake')
             %td
-              = number_with_precision @bet.amount, precision: 2
-              = @bet.currency.code
+              = bet.amount(human: true)
+              = bet.currency_code
               \/
-              = number_with_precision @bet.base_currency_amount, precision: 2
+              = bet.base_currency_amount(human: true)
               = Currency::PRIMARY_CODE
           %tr
             %td= t('attributes.bet_placement_time')
-            %td= l(@bet.created_at, format: :long)
+            %td= bet.created_at(human: true)
           %tr
             %td= t('attributes.status')
-            %td= status_badge(@bet.status)
+            %td= status_badge(bet.status)
           %tr
             %td= t('attributes.external_id')
-            %td= @bet.validation_ticket_id
+            %td= bet.validation_ticket_id
           %tr
             %td= t('attributes.notification_message')
-            %td= @bet.notification_message
+            %td= bet.notification_message
           %tr
             %td= t('attributes.notification_code')
-            %td= @bet.notification_code
+            %td= bet.notification_code
           %tr
             %td= t('attributes.settlement')
-            %td= settle_badge(@bet.settlement_status)
+            %td= settle_badge(bet.settlement_status)
           %tr
             %td= t('attributes.possible_payout')
             %td
-              = number_with_precision @bet.winning_amount, precision: 2
-              = @bet.currency.code
+              = bet.winning_amount(human: true)
+              = bet.currency_code
           %tr
             %td= t('attributes.actual_payout')
             %td
-              = number_with_precision @bet.actual_payout, precision: 2
-              = @bet.currency.code
+              = bet.actual_payout(human: true)
+              = bet.currency_code
     .row
       .col
         %hr

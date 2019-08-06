@@ -30,20 +30,19 @@ module Customers
 
       def explicit_attributes
         {
+          total_bonus_awarded: total_bonus_awarded,
           total_pending_bet_sum: total_pending_bet_sum,
           updated_at: Time.zone.now,
           last_updated_at: stats.updated_at
         }
       end
 
-      # rubocop:disable Metrics/MethodLength
       def calculated_attributes
         {
           deposit_count: successful_deposits.count,
           deposit_value: deposit_value,
           withdrawal_count: successful_withdrawals.count,
           withdrawal_value: withdrawal_value,
-          total_bonus_awarded: total_bonus_awarded,
           total_bonus_completed: total_bonus_completed,
           prematch_bet_count: prematch_bets.count,
           prematch_wager: prematch_wager,
@@ -53,7 +52,6 @@ module Customers
           live_sports_payout: live_sports_payout
         }.map { |attribute, value| sum_up_attribute(attribute, value) }.to_h
       end
-      # rubocop:enable Metrics/MethodLength
 
       def successful_deposits
         @successful_deposits ||= entries.deposit
@@ -77,8 +75,12 @@ module Customers
           .sum { |entry| convert_money(entry.real_money_balance_entry) }
       end
 
-      def convert_money(record)
-        money_converter.call(record.amount, record.currency, primary_currency)
+      def convert_money(record, attribute = :amount)
+        money_converter.call(
+          record.public_send(attribute),
+          record.currency,
+          primary_currency
+        )
       end
 
       def money_converter
@@ -136,7 +138,7 @@ module Customers
       def prematch_payout
         prematch_bets.won
                      .find_each(batch_size: BATCH_SIZE)
-                     .sum { |bet| convert_money(bet) }
+                     .sum { |bet| convert_money(bet, :win_amount) }
       end
 
       def live_bets
@@ -151,7 +153,7 @@ module Customers
       def live_sports_payout
         live_bets.won
                  .find_each(batch_size: BATCH_SIZE)
-                 .sum { |bet| convert_money(bet) }
+                 .sum { |bet| convert_money(bet, :win_amount) }
       end
 
       def total_pending_bet_sum
