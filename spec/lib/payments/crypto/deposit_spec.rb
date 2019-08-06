@@ -23,7 +23,7 @@ describe Payments::Crypto::Deposit do
   context 'with customer bonus' do
     let(:bonus_code) { create(:bonus).code }
 
-    it 'does not create customer bonus' do
+    it 'create customer bonus' do
       allow_any_instance_of(Payments::Crypto::CoinsPaid::Provider)
         .to receive(:receive_deposit_address).and_return('address')
 
