@@ -14,7 +14,7 @@ shared_context 'successful_deposit_response' do
       id: Faker::Number.number(5),
       crypto_address: {
         currency: currency_code,
-        foreign_id: customer.id,
+        foreign_id: customer.id
       },
       currency_received: {
         amount: amount

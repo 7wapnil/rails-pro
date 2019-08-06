@@ -143,3 +143,4 @@ RSpec/NestedGroups:
     - 'spec/features/bets_index_spec.rb'
     - 'spec/features/verification_document_index_spec.rb'
     - 'spec/services/odds_feed/radar/market_generator/service_spec.rb'
+    - 'spec/lib/payments/crypto/coins_paid/callback_handler_spec.rb'

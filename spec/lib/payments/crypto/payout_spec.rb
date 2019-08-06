@@ -33,9 +33,10 @@ describe Payments::Crypto::Payout do
   end
 
   context 'invalid transaction' do
-    let(:details) { }
+    let(:details) {}
+
     it 'raises error on invalid transaction' do
-      expect{ subject }.to raise_error(Payments::InvalidTransactionError)
+      expect { subject }.to raise_error(Payments::InvalidTransactionError)
     end
   end
 end

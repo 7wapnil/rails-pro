@@ -59,7 +59,7 @@ module Payments
           {
             currency: ::Payments::Crypto::CoinsPaid::Currency::BTC_CODE,
             foreign_id: transaction.id.to_s,
-            amount: divide_amount(transaction.amount),
+            amount: divide_amount(transaction.amount).to_s,
             address: transaction.details['address']
           }.to_json
         end

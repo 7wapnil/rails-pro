@@ -41,8 +41,8 @@ describe Payments::Crypto::CoinsPaid::CallbackHandler do
     let(:status) { Payments::Crypto::CoinsPaid::Statuses::CONFIRMED }
     let!(:wallet) do
       create(:wallet, :crypto_btc, :with_crypto_address,
-      customer: customer,
-      amount: 0)
+             customer: customer,
+             amount: 0)
     end
 
     it 'chooses correct handler' do
@@ -54,13 +54,14 @@ describe Payments::Crypto::CoinsPaid::CallbackHandler do
 
     context 'confirmed transaction' do
       it 'creates entries' do
-        expect{ subject }.to change(Entry, :count)
+        expect { subject }.to change(Entry, :count)
       end
 
       it 'changes customer balance' do
         subject
 
-        expect(wallet.reload.amount).to eq((deposit_amount.to_d * 1000).round(2))
+        expect(wallet.reload.amount)
+          .to eq((deposit_amount.to_d * 1000).round(2))
       end
 
       context 'with active bonus' do
@@ -71,7 +72,7 @@ describe Payments::Crypto::CoinsPaid::CallbackHandler do
                  percentage: 100,
                  original_bonus: bonus)
         end
-        let!(:bonus) { create(:bonus, max_deposit_match: 9999999) }
+        let!(:bonus) { create(:bonus, max_deposit_match: 9_999_999) }
 
         it 'gives bonus on deposit' do
           subject
@@ -92,7 +93,7 @@ describe Payments::Crypto::CoinsPaid::CallbackHandler do
       let(:status) { Payments::Crypto::CoinsPaid::Statuses::CANCELLED }
 
       it 'creates entry request' do
-        expect{ subject }.to change(EntryRequest, :count)
+        expect { subject }.to change(EntryRequest, :count)
       end
 
       it 'does not change customer balance' do
@@ -161,7 +162,7 @@ describe Payments::Crypto::CoinsPaid::CallbackHandler do
       let(:status) { Faker::Lorem.word }
 
       it 'creates entry request' do
-        expect{ subject }.to change(EntryRequest, :count)
+        expect { subject }.to change(EntryRequest, :count)
 
       rescue ::Payments::GatewayError
       end
@@ -174,7 +175,7 @@ describe Payments::Crypto::CoinsPaid::CallbackHandler do
       end
 
       it 'raises error' do
-        expect{ subject }.to raise_error(::Payments::GatewayError)
+        expect { subject }.to raise_error(::Payments::GatewayError)
       end
     end
   end
@@ -203,7 +204,6 @@ describe Payments::Crypto::CoinsPaid::CallbackHandler do
               "address": "115Mn1jCjBh1CNqug7yAB21Hq2rw8PfmTA",
               "tag": null,
               "amount": "0.02",
-              "txid": "bb040d895ef7141ea0b06b04227d8f5dd4ee12d5b890e6e5633f6439393a666b",
               "confirmations": 3
             }
           ],
@@ -221,8 +221,7 @@ describe Payments::Crypto::CoinsPaid::CallbackHandler do
     let!(:withdraw) do
       create(:entry_request, :withdraw,
              customer: customer,
-             currency: wallet.currency,
-             external_id: Faker::Number.number(6))
+             currency: wallet.currency)
     end
     let!(:withdrawal) do
       create(:withdrawal, entry_request: withdraw)
@@ -259,14 +258,14 @@ describe Payments::Crypto::CoinsPaid::CallbackHandler do
   context 'unknown payment type' do
     let(:request) do
       <<-EXAMPLE_JSON
-        { 
+        {
           "status": "#{Faker::Lorem.word}"
         }
       EXAMPLE_JSON
     end
 
     it 'raises error' do
-      expect{ subject }.to raise_error(::Payments::GatewayError)
+      expect { subject }.to raise_error(::Payments::GatewayError)
     end
   end
 end

@@ -17,7 +17,9 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
     create(:wallet, :crypto_btc, :with_crypto_address, customer: customer)
   end
   let(:entry_request) do
-    create(:entry_request, :deposit, customer: customer, currency: wallet.currency)
+    create(:entry_request, :deposit,
+           customer: customer,
+           currency: wallet.currency)
   end
 
   before do
@@ -127,8 +129,7 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
       create(:entry_request, :deposit,
              external_id: response['id'],
              customer: customer,
-             mode: EntryRequest::BITCOIN
-      )
+             mode: EntryRequest::BITCOIN)
     end
 
     let(:status) { Payments::Crypto::CoinsPaid::Statuses::CONFIRMED }
@@ -161,7 +162,7 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
       allow(entry_request_double).to receive(:register_failure!)
       allow(entry_request_double).to receive(:origin).and_return(nil)
 
-      expect{ subject }.to raise_error(::Payments::GatewayError)
+      expect { subject }.to raise_error(::Payments::GatewayError)
     end
 
     it 'registers failure' do
@@ -177,7 +178,6 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
     end
 
     it 'failes customer bonus' do
-
     end
   end
 end
