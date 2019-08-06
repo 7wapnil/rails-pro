@@ -31,7 +31,7 @@ module Payments
 
         def succeeded!
           withdrawal.succeeded!
-          entry_request.update(external_id: transaction_id)
+          entry_request.update!(external_id: transaction_id)
         end
 
         def cancelled!(message)
