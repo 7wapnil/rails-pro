@@ -42,6 +42,7 @@ describe Webhooks::Wirecard::PaymentsController, type: :controller do
   let(:signature_id) { entry_request.id }
 
   before do
+    # ignore job after new customer creating
     allow(Customers::Summaries::UpdateWorker).to receive(:perform_async)
   end
 

@@ -20,7 +20,7 @@ describe Payments::Fiat::Wirecard::Payouts::RequestHandler do
   let(:entry_request) do
     create(:entry_request, customer: customer, currency: currency)
   end
-  let(:currency) { create(:currency, code: 'EUR') }
+  let(:currency) { create(:currency, :primary) }
   let(:wallet) { create(:wallet, currency: currency) }
   let(:entry) do
     create(:entry, kind: Entry::WITHDRAW, amount: amount, wallet: wallet)

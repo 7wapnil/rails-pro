@@ -1,4 +1,6 @@
 describe Payments::Fiat::Wirecard::Payouts::CallbackHandler do
+  include_context 'wirecard_env'
+
   subject { described_class.call(response) }
 
   let(:customer) { create(:customer) }
@@ -11,7 +13,7 @@ describe Payments::Fiat::Wirecard::Payouts::CallbackHandler do
     )
   end
   let(:withdrawal) { create(:withdrawal, entry_request: nil) }
-  let(:currency) { create(:currency, code: 'EUR') }
+  let(:currency) { create(:currency, :primary) }
   let(:wallet) { create(:wallet, currency: currency) }
   let(:entry) do
     create(

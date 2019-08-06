@@ -1,4 +1,7 @@
 describe Payments::Fiat::Wirecard::Deposits::RequestBuilder do
+  include_context 'wirecard_env'
+  include_context 'frozen_time'
+
   subject { described_class.call(transaction) }
 
   let(:transaction) do
@@ -58,7 +61,6 @@ describe Payments::Fiat::Wirecard::Deposits::RequestBuilder do
 
   context 'when transaction completed' do
     it 'generate valid wirecard request' do
-      allow(Time.zone).to receive(:now).and_return(timestamp)
       allow(Customers::Summaries::UpdateWorker).to receive(:perform_async)
 
       expect(subject).to eq(expected_params)

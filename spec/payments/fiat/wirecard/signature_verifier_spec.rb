@@ -1,4 +1,6 @@
 describe Payments::Fiat::Wirecard::SignatureVerifier do
+  include_context 'wirecard_env'
+
   subject { described_class.call(params) }
 
   let(:params) do
