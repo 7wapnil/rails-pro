@@ -17,6 +17,8 @@ class CustomerTransaction < ApplicationRecord
           -> { unscoped.order(:created_at) },
           as: :origin
 
+  has_one :customer, through: :entry_request
+
   has_one :entry,
           -> { unscoped.order(:created_at) },
           through: :entry_request,
@@ -28,6 +30,4 @@ class CustomerTransaction < ApplicationRecord
   belongs_to :customer_bonus, optional: true
 
   enum status: STATUSES
-
-  delegate :customer, to: :entry_request
 end
