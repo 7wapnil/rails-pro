@@ -3,12 +3,19 @@
 module OddsFeed
   module Radar
     module MarketGenerator
-      class Service < ::ApplicationService
+      class Service < ::ApplicationService # rubocop:disable Metrics/ClassLength
+        HANDED_OVER_MARKET_STATUS = '-2'
+        SKIP_MARKET_MESSAGE =
+          'Got -2 market status from of for non-prematch producer.'
+
+        class HandOverError < StandardError; end
+
         include JobLogger
 
-        def initialize(event, markets_data)
+        def initialize(event:, markets_data:, prematch_producer: false)
           @event = event
           @markets_data = markets_data
+          @prematch_producer = prematch_producer
           @markets = []
           @odds = []
         end
@@ -22,11 +29,24 @@ module OddsFeed
 
         def build
           @markets_data.each do |market_data|
+            raise HandOverError if skip_market?(market_data)
+
             build_market(market_data)
+          rescue HandOverError
+            log_job_message(
+              :warn,
+              market_data.merge(message: SKIP_MARKET_MESSAGE)
+            )
+            next
           rescue StandardError => e
             log_job_message(:debug, e.message)
             next
           end
+        end
+
+        def skip_market?(market_data)
+          market_data['status'] == HANDED_OVER_MARKET_STATUS &&
+            !@prematch_producer
         end
 
         def build_market(market_data)

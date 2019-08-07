@@ -2,7 +2,7 @@
 
 describe OddsFeed::Radar::MarketGenerator::Service do
   subject do
-    described_class.new(event, markets_payload)
+    described_class.new(event: event, markets_data: markets_payload)
   end
 
   let(:markets_payload) do
@@ -80,8 +80,8 @@ describe OddsFeed::Radar::MarketGenerator::Service do
         { status: '1', result: 'active' }
       ].each do |expectation|
         markets_payload[3]['status'] = expectation[:status]
-        described_class.call(event,
-                             markets_payload)
+        described_class.call(event: event,
+                             markets_data: markets_payload)
         market = Market.find_by!(external_id: external_id)
         expect(market.status).to eq(expectation[:result])
       end

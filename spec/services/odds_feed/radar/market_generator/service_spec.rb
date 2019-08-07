@@ -34,7 +34,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
   end
 
   describe 'market attributes' do
-    subject { described_class.new(event, markets_data) }
+    subject { described_class.new(event: event, markets_data: markets_data) }
 
     it 'assigns market template category' do
       MarketTemplate.find_by!(external_id: '188')
@@ -46,7 +46,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
   end
 
   describe '#call' do
-    subject { described_class.call(event, markets_data) }
+    subject { described_class.call(event: event, markets_data: markets_data) }
 
     let(:web_socket) { double }
     let(:odds)       { build_stubbed_list(:odd, 5) }
@@ -143,7 +143,7 @@ describe OddsFeed::Radar::MarketGenerator::Service do
     end
 
     context 'with market templates cache' do
-      subject { described_class.call(event, markets_data) }
+      subject { described_class.call(event: event, markets_data: markets_data) }
 
       before do
         allow(MarketTemplate).to receive('find_by!').and_call_original

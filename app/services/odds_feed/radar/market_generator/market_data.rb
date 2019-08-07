@@ -64,7 +64,7 @@ module OddsFeed
 
         def status_map
           {
-            '-2': :handed_over,
+            '-2': :inactive,
             '-1': :suspended,
             '0': :inactive,
             '1': :active

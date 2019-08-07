@@ -116,8 +116,11 @@ module OddsFeed
       def update_odds
         return if markets_data.empty?
 
-        ::OddsFeed::Radar::MarketGenerator::Service
-          .call(event, markets_data)
+        ::OddsFeed::Radar::MarketGenerator::Service.call(
+          event: event,
+          markets_data: markets_data,
+          prematch_producer: prematch_producer?
+        )
       end
 
       def markets_data
@@ -130,6 +133,15 @@ module OddsFeed
         log_missing_payload if odds_payload.is_a?(Hash)
 
         []
+      end
+
+      def prematch_producer?
+        (producer_id.to_i == ::Radar::Producer::PREMATCH_PROVIDER_ID) &&
+          (event.producer_id == ::Radar::Producer::PREMATCH_PROVIDER_ID)
+      end
+
+      def producer_id
+        input_data['product']
       end
 
       def markets_payload
@@ -145,17 +157,10 @@ module OddsFeed
       end
 
       def event_status
-        raise KeyError unless event_status_payload
+        return event.status unless event_status_payload
 
         @event_status ||=
           EventStatusConverter.call(event_status_payload.fetch('status'))
-      rescue KeyError
-        log_job_message(
-          :warn,
-          message: 'Event status missing in payload for Event',
-          event_id: event_id
-        )
-        Event::NOT_STARTED
       end
 
       def event_status_payload
@@ -169,20 +174,28 @@ module OddsFeed
       end
 
       def event_display_status
+        return event.display_status unless event_status_payload
+
         MatchStatusMappingService.new.call(
           event_status_payload.fetch('match_status')
         )
       end
 
       def event_home_score
+        return event.home_score unless event_status_payload
+
         event_status_payload['home_score']&.to_i
       end
 
       def event_away_score
+        return event.away_score unless event_status_payload
+
         event_status_payload['away_score']&.to_i
       end
 
       def event_time_in_seconds
+        return event.time_in_seconds unless event_status_payload
+
         match_time = event_status_payload.dig('clock', 'match_time')
 
         return unless match_time
@@ -195,7 +208,7 @@ module OddsFeed
       def update_producer
         ProducerUpdateService.call(
           event: event,
-          producer_id: ::Radar::Producer.find(input_data['product']).id
+          producer_id: ::Radar::Producer.find(producer_id).id
         )
       end
 
