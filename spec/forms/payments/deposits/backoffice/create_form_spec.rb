@@ -28,7 +28,6 @@ describe ::Payments::Deposits::Backoffice::CreateForm, type: :model do
 
   context 'presence' do
     it { is_expected.to validate_presence_of(:wallet) }
-    it { is_expected.to validate_presence_of(:amount) }
     it { is_expected.not_to validate_presence_of(:payment_method) }
     it { is_expected.not_to validate_presence_of(:bonus) }
   end
