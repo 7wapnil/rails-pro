@@ -13,9 +13,18 @@ describe Reports::SalesReport do
     control_customers.each do |customer|
       wallet = create(:wallet, customer: customer,
                                currency: create(:currency, :primary))
-      create(:entry, :bet, :recent, wallet: wallet, entry_request: nil)
-      create(:entry, :deposit, :recent, wallet: wallet, entry_request: nil)
-      create(:entry, :win, :recent, wallet: wallet, entry_request: nil)
+      create(:entry, :bet, :recent,
+             wallet: wallet,
+             entry_request: nil,
+             origin: create(:bet, customer: customer, status: :settled))
+      create(:entry, :deposit, :recent,
+             wallet: wallet,
+             entry_request: nil,
+             origin: create(:bet, customer: customer, status: :settled))
+      create(:entry, :win, :recent,
+             wallet: wallet,
+             entry_request: nil,
+             origin: create(:bet, customer: customer, status: :settled))
     end
 
     test_customers.each do |customer|
