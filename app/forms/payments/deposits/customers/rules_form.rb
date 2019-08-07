@@ -12,8 +12,8 @@ module Payments
 
         validates :customer, presence: true
 
-        validate :validate_deposit_limit
-        validate :validate_attempts
+        validate :validate_deposit_limit, if: :customer
+        validate :validate_attempts, if: :customer
 
         def validate_deposit_limit
           return if deposit_limit

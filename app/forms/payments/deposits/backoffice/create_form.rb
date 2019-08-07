@@ -18,13 +18,16 @@ module Payments
         def validate_bonus_expiration
           return true unless bonus.expired?
 
-          raise CustomerBonuses::ActivationError,
-                I18n.t('errors.messages.entry_requests.bonus_expired')
+          errors.add(
+            :bonus,
+            I18n.t('errors.messages.entry_requests.bonus_expired')
+          )
         end
 
         def validate_currency_rule
           return true unless rule
-          return amount_less_than_zero! unless amount.positive?
+          return amount_less_than_zero! unless amount.is_a?(Numeric) &&
+                                               amount.positive?
           return amount_less_than_allowed! if amount < rule.min_amount.abs
 
           amount_greater_than_allowed! if amount > rule.max_amount

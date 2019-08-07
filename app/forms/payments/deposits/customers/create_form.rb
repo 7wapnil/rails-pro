@@ -32,7 +32,8 @@ module Payments
 
         def validate_currency_rule
           return true unless rule
-          return amount_less_than_zero! unless amount.positive?
+          return amount_less_than_zero! unless amount.is_a?(Numeric) &&
+                                               amount.positive?
           return amount_less_than_allowed! if amount < rule.min_amount.abs
 
           amount_greater_than_allowed! if amount > rule.max_amount
