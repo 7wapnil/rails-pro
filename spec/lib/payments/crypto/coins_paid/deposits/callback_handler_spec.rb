@@ -34,7 +34,7 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
 
       it 'calls entry request creation' do
         allow(entry_request_double).to receive(:succeeded?).and_return(true)
-        allow(entry_request_double).to receive(:origin).and_return(nil)
+        allow(entry_request_double).to receive(:origin)
 
         expect(::EntryRequests::Factories::Deposit)
           .to receive(:call).and_return(entry_request_double)
@@ -66,7 +66,7 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
 
       it 'calls entry request creation' do
         allow(entry_request_double).to receive(:register_failure!)
-        allow(entry_request_double).to receive(:origin).and_return(nil)
+        allow(entry_request_double).to receive(:origin)
 
         expect(::EntryRequests::Factories::Deposit)
           .to receive(:call).and_return(entry_request_double)
@@ -77,7 +77,7 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
       it 'register failure' do
         allow(::EntryRequests::Factories::Deposit)
           .to receive(:call).and_return(entry_request_double)
-        allow(entry_request_double).to receive(:origin).and_return(nil)
+        allow(entry_request_double).to receive(:origin)
 
         expect(entry_request_double).to receive(:register_failure!)
 
@@ -149,7 +149,7 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
     it 'calls entry request creation' do
       allow(entry_request_double).to receive(:register_failure!)
       allow(entry_request_double).to receive(:id).and_return(rand(1..5))
-      allow(entry_request_double).to receive(:origin).and_return(nil)
+      allow(entry_request_double).to receive(:origin)
 
       expect(::EntryRequests::Factories::Deposit)
         .to receive(:call).and_return(entry_request_double)
@@ -160,7 +160,7 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
 
     it 'raises error' do
       allow(entry_request_double).to receive(:register_failure!)
-      allow(entry_request_double).to receive(:origin).and_return(nil)
+      allow(entry_request_double).to receive(:origin)
 
       expect { subject }.to raise_error(::Payments::GatewayError)
     end
@@ -169,7 +169,7 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
       allow(::EntryRequests::Factories::Deposit)
         .to receive(:call).and_return(entry_request_double)
       allow(entry_request_double).to receive(:id).and_return(rand(1..5))
-      allow(entry_request_double).to receive(:origin).and_return(nil)
+      allow(entry_request_double).to receive(:origin)
 
       expect(entry_request_double).to receive(:register_failure!)
 
