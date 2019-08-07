@@ -9,6 +9,8 @@ module Payments
             .call(transaction)
         end
 
+        protected
+
         def payout_request_handler
           ::Payments::Crypto::CoinsPaid::Payouts::RequestHandler
         end

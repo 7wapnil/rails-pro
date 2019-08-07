@@ -1,7 +1,5 @@
 describe ApiController, type: :controller do
   context '#current_customer' do
-    subject { described_class.new }
-
     let(:subject_request) { described_class.new }
     let(:user) { create(:user) }
     let(:customer) { create(:customer) }

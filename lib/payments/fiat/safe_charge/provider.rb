@@ -9,9 +9,7 @@ module Payments
             .call(transaction)
         end
 
-        def deposit_response_handler
-          ::Payments::Fiat::SafeCharge::Deposits::CallbackHandler
-        end
+        protected
 
         def payout_request_handler
           ::Payments::Fiat::SafeCharge::Payouts::RequestHandler

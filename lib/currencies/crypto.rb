@@ -4,7 +4,7 @@ module Currencies
   module Crypto
     include Payments::Crypto::SuppliedCurrencies
 
-    M_BTC_MULTIPLIER = 1000
+    M_BTC_MULTIPLIER = 1000.0
 
     def multiply_amount(amount)
       amount * M_BTC_MULTIPLIER

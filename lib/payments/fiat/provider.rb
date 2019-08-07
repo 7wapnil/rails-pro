@@ -11,6 +11,8 @@ module Payments
         payout_request_handler.call(transaction)
       end
 
+      protected
+
       def payout_request_handler
         raise NotImplementedError
       end

@@ -9,6 +9,8 @@ module Payments
             .call(transaction: transaction)
         end
 
+        protected
+
         def payout_request_handler
           ::Payments::Fiat::Wirecard::Payouts::RequestHandler
         end
