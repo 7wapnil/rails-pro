@@ -54,13 +54,22 @@ describe Reports::SalesReportCollector do
       let!(:bets) do
         create_list(:entry, count, :recent, :bet,
                     wallet: wallet,
-                    balance_entries: create_list(:balance_entry, 2))
+                    balance_entries: create_list(:balance_entry, 2),
+                    origin: create(:bet, customer: customer, status: :settled))
       end
 
       let!(:win_bets) do
         create_list(:entry, count, :recent, :win,
                     wallet: wallet,
-                    balance_entries: create_list(:balance_entry, 2))
+                    balance_entries: create_list(:balance_entry, 2),
+                    origin: create(:bet, customer: customer, status: :settled))
+      end
+
+      let!(:test_bets_with_rejected_status) do
+        create_list(:entry, rand(1..3), :bet, :recent,
+                    wallet: wallet,
+                    balance_entries: create_list(:balance_entry, 2),
+                    origin: create(:bet, customer: customer, status: :rejected))
       end
 
       let!(:test_bets) do

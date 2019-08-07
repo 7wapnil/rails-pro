@@ -50,11 +50,13 @@ module Reports
     end
 
     def bets_per_day
-      @bets_per_day ||= subject.bet_entries
+      @bets_per_day ||=
+        subject.bet_entries.select { |entry| entry.bet.settled? }
     end
 
     def win_bets_per_day
-      @win_bets_per_day ||= subject.win_entries
+      @win_bets_per_day ||=
+        subject.win_entries.select { |entry| entry.bet.settled? }
     end
 
     def stake_amount
