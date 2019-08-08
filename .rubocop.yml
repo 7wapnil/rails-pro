@@ -40,6 +40,9 @@ RSpec/FilePath:
   Exclude:
     - 'spec/graphql/**/*'
 
+RSpec/NestedGroups:
+  Max: 5
+
 AllCops:
   Exclude:
     - 'config/initializers/simple_form.rb'

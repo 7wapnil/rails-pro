@@ -1,31 +1,36 @@
+# frozen_string_literal: true
+
 describe Customers::ImpersonationService do
+  subject { described_class.call(user, customer) }
+
   let(:user) { create(:user) }
   let(:customer) { create(:customer) }
-  let(:token) { 'token' }
+  let(:token) { Faker::WorldOfWarcraft.hero }
+  let(:frontend_url) { Faker::Internet.url }
   let(:payload) do
     {
       id: customer.id,
-      impersonated_by: user.id,
-      email: customer.email,
       username: customer.username,
-      wallets: []
+      email: customer.email,
+      impersonated_by: user.id
     }
   end
 
-  it 'returns link to frontend app to login as impersonated customer' do
+  before do
+    allow(ENV).to receive(:[])
+    allow(ENV).to receive(:[]).with('FRONTEND_URL').and_return(frontend_url)
     allow(JwtService).to receive(:encode).with(payload).and_return(token)
-    customer_params = payload.slice(:email, :username, :id, :wallets)
-    params = "#{token}?customer=#{customer_params.to_json}"
-    impersonation_link = "#{ENV['FRONTEND_URL']}/impersonate/#{params}"
-    link = described_class.call(user, customer)
-
-    expect(impersonation_link).to eq(link)
   end
 
-  it 'encodes customer payload' do
-    allow(JwtService).to receive(:encode)
-    described_class.call(user, customer)
+  it 'logs impersonation attempt' do
+    expect(user)
+      .to receive(:log_event)
+      .with(:impersonate_customer, {}, customer)
 
-    expect(JwtService).to have_received(:encode).with(payload)
+    subject
+  end
+
+  it 'returns link to frontend app to login as impersonated customer' do
+    expect(subject).to eq("#{ENV['FRONTEND_URL']}/impersonate/#{token}")
   end
 end

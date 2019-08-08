@@ -46,10 +46,7 @@ class CustomersController < ApplicationController
   end
 
   def impersonate
-    frontend_url = Customers::ImpersonationService.call(current_user, customer)
-    current_user.log_event(:impersonate_customer, {}, customer)
-
-    redirect_to frontend_url
+    redirect_to Customers::ImpersonationService.call(current_user, customer)
   end
 
   def account_management

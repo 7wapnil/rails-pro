@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Customers
   class ImpersonationService < ApplicationService
     def initialize(user, customer)
@@ -6,41 +8,22 @@ module Customers
     end
 
     def call
-      payload = customer_payload
-      token = JwtService.encode(payload)
-      customer_attrs = payload.slice(:email, :username, :id, :wallets).to_json
+      user.log_event(:impersonate_customer, {}, customer)
 
-      "#{ENV['FRONTEND_URL']}/impersonate/#{token}?customer=#{customer_attrs}"
+      "#{ENV['FRONTEND_URL']}/impersonate/#{generate_jwt_token}"
     end
 
     private
 
     attr_accessor :customer, :user
 
-    def customer_payload
-      {
+    def generate_jwt_token
+      JwtService.encode(
         id: customer.id,
-        impersonated_by: user.id,
-        email: customer.email,
         username: customer.username,
-        wallets: wallets_payload
-      }
-    end
-
-    def wallets_payload
-      customer.wallets.preload(:currency).map do |wallet|
-        {
-          id: wallet.id,
-          amount: wallet.amount.to_f,
-          currency: {
-            id: wallet.currency.id,
-            code: wallet.currency.code,
-            name: wallet.currency.name,
-            kind: wallet.currency.kind,
-            primary: wallet.currency.primary
-          }
-        }
-      end
+        email: customer.email,
+        impersonated_by: user.id
+      )
     end
   end
 end

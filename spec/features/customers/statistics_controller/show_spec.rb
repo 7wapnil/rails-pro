@@ -176,22 +176,24 @@ describe Customers::StatisticsController, '#show' do
     # CALCULATED VALUES
 
     let(:deposit_value) do
-      successful_deposit_real_money_balance_entries.sum(&:amount)
+      successful_deposit_real_money_balance_entries.sum(&:amount).round(2)
     end
     let(:withdrawal_value) do
-      successful_withdrawal_real_money_balance_entries.sum(&:amount).abs
+      successful_withdrawal_real_money_balance_entries.sum(&:amount)
+                                                      .abs
+                                                      .round(2)
     end
     let(:total_bonus_awarded) do
-      awarded_customer_bonus_balance_entries.sum(&:amount)
+      awarded_customer_bonus_balance_entries.sum(&:amount).round(2)
     end
     let(:total_bonus_completed) do
-      bonus_conversion_real_money_balance_entries.sum(&:amount)
+      bonus_conversion_real_money_balance_entries.sum(&:amount).round(2)
     end
-    let(:prematch_wager) { settled_prematch_bets.sum(&:amount) }
-    let(:prematch_payout) { won_prematch_bets.sum(&:win_amount) }
+    let(:prematch_wager) { settled_prematch_bets.sum(&:amount).round(2) }
+    let(:prematch_payout) { won_prematch_bets.sum(&:win_amount).round(2) }
     let(:prematch_bet_count) { settled_prematch_bets.length }
-    let(:live_sports_wager) { settled_live_bets.sum(&:amount) }
-    let(:live_sports_payout) { won_live_bets.sum(&:win_amount) }
+    let(:live_sports_wager) { settled_live_bets.sum(&:amount).round(2) }
+    let(:live_sports_payout) { won_live_bets.sum(&:win_amount).round(2) }
     let(:live_bet_count) { settled_live_bets.length }
     let(:total_wager) { prematch_wager + live_sports_wager }
     let(:total_payout) { prematch_payout + live_sports_payout }
@@ -203,7 +205,7 @@ describe Customers::StatisticsController, '#show' do
     let(:prematch_margin) { prematch_gross_gaming_revenue / prematch_wager }
     let(:live_margin) { live_gross_gaming_revenue / live_sports_wager }
     let(:total_pending_bet_sum) do
-      [pending_prematch_bets, pending_live_bets].flatten.sum(&:amount)
+      [pending_prematch_bets, pending_live_bets].flatten.sum(&:amount).round(2)
     end
 
     let(:stats) do
