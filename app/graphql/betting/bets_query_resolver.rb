@@ -11,6 +11,7 @@ module Betting
       @query = base_query
       @query = filter_by_ids
       @query = filter_by_kind
+      @query = filter_by_status
 
       query
     end
@@ -35,6 +36,12 @@ module Betting
       return query if args[:kind].blank?
 
       query.where(titles: { kind: args[:kind] })
+    end
+
+    def filter_by_status
+      return query if args[:status].blank?
+
+      query.where(settlement_status: args[:status])
     end
   end
 end
