@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Account
   class ChangePassword < ::Base::Resolver
     argument :existingPassword, !types.String
@@ -9,7 +11,7 @@ module Account
     description 'Change password'
 
     def resolve(_obj, args)
-      params = args.to_h
+      params = args.to_h.deep_transform_keys!(&:underscore)
       params[:subject] = @current_customer
       form = ::Forms::PasswordChange.new(params)
       form.validate!
