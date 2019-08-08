@@ -84,7 +84,7 @@ describe OddsFeed::Radar::Alive::Message do
       before { allow(product).to receive(:last_successful_subscribed_at) }
 
       it 'returns true' do
-        expect(unsubscribed_message).to be_expired
+        expect(unsubscribed_message).not_to be_expired
       end
     end
   end

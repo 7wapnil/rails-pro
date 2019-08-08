@@ -45,7 +45,8 @@ module JobLogger
                       job_execution_time: execution_time.round(3),
                       overall_processing_time: processing_time.round(3),
                       thread_id: thread_id,
-                      event_id: event_id)
+                      event_id: event_id,
+                      **extra_log_info)
   end
 
   def event_id

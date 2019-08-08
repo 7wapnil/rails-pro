@@ -17,7 +17,7 @@ module OddsFeed
         end
 
         def expired?
-          return true unless product.last_successful_subscribed_at
+          return false unless product.last_successful_subscribed_at
 
           received_at < product.last_successful_subscribed_at
         end

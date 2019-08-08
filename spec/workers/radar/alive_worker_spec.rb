@@ -12,6 +12,7 @@ describe Radar::AliveWorker do
   end
 
   before do
+    allow(Rails.logger).to receive(:info)
     allow_any_instance_of(::Radar::AliveWorker)
       .to receive(:job_id)
       .and_return(123)
@@ -30,5 +31,17 @@ describe Radar::AliveWorker do
       )
 
     subject.log_job_failure(StandardError)
+  end
+
+  it 'logs extra data when job is done' do
+    expect(Rails.logger)
+      .to have_received(:info)
+      .with(
+        hash_including(
+          producer_id: product.id,
+          producer_subscription_state: product.subscribed?,
+          message_subscription_state: true
+        )
+      )
   end
 end

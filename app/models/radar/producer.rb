@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 module Radar
   class Producer < ApplicationRecord
     LIVE_PROVIDER_ID = 1
-    LIVE_PROVIDER_CODE = 'liveodds'.freeze
+    LIVE_PROVIDER_CODE = 'liveodds'
     PREMATCH_PROVIDER_ID = 3
-    PREMATCH_PROVIDER_CODE = 'pre'.freeze
+    PREMATCH_PROVIDER_CODE = 'pre'
     RECOVERY_WAIT_TIME_IN_SECONDS = 10
 
     self.table_name = 'radar_providers'
@@ -15,12 +17,12 @@ module Radar
     HEARTBEAT_EXPIRATION_TIME_IN_SECONDS = 15
 
     UNSUBSCRIBED_STATES = {
-      unsubscribed: UNSUBSCRIBED = 'unsubscribed'.freeze
+      unsubscribed: UNSUBSCRIBED = 'unsubscribed'
     }.freeze
 
     SUBSCRIBED_STATES = {
-      recovering: RECOVERING = 'recovering'.freeze,
-      healthy:    HEALTHY    = 'healthy'.freeze
+      recovering: RECOVERING = 'recovering',
+      healthy: HEALTHY = 'healthy'
     }.freeze
 
     STATES = UNSUBSCRIBED_STATES.merge(SUBSCRIBED_STATES)
