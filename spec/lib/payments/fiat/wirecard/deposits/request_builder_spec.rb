@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Payments::Fiat::Wirecard::Deposits::RequestBuilder do
   include_context 'wirecard_env'
   include_context 'frozen_time'

@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 describe ::Payments::Fiat::SafeCharge::Deposits::RequestHandler do
+  include_context 'safecharge_env'
+
   subject { described_class.call(transaction, **extra_query_params) }
 
   let(:transaction) do

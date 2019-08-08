@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Payments::Fiat::Wirecard::Payouts::CallbackHandler do
   include_context 'wirecard_env'
 
