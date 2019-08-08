@@ -63,9 +63,11 @@ describe OddsFeed::Radar::OddsChangeHandler do
         receive(:log_job_message).with(
           :warn,
           message: 'Got -2 market status from of for non-prematch producer.',
-          'id' => market.template_id,
-          'specifiers' => market.template_specifiers,
-          'status' => '-2'
+          market_data: {
+            'id' => market.template_id,
+            'specifiers' => market.template_specifiers,
+            'status' => '-2'
+          }
         ).once
       )
     end
