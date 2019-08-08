@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Webhooks::SafeCharge::CancelledPaymentsController, type: :controller do
   include_context 'safecharge_env'
 

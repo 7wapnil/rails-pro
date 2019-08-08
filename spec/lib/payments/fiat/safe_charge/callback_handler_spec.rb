@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 describe Payments::Fiat::SafeCharge::CallbackHandler do
+  include_context 'safecharge_env'
+
   subject { described_class.call(response) }
 
   let(:response) { { status: 'succeed' } }

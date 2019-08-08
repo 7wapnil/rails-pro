@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 describe Webhooks::Wirecard::PaymentsController, type: :controller do
+  include_context 'wirecard_env'
+
   subject do
     post(:create, params: params, body: body)
   end

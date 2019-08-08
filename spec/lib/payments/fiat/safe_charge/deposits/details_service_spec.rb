@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 describe Payments::Fiat::SafeCharge::Deposits::DetailsService do
+  include_context 'safecharge_env'
+
   subject { described_class.call(params) }
 
   let(:params) do

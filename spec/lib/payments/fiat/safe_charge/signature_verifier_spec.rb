@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Payments::Fiat::SafeCharge::SignatureVerifier do
   include_context 'safecharge_env'
 

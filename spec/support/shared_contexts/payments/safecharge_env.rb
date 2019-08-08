@@ -11,6 +11,7 @@ shared_context 'safecharge_env' do
   end
 
   before do
+    allow(ENV).to receive(:[])
     env.each do |key, value|
       allow(ENV).to receive(:[]).with(key).and_return(value)
     end

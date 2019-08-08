@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 describe Payments::Fiat::Wirecard::CallbackHandler do
+  include_context 'wirecard_env'
+
   subject { described_class.call(request) }
 
   context 'when deposit' do

@@ -1,4 +1,8 @@
+# frozen_string_literal: true
+
 describe Payments::Fiat::Wirecard::Payouts::RequestHandler do
+  include_context 'wirecard_env'
+
   subject { described_class.call(transaction) }
 
   let(:transaction) do
