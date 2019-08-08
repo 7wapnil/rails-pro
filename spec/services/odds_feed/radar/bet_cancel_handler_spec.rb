@@ -58,18 +58,50 @@ describe OddsFeed::Radar::BetCancelHandler do
     end
   end
 
-  it 'refunds correct real money and bonus ratio' do
-    Sidekiq::Testing.inline! do
-      entry = create(:entry, :bet, :with_balance_entries)
-      bet = create(:bet, :accepted, odd: odds.sample, placement_entry: entry)
-      subject.handle
-      cancellation_entry = Entry.find_by(origin: bet, kind: entry_kind_cancel)
+  context 'real money and bonus ratio' do
+    let(:stake) { create(:entry, :bet, :with_balance_entries) }
+    let(:winning) { create(:entry, :win, :with_balance_entries) }
 
-      expect(cancellation_entry.real_money_balance_entry.amount)
-        .to eq(-entry.real_money_balance_entry.amount)
+    let!(:bet) do
+      create(
+        :bet,
+        :won,
+        odd: odds.sample,
+        placement_entry: stake,
+        winning: winning
+      )
+    end
 
-      expect(cancellation_entry.bonus_balance_entry.amount)
-        .to eq(-entry.bonus_balance_entry.amount)
+    it 'refunds correct real money and bonus ratio for stake' do
+      Sidekiq::Testing.inline! do
+        subject.handle
+
+        stake_cancellation = Entry
+                             .where('amount > ?', 0)
+                             .find_by(origin: bet, kind: entry_kind_cancel)
+
+        expect(stake_cancellation.real_money_balance_entry.amount)
+          .to eq(-stake.real_money_balance_entry.amount)
+
+        expect(stake_cancellation.bonus_balance_entry.amount)
+          .to eq(-stake.bonus_balance_entry.amount)
+      end
+    end
+
+    it 'subtracts correct real money and bonus ratio for winning' do
+      Sidekiq::Testing.inline! do
+        subject.handle
+
+        winning_cancellation = Entry
+                               .where('amount < ?', 0)
+                               .find_by(origin: bet, kind: entry_kind_cancel)
+
+        expect(winning_cancellation.real_money_balance_entry.amount)
+          .to eq(-winning.real_money_balance_entry.amount)
+
+        expect(winning_cancellation.bonus_balance_entry.amount)
+          .to eq(-winning.bonus_balance_entry.amount)
+      end
     end
   end
 

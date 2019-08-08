@@ -74,7 +74,7 @@ module EntryRequests
       end
 
       def bet_entry
-        @bet_entry ||= bet.entry
+        @bet_entry ||= bet.placement_entry
       end
 
       def win_cancel_comment
@@ -86,7 +86,7 @@ module EntryRequests
         balance_entries = original_entry.balance_entries.includes(:balance)
 
         balance_entry_amounts = balance_entries.map do |balance_entry|
-          [balance_entry.balance.kind, balance_entry.amount.abs]
+          [balance_entry.balance.kind, -balance_entry.amount]
         end
 
         balance_entry_amounts = balance_entry_amounts.to_h.symbolize_keys!
