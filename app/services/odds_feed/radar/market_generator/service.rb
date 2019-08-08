@@ -33,10 +33,9 @@ module OddsFeed
 
             build_market(market_data)
           rescue HandOverError
-            log_job_message(
-              :warn,
-              market_data.merge(message: SKIP_MARKET_MESSAGE)
-            )
+            log_job_message(:warn,
+                            message: SKIP_MARKET_MESSAGE,
+                            market_data: market_data)
             next
           rescue StandardError => e
             log_job_message(:debug, e.message)
