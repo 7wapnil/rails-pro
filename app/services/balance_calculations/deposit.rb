@@ -44,8 +44,8 @@ module BalanceCalculations
     def max_deposit_bonus
       @max_deposit_bonus ||= Exchanger::Converter.call(
         bonus.max_deposit_match,
-        currency,
-        Currency.primary
+        Currency.primary,
+        currency
       )
     end
   end
