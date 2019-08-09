@@ -2,9 +2,12 @@ describe GraphQL, '#deposit_bonus' do
   let!(:auth_customer) { create(:customer) }
   let!(:wallet) { create(:wallet, customer: auth_customer) }
   let!(:primary_currency) { create(:currency, :primary) }
+  let(:currency_code) { primary_currency.code }
   let(:context) { { current_customer: auth_customer } }
-  let(:variables) { { amount: amount, code: code, currencyCode: 'EUR' } }
   let(:amount) { 100.0 }
+  let(:variables) do
+    { amount: amount, code: code, currencyCode: currency_code }
+  end
 
   let(:query) do
     %(mutation depositBonus($amount: Float!,
@@ -124,6 +127,28 @@ describe GraphQL, '#deposit_bonus' do
       expect(error_message).to eq(
         I18n.t('errors.messages.repeated_bonus_activation')
       )
+    end
+  end
+
+  describe 'when non-primary currency used' do
+    describe 'when amount is too high' do
+      let!(:bonus) { create(:bonus) }
+      let(:code) { bonus.code }
+      let(:deposit_bonus) { result['data']['depositBonus'] }
+      let(:exchange_rate) { 0.1 }
+      let!(:currency) do
+        create(:currency, :crypto, exchange_rate: exchange_rate)
+      end
+      let(:currency_code) { currency.code }
+      let(:amount) { bonus.max_deposit_match + 1.0 }
+
+      it 'returns max amount allowed by the bonus' do
+        expect(deposit_bonus['bonus']).to(
+          eq(
+            bonus.max_deposit_match * (bonus.percentage / 100.0) * exchange_rate
+          )
+        )
+      end
     end
   end
 end
