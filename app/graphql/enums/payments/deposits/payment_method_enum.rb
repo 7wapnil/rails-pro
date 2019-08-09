@@ -8,7 +8,6 @@ module Payments
       description 'Deposit payment methods'
 
       value ::Payments::Methods::CREDIT_CARD, 'MasterCard/Visa'
-      value ::Payments::Methods::NEOSURF, 'Neosurf'
       value ::Payments::Methods::NETELLER, 'Neteller'
       value ::Payments::Methods::SKRILL, 'Skrill'
       value ::Payments::Methods::PAYSAFECARD, 'Paysafecard'
