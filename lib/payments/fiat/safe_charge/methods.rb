@@ -13,7 +13,6 @@ module Payments
         APMGW_WEBMONEY = 'apmgw_WebMoney'
         APMGW_YANDEXMONEY = 'apmgw_YANDEXMONEY'
         APMGW_QIWI = 'apmgw_QIWI'
-        APMGW_NEOSURF = 'apmgw_Neosurf'
 
         PAYMENT_METHOD_MAP = {
           CC_CARD => ::Payments::Methods::CREDIT_CARD,
@@ -24,8 +23,7 @@ module Payments
           APMGW_IDEAL => ::Payments::Methods::IDEAL,
           APMGW_WEBMONEY => ::Payments::Methods::WEBMONEY,
           APMGW_YANDEXMONEY => ::Payments::Methods::YANDEX,
-          APMGW_QIWI => ::Payments::Methods::QIWI,
-          APMGW_NEOSURF => ::Payments::Methods::NEOSURF
+          APMGW_QIWI => ::Payments::Methods::QIWI
         }.freeze
 
         IDENTIFIERS_MAP = {
