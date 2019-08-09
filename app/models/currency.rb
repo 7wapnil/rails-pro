@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Currency < ApplicationRecord
+  FIAT_CODES = %w[EUR USD INR ZAR].freeze
+  CRYPTO_CODES = %w[BTC].freeze
   PRIMARY_CODE = 'EUR'
   PRIMARY_RATE = 1
 
@@ -27,10 +29,6 @@ class Currency < ApplicationRecord
   validates :name, :code, presence: true
   validates :exchange_rate, numericality: { allow_nil: true }
   validates_associated :entry_currency_rules
-
-  def self.available_currency_codes
-    %w[EUR BTC USD INR ZAR]
-  end
 
   def self.build_default
     new(code: PRIMARY_CODE, name: 'Euro', primary: true)

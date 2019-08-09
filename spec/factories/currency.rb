@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :currency do
-    code          { Currency.available_currency_codes.sample }
+    code          { Currency::FIAT_CODES.sample }
     name          { "#{code} currency name" }
     primary       { false }
     kind          { Currency::FIAT }
@@ -52,7 +52,7 @@ FactoryBot.define do
     trait :allowed_by_safe_charge do
       code do
         allowed_currencies =
-          Currency.available_currency_codes &
+          Currency::FIAT_CODES &
           ::Payments::Fiat::SafeCharge::Currency::AVAILABLE_CURRENCY_LIST[
             ::Payments::Fiat::SafeCharge::Methods::CC_CARD
           ]
