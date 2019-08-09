@@ -3,12 +3,14 @@ describe GraphQL, '#deposit_bonus' do
   let!(:wallet) { create(:wallet, customer: auth_customer) }
   let!(:primary_currency) { create(:currency, :primary) }
   let(:context) { { current_customer: auth_customer } }
-  let(:variables) { { amount: amount, code: code } }
+  let(:variables) { { amount: amount, code: code, currencyCode: 'EUR' } }
   let(:amount) { 100.0 }
 
   let(:query) do
-    %(mutation depositBonus($amount: Float!, $code: String!) {
-      depositBonus(amount: $amount, code: $code) {
+    %(mutation depositBonus($amount: Float!,
+                            $code: String!,
+                            $currencyCode: String!) {
+      depositBonus(amount: $amount, code: $code, currencyCode: $currencyCode) {
         realMoney
         bonus
       }

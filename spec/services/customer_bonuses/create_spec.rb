@@ -14,7 +14,9 @@ describe CustomerBonuses::Create do
   end
 
   let(:customer) { create(:customer) }
-  let(:wallet) { create(:wallet, customer: customer) }
+  let(:wallet) do
+    create(:wallet, customer: customer, currency: primary_currency)
+  end
   let(:bonus) { create(:bonus, rollover_multiplier: rollover_multiplier) }
   let(:amount) { 100 }
   let(:rollover_multiplier) { 5 }
@@ -104,6 +106,7 @@ describe CustomerBonuses::Create do
     before do
       create(:customer_bonus,
              customer: customer,
+             wallet: wallet,
              original_bonus: bonus,
              expires_at: 1.day.ago,
              status: CustomerBonus::EXPIRED)
@@ -124,6 +127,7 @@ describe CustomerBonuses::Create do
       bonus.update(repeatable: false)
       create(:customer_bonus,
              customer: customer,
+             wallet: wallet,
              original_bonus: bonus,
              status: CustomerBonus::EXPIRED)
     end
@@ -142,6 +146,7 @@ describe CustomerBonuses::Create do
       bonus.update(repeatable: false)
       create(:customer_bonus,
              customer: customer,
+             wallet: wallet,
              original_bonus: bonus,
              status: CustomerBonus::FAILED)
     end
@@ -170,6 +175,7 @@ describe CustomerBonuses::Create do
         :customer_bonus,
         :with_positive_bonus_balance,
         customer: customer,
+        wallet: wallet,
         original_bonus: bonus,
         activated_at: 2.years.ago,
         status: CustomerBonus::ACTIVE

@@ -12,8 +12,11 @@ describe Bonuses::ActivationService do
     }
   end
 
+  let(:primary_currency) { create(:currency, :primary) }
   let(:customer) { create(:customer) }
-  let(:wallet) { create(:wallet, customer: customer) }
+  let(:wallet) do
+    create(:wallet, customer: customer, currency: primary_currency)
+  end
   let(:bonus) { create(:bonus, rollover_multiplier: rollover_multiplier) }
   let(:amount) { 100 }
   let(:initiator) { create(:user) }

@@ -6,12 +6,15 @@ describe BalanceCalculations::Deposit do
   let(:amount) { 200 }
   let(:max_deposit_bonus) { 20 }
   let(:customer) { create(:customer) }
-  let(:wallet) { create(:wallet, customer: customer) }
+  let(:wallet) do
+    create(:wallet, customer: customer, currency: primary_currency)
+  end
   let(:currency) { wallet.currency }
 
   let!(:customer_bonus) do
     create(:customer_bonus,
            customer: customer,
+           wallet: wallet,
            percentage: 50,
            max_deposit_match: 1000)
   end
@@ -63,6 +66,7 @@ describe BalanceCalculations::Deposit do
     let(:customer_bonus) do
       create(:customer_bonus,
              customer: customer,
+             wallet: wallet,
              percentage: 100,
              max_deposit_match: max_deposit_bonus)
     end
@@ -74,7 +78,7 @@ describe BalanceCalculations::Deposit do
         customer_bonus
       )[:bonus]
 
-      expect(bonus).to eq(max_deposit_bonus / exchange_rate)
+      expect(bonus).to eq(max_deposit_bonus * exchange_rate)
     end
   end
 end
