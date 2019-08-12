@@ -11,7 +11,7 @@ module Betting
 
     argument :kind, types.String
     argument :ids, types[types.ID]
-    argument :status, types.String
+    argument :settlement_status, types.String
 
     def resolve(_obj, args)
       BetsQueryResolver.new(args: args, customer: @current_customer).resolve

@@ -39,9 +39,9 @@ module Betting
     end
 
     def filter_by_status
-      return query if args[:status].blank?
+      return query if args[:settlement_status].blank?
 
-      query.where(settlement_status: args[:status])
+      query.where(settlement_status: args[:settlement_status])
     end
   end
 end
