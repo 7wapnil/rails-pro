@@ -24,7 +24,8 @@ module Deposits
       currency = find_currency!(args)
       form = CustomerBonuses::CreateForm.new(customer: current_customer,
                                              original_bonus: bonus,
-                                             amount: args[:amount])
+                                             amount: args[:amount],
+                                             currency: currency)
       form.validate!
       bonus_hash = BalanceCalculations::Deposit.call(
         args[:amount],
