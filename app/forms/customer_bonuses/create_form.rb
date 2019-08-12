@@ -4,7 +4,7 @@ module CustomerBonuses
   class CreateForm
     include ActiveModel::Model
 
-    attr_reader :subject, :amount
+    attr_reader :subject, :amount, :currency
 
     validate :ensure_no_active_bonus
     validate :validate_repeated_activation
@@ -12,8 +12,9 @@ module CustomerBonuses
 
     delegate :customer, :original_bonus, to: :subject
 
-    def initialize(amount:, **bonus_attributes)
+    def initialize(amount:, currency: nil, **bonus_attributes)
       @amount = amount
+      @currency = currency || Currency.primary
       @subject = CustomerBonus.new(bonus_attributes)
     end
 
@@ -31,7 +32,7 @@ module CustomerBonuses
     private
 
     def minimal_bonus_amount
-      return if amount.present? && amount >= original_bonus.min_deposit
+      return if amount.present? && amount >= min_deposit
 
       errors.add(:bonus,
                  I18n.t('errors.messages.bonus_minimum_requirements_failed'))
@@ -59,6 +60,14 @@ module CustomerBonuses
     def displayed_error
       # [1] takes the error message itself instead of key-value pair
       errors.first[1]
+    end
+
+    def min_deposit
+      @min_deposit ||= Exchanger::Converter.call(
+        original_bonus.min_deposit,
+        Currency.primary,
+        currency
+      )
     end
   end
 end

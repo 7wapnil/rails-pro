@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 describe CustomerBonuses::CreateForm do
+  before { create(:currency, :primary) }
+
   context '#submit!' do
     subject { form.submit! }
 
