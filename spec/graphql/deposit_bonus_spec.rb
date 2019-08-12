@@ -1,7 +1,9 @@
 describe GraphQL, '#deposit_bonus' do
   let!(:auth_customer) { create(:customer) }
-  let!(:wallet) { create(:wallet, customer: auth_customer) }
   let!(:primary_currency) { create(:currency, :primary) }
+  let!(:wallet) do
+    create(:wallet, customer: auth_customer, currency: primary_currency)
+  end
   let(:currency_code) { primary_currency.code }
   let(:context) { { current_customer: auth_customer } }
   let(:amount) { 100.0 }
@@ -100,6 +102,7 @@ describe GraphQL, '#deposit_bonus' do
         :customer_bonus,
         original_bonus: other_bonus,
         customer: auth_customer,
+        wallet: wallet,
         status: 'active'
       )
     end
@@ -119,6 +122,7 @@ describe GraphQL, '#deposit_bonus' do
         :customer_bonus,
         original_bonus: bonus,
         customer: auth_customer,
+        wallet: wallet,
         status: 'completed'
       )
     end
