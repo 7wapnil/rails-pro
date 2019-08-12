@@ -47,12 +47,12 @@ describe OddsFeed::Radar::FixtureChangeHandler do
   end
 
   describe 'update event data' do
-    context 'updates from prematch to liveodds' do
-      before { payload['fixture_change']['product'] = liveodds_producer.id }
+    context 'does not update from prematch to liveodds' do
+      let(:initial_producer_id) { event.producer_id }
 
       it 'updates event producer if changed' do
         subject.handle
-        expect(event.reload.producer_id).to eq(liveodds_producer.id)
+        expect(event.reload.producer_id).to eq(initial_producer_id)
       end
     end
 
@@ -62,37 +62,6 @@ describe OddsFeed::Radar::FixtureChangeHandler do
       it 'deactivates event' do
         subject.handle
         expect(event.reload.active).to be_falsy
-      end
-    end
-
-    context 'invalid producer' do
-      let(:producer_id) { rand(10..100) }
-      let(:message) do
-        I18n.t('errors.messages.nonexistent_producer')
-      end
-
-      it 'does not raise error' do
-        expect { subject.handle }.not_to raise_error
-      end
-
-      it 'log message' do
-        expect(Rails.logger).to receive(:warn).with(message: message,
-                                                    id: producer_id)
-
-        subject.handle
-      end
-    end
-
-    context 'invalid producer change' do
-      let!(:event) do
-        create(:event, external_id: external_event_id,
-                       producer_id: liveodds_producer.id.to_s)
-      end
-
-      it 'does not change producer id' do
-        producer_id_before_call = event.producer_id
-        subject.handle
-        expect(event.reload.producer_id).to eq(producer_id_before_call)
       end
     end
   end

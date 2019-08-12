@@ -37,25 +37,7 @@ module OddsFeed
                                change_type: change_type)
 
         update_event_start_time!
-        update_event_producer!
         update_event_payload!
-      end
-
-      def update_event_producer!
-        return if producer == event.producer
-
-        log_job_message(:info, message: 'Updating producer',
-                               event_id: event_id)
-
-        ProducerUpdateService.call(event: event, producer_id: producer.id)
-
-        event.save!
-      rescue ActiveRecord::RecordNotFound => e
-        log_job_message(
-          :warn,
-          message: I18n.t('errors.messages.nonexistent_producer'),
-          id: e.id
-        )
       end
 
       def update_event_start_time!
