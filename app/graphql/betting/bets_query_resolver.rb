@@ -2,6 +2,12 @@
 
 module Betting
   class BetsQueryResolver
+    DATE_RANGES = {
+      'today' => Time.zone.now.all_day,
+      'week' => Time.zone.now.all_week,
+      'month' => Time.zone.now.all_month
+    }.freeze
+
     def initialize(args:, customer:)
       @args = args
       @customer = customer
@@ -12,6 +18,7 @@ module Betting
       @query = filter_by_ids
       @query = filter_by_kind
       @query = filter_by_status
+      @query = filter_by_date
 
       query
     end
@@ -42,6 +49,12 @@ module Betting
       return query if args[:settlement_status].blank?
 
       query.where(settlement_status: args[:settlement_status])
+    end
+
+    def filter_by_date
+      return query if args[:date_range].blank?
+
+      query.where(created_at: DATE_RANGES[args[:date_range]])
     end
   end
 end
