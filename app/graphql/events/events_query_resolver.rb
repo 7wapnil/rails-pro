@@ -19,7 +19,8 @@ module Events
       @query = filter_by_title_kind
       @query = filter_by_event_scopes
       filter_by_context!
-      query
+
+      query.distinct
     end
 
     private
@@ -28,7 +29,7 @@ module Events
 
     def base_query
       Event
-        .joins(:title)
+        .joins(:title, :markets)
         .joins(join_events_to_tournaments_sql)
         .preload(:dashboard_markets, :competitors)
         .visible

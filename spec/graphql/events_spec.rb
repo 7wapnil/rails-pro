@@ -27,7 +27,7 @@ describe GraphQL, '#events' do
            markets: control_event_markets
   end
   let(:control_events) do
-    create_list(:event, control_count, :upcoming,
+    create_list(:event, control_count, :upcoming, :with_market,
                 title: title, event_scopes: [tournament])
   end
 
@@ -132,6 +132,35 @@ describe GraphQL, '#events' do
       it 'is not returned' do
         expect(result_event.dashboardMarket).to be_nil
       end
+    end
+  end
+
+  context 'without market' do
+    let(:control_event) do
+      create :event,
+             *control_event_traits,
+             title: title,
+             event_scopes: control_event_scopes
+    end
+    let(:control_events) do
+      create_list(:event, control_count, :upcoming,
+                  title: title, event_scopes: [tournament])
+    end
+
+    let(:query) do
+      %({
+          events(context: #{upcoming_ctx}) {
+            id
+            dashboardMarket {
+              id
+              odds { id }
+            }
+          }
+      })
+    end
+
+    it 'does not return events' do
+      expect(result_events).to be_empty
     end
   end
 
