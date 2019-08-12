@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OddsFeed
   class MessageHandler
     def initialize(payload, configuration: {})
