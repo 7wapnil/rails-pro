@@ -1,9 +1,16 @@
 # frozen_string_literal: true
 
 describe CustomerBonuses::RolloverCalculationService do
+  let(:customer) { create(:customer) }
+  let!(:primary_currency) { create(:currency, :primary) }
+  let(:wallet) do
+    create(:wallet, customer: customer, currency: primary_currency)
+  end
   let(:bonus) do
     create(
       :customer_bonus,
+      customer: customer,
+      wallet: wallet,
       min_odds_per_bet: 1.5,
       max_rollover_per_bet: 50,
       rollover_initial_value: 1000,
@@ -19,7 +26,8 @@ describe CustomerBonuses::RolloverCalculationService do
       customer_bonus: bonus,
       odd: odd,
       odd_value: 1.85,
-      amount: 10
+      amount: 10,
+      currency: primary_currency
     }
   end
 
@@ -48,6 +56,8 @@ describe CustomerBonuses::RolloverCalculationService do
     it 'when bonus is not active' do
       customer_bonus = create(
         :customer_bonus,
+        customer: customer,
+        wallet: wallet,
         status: CustomerBonus::EXPIRED,
         min_odds_per_bet: 1.5
       )
@@ -125,7 +135,8 @@ describe CustomerBonuses::RolloverCalculationService do
         status: :settled,
         customer_bonus: bonus,
         odd: odd,
-        odd_value: payload[:odds]
+        odd_value: payload[:odds],
+        currency: primary_currency
       )
 
       described_class.call(bet)
