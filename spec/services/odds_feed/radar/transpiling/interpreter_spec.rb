@@ -55,12 +55,44 @@ describe OddsFeed::Radar::Transpiling::Interpreter do
       expect(result).to eq('2nd period')
     end
 
-    it 'signed value token' do
+    it 'signed value token for specifier without sign' do
       result = described_class
-               .new(event, { points: 2 }.stringify_keys!)
+               .new(event, { points: '2' }.stringify_keys!)
                .parse('{+points} points')
 
       expect(result).to eq('+2 points')
+    end
+
+    it 'signed value token for integer specifier' do
+      result = described_class
+               .new(event, { points: '+2' }.stringify_keys!)
+               .parse('{+points} points')
+
+      expect(result).to eq('+2 points')
+    end
+
+    it 'signed value token for negative integer specifier' do
+      result = described_class
+               .new(event, { points: '-2' }.stringify_keys!)
+               .parse('{-points} points')
+
+      expect(result).to eq('+2 points')
+    end
+
+    it 'signed value token for float specifier' do
+      result = described_class
+               .new(event, { points: '0.25' }.stringify_keys!)
+               .parse('{+points} points')
+
+      expect(result).to eq('+0.25 points')
+    end
+
+    it 'signed value token for negative float specifier' do
+      result = described_class
+               .new(event, { points: '-0.25' }.stringify_keys!)
+               .parse('{+points} points')
+
+      expect(result).to eq('-0.25 points')
     end
 
     it 'plus value token' do
