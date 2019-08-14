@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Mts::UofId do
   describe '#initialize' do
     context 'with missing producer' do
@@ -57,6 +59,10 @@ describe Mts::UofId do
       context example[:title] do
         subject { described_class.new(odd) }
 
+        let(:market_template) do
+          create(:market_template, external_id: example[:template_id])
+        end
+
         let(:producer) do
           create(:producer, id: example[:producer_id] || '1',
                             code: Radar::Producer::PREMATCH_PROVIDER_CODE)
@@ -69,7 +75,7 @@ describe Mts::UofId do
         end
         let(:market) do
           create(:market, event: event,
-                          template_id: example[:template_id],
+                          template: market_template,
                           template_specifiers: example[:template_specifiers])
         end
         let(:odd) do

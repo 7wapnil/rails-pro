@@ -25,7 +25,7 @@ module Mts
         '/',
         sport_id,
         '/',
-        template_id,
+        template.external_id,
         '/',
         outcome_id,
         formatted_specifier
@@ -37,7 +37,7 @@ module Mts
     attr_reader :odd
 
     delegate :producer, :title, to: :event
-    delegate :template_id, :template_specifiers, to: :market
+    delegate :template, :template_specifiers, to: :market
     delegate :outcome_id, to: :odd
 
     def event_producer_failure!

@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module WebSocket
-  # rubocop:disable Metrics/ClassLength
   class Client
     include Singleton
     include JobLogger
@@ -16,14 +15,6 @@ module WebSocket
       trigger_category_event(event)
       trigger_sport_event(event)
       trigger_kind_event(event)
-    end
-
-    def trigger_market_update(market)
-      trigger(SubscriptionFields::MARKET_UPDATED,
-              market,
-              id: market.id)
-      trigger_event_market(market)
-      trigger_category_market(market)
     end
 
     def trigger_provider_update(provider)
@@ -109,22 +100,6 @@ module WebSocket
       )
     end
 
-    def trigger_event_market(market)
-      trigger(
-        SubscriptionFields::EVENT_MARKET_UPDATED,
-        market,
-        eventId: market.event_id
-      )
-    end
-
-    def trigger_category_market(market)
-      trigger(
-        SubscriptionFields::CATEGORY_MARKET_UPDATED,
-        market,
-        eventId: market.event_id, category: market.category
-      )
-    end
-
     def warn(message, event)
       log_job_message(:warn, message: message, event_id: event.id)
     end
@@ -142,5 +117,4 @@ module WebSocket
            .limit(Event::UPCOMING_LIMIT)
     end
   end
-  # rubocop:enable Metrics/ClassLength
 end

@@ -141,40 +141,6 @@ describe WebSocket::Client do
     end
   end
 
-  describe 'market updates' do
-    let(:market) { create(:market) }
-
-    before do
-      subject.trigger_market_update(market)
-    end
-
-    it 'triggers single market subscription' do
-      expect(subject)
-        .to have_received(:trigger)
-        .with(SubscriptionFields::MARKET_UPDATED, market, id: market.id)
-    end
-
-    it 'triggers event markets subscription' do
-      expect(subject)
-        .to have_received(:trigger)
-        .with(
-          SubscriptionFields::EVENT_MARKET_UPDATED,
-          market,
-          eventId: market.event_id
-        )
-    end
-
-    it 'triggers category markets subscription' do
-      expect(subject)
-        .to have_received(:trigger)
-        .with(
-          SubscriptionFields::CATEGORY_MARKET_UPDATED,
-          market,
-          eventId: market.event_id, category: market.category
-        )
-    end
-  end
-
   describe 'providers updates' do
     let(:provider) { create(:producer) }
 

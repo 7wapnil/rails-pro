@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe GraphQL, '#markets' do
   let(:context) { {} }
   let(:variables) { {} }
@@ -68,12 +70,15 @@ describe GraphQL, '#markets' do
 
     context 'market category' do
       let(:category) { 'popular' }
+      let(:template) { create(:market_template, category: category) }
       let(:query) do
-        %({ markets (eventId: #{event.id}, category: #{category}) {
-              id
-              name
-              priority
-        } })
+        %({
+          markets (eventId: #{event.id}, category: #{category}) {
+            id
+            name
+            priority
+          }
+        })
       end
 
       before do
@@ -82,9 +87,7 @@ describe GraphQL, '#markets' do
 
       it 'returns markets with specific category' do
         create_list(:market, 2, :with_odds, event: event)
-        create_list(:market, 2, :with_odds,
-                    event:    event,
-                    category: category)
+        create_list(:market, 2, :with_odds, event: event, template: template)
 
         expect(result['data']['markets'].count).to eq(2)
       end

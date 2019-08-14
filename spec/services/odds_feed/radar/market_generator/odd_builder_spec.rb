@@ -42,7 +42,7 @@ describe OddsFeed::Radar::MarketGenerator::OddBuilder do
                event_id: event.id,
                name: market_data.name,
                status: market_data.status,
-               category: market_data.category)
+               template: market_template)
   end
 
   before do

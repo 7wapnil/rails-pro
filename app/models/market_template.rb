@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class MarketTemplate < ApplicationRecord
+  has_many :markets, foreign_key: :template_id, inverse_of: :template
+
   enum category: {
     popular: POPULAR = 'popular',
     maps: MAPS = 'maps',

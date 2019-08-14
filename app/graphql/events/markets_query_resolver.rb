@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Events
   class MarketsQueryResolver < ApplicationService
     def initialize(args: {})
@@ -21,10 +23,16 @@ module Events
     def markets
       query = Market.for_displaying
                     .where(event_id: event_id)
-      query = filter_by(:category, args[:category], query)
+      query = filter_by_category(args[:category], query)
       query = filter_by(:priority, args[:priority], query)
       query = filter_by(:id, args[:id], query)
       query
+    end
+
+    def filter_by_category(value, query)
+      return query unless value
+
+      query.where(market_templates: { category: value })
     end
 
     def filter_by(field, value, query)

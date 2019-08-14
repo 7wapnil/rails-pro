@@ -14,8 +14,8 @@ class EventScope < ApplicationRecord
 
   enum kind: {
     tournament: TOURNAMENT = 'tournament',
-    category:   CATEGORY   = 'category',
-    season:     SEASON     = 'season'
+    category: CATEGORY = 'category',
+    season: SEASON = 'season'
   }
 
   validates :name, presence: true

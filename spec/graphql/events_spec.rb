@@ -174,26 +174,32 @@ describe GraphQL, '#events' do
       })
     end
 
+    let(:players_template) do
+      create(:market_template, category: MarketTemplate::PLAYERS)
+    end
+    let(:template_without_category) { create(:market_template, category: nil) }
+
     before do
       control_events.each do |event|
         create_list(:market,
                     3,
                     :with_odds,
+                    :with_template,
                     event: event,
-                    status: Market::ACTIVE,
-                    category: MarketTemplate::POPULAR)
+                    status: Market::ACTIVE)
         create_list(:market,
                     2,
                     :with_odds,
                     event: event,
                     status: Market::ACTIVE,
-                    category: MarketTemplate::PLAYERS)
-        create_list(:market,
-                    1,
-                    :with_odds,
-                    event: event,
-                    status: Market::ACTIVE,
-                    category: nil)
+                    template: players_template)
+        create(:market, :with_odds,
+               event: event,
+               status: Market::ACTIVE,
+               template: template_without_category)
+        create(:market, :with_odds,
+               event: event,
+               status: Market::ACTIVE)
       end
     end
 

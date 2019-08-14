@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Mts
   module Messages
     # TODO: Extract parts to different classes
@@ -5,10 +7,10 @@ module Mts
       include JobLogger
 
       SUPPORTED_BETS_PER_REQUEST = 1
-      MESSAGE_VERSION = '2.3'.freeze
-      DEFAULT_STAKE_TYPE = 'total'.freeze
-      CUSTOMER_DEFAULT_LANGUAGE = 'EN'.freeze
-      DEFAULT_ODDS_CHANGE_BEHAVIOUR = 'none'.freeze
+      MESSAGE_VERSION = '2.3'
+      DEFAULT_STAKE_TYPE = 'total'
+      CUSTOMER_DEFAULT_LANGUAGE = 'EN'
+      DEFAULT_ODDS_CHANGE_BEHAVIOUR = 'none'
       STAKE_MULTIPLIER = 10_000
 
       attr_reader :bets

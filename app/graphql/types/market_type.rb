@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Types::MarketType = GraphQL::ObjectType.define do
   name 'Market'
 
@@ -8,5 +10,7 @@ Types::MarketType = GraphQL::ObjectType.define do
   field :status, types.String
   field :odds, types[Types::OddType], property: :active_odds
   field :visible, types.Boolean
-  field :category, types.String
+  field :category, types.String do
+    resolve ->(obj, *) { obj.template&.category }
+  end
 end

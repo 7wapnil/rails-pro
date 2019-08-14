@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module OddsFeed
   module Radar
     module MarketGenerator
@@ -14,10 +16,6 @@ module OddsFeed
 
         def name
           @interpreter.parse(template.market_name)
-        end
-
-        def category
-          template.market_category
         end
 
         def odd_name(odd_id)
@@ -47,10 +45,6 @@ module OddsFeed
         def template
           @template ||=
             TemplateLoader.new(@event, market_template, tokens['variant'])
-        end
-
-        def template_id
-          @payload['id']
         end
 
         private

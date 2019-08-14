@@ -64,8 +64,7 @@ module OddsFeed
                      event: @event,
                      name: data_object.name,
                      status: data_object.status,
-                     category: data_object.category,
-                     template_id: data_object.template_id,
+                     template: data_object.market_template,
                      template_specifiers: data_object.specifiers)
         end
 
@@ -124,13 +123,11 @@ module OddsFeed
         end
 
         def cached_templates
-          market_template_ids =
-            @markets_data.map { |market| market['id'] }
+          market_template_ids = @markets_data.map { |market| market['id'] }
 
-          @cached_templates ||=
-            MarketTemplate
-            .where(external_id: market_template_ids)
-            .order(:external_id)
+          @cached_templates ||= MarketTemplate
+                                .where(external_id: market_template_ids)
+                                .order(:external_id)
         end
       end
     end

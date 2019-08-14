@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_07_09_080430) do
+ActiveRecord::Schema.define(version: 2019_08_14_085001) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -100,8 +100,8 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.string "settlement_status"
     t.datetime "validation_ticket_sent_at"
+    t.string "settlement_status"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"
@@ -211,9 +211,9 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.decimal "rollover_balance", precision: 8, scale: 2
     t.decimal "rollover_initial_value", precision: 8, scale: 2
     t.string "status", default: "initial", null: false
+    t.bigint "balance_entry_id"
     t.datetime "activated_at"
     t.datetime "deactivated_at"
-    t.bigint "balance_entry_id"
     t.index ["balance_entry_id"], name: "index_customer_bonuses_on_balance_entry_id"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -507,12 +507,12 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
     t.string "external_id"
     t.string "status"
     t.boolean "visible", default: true
-    t.string "category"
     t.string "previous_status"
-    t.string "template_id"
     t.string "template_specifiers"
+    t.bigint "template_id"
     t.index ["event_id"], name: "index_markets_on_event_id"
     t.index ["external_id"], name: "index_markets_on_external_id", unique: true
+    t.index ["template_id"], name: "index_markets_on_template_id"
   end
 
   create_table "odds", force: :cascade do |t|
@@ -650,6 +650,7 @@ ActiveRecord::Schema.define(version: 2019_07_09_080430) do
   add_foreign_key "events", "titles"
   add_foreign_key "label_joins", "labels"
   add_foreign_key "markets", "events", on_delete: :cascade
+  add_foreign_key "markets", "market_templates", column: "template_id", on_delete: :nullify
   add_foreign_key "odds", "markets", on_delete: :cascade
   add_foreign_key "scoped_events", "event_scopes"
   add_foreign_key "scoped_events", "events", on_delete: :cascade

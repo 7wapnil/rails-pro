@@ -36,12 +36,13 @@ describe OddsFeed::Radar::MarketGenerator::Service do
   describe 'market attributes' do
     subject { described_class.new(event: event, markets_data: markets_data) }
 
-    it 'assigns market template category' do
-      MarketTemplate.find_by!(external_id: '188')
-                    .update(category: MarketTemplate::PLAYERS)
+    let(:template) { MarketTemplate.find_by!(external_id: '188') }
+
+    it 'assigns market template' do
       subject.call
-      expect(Market.find_by!(external_id: 'sr:match:1234:188').category)
-        .to eq(MarketTemplate::PLAYERS)
+
+      expect(Market.find_by!(external_id: 'sr:match:1234:188').template)
+        .to eq(template)
     end
   end
 
@@ -64,9 +65,8 @@ describe OddsFeed::Radar::MarketGenerator::Service do
 
     before do
       allow(WebSocket::Client).to receive(:instance).and_return(web_socket)
-      allow(web_socket).to        receive(:trigger_event_update)
-      allow(web_socket).to        receive(:trigger_market_update)
-      allow(web_socket).to        receive(:trigger_provider_update)
+      allow(web_socket).to receive(:trigger_event_update)
+      allow(web_socket).to receive(:trigger_provider_update)
 
       allow(OddsFeed::Radar::Entities::PlayerLoader)
         .to receive(:call) { Faker::Name.name }
@@ -89,8 +89,6 @@ describe OddsFeed::Radar::MarketGenerator::Service do
       before do
         allow_any_instance_of(OddsFeed::Radar::MarketGenerator::MarketData)
           .to receive(:name)
-        allow_any_instance_of(OddsFeed::Radar::MarketGenerator::MarketData)
-          .to receive(:category)
         allow(Market).to receive(:new).and_return(*markets)
       end
 

@@ -18,15 +18,21 @@ class Market < ApplicationRecord
   ].freeze
 
   belongs_to :event
+  belongs_to :template, class_name: MarketTemplate.name,
+                        optional: true,
+                        inverse_of: :markets
+
   has_many :odds, -> { order(id: :asc) }, dependent: :destroy
   has_many :active_odds, -> { active.order(id: :asc) }, class_name: Odd.name
   has_many :bets, through: :odds
   has_many :label_joins, as: :labelable, dependent: :destroy
   has_many :labels, through: :label_joins
 
-  scope :with_category, -> { where.not(category: nil) }
-
   validates :name, :priority, presence: true
+
+  def self.with_category
+    eager_load(:template).where.not(market_templates: { category: nil })
+  end
 
   def specifier
     external_id
@@ -42,8 +48,9 @@ class Market < ApplicationRecord
       .or(
         where(markets: { priority: HIGH_PRIORITY, status: INACTIVE })
       )
+      .eager_load(:template)
       .joins(:odds)
-      .group('markets.id')
+      .group('markets.id, market_templates.id')
       .order(priority: :asc, id: :asc)
   end
 

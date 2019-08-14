@@ -21,7 +21,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
       :market,
       event: event,
       external_id: "#{external_id}:#{template.external_id}/#{specifiers}",
-      template_id: template.external_id,
+      template: template,
       template_specifiers: specifiers
     )
   end
@@ -30,7 +30,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
       <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
       <odds_change product="#{message_producer_id}" event_id="#{external_id}" timestamp="#{Time.now.to_i}" request_id="1564727279">
         <odds>
-          <market status="-2" id="#{market.template_id}" specifiers="#{market.template_specifiers}"/>
+          <market status="-2" id="#{template.external_id}" specifiers="#{market.template_specifiers}"/>
         </odds>
       </odds_change>
     XML
@@ -64,7 +64,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
           :warn,
           message: 'Got -2 market status from of for non-prematch producer.',
           market_data: {
-            'id' => market.template_id,
+            'id' => template.external_id,
             'specifiers' => market.template_specifiers,
             'status' => '-2'
           }

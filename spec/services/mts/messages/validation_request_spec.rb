@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Mts::Messages::ValidationRequest do
   describe 'generates example message' do
     subject { described_class.new([bet]) }
@@ -51,10 +53,11 @@ describe Mts::Messages::ValidationRequest do
              producer_id: 3,
              external_id: 'sr:match:11050343')
     end
+    let(:market_template) { create(:market_template, external_id: '186') }
     let(:market) do
       create(:market, event: event,
                       template_specifiers: 'setnr=1|gamenr=2',
-                      template_id: '186')
+                      template: market_template)
     end
     let(:odd) do
       create(:odd,

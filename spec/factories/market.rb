@@ -7,7 +7,6 @@ FactoryBot.define do
     priority            { 2 }
     status              { StateMachines::MarketStateMachine::ACTIVE }
     previous_status     { StateMachines::MarketStateMachine::ACTIVE }
-    template_id         { '' }
     template_specifiers { '' }
 
     sequence :external_id do |n|
@@ -15,6 +14,10 @@ FactoryBot.define do
     end
 
     event
+
+    trait :with_template do
+      association :template, factory: :market_template, strategy: :build
+    end
 
     trait :with_odds do
       after(:create) do |market|

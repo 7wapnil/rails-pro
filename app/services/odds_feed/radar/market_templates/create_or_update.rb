@@ -108,7 +108,7 @@ module OddsFeed
           log_job_message(
             :debug,
             message: 'Market template updated',
-            market_template_id: template.id
+            market_template_id: template.external_id
           )
         end
       end

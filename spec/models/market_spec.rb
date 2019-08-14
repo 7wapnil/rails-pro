@@ -4,6 +4,7 @@ describe Market do
   subject(:market) { described_class.new }
 
   it { is_expected.to belong_to(:event) }
+  it { is_expected.to belong_to(:template) }
   it { is_expected.to have_many(:odds) }
 
   it { is_expected.to validate_presence_of(:name) }

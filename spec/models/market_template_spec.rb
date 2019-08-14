@@ -3,6 +3,8 @@
 describe MarketTemplate do
   subject { build(:market_template) }
 
+  it { is_expected.to have_many(:markets) }
+
   it { is_expected.to validate_presence_of(:external_id) }
   it { is_expected.to validate_presence_of(:name) }
 
