@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EventsManager
   module Entities
     class Competitor < BaseEntity
@@ -26,7 +28,14 @@ module EventsManager
       end
 
       def profile
-        attribute!(@payload, 'competitor_profile')
+        @profile ||= attribute(@payload, 'competitor_profile') ||
+                     attribute(@payload, 'simpleteam_profile')
+
+        return @profile if @profile
+
+        log(:error, message: 'Competitor profile is malformed',
+                    payload: @payload)
+        {}
       end
 
       def fixture

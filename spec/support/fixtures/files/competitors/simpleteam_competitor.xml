@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<simpleteam-profile>
+  <competitor>
+    <id>sr:simpleteam:8249060</id>
+    <name>Lokeren</name>
+  </competitor>
+  <generated-at>2019-08-12T07:13:48+00:00</generated-at>
+  <schemaLocation>http://schemas.sportradar.com/sportsapi/v1/unified http://schemas.sportradar.com/bsa/unified/v1/xml/endpoints/unified/simpleteam_profile.xsd</schemaLocation>
+</simpleteam-profile>

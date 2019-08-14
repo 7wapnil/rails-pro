@@ -6,6 +6,7 @@ describe EventsManager::CompetitorLoader do
     fixture = file_fixture('competitors/competitor_1860.xml').read
     ::XmlParser.parse(fixture)
   end
+  let(:competitor) { subject.call }
 
   before do
     allow_any_instance_of(::OddsFeed::Radar::Client)
@@ -14,18 +15,34 @@ describe EventsManager::CompetitorLoader do
   end
 
   it 'stores external id from response' do
-    competitor = subject.call
     expect(competitor.external_id).to eq(external_id)
   end
 
   it 'stores name id from response' do
-    competitor = subject.call
     expect(competitor.name).to eq('IK Oddevold')
   end
 
   it 'loads players to database' do
-    competitor = subject.call
     expect(competitor.players.count).to eq(3)
+  end
+
+  context 'from simple team' do
+    let(:competitor_response) do
+      ::XmlParser.parse(
+        file_fixture('competitors/simpleteam_competitor.xml').read
+      )
+    end
+
+    it 'does not have player entities' do
+      expect(competitor.players).to be_empty
+    end
+
+    it 'loads attributes' do
+      expect(competitor).to have_attributes(
+        name: 'Lokeren',
+        external_id: 'sr:simpleteam:8249060'
+      )
+    end
   end
 
   context 'duplicated' do

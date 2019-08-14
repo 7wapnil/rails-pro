@@ -19,6 +19,25 @@ describe EventsManager::Entities::Competitor do
     expect(subject.players.length).to eq(3)
   end
 
+  context 'from simple team' do
+    let(:payload) do
+      ::XmlParser.parse(
+        file_fixture('competitors/simpleteam_competitor.xml').read
+      )
+    end
+
+    it 'does not have player entities' do
+      expect(subject.players).to be_empty
+    end
+
+    it 'loads attributes' do
+      expect(subject).to have_attributes(
+        name: 'Lokeren',
+        id: 'sr:simpleteam:8249060'
+      )
+    end
+  end
+
   context 'single player' do
     let(:payload) do
       ::XmlParser.parse(
