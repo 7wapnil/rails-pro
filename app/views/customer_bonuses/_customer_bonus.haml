@@ -13,13 +13,13 @@
               %td= customer_bonus.rollover_multiplier
             %tr
               %td= t('attributes.max_rollover_per_bet')
-              %td= customer_bonus.max_rollover_per_bet
+              %td= customer_bonus.max_rollover_per_bet(human: true)
             %tr
               %td= t('attributes.max_deposit_match')
-              %td= customer_bonus.max_deposit_match
+              %td= customer_bonus.max_deposit_match(human: true)
             %tr
               %td= t('attributes.min_deposit')
-              %td= customer_bonus.min_deposit
+              %td= customer_bonus.min_deposit(human: true)
       .col-6
         = card do
           %table.table
@@ -54,10 +54,10 @@
               %td= customer_bonus.link_to_entry
             %tr
               %td= t('attributes.rollover_balance')
-              %td= customer_bonus.rollover_balance
+              %td= customer_bonus.rollover_balance(human: true)
             %tr
               %td= t('attributes.rollover_initial_balance')
-              %td= customer_bonus.rollover_initial_value
+              %td= customer_bonus.rollover_initial_value(human: true)
             %tr
               %td= t('attributes.awarded_amount')
               %td= customer_bonus.amount(human: true)
