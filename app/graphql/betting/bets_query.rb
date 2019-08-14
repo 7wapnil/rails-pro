@@ -11,8 +11,8 @@ module Betting
 
     argument :kind, types.String
     argument :ids, types[types.ID]
-    argument :settlement_status, types.String
-    argument :date_range, types.String
+    argument :settlementStatus, types.String
+    argument :dateRange, types.String
 
     def resolve(_obj, args)
       BetsQueryResolver.new(args: args, customer: @current_customer).resolve
