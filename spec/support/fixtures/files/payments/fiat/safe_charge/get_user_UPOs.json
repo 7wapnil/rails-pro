@@ -1,0 +1,77 @@
+{
+  "paymentMethods": [
+    {
+      "userPaymentOptionId": 1,
+      "upoName": "",
+      "paymentMethodName": "apmgw_MoneyBookers",
+      "upoStatus": "enabled",
+      "upoRegistrationDate": "20190730",
+      "depositSuccess": "true",
+      "withdrawSuccess": "true",
+      "billingAddress": {
+        "firstName": "Alex",
+        "lastName": "Kek",
+        "address": "Lol street",
+        "phone": "31646887665",
+        "zip": "79019",
+        "city": "Lviv",
+        "countryCode": "UA",
+        "email": "alex@kek.com"
+      },
+      "upoData": {
+        "account_id": "322322322"
+      }
+    },
+    {
+      "userPaymentOptionId": 2,
+      "upoName": "",
+      "paymentMethodName": "apmgw_Neteller",
+      "upoStatus": "enabled",
+      "upoRegistrationDate": "20190730",
+      "depositSuccess": "true",
+      "withdrawSuccess": "true",
+      "billingAddress": {
+        "firstName": "Alex",
+        "lastName": "Kek",
+        "address": "Lol street",
+        "phone": "31646887665",
+        "zip": "79019",
+        "city": "Lviv",
+        "countryCode": "UA",
+        "email": "alex@kek.com"
+      },
+      "upoData": {
+        "nettelerSecureId": "123321",
+        "nettelerAccount": "1488228"
+      }
+    },
+    {
+      "userPaymentOptionId": 3,
+      "upoName": "",
+      "paymentMethodName": "apmgw_PaySafeCard",
+      "upoStatus": "enabled",
+      "upoRegistrationDate": "20190730",
+      "depositSuccess": "true",
+      "withdrawSuccess": "false",
+      "billingAddress": {
+        "firstName": "Alex",
+        "lastName": "Kek",
+        "address": "Lol street",
+        "phone": "31646887665",
+        "zip": "79019",
+        "city": "Lviv",
+        "countryCode": "UA",
+        "email": "alex@kek.com"
+      },
+      "upoData": {}
+    }
+  ],
+  "internalRequestId": 1234567,
+  "status": "SUCCESS",
+  "errCode": 0,
+  "reason": "",
+  "merchantId": "12345678",
+  "merchantSiteId": "1234",
+  "version": "1.0",
+  "clientRequestId": "1"
+}

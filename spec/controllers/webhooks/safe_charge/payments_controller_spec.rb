@@ -34,7 +34,7 @@ describe Webhooks::SafeCharge::PaymentsController, type: :controller do
       ppp_status: payment_status,
       Status: status,
       payment_method: payment_method,
-      userPaymentOptionId: Faker::Number.number(5).to_s,
+      userPaymentOptionId: '2',
       request_id: entry_request.id,
       responseTimeStamp: Time.zone.now.to_s,
       productId: Faker::Number.number(5).to_s
@@ -64,10 +64,20 @@ describe Webhooks::SafeCharge::PaymentsController, type: :controller do
   end
   let(:mode) { Payments::Methods::NETELLER }
 
+  let(:payment_options_payload) do
+    JSON.parse(
+      file_fixture('payments/fiat/safe_charge/get_user_UPOs.json').read
+    )['paymentMethods']
+  end
+
   before do
     # ignore job after new customer creating
     allow(Customers::Summaries::UpdateWorker).to receive(:perform_async)
     allow(Customers::Summaries::BalanceUpdateWorker).to receive(:perform_async)
+
+    allow_any_instance_of(::Payments::Fiat::SafeCharge::Client)
+      .to receive(:receive_user_payment_options)
+      .and_return(payment_options_payload)
   end
 
   context 'when payment approved' do
@@ -75,6 +85,14 @@ describe Webhooks::SafeCharge::PaymentsController, type: :controller do
 
     it 'change deposit status to succeeded' do
       expect(deposit.reload.status).to eq(Deposit::SUCCEEDED)
+    end
+
+    it 'stores payment details' do
+      subject
+      expect(deposit.reload.details).to include(
+        'user_payment_option_id' => '2',
+        'name' => '1488228'
+      )
     end
   end
 

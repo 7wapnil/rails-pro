@@ -44,7 +44,8 @@ module Payments
 
       field :currencyKind, types.String,
             resolve: ->(obj, _args, _ctx) do
-              ::Payments::Methods::METHOD_PROVIDERS.dig(obj, :currency_kind)
+              ::Payments::Methods::METHOD_PROVIDERS.dig(obj.mode,
+                                                        :currency_kind)
             end
 
       field :currencyCode, types.String,

@@ -5,12 +5,12 @@ module Payments
     module Customers
       module Methods
         class SkrillForm < WithdrawalMethodForm
-          attr_accessor :email
+          attr_accessor :name, :user_payment_option_id
 
-          validates :email, presence: true
+          validates :name, :user_payment_option_id, presence: true
 
           def identifier
-            :email
+            :user_payment_option_id
           end
 
           def consistency_error_message

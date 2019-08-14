@@ -26,10 +26,10 @@ module Payments
           APMGW_QIWI => ::Payments::Methods::QIWI
         }.freeze
 
-        IDENTIFIERS_MAP = {
-          ::Payments::Methods::CREDIT_CARD => :last_four_digits,
-          ::Payments::Methods::SKRILL => :email,
-          ::Payments::Methods::NETELLER => :account_id
+        NAME_IDENTIFIERS_MAP = {
+          ::Payments::Methods::CREDIT_CARD => 'ccCardNumber',
+          ::Payments::Methods::SKRILL => 'account_id',
+          ::Payments::Methods::NETELLER => 'nettelerAccount'
         }.freeze
       end
     end

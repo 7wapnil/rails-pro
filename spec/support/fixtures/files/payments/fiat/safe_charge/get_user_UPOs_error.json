@@ -1,0 +1,12 @@
+{
+  "paymentMethods": [],
+  "internalRequestId": 1234567,
+  "status": "ERROR",
+  "errCode": 1001,
+  "reason": "Invalid checksum",
+  "merchantId": "12345678",
+  "merchantSiteId": "1234",
+  "version": "1.0",
+  "clientRequestId": "1",
+  "errorType": "INVALID_CHECKSUM"
+}

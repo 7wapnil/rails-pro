@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 shared_context 'safecharge_env' do
   let(:env) do
     {
@@ -11,7 +13,7 @@ shared_context 'safecharge_env' do
   end
 
   before do
-    allow(ENV).to receive(:[])
+    allow(ENV).to receive(:[]).and_call_original
     env.each do |key, value|
       allow(ENV).to receive(:[]).with(key).and_return(value)
     end

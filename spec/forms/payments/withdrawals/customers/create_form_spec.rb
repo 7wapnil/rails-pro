@@ -107,6 +107,52 @@ describe ::Payments::Withdrawals::Customers::CreateForm, type: :model do
     end
   end
 
+  context 'skrill' do
+    let(:payment_method) { ::Payments::Methods::SKRILL }
+    let(:payment_details) { {} }
+    let(:wallet_type) { Currency::FIAT }
+
+    it 'validates presence of name and payment option id' do
+      subject.valid?
+      expect(subject.errors).to include(:name, :user_payment_option_id)
+    end
+
+    context 'validates acceptable details' do
+      let(:payment_details) do
+        { name: 'Test Skrill', user_payment_option_id: '1234' }
+      end
+
+      before { subject.valid? }
+
+      it 'and has no errors' do
+        expect(subject.errors).not_to include(:name, :user_payment_option_id)
+      end
+    end
+  end
+
+  context 'neteller' do
+    let(:payment_method) { ::Payments::Methods::NETELLER }
+    let(:payment_details) { {} }
+    let(:wallet_type) { Currency::FIAT }
+
+    it 'validates presence of name and payment option id' do
+      subject.valid?
+      expect(subject.errors).to include(:name, :user_payment_option_id)
+    end
+
+    context 'validates acceptable details' do
+      let(:payment_details) do
+        { name: 'Test Neteller', user_payment_option_id: '1234' }
+      end
+
+      before { subject.valid? }
+
+      it 'and has no errors' do
+        expect(subject.errors).not_to include(:name, :user_payment_option_id)
+      end
+    end
+  end
+
   it 'successfully verify withdrawal' do
     expect { subject.validate! }.not_to raise_error
   end

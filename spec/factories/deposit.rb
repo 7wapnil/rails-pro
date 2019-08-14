@@ -12,9 +12,12 @@ FactoryBot.define do
 
     trait :credit_card do
       details do
+        last_four_digits = Faker::Number.number(4)
+
         {
           holder_name: Faker::WorldOfWarcraft.hero,
-          last_four_digits: Faker::Number.number(4)
+          masked_account_number: "5 **** #{last_four_digits}",
+          token_id: SecureRandom.hex(7)
         }
       end
     end
@@ -24,14 +27,19 @@ FactoryBot.define do
     end
 
     trait :skrill do
-      details { { email: Faker::Internet.email } }
+      details do
+        {
+          name: SecureRandom.hex(7),
+          user_payment_option_id: SecureRandom.hex(7)
+        }
+      end
     end
 
     trait :neteller do
       details do
         {
-          account_id: SecureRandom.hex(7),
-          secure_id: SecureRandom.hex(7)
+          name: SecureRandom.hex(7),
+          user_payment_option_id: SecureRandom.hex(7)
         }
       end
     end

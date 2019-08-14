@@ -5,12 +5,12 @@ module Payments
     module Customers
       module Methods
         class NetellerForm < WithdrawalMethodForm
-          attr_accessor :account_id
+          attr_accessor :name, :user_payment_option_id
 
-          validates :account_id, presence: true
+          validates :name, :user_payment_option_id, presence: true
 
           def identifier
-            :account_id
+            :user_payment_option_id
           end
 
           def consistency_error_message

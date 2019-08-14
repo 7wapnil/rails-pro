@@ -71,9 +71,9 @@ module Payments
 
           # TODO: recheck what fields we will be storing in payment details
           def update_deposit_details!
-            ::Payments::Fiat::SafeCharge::Deposits::DetailsService.call(
+            ::Payments::Fiat::SafeCharge::Deposits::UpdateDetails.call(
               entry_request: entry_request,
-              field: response[:userPaymentOptionId]
+              payment_option_id: response[:userPaymentOptionId]
             )
           end
 

@@ -198,6 +198,13 @@ describe Customer do
              mode: EntryRequest::CREDIT_CARD,
              origin: credit_card_deposit)
     end
+    let(:duplicated_credit_card_entry_request) do
+      create(:entry_request, :with_entry,
+             customer: customer,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::CREDIT_CARD,
+             origin: create(:deposit, details: credit_card_deposit.details))
+    end
     let(:second_credit_card_entry_request) do
       create(:entry_request, :with_entry,
              customer: customer,
@@ -219,30 +226,30 @@ describe Customer do
              mode: EntryRequest::NETELLER,
              origin: create(:deposit, :neteller))
     end
+    let(:bitcoin_deposit) { create(:deposit, :bitcoin) }
     let(:bitcoin_entry_request) do
       create(:entry_request, :with_entry,
              customer: customer,
              status: EntryRequest::SUCCEEDED,
              mode: EntryRequest::BITCOIN,
-             origin: create(:deposit, :bitcoin))
+             origin: bitcoin_deposit)
     end
-
-    let!(:successful_entry_request) do
-      [
-        credit_card_entry_request,
-        second_credit_card_entry_request,
-        skrill_entry_request,
-        neteller_entry_request,
-        bitcoin_entry_request
-      ]
-    end
-
-    let!(:duplicated_credit_card_entry_request) do
+    let(:duplicated_bitcoin_entry_request) do
       create(:entry_request, :with_entry,
              customer: customer,
              status: EntryRequest::SUCCEEDED,
-             mode: EntryRequest::CREDIT_CARD,
-             origin: create(:deposit, details: credit_card_deposit.details))
+             mode: EntryRequest::BITCOIN,
+             origin: create(:deposit, details: bitcoin_deposit.details))
+    end
+
+    let!(:successful_entry_requests) do
+      [
+        duplicated_credit_card_entry_request,
+        second_credit_card_entry_request,
+        skrill_entry_request,
+        neteller_entry_request,
+        duplicated_bitcoin_entry_request
+      ]
     end
 
     let(:mapped_result) do
@@ -251,7 +258,7 @@ describe Customer do
     end
 
     let(:expected_result) do
-      successful_entry_request.map do |entry_request|
+      successful_entry_requests.map do |entry_request|
         [entry_request.mode, entry_request.deposit.details]
       end
     end

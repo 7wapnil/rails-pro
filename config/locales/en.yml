@@ -466,9 +466,9 @@ en:
           credit_card:
             inconsistent: Last four credit card digits should be the same as were used for deposit
           skrill:
-            inconsistent: Skrill email address should be the same as was used for deposit
+            inconsistent: Skrill payment option should be the same as was used for deposit
           neteller:
-            inconsistent: Neteller account id should be the same as was used for deposit
+            inconsistent: Neteller payment option should be the same as was used for deposit
 
       backoffice:
         not_enough_money: Please check customer available balance

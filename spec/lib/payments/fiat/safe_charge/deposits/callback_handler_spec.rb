@@ -13,7 +13,7 @@ describe Payments::Fiat::SafeCharge::Deposits::CallbackHandler do
       ppp_status: payment_status,
       Status: status,
       payment_method: payment_method,
-      userPaymentOptionId: Faker::Number.number(5).to_s,
+      userPaymentOptionId: '2',
       request_id: entry_request.id
     }
   end
@@ -41,10 +41,19 @@ describe Payments::Fiat::SafeCharge::Deposits::CallbackHandler do
   end
   let(:mode) { Payments::Methods::NETELLER }
 
+  let(:payment_options_payload) do
+    JSON.parse(
+      file_fixture('payments/fiat/safe_charge/get_user_UPOs.json').read
+    )['paymentMethods']
+  end
+
   before do
     # ignore job after new customer creating
     allow(Customers::Summaries::UpdateWorker).to receive(:perform_async)
     allow(Customers::Summaries::BalanceUpdateWorker).to receive(:perform_async)
+    allow_any_instance_of(::Payments::Fiat::SafeCharge::Client)
+      .to receive(:receive_user_payment_options)
+      .and_return(payment_options_payload)
   end
 
   context 'when entry request has different payment method' do
@@ -68,8 +77,12 @@ describe Payments::Fiat::SafeCharge::Deposits::CallbackHandler do
       expect(wallet.reload.real_money_balance.amount).to eq(amount.to_d)
     end
 
-    it 'store payment details' do
-      expect(deposit.reload.details).to include('account_id')
+    it 'stores payment details' do
+      subject
+      expect(deposit.reload.details).to include(
+        'user_payment_option_id' => '2',
+        'name' => '1488228'
+      )
     end
   end
 

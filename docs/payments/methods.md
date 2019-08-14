@@ -32,8 +32,13 @@
 
 ```
 {
-    description: 'Neteller account id',
-    code: :account_id,
+    description: 'Neteller option name',
+    code: :name,
+    type: :string
+},
+{
+    description: 'Neteller option id',
+    code: :user_payment_option_id,
     type: :string
 }
 ```
@@ -46,8 +51,13 @@
 
 ```
 {
-    description: 'Skrill email address',
-    code: :email,
+    description: 'Skrill option name',
+    code: :name,
+    type: :string
+},
+{
+    description: 'Skrill option id',
+    code: :user_payment_option_id,
     type: :string
 }
 ```

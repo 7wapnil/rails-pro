@@ -21,11 +21,13 @@ maskedAccountNumber: String!
 
 id: ID!
 title: String!
-accountId: String!
+name: String!
+userPaymentOptionId: String!
 
 ## PaymentMethodSkrill
 
 id: ID!
 title: String!
-email: String!
+name: String!
+userPaymentOptionId: String!
 ```
