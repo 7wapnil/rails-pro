@@ -21,11 +21,15 @@ describe CustomerBonus, '#show' do
     end
 
     it 'shows customer bonus rollover balance' do
-      expect(page).to have_content(subject.rollover_balance)
+      expect(page).to have_content(
+        "#{subject.rollover_balance} #{subject.wallet.currency.code}"
+      )
     end
 
     it 'shows customer bonus initial rollover value' do
-      expect(page).to have_content(subject.rollover_initial_value)
+      expect(page).to have_content(
+        "#{subject.rollover_initial_value} #{subject.wallet.currency.code}"
+      )
     end
   end
 end
