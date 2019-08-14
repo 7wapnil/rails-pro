@@ -15,7 +15,7 @@ module Customers
 
       def initialize(day, attributes)
         @attributes = attributes
-        @summary = Customers::Summary.find_or_create_by day: day
+        @day = day
       end
 
       def call
@@ -26,7 +26,13 @@ module Customers
 
       private
 
-      attr_reader :attributes, :summary
+      attr_reader :attributes, :day
+
+      def summary
+        @summary ||= Customers::Summary.find_or_create_by(day: day)
+      rescue ActiveRecord::RecordNotUnique
+        @summary = Customers::Summary.all.reload.find_by!(day: day)
+      end
 
       def update_summary_attribute(key, value)
         case key.to_sym
