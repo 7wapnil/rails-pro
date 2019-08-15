@@ -62,12 +62,12 @@ module Betting
     def dates_selector
       return if args[:dateRange].blank?
 
-      return all_day if args[:dateRange].match(DATE_FORMAT_REGEXP)
+      return specific_day if args[:dateRange].match(DATE_FORMAT_REGEXP)
 
       DATE_RANGES[args[:dateRange]]
     end
 
-    def all_day
+    def specific_day
       Date.parse(args[:dateRange]).all_day
     end
   end
