@@ -2,6 +2,8 @@
 
 module Betting
   class BetsQueryResolver
+    DATE_FORMAT_REGEXP = %r[^[0-9]{2}/[0-9]{2}/[0-9]{4}$]
+
     DATE_RANGES = {
       'today' => Time.zone.now.all_day,
       'week' => Time.zone.now.all_week,
@@ -46,15 +48,27 @@ module Betting
     end
 
     def filter_by_status
-      return query if args[:settlement_status].blank?
+      return query if args[:settlementStatus].blank?
 
-      query.where(settlement_status: args[:settlement_status])
+      query.where(settlement_status: args[:settlementStatus])
     end
 
     def filter_by_date
-      return query if args[:date_range].blank?
+      return query if args[:dateRange].blank?
 
-      query.where(created_at: DATE_RANGES[args[:date_range]])
+      query.where(created_at: dates_selector)
+    end
+
+    def dates_selector
+      return if args[:dateRange].blank?
+
+      return specific_day if args[:dateRange].match(DATE_FORMAT_REGEXP)
+
+      DATE_RANGES[args[:dateRange]]
+    end
+
+    def specific_day
+      Date.parse(args[:dateRange]).all_day
     end
   end
 end
