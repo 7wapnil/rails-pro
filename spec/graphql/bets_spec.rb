@@ -43,6 +43,14 @@ describe GraphQL, '#bets' do
         .to eq(bets.length)
     end
 
+    it 'does not return failed or rejected bets' do
+      create(:bet, :failed, customer: auth_customer)
+      create(:bet, :rejected, customer: auth_customer)
+
+      expect(result['data']['bets']['pagination']['items'])
+        .to eq(bets.length)
+    end
+
     it_behaves_like Base::Pagination do
       let(:paginated_collection) { bets.sort_by(&:created_at).reverse }
       let(:pagination_query) { query }
