@@ -27,7 +27,7 @@ module OddsFeed
 
           msg = 'Odd template not found'
           log_job_message(:error, message: msg, external_id: external_id)
-          raise SilentRetryJobError
+          raise SilentRetryJobError, "#{msg}. External id: #{external_id}"
         end
 
         private

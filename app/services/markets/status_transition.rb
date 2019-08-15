@@ -47,7 +47,8 @@ module Markets
     def snapshot_not_exists!
       message = 'There is no status snapshot for market!'
       log_job_message(:error, message: message, market_id: market.external_id)
-      raise SilentRetryJobError
+
+      raise SilentRetryJobError, "#{message} Market id: #{market.external_id}"
     end
   end
 end
