@@ -9,6 +9,7 @@ module CustomerBonuses
       CustomerBonus
         .customer_history(current_customer)
         .where.not(status: CustomerBonus::SYSTEM_STATUSES)
+        .order(activated_at: :desc)
     end
   end
 end
