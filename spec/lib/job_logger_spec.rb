@@ -161,7 +161,7 @@ describe JobLogger do
               job_execution_time:      job_execution_time,
               overall_processing_time: overall_processing_time,
               thread_id:               Thread.current.object_id,
-              event_id:                nil).once
+              event_id:                Thread.current[:event_id]).once
     end
 
     # TODO: Missing parts
