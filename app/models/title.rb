@@ -4,7 +4,7 @@ class Title < ApplicationRecord
   include Importable
 
   conflict_target :external_id
-  conflict_updatable :name
+  conflict_updatable :external_name
 
   has_many :events, dependent: :destroy
   has_many :event_scopes, dependent: :destroy
