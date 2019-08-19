@@ -1,0 +1,21 @@
+.row
+  .col.mt-2= f.error_notification
+.row
+  .col-8.offset-2
+    %h2= heading
+    %hr
+    .row
+      .col
+        = f.hidden_field :id, hidden: true
+        = f.input :name, required: true
+        = f.input :short_name
+        = f.input :external_id, required: true
+        = f.label :kind
+        = f.select :kind,
+            Title.kinds,
+            { include_blank: false, required: true },
+            class: 'form-control'
+        = f.input :show_category_in_navigation, required: true
+        %hr
+        = f.button :submit, t(:save), class: 'btn btn-success'
+        = link_back
