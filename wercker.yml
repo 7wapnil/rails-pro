@@ -2,7 +2,7 @@ box:
   id: arcanebet/arcanebet
   username: $DOCKERHUB_USERNAME
   password: $DOCKERHUB_PASSWORD
-  tag: base
+  tag: node10
 
 services:
   - postgres
