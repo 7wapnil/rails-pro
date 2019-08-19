@@ -192,4 +192,25 @@ describe CustomerBonuses::Create do
       expect(expiring_bonus.reload).to be_expired
     end
   end
+
+  context 'with crypto wallet' do
+    let(:exchange_rate) { 0.1 }
+    let(:crypto_currency) do
+      create(:currency, :crypto, exchange_rate: exchange_rate)
+    end
+    let(:wallet) do
+      create(:wallet, customer: customer, currency: crypto_currency)
+    end
+    let(:customer_bonus) { wallet.customer_bonus }
+
+    it 'sets customer bonus attributes in crypto currency' do
+      subject
+
+      expect(customer_bonus).to have_attributes(
+        max_rollover_per_bet: bonus.max_rollover_per_bet * exchange_rate,
+        max_deposit_match: bonus.max_deposit_match * exchange_rate,
+        min_deposit: bonus.min_deposit * exchange_rate
+      )
+    end
+  end
 end

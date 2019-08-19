@@ -39,10 +39,10 @@ module CustomerBonuses
         code: bonus.code,
         kind: bonus.kind,
         rollover_multiplier: bonus.rollover_multiplier,
-        max_rollover_per_bet: bonus.max_rollover_per_bet,
-        max_deposit_match: bonus.max_deposit_match,
+        max_rollover_per_bet: max_rollover_per_bet,
+        max_deposit_match: max_deposit_match,
         min_odds_per_bet: bonus.min_odds_per_bet,
-        min_deposit: bonus.min_deposit,
+        min_deposit: min_deposit,
         valid_for_days: bonus.valid_for_days,
         percentage: bonus.percentage,
         expires_at: bonus.expires_at,
@@ -73,6 +73,29 @@ module CustomerBonuses
         bonus: customer.active_bonus,
         action: CustomerBonuses::Deactivate::EXPIRE
       )
+    end
+
+    def convert_to_wallet_currency(amount)
+      Exchanger::Converter.call(
+        amount,
+        Currency.primary,
+        wallet.currency
+      )
+    end
+
+    def max_rollover_per_bet
+      @max_rollover_per_bet ||=
+        convert_to_wallet_currency(bonus.max_rollover_per_bet)
+    end
+
+    def max_deposit_match
+      @max_deposit_match ||=
+        convert_to_wallet_currency(bonus.max_deposit_match)
+    end
+
+    def min_deposit
+      @min_deposit ||=
+        convert_to_wallet_currency(bonus.min_deposit)
     end
   end
 end

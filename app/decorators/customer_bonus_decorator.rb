@@ -13,6 +13,26 @@ class CustomerBonusDecorator < ApplicationDecorator
     human ? "#{amount} #{currency}" : amount
   end
 
+  def max_rollover_per_bet(human: false)
+    human ? "#{super()} #{currency}" : super()
+  end
+
+  def max_deposit_match(human: false)
+    human ? "#{super()} #{currency}" : super()
+  end
+
+  def min_deposit(human: false)
+    human ? "#{super()} #{currency}" : super()
+  end
+
+  def rollover_balance(human: false)
+    human ? "#{super()} #{currency}" : super()
+  end
+
+  def rollover_initial_value(human: false)
+    human ? "#{super()} #{currency}" : super()
+  end
+
   def link_to_entry
     entry ? link_to(t('entities.entry'), entry_path(entry)) : t('not_available')
   end
