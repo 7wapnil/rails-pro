@@ -17,11 +17,11 @@ describe OddsFeed::Radar::EventScopesService do
     it 'updates from payload if exists' do
       existing = create(:title,
                         external_id: payload['sport']['id'],
-                        name: 'Old name')
+                        external_name: 'Old name')
       service.call
 
       existing.reload
-      expect(existing.name).to eq(payload['sport']['name'])
+      expect(existing.external_name).to eq(payload['sport']['name'])
     end
   end
 
@@ -109,7 +109,7 @@ describe OddsFeed::Radar::EventScopesService do
     it 'fills title without kind' do
       expect(title)
         .to have_attributes(
-          name: title_name,
+          external_name: title_name,
           kind: Title::SPORTS
         )
     end

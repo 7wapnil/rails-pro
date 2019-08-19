@@ -30,7 +30,9 @@ describe OddsFeed::Radar::EventAdapter do
       title: title
     }
   end
-  let!(:title) { create(:title, external_id: 'sr:sport:1', name: 'Soccer') }
+  let!(:title) do
+    create(:title, external_id: 'sr:sport:1', external_name: 'Soccer')
+  end
 
   describe '#result' do
     subject(:result) { described_class.new(payload).result }
@@ -91,7 +93,7 @@ describe OddsFeed::Radar::EventAdapter do
         it { expect { result.title }.to change(Title, :count).by(1) }
 
         it 'with copied attributes' do
-          expect(result_title.name).to        eq(title.name)
+          expect(result_title.external_name).to eq(title.external_name)
           expect(result_title.external_id).to eq(title.external_id)
         end
       end
