@@ -21,7 +21,7 @@ module Titles
 
       query = query.where(id: args[:id]) if args[:id]
       query = query.where(kind: args[:kind]) if args[:kind]
-      query.all
+      query.all.decorate
     end
 
     private

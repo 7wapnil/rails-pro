@@ -4,6 +4,7 @@ module Titles
 
     field :id, !types.ID
     field :name, !types.String
+    field :shortName, !types.String, property: :short_name
     field :kind, !types.String
     field :position, !types.Int
     field :showCategoryInNavigation, !types.Boolean,
