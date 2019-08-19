@@ -2,10 +2,10 @@
 
 class TitleDecorator < ApplicationDecorator
   def name
-    super || external_name
+    object.name.present? ? object.name : object.external_name
   end
 
   def short_name
-    super || name
+    object.short_name.present? ? object.short_name : name
   end
 end
