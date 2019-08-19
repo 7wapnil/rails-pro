@@ -38,11 +38,11 @@ module OddsFeed
         end
 
         def search_params
-          ['external_id = ? OR name = ?', id, name]
+          ['external_id = ? OR external_name = ?', id, name]
         end
 
         def create_title!
-          Title.create!(kind: :sports, name: name, external_id: id)
+          Title.create!(kind: :sports, external_name: name, external_id: id)
         end
       end
     end
