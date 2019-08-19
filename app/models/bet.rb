@@ -105,7 +105,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
     def with_sport
       sub_query = <<~SQL
-        SELECT  titles.name FROM titles
+        SELECT  titles.external_name FROM titles
          INNER JOIN events ON events.title_id = titles.id
          INNER JOIN markets ON markets.event_id = events.id
          INNER JOIN odds ON markets.id = odds.market_id
