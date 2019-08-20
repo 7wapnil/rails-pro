@@ -25,7 +25,7 @@ describe GraphQL, '#titles' do
   end
 
   context 'with shortName' do
-    let(:query) { %({ titles { id name shortName } }) }
+    let(:query) { %({ titles { id externalName name shortName } }) }
     let(:external_name) { 'External name' }
     let(:custom_name) { 'Custom name' }
     let(:short_name) { 'Short name' }
@@ -42,6 +42,7 @@ describe GraphQL, '#titles' do
     it 'returns custom name and short name' do
       expect(result_titles.first).to eq(
         'id' => control_title.id.to_s,
+        'externalName' => external_name,
         'name' => custom_name,
         'shortName' => short_name
       )
