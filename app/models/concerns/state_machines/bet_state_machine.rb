@@ -76,6 +76,9 @@ module StateMachines
         state :pending_manual_settlement
         state :settled
 
+        after_all_events :log_transition_success
+        error_on_all_events :log_transition_error
+
         event :send_to_internal_validation do
           transitions from: :initial,
                       to: :sent_to_internal_validation
@@ -174,6 +177,35 @@ module StateMachines
         Customers::Summaries::UpdateWorker.perform_async(
           Date.current,
           betting_customer_ids: customer_id
+        )
+      end
+
+      def log_transition_success
+        Rails.logger.info(
+          message: 'Bet status changed',
+          from_state: aasm.from_state,
+          to_state: aasm.to_state,
+          bet_id: id,
+          customer_id: customer_id,
+          odd_id: odd_id,
+          notification_message: notification_message,
+          settlement_status: settlement_status,
+          notification_code: notification_code
+        )
+      end
+
+      def log_transition_error(error)
+        Rails.logger.info(
+          message: 'Bet status change failed',
+          from_state: aasm.from_state,
+          to_state: aasm.to_state,
+          bet_id: id,
+          customer_id: customer_id,
+          odd_id: odd_id,
+          notification_message: notification_message,
+          settlement_status: settlement_status,
+          notification_code: notification_code,
+          error: error
         )
       end
     end
