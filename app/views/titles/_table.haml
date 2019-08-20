@@ -5,6 +5,7 @@
   %tbody.sortable{ data: { kind: kind } }
     - titles.each do |title|
       %tr{ data: { id: title.id } }
-        %td= title.name
+        %td= link_to title.name,
+                      edit_title_path(title)
         %td= link_to t('entities.event_scopes'),
                       event_scopes_path(title_id: title.id)

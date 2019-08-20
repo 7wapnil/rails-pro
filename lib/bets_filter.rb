@@ -17,7 +17,7 @@ class BetsFilter
   end
 
   def sports
-    Title.order(:name).pluck(:name)
+    Title.order(:name).pluck(:external_name)
   end
 
   def tournaments

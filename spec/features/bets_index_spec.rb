@@ -105,17 +105,17 @@ describe Bet, '#index' do
       context 'by Sport' do
         it 'found' do
           bet = Bet.first
-          picked_sport = bet.title.name
-          available_sports = page.find('#bets_title_name_eq')
+          picked_sport = bet.title.external_name
+          available_sports = page.find('#bets_title_external_name_eq')
                                  .all('option')
                                  .map(&:text)
                                  .reject(&:blank?)
-          select picked_sport, from: 'Title Name equals'
+          select picked_sport, from: 'Title External name equals'
           click_on('Search')
 
           within 'table.table.entities tbody' do
             expect(page).to have_selector(resource_row_selector(bet))
-            expect(page).to have_content(bet.title.name)
+            expect(page).to have_content(bet.title.external_name)
             (available_sports - [picked_sport]).each do |sport|
               expect(page).not_to have_content(sport)
             end
@@ -124,9 +124,9 @@ describe Bet, '#index' do
 
         it 'not found' do
           bet = Bet.first
-          picked_sport = bet.title.name
-          Title.update_all(name: 'Dota2')
-          select picked_sport, from: 'Title Name equals'
+          picked_sport = bet.title.external_name
+          Title.update_all(external_name: 'Dota2')
+          select picked_sport, from: 'Title External name equals'
           click_on('Search')
 
           within 'table.table.entities tbody' do

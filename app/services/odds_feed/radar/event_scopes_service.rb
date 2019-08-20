@@ -29,7 +29,7 @@ module OddsFeed
         return unless payload_valid_for?('Title', payload)
 
         @title = Title.new(external_id: payload['id'],
-                           name: payload['name'],
+                           external_name: payload['name'],
                            kind: SportKind.from_title(payload['name']))
 
         Title.create_or_update_on_duplicate(@title)

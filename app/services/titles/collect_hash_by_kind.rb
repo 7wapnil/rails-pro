@@ -3,7 +3,12 @@ module Titles
     def call
       Hash[
         Title.kinds.keys.map do |kind|
-          [kind, Title.send(kind).order(:position)]
+          [
+            kind,
+            TitleDecorator.decorate_collection(
+              Title.send(kind).order(:position)
+            )
+          ]
         end
       ]
     end

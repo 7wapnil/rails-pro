@@ -4,7 +4,7 @@ class Title < ApplicationRecord
   include Importable
 
   conflict_target :external_id
-  conflict_updatable :name
+  conflict_updatable :external_name
 
   has_many :events, dependent: :destroy
   has_many :event_scopes, dependent: :destroy
@@ -24,8 +24,8 @@ class Title < ApplicationRecord
     sports:  SPORTS  = 'sports'
   }
 
-  validates :name, :kind, presence: true
-  validates :name, uniqueness: true
+  validates :external_name, :kind, presence: true
+  validates :external_name, uniqueness: true
 
   scope :with_active_events, ->(limit_start_at: nil) {
     joins(:events)

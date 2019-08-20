@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_14_085001) do
+ActiveRecord::Schema.define(version: 2019_08_19_115504) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -562,13 +562,15 @@ ActiveRecord::Schema.define(version: 2019_08_14_085001) do
   end
 
   create_table "titles", force: :cascade do |t|
-    t.string "name"
+    t.string "external_name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "kind", default: "esports"
     t.string "external_id"
     t.boolean "show_category_in_navigation", default: true
     t.integer "position", default: 9999, null: false
+    t.string "short_name"
+    t.string "name"
     t.index ["external_id"], name: "index_titles_on_external_id", unique: true
     t.index ["position"], name: "index_titles_on_position"
   end
