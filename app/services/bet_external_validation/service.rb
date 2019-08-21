@@ -9,7 +9,7 @@ module BetExternalValidation
     end
 
     def call
-      return publisher.perform_async(bet.id) unless live_bet_delay
+      return publisher.perform_async(bet.id) unless live_bet_delay&.positive?
 
       publisher.perform_in(live_bet_delay.seconds, bet.id)
     end
@@ -27,13 +27,13 @@ module BetExternalValidation
     def global_live_bet_delay
       BettingLimit
         .find_by(customer: customer, title: nil)
-        &.live_bet_delay
+        &.live_bet_delay || 0
     end
 
     def title_live_bet_delay
       BettingLimit
         .find_by(customer: customer, title: bet.odd.market.event.title)
-        &.live_bet_delay
+        &.live_bet_delay || 0
     end
 
     def publisher
