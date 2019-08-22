@@ -8,6 +8,8 @@ module OddsFeed
         validate_payload!
         return unless valid?
 
+        populate_job_log_info!
+
         update_event!
         update_odds
         emit_websocket
@@ -218,6 +220,12 @@ module OddsFeed
 
       def emit_websocket
         WebSocket::Client.instance.trigger_event_update(event)
+      end
+
+      def populate_job_log_info!
+        Thread.current[:event_id] = event_id
+        Thread.current[:event_producer_id] = event.producer_id
+        Thread.current[:message_producer_id] = producer_id.to_i
       end
     end
     # rubocop:enable Metrics/ClassLength

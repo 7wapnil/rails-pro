@@ -31,6 +31,8 @@ module OddsFeed
           @markets_data.each do |market_data|
             raise HandOverError if skip_market?(market_data)
 
+            populate_job_log_info!(market_data)
+
             build_market(market_data)
           rescue HandOverError
             log_job_message(:warn,
@@ -128,6 +130,10 @@ module OddsFeed
           @cached_templates ||= MarketTemplate
                                 .where(external_id: market_template_ids)
                                 .order(:external_id)
+        end
+
+        def populate_job_log_info!(market_data)
+          Thread.current[:market_data] = market_data
         end
       end
     end
