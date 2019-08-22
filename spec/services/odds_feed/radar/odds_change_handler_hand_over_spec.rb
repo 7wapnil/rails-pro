@@ -8,11 +8,14 @@ describe OddsFeed::Radar::OddsChangeHandler do
   let!(:liveodds_producer) { create(:liveodds_producer) }
   let!(:prematch_producer) { create(:prematch_producer) }
   let!(:event) do
-    create(:event,
-           external_id: external_id,
-           remote_updated_at: nil,
-           producer: prematch_producer)
+    create(
+      :event,
+      external_id: external_id,
+      remote_updated_at: nil,
+      producer_id: event_producer_id
+    )
   end
+  let(:event_producer_id) { prematch_producer.id }
   let(:payload) { XmlParser.parse(payload_xml) }
   let(:template) { create(:market_template) }
   let(:specifiers) { 'hcp=1:0' }
@@ -63,6 +66,9 @@ describe OddsFeed::Radar::OddsChangeHandler do
         receive(:log_job_message).with(
           :warn,
           message: 'Got -2 market status from of for non-prematch producer.',
+          event_id: external_id,
+          event_producer_id: event_producer_id,
+          message_producer_id: message_producer_id,
           market_data: {
             'id' => template.external_id,
             'specifiers' => market.template_specifiers,
@@ -83,14 +89,10 @@ describe OddsFeed::Radar::OddsChangeHandler do
     end
 
     context 'match producer: live, message producer: prematch' do
-      let(:message_producer_id) { ::Radar::Producer::PREMATCH_PROVIDER_ID }
+      let(:message_producer_id) { prematch_producer.id }
+      let(:event_producer_id) { liveodds_producer.id }
 
-      before do
-        event.update_attribute(
-          :producer_id,
-          ::Radar::Producer::LIVE_PROVIDER_ID
-        )
-      end
+      before { event.update_attribute(:producer_id, event_producer_id) }
 
       it 'logs warning, market status active' do
         subject.handle
@@ -101,13 +103,9 @@ describe OddsFeed::Radar::OddsChangeHandler do
 
     context 'match producer: live, message producer: live' do
       let(:message_producer_id) { ::Radar::Producer::LIVE_PROVIDER_ID }
+      let(:event_producer_id) { liveodds_producer.id }
 
-      before do
-        event.update_attribute(
-          :producer_id,
-          ::Radar::Producer::LIVE_PROVIDER_ID
-        )
-      end
+      before { event.update_attribute(:producer_id, event_producer_id) }
 
       it 'logs warning, market status active' do
         subject.handle

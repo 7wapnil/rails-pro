@@ -29,15 +29,15 @@ module OddsFeed
 
         def build
           @markets_data.each do |market_data|
-            raise HandOverError if skip_market?(market_data)
-
             populate_job_log_info!(market_data)
+
+            raise HandOverError if skip_market?(market_data)
 
             build_market(market_data)
           rescue HandOverError
             log_job_message(:warn,
                             message: SKIP_MARKET_MESSAGE,
-                            market_data: market_data)
+                            **extra_log_info)
             next
           rescue StandardError => e
             log_job_message(:debug, e.message)
@@ -134,6 +134,15 @@ module OddsFeed
 
         def populate_job_log_info!(market_data)
           Thread.current[:market_data] = market_data
+        end
+
+        def extra_log_info
+          {
+            event_id:            Thread.current[:event_id],
+            event_producer_id:   Thread.current[:event_producer_id],
+            message_producer_id: Thread.current[:message_producer_id],
+            market_data:         Thread.current[:market_data]
+          }
         end
       end
     end
