@@ -147,7 +147,8 @@ module StateMachines
         update(
           status: :settled,
           settlement_status: settlement_status,
-          void_factor: void_factor
+          void_factor: void_factor,
+          bet_settlement_status_achieved_at: Time.zone.now
         )
       end
 
@@ -156,7 +157,7 @@ module StateMachines
       end
 
       def on_successful_bet_placement
-        entry.confirmed_at = Time.zone.now
+        entry.update(confirmed_at: Time.zone.now)
       end
 
       def update_notification(message, code:)

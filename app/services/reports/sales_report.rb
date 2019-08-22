@@ -8,14 +8,6 @@ module Reports
                  CASINO_bonuses	CASINO_stake CASINO_NGR SPORTS_BONUSES
                  SPORTS_REVENUE SPORTS_BETS	SPORTS_STAKE SPORTS_NGR].freeze
 
-    PRELOAD_OPTIONS = [
-      bet_entries: :bet,
-      win_entries: :bet,
-      income_entries: {
-        balance_entries: :balance
-      }
-    ].freeze
-
     protected
 
     def subject_fields(subject)

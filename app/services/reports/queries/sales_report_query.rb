@@ -108,7 +108,7 @@ module Reports
             count(entries.id) bets_count
           FROM entries
           JOIN bets ON bets.id = entries.origin_id AND bets.status = '#{Bet::SETTLED}'
-          WHERE entries.created_at BETWEEN #{recent_scope}
+          WHERE bets.bet_settlement_status_achieved_at BETWEEN #{recent_scope}
                 AND entries.kind = '#{Entry::BET}'
           GROUP BY bets.customer_id
         SQL

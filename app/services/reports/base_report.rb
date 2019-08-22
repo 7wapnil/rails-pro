@@ -4,8 +4,6 @@ require 'tempfile'
 
 module Reports
   class BaseReport < ApplicationService
-    BATCH_SIZE = 10
-
     def call
       send_report!
     end

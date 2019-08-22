@@ -2,6 +2,7 @@
 
 module Reports
   class RegistrationReport < BaseReport
+    BATCH_SIZE = 10
     REPORT_TYPE = 'reg'
     HEADERS = %w[BTAG	BRAND	ACCOUNT_OPENING_DATE
                  PLAYER_ID USERNAME COUNTRY].freeze
