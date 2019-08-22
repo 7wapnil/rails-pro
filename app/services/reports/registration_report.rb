@@ -21,5 +21,11 @@ module Reports
       Customer.where('DATE(created_at) = ? AND b_tag != ?',
                      Date.current.yesterday, '')
     end
+
+    def records_iterator
+      subjects.find_each(batch_size: BATCH_SIZE) do |subject|
+        yield subject
+      end
+    end
   end
 end
