@@ -11,16 +11,18 @@ module EntryRequests
 
     def call
       return if entry_request.failed?
-      return handle_unexpected_bet! unless bet.settled?
+      return handle_unexpected_bet! unless acceptable_bet?
 
-      WalletEntry::AuthorizationService.call(entry_request)
+      failure unless WalletEntry::AuthorizationService.call(entry_request)
     end
-
-    delegate :customer_bonus, to: :bet
 
     private
 
     attr_reader :entry_request, :bet
+
+    def acceptable_bet?
+      bet.settled? || bet.voided?
+    end
 
     def handle_unexpected_bet!
       log_job_message(:error,
@@ -30,6 +32,10 @@ module EntryRequests
       entry_request.register_failure!(
         I18n.t('errors.messages.entry_request_for_settled_bet', bet_id: bet.id)
       )
+    end
+
+    def failure
+      bet.pending_manual_settlement!
     end
   end
 end

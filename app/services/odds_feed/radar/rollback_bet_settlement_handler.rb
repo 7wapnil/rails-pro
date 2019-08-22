@@ -62,6 +62,8 @@ module OddsFeed
 
       def rollback_bet(bet)
         ActiveRecord::Base.transaction do
+          bet.lock!
+
           rollback_winning(bet) if bet.won?
 
           bet.update(settlement_status: nil,

@@ -492,8 +492,6 @@ en:
         transactions:
           kind:
             invalid: "Invalid transaction kind: '%{kind}'"
-      odds_feed:
-        low_certainty: "Settlement ignored because of low certainty"
       wallets:
         not_unique: 'You have the same wallet created already'
         fiat_not_unique: 'You can have only one FIAT wallet'

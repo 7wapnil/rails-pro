@@ -1,9 +1,24 @@
+# frozen_string_literal: true
+
 module Bets
   class SettlementWorker < ApplicationWorker
-    def perform(bet_id)
-      bet = Bet.find(bet_id)
+    sidekiq_options queue: :default, retry: 0
 
-      Bets::Settlement::Proceed.call(bet: bet)
+    def perform(bet_id, void_factor, result)
+      @bet = Bet.find(bet_id)
+      @void_factor = void_factor
+      @result = result
+
+      Bets::Settle.call(bet: @bet, void_factor: void_factor, result: result)
+    end
+
+    def extra_log_info
+      {
+        bet_id: @bet.id,
+        bet_status: @bet.status,
+        void_factor: @void_factor,
+        result: @result
+      }
     end
   end
 end

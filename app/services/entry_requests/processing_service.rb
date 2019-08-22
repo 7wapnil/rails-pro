@@ -7,15 +7,13 @@ module EntryRequests
     end
 
     def call
-      authorize_entry_request!
+      return if entry_request.failed?
+
+      WalletEntry::AuthorizationService.call(entry_request)
     end
 
     private
 
-    attr_reader :entry_request, :entry
-
-    def authorize_entry_request!
-      WalletEntry::AuthorizationService.call(entry_request)
-    end
+    attr_reader :entry_request
   end
 end

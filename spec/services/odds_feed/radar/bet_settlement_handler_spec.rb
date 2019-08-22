@@ -17,7 +17,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
             '<outcome id="sr:player:222" result="1" void_factor="0.5"/>'\
             '<outcome id="sr:player:456" result="0" void_factor="0.5"/>'\
             '<outcome id="sr:player:333" result="1" void_factor="1"/>'\
-            '<outcome id="sr:player:444" result="0" void_factor="1"/>'\
+            '<outcome id="sr:player:444" result="0" void_factor="1.0"/>'\
           '</market>'\
         '</outcomes>'\
       '</bet_settlement>'
@@ -27,6 +27,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
   let(:market) do
     create(:market, status: Market::ACTIVE, external_id: market_id)
   end
+  let!(:primary_currency) { create(:currency, :primary) }
   let(:odd) do
     create(:odd, market: market,
                  external_id: 'sr:match:3432:13/hcp=3.5:sr:player:222')
@@ -60,13 +61,14 @@ describe OddsFeed::Radar::BetSettlementHandler do
                  external_id: 'sr:match:3432:13/hcp=3.5:sr:player:999')
   end
 
-  let(:total_bets_count)     { 25 }
+  let(:total_bets_count)     { 28 }
   let(:first_odd_bets_count) { 6 }
 
   let(:mocked_entry_request) { double }
 
+  include_context 'asynchronous to synchronous'
+
   before do
-    allow(Bets::Settlement::Proceed).to receive(:call)
     allow(WebSocket::Client.instance).to receive(:trigger_event_update)
   end
 
@@ -75,17 +77,6 @@ describe OddsFeed::Radar::BetSettlementHandler do
     expect do
       subject_with_input.handle
     end.to raise_error(OddsFeed::InvalidMessageError)
-  end
-
-  describe '#invalid_bet_ids' do
-    it 'returns empty array' do
-      expect(subject.send(:invalid_bet_ids)).to eq []
-    end
-
-    it 'returns an item added' do
-      subject.send(:invalid_bet_ids).push :foo
-      expect(subject.send(:invalid_bet_ids)).to eq [:foo]
-    end
   end
 
   describe 'uncertain settlement for prelive markets' do
@@ -127,20 +118,20 @@ describe OddsFeed::Radar::BetSettlementHandler do
     let(:payload) { XmlParser.parse(original_message) }
 
     before do
-      allow(subject_with_input).to receive(:process_outcomes_for)
+      allow(subject_with_input).to receive(:settle_bets_for_market)
 
       allow(subject_with_input)
-        .to receive(:market_template_for)
+        .to receive(:find_market_template_for)
         .with('13')
         .and_return(build(:market_template, :products_live))
 
       allow(subject_with_input)
-        .to receive(:market_template_for)
+        .to receive(:find_market_template_for)
         .with('14')
         .and_return(build(:market_template, :products_prelive))
 
       allow(subject_with_input)
-        .to receive(:market_template_for)
+        .to receive(:find_market_template_for)
         .with('15')
         .and_return(build(:market_template, :products_all))
     end
@@ -153,19 +144,19 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
       it 'processes live market' do
         expect(subject_with_input)
-          .to have_received(:process_outcomes_for)
+          .to have_received(:settle_bets_for_market)
           .with(payload['bet_settlement']['outcomes']['market'][0])
       end
 
       it 'skips prelive market' do
         expect(subject_with_input)
-          .not_to have_received(:process_outcomes_for)
+          .not_to have_received(:settle_bets_for_market)
           .with(payload['bet_settlement']['outcomes']['market'][1])
       end
 
       it 'processes market for both products' do
         expect(subject_with_input)
-          .to have_received(:process_outcomes_for)
+          .to have_received(:settle_bets_for_market)
           .with(payload['bet_settlement']['outcomes']['market'][2])
       end
     end
@@ -177,19 +168,19 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
       it 'processes live market' do
         expect(subject_with_input)
-          .to have_received(:process_outcomes_for)
+          .to have_received(:settle_bets_for_market)
           .with(payload['bet_settlement']['outcomes']['market'][0])
       end
 
       it 'processes prelive market' do
         expect(subject_with_input)
-          .to have_received(:process_outcomes_for)
+          .to have_received(:settle_bets_for_market)
           .with(payload['bet_settlement']['outcomes']['market'][1])
       end
 
       it 'processes market for both products' do
         expect(subject_with_input)
-          .to have_received(:process_outcomes_for)
+          .to have_received(:settle_bets_for_market)
           .with(payload['bet_settlement']['outcomes']['market'][2])
       end
     end
@@ -225,7 +216,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
       allow(subject_with_input).to receive(:skip_uncertain_settlement?)
     end
 
-    it 'calls Proceed service to process all affected bets' do
+    it 'calls Settlement service to process all bets' do
       allow(Bets::SettlementWorker).to receive(:perform_async)
 
       subject_with_input.handle
@@ -236,32 +227,20 @@ describe OddsFeed::Radar::BetSettlementHandler do
         .times
     end
 
-    context 'market status' do
-      it 'updates to SETTLED and creates snapshot' do
-        subject_with_input.handle
+    it 'updates market status to SETTLED and creates snapshot' do
+      allow(Bets::SettlementWorker).to receive(:perform_async)
 
-        expect(Market.find_by(external_id: market_id)).to have_attributes(
-          status: StateMachines::MarketStateMachine::SETTLED,
-          previous_status: StateMachines::MarketStateMachine::ACTIVE
-        )
-      end
+      subject_with_input.handle
 
-      it 'updates bets even when market not found' do
-        Market.find_by(external_id: market_id).destroy
-        allow(subject_with_input).to receive(:proceed_bets)
-
-        subject_with_input.handle
-
-        expect(subject_with_input)
-          .to have_received(:proceed_bets)
-          .at_least(:once)
-      end
+      expect(Market.find_by(external_id: market_id)).to have_attributes(
+        status: StateMachines::MarketStateMachine::SETTLED,
+        previous_status: StateMachines::MarketStateMachine::ACTIVE
+      )
     end
   end
 
   it 'settles odd bets with result and void factor' do
     allow(subject_with_input).to receive(:skip_uncertain_settlement?)
-    allow(subject_with_input).to receive(:proceed_bets)
     create_list(:bet, 3,
                 odd: odd_sixth,
                 status: StateMachines::BetStateMachine::ACCEPTED)
@@ -277,27 +256,34 @@ describe OddsFeed::Radar::BetSettlementHandler do
     expect(expected_result.count).to eq(3)
   end
 
-  it 'does not settle odd bets with result and half void factor' do
+  it 'settles only accepted bets with odds' do
     allow(subject_with_input).to receive(:skip_uncertain_settlement?)
-    allow(subject_with_input).to receive(:proceed_bets)
     create_list(:bet, 3,
-                odd: odd,
+                odd: odd_sixth,
                 status: StateMachines::BetStateMachine::ACCEPTED)
     # other bets
-    create_list(:bet, 3, status: StateMachines::BetStateMachine::ACCEPTED)
+    create(:bet, status: StateMachines::BetStateMachine::ACCEPTED)
+    create(:bet, :lost, status: StateMachines::BetStateMachine::SETTLED)
+    create(:bet, status: StateMachines::BetStateMachine::FAILED)
+    create(:bet, status: StateMachines::BetStateMachine::REJECTED)
     subject_with_input.handle
 
     expected_result = Bet.where(
-      status: StateMachines::BetStateMachine::PENDING_MANUAL_SETTLEMENT,
-      settlement_status: nil,
-      void_factor: nil
+      status: StateMachines::BetStateMachine::SETTLED,
+      settlement_status: StateMachines::BetStateMachine::VOIDED
     )
     expect(expected_result.count).to eq(3)
   end
 
-  it 'settles odd bets without result, but with void factor' do
+  it 'does not settle odd bets with result and half void factor' do
     allow(subject_with_input).to receive(:skip_uncertain_settlement?)
-    allow(subject_with_input).to receive(:proceed_bets)
+    create(:bet, odd: odd, status: StateMachines::BetStateMachine::ACCEPTED)
+    expect { subject_with_input.handle }
+      .to raise_error(::Bets::NotSupportedError, 'Void factor is not supported')
+  end
+
+  it 'settles odd bets without result, but with void factor, even as float' do
+    allow(subject_with_input).to receive(:skip_uncertain_settlement?)
     create_list(:bet, 3,
                 odd: odd_seventh,
                 status: StateMachines::BetStateMachine::ACCEPTED)
@@ -315,19 +301,9 @@ describe OddsFeed::Radar::BetSettlementHandler do
 
   it 'does not settle odd bets without result, but with half void factor' do
     allow(subject_with_input).to receive(:skip_uncertain_settlement?)
-    allow(subject_with_input).to receive(:proceed_bets)
-    create_list(:bet, 3,
-                odd: odd_fifth,
-                status: StateMachines::BetStateMachine::ACCEPTED)
-    # other bets
-    create_list(:bet, 3, status: StateMachines::BetStateMachine::ACCEPTED)
-    subject_with_input.handle
-
-    expected_result = Bet.where(
-      status: StateMachines::BetStateMachine::PENDING_MANUAL_SETTLEMENT,
-      settlement_status: nil,
-      void_factor: nil
-    )
-    expect(expected_result.count).to eq(3)
+    create(:bet, odd: odd_fifth,
+                 status: StateMachines::BetStateMachine::ACCEPTED)
+    expect { subject_with_input.handle }
+      .to raise_error(::Bets::NotSupportedError, 'Void factor is not supported')
   end
 end
