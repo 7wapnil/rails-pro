@@ -10,8 +10,8 @@ module EntryRequests
     end
 
     def call
-      return if entry_request.failed?
       return handle_unexpected_bet! unless acceptable_bet?
+      return failure if entry_request.failed?
 
       failure unless WalletEntry::AuthorizationService.call(entry_request)
     end
