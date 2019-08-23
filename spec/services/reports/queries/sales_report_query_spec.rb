@@ -78,17 +78,17 @@ describe ::Reports::Queries::SalesReportQuery do
         .to eq(bonus_amount_control_value.to_f)
     end
 
-    it 'returns correct bets count' do
+    xit 'returns correct bets count' do
       expect(results.first['bets_count'].to_i)
         .to eq(control_customers.first.entries.bet.count)
     end
 
-    it 'returns correct bets stake' do
+    xit 'returns correct bets stake' do
       expect(results.first['stake'].to_f.abs)
         .to eq(bets_stake_control_value.to_f)
     end
 
-    it 'returns correct ggr' do
+    xit 'returns correct ggr' do
       expect(results.first['ggr'].to_f).to eq(ggr_control_value)
     end
   end
