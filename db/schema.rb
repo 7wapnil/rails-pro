@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_19_115504) do
+ActiveRecord::Schema.define(version: 2019_08_19_161903) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -100,12 +100,13 @@ ActiveRecord::Schema.define(version: 2019_08_19_115504) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.datetime "validation_ticket_sent_at"
     t.string "settlement_status"
+    t.datetime "validation_ticket_sent_at"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"
     t.boolean "counted_towards_rollover", default: false
+    t.datetime "bet_settlement_status_achieved_at"
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_bonus_id"], name: "index_bets_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
@@ -211,9 +212,9 @@ ActiveRecord::Schema.define(version: 2019_08_19_115504) do
     t.decimal "rollover_balance", precision: 8, scale: 2
     t.decimal "rollover_initial_value", precision: 8, scale: 2
     t.string "status", default: "initial", null: false
-    t.bigint "balance_entry_id"
     t.datetime "activated_at"
     t.datetime "deactivated_at"
+    t.bigint "balance_entry_id"
     t.index ["balance_entry_id"], name: "index_customer_bonuses_on_balance_entry_id"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"

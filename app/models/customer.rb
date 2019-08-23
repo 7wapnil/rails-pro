@@ -78,24 +78,6 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
           -> { joins(:currency).where(currencies: { kind: Currency::FIAT }) },
           class_name: Wallet.name
 
-  has_many :bet_entries,
-           -> { bet.recent },
-           through: :wallets,
-           source: :entries,
-           class_name: Entry.name
-
-  has_many :income_entries,
-           -> { where(kind: EntryKinds::INCOME_ENTRY_KINDS).positive.recent },
-           through: :wallets,
-           source: :entries,
-           class_name: Entry.name
-
-  has_many :win_entries,
-           -> { win.recent },
-           through: :wallets,
-           source: :entries,
-           class_name: Entry.name
-
   has_one :customer_data
 
   delegate :street_address,

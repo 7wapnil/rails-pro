@@ -2,6 +2,7 @@
 
 module Reports
   class RegistrationReport < BaseReport
+    BATCH_SIZE = 10
     REPORT_TYPE = 'reg'
     HEADERS = %w[BTAG	BRAND	ACCOUNT_OPENING_DATE
                  PLAYER_ID USERNAME COUNTRY].freeze
@@ -20,6 +21,12 @@ module Reports
     def subjects
       Customer.where('DATE(created_at) = ? AND b_tag != ?',
                      Date.current.yesterday, '')
+    end
+
+    def records_iterator
+      subjects.find_each(batch_size: BATCH_SIZE) do |subject|
+        yield subject
+      end
     end
   end
 end

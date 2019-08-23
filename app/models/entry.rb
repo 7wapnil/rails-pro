@@ -31,15 +31,4 @@ class Entry < ApplicationRecord
   validates :kind, inclusion: { in: kinds.keys }
 
   validates_with EntryAmountValidator
-
-  scope :recent, -> { where(created_at: recent_scope) }
-
-  # Hack to avoid collision after joins for sales report
-  scope :positive, -> { where(amount: [0..Float::INFINITY]) }
-
-  class << self
-    def recent_scope
-      Time.zone.yesterday.beginning_of_day..Time.zone.yesterday.end_of_day
-    end
-  end
 end
