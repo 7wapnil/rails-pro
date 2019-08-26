@@ -4,9 +4,9 @@ require Rails.root.join('lib/sidekiq_scheduler/configure_server')
 require 'sidekiq/processor'
 
 Sidekiq::Logging.logger = ::MaskedLogStashLoggerFactory.build(type: :stdout)
+Sidekiq::Logging.logger.level = ENV['RAILS_LOG_LEVEL'] || ::Logger::DEBUG
 
 Sidekiq.configure_server do |config|
-  config.logger.level = ENV['RAILS_LOG_LEVEL'] || ::Logger::DEBUG
   config.options[:job_logger] = Sidekiq::SilenceJobLogger
 
   config.on(:startup) do
