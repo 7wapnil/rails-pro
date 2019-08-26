@@ -196,9 +196,9 @@ module StateMachines
       end
 
       def log_transition_error(error)
-        Rails.logger.info(
+        Rails.logger.error(
           message: 'Bet status change failed',
-          from_state: aasm.from_state,
+          from_state: error.originating_state,
           to_state: aasm.to_state,
           bet_id: id,
           customer_id: customer_id,
