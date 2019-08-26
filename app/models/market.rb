@@ -23,7 +23,6 @@ class Market < ApplicationRecord
                         inverse_of: :markets
 
   has_many :odds, -> { order(id: :asc) }, dependent: :destroy
-  has_many :active_odds, -> { active.order(id: :asc) }, class_name: Odd.name
   has_many :bets, through: :odds
   has_many :label_joins, as: :labelable, dependent: :destroy
   has_many :labels, through: :label_joins
@@ -46,7 +45,7 @@ class Market < ApplicationRecord
     visible
       .where(markets: { status: DISPLAYED_STATUSES })
       .or(
-        where(markets: { priority: HIGH_PRIORITY, status: INACTIVE })
+        where(markets: { priority: HIGH_PRIORITY })
       )
       .eager_load(:template)
       .joins(:odds)
