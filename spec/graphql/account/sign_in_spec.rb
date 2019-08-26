@@ -170,4 +170,34 @@ describe GraphQL, '#sign_in' do
       expect(result['data']['signIn']['user']).not_to be_nil
     end
   end
+
+  context 'first login of imported user' do
+    before do
+      create(
+        :customer,
+        username: 'testuser',
+        password: 'strongpass',
+        email: 'testuser@email.com'
+      )
+      Customer.where(username: 'testuser').update_all(encrypted_password: '')
+    end
+
+    let(:variables) do
+      {
+        input: {
+          login: 'testuser',
+          password: 'strongpass'
+        }
+      }
+    end
+
+    it 'gets error message' do
+      expect(result['errors'].first['message']).to eq(
+        I18n.t(
+          'errors.messages.imported_customer_first_login',
+          email: 'te...r@em...m'
+        )
+      )
+    end
+  end
 end

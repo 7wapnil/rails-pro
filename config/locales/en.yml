@@ -413,6 +413,7 @@ en:
       market_inactive: Bet market is inactive
       amount_not_negative: "%{subject} amount cannot beсome negative. Current amount: %{current_amount}, new amount: %{new_amount}."
       wrong_login_credentials: Wrong username, email or password
+      imported_customer_first_login: "For your safety, we require you to update your password. Please follow reset instructions sent by email to %{email}"
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
       account_transition: "can't bet changed from '%{from}' to '%{to}'"
       balance_request_uniqueness: 'already has balance entry request with this kind.'

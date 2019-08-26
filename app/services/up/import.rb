@@ -67,9 +67,11 @@ module UP
 
     def create_customer(row)
       Customer.find_or_initialize_by(external_id: row['AccountID']) do |c|
+        new_customer = c.new_record?
         attributes = customer_attribures(row)
-        attributes[:password] = Devise.friendly_token if c.new_record?
+        attributes[:password] = Devise.friendly_token if new_customer
         c.update_attributes!(attributes)
+        c.update_column(:encrypted_password, '') if new_customer
       end
     end
 

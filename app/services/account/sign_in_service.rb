@@ -2,8 +2,11 @@ module Account
   class SignInService
     include Recaptcha::Verify
 
+    IMPORTED_CUSTOMER_RESET_INTERVAL = 15
+
     delegate :invalid_login_attempt!, :valid_password?,
-             :suspicious_login?,
+             :suspicious_login?, :encrypted_password,
+             :reset_password_sent_at,
              to: :customer, allow_nil: true
 
     def initialize(customer:, params:)
@@ -33,6 +36,21 @@ module Account
 
       GraphQL::ExecutionError.new(
         I18n.t('errors.messages.wrong_login_credentials')
+      )
+    end
+
+    def imported_customer_first_login?
+      empty_encrypted_password? && !recent_reset_email?
+    end
+
+    def reset_password!
+      send_reset_password! unless recent_reset_email?
+
+      GraphQL::ExecutionError.new(
+        I18n.t(
+          'errors.messages.imported_customer_first_login',
+          email: obfuscate_email(customer.email)
+        )
       )
     end
 
@@ -87,6 +105,28 @@ module Account
         username: customer.username,
         email:    customer.email
       )
+    end
+
+    def empty_encrypted_password?
+      encrypted_password&.empty?
+    end
+
+    def send_reset_password!
+      Account::SendPasswordResetService.call(customer)
+    end
+
+    def obfuscate_email(email)
+      email
+        .split('@')
+        .map { |word| "#{word.first(2)}...#{word.last}" }
+        .join('@')
+    end
+
+    def recent_reset_email?
+      return unless customer.reset_password_sent_at
+
+      (Time.zone.now - customer.reset_password_sent_at) <
+        IMPORTED_CUSTOMER_RESET_INTERVAL.minutes
     end
   end
 end
