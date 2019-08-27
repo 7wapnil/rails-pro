@@ -32,7 +32,7 @@ describe ::Reports::Queries::SalesReportQuery do
       create(:entry, :bet, :recent,
              wallet: wallet,
              entry_request: nil,
-             origin: create(:bet, customer: customer, status: :settled))
+             origin: create(:bet, :recently_settled, customer: customer))
       create(:entry, :deposit, :recent, :with_balance_entries,
              wallet: wallet,
              entry_request: nil)
@@ -78,17 +78,17 @@ describe ::Reports::Queries::SalesReportQuery do
         .to eq(bonus_amount_control_value.to_f)
     end
 
-    xit 'returns correct bets count' do
+    it 'returns correct bets count' do
       expect(results.first['bets_count'].to_i)
         .to eq(control_customers.first.entries.bet.count)
     end
 
-    xit 'returns correct bets stake' do
+    it 'returns correct bets stake' do
       expect(results.first['stake'].to_f.abs)
         .to eq(bets_stake_control_value.to_f)
     end
 
-    xit 'returns correct ggr' do
+    it 'returns correct ggr' do
       expect(results.first['ggr'].to_f).to eq(ggr_control_value)
     end
   end
