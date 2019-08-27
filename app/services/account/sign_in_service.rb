@@ -40,7 +40,7 @@ module Account
     end
 
     def imported_customer_first_login?
-      empty_encrypted_password? && !recent_reset_email?
+      empty_encrypted_password?
     end
 
     def reset_password!
