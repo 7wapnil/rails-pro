@@ -19,6 +19,11 @@ FactoryBot.define do
       end
     end
 
+    trait :recently_settled do
+      status { StateMachines::BetStateMachine::SETTLED }
+      bet_settlement_status_achieved_at { 1.day.ago.midday }
+    end
+
     trait :sent_to_external_validation do
       status { StateMachines::BetStateMachine::SENT_TO_EXTERNAL_VALIDATION }
     end
