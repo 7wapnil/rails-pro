@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 module Audit
   class Service < ApplicationService
+    include JobLogger
+
     def initialize(event:, user: nil, customer: nil, context: {})
       @event = event
       @user = user
@@ -12,6 +16,15 @@ module Audit
                        user_id: @user&.id,
                        customer_id: @customer&.id,
                        context: context)
+    rescue ::Mongoid::Errors::MongoidError, ::Mongo::Error => e
+      log_job_message(
+        :error,
+        message: "Audit Service raised error: #{e.message}",
+        context: context,
+        event: @event,
+        user_id: @user&.id,
+        customer_id: @customer&.id
+      )
     end
 
     private
