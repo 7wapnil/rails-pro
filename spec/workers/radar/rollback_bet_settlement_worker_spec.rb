@@ -8,6 +8,9 @@ describe Radar::RollbackBetSettlementWorker do
   end
   let(:payload) { XmlParser.parse(payload_xml) }
   let(:event_id) { payload.dig('rollback_bet_settlement', 'event_id') }
+  let(:event) { Event.find_by(external_id: event_id) }
+  let(:timestamp) { payload.dig('rollback_bet_settlement', 'timestamp') }
+  let(:message_producer) { payload.dig('rollback_bet_settlement', 'product') }
 
   let(:control_markets) do
     [
@@ -124,6 +127,29 @@ describe Radar::RollbackBetSettlementWorker do
                min_amount: -10_000,
                max_amount: 10_000,
                kind: EntryKinds::ROLLBACK)
+      end
+    end
+
+    context 'writes logs' do
+      before do
+        allow(Rails.logger).to receive(:info)
+        allow_any_instance_of(described_class)
+          .to receive(:job_id)
+                .and_return(123)
+        described_class.new.perform(payload_xml)
+      end
+
+      it 'logs extra data' do
+        expect(Rails.logger)
+          .to have_received(:info)
+                .with(
+                  hash_including(
+                    event_id: event_id,
+                    event_producer_id: event&.producer_id,
+                    message_producer_id: message_producer,
+                    message_timestamp: timestamp
+                  )
+                )
       end
     end
 

@@ -38,9 +38,10 @@ describe Radar::AliveWorker do
       .to have_received(:info)
       .with(
         hash_including(
-          producer_id: product.id,
           producer_subscription_state: product.subscribed?,
-          message_subscription_state: true
+          message_subscription_state: true,
+          message_timestamp: timestamp.to_s,
+          message_producer_id: product.id.to_s
         )
       )
   end

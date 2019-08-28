@@ -23,10 +23,11 @@ describe Radar::OddsChangeWorker do
       template_specifiers: specifiers
     )
   end
+  let(:timestamp) { Time.now.to_i }
   let(:payload) do
     <<~XML
       <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-      <odds_change product="#{message_producer_id}" event_id="#{external_id}" timestamp="#{Time.now.to_i}" request_id="1564727279">
+      <odds_change product="#{message_producer_id}" event_id="#{external_id}" timestamp="#{timestamp}" request_id="1564727279">
         <odds>
           <market status="-2" id="#{template.external_id}" specifiers="#{market.template_specifiers}"/>
         </odds>
@@ -36,6 +37,7 @@ describe Radar::OddsChangeWorker do
 
   before do
     allow(Rails.logger).to receive(:warn)
+    allow(Rails.logger).to receive(:info)
     allow_any_instance_of(described_class)
       .to receive(:job_id)
       .and_return(123)
@@ -53,5 +55,18 @@ describe Radar::OddsChangeWorker do
         )
       ).once
     subject.log_job_failure(StandardError)
+  end
+
+  it 'logs extra data when job is done' do
+    expect(Rails.logger)
+      .to have_received(:info)
+      .with(
+        hash_including(
+          event_id: external_id,
+          event_producer_id: event.producer_id,
+          message_producer_id: message_producer_id,
+          message_timestamp: timestamp.to_s
+        )
+      )
   end
 end
