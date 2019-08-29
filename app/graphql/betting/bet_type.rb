@@ -21,7 +21,7 @@ module Betting
     end
 
     field :status, !types.String
-    field :notificationCode, !types.String, property: :notification_code
+    field :notificationCode, types.String, property: :notification_code
     field :message, types.String, property: :human_notification_message
     field :displayStatus, types.String,
           resolve: ->(obj, *) do
