@@ -18,7 +18,12 @@ describe ::Reports::Queries::SalesReportQuery do
     end
   end
   let(:bets_stake_control_value) do
-    control_customers.first.entries.bet.sum(&:base_currency_amount).abs
+    control_customers.first
+                     .entries
+                     .bet
+                     .confirmed
+                     .sum(&:base_currency_amount)
+                     .abs
   end
   let(:ggr_control_value) do
     bets_stake_control_value -
@@ -30,6 +35,10 @@ describe ::Reports::Queries::SalesReportQuery do
       wallet = create(:wallet, customer: customer,
                                currency: create(:currency, :primary))
       create(:entry, :bet, :recent,
+             wallet: wallet,
+             entry_request: nil,
+             origin: create(:bet, :recently_settled, customer: customer))
+      create(:entry, :bet, :recent, :confirmed,
              wallet: wallet,
              entry_request: nil,
              origin: create(:bet, :recently_settled, customer: customer))
@@ -46,6 +55,7 @@ describe ::Reports::Queries::SalesReportQuery do
       wallet = create(:wallet, customer: customer,
                                currency: create(:currency, :primary))
       create(:entry, :bet, wallet: wallet, entry_request: nil)
+      create(:entry, :bet, :confirmed, wallet: wallet, entry_request: nil)
       create(:entry, :deposit, wallet: wallet, entry_request: nil)
       create(:entry, :win, wallet: wallet, entry_request: nil)
     end
@@ -80,7 +90,7 @@ describe ::Reports::Queries::SalesReportQuery do
 
     it 'returns correct bets count' do
       expect(results.first['bets_count'].to_i)
-        .to eq(control_customers.first.entries.bet.count)
+        .to eq(control_customers.first.entries.bet.confirmed.count)
     end
 
     it 'returns correct bets stake' do

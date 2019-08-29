@@ -426,8 +426,6 @@ en:
       deposit_attempts_exceeded: Deposit attempts exceeded, contact support agent
       deposit_attempt_is_not_succeded: Deposit attempt is not succeded
       technical_error_happened: Technical error happened
-      deposit_cancelled: Deposit request canceled
-      deposit_failed: Deposit request failed
       payment_failed_error: Payment was failed
       payment_failed_with_reason_error: "Payment was failed: `%{reason}`"
       payment_cancelled_error: Payment was cancelled
