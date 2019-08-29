@@ -1,0 +1,26 @@
+default: &defaults
+  push_api_key: <%= ENV['APPSIGNAL_PUSH_API_KEY'] %>
+  name: <%= ENV['APPSIGNAL_APP_NAME'] %>
+  ignore_errors:
+    - SilentRetryJobError
+    - ActionController::RoutingError
+  filter_parameters:
+    - password
+    - confirm_password
+  log: stdout
+
+development:
+  <<: *defaults
+  active: false
+
+test:
+  <<: *defaults
+  active: false
+
+production:
+  <<: *defaults
+  active: true
+
+staging:
+  <<: *defaults
+  active: true
