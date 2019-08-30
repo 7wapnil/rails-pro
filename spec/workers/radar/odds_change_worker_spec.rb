@@ -23,7 +23,7 @@ describe Radar::OddsChangeWorker do
       template_specifiers: specifiers
     )
   end
-  let(:timestamp) { Time.now.to_i }
+  let(:timestamp) { Time.zone.now.to_i }
   let(:payload) do
     <<~XML
       <?xml version="1.0" encoding="UTF-8" standalone="yes"?>

@@ -135,21 +135,21 @@ describe Radar::RollbackBetSettlementWorker do
         allow(Rails.logger).to receive(:info)
         allow_any_instance_of(described_class)
           .to receive(:job_id)
-                .and_return(123)
+          .and_return(123)
         described_class.new.perform(payload_xml)
       end
 
       it 'logs extra data' do
         expect(Rails.logger)
           .to have_received(:info)
-                .with(
-                  hash_including(
-                    event_id: event_id,
-                    event_producer_id: event&.producer_id,
-                    message_producer_id: message_producer,
-                    message_timestamp: timestamp
-                  )
-                )
+          .with(
+            hash_including(
+              event_id: event_id,
+              event_producer_id: event&.producer_id,
+              message_producer_id: message_producer,
+              message_timestamp: timestamp
+            )
+          )
       end
     end
 
