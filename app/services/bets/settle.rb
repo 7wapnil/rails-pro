@@ -17,16 +17,16 @@ module Bets
     def call
       ActiveRecord::Base.transaction do
         bet.lock!
+        bet.customer_bonus&.lock!
 
         break unless validate_settlement!
 
         settle_bet!
         perform_payout!
+        settle_customer_bonus!
       end
 
       raise delayed_transaction_error if delayed_transaction_error
-
-      settle_customer_bonus!
     end
 
     private
