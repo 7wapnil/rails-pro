@@ -59,7 +59,7 @@ module Mts
       -407 => DEFAULT_EXCEPTION_KEY,
       -409 => DEFAULT_EXCEPTION_KEY,
       -410 => DEFAULT_EXCEPTION_KEY,
-      -421 => DEFAULT_EXCEPTION_KEY,
+      -421 => Bets::Notification::ODDS_TOO_HIGH_ERROR,
       -422 => DEFAULT_EXCEPTION_KEY,
       -423 => DEFAULT_EXCEPTION_KEY
     }.freeze

@@ -27,7 +27,7 @@ module Customers
     end
 
     def titles
-      @titles ||= Title.order(:name)
+      @titles ||= TitleDecorator.decorate_collection(Title.ordered_by_name)
     end
 
     def limits_grouped_by_title_id

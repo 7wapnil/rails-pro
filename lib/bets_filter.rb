@@ -17,7 +17,8 @@ class BetsFilter
   end
 
   def sports
-    Title.order(:name).pluck(:name)
+    TitleDecorator.decorate_collection(Title.ordered_by_name)
+                  .map { |t| [t.name, t.id] }
   end
 
   def tournaments

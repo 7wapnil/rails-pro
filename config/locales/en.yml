@@ -237,6 +237,7 @@ en:
       external_validation_error: "Betting service is experiencing some issues now. Bet was not accepted"
       mts_cancellation_error: "MTS rejected bet cancellation"
       liability_limit_reached_error: 'Oops! Bet cannot be accepted according to liability limits. Try to place bet with less odds/smaller stake or contact an administration.'
+      odds_too_high_error: 'Oops! Bet cannot be accepted. Odds changed.'
 
   customers:
     statistics:
@@ -413,6 +414,7 @@ en:
       market_inactive: Bet market is inactive
       amount_not_negative: "%{subject} amount cannot beсome negative. Current amount: %{current_amount}, new amount: %{new_amount}."
       wrong_login_credentials: Wrong username, email or password
+      imported_customer_first_login: "For your safety, we require you to update your password. Please follow the instructions sent to email %{email}"
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
       account_transition: "can't bet changed from '%{from}' to '%{to}'"
       balance_request_uniqueness: 'already has balance entry request with this kind.'
@@ -425,8 +427,6 @@ en:
       deposit_attempts_exceeded: Deposit attempts exceeded, contact support agent
       deposit_attempt_is_not_succeded: Deposit attempt is not succeded
       technical_error_happened: Technical error happened
-      deposit_cancelled: Deposit request canceled
-      deposit_failed: Deposit request failed
       payment_failed_error: Payment was failed
       payment_failed_with_reason_error: "Payment was failed: `%{reason}`"
       payment_cancelled_error: Payment was cancelled
@@ -443,7 +443,7 @@ en:
       reset_password_confirmation_mismatch: Confirmation does not match password
       nonexistent_producer: Producer not found.
       unsupported_event_type: Event type is not supported
-      unexpected_customer_bonus: Unexpected customer bonus for bet
+      bonus_for_wrong_customer: Unexpected customer bonus for bet
       tos_not_accepted: You have to accept T&C and privacy policy
       crypto_deposit_limit: "External service requires amount higher than %{limit}"
 
@@ -492,8 +492,6 @@ en:
         transactions:
           kind:
             invalid: "Invalid transaction kind: '%{kind}'"
-      odds_feed:
-        low_certainty: "Settlement ignored because of low certainty"
       wallets:
         not_unique: 'You have the same wallet created already'
         fiat_not_unique: 'You can have only one FIAT wallet'

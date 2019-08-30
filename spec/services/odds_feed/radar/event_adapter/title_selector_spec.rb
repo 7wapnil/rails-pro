@@ -7,13 +7,17 @@ describe OddsFeed::Radar::EventAdapter::TitleSelector do
 
   context 'found title' do
     context 'by id' do
-      let!(:title) { create(:title, external_id: id, name: 'Another name') }
+      let!(:title) do
+        create(:title, external_id: id, external_name: 'Another name')
+      end
 
       it { expect(subject).to eq(title) }
     end
 
     context 'by name' do
-      let!(:title) { create(:title, external_id: 'Another id', name: name) }
+      let!(:title) do
+        create(:title, external_id: 'Another id', external_name: name)
+      end
 
       it { expect(subject).to eq(title) }
     end

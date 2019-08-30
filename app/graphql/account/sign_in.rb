@@ -16,6 +16,7 @@ module Account
       )
 
       return service.invalid_captcha! if service.captcha_invalid?
+      return service.reset_password!  if service.imported_customer_first_login?
       return service.invalid_login!   if service.invalid_password?
 
       customer.update_tracked_fields!(@request)

@@ -70,6 +70,25 @@ describe Bet, type: :model do
     end
   end
 
+  it 'Logs bet status transitions' do
+    bet = create(:bet)
+
+    expect(Rails.logger)
+      .to receive(:info)
+      .with(
+        hash_including(
+          message: 'Bet status changed',
+          customer_id: bet.customer_id,
+          odd_id: bet.odd_id,
+          bet_id: bet.id,
+          from_state: :initial,
+          to_state: :sent_to_internal_validation
+        )
+      )
+
+    bet.send_to_internal_validation!
+  end
+
   describe 'Bet.expired_live' do
     include_context 'frozen_time'
 

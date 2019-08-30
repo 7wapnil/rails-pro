@@ -8,8 +8,8 @@ describe Titles::CollectHashByKind do
 
   it 'returns expected hash' do
     expect(described_class.call).to include(
-      'esports' => Title.esports.order(:position),
-      'sports'  => Title.sports.order(:position)
+      'esports' => Title.esports.order(:position).decorate,
+      'sports'  => Title.sports.order(:position).decorate
     )
   end
 end

@@ -32,6 +32,9 @@ module StateMachines
         state :lost
         state :expired
 
+        after_all_events :log_transition_success
+        error_on_all_events :log_transition_error
+
         event :activate do
           transitions from: :initial,
                       to: :active,
@@ -82,6 +85,27 @@ module StateMachines
 
       def set_deactivated_at
         update(deactivated_at: Time.zone.now)
+      end
+
+      def log_transition_success
+        Rails.logger.info(
+          message: 'CustomerBonus status changed',
+          from_state: aasm.from_state,
+          to_state: aasm.to_state,
+          id: id,
+          customer_id: customer_id
+        )
+      end
+
+      def log_transition_error(error)
+        Rails.logger.error(
+          message: 'CustomerBonus status change failed',
+          from_state: error.originating_state,
+          to_state: aasm.to_state,
+          id: id,
+          customer_id: customer_id,
+          error: error
+        )
       end
     end
   end

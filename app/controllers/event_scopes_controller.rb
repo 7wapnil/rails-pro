@@ -2,7 +2,7 @@ class EventScopesController < ApplicationController
   protect_from_forgery prepend: true
 
   def index
-    @title = Title.find(params[:title_id])
+    @title = Title.find(params[:title_id]).decorate
   end
 
   def show

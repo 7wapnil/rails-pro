@@ -12,7 +12,7 @@ module Events
 
     def scope(event_ids)
       model
-        .preload(:active_odds, :template)
+        .preload(:odds, :template)
         .where(id: market_ids(event_ids))
         .order(:priority)
     end

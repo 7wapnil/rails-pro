@@ -1,14 +1,16 @@
+# frozen_string_literal: true
+
 module Mts
   module Messages
     class ValidationResponse
-      SUPPORTED_VALIDATION_RESPONSE_VERSION = '2.3'.freeze
+      SUPPORTED_VALIDATION_RESPONSE_VERSION = '2.3'
 
       attr_reader :message
 
       def initialize(input_json)
         @message = parse(input_json)
-        raise NotImplementedError unless version ==
-                                         SUPPORTED_VALIDATION_RESPONSE_VERSION
+
+        raise NotImplementedError unless version_supported?
       end
 
       def version
@@ -52,6 +54,10 @@ module Mts
       end
 
       private
+
+      def version_supported?
+        version == SUPPORTED_VALIDATION_RESPONSE_VERSION
+      end
 
       def parse(json)
         hash = JSON.parse(json)

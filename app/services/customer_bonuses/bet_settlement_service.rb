@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module CustomerBonuses
   class BetSettlementService < ApplicationService
     def initialize(bet)
@@ -6,7 +8,7 @@ module CustomerBonuses
     end
 
     def call
-      return unless customer_bonus&.active?
+      return unless customer_bonus&.active? && bet.settled?
 
       recalculate_bonus_rollover
 

@@ -15,7 +15,7 @@ module EventScopes
     private
 
     def title
-      @title ||= Title.find(@title_id)
+      @title ||= Title.find(@title_id).decorate
     end
 
     def event_scope

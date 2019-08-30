@@ -69,28 +69,13 @@ describe Markets::StatusTransition do
     end
 
     context 'without previous status' do
-      before do
-        allow(Rails.logger)
-          .to receive(:error)
-          .with(message: error_message, market_id: market.external_id)
-      end
-
       let(:market) { create(:market, :settled, previous_status: nil) }
       let(:error_message) do
-        'There is no status snapshot for market!'
+        "There is no status snapshot for market #{market.external_id}!"
       end
 
       it 'raises an error' do
-        expect { subject }.to raise_error(StandardError)
-      end
-
-      it 'logs the error' do
-        subject
-        raise
-      rescue StandardError
-        expect(Rails.logger)
-          .to have_received(:error)
-          .with(message: error_message, market_id: market.external_id)
+        expect { subject }.to raise_error(StandardError, error_message)
       end
     end
   end

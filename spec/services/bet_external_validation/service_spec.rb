@@ -34,5 +34,49 @@ describe BetExternalValidation::Service do
           .to have_enqueued_sidekiq_job(bet.id)
       end
     end
+
+    describe 'live_bet_delay' do
+      let(:service) { described_class.new(bet) }
+
+      before do
+        allow(bet.producer).to receive(:live?).and_return(true)
+      end
+
+      it 'live_bet_delay = 0, when limit = 0' do
+        allow(service)
+          .to receive(:global_live_bet_delay)
+          .and_return(0)
+
+        allow(service)
+          .to receive(:title_live_bet_delay)
+          .and_return(0)
+
+        expect(service.send(:live_bet_delay)).to eq(0)
+      end
+
+      it 'live_bet_delay = 5, when customer limit = 5' do
+        allow(service)
+          .to receive(:global_live_bet_delay)
+          .and_return(5)
+
+        allow(service)
+          .to receive(:title_live_bet_delay)
+          .and_return(0)
+
+        expect(service.send(:live_bet_delay)).to eq(5)
+      end
+
+      it 'live_bet_delay = 10, when event limit = 10' do
+        allow(service)
+          .to receive(:global_live_bet_delay)
+          .and_return(0)
+
+        allow(service)
+          .to receive(:title_live_bet_delay)
+          .and_return(10)
+
+        expect(service.send(:live_bet_delay)).to eq(10)
+      end
+    end
   end
 end

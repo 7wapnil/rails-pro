@@ -38,6 +38,7 @@ module OddsFeed
       def create_title(params)
         Title.create_or_ignore_on_duplicate(
           name: params['name'],
+          external_name: params['name'],
           external_id: params['id'],
           kind: kind(params['id'])
         )

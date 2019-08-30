@@ -8,18 +8,12 @@ module EntryRequests
       end
 
       def call
-        create_entry_request!
-
-        entry_request
+        EntryRequest.create!(entry_request_attributes)
       end
 
       private
 
-      attr_reader :bet, :entry_request
-
-      def create_entry_request!
-        @entry_request = EntryRequest.create!(entry_request_attributes)
-      end
+      attr_reader :bet
 
       def entry_request_attributes
         {

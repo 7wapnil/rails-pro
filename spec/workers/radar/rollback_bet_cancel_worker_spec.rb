@@ -158,6 +158,29 @@ describe Radar::RollbackBetCancelWorker do
 
   include_context 'base_currency'
 
+  context 'writes logs' do
+    before do
+      allow(Rails.logger).to receive(:info)
+      allow_any_instance_of(described_class)
+        .to receive(:job_id)
+        .and_return(123)
+
+      described_class.new.perform(payload)
+    end
+
+    it 'logs extra data' do
+      expect(Rails.logger)
+        .to have_received(:info)
+        .with(
+          hash_including(
+            event_id: event.external_id,
+            event_producer_id: event.producer_id,
+            message_timestamp: '1234000'
+          )
+        )
+    end
+  end
+
   context 'market statuses' do
     before { subject }
 

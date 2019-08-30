@@ -21,6 +21,7 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
     )
   end
 
+  let!(:primary_currency) { create(:currency, :primary) }
   let(:odd_entire_lose) do
     create(:odd, external_id: 'sr:match:3432:13/hcp=3.5:sr:player:123')
   end
@@ -101,50 +102,68 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
 
     context 'half win, half refund' do
       let(:odd) { odd_half_win }
-      let(:bet) do
+      let!(:bet) do
         create(:bet, :accepted, odd: odd, amount: 100, currency: currency)
       end
 
-      before do
-        odd.value = 1.5
-        bet
+      it 'raises an error' do
+        expect { subject.handle }.to raise_error(
+          ::Bets::NotSupportedError,
+          'Void factor is not supported'
+        )
       end
 
       it 'does not create balance entry requests' do
-        expect { subject.handle }.not_to change(BalanceEntryRequest, :count)
+        expect do
+          subject.handle
+        rescue ::Bets::NotSupportedError
+        end.not_to change(BalanceEntryRequest, :count)
       end
 
       it 'does not create balance entries' do
-        expect { subject.handle }.not_to change(BalanceEntry, :count)
+        expect do
+          subject.handle
+        rescue ::Bets::NotSupportedError
+        end.not_to change(BalanceEntry, :count)
       end
 
       it 'moves bet to pending manual settlement status' do
         subject.handle
+      rescue ::Bets::NotSupportedError
         expect(bet.reload.status).to eq(Bet::PENDING_MANUAL_SETTLEMENT)
       end
     end
 
     context 'lose, half refund' do
       let(:odd) { odd_lose_half_refund }
-      let(:bet) do
+      let!(:bet) do
         create(:bet, :accepted, odd: odd, amount: 22.4, currency: currency)
       end
 
-      before do
-        odd.value = 1.65
-        bet
+      it 'raises an error' do
+        expect { subject.handle }.to raise_error(
+          ::Bets::NotSupportedError,
+          'Void factor is not supported'
+        )
       end
 
       it 'does not create balance entry requests' do
-        expect { subject.handle }.not_to change(BalanceEntryRequest, :count)
+        expect do
+          subject.handle
+        rescue ::Bets::NotSupportedError
+        end.not_to change(BalanceEntryRequest, :count)
       end
 
       it 'does not create balance entries' do
-        expect { subject.handle }.not_to change(BalanceEntry, :count)
+        expect do
+          subject.handle
+        rescue ::Bets::NotSupportedError
+        end.not_to change(BalanceEntry, :count)
       end
 
       it 'moves bet to pending manual settlement status' do
         subject.handle
+      rescue ::Bets::NotSupportedError
         expect(bet.reload.status).to eq(Bet::PENDING_MANUAL_SETTLEMENT)
       end
     end

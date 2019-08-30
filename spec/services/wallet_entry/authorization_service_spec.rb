@@ -2,25 +2,18 @@
 
 describe WalletEntry::AuthorizationService do
   let(:currency) { create(:currency) }
-  let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
+  let(:rule) { create(:entry_currency_rule, min_amount: -500, max_amount: 500) }
 
   before do
-    allow(EntryCurrencyRule).to receive(:find_by) { rule }
-    allow(Currency).to receive(:find_by!) { currency }
+    allow(EntryCurrencyRule).to receive(:find_by).and_return(rule)
+    allow(Currency).to receive(:find_by!).and_return(currency)
   end
 
   context 'first entry' do
-    let(:request) do
-      create(:entry_request)
-    end
-
-    let(:customer) do
-      request.customer
-    end
-
-    let(:service) do
-      described_class.new(request)
-    end
+    let(:kind) { EntryKinds::DEPOSIT }
+    let(:request) { create(:entry_request, kind: kind) }
+    let(:customer) { request.customer }
+    let(:service) { described_class.new(request) }
 
     let(:entry) do
       Entry.joins(:wallet).where('wallets.customer_id': customer.id).first
@@ -111,6 +104,34 @@ describe WalletEntry::AuthorizationService do
         expect(entry).to be_an Entry
         expect(entry.entry_request).to eq request
         expect(entry.balance_amount_after).to eq current_balance_amount
+      end
+
+      context 'entry confirmation' do
+        let(:wallet) do
+          create(:wallet, :fiat,
+                 amount: 500,
+                 customer: request.customer,
+                 currency: request.currency)
+        end
+        let!(:real_balance) do
+          create(:balance, :real_money, amount: wallet.amount, wallet: wallet)
+        end
+
+        include_context 'frozen_time'
+
+        before { described_class.call(request) }
+
+        it 'is performed' do
+          expect(entry.confirmed_at).to eq(Time.zone.now)
+        end
+
+        context 'for entry with delayed confirmation' do
+          let(:kind) { EntryKinds::DELAYED_CONFIRMATION_KINDS.sample }
+
+          it 'is not performed' do
+            expect(entry.confirmed_at).to be_nil
+          end
+        end
       end
     end
 
