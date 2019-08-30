@@ -67,7 +67,7 @@ module Events
     end
 
     def cached_for(interval)
-      caching_key = "graphql-events-#{query_args.to_kwargs}"
+      caching_key = "graphql-events-#{query_args.to_h}"
 
       Rails.cache.fetch(caching_key, expires_in: interval) do
         yield
