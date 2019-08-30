@@ -11,6 +11,18 @@ FactoryBot.define do
     wallet
     entry_request
 
+    before(:create) do |entry|
+      create(:entry_currency_rule,
+             currency: entry.currency,
+             kind: entry.kind,
+             min_amount: -entry.amount.abs * 2,
+             max_amount: entry.amount.abs * 2)
+    end
+
+    trait :confirmed do
+      confirmed_at { Time.zone.now }
+    end
+
     trait :with_random_wallet do
       association :wallet, strategy: :random_or_create
     end
@@ -21,27 +33,6 @@ FactoryBot.define do
 
     trait :with_bonus_balances do
       balance_entries { create_list(:balance_entry, 2, :bonus) }
-    end
-
-    before(:create) do |entry|
-      create(:entry_currency_rule,
-             currency: entry.currency,
-             kind: entry.kind,
-             min_amount: -entry.amount.abs * 2,
-             max_amount: entry.amount.abs * 2)
-    end
-
-    EntryKinds::DEBIT_KINDS.each do |kind|
-      trait(kind.to_sym) do
-        kind { kind }
-      end
-    end
-
-    EntryKinds::CREDIT_KINDS.each do |kind|
-      trait(kind.to_sym) do
-        kind { kind }
-        amount { Faker::Number.negative.round(2) }
-      end
     end
 
     trait :with_bonus_balance_entry do
@@ -64,6 +55,19 @@ FactoryBot.define do
         create(:balance_entry, :real_money,
                amount: entry.amount / 2,
                entry: entry)
+      end
+    end
+
+    EntryKinds::DEBIT_KINDS.each do |kind|
+      trait(kind.to_sym) do
+        kind { kind }
+      end
+    end
+
+    EntryKinds::CREDIT_KINDS.each do |kind|
+      trait(kind.to_sym) do
+        kind { kind }
+        amount { Faker::Number.negative.round(2) }
       end
     end
   end

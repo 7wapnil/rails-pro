@@ -2,18 +2,26 @@
 
 module Withdrawals
   class ProcessPayout < ApplicationService
+    delegate :entry, to: :withdrawal
+
     def initialize(withdrawal)
       @withdrawal = withdrawal
       @entry_request = withdrawal.entry_request
+      @confirmed_at = Time.zone.now
     end
 
     def call
-      ::Payments::Payout.call(transaction)
+      payout!
+      confirm_entry
     end
 
     private
 
-    attr_reader :withdrawal, :entry_request
+    attr_reader :withdrawal, :entry_request, :confirmed_at
+
+    def payout!
+      ::Payments::Payout.call(transaction)
+    end
 
     def transaction
       ::Payments::Transactions::Payout.new(
@@ -25,6 +33,10 @@ module Withdrawals
         withdrawal: withdrawal,
         details: withdrawal.details
       )
+    end
+
+    def confirm_entry
+      entry.update!(confirmed_at: confirmed_at)
     end
   end
 end

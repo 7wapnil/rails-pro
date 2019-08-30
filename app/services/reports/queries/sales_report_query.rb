@@ -18,10 +18,12 @@ module Reports
 
         loop do
           count += 1
-          @records = ActiveRecord::Base.connection.execute(sales_report_query)
+          @records = ActiveRecord::Base.connection
+                                       .execute(sales_report_query)
+                                       .to_a
 
           yield records
-          break if records.count.zero? || records.count < batch_size
+          break if records.length.zero? || records.length < batch_size
 
           raise StandardError, INFINITE_LOOP_MESSAGE if count >= MAX_ITERATIONS
         end
@@ -110,6 +112,7 @@ module Reports
           JOIN bets ON bets.id = entries.origin_id AND bets.status = '#{Bet::SETTLED}'
           WHERE bets.bet_settlement_status_achieved_at BETWEEN #{recent_scope}
                 AND entries.kind = '#{Entry::BET}'
+                AND entries.confirmed_at IS NOT NULL
           GROUP BY bets.customer_id
         SQL
       end
@@ -139,7 +142,7 @@ module Reports
         return NO_OFFSET unless records
 
         # not an array, but PG::Result object, does not support [-1]
-        records[records.count - 1]['customer_id']
+        records[records.length - 1]['customer_id']
       end
     end
     # rubocop:enable Metrics/ClassLength

@@ -25,6 +25,7 @@ module WalletEntry
         update_wallet!
         create_entry!
         update_balances!
+        confirm_entry if auto_confirmation?
 
         entry
       end
@@ -35,18 +36,14 @@ module WalletEntry
     end
 
     def create_default_balance_entry_request!
-      BalanceEntryRequest.create(
-        entry_request: request,
-        amount: amount,
-        kind: Balance::REAL_MONEY
-      )
+      BalanceEntryRequest.create(entry_request: request,
+                                 amount: amount,
+                                 kind: Balance::REAL_MONEY)
     end
 
     def update_wallet!
-      @wallet = Wallets::FindOrCreate.call(
-        customer: request.customer,
-        currency: request.currency
-      )
+      @wallet = Wallets::FindOrCreate.call(customer: request.customer,
+                                           currency: request.currency)
       amount_increment = request.balance_entry_requests.sum(:amount)
       ::Forms::AmountChange
         .new(wallet, amount_increment: amount_increment, request: request)
@@ -54,8 +51,8 @@ module WalletEntry
     end
 
     def create_entry!
-      base_currency_amount = Exchanger::Converter.call(amount,
-                                                       request.currency.code)
+      base_currency_amount = Exchanger::Converter
+                             .call(amount, request.currency.code)
       @entry = Entry.create!(
         wallet_id: wallet.id,
         origin_type: request.origin_type,
@@ -70,6 +67,14 @@ module WalletEntry
 
     def update_balances!
       UpdateBalances.call(entry: entry)
+    end
+
+    def auto_confirmation?
+      EntryKinds::DELAYED_CONFIRMATION_KINDS.exclude?(entry.kind)
+    end
+
+    def confirm_entry
+      entry.update(confirmed_at: Time.zone.now)
     end
 
     def handle_success

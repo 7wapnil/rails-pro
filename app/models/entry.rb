@@ -31,4 +31,6 @@ class Entry < ApplicationRecord
   validates :kind, inclusion: { in: kinds.keys }
 
   validates_with EntryAmountValidator
+
+  scope :confirmed, -> { where.not(confirmed_at: nil) }
 end
