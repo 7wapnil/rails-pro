@@ -66,6 +66,8 @@ GEM
       airbrake-ruby (~> 2.10)
     airbrake-ruby (2.11.0)
     amq-protocol (2.3.0)
+    appsignal (2.9.11)
+      rack
     archive-zip (0.11.0)
       io-like (~> 0.3.0)
     arel (9.0.0)
@@ -547,6 +549,7 @@ DEPENDENCIES
   action-cable-testing
   activerecord-import
   airbrake (~> 7.3)
+  appsignal
   awesome_print
   aws-sdk-s3
   bootsnap (>= 1.1.0)
