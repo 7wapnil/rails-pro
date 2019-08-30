@@ -7,6 +7,9 @@ module Events
       %w[upcoming_for_time upcoming_limited upcoming_unlimited].freeze
     SUPPORTED_CONTEXTS = [LIVE, *UPCOMING_CONTEXTS].freeze
 
+    UPCOMING_CONTEXT_CACHE_TTL = 5.seconds
+    LIVE_CONTEXT_CACHE_TTL = 2.seconds
+
     def initialize(query_args)
       @query_args = query_args
       @context = query_args.context
@@ -64,7 +67,7 @@ module Events
     end
 
     def cached_for(interval)
-      caching_key = "graphql-events-#{query_args}"
+      caching_key = "graphql-events-#{query_args.to_h}"
 
       Rails.cache.fetch(caching_key, expires_in: interval) do
         yield
@@ -72,26 +75,26 @@ module Events
     end
 
     def live
-      cached_for(2.seconds) do
+      cached_for(LIVE_CONTEXT_CACHE_TTL) do
         query.in_play
       end
     end
 
     def upcoming_for_time
-      cached_for(5.seconds) do
+      cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
         query.where('events.start_at <= ?',
                     Event::UPCOMING_DURATION.hours.from_now)
       end
     end
 
     def upcoming_limited
-      cached_for(5.seconds) do
+      cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
         query.where(id: limited_per_tournament_ids)
       end
     end
 
     def upcoming_unlimited
-      cached_for(5.seconds) do
+      cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
         query
       end
     end

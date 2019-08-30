@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 describe GraphQL, '#events' do
+  let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
+  let(:cache) { Rails.cache }
+
   let(:context) { {} }
   let(:variables) { {} }
   let(:upcoming_ctx) { 'upcoming_for_time' }
@@ -40,6 +43,9 @@ describe GraphQL, '#events' do
   end
 
   before do
+    allow(Rails).to receive(:cache).and_return(memory_store)
+    Rails.cache.clear
+
     control_events
     control_event
   end
