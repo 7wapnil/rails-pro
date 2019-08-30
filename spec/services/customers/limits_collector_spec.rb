@@ -71,7 +71,10 @@ describe Customers::LimitsCollector do
     context 'entries are additionally ordered' do
       let(:built_control_count) { 5 }
 
-      let(:ordered_titles) { titles_without_limits.sort_by(&:name) }
+      let(:ordered_titles) do
+        TitleDecorator.decorate_collection(titles_without_limits)
+                      .sort_by(&:name)
+      end
 
       it 'by title name' do
         expect(extracted_titles_for_built_limits).to eq(ordered_titles)

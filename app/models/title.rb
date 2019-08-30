@@ -33,4 +33,9 @@ class Title < ApplicationRecord
       .or(joins(:events).merge(Event.active.visible.in_play))
       .distinct
   }
+
+  def self.ordered_by_name
+    titles_ordering_sql = Arel.sql('LOWER(COALESCE(name, external_name))')
+    order(titles_ordering_sql)
+  end
 end

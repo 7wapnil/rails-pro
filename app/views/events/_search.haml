@@ -33,9 +33,9 @@
         %th
           .filter_title #{t('attributes.sport')}:
           .filter_field
-            = f.label :title_name_eq, class: 'sr-only'
-            = f.select :title_name_eq,
-                 options_for_select(sports, query_params[:title_name_eq]),
+            = f.label :title_id_eq, class: 'sr-only'
+            = f.select :title_id_eq,
+                 options_for_select(sports, query_params[:title_id_eq]),
                   { include_blank: true },
                   class: 'form-control'
         %th

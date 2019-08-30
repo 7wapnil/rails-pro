@@ -16,7 +16,7 @@ describe BetsFilter do
   let(:filter) { described_class.new(source: Bet) }
 
   it 'returns sports' do
-    expect(filter.sports).to include(sport.external_name)
+    expect(filter.sports).to include([sport.name, sport.id])
   end
 
   it 'returns categories' do

@@ -106,11 +106,11 @@ describe Bet, '#index' do
         it 'found' do
           bet = Bet.first
           picked_sport = bet.title.external_name
-          available_sports = page.find('#bets_title_external_name_eq')
+          available_sports = page.find('#bets_title_id_eq')
                                  .all('option')
                                  .map(&:text)
                                  .reject(&:blank?)
-          select picked_sport, from: 'Title External name equals'
+          select picked_sport, from: 'Title ID equals'
           click_on('Search')
 
           within 'table.table.entities tbody' do
@@ -124,9 +124,9 @@ describe Bet, '#index' do
 
         it 'not found' do
           bet = Bet.first
-          picked_sport = bet.title.external_name
-          Title.update_all(external_name: 'Dota2')
-          select picked_sport, from: 'Title External name equals'
+          picked_sport = bet.title.decorate.name
+          Bet.joins(:event).where(events: { title_id: bet.title.id }).delete_all
+          select picked_sport, from: 'Title ID equals'
           click_on('Search')
 
           within 'table.table.entities tbody' do
