@@ -10,7 +10,8 @@ describe Bets::Settle do
   let(:result) { '0' }
   let(:last_entry_request) { EntryRequest.order(created_at: :desc).first }
   let(:last_entry) { Entry.order(created_at: :desc).first }
-  let!(:primary_currency) { create(:currency, :primary) }
+
+  include_context 'base_currency'
 
   context 'with entire win bet' do
     let(:result) { described_class::WIN_RESULT }
@@ -153,6 +154,38 @@ describe Bets::Settle do
       expect(CustomerBonuses::BetSettlementService).not_to receive(:call)
       subject
     rescue StandardError
+    end
+  end
+
+  context 'when error appears on last operation' do
+    let!(:bet) { create(:bet, :accepted) }
+    let(:result) { described_class::WIN_RESULT }
+
+    before do
+      allow(CustomerBonuses::BetSettlementService)
+        .to receive(:call)
+        .and_raise(StandardError, 'error')
+    end
+
+    it 'raises an error' do
+      expect { subject }.to raise_error(StandardError, 'error')
+    end
+
+    it 'move bet to manual settlement' do
+      subject
+    rescue StandardError
+      expect(bet.reload).to have_attributes(
+        status: StateMachines::BetStateMachine::PENDING_MANUAL_SETTLEMENT,
+        notification_message: 'error',
+        notification_code: Bets::Notification::INTERNAL_SERVER_ERROR
+      )
+    end
+
+    it 'does not create any entry' do
+      expect do
+        subject
+      rescue StandardError
+      end.not_to change(Entry, :count)
     end
   end
 

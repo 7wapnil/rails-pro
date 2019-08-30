@@ -7,7 +7,7 @@ module EntryRequests
     end
 
     def call
-      return if entry_request.failed?
+      return if entry_request.failed? || entry_request.entry.present?
 
       WalletEntry::AuthorizationService.call(entry_request)
     end

@@ -2,7 +2,9 @@
 
 module EntryRequests
   module Factories
-    class Rollback < ApplicationService
+    class RollbackBetRefund < ApplicationService
+      delegate :refund_entry, to: :bet
+
       def initialize(bet:)
         @bet = bet
       end
@@ -19,7 +21,7 @@ module EntryRequests
         {
           kind: EntryKinds::ROLLBACK,
           mode: EntryRequest::INTERNAL,
-          amount: -winning_entry.amount,
+          amount: -refund_entry.amount,
           comment: comment,
           customer_id: bet.customer_id,
           currency_id: bet.currency_id,
@@ -27,12 +29,8 @@ module EntryRequests
         }
       end
 
-      def winning_entry
-        @winning_entry ||= bet.winning
-      end
-
       def comment
-        "Rollback won amount #{winning_entry.amount} #{bet.currency} " \
+        "Rollback bet refund #{refund_entry.amount} #{bet.currency} " \
         "for #{bet.customer} on #{bet.event}."
       end
     end

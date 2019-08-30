@@ -8,6 +8,8 @@ module Bets
     SUPPORTED_VOID_FACTORS = [nil, ACTIVE_VOID_FACTOR].freeze
     WIN_RESULT = '1'
 
+    delegate :customer_bonus, to: :bet
+
     def initialize(bet:, void_factor:, result:)
       @bet = bet
       @raw_void_factor = void_factor
@@ -16,44 +18,41 @@ module Bets
 
     def call
       ActiveRecord::Base.transaction do
-        bet.lock!
-        bet.customer_bonus&.lock!
-
-        break unless validate_settlement!
-
+        lock_important_entities!
+        validate_settlement!
         settle_bet!
         perform_payout!
         settle_customer_bonus!
       end
-
-      raise delayed_transaction_error if delayed_transaction_error
+    rescue ::Bets::NotAcceptedError => error
+      raise error
+    rescue StandardError => error
+      bet.send_to_manual_settlement!(error.message)
+      raise error
     end
 
     private
 
-    attr_reader :bet, :raw_void_factor, :result,
-                :delayed_transaction_error, :entry_request
+    attr_reader :bet, :raw_void_factor, :result, :entry_request
+
+    def lock_important_entities!
+      bet.lock!
+      customer_bonus&.lock!
+    end
 
     def validate_settlement!
       validate_bet!
       validate_void_factor!
-
-      true
-    rescue ::Bets::NotSupportedError => error
-      bet.pending_manual_settlement!
-      @delayed_transaction_error = error
-
-      false
     end
 
     def validate_bet!
-      return true if bet.accepted?
+      return if bet.accepted?
 
-      raise 'Bet is not accepted'
+      raise ::Bets::NotAcceptedError, 'Bet is not accepted'
     end
 
     def validate_void_factor!
-      return true if SUPPORTED_VOID_FACTORS.include?(void_factor)
+      return if SUPPORTED_VOID_FACTORS.include?(void_factor)
 
       raise ::Bets::NotSupportedError, 'Void factor is not supported'
     end

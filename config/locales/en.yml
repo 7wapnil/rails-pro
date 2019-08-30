@@ -443,7 +443,7 @@ en:
       reset_password_confirmation_mismatch: Confirmation does not match password
       nonexistent_producer: Producer not found.
       unsupported_event_type: Event type is not supported
-      unexpected_customer_bonus: Unexpected customer bonus for bet
+      bonus_for_wrong_customer: Unexpected customer bonus for bet
       tos_not_accepted: You have to accept T&C and privacy policy
       crypto_deposit_limit: "External service requires amount higher than %{limit}"
 
