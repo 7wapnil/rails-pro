@@ -45,12 +45,33 @@ module JobLogger
                       job_execution_time: execution_time.round(3),
                       overall_processing_time: processing_time.round(3),
                       thread_id: thread_id,
-                      event_id: event_id,
+                      **odd_messages_info,
                       **extra_log_info)
+  end
+
+  def odd_messages_info
+    {
+      event_id: event_id,
+      message_producer_id: message_producer_id,
+      message_timestamp: message_timestamp,
+      event_producer_id: event_producer_id
+    }
   end
 
   def event_id
     Thread.current[:event_id]
+  end
+
+  def message_producer_id
+    Thread.current[:message_producer_id]
+  end
+
+  def message_timestamp
+    Thread.current[:message_timestamp]
+  end
+
+  def event_producer_id
+    Thread.current[:event_producer_id]
   end
 
   def enqueued_at

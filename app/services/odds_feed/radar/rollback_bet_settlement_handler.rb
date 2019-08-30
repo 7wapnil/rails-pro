@@ -4,7 +4,6 @@ module OddsFeed
   module Radar
     class RollbackBetSettlementHandler < RadarMessageHandler
       include WebsocketEventEmittable
-      include JobLogger
 
       BATCH_SIZE = 100
 
