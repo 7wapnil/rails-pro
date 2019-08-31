@@ -2,6 +2,7 @@
 
 describe CustomerBonusesController, type: :controller do
   describe '#create' do
+    let!(:primary_currency) { create(:currency, :primary) }
     let!(:wallet) { create(:wallet) }
     let!(:original_bonus) { create(:bonus) }
     let(:amount) { rand(1..1000).to_s }

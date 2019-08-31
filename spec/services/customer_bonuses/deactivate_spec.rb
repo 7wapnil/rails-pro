@@ -19,7 +19,7 @@ describe CustomerBonuses::Deactivate do
       end
 
       before do
-        allow(EntryRequests::BonusChangeWorker).to receive(:perform_async)
+        allow(EntryRequests::BonusChangeService).to receive(:call)
         described_class.call(
           bonus: customer_bonus,
           action: CustomerBonuses::Deactivate::CANCEL
@@ -37,9 +37,9 @@ describe CustomerBonuses::Deactivate do
       end
 
       it 'schedules job for updating wallet' do
-        expect(EntryRequests::BonusChangeWorker)
-          .to have_received(:perform_async)
-          .with(found_entry_request.id)
+        expect(EntryRequests::BonusChangeService)
+          .to have_received(:call)
+          .with(entry_request: found_entry_request)
       end
     end
   end
@@ -59,7 +59,7 @@ describe CustomerBonuses::Deactivate do
     end
 
     it 'doesn\'t schedule bonus funds confiscation' do
-      expect(EntryRequests::BonusChangeWorker).not_to receive(:perform_async)
+      expect(EntryRequests::BonusChangeService).not_to receive(:call)
       described_class.call(bonus: customer_bonus, action: action)
     end
   end

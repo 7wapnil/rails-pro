@@ -24,8 +24,8 @@ module CustomerBonuses
       subtract_request = remove_bonus_money_request
       add_request = grant_real_money_request
 
-      EntryRequests::BonusChangeWorker.perform_async(subtract_request.id)
-      EntryRequests::BonusConversionWorker.perform_async(add_request.id)
+      EntryRequests::BonusChangeService.call(entry_request: subtract_request)
+      EntryRequests::ProcessingService.call(entry_request: add_request)
     end
 
     def remove_bonus_money_request
