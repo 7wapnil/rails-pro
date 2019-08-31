@@ -52,7 +52,7 @@ module CustomerBonuses
         amount: -bonus_balance.amount
       )
 
-      EntryRequests::BonusChangeWorker.perform_async(request.id)
+      EntryRequests::BonusChangeService.call(entry_request: request)
     end
 
     def positive_bonus_balance?

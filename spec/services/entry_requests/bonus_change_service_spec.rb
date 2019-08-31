@@ -66,14 +66,14 @@ describe EntryRequests::BonusChangeService do
 
     it 'does not proceed' do
       expect { subject }.to raise_error(
-        SilentRetryJobError,
+        EntryRequests::FailedEntryRequestError,
         'Failed entry request passed to payment service'
       )
     end
 
     it 'does not assign balance entry to customer bonus' do
       subject
-    rescue SilentRetryJobError
+    rescue EntryRequests::FailedEntryRequestError
       expect(customer_bonus.reload.balance_entry).to be_nil
     end
   end

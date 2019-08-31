@@ -46,7 +46,7 @@ module Bonuses
 
       return charge_failed! if entry_request.failed?
 
-      EntryRequests::BonusChangeWorker.perform_async(entry_request.id)
+      EntryRequests::BonusChangeService.call(entry_request: entry_request)
     end
 
     def create_entry_request!

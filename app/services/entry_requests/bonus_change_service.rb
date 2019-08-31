@@ -28,7 +28,7 @@ module EntryRequests
                       message: 'Failed entry request passed to payment service',
                       entry_request_id: entry_request.id)
 
-      raise SilentRetryJobError,
+      raise FailedEntryRequestError,
             'Failed entry request passed to payment service'
     end
 

@@ -63,7 +63,7 @@ describe Customer, '#bonuses' do
     end
 
     before do
-      allow(EntryRequests::BonusChangeWorker).to receive(:perform_async)
+      allow(EntryRequests::BonusChangeService).to receive(:call)
       visit customer_bonus_path(bonus)
       click_link 'Cancel'
     end
@@ -90,9 +90,9 @@ describe Customer, '#bonuses' do
     end
 
     it 'schedules job for updating wallet' do
-      expect(EntryRequests::BonusChangeWorker)
-        .to have_received(:perform_async)
-        .with(found_entry_request.id)
+      expect(EntryRequests::BonusChangeService)
+        .to have_received(:call)
+        .with(entry_request: found_entry_request)
     end
   end
 end

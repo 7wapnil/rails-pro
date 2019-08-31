@@ -24,6 +24,7 @@ class CustomerBonusesController < ApplicationController
     redirect_to bonuses_customer_path(@customer_bonus.customer),
                 notice: t(:activated, instance: t('entities.bonus'))
   rescue CustomerBonuses::ActivationError,
+         EntryRequests::FailedEntryRequestError,
          ActiveModel::ValidationError => error
     redirect_to bonuses_customer_path(@wallet.customer), alert: error.message
   end

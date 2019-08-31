@@ -1,6 +1,8 @@
 describe CustomerBonuses::BetSettlementService do
   subject { described_class.call(bet) }
 
+  let!(:primary_currency) { create(:currency, :primary) }
+
   before do
     allow(CustomerBonuses::RolloverCalculationService)
       .to receive(:call)
