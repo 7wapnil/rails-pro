@@ -48,7 +48,9 @@ describe ::Reports::Queries::SalesReportQuery do
       create(:entry, :win, :recent,
              wallet: wallet,
              entry_request: nil,
-             origin: create(:bet, customer: customer, status: :settled))
+             origin: create(:bet, customer: customer,
+                                  status: :settled,
+                                  settlement_status: :lost))
     end
 
     test_customers.each do |customer|

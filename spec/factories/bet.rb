@@ -6,7 +6,6 @@ FactoryBot.define do
     base_currency_amount { amount * Faker::Number.decimal(2, 2).to_f }
     odd_value { odd.value }
     status    { StateMachines::BetStateMachine::INITIAL }
-    settlement_status { :lost }
 
     currency
     association :odd, factory: %i[odd active]
@@ -23,6 +22,7 @@ FactoryBot.define do
     trait :recently_settled do
       status { StateMachines::BetStateMachine::SETTLED }
       bet_settlement_status_achieved_at { 1.day.ago.midday }
+      settlement_status { :lost }
     end
 
     trait :sent_to_external_validation do
