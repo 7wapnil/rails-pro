@@ -109,7 +109,7 @@ module Reports
             CAST(SUM(COALESCE(ABS(entries.base_currency_amount),0)) AS DECIMAL(10,2)) stake,
             count(entries.id) bets_count
           FROM entries
-          JOIN bets ON bets.id = entries.origin_id AND bets.status = '#{Bet::SETTLED}'
+          JOIN bets ON bets.id = entries.origin_id AND bets.status = '#{Bet::SETTLED}' AND bets.settlement_status != '#{Bet::VOIDED}'
           WHERE bets.bet_settlement_status_achieved_at BETWEEN #{recent_scope}
                 AND entries.kind = '#{Entry::BET}'
                 AND entries.confirmed_at IS NOT NULL
@@ -123,7 +123,7 @@ module Reports
             bets.customer_id customer_id,
             CAST(SUM(COALESCE(entries.base_currency_amount,0)) AS DECIMAL(10,2)) wins_amount
           FROM entries
-          JOIN bets ON bets.id = entries.origin_id AND bets.status = '#{Bet::SETTLED}'
+          JOIN bets ON bets.id = entries.origin_id AND bets.status = '#{Bet::SETTLED}' AND bets.settlement_status != '#{Bet::VOIDED}'
           WHERE entries.created_at BETWEEN#{recent_scope} AND entries.kind = '#{Entry::WIN}'
           GROUP BY bets.customer_id
         SQL
