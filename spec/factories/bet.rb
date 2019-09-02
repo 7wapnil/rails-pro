@@ -6,6 +6,7 @@ FactoryBot.define do
     base_currency_amount { amount * Faker::Number.decimal(2, 2).to_f }
     odd_value { odd.value }
     status    { StateMachines::BetStateMachine::INITIAL }
+    settlement_status { :lost }
 
     currency
     association :odd, factory: %i[odd active]
