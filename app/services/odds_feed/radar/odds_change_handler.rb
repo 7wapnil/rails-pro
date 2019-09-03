@@ -120,8 +120,7 @@ module OddsFeed
 
         ::OddsFeed::Radar::MarketGenerator::Service.call(
           event: event,
-          markets_data: markets_data,
-          prematch_producer: prematch_producer?
+          markets_data: markets_data
         )
       end
 
@@ -135,11 +134,6 @@ module OddsFeed
         log_missing_payload if odds_payload.is_a?(Hash)
 
         []
-      end
-
-      def prematch_producer?
-        (producer_id.to_i == ::Radar::Producer::PREMATCH_PROVIDER_ID) &&
-          (event.producer_id == ::Radar::Producer::PREMATCH_PROVIDER_ID)
       end
 
       def producer_id

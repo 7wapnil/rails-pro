@@ -21,6 +21,9 @@ class Market < ApplicationRecord
   belongs_to :template, class_name: MarketTemplate.name,
                         optional: true,
                         inverse_of: :markets
+  belongs_to :producer, class_name: Radar::Producer.name,
+                        optional: true,
+                        inverse_of: :markets
 
   has_many :odds, -> { order(id: :asc) }, dependent: :destroy
   has_many :bets, through: :odds
