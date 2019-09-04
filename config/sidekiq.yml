@@ -53,13 +53,13 @@
     description: "Queries events that will start in the future and stores them in local database"
 
   registration_reports_sending:
-    every: <%= ENV.fetch('REG_REPORT_INTERVAL', '1d') %>
+    cron: '0 5 * * * CET'
     class: Scheduled::RegistrationReportWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Sends registration reports to FTP server"
 
   sales_reports_sending:
-    every: <%= ENV.fetch('SALES_REPORT_INTERVAL', '1d') %>
+    cron: '0 5 * * * CET'
     class: Scheduled::SalesReportWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Sends sales reports to FTP server"
