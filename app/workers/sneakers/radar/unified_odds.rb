@@ -23,7 +23,7 @@ module Radar
                exchange_options: { passive: true },
                routing_key: routing_key,
                durable: false,
-               ack: false
+               ack: true
 
     MATCHERS = {
       event_processing: {
@@ -66,6 +66,7 @@ module Radar
 
     def work(msg)
       match_result(scan_payload(msg)).perform_async(msg)
+      ack!
     end
 
     private

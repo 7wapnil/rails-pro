@@ -6,16 +6,15 @@ module OddsFeed
       class Service < ::ApplicationService # rubocop:disable Metrics/ClassLength
         HANDED_OVER_MARKET_STATUS = '-2'
         SKIP_MARKET_MESSAGE =
-          'Got -2 market status from of for non-prematch producer.'
+          'Got -2 market status from or for non-prematch producer.'
 
         class HandOverError < StandardError; end
 
         include JobLogger
 
-        def initialize(event:, markets_data:, prematch_producer: false)
+        def initialize(event:, markets_data:)
           @event = event
           @markets_data = markets_data
-          @prematch_producer = prematch_producer
           @markets = []
           @odds = []
         end
@@ -29,15 +28,13 @@ module OddsFeed
 
         def build
           @markets_data.each do |market_data|
-            populate_job_log_info!(market_data)
-
-            raise HandOverError if skip_market?(market_data)
+            raise HandOverError if skip_handover_with_warning?(market_data)
 
             build_market(market_data)
           rescue HandOverError
             log_job_message(:warn,
                             message: SKIP_MARKET_MESSAGE,
-                            **extra_log_info)
+                            **extra_log_info(market_data))
             next
           rescue StandardError => e
             log_job_message(:debug, e.message)
@@ -45,9 +42,20 @@ module OddsFeed
           end
         end
 
-        def skip_market?(market_data)
+        def skip_handover_with_warning?(market_data)
           market_data['status'] == HANDED_OVER_MARKET_STATUS &&
-            !@prematch_producer
+            message_producer_id != ::Radar::Producer::PREMATCH_PROVIDER_ID
+        end
+
+        def handed_over_and_suspended?(market_data, event_market)
+          market_data['status'] == HANDED_OVER_MARKET_STATUS &&
+            message_producer_id == ::Radar::Producer::PREMATCH_PROVIDER_ID &&
+            event_market&.producer_id == ::Radar::Producer::PREMATCH_PROVIDER_ID
+        end
+
+        def handed_over_and_overridden?(market_data, event_market)
+          market_data['status'] == HANDED_OVER_MARKET_STATUS &&
+            event_market&.producer_id == ::Radar::Producer::LIVE_PROVIDER_ID
         end
 
         def build_market(market_data)
@@ -55,6 +63,16 @@ module OddsFeed
             market_template_find_by!(external_id: market_data['id'])
           data_object = MarketData.new(@event, market_data, market_template)
           market = build_market_model(data_object)
+
+          event_market =
+            event_market_find_by(external_id: market.external_id)
+
+          return if handed_over_and_overridden?(market_data, event_market)
+
+          if handed_over_and_suspended?(market_data, event_market)
+            market.status = StateMachines::MarketStateMachine::SUSPENDED
+          end
+
           return unless valid?(market)
 
           @markets << market
@@ -64,6 +82,7 @@ module OddsFeed
         def build_market_model(data_object)
           Market.new(external_id: data_object.external_id,
                      event: @event,
+                     producer_id: message_producer_id,
                      name: data_object.name,
                      status: data_object.status,
                      template: data_object.market_template,
@@ -83,6 +102,13 @@ module OddsFeed
           cached_templates.detect do |template|
             template.external_id == external_id
           end
+        end
+
+        def event_market_find_by(external_id:)
+          @event_markets_by_external_id ||=
+            @event.markets.index_by(&:external_id)
+
+          @event_markets_by_external_id[external_id]
         end
 
         def valid?(market)
@@ -111,7 +137,7 @@ module OddsFeed
                         validate: false,
                         on_duplicate_key_update: {
                           conflict_target: %i[external_id],
-                          columns: %i[status priority]
+                          columns: %i[status priority producer_id]
                         })
         end
 
@@ -132,16 +158,24 @@ module OddsFeed
                                 .order(:external_id)
         end
 
-        def populate_job_log_info!(market_data)
-          Thread.current[:market_data] = market_data
+        def event_id
+          Thread.current[:event_id]
         end
 
-        def extra_log_info
+        def event_producer_id
+          Thread.current[:event_producer_id]
+        end
+
+        def message_producer_id
+          Thread.current[:message_producer_id]
+        end
+
+        def extra_log_info(market_data)
           {
-            event_id:            Thread.current[:event_id],
-            event_producer_id:   Thread.current[:event_producer_id],
-            message_producer_id: Thread.current[:message_producer_id],
-            market_data:         Thread.current[:market_data]
+            event_id:            event_id,
+            event_producer_id:   event_producer_id,
+            message_producer_id: message_producer_id,
+            market_data:         market_data
           }
         end
       end

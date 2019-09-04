@@ -11,6 +11,11 @@ describe OddsFeed::Radar::MarketGenerator::Service do
   end
   let(:event) { create(:event, :bookable, external_id: 'sr:match:1234') }
 
+  let(:producer_id_in_file) { 2 }
+  let!(:producer) { create(:producer, id: producer_id_in_file) }
+  let!(:liveodds_producer) { create(:liveodds_producer) }
+  let!(:prematch_producer) { create(:prematch_producer) }
+
   before do
     payload = {
       outcomes: {

@@ -12,7 +12,9 @@ describe OddsFeed::Radar::MarketGenerator::Service do
   let(:producer_id_in_file) { 2 }
   let(:event_external_id_in_file) { 'sr:match:1234' }
 
-  let(:producer) { create(:producer, id: producer_id_in_file) }
+  let!(:producer) { create(:producer, id: producer_id_in_file) }
+  let!(:liveodds_producer) { create(:liveodds_producer) }
+  let!(:prematch_producer) { create(:prematch_producer) }
 
   let!(:event) do
     create(:event, external_id: event_external_id_in_file, producer: producer)

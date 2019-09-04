@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_19_161903) do
+ActiveRecord::Schema.define(version: 2019_08_30_095035) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -511,8 +511,10 @@ ActiveRecord::Schema.define(version: 2019_08_19_161903) do
     t.string "previous_status"
     t.string "template_specifiers"
     t.bigint "template_id"
+    t.bigint "producer_id"
     t.index ["event_id"], name: "index_markets_on_event_id"
     t.index ["external_id"], name: "index_markets_on_external_id", unique: true
+    t.index ["producer_id"], name: "index_markets_on_producer_id"
     t.index ["template_id"], name: "index_markets_on_template_id"
   end
 
@@ -654,6 +656,7 @@ ActiveRecord::Schema.define(version: 2019_08_19_161903) do
   add_foreign_key "label_joins", "labels"
   add_foreign_key "markets", "events", on_delete: :cascade
   add_foreign_key "markets", "market_templates", column: "template_id", on_delete: :nullify
+  add_foreign_key "markets", "radar_providers", column: "producer_id"
   add_foreign_key "odds", "markets", on_delete: :cascade
   add_foreign_key "scoped_events", "event_scopes"
   add_foreign_key "scoped_events", "events", on_delete: :cascade

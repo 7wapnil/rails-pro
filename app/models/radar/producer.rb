@@ -13,6 +13,7 @@ module Radar
     after_commit :notify_application
 
     has_many :events
+    has_many :markets
 
     HEARTBEAT_EXPIRATION_TIME_IN_SECONDS = 15
 

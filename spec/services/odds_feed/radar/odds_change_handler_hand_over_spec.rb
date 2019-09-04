@@ -19,11 +19,14 @@ describe OddsFeed::Radar::OddsChangeHandler do
   let(:payload) { XmlParser.parse(payload_xml) }
   let(:template) { create(:market_template) }
   let(:specifiers) { 'hcp=1:0' }
+  let(:market_external_id) do
+    "#{external_id}:#{template.external_id}/#{specifiers}"
+  end
   let(:market) do
     create(
       :market,
       event: event,
-      external_id: "#{external_id}:#{template.external_id}/#{specifiers}",
+      external_id: market_external_id,
       template: template,
       template_specifiers: specifiers
     )
@@ -33,7 +36,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
       <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
       <odds_change product="#{message_producer_id}" event_id="#{external_id}" timestamp="#{Time.now.to_i}" request_id="1564727279">
         <odds>
-          <market status="-2" id="#{template.external_id}" specifiers="#{market.template_specifiers}"/>
+          <market status="-2" id="#{template.external_id}" specifiers="#{specifiers}"/>
         </odds>
       </odds_change>
     XML
@@ -48,14 +51,35 @@ describe OddsFeed::Radar::OddsChangeHandler do
   end
 
   # Hand over
-  describe 'hand over deactivating markets' do
+  describe 'new markets created inactive' do
     context 'match producer: prematch, message producer: prematch' do
-      let(:message_producer_id) { ::Radar::Producer::PREMATCH_PROVIDER_ID }
+      let(:message_producer_id) { prematch_producer.id }
 
-      it 'changes the market status to inactive' do
+      it 'market status is inactive' do
         subject.handle
 
-        expect(market.reload.status).to eq(Market::INACTIVE)
+        the_market = Market.find_by(external_id: market_external_id)
+
+        expect(the_market.status).to eq(Market::INACTIVE)
+      end
+    end
+  end
+
+  describe 'hand over suspending prematch markets' do
+    context 'match producer: prematch, message producer: prematch' do
+      let(:message_producer_id) { prematch_producer.id }
+      let(:event_producer_id) { liveodds_producer.id }
+
+      before do
+        market.update_column(:producer_id, prematch_producer.id)
+      end
+
+      it 'market status is suspended' do
+        subject.handle
+
+        the_market = Market.find_by(external_id: market_external_id)
+
+        expect(the_market.status).to eq(Market::SUSPENDED)
       end
     end
   end
@@ -65,7 +89,8 @@ describe OddsFeed::Radar::OddsChangeHandler do
       expect_any_instance_of(JobLogger).to(
         receive(:log_job_message).with(
           :warn,
-          message: 'Got -2 market status from of for non-prematch producer.',
+          message:
+            OddsFeed::Radar::MarketGenerator::Service::SKIP_MARKET_MESSAGE,
           event_id: external_id,
           event_producer_id: event_producer_id,
           message_producer_id: message_producer_id,
@@ -79,20 +104,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
     end
 
     context 'match producer: prematch, message producer: live' do
-      let(:message_producer_id) { ::Radar::Producer::LIVE_PROVIDER_ID }
-
-      it 'logs warning, market status active' do
-        subject.handle
-
-        expect(market.reload.status).to eq(Market::ACTIVE)
-      end
-    end
-
-    context 'match producer: live, message producer: prematch' do
-      let(:message_producer_id) { prematch_producer.id }
-      let(:event_producer_id) { liveodds_producer.id }
-
-      before { event.update_attribute(:producer_id, event_producer_id) }
+      let(:message_producer_id) { liveodds_producer.id }
 
       it 'logs warning, market status active' do
         subject.handle
@@ -102,7 +114,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
     end
 
     context 'match producer: live, message producer: live' do
-      let(:message_producer_id) { ::Radar::Producer::LIVE_PROVIDER_ID }
+      let(:message_producer_id) { liveodds_producer.id }
       let(:event_producer_id) { liveodds_producer.id }
 
       before { event.update_attribute(:producer_id, event_producer_id) }
