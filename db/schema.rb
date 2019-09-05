@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_08_30_095035) do
+ActiveRecord::Schema.define(version: 2019_09_05_090730) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -58,10 +58,10 @@ ActiveRecord::Schema.define(version: 2019_08_30_095035) do
   create_table "balance_entries", force: :cascade do |t|
     t.bigint "balance_id"
     t.bigint "entry_id"
-    t.decimal "amount", precision: 8, scale: 2
+    t.decimal "amount", precision: 14, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.decimal "balance_amount_after", precision: 8, scale: 2
+    t.decimal "balance_amount_after", precision: 14, scale: 2
     t.decimal "base_currency_amount"
     t.index ["balance_id"], name: "index_balance_entries_on_balance_id"
     t.index ["entry_id"], name: "index_balance_entries_on_entry_id"
@@ -71,7 +71,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_095035) do
     t.bigint "entry_request_id"
     t.bigint "balance_entry_id"
     t.string "kind"
-    t.decimal "amount", precision: 8, scale: 2
+    t.decimal "amount", precision: 14, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["balance_entry_id"], name: "index_balance_entry_requests_on_balance_entry_id"
@@ -82,7 +82,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_095035) do
   create_table "balances", force: :cascade do |t|
     t.bigint "wallet_id"
     t.string "kind"
-    t.decimal "amount", precision: 8, scale: 2, default: "0.0"
+    t.decimal "amount", precision: 14, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["wallet_id"], name: "index_balances_on_wallet_id"
@@ -100,8 +100,8 @@ ActiveRecord::Schema.define(version: 2019_08_30_095035) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.string "settlement_status"
     t.datetime "validation_ticket_sent_at"
+    t.string "settlement_status"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"
@@ -209,12 +209,12 @@ ActiveRecord::Schema.define(version: 2019_08_30_095035) do
     t.integer "original_bonus_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.decimal "rollover_balance", precision: 8, scale: 2
-    t.decimal "rollover_initial_value", precision: 8, scale: 2
+    t.decimal "rollover_balance", precision: 14, scale: 2
+    t.decimal "rollover_initial_value", precision: 14, scale: 2
     t.string "status", default: "initial", null: false
+    t.bigint "balance_entry_id"
     t.datetime "activated_at"
     t.datetime "deactivated_at"
-    t.bigint "balance_entry_id"
     t.index ["balance_entry_id"], name: "index_customer_bonuses_on_balance_entry_id"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -266,34 +266,34 @@ ActiveRecord::Schema.define(version: 2019_08_30_095035) do
 
   create_table "customer_statistics", force: :cascade do |t|
     t.integer "deposit_count", default: 0
-    t.decimal "deposit_value", precision: 8, scale: 2, default: "0.0"
+    t.decimal "deposit_value", precision: 14, scale: 2, default: "0.0"
     t.integer "withdrawal_count", default: 0
-    t.decimal "withdrawal_value", precision: 8, scale: 2, default: "0.0"
+    t.decimal "withdrawal_value", precision: 14, scale: 2, default: "0.0"
     t.integer "prematch_bet_count", default: 0
-    t.decimal "prematch_wager", precision: 8, scale: 2, default: "0.0"
-    t.decimal "prematch_payout", precision: 8, scale: 2, default: "0.0"
+    t.decimal "prematch_wager", precision: 14, scale: 2, default: "0.0"
+    t.decimal "prematch_payout", precision: 14, scale: 2, default: "0.0"
     t.integer "live_bet_count", default: 0
-    t.decimal "live_sports_wager", precision: 8, scale: 2, default: "0.0"
-    t.decimal "live_sports_payout", precision: 8, scale: 2, default: "0.0"
-    t.decimal "total_pending_bet_sum", precision: 8, scale: 2, default: "0.0"
+    t.decimal "live_sports_wager", precision: 14, scale: 2, default: "0.0"
+    t.decimal "live_sports_payout", precision: 14, scale: 2, default: "0.0"
+    t.decimal "total_pending_bet_sum", precision: 14, scale: 2, default: "0.0"
     t.bigint "customer_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.datetime "last_updated_at"
-    t.decimal "total_bonus_awarded", precision: 8, scale: 2, default: "0.0"
-    t.decimal "total_bonus_completed", precision: 8, scale: 2, default: "0.0"
+    t.decimal "total_bonus_awarded", precision: 14, scale: 2, default: "0.0"
+    t.decimal "total_bonus_completed", precision: 14, scale: 2, default: "0.0"
     t.index ["customer_id"], name: "index_customer_statistics_on_customer_id"
   end
 
   create_table "customer_summaries", force: :cascade do |t|
     t.date "day", null: false
-    t.decimal "bonus_wager_amount", precision: 8, scale: 2, default: "0.0", null: false
-    t.decimal "real_money_wager_amount", precision: 8, scale: 2, default: "0.0", null: false
-    t.decimal "bonus_payout_amount", precision: 8, scale: 2, default: "0.0", null: false
-    t.decimal "real_money_payout_amount", precision: 8, scale: 2, default: "0.0", null: false
-    t.decimal "bonus_deposit_amount", precision: 8, scale: 2, default: "0.0", null: false
-    t.decimal "real_money_deposit_amount", precision: 8, scale: 2, default: "0.0", null: false
-    t.decimal "withdraw_amount", precision: 8, scale: 2, default: "0.0", null: false
+    t.decimal "bonus_wager_amount", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "real_money_wager_amount", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "bonus_payout_amount", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "real_money_payout_amount", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "bonus_deposit_amount", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "real_money_deposit_amount", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "withdraw_amount", precision: 14, scale: 2, default: "0.0", null: false
     t.integer "signups_count", default: 0, null: false
     t.integer "betting_customer_ids", default: [], null: false, array: true
     t.datetime "created_at", null: false
@@ -371,7 +371,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_095035) do
   create_table "entries", force: :cascade do |t|
     t.bigint "wallet_id"
     t.string "kind"
-    t.decimal "amount", precision: 8, scale: 2
+    t.decimal "amount", precision: 14, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "origin_type"
@@ -380,7 +380,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_095035) do
     t.datetime "confirmed_at"
     t.string "external_id"
     t.bigint "entry_request_id"
-    t.decimal "balance_amount_after", precision: 8, scale: 2
+    t.decimal "balance_amount_after", precision: 14, scale: 2
     t.decimal "base_currency_amount"
     t.index ["entry_request_id"], name: "index_entries_on_entry_request_id"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
@@ -390,8 +390,8 @@ ActiveRecord::Schema.define(version: 2019_08_30_095035) do
   create_table "entry_currency_rules", force: :cascade do |t|
     t.bigint "currency_id"
     t.string "kind"
-    t.decimal "min_amount", precision: 8, scale: 2
-    t.decimal "max_amount", precision: 8, scale: 2
+    t.decimal "min_amount", precision: 14, scale: 2
+    t.decimal "max_amount", precision: 14, scale: 2
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["currency_id", "kind"], name: "index_entry_currency_rules_on_currency_id_and_kind", unique: true
@@ -407,7 +407,7 @@ ActiveRecord::Schema.define(version: 2019_08_30_095035) do
     t.integer "currency_id"
     t.string "kind"
     t.text "comment"
-    t.decimal "amount", precision: 8, scale: 2
+    t.decimal "amount", precision: 14, scale: 2
     t.string "initiator_type"
     t.bigint "initiator_id"
     t.string "mode"

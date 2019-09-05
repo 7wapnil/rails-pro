@@ -132,4 +132,7 @@ describe CustomerBonus do
       end
     end
   end
+
+  include_examples 'precionable up to 12 digit', :rollover_balance
+  include_examples 'precionable up to 12 digit', :rollover_initial_value
 end

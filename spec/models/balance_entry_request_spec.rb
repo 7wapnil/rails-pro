@@ -8,4 +8,6 @@ describe BalanceEntryRequest, type: :model do
 
   it { expect(described_class.kinds).to eq(Balance.kinds) }
   it { is_expected.to have_one(:balance).through(:balance_entry) }
+
+  include_examples 'precionable up to 12 digit', :amount
 end
