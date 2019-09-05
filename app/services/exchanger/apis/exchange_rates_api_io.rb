@@ -1,13 +1,17 @@
 module Exchanger
   module Apis
     class ExchangeRatesApiIo < BaseApi
-      base_uri 'https://api.exchangeratesapi.io'
-
       protected
 
       def request
-        self.class.get('/latest', query: { base: @base,
-                                           symbols: @currencies.join(',') })
+        self.class.get(
+          "#{ENV['FIXER_API_URL']}/api/latest",
+          query: {
+            base: @base,
+            symbols: @currencies.join(','),
+            access_key: ENV['FIXER_API_KEY']
+          }
+        )
       end
 
       def parse(formatted_response)
