@@ -42,9 +42,12 @@ describe Payments::Fiat::Wirecard::CallbackHandler do
     let(:body) do
       Nokogiri::XML::Builder.new do |xml|
         xml.payment do
-          xml.send(:'transaction-type', 'credit')
+          xml.send(:'transaction-type', transaction_type)
         end
       end
+    end
+    let(:transaction_type) do
+      Payments::Fiat::Wirecard::CallbackHandler::WITHDRAWAL
     end
 
     before do
