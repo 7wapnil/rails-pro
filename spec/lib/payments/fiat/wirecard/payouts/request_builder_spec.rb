@@ -35,11 +35,14 @@ describe Payments::Fiat::Wirecard::Payouts::RequestBuilder do
       payment_method: Payments::Fiat::Wirecard::Methods::CREDIT_CARD,
       requested_amount_currency: currency.code,
       requested_amount: amount,
-      transaction_type: 'credit',
+      transaction_type: transaction_type,
       token_id: card_token,
       masked_account_number: card_mask,
       notification_url: "#{callback_url}?#{verification_parameters}"
     }
+  end
+  let(:transaction_type) do
+    Payments::Fiat::Wirecard::Payouts::RequestBuilder::PAYMENT_TYPE
   end
   let(:timestamp) { Time.zone.now }
   let(:callback_url) { "#{ENV['APP_HOST']}/webhooks/wirecard/payment" }

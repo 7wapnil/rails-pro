@@ -5,7 +5,7 @@ module Payments
     module Wirecard
       class CallbackHandler < ::ApplicationService
         DEPOSIT = 'authorization'
-        WITHDRAWAL = 'credit'
+        WITHDRAWAL = Rails.env.production? ? 'original-credit' : 'credit'
 
         def initialize(request)
           @request = request

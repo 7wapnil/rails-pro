@@ -66,7 +66,7 @@ describe Webhooks::Wirecard::PaymentsController, type: :controller do
     let(:response) do
       Nokogiri::XML::Builder.new do |xml|
         xml.payment do
-          xml.send(:'transaction-type', 'credit')
+          xml.send(:'transaction-type', transaction_type)
           xml.send(:'transaction-state', state)
           xml.send(:'transaction-id', SecureRandom.hex(5))
           xml.send(:'request-id', "#{entry_request.id}:#{Time.zone.now}")
@@ -78,6 +78,9 @@ describe Webhooks::Wirecard::PaymentsController, type: :controller do
           end
         end
       end
+    end
+    let(:transaction_type) do
+      Payments::Fiat::Wirecard::CallbackHandler::WITHDRAWAL
     end
 
     context 'when success' do
