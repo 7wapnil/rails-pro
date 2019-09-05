@@ -2,7 +2,7 @@ describe Exchanger::Apis::ExchangeRatesApiIo do
   subject { described_class.new('EUR', %w[USD GBP]) }
 
   let(:expected_route) do
-    'https://api.exchangeratesapi.io/latest?base=EUR&symbols=USD,GBP'
+    'http://data.fixer.io/api/latest?base=EUR&symbols=USD,GBP&access_key=key'
   end
   let(:expected_response) do
     { rates: {
@@ -15,6 +15,13 @@ describe Exchanger::Apis::ExchangeRatesApiIo do
     create(:currency, :primary, code: Currency::PRIMARY_CODE)
     create(:currency, code: 'USD', kind: Currency::FIAT)
     create(:currency, code: 'GBP', kind: Currency::FIAT)
+
+    allow(ENV).to(
+      receive(:[]).with('FIXER_API_KEY').and_return('key')
+    )
+    allow(ENV).to(
+      receive(:[]).with('FIXER_API_URL').and_return('http://data.fixer.io')
+    )
   end
 
   it 'requests rates from service' do
