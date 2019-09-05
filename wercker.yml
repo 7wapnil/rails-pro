@@ -154,17 +154,64 @@ deploy:
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-listener
-        terraform init
-        terraform workspace select $TARGET_ENV
-        terraform apply -auto-approve
-
         cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-listener-mts
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
 
         cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-websocket
+        terraform init
+        terraform workspace select $TARGET_ENV
+        terraform apply -auto-approve
+
+  after-steps:
+    - slack-notifier:
+      url: $SLACK_URL
+
+deploy-unified-odds-listener:
+  box: python:2.7-alpine
+
+  steps:
+    - script:
+      name: install-linux-deps
+      code: apk add -qU openssh git curl jq
+
+    - capgemini/terraform-install:
+      version: "0.11.14"
+
+    - edgecaseadmin/install-aws-cli:
+      key: $AWS_ACCESS_KEY_ID
+      secret: $AWS_SECRET_ACCESS_KEY
+      region: $AWS_DEFAULT_REGION
+
+    - add-ssh-key:
+      keyname: GITHUB
+
+    - script:
+      name: add-github-to-known-hosts
+      code: ssh-keyscan github.com >> /root/.ssh/known_hosts
+
+    - script:
+      name: clone-terraform-config
+      code: |
+        rm -rf $TERRAFORM_CONFIG_DIR
+        git clone \
+            git@github.com:arcanebet/infrastructure.git \
+            $TERRAFORM_CONFIG_DIR
+
+    - script:
+      name: update-image-tag
+      code: |
+        aws ssm put-parameter \
+            --name /backend/tag \
+            --value $WERCKER_GIT_COMMIT \
+            --type SecureString \
+            --overwrite
+
+    - script:
+      name: terraform-apply
+      code: |
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-listener
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
