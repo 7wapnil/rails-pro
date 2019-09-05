@@ -53,4 +53,6 @@ describe EntryRequest, type: :model do
       end
     end
   end
+
+  include_examples 'precionable up to 12 digit', :amount
 end

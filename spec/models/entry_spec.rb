@@ -34,4 +34,7 @@ describe Entry do
       expect(subject.withdrawal).to be_nil
     end
   end
+
+  include_examples 'precionable up to 12 digit', :amount
+  include_examples 'precionable up to 12 digit', :balance_amount_after
 end
