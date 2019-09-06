@@ -12,9 +12,10 @@ module OddsFeed
 
         include JobLogger
 
-        def initialize(event:, markets_data:)
+        def initialize(event:, markets_data:, message_producer_id:)
           @event = event
           @markets_data = markets_data
+          @message_producer_id = message_producer_id
           @markets = []
           @odds = []
         end
@@ -25,6 +26,8 @@ module OddsFeed
         end
 
         private
+
+        attr_reader :message_producer_id
 
         def build
           @markets_data.each do |market_data|
@@ -164,10 +167,6 @@ module OddsFeed
 
         def event_producer_id
           Thread.current[:event_producer_id]
-        end
-
-        def message_producer_id
-          Thread.current[:message_producer_id]
         end
 
         def extra_log_info(market_data)

@@ -26,10 +26,11 @@ describe EventArchive::Service do
   it 'archives every event scope' do
     described_class.call(event: event)
     archived = ArchivedEvent.find_by(external_id: event.external_id)
+    archived_tournament_scope =
+      archived.scopes.detect { |scope| scope.kind == EventScope::TOURNAMENT }
 
     expect(archived.scopes.size).to eq(3)
-    expect(archived.scopes[0].name).to eq(tournament.name)
-    expect(archived.scopes[0].external_id).to eq(tournament.external_id)
-    expect(archived.scopes[0].kind).to eq(tournament.kind)
+    expect(archived_tournament_scope.name).to eq(tournament.name)
+    expect(archived_tournament_scope.external_id).to eq(tournament.external_id)
   end
 end
