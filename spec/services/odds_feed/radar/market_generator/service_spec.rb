@@ -36,7 +36,13 @@ describe OddsFeed::Radar::MarketGenerator::Service do
   end
 
   describe 'market attributes' do
-    subject { described_class.new(event: event, markets_data: markets_data) }
+    subject do
+      described_class.new(
+        event: event,
+        markets_data: markets_data,
+        message_producer_id: 1
+      )
+    end
 
     let(:template) { MarketTemplate.find_by!(external_id: '188') }
 
@@ -49,7 +55,13 @@ describe OddsFeed::Radar::MarketGenerator::Service do
   end
 
   describe '#call' do
-    subject { described_class.call(event: event, markets_data: markets_data) }
+    subject do
+      described_class.call(
+        event: event,
+        markets_data: markets_data,
+        message_producer_id: 1
+      )
+    end
 
     let(:web_socket) { double }
     let(:odds)       { build_stubbed_list(:odd, 5) }
@@ -143,7 +155,13 @@ describe OddsFeed::Radar::MarketGenerator::Service do
     end
 
     context 'with market templates cache' do
-      subject { described_class.call(event: event, markets_data: markets_data) }
+      subject do
+        described_class.call(
+          event: event,
+          markets_data: markets_data,
+          message_producer_id: 1
+        )
+      end
 
       before do
         allow(MarketTemplate).to receive('find_by!').and_call_original

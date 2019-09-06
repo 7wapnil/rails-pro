@@ -5,6 +5,8 @@ module Payments
     module Wirecard
       module Deposits
         class RequestHandler < ApplicationService
+          CURRENCY_ERROR_CODE = 'E7001'
+
           def initialize(transaction:)
             @transaction = transaction
           end
@@ -23,11 +25,22 @@ module Payments
           rescue ::HTTParty::ResponseError => error
             Appsignal.send_error(error)
             Rails.logger.error(error.message)
-            raise ::Payments::GatewayError, 'Technical gateway error'
+
+            raise ::Payments::GatewayError, gateway_error_message(error)
           end
 
           def client
             @client ||= Client.new
+          end
+
+          def gateway_error_message(error)
+            currency_error = I18n.t(
+              'errors.messages.payments.deposits.currency_error'
+            )
+
+            return currency_error if error.message.include?(CURRENCY_ERROR_CODE)
+
+            I18n.t('errors.messages.payments.gateway_error')
           end
         end
       end

@@ -120,7 +120,8 @@ module OddsFeed
 
         ::OddsFeed::Radar::MarketGenerator::Service.call(
           event: event,
-          markets_data: markets_data
+          markets_data: markets_data,
+          message_producer_id: producer_id.to_i
         )
       end
 
