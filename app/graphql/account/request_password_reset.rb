@@ -11,7 +11,12 @@ module Account
     end
 
     def resolve(_obj, args)
-      customer = Customer.find_by!(email: args[:email])
+      # should be fixed after going production
+      customer =
+        Customer.where('lower(email) = ?', args[:email].downcase.strip)&.first
+
+      raise ActiveRecord::RecordNotFound unless customer
+
       Account::SendPasswordResetService.call(customer)
 
       true
