@@ -60,6 +60,7 @@ Rails.application.routes.draw do
 
   resources :customers, only: [], module: :customers do
     resource :statistics, only: :show, path: 'stats'
+    resources :entry_requests, only: :create
   end
 
   resources :customer_bonuses, only: %i[create show destroy]
@@ -75,7 +76,7 @@ Rails.application.routes.draw do
 
   resources :labels, only: %i[index new edit create update destroy]
 
-  resources :entry_requests, only: %i[index show create]
+  resources :entry_requests, only: %i[index show]
   resources :entries, only: :show
   resources :transactions, only: %i[index]
   resources :titles, only: %i[index edit update create]

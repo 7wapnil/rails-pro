@@ -2,7 +2,7 @@
 = stylesheet_pack_tag 'css/event_scopes'
 
 #overlay
-%h1.display-4= t('entities.event_scopes') + ' for ' + @title.name
+%h1.display-4= title.event_scopes_header
 %table.table
   %tbody
-    %tr#event-scopes-tr{ data: { title_id: @title.id } }
+    %tr#event-scopes-tr{ data: { title_id: title.id } }

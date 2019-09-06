@@ -5,18 +5,23 @@ module EntryRequests
     def initialize(entry_request_params)
       @params = entry_request_params
       @amount = params[:amount].to_f
+      @initiator = params[:initiator]
+      @customer = params[:customer]
     end
 
     def call
       deposit? ? create_and_proceed_deposit : create_and_proceed_withdrawal
-      entry_request_error! if entry_request.failed?
+
+      return entry_request_error! if entry_request.failed?
+
+      log_creating
 
       entry_request
     end
 
     private
 
-    attr_reader :entry_request, :params, :amount, :technical_errors
+    attr_reader :entry_request, :params, :amount, :initiator, :customer
 
     def deposit?
       params[:kind] == EntryRequest::DEPOSIT
@@ -73,12 +78,16 @@ module EntryRequests
     def transaction_params
       {
         method: params[:mode],
-        customer: Customer.find_by(id: params[:customer_id]),
+        customer: customer,
         amount: amount,
         comment: params[:comment],
-        initiator: params[:initiator],
+        initiator: initiator,
         currency_code: Currency.find_by(id: params[:currency_id])&.code
       }
+    end
+
+    def log_creating
+      initiator.log_event(:entry_request_created, entry_request, customer)
     end
   end
 end
