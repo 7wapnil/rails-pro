@@ -21,7 +21,8 @@ module Payments
             response = client.authorize_payment(transaction)
             response.parsed_response
           rescue ::HTTParty::ResponseError => error
-            Rails.logger.error(error)
+            Appsignal.send_error(error)
+            Rails.logger.error(error.message)
             raise ::Payments::GatewayError, 'Technical gateway error'
           end
 
