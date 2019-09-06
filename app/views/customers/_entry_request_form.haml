@@ -2,7 +2,6 @@
        class: 'customer-entry-request-form' do
   .customer-entry-request-form
     = simple_form_for [customer, entry_request] do |f|
-      = f.input :customer_id, as: :hidden
       .row
         .col-6
           = f.input :kind,
