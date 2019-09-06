@@ -102,7 +102,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   validates :email, uniqueness: { case_sensitive: false }
   validates :verified, :activated, :locked, inclusion: { in: [true, false] }
 
-  validates :phone, phone: true
+  validates :phone, phone: true, on: :create
   validates_with AgeValidator
   ransack_alias :ip_address, :last_sign_in_ip_or_current_sign_in_ip
 
