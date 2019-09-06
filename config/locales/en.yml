@@ -462,6 +462,9 @@ en:
         bonus_expired: 'Customer bonus is expired!'
 
       payments:
+        gateway_error: 'Technical gateway error'
+        deposits:
+          currency_error: 'Your currency is currently not supported for depositing with Credit Cards. We are working hard to make sure this is in place early next week. Our apologies for the inconvenience.'
         withdrawals:
           credit_card:
             inconsistent: Last four credit card digits should be the same as were used for deposit
