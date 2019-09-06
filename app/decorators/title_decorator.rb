@@ -2,10 +2,18 @@
 
 class TitleDecorator < ApplicationDecorator
   def name
-    object.name.present? ? object.name : object.external_name
+    return object.name if object.name.present?
+
+    object.external_name || t('not_available')
   end
 
   def short_name
-    object.short_name.present? ? object.short_name : name
+    return object.short_name if object.short_name.present?
+
+    name || t('not_available')
+  end
+
+  def event_scopes_header
+    "#{t('entities.event_scopes')} for #{name}"
   end
 end

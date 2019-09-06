@@ -10,7 +10,7 @@ describe EntryRequests::BackofficeEntryRequestService do
   let(:entry_request) { create(:entry_request, customer: customer) }
   let(:base_params) do
     {
-      customer_id: customer.id,
+      customer: customer,
       amount: 10,
       currency_id: currency.id,
       kind: EntryRequest::DEPOSIT,
@@ -23,6 +23,7 @@ describe EntryRequests::BackofficeEntryRequestService do
   before do
     allow(EntryCurrencyRule).to receive(:find_by!) { rule }
     allow(Currency).to receive(:find_by!) { currency }
+    allow(Audit::Service).to receive(:call)
   end
 
   describe '#submit' do
@@ -56,6 +57,12 @@ describe EntryRequests::BackofficeEntryRequestService do
         expect { described_class.call(entry_params) }
           .to raise_error(EntryRequests::ValidationError)
       end
+
+      it 'does not create audit log' do
+        described_class.call(entry_params)
+      rescue EntryRequests::ValidationError
+        expect(Audit::Service).not_to have_received(:call)
+      end
     end
 
     context 'withdrawal success creation flow' do
@@ -63,13 +70,26 @@ describe EntryRequests::BackofficeEntryRequestService do
         base_params.merge(kind: EntryRequest::WITHDRAW)
       end
 
-      it 'passes entry request to EntryRequestProcessingWorker' do
+      before do
         allow(EntryRequest).to receive(:new).and_return(entry_request)
+      end
 
+      it 'passes entry request to EntryRequestProcessingWorker' do
         expect(EntryRequestProcessingWorker)
           .to receive(:perform_async).with(entry_request.id)
 
         described_class.call(entry_params)
+      end
+
+      it 'creates audit log' do
+        described_class.call(entry_params)
+
+        expect(Audit::Service)
+          .to have_received(:call)
+          .with(event: :entry_request_created,
+                user: initiator,
+                customer: customer,
+                context: entry_request)
       end
     end
   end

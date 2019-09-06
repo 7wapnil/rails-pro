@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class EventScopesController < ApplicationController
   protect_from_forgery prepend: true
 
-  def index
-    @title = Title.find(params[:title_id]).decorate
-  end
+  find :title, by: :title_id, only: :index
+
+  decorates_assigned :title
 
   def show
     render json: EventScopes::CollectChildren.call(
