@@ -214,7 +214,7 @@ describe EntryRequests::Factories::Deposit do
       )
     end
 
-    it 'fails created empty request' do
+    xit 'fails created empty request' do
       expect(service_call).to have_attributes(
         status: EntryRequest::FAILED,
         result: {
