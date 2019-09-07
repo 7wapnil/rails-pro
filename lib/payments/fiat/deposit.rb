@@ -7,8 +7,9 @@ module Payments
 
       PAYMENT_METHODS = [
         ::Payments::Methods::CREDIT_CARD,
-        ::Payments::Methods::NETELLER,
-        ::Payments::Methods::SKRILL,
+        # FIXME: uncomment when becomes available
+        # ::Payments::Methods::NETELLER,
+        # ::Payments::Methods::SKRILL,
         ::Payments::Methods::PAYSAFECARD
       ].freeze
 
