@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Exchanger
   class Converter < ApplicationService
     PRECISION = 2
@@ -7,8 +9,8 @@ module Exchanger
       @origin_code = origin_currency # origin_currency
       @target_code = target_currency || ::Currency::PRIMARY_CODE
 
-      @origin_currency = origin_currency if origin_currency.is_a? Currency
-      @target_currency = target_currency if target_currency.is_a? Currency
+      @origin_currency = origin_currency if origin_currency.is_a?(Currency)
+      @target_currency = target_currency if target_currency.is_a?(Currency)
     end
 
     def call

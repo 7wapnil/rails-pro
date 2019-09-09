@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Exchanger
   class RatesScraper < ApplicationService
     def call
@@ -18,9 +20,11 @@ module Exchanger
     def update_crypto_rates
       return unless crypto_currencies
 
-      Exchanger::Apis::CoinApi
-        .call(::Currency::PRIMARY_CODE, crypto_currencies)
-        .each(&method(:update_rate))
+      Exchanger::Apis::CoinApi.call(
+        ::Currency::PRIMARY_CODE,
+        crypto_currencies,
+        default: ::Payments::Crypto::SuppliedCurrencies::BTC
+      ).each(&method(:update_rate))
     end
 
     def update_rate(rate)

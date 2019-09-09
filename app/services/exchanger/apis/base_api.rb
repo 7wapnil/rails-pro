@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Exchanger
   module Apis
     class BaseApi < ApplicationService
@@ -5,9 +7,9 @@ module Exchanger
 
       raise_on [400, 401, 403, 429, 500, 550]
 
-      def initialize(base, currencies)
+      def initialize(base, currencies, default: [])
         @base = base
-        @currencies = currencies.reject { |code| code == base }
+        @currencies = Array(default) | currencies.reject { |code| code == base }
       end
 
       def call
@@ -24,6 +26,8 @@ module Exchanger
 
       protected
 
+      attr_reader :base, :currencies
+
       def request
         raise NotImplementedError, 'Must be implemented by child classes'
       end
@@ -39,8 +43,8 @@ module Exchanger
           level,
           message:              message,
           api:                  self.class.name,
-          base_currency:        @base,
-          currencies_to_update: @currencies
+          base_currency:        base,
+          currencies_to_update: currencies
         )
       end
     end

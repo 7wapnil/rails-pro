@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Exchanger::Converter do
   before do
     create(:currency, code: Currency::PRIMARY_CODE, exchange_rate: nil)
