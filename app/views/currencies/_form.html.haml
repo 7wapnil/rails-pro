@@ -10,9 +10,17 @@
         = f.input :name, required: true
         = f.input :code, required: true
         = f.input :exchange_rate,
-            label: t('entities.exchange_rate', code: Currency.primary&.code),
+            label: t('entities.exchange_rate', code: Currency::PRIMARY_CODE),
             required: true,
-            disabled: true
+            disabled: true,
+            input_html: { type: :text,
+                          value: f.object.exchange_rate(human: true) }
+        = f.input :reverse_exchange_rate,
+            label: t('entities.reverse_exchange_rate', code: f.object.code),
+            required: true,
+            disabled: true,
+            input_html: { type: :text,
+                          value: f.object.reverse_exchange_rate(human: true) }
         = f.select :kind,
             Currency.kinds,
             { include_blank: false, required: true },

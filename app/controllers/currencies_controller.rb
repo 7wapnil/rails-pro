@@ -1,4 +1,10 @@
+# frozen_string_literal: true
+
 class CurrenciesController < ApplicationController
+  find :currency, only: :edit
+
+  decorates_assigned :currency
+
   def index
     @search = Currency.ransack(query_params)
     @currencies = @search.result.page(params[:page])
@@ -14,7 +20,6 @@ class CurrenciesController < ApplicationController
   end
 
   def edit
-    @currency = Currency.find(params[:id])
     EntryKinds::KINDS.keys.each do |kind|
       next if @currency.entry_currency_rules.exists?(kind: kind)
 

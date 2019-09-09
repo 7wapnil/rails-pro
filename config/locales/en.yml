@@ -340,7 +340,8 @@ en:
       one: 1 event
       other: "%{count} events"
     event_scopes: Event Scopes
-    exchange_rate: "Exchange rate (against %{code})"
+    exchange_rate: "Exchange rate (for 1 %{code})"
+    reverse_exchange_rate: "Reverse exchange rate (for 1 %{code})"
     global_betting_limit: Global betting limit
     global_betting_limits: Global betting limits
     label: Label

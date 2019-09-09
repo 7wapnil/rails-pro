@@ -9,8 +9,8 @@ module Exchanger
         self.class.get(
           "#{ENV['FIXER_API_URL']}/api/latest",
           query: {
-            base: base,
-            symbols: currencies.join(','),
+            base: base_currency_code,
+            symbols: currency_codes.join(','),
             access_key: ENV['FIXER_API_KEY']
           }
         )

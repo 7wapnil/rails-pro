@@ -6,59 +6,44 @@ module Exchanger
 
     def initialize(value, origin_currency, target_currency = nil)
       @value = value
-      @origin_code = origin_currency # origin_currency
-      @target_code = target_currency || ::Currency::PRIMARY_CODE
-
-      @origin_currency = origin_currency if origin_currency.is_a?(Currency)
-      @target_currency = target_currency if target_currency.is_a?(Currency)
+      @origin = origin_currency
+      @target = target_currency || ::Currency::PRIMARY_CODE
     end
 
     def call
-      return @value.truncate(PRECISION) if @origin_code == @target_code
+      return value.truncate(PRECISION) if origin_currency == target_currency
 
-      convert
+      converted_value.truncate(PRECISION)
     end
 
     private
 
-    def convert
-      converted_value.truncate(PRECISION)
-    end
+    attr_reader :value, :origin, :target
 
     def converted_value
-      converted = @value / currency_rate(origin_currency)
-      return converted if target_currency.primary?
-
-      converted * currency_rate(target_currency)
+      value / currency_rate(origin_currency) * currency_rate(target_currency)
     end
 
     def origin_currency
-      @origin_currency ||= ::Currency.find_by!(code: @origin_code)
+      @origin_currency ||=
+        origin.is_a?(Currency) ? origin : ::Currency.find_by!(code: origin)
     rescue ActiveRecord::RecordNotFound
-      raise ActiveRecord::RecordNotFound, "Currency #{@origin_code} not found"
+      raise ActiveRecord::RecordNotFound, "Currency #{origin} not found"
     end
 
     def target_currency
-      @target_currency ||= ::Currency.find_by!(code: @target_code)
+      @target_currency ||=
+        target.is_a?(Currency) ? target : ::Currency.find_by!(code: target)
     rescue ActiveRecord::RecordNotFound
-      raise ActiveRecord::RecordNotFound, "Currency #{@target_code} not found"
+      raise ActiveRecord::RecordNotFound, "Currency #{target} not found"
     end
 
     def currency_rate(currency)
-      return ::Currency::PRIMARY_RATE if currency.primary?
-
       rate = currency.exchange_rate
+
       return rate.to_f if rate
 
-      raise StandardError, "Currency '#{currency.code}' has no updated rate"
-    end
-
-    def validate_rate!(currency)
-      return if currency.code == ::Currency::PRIMARY_CODE
-      return if currency.exchange_rate
-
-      err_msg = "Currency '#{currency.code}' has no updated exchange rate"
-      raise StandardError, err_msg
+      raise StandardError, "Currency '#{currency}' has no updated rate"
     end
   end
 end

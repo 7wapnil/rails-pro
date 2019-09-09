@@ -2,6 +2,8 @@
 
 module Exchanger
   class RatesScraper < ApplicationService
+    include ::Payments::Crypto::SuppliedCurrencies
+
     def call
       update_fiat_rates
       update_crypto_rates
@@ -20,11 +22,9 @@ module Exchanger
     def update_crypto_rates
       return unless crypto_currencies
 
-      Exchanger::Apis::CoinApi.call(
-        ::Currency::PRIMARY_CODE,
-        crypto_currencies,
-        default: ::Payments::Crypto::SuppliedCurrencies::BTC
-      ).each(&method(:update_rate))
+      Exchanger::Apis::CoinApi
+        .call(::Currency::PRIMARY_CODE, crypto_currencies)
+        .each(&method(:update_rate))
     end
 
     def update_rate(rate)
@@ -47,7 +47,7 @@ module Exchanger
     end
 
     def crypto_currencies
-      @crypto_currencies ||= ::Currency.crypto.pluck(:code)
+      @crypto_currencies ||= ::Currency.crypto.pluck(:code) | [BTC]
     end
   end
 end

@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 describe Exchanger::Converter do
+  include_context 'base_currency'
+
   before do
-    create(:currency, code: Currency::PRIMARY_CODE, exchange_rate: nil)
     create(:currency, code: 'USD', exchange_rate: 1.13000)
     create(:currency, code: 'GBP', exchange_rate: 0.86390)
     create(:currency, code: 'BTC', exchange_rate: 0.00022)

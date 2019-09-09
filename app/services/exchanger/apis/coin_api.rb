@@ -11,8 +11,8 @@ module Exchanger
       protected
 
       def request
-        self.class.get("/exchangerate/#{base}",
-                       query: { filter_asset_id: currencies.join(',') })
+        self.class.get("/exchangerate/#{base_currency_code}",
+                       query: { filter_asset_id: currency_codes.join(',') })
       end
 
       def parse(formatted_response)

@@ -7,14 +7,14 @@ module Exchanger
 
       raise_on [400, 401, 403, 429, 500, 550]
 
-      def initialize(base, currencies, default: [])
-        @base = base
-        @currencies = Array(default) | currencies.reject { |code| code == base }
+      def initialize(base_currency_code, currency_codes)
+        @base_currency_code = base_currency_code
+        @currency_codes = currency_codes
       end
 
       def call
         log(:info, 'Requesting new currencies rates')
-        response = request.parsed_response
+
         return [] unless response
 
         parse(response)
@@ -26,7 +26,11 @@ module Exchanger
 
       protected
 
-      attr_reader :base, :currencies
+      attr_reader :base_currency_code, :currency_codes
+
+      def response
+        @response ||= request.parsed_response
+      end
 
       def request
         raise NotImplementedError, 'Must be implemented by child classes'
@@ -43,8 +47,8 @@ module Exchanger
           level,
           message:              message,
           api:                  self.class.name,
-          base_currency:        base,
-          currencies_to_update: currencies
+          base_currency:        base_currency_code,
+          currencies_to_update: currency_codes
         )
       end
     end
