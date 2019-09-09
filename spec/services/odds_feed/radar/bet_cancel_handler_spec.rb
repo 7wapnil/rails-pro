@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 describe OddsFeed::Radar::BetCancelHandler do
   subject { described_class.new(message) }
 
-  let(:message) do
-    XmlParser.parse(file_fixture('bet_cancel_message.xml').read)
-  end
+  let(:message) { XmlParser.parse(file_fixture('bet_cancel_message.xml').read) }
 
   let!(:event_id) { message.dig('bet_cancel', 'event_id') }
   let!(:event) { create(:event, external_id: event_id) }
@@ -12,9 +12,7 @@ describe OddsFeed::Radar::BetCancelHandler do
 
   let(:entry_kind_cancel) { EntryKinds::SYSTEM_BET_CANCEL }
 
-  before do
-    create(:currency, :primary)
-  end
+  include_context 'base_currency'
 
   it 'cancels accepted bet' do
     bet = create(:bet, :with_placement_entry, :accepted, odd: odds.sample)
@@ -63,45 +61,37 @@ describe OddsFeed::Radar::BetCancelHandler do
     let(:winning) { create(:entry, :win, :with_balance_entries) }
 
     let!(:bet) do
-      create(
-        :bet,
-        :won,
-        odd: odds.sample,
-        placement_entry: stake,
-        winning: winning
-      )
+      create(:bet, :won, odd: odds.sample,
+                         placement_entry: stake,
+                         winning: winning)
     end
 
     it 'refunds correct real money and bonus ratio for stake' do
-      Sidekiq::Testing.inline! do
-        subject.handle
+      subject.handle
 
-        stake_cancellation = Entry
-                             .where('amount > ?', 0)
-                             .find_by(origin: bet, kind: entry_kind_cancel)
+      stake_cancellation = Entry
+                           .where('amount > ?', 0)
+                           .find_by(origin: bet, kind: entry_kind_cancel)
 
-        expect(stake_cancellation.real_money_balance_entry.amount)
-          .to eq(-stake.real_money_balance_entry.amount)
+      expect(stake_cancellation.real_money_balance_entry.amount)
+        .to eq(-stake.real_money_balance_entry.amount)
 
-        expect(stake_cancellation.bonus_balance_entry.amount)
-          .to eq(-stake.bonus_balance_entry.amount)
-      end
+      expect(stake_cancellation.bonus_balance_entry.amount)
+        .to eq(-stake.bonus_balance_entry.amount)
     end
 
     it 'subtracts correct real money and bonus ratio for winning' do
-      Sidekiq::Testing.inline! do
-        subject.handle
+      subject.handle
 
-        winning_cancellation = Entry
-                               .where('amount < ?', 0)
-                               .find_by(origin: bet, kind: entry_kind_cancel)
+      winning_cancellation = Entry
+                             .where('amount < ?', 0)
+                             .find_by(origin: bet, kind: entry_kind_cancel)
 
-        expect(winning_cancellation.real_money_balance_entry.amount)
-          .to eq(-winning.real_money_balance_entry.amount)
+      expect(winning_cancellation.real_money_balance_entry.amount)
+        .to eq(-winning.real_money_balance_entry.amount)
 
-        expect(winning_cancellation.bonus_balance_entry.amount)
-          .to eq(-winning.bonus_balance_entry.amount)
-      end
+      expect(winning_cancellation.bonus_balance_entry.amount)
+        .to eq(-winning.bonus_balance_entry.amount)
     end
   end
 
@@ -120,8 +110,7 @@ describe OddsFeed::Radar::BetCancelHandler do
 
     it 'cancels bets accepted after the start_time' do
       created_at =
-        DateTime.strptime(message.dig('bet_cancel', 'start_time'), '%s') +
-        5.minutes
+        Time.at(message.dig('bet_cancel', 'start_time')[0..-4].to_i) + 5.minutes
       bet = create(:bet, :with_placement_entry, :accepted,
                    odd: odds.sample, created_at: created_at)
       subject.handle
@@ -130,8 +119,7 @@ describe OddsFeed::Radar::BetCancelHandler do
 
     it 'doesn\'t cancel bets accepted before the start_time' do
       created_at =
-        DateTime.strptime(message.dig('bet_cancel', 'start_time'), '%s') -
-        5.minutes
+        Time.at(message.dig('bet_cancel', 'start_time')[0..-4].to_i) - 5.minutes
       bet = create(:bet, :with_placement_entry, :accepted,
                    odd: odds.sample, created_at: created_at)
       subject.handle
@@ -140,8 +128,7 @@ describe OddsFeed::Radar::BetCancelHandler do
 
     it 'cancels bets accepted before the end_time' do
       created_at =
-        DateTime.strptime(message.dig('bet_cancel', 'end_time'), '%s') -
-        5.minutes
+        Time.at(message.dig('bet_cancel', 'end_time')[0..-4].to_i) - 5.minutes
       bet = create(:bet, :with_placement_entry, :accepted,
                    odd: odds.sample, created_at: created_at)
       subject.handle
@@ -150,8 +137,7 @@ describe OddsFeed::Radar::BetCancelHandler do
 
     it 'doesn\'t cancel bets accepted after the end_time' do
       created_at =
-        DateTime.strptime(message.dig('bet_cancel', 'end_time'), '%s') +
-        5.minutes
+        Time.at(message.dig('bet_cancel', 'end_time')[0..-4].to_i) + 5.minutes
       bet = create(:bet, :with_placement_entry, :accepted,
                    odd: odds.sample, created_at: created_at)
       subject.handle

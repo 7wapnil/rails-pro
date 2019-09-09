@@ -18,7 +18,7 @@ module OddsFeed
       private
 
       def input_data
-        @payload['bet_cancel']
+        payload['bet_cancel']
       end
 
       def markets
@@ -28,7 +28,7 @@ module OddsFeed
       def validate_message!
         return if event_id && markets.any?
 
-        raise OddsFeed::InvalidMessageError, @payload
+        raise OddsFeed::InvalidMessageError, payload
       end
 
       def event_id
@@ -62,20 +62,14 @@ module OddsFeed
         return {} unless input_data['start_time']
 
         Bet.where('bets.created_at >= ?',
-                  to_datetime(input_data['start_time']))
+                  parse_timestamp(input_data['start_time']))
       end
 
       def bets_with_end_time
         return {} unless input_data['end_time']
 
         Bet.where('bets.created_at < ?',
-                  to_datetime(input_data['end_time']))
-      end
-
-      def to_datetime(timestamp)
-        Time.at(timestamp.to_i)
-            .to_datetime
-            .in_time_zone
+                  parse_timestamp(input_data['end_time']))
       end
 
       def cancel_bet(bet)
@@ -96,7 +90,7 @@ module OddsFeed
       end
 
       def proceed_entry_request(request)
-        EntryRequests::BetCancellationWorker.perform_async(request.id)
+        EntryRequests::ProcessingService.call(entry_request: request)
       end
     end
   end

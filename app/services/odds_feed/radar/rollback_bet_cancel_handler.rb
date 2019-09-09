@@ -54,7 +54,24 @@ module OddsFeed
         @bets ||= Bet
                   .joins(:market)
                   .includes(:winning_rollback_entry, :placement_rollback_entry)
+                  .cancelled_by_system
                   .where(markets: { external_id: market_external_ids })
+                  .merge(bets_with_start_time)
+                  .merge(bets_with_end_time)
+      end
+
+      def bets_with_start_time
+        return {} unless input_data['start_time']
+
+        Bet.where('bets.created_at >= ?',
+                  parse_timestamp(input_data['start_time']))
+      end
+
+      def bets_with_end_time
+        return {} unless input_data['end_time']
+
+        Bet.where('bets.created_at < ?',
+                  parse_timestamp(input_data['end_time']))
       end
 
       def rollback_bet(bet)
@@ -81,7 +98,7 @@ module OddsFeed
       end
 
       def proceed_entry_request(request)
-        EntryRequests::RollbackBetCancellationWorker.perform_async(request.id)
+        EntryRequests::ProcessingService.call(entry_request: request)
       end
     end
   end
