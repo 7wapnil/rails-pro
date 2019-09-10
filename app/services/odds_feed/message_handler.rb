@@ -2,6 +2,8 @@
 
 module OddsFeed
   class MessageHandler
+    include ::OddsFeed::Radar::Timestampable
+
     def initialize(payload, configuration: {})
       @payload = payload
       @configuration = configuration

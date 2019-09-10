@@ -1,18 +1,15 @@
 # frozen_string_literal: true
 
 describe Radar::RollbackBetCancelWorker do
-  subject { described_class.new.perform(payload) }
+  subject { described_class.new.perform(raw_payload) }
 
-  let(:pending_status) { StateMachines::BetStateMachine::VALIDATED_INTERNALLY }
-  let(:cancelled_status) { StateMachines::BetStateMachine::CANCELLED_BY_SYSTEM }
-
-  let(:payload) do
-    '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
-    '<rollback_bet_cancel event_id="sr:match:1234" timestamp="1234000">'\
-    '<market specifiers="gamenr=1|pointnr=20" id="1"/>'\
-    '<market id="2"/>'\
-    '</rollback_bet_cancel>'
+  let(:raw_payload) do
+    file_fixture('radar_rollback_bet_cancel_fixture.xml').read
   end
+  let(:payload) { XmlParser.parse(raw_payload)['rollback_bet_cancel'] }
+
+  let(:start_time) { Time.at(payload['start_time'][0..-4].to_i) }
+  let(:end_time) { Time.at(payload['end_time'][0..-4].to_i) }
 
   let(:event) { create(:event, external_id: 'sr:match:1234') }
   let(:settled_market) do
@@ -36,29 +33,54 @@ describe Radar::RollbackBetCancelWorker do
   end
 
   let(:won_bets) do
-    create_list(:bet, rand(1..3), :won,
+    create_list(:bet, rand(1..3), :won, :cancelled_by_system,
+                created_at: start_time + 2.seconds,
                 odd: build(:odd, market: settled_market),
-                status: pending_status,
                 customer: build(:customer))
   end
   let(:common_bets) do
-    create_list(:bet, rand(1..3),
+    create_list(:bet, rand(1..3), :cancelled_by_system,
+                created_at: start_time + 2.seconds,
                 odd: build(:odd, market: active_market),
-                status: StateMachines::BetStateMachine::CANCELLED_BY_SYSTEM,
                 customer: build(:customer))
   end
   let(:excluded_win_bet) do
-    create(:bet, :won,
+    create(:bet, :won, :cancelled_by_system,
+           created_at: start_time + 2.seconds,
            odd: build(:odd, market: excluded_market),
-           status: StateMachines::BetStateMachine::CANCELLED_BY_SYSTEM,
            customer: build(:customer))
   end
   let(:excluded_placement_bet) do
-    create(:bet, odd: build(:odd, market: excluded_market),
-                 status: StateMachines::BetStateMachine::CANCELLED_BY_SYSTEM,
-                 customer: build(:customer))
+    create(:bet, :cancelled_by_system,
+           created_at: start_time + 2.seconds,
+           odd: build(:odd, market: excluded_market),
+           customer: build(:customer))
   end
-  let(:excluded_bets) { [excluded_win_bet, excluded_placement_bet] }
+  let(:excluded_failed_bet) do
+    create(:bet, :failed, created_at: start_time + 2.seconds,
+                          odd: build(:odd, market: active_market),
+                          customer: build(:customer))
+  end
+  let(:excluded_bets_by_time) do
+    [
+      create(:bet, :won, :cancelled_by_system,
+             created_at: start_time - 5.seconds,
+             odd: build(:odd, market: settled_market),
+             customer: build(:customer)),
+      create(:bet, :cancelled_by_system,
+             created_at: end_time + 5.seconds,
+             odd: build(:odd, market: active_market),
+             customer: build(:customer))
+    ]
+  end
+  let(:excluded_bets) do
+    [
+      excluded_win_bet,
+      excluded_placement_bet,
+      excluded_failed_bet,
+      *excluded_bets_by_time
+    ]
+  end
   let!(:bets) { [*won_bets, *common_bets, *excluded_bets] }
 
   let!(:wallets) do
@@ -158,6 +180,10 @@ describe Radar::RollbackBetCancelWorker do
 
   include_context 'base_currency'
 
+  before do
+    allow(EntryRequests::ProcessingService).to receive(:call)
+  end
+
   context 'writes logs' do
     before do
       allow(Rails.logger).to receive(:info)
@@ -165,7 +191,7 @@ describe Radar::RollbackBetCancelWorker do
         .to receive(:job_id)
         .and_return(123)
 
-      described_class.new.perform(payload)
+      subject
     end
 
     it 'logs extra data' do
@@ -175,7 +201,7 @@ describe Radar::RollbackBetCancelWorker do
           hash_including(
             event_id: event.external_id,
             event_producer_id: event.producer_id,
-            message_timestamp: '1234000'
+            message_timestamp: '1567894394937'
           )
         )
     end
@@ -217,13 +243,18 @@ describe Radar::RollbackBetCancelWorker do
       expect(won_bets.map(&:reload)).to be_all(&:settled?)
     end
 
-    it 'excluded do nor become rollbacked' do
-      expect(excluded_bets.map(&:reload)).to be_all(&:cancelled_by_system?)
+    it 'excluded do not become rollbacked' do
+      expect(excluded_bets.map(&:reload))
+        .to all(be_cancelled_by_system.or(be_failed))
     end
   end
 
   context 'calls entry creating service' do
-    include_context 'asynchronous to synchronous'
+    before do
+      allow(EntryRequests::ProcessingService)
+        .to receive(:call)
+        .and_call_original
+    end
 
     context 'and creates rollback entry requests' do
       let(:win_entry_request) { win_entry_requests.sample }
@@ -315,9 +346,10 @@ describe Radar::RollbackBetCancelWorker do
 
   context 'invalid payload' do
     context 'without event id' do
-      let(:payload) do
+      let(:raw_payload) do
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
-        '<rollback_bet_cancel timestamp="1234000">'\
+        '<rollback_bet_cancel timestamp="1234000" start_time="1234000" '\
+        ' end_time="1234000">'\
         '<market specifiers="gamenr=1|pointnr=20" id="520"/>'\
         '</rollback_bet_cancel>'
       end
@@ -328,9 +360,10 @@ describe Radar::RollbackBetCancelWorker do
     end
 
     context 'without markets' do
-      let(:payload) do
+      let(:raw_payload) do
         '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
-        '<rollback_bet_cancel event_id="sr:match:4711" timestamp="1234000">'\
+        '<rollback_bet_cancel event_id="sr:match:4711" timestamp="1234000" '\
+        'start_time="1234000" end_time="1234000">'\
         '</rollback_bet_cancel>'
       end
 
