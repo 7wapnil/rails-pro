@@ -13,6 +13,7 @@ module Betting
     argument :ids, types[types.ID]
     argument :settlementStatus, types.String
     argument :dateRange, types.String
+    argument :excludedStatuses, types[::Bets::StatusEnum]
 
     def resolve(_obj, args)
       BetsQueryResolver.new(args: args, customer: @current_customer).resolve

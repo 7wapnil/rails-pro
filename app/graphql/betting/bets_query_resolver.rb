@@ -10,11 +10,6 @@ module Betting
       'month' => Time.zone.now.all_month
     }.freeze
 
-    EXCLUDE_STATUSES = [
-      Bet::FAILED,
-      Bet::REJECTED
-    ].freeze
-
     def initialize(args:, customer:)
       @args = args
       @customer = customer
@@ -26,6 +21,7 @@ module Betting
       @query = filter_by_kind
       @query = filter_by_status
       @query = filter_by_date
+      @query = filter_by_excluded_statuses
 
       query
     end
@@ -37,7 +33,6 @@ module Betting
     def base_query
       Bet.includes(:currency, odd: { market: { event: :title } })
          .where(customer: customer)
-         .where.not(status: EXCLUDE_STATUSES)
          .order(created_at: :desc)
     end
 
@@ -63,6 +58,12 @@ module Betting
       return query if args[:dateRange].blank?
 
       query.where(created_at: dates_selector)
+    end
+
+    def filter_by_excluded_statuses
+      return query if args[:excludedStatuses].blank?
+
+      query.where.not(status: args[:excludedStatuses])
     end
 
     def dates_selector
