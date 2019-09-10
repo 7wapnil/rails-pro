@@ -7,6 +7,10 @@ class CustomerBonusDecorator < ApplicationDecorator
     human ? super().strftime(EXPIRES_AT_FORMAT) : super()
   end
 
+  def active_until_date(human: false)
+    human ? super().strftime(EXPIRES_AT_FORMAT) : super()
+  end
+
   def amount(human: false)
     amount = balance_entry ? balance_entry.amount : 0.0
 

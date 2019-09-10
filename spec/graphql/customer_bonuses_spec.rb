@@ -31,7 +31,7 @@ describe GraphQL, '#customerBonuses' do
     end
 
     let(:control_date) do
-      customer_bonuses.first.expires_at.strftime('%e.%m.%y')
+      customer_bonuses.first.active_until_date.strftime('%e.%m.%y')
     end
 
     let(:control_customer_bonus) { customer_bonuses.first.decorate }
