@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Exchanger::Apis::ExchangeRatesApiIo do
   subject { described_class.new('EUR', %w[USD GBP]) }
 

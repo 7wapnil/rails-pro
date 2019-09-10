@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 module Exchanger
   class RatesScraper < ApplicationService
+    include ::Payments::Crypto::SuppliedCurrencies
+
     def call
       update_fiat_rates
       update_crypto_rates
@@ -43,7 +47,7 @@ module Exchanger
     end
 
     def crypto_currencies
-      @crypto_currencies ||= ::Currency.crypto.pluck(:code)
+      @crypto_currencies ||= ::Currency.crypto.pluck(:code) | [BTC]
     end
   end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Exchanger::RatesScraper do
   let(:fiat_rates) do
     [
