@@ -26,7 +26,7 @@ class CustomerBonus < ApplicationRecord
   end
 
   def active_until_date
-    return unless active? && activated_at
+    return expires_at unless activated_at
 
     activated_at.to_date + valid_for_days
   end
