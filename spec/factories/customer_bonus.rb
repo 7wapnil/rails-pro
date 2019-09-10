@@ -26,6 +26,11 @@ FactoryBot.define do
       activated_at { (valid_for_days + 1).days.ago }
     end
 
+    trait :cancelled do
+      status { CustomerBonus::CANCELLED }
+      activated_at { nil }
+    end
+
     trait :with_balance_entry do
       association :balance_entry, factory: %i[balance_entry bonus],
                                   strategy: :build
