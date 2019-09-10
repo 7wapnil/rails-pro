@@ -211,6 +211,22 @@ module StateMachines
       end
 
       def update_summary
+        update_summary_customer_ids
+        update_summary_wager_amounts
+      end
+
+      def update_summary_wager_amounts
+        return unless placement_entry
+
+        placement_entry.balance_entries.each do |balance_entry|
+          Customers::Summaries::BalanceUpdateWorker.perform_async(
+            Date.current,
+            balance_entry.id
+          )
+        end
+      end
+
+      def update_summary_customer_ids
         Customers::Summaries::UpdateWorker.perform_async(
           Date.current,
           betting_customer_ids: customer_id
