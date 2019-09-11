@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe CustomersFilter do
   let(:filter) { described_class.new(source: Customer) }
 
