@@ -72,6 +72,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   conflict_target :external_id
   conflict_updatable :name,
+                     :description,
                      :status,
                      :traded_live,
                      :display_status,
