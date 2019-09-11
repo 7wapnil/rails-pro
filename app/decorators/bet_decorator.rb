@@ -33,7 +33,13 @@ class BetDecorator < ApplicationDecorator
   end
 
   def created_at(human: false)
-    human ? l(created_at, format: :long) : super()
+    human ? l(super(), format: :long) : super()
+  end
+
+  def bet_settlement_status_achieved_at(human: false)
+    return super() unless human
+
+    super() ? l(super(), format: :long) : '-'
   end
 
   def winning_amount(human: false)
