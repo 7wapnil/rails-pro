@@ -90,7 +90,9 @@ describe Bets::RollbackSettlement do
 
     context 'when error appears on bet updating' do
       before do
-        allow(bet).to receive(:update!).and_raise(StandardError, 'error')
+        allow(bet)
+          .to receive(:rollback_settlement!)
+          .and_raise(StandardError, 'error')
       end
 
       it 'raises an error' do

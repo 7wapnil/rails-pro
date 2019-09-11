@@ -78,9 +78,9 @@ module OddsFeed
         ActiveRecord::Base.transaction do
           rollback_money(bet)
 
-          return bet.settled! if bet.settlement_status
+          return settle_bet(bet) if bet.settlement_status
 
-          bet.accepted!
+          bet.rollback_system_cancellation_with_acceptance!
         end
       rescue StandardError => error
         log_job_message(
@@ -99,6 +99,10 @@ module OddsFeed
 
       def proceed_entry_request(request)
         EntryRequests::ProcessingService.call(entry_request: request)
+      end
+
+      def settle_bet(bet)
+        bet.rollback_system_cancellation_with_settlement!
       end
     end
   end
