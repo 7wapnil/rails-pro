@@ -19,7 +19,7 @@ describe Currency, '#form' do
       expect(page).to have_selector('.alert-danger')
     end
 
-    it 'redirect to currencies list on success' do
+    it 'redirect to currency edit page on success' do
       fill_in :currency_code, with: 'COD'
       fill_in :currency_name, with: 'Test currency'
       EntryKinds::KINDS.keys.each.with_index do |_, index|
@@ -30,7 +30,9 @@ describe Currency, '#form' do
       end
       click_submit
 
-      expect(page).to have_current_path(currencies_path)
+      currency = Currency.order(created_at: :desc).reload.first
+
+      expect(page).to have_current_path(edit_currency_path(currency))
       expect(page).to have_content('COD')
     end
   end
@@ -73,12 +75,14 @@ describe Currency, '#form' do
       expect(page).to have_selector('.alert-danger')
     end
 
-    it 'redirect to currencies list on success' do
+    it 'redirect to currency edit page on success' do
       fill_in :currency_name, with: 'New name'
       click_submit
 
-      expect(page).to have_current_path(currencies_path)
-      expect(page).to have_content('New name')
+      currency = Currency.order(created_at: :desc).reload.first
+
+      expect(page).to have_current_path(edit_currency_path(currency))
+      expect(page).to have_content(I18n.t('currencies.edit.title'))
     end
   end
 end
