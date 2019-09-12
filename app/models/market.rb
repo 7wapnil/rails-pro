@@ -30,6 +30,8 @@ class Market < ApplicationRecord
   has_many :label_joins, as: :labelable, dependent: :destroy
   has_many :labels, through: :label_joins
 
+  scope :available, -> { visible.where(status: DISPLAYED_STATUSES) }
+
   validates :name, :priority, presence: true
 
   def self.with_category

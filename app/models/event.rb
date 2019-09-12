@@ -65,6 +65,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_many :players, through: :competitors
 
   has_many :dashboard_markets, -> { for_displaying }, class_name: Market.name
+  has_many :available_markets, -> { available }, class_name: Market.name
 
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }
@@ -208,6 +209,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   def bookable?
     liveodds == BOOKABLE
+  end
+
+  def available?
+    active? && visible
   end
 
   # TODO: rework producer assignment flow in odd change and fixture change
