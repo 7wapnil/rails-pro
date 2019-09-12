@@ -3,6 +3,12 @@
 module OddsFeed
   module Radar
     class BetCancelHandler < RadarMessageHandler
+      SUITABLE_BET_STATUSES = [
+        Bet::ACCEPTED,
+        Bet::SETTLED,
+        Bet::PENDING_MANUAL_SETTLEMENT
+      ].freeze
+
       attr_accessor :batch_size
 
       def initialize(payload)
@@ -50,12 +56,13 @@ module OddsFeed
       end
 
       def bets
-        @bets ||= Bet.accepted.or(Bet.settled)
-                     .joins(odd: :market)
-                     .includes(:winning, :placement_entry)
-                     .where(markets: { external_id: market_external_ids })
-                     .merge(bets_with_start_time)
-                     .merge(bets_with_end_time)
+        @bets ||= Bet
+                  .joins(odd: :market)
+                  .includes(:winning, :placement_entry)
+                  .where(markets: { external_id: market_external_ids })
+                  .where(status: SUITABLE_BET_STATUSES)
+                  .merge(bets_with_start_time)
+                  .merge(bets_with_end_time)
       end
 
       def bets_with_start_time
@@ -76,7 +83,7 @@ module OddsFeed
         ActiveRecord::Base.transaction do
           return_money(bet)
 
-          bet.cancelled_by_system!
+          bet.cancel_by_system!
         end
       rescue StandardError => error
         log_job_message(:error, message: 'Bet was not cancelled!',

@@ -9,7 +9,7 @@ module Mts
     end
 
     def call
-      successful_status_code? ? successful_bet_cancel : unsuccessful_bet_cancel
+      successful_status_code? ? bet.cancel! : unsuccessful_bet_cancel
 
       refund!
     end
@@ -39,10 +39,6 @@ module Mts
                       id: message['result']['ticketId'])
       raise SilentRetryJobError,
             "#{error_message}. Id: #{message['result']['ticketId']}"
-    end
-
-    def successful_bet_cancel
-      bet.cancelled!
     end
 
     def refund!

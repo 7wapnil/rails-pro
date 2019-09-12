@@ -64,11 +64,7 @@ module Bets
     end
 
     def revert_bet_status
-      bet.update!(
-        settlement_status: nil,
-        status: StateMachines::BetStateMachine::ACCEPTED,
-        void_factor: nil
-      )
+      bet.rollback_settlement!
     end
   end
 end

@@ -90,13 +90,13 @@ module StateMachines
         end
 
         event :send_to_external_validation,
-              after: :send_single_bet_to_external_validation do
+              after: :request_external_validation do
           transitions from: :validated_internally,
                       to: :sent_to_external_validation
         end
 
         event :finish_external_validation_with_acceptance,
-              after: :on_successful_bet_placement do
+              after: :on_successful_placement do
           transitions from: :sent_to_external_validation,
                       to: :accepted
         end
@@ -147,30 +147,60 @@ module StateMachines
                       to: :pending_manual_settlement,
                       after: :update_error_notification
         end
+
+        event :rollback_settlement do
+          transitions from: %i[settled pending_manual_settlement],
+                      to: :accepted,
+                      after: :reset_settlement_info
+        end
+
+        event :cancel_by_system do
+          transitions from: %i[accepted settled pending_manual_settlement],
+                      to: :cancelled_by_system,
+                      after: :reset_settlement_info
+        end
+
+        event :rollback_system_cancellation_with_acceptance do
+          transitions from: :cancelled_by_system,
+                      to: :accepted
+        end
+
+        event :rollback_system_cancellation_with_settlement do
+          transitions from: :cancelled_by_system,
+                      to: :settled
+        end
+
+        event :cancel do
+          transitions from: %i[pending_cancellation
+                               sent_to_external_validation
+                               accepted
+                               rejected
+                               pending_manual_settlement],
+                      to: :cancelled
+        end
       end
+
+      private
 
       def settle_as(settlement_status:, void_factor:)
         update(
-          status: :settled,
           settlement_status: settlement_status,
           void_factor: void_factor,
           bet_settlement_status_achieved_at: Time.zone.now
         )
       end
 
-      def send_single_bet_to_external_validation
+      def request_external_validation
         BetExternalValidation::Service.call(self)
       end
 
-      def on_successful_bet_placement
+      def on_successful_placement
         entry.update(confirmed_at: Time.zone.now)
       end
 
       def update_notification(message, code:)
         update(notification_message: message, notification_code: code)
       end
-
-      private
 
       def update_error_notification(message, code: default_error_code)
         update_notification(message, code: code)
@@ -184,6 +214,14 @@ module StateMachines
         Customers::Summaries::UpdateWorker.perform_async(
           Date.current,
           betting_customer_ids: customer_id
+        )
+      end
+
+      def reset_settlement_info
+        update(
+          settlement_status: nil,
+          void_factor: nil,
+          bet_settlement_status_achieved_at: nil
         )
       end
 
