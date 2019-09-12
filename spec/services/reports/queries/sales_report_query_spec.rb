@@ -101,7 +101,7 @@ describe ::Reports::Queries::SalesReportQuery do
     end
 
     it 'returns correct ggr' do
-      expect(results.first['ggr'].to_f).to eq(ggr_control_value)
+      expect(results.first['ggr'].to_f).to eq(ggr_control_value.to_f)
     end
   end
 end
