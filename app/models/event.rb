@@ -48,6 +48,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     LIVE = 'live'
   ].freeze
 
+  TWITCH_END_TIME_DELAY = 3.hours
+
   enum status: STATUSES
 
   belongs_to :title

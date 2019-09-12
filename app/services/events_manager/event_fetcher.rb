@@ -90,7 +90,7 @@ module EventsManager
     def expected_event_end_time
       return unless event_data.start_at
 
-      event_data.start_at.to_time + 3.hours
+      event_data.start_at.to_time + Event::TWITCH_END_TIME_DELAY
     end
 
     def competitor_qualifier(competitor)
