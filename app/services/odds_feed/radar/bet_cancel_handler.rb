@@ -81,7 +81,8 @@ module OddsFeed
       rescue StandardError => error
         log_job_message(:error, message: 'Bet was not cancelled!',
                                 bet_id: bet.id,
-                                reason: error.message)
+                                reason: error.message,
+                                error_object: error)
       end
 
       def return_money(bet)

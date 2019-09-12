@@ -26,7 +26,14 @@ module OddsFeed
           return player_name(external_id) if player?(external_id)
 
           msg = 'Odd template not found'
-          log_job_message(:error, message: msg, external_id: external_id)
+
+          raise ::Radar::OddTemplateNotFoundError,
+                "#{msg}. External id: #{external_id}"
+        rescue ::Radar::OddTemplateNotFoundError => e
+          log_job_message(:error, message: msg,
+                                  external_id: external_id,
+                                  error_object: e)
+
           raise SilentRetryJobError, "#{msg}. External id: #{external_id}"
         end
 

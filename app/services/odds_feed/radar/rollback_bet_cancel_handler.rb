@@ -87,7 +87,8 @@ module OddsFeed
           :error,
           message: 'Bet cancel for bet was not rollbacked!',
           bet_id: bet.id,
-          reason: error.message
+          reason: error.message,
+          error_object: error
         )
       end
 

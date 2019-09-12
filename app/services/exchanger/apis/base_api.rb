@@ -13,13 +13,13 @@ module Exchanger
       end
 
       def call
-        log(:info, 'Requesting new currencies rates')
+        Rails.logger.info(log_params('Requesting new currencies rates'))
 
         return [] unless response
 
         parse(response)
       rescue HTTParty::ResponseError => e
-        log(:error, e.message)
+        Rails.logger.error(log_params(e.message).merge(error_object: e))
 
         []
       end
@@ -42,14 +42,13 @@ module Exchanger
 
       private
 
-      def log(level, message)
-        Rails.logger.send(
-          level,
+      def log_params(message)
+        {
           message:              message,
           api:                  self.class.name,
           base_currency:        base_currency_code,
           currencies_to_update: currency_codes
-        )
+        }
       end
     end
   end

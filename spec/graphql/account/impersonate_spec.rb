@@ -46,7 +46,8 @@ describe GraphQL, '#impersonate' do
     {
       message: 'Impersonation attempt with malformed token!',
       token: token,
-      ip_address: ip_address
+      ip_address: ip_address,
+      error_object: kind_of(ActiveRecord::RecordNotFound)
     }
   end
 

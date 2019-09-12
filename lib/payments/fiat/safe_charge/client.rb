@@ -42,22 +42,19 @@ module Payments
         def request(method, route, **options)
           response = self.class.send(method, route, options)
 
-          return internal_server_error(response) unless response.ok?
-          return error(response) if response['status'] == ERROR_STATUS
+          raise(::SafeCharge::ApiError, response.body) unless response.ok?
 
-          response
-        end
+          return response unless invalid_response?(response)
 
-        def internal_server_error(response)
-          Rails.logger.error(message: 'SafeCharge API error',
-                             response: response.body)
+          raise(::SafeCharge::ApiError, response['reason'])
+        rescue ::SafeCharge::ApiError => e
+          Rails.logger.error(error_object: e, message: e.message)
+
           nil
         end
 
-        def error(response)
-          Rails.logger.error(message: 'SafeCharge API error',
-                             response: response['reason'])
-          nil
+        def invalid_response?(response)
+          response['status'] == ERROR_STATUS
         end
       end
     end

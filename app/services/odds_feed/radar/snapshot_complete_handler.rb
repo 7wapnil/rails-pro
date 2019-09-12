@@ -31,12 +31,15 @@ module OddsFeed
       end
 
       def invalid_snapshot_id!
+        raise Snapshots::UnknownSnapshotError, 'Unknown snapshot completed'
+      rescue Snapshots::UnknownSnapshotError => e
         log_job_message(:error,
-                        message: 'Unknown snapshot completed',
+                        message: e.message,
+                        error_object: e,
                         producer_request_id: producer.recovery_snapshot_id,
                         payload_request_id: request_id)
 
-        raise SilentRetryJobError, 'Unknown snapshot completed'
+        raise SilentRetryJobError, e.message
       end
     end
   end

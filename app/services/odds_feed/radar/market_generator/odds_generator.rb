@@ -39,7 +39,7 @@ module OddsFeed
         rescue ActiveRecord::RecordInvalid => e
           log_message(:warn, e.message, odd_data)
         rescue StandardError => e
-          log_message(:error, e.message, odd_data)
+          log_message(:error, e.message, odd_data, error_object: e)
         end
 
         def odd_data_is_not_payload(odd_data)
@@ -55,12 +55,13 @@ module OddsFeed
           )
         end
 
-        def log_message(level, message, odd_data)
+        def log_message(level, message, odd_data, **args)
           log_job_message(level,
                           message: message,
                           odd_data: odd_data,
                           market_id: market.external_id,
-                          event_id: market.event.external_id)
+                          event_id: market.event.external_id,
+                          **args)
         end
       end
     end

@@ -103,6 +103,8 @@ Rails.application.configure do
     config.logger = ::MaskedLogStashLoggerFactory.build(type: :stdout)
   end
 
+  config.logger = CustomLogger.new("#{Rails.root}/log/#{Rails.env}.log")
+
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 

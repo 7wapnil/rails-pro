@@ -140,6 +140,7 @@ describe OddsFeed::Radar::SubscriptionRecovery do
 
     context 'with rates limit reached' do
       let(:original_state) { Radar::Producer::UNSUBSCRIBED }
+      let(:error) { ::Radar::RecoveryRatesReachedError }
 
       before do
         product.update(state: original_state)
@@ -153,7 +154,8 @@ describe OddsFeed::Radar::SubscriptionRecovery do
       it 'writes rate error to logs' do
         expect(Rails.logger)
           .to have_received(:error)
-          .with(described_class::RECOVERY_RATES_REACHED_MESSAGE)
+          .with(error_object: kind_of(error),
+                message: described_class::RECOVERY_RATES_REACHED_MESSAGE)
           .once
       end
 

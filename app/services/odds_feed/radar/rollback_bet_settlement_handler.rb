@@ -49,7 +49,8 @@ module OddsFeed
                                 market_id: market.external_id,
                                 status: market.status,
                                 previous_status: market.previous_status,
-                                reason: error.message)
+                                reason: error.message,
+                                error_object: error)
       end
 
       def rollback_bets

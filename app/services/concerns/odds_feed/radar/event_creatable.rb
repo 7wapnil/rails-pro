@@ -28,8 +28,11 @@ module OddsFeed
         end
 
         def invalid_event_type
-          log_job_message(:error, message: 'Event cannot be processed yet',
-                                  event_id: event_id)
+          raise Events::InvalidEventTypeError, 'Event cannot be processed yet'
+        rescue Events::InvalidEventTypeError => e
+          log_job_message(:error, message: e.message,
+                                  event_id: event_id,
+                                  error_object: e)
           nil
         end
 
