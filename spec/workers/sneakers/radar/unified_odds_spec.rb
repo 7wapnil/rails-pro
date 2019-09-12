@@ -40,53 +40,57 @@ describe Radar::UnifiedOdds do
     '<rollback_bet_settlement/>'
   end
 
+  include_context 'frozen_time' do
+    let(:frozen_time) { Time.zone.now }
+  end
+
   describe 'work' do
     it 'routes odds_change to Radar::OddsChangeWorker' do
       expect(Radar::OddsChangeWorker)
         .to receive(:perform_async)
-        .with(minimal_valid_odds_change_xml)
+        .with(minimal_valid_odds_change_xml, Time.zone.now)
       subject.work(minimal_valid_odds_change_xml)
     end
 
     it 'routes alive to Radar::AliveWorker' do
       expect(Radar::AliveWorker)
         .to receive(:perform_async)
-        .with(minimal_valid_alive_xml)
+        .with(minimal_valid_alive_xml, Time.zone.now)
       subject.work(minimal_valid_alive_xml)
     end
 
     it 'routes alive to Radar::BetSettlementWorker' do
       expect(Radar::BetSettlementWorker)
         .to receive(:perform_async)
-        .with(minimal_valid_bet_settlement_xml)
+        .with(minimal_valid_bet_settlement_xml, Time.zone.now)
       subject.work(minimal_valid_bet_settlement_xml)
     end
 
     it 'routes bet stop to Radar::BetStopWorker' do
       expect(Radar::BetStopWorker)
         .to receive(:perform_async)
-        .with(minimal_valid_bet_stop_xml)
+        .with(minimal_valid_bet_stop_xml, Time.zone.now)
       subject.work(minimal_valid_bet_stop_xml)
     end
 
     it 'routes bet cancel to Radar::BetCancelWorker' do
       expect(Radar::BetCancelWorker)
         .to receive(:perform_async)
-        .with(minimal_valid_bet_cancel_xml)
+        .with(minimal_valid_bet_cancel_xml, Time.zone.now)
       subject.work(minimal_valid_bet_cancel_xml)
     end
 
     it 'routes alive to Radar::FixtureChangeWorker' do
       expect(Radar::FixtureChangeWorker)
         .to receive(:perform_async)
-        .with(minimal_valid_fixture_change_xml)
+        .with(minimal_valid_fixture_change_xml, Time.zone.now)
       subject.work(minimal_valid_fixture_change_xml)
     end
 
     it 'routes alive to Radar::RollbackBetSettlementWorker' do
       expect(Radar::RollbackBetSettlementWorker)
         .to receive(:perform_async)
-        .with(minimal_rollback_bet_settlement)
+        .with(minimal_rollback_bet_settlement, Time.zone.now)
       subject.work(minimal_rollback_bet_settlement)
     end
 

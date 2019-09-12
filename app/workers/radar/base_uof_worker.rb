@@ -4,7 +4,7 @@ module Radar
   class BaseUofWorker < ApplicationWorker
     sidekiq_options retry: 3
 
-    def perform(payload)
+    def perform(payload, enqueued_at = nil)
       populate_message_info_to_thread(payload)
 
       execute_logged(enqueued_at: enqueued_at) do
