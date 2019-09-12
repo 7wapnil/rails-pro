@@ -11,7 +11,7 @@ class ApplicationWorker
     @enqueued_at = enqueued_at
     populate_enqueued_at_to_thread
 
-    Proc.new.call
+    yield
 
     log_success
   rescue StandardError => e
