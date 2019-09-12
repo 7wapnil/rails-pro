@@ -10,6 +10,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     description
     start_at
     end_at
+    visible
+    twitch_url
+    twitch_start_time
+    twitch_end_time
     display_status
     home_score
     away_score

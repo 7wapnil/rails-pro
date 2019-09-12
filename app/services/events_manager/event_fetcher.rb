@@ -77,12 +77,20 @@ module EventsManager
       {
         external_id: event_data.id,
         start_at: event_data.start_at,
+        twitch_start_time: event_data.start_at,
+        twitch_end_time: expected_event_end_time,
         name: event_data.name,
         description: event_data.name,
         traded_live: event_data.traded_live?,
         liveodds: event_data.liveodds,
         title: title
       }
+    end
+
+    def expected_event_end_time
+      return unless event_data.start_at
+
+      event_data.start_at.to_time + 3.hours
     end
 
     def competitor_qualifier(competitor)

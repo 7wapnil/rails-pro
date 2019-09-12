@@ -12,10 +12,6 @@ Rails.application.routes.draw do
 
   resources :bonuses
 
-  concern :visible do
-    post :update_visibility, on: :member
-  end
-
   concern :labelable do
     post :update_labels, on: :member
   end
@@ -24,7 +20,7 @@ Rails.application.routes.draw do
     post :create_comment, on: :member
   end
 
-  resources :markets, concerns: %i[visible labelable]
+  resources :markets, concerns: %i[labelable]
   resources :customers, only: %i[index show], concerns: :labelable do
     member do
       get :account_management
@@ -100,7 +96,7 @@ Rails.application.routes.draw do
   resources :activities, only: %i[index show]
 
   resources :events, only: %i[index show update],
-                     concerns: %i[visible labelable] do
+                     concerns: %i[labelable] do
     resources :markets, only: :update
   end
 

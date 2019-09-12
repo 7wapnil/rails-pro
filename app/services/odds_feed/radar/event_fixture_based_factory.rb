@@ -21,6 +21,8 @@ module OddsFeed
         {
           external_id: fixture['id'],
           start_at: replay_mode? ? patched_start_time : start_at,
+          twitch_start_time: replay_mode? ? patched_start_time : start_at,
+          twitch_end_time: expected_event_end_time,
           name: event_name,
           description: event_name,
           traded_live: event_traded_live?,
@@ -65,6 +67,12 @@ module OddsFeed
           month: today.month,
           day: today.day
         )
+      end
+
+      def expected_event_end_time
+        start_at_time = replay_mode? ? patched_start_time : start_at
+
+        start_at_time + 3.hours
       end
     end
   end

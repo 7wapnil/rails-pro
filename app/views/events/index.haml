@@ -33,7 +33,7 @@
               - event.labels.each do |label|
                 %span.badge.badge-info= label.name
           %td= event.title.name
-          %td.toggle-holder= visibility_toggle(event, update_visibility_event_path(event))
+          %td.toggle-holder= visibility_toggle(event.object, event_path(event))
           %td= safe_date_localize_helper(event.start_at, format: :long, default_result: '-')
           %td= event.markets_count
 

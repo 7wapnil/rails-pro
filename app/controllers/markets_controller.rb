@@ -1,16 +1,27 @@
 class MarketsController < ApplicationController
-  include Visibility
   include Labelable
 
+  find :market, only: :update
+
   def update
-    market = Market.find(params[:id])
-    updated = market.update(market_params)
-    render nothing: true, status: :unprocessable_entity unless updated
+    return head :unprocessable_entity unless @market.update(market_params)
+
+    WebSocket::Client.instance.trigger_event_update(
+      @market.event,
+      force: @market.active? && @market.event.active?
+    )
+
+    respond_to do |format|
+      format.js
+      format.html do
+        redirect_back(fallback_location: events_path)
+      end
+    end
   end
 
   private
 
   def market_params
-    params.require(:market).permit(:priority)
+    params.require(:market).permit(:priority, :visible)
   end
 end

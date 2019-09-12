@@ -464,6 +464,9 @@ ActiveRecord::Schema.define(version: 2019_09_05_090730) do
     t.integer "time_in_seconds"
     t.string "liveodds"
     t.boolean "ready", default: false
+    t.datetime "twitch_start_time"
+    t.datetime "twitch_end_time"
+    t.string "twitch_url"
     t.index ["active"], name: "index_events_on_active"
     t.index ["external_id"], name: "index_events_on_external_id", unique: true
     t.index ["producer_id"], name: "index_events_on_producer_id"

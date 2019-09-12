@@ -26,7 +26,7 @@
               %td
                 = select_tag :priority, options_for_select(Market::PRIORITIES, market.priority),
                  class: 'priority_toggle',
-                 data: { endpoint: event_market_path(@event, market),
+                 data: { endpoint: market_path(market),
                          resource: 'market',
                          initial_value: market.priority }
               %td
@@ -36,7 +36,7 @@
                   %button.btn.btn-success.mt-2.save_labels{ disabled: true,
                    data: { label_selector: "market_#{market.id}" } }= t(:save)
 
-              %td= visibility_toggle(market, update_visibility_market_path(market))
+              %td= visibility_toggle(market, market_path(market))
 - content_for :js do
   = javascript_pack_tag 'labels_selector'
   = javascript_pack_tag 'priority_toggle', 'data-turbolinks-track': 'reload'

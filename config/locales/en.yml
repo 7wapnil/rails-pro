@@ -209,6 +209,9 @@ en:
     street_address: Street address
     text: Text
     tournament: Tournament
+    twitch_end_time: Twitch end time
+    twitch_start_time: Twitch start time
+    twitch_url: Twitch URL
     bet_type: Bet type
     updated_at: Updated at
     username: Username

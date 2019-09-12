@@ -32,6 +32,15 @@ module Events
       resolve ->(obj, _args, _ctx) { obj.end_at&.iso8601 }
     end
 
+    field :visible, types.String, property: :visible
+    field :twitchUrl, types.String, property: :twitch_url
+    field :twitchStartTime, types.String do
+      resolve ->(obj, _args, _ctx) { obj.twitch_start_time&.iso8601 }
+    end
+    field :twitchEndTime, types.String do
+      resolve ->(obj, _args, _ctx) { obj.twitch_end_time&.iso8601 }
+    end
+
     field :scopes, types[Types::ScopeType] do
       resolve ->(obj, _args, _ctx) { obj.event_scopes }
     end
