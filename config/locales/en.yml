@@ -241,7 +241,8 @@ en:
       internal_validation_error: "Oops! Bet cannot be accepted. Feel free to contact administration or try again later"
       external_validation_error: "Betting service is experiencing some issues now. Bet was not accepted"
       mts_cancellation_error: "MTS rejected bet cancellation"
-      liability_limit_reached_error: 'Oops! Bet cannot be accepted according to liability limits. Try to place bet with less odds/smaller stake or contact an administration.'
+      liability_limit_reached_error: 'Max stake limit reached, please reduce your bet size'
+      payout_limit_reached_error: 'Max stake limit reached, please reduce your bet size'
       odds_too_high_error: 'Oops! Bet cannot be accepted. Odds changed.'
 
   currencies:
