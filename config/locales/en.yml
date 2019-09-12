@@ -126,6 +126,7 @@ en:
     customer: Customer
     customer_name: Customer name
     customer_verification_status: Customer verification status
+    customer_username: Customer username
     date: Date
     date_of_birth: Date of birth
     deactivated_at: Deactivated at
