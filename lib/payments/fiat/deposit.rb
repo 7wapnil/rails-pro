@@ -9,7 +9,7 @@ module Payments
         ::Payments::Methods::CREDIT_CARD,
         # FIXME: uncomment when becomes available
         # ::Payments::Methods::NETELLER,
-        # ::Payments::Methods::SKRILL,
+        ::Payments::Methods::SKRILL,
         ::Payments::Methods::PAYSAFECARD
       ].freeze
 
