@@ -49,15 +49,15 @@ describe EntryRequests::DepositService do
       wallet.reload
     end
 
-    xit 'increases wallet amount' do
+    it 'increases wallet amount' do
       expect(wallet.amount).to eq(125)
     end
 
-    xit 'increases bonus money balance amount' do
+    it 'increases bonus money balance amount' do
       expect(wallet.bonus_balance.amount).to eq(25)
     end
 
-    xit 'increases real money balance amount' do
+    it 'increases real money balance amount' do
       expect(wallet.real_money_balance.amount).to eq(amount)
     end
   end
@@ -83,20 +83,20 @@ describe EntryRequests::DepositService do
 
     before { service_call }
 
-    # it_behaves_like 'entries splitting with bonus' do
-    #   let(:real_money_amount) { 100 }
-    #   let(:bonus_amount) { amount * percentage / 100.0 }
-    # end
+    it_behaves_like 'entries splitting with bonus' do
+      let(:real_money_amount) { 100 }
+      let(:bonus_amount) { amount * percentage / 100.0 }
+    end
 
-    xit 'creates deposit request with customer bonus assigned' do
+    it 'creates deposit request with customer bonus assigned' do
       expect(created_deposit.customer_bonus).to eq(customer_bonus)
     end
 
-    xit 'applies customer bonus only once' do
+    it 'applies customer bonus only once' do
       expect { service_call }.not_to change(BalanceEntryRequest.bonus, :count)
     end
 
-    xit 'activates customer bonus' do
+    it 'activates customer bonus' do
       service_call
 
       expect(customer_bonus.reload).to have_attributes(
@@ -106,7 +106,7 @@ describe EntryRequests::DepositService do
     end
   end
 
-  xcontext 'without customer bonus' do
+  context 'without customer bonus' do
     let(:customer_bonus) {}
 
     before do
