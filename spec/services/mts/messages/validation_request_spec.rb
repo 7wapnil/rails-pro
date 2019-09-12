@@ -6,6 +6,8 @@ describe Mts::Messages::ValidationRequest do
 
     before do
       allow(ENV).to receive(:[])
+
+      allow(ENV).to receive(:[])
         .with('MTS_BOOKMAKER_ID')
         .and_return(bookmaker_id)
 

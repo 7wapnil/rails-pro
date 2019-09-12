@@ -32,15 +32,5 @@ describe GraphQL, '#currencies' do
     it 'returns correct content of existing currencies' do
       expect(result['data']['currencies']).to match_array(expected_result_array)
     end
-
-    describe 'relies on cached data' do
-      before do
-        allow(Currency).to receive(:cached_all) { [create(:currency)] }
-      end
-
-      it 'returns cached source length of currencies' do
-        expect(result['data']['currencies'].size).to eq 1
-      end
-    end
   end
 end

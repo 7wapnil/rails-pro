@@ -6,11 +6,7 @@ class Currency < ApplicationRecord
   PRIMARY_CODE = 'EUR'
   PRIMARY_RATE = 1
 
-  CACHED_ALL_KEY = 'cache/currencies/cached_all'
-
   include Loggable
-
-  after_commit :flush_cache
 
   has_many :entry_currency_rules
   has_many :wallets
@@ -37,18 +33,6 @@ class Currency < ApplicationRecord
   def self.primary
     find_by(primary: true)
   end
-
-  def self.cached_all
-    Rails.cache.fetch(CACHED_ALL_KEY, expires_in: 24.hours) do
-      Currency.all
-    end
-  end
-
-  def self.flush_cache
-    Rails.cache.delete(CACHED_ALL_KEY)
-  end
-
-  delegate :flush_cache, to: :class
 
   def to_s
     code
