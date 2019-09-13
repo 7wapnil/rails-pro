@@ -7,15 +7,22 @@ describe EventsManager::EventFetcher do
   let(:event_response) do
     ::XmlParser.parse(file_fixture('radar_event_fixture.xml').read)
   end
+  let(:competitor_double) { double }
 
   before do
     allow_any_instance_of(::OddsFeed::Radar::Client)
       .to receive(:event_raw)
       .and_return(event_response)
 
-    allow_any_instance_of(EventsManager::CompetitorLoader)
+    allow(EventsManager::CompetitorLoader)
+      .to receive(:new).and_return(competitor_double)
+
+    allow(competitor_double)
       .to receive(:call)
-      .and_return(create(:competitor, external_id: 'sr:competitor:1860'))
+      .and_return(
+        create(:competitor, external_id: 'sr:competitor:1860'),
+        create(:competitor, external_id: 'sr:competitor:22356')
+      )
   end
 
   context 'attributes building' do
@@ -46,7 +53,7 @@ describe EventsManager::EventFetcher do
   context 'competitors' do
     it 'creates competitors and associates with event' do
       event = subject.call
-      expect(event.competitors.count).to eq(1)
+      expect(event.competitors.count).to eq(2)
     end
   end
 
@@ -74,7 +81,9 @@ describe EventsManager::EventFetcher do
       event.competitors << create(:competitor,
                                   external_id: 'sr:competitor:1')
       event.competitors << create(:competitor,
-                                  external_id: 'sr:competitor:22356')
+                                  external_id: 'sr:competitor:2')
+      event.competitors << create(:competitor,
+                                  external_id: 'sr:competitor:3')
     end
 
     it 'not duplicates scopes associations' do
@@ -82,9 +91,9 @@ describe EventsManager::EventFetcher do
       expect(event.event_scopes.count).to eq(3)
     end
 
-    it 'not duplicates competitors associations' do
+    it 'rewrites competitors associations' do
       subject.call
-      expect(event.competitors.count).to eq(3)
+      expect(event.competitors.count).to eq(2)
     end
   end
 end

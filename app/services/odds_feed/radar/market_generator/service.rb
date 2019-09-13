@@ -149,7 +149,7 @@ module OddsFeed
                      validate: false,
                      on_duplicate_key_update: {
                        conflict_target: %i[external_id],
-                       columns: %i[status value]
+                       columns: %i[status value name]
                      })
         end
 
