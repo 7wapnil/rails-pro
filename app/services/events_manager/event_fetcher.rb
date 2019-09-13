@@ -19,7 +19,7 @@ module EventsManager
 
       update_competitors(event)
 
-      update_event_scope(event) if load_associations?
+      update_event_scopes(event) if load_associations?
       event.update!(ready: true)
 
       event
@@ -29,7 +29,7 @@ module EventsManager
       @options[:only_event].blank?
     end
 
-    def update_event_scope(event)
+    def update_event_scopes(event)
       ScopesBuilder.call(event, event_data)
       log :info, message: 'Event scopes updated', event_id: @external_id
     end
