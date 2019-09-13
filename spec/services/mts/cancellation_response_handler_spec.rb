@@ -77,7 +77,9 @@ describe Mts::CancellationResponseHandler do
       before do
         allow(Rails.logger)
           .to receive(:error)
-          .with(message: error_message, id: ticket_id)
+          .with(message: error_message,
+                id: ticket_id,
+                error_object: kind_of(ActiveRecord::RecordNotFound))
       end
 
       let(:error_message) { I18n.t('errors.messages.nonexistent_bet') }
@@ -98,7 +100,9 @@ describe Mts::CancellationResponseHandler do
       rescue StandardError
         expect(Rails.logger)
           .to have_received(:error)
-          .with(message: error_message, id: ticket_id)
+          .with(message: error_message,
+                id: ticket_id,
+                error_object: kind_of(StandardError))
       end
     end
   end

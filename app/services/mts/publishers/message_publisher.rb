@@ -68,7 +68,7 @@ module Mts
         rescue StandardError => e
           bet.register_failure(e)
           WebSocket::Client.instance.trigger_bet_update(bet)
-          log_job_message(:error, e)
+          log_job_message(:error, message: e.message, error_object: e)
         end
       ensure
         channel&.close

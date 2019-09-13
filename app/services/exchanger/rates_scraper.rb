@@ -36,10 +36,12 @@ module Exchanger
         code: rate.code,
         value: rate.value
       )
-    rescue ActiveRecord::RecordNotFound
-      Rails.logger.error(message: 'Currency not found', code: rate.code)
+    rescue ActiveRecord::RecordNotFound => e
+      Rails.logger.error(
+        message: 'Currency not found', code: rate.code, error_object: e
+      )
     rescue StandardError => e
-      Rails.logger.error e.message
+      Rails.logger.error(error_object: e, message: e.message)
     end
 
     def fiat_currencies

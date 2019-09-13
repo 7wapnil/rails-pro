@@ -104,7 +104,7 @@ module StateMachines
           to_state: aasm.to_state,
           id: id,
           customer_id: customer_id,
-          error: error
+          error_object: error
         )
       end
     end

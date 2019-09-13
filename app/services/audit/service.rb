@@ -11,6 +11,7 @@ module Audit
       @context = context
     end
 
+    # rubocop:disable Metrics/MethodLength
     def call
       AuditLog.create!(event: @event,
                        user_id: @user&.id,
@@ -23,9 +24,11 @@ module Audit
         context: context,
         event: @event,
         user_id: @user&.id,
-        customer_id: @customer&.id
+        customer_id: @customer&.id,
+        error_object: e
       )
     end
+    # rubocop:enable Metrics/MethodLength
 
     private
 

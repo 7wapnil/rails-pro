@@ -70,7 +70,8 @@ module OddsFeed
             date: humanize(date)
           )
 
-          log_job_message(:error, error.message)
+          log_job_message(:error, message: error.message,
+                                  error_object: error)
         end
       end
     end

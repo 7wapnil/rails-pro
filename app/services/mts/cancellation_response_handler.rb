@@ -32,11 +32,12 @@ module Mts
 
     def bet
       @bet ||= Bet.find_by!(validation_ticket_id: message['result']['ticketId'])
-    rescue ActiveRecord::RecordNotFound
+    rescue ActiveRecord::RecordNotFound => e
       error_message = I18n.t('errors.messages.nonexistent_bet')
       log_job_message(:error,
                       message: error_message,
-                      id: message['result']['ticketId'])
+                      id: message['result']['ticketId'],
+                      error_object: e)
       raise SilentRetryJobError,
             "#{error_message}. Id: #{message['result']['ticketId']}"
     end
@@ -53,9 +54,13 @@ module Mts
         code: Bets::Notification::MTS_CANCELLATION_ERROR
       )
 
+      raise ::Bets::UnsuccessfulBetCancelError,
+            I18n.t("errors.messages.mts.#{status}")
+    rescue ::Bets::UnsuccessfulBetCancelError => e
       log_job_message(:error,
-                      message: I18n.t("errors.messages.mts.#{status}"),
-                      bet_id: bet.id)
+                      message: e.message,
+                      bet_id: bet.id,
+                      error_object: e)
     end
   end
 end

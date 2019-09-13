@@ -16,12 +16,12 @@ module Webhooks
 
         head :ok
       rescue ::Payments::GatewayError => error
-        Rails.logger.error(message: error.message)
+        Rails.logger.error(message: error.message, error_object: error)
         head :internal_server_error
       rescue *NO_LOGS_ERRORS
         head :ok
       rescue StandardError => error
-        Rails.logger.error(message: error.message)
+        Rails.logger.error(message: error.message, error_object: error)
         head :ok
       end
 

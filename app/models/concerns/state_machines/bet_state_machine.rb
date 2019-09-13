@@ -266,7 +266,7 @@ module StateMachines
           notification_message: notification_message,
           settlement_status: settlement_status,
           notification_code: notification_code,
-          error: error
+          error_object: error
         )
       end
     end

@@ -13,7 +13,8 @@ module Account
       Rails.logger.error(
         message: 'Impersonation attempt with malformed token!',
         token: token,
-        ip_address: ip_address
+        ip_address: ip_address,
+        error_object: error
       )
 
       raise error

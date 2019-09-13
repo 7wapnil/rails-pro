@@ -33,8 +33,11 @@ module EventsManager
 
         return @profile if @profile
 
-        log(:error, message: 'Competitor profile is malformed',
-                    payload: @payload)
+        raise MalformedCompetitorProfile, 'Competitor profile is malformed'
+      rescue MalformedCompetitorProfile => e
+        log(:error, message: e.message,
+                    payload: @payload,
+                    error_object: e)
         {}
       end
 
