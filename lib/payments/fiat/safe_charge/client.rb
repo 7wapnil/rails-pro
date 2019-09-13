@@ -46,7 +46,7 @@ module Payments
 
           return response unless invalid_response?(response)
 
-          raise(::SafeCharge::ApiError, response['reason'])
+          raise ::SafeCharge::ApiError, response['reason']
         rescue ::SafeCharge::ApiError => e
           Rails.logger.error(error_object: e, message: e.message)
 

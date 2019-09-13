@@ -51,7 +51,6 @@ gem 'redis', '~> 4.0'
 gem 'redis-rails'
 gem 'redis-rack-cache'
 gem 'lograge'
-gem 'newrelic_rpm'
 gem 'paranoia', '~> 2.2'
 gem 'mongoid', '~> 6.1.0'
 gem 'httparty', '~> 0.16.2'
@@ -68,10 +67,14 @@ gem 'phonelib'
 gem 'cryptocompare'
 gem 'recaptcha'
 gem 'countries'
-gem 'appsignal'
 
 gem 'faker', github: 'stympy/faker', branch: 'master', require: false
 gem 'factory_bot_rails', require: false
+
+group :production do
+  gem 'appsignal'
+  gem 'newrelic_rpm'
+end
 
 group :development, :test do
   gem 'byebug', platforms: %i[mri mingw x64_mingw]

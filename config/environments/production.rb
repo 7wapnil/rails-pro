@@ -99,11 +99,7 @@ Rails.application.configure do
   # Send deprecation notices to registered listeners.
   config.active_support.deprecation = :notify
 
-  if ENV['RAILS_LOG_TO_STDOUT'].present?
-    config.logger = ::MaskedLogStashLoggerFactory.build(type: :stdout)
-  end
-
-  config.logger = CustomLogger.new("#{Rails.root}/log/#{Rails.env}.log")
+  config.logger = AppSignalLogger.new(STDOUT)
 
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
