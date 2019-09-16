@@ -1,15 +1,19 @@
 # Be sure to restart your server when you modify this file.
 # Action Cable runs in a loop that does not support auto reloading.
 class GraphqlChannel < ApplicationCable::Channel
+  include AppSignal::GraphqlExtensions
+
   def subscribed
     @subscription_ids = []
   end
 
-  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def execute(data)
+    operation_name = data['operationName']
+    set_action_name(operation_name, self.class.name)
+
     query = data['query']
     variables = ensure_hash(data['variables'])
-    operation_name = data['operationName']
 
     context = {
       current_customer: customer,
@@ -39,8 +43,10 @@ class GraphqlChannel < ApplicationCable::Channel
     end
 
     transmit(payload)
+  rescue StandardError => e
+    Rails.logger.error(error_object: e)
   end
-  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   def unsubscribed
     @subscription_ids.each do |sid|
