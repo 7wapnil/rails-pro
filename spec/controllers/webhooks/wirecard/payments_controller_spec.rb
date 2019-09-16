@@ -162,7 +162,7 @@ describe Webhooks::Wirecard::PaymentsController, type: :controller do
             'last-name' => Faker::Name.last_name
           },
           'request-id' => "#{entry_request.id}:#{Time.zone.now}",
-          'transaction-type' => 'authorization'
+          'transaction-type' => 'purchase'
         }
       }
     end

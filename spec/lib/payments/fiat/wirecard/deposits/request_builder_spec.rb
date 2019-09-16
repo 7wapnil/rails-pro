@@ -29,7 +29,7 @@ describe Payments::Fiat::Wirecard::Deposits::RequestBuilder do
           'value': ENV['WIRECARD_MERCHANT_ACCOUNT_ID']
         },
         'request-id': "#{id}:#{timestamp}",
-        'transaction-type': 'authorization',
+        'transaction-type': 'purchase',
         'requested-amount': {
           'value': amount,
           'currency': currency.code

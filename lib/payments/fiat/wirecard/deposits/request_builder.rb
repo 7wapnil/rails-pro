@@ -12,7 +12,7 @@ module Payments
                   'value': ENV['WIRECARD_MERCHANT_ACCOUNT_ID']
                 },
                 'request-id': request_id,
-                'transaction-type': 'authorization',
+                'transaction-type': 'purchase',
                 'requested-amount': request_amount,
                 'account-holder': account_holder,
                 'payment-methods': payment_method,
