@@ -104,7 +104,7 @@ Rails.application.configure do
   if ENV['RAILS_LOG_TO_STDOUT'].present?
     config.logger = ::MaskedLogStashLoggerFactory.build(type: :stdout)
   end
-  
+
   # Do not dump schema after migrations.
   config.active_record.dump_schema_after_migration = false
 
