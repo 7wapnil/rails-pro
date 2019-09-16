@@ -44,27 +44,27 @@ describe GraphQL, '#requestPasswordReset' do
     allow(mailer).to receive(:deliver_later)
   end
 
-  xit 'returns true' do
+  it 'returns true' do
     expect(result.dig('data', 'requestPasswordReset')).to eq(true)
   end
 
-  xit 're-generate reset password token' do
+  it 're-generate reset password token' do
     result
     expect(customer.reload.reset_password_token).to eq(reset_password_token)
   end
 
-  xit 'updates reset password token generating time' do
+  it 'updates reset password token generating time' do
     result
     expect(customer.reload.reset_password_sent_at.to_s)
       .to eq(Time.zone.now.to_s)
   end
 
-  xit 'sends an email' do
+  it 'sends an email' do
     expect(mailer).to receive(:deliver_later)
     result
   end
 
-  xcontext 'when customer is not found' do
+  context 'when customer is not found' do
     let(:variables) { { email: Faker::Internet.email } }
 
     it 'raises an error' do
@@ -73,7 +73,7 @@ describe GraphQL, '#requestPasswordReset' do
     end
   end
 
-  xcontext 'on internal server error' do
+  context 'on internal server error' do
     before do
       allow(Account::SendPasswordResetService)
         .to receive(:call)

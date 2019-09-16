@@ -27,7 +27,7 @@ describe GraphQL, '#resetPassword' do
     allow(Account::ResetPasswordService).to receive(:call)
   end
 
-  xit 'calls Account::ResetPasswordService' do
+  it 'calls Account::ResetPasswordService' do
     result[:data]
 
     expect(Account::ResetPasswordService).to have_received(:call)
