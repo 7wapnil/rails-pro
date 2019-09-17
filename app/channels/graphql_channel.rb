@@ -7,28 +7,10 @@ class GraphqlChannel < ApplicationCable::Channel
     @subscription_ids = []
   end
 
-  # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
   def execute(data)
-    operation_name = data['operationName']
-    set_action_name(operation_name, self.class.name)
+    set_action_name(data['operationName'], self.class.name)
 
-    query = data['query']
-    variables = ensure_hash(data['variables'])
-
-    context = {
-      current_customer: customer,
-      customer_id: customer&.id,
-      impersonated_by: impersonated_by,
-      channel: self
-    }
-
-    result = schema.execute(
-      query: query,
-      context: context,
-      variables: variables,
-      operation_name: operation_name
-    )
-
+    result = execute_graphql_query(data)
     payload = {
       result: result.subscription? ? { data: nil } : result.to_h,
       more: result.subscription?
@@ -46,32 +28,29 @@ class GraphqlChannel < ApplicationCable::Channel
   rescue StandardError => e
     Rails.logger.error(error_object: e)
   end
-  # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
   def unsubscribed
-    @subscription_ids.each do |sid|
-      schema.subscriptions.delete_subscription(sid)
-    end
+    @subscription_ids
+      .each { |sid| ArcanebetSchema.subscriptions.delete_subscription(sid) }
   end
 
   private
 
-  def schema
-    ArcanebetSchema
+  def execute_graphql_query(data)
+    ArcanebetSchema.execute(
+      query: data['query'],
+      operation_name: data['operationName'],
+      variables: ensure_hash(data['variables']),
+      context: context
+    )
   end
 
-  # rubocop:disable Metrics/MethodLength
-  #
   # TODO: we are facing too often with this issue. It would be nice
   # to place it in some helper class
   def ensure_hash(ambiguous_param)
     case ambiguous_param
     when String
-      if ambiguous_param.present?
-        ensure_hash(JSON.parse(ambiguous_param))
-      else
-        {}
-      end
+      ambiguous_param.present? ? ensure_hash(JSON.parse(ambiguous_param)) : {}
     when Hash, ActionController::Parameters
       ambiguous_param
     when nil
@@ -80,5 +59,13 @@ class GraphqlChannel < ApplicationCable::Channel
       raise ArgumentError, "Unexpected parameter: #{ambiguous_param}"
     end
   end
-  # rubocop:enable Metrics/MethodLength
+
+  def context
+    {
+      current_customer: customer,
+      customer_id: customer&.id,
+      impersonated_by: impersonated_by,
+      channel: self
+    }
+  end
 end

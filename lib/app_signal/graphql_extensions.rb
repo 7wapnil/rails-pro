@@ -7,7 +7,7 @@ module AppSignal
 
       Appsignal::Transaction
         .current
-        .set_action("#{class_name}##{action_name || 'Unknown'}")
+        .set_action("#{class_name}##{action_name || 'unknown'}")
     end
   end
 end
