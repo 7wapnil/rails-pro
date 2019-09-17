@@ -33,6 +33,9 @@ module Account
 
     attr_reader :customer, :captcha
 
+    # Need to mock `request` to make `verify_recaptcha` works
+    def request; end
+
     def captcha_verified?
       verify_recaptcha(response: captcha.to_s, skip_remote_ip: true)
     end
