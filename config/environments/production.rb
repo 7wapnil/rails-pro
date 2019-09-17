@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.configure do
   # Settings specified here will take precedence over those in
   # config/application.rb.
@@ -102,7 +104,10 @@ Rails.application.configure do
   config.logger = AppSignalLogger.new(STDOUT)
 
   if ENV['RAILS_LOG_TO_STDOUT'].present?
-    config.logger = ::MaskedLogStashLoggerFactory.build(type: :stdout)
+    config.logger = ::MaskedLogStashLoggerFactory.build(
+      type: :stdout,
+      logger_class: AppSignalLogger
+    )
   end
 
   # Do not dump schema after migrations.
