@@ -67,7 +67,7 @@
   mts_random_bet_placement:
     every: <%= "#{ENV.fetch('MTS_RANDOM_BET_INTERVAL', 10)}s" %>
     class: Mts::RandomBetPlacementWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    enabled: <%= ENV["MTS_RUN_RANDOM_BET_PLACEMENT"] == 'true' %>
     description: "Random bet placement for MTS testing"
 
   expirining_entry_requests_worker:
