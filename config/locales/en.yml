@@ -561,6 +561,9 @@ en:
       qiwi: Qiwi
       safecharge_unknown: Safecharge unknown
 
+  graphql:
+    internal_server_error: 'Something went wrong with your query, fellow :)'
+
   lock_reasons:
     closed: Closed
     cooling_off: Cooling off
