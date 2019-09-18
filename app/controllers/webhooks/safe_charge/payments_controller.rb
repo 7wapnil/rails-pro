@@ -7,7 +7,7 @@ module Webhooks
       before_action :verify_payment_signature
 
       def show
-        redirect_to success_redirection_url
+        redirect_to redirection_url
       end
 
       def create
@@ -18,7 +18,7 @@ module Webhooks
         head :unprocessable_entity
       rescue StandardError => error
         Rails.logger.error(message: 'Technical error appeared on deposit',
-                           error: error.message)
+                           error_object: error.message)
 
         head :internal_server_error
       end
@@ -32,10 +32,14 @@ module Webhooks
               'Malformed SafeCharge deposit request!'
       end
 
-      def success_redirection_url
-        ::Payments::Webhooks::DepositRedirectionUrlBuilder.call(
-          status: ::Payments::Webhooks::Statuses::SUCCESS
-        )
+      def redirection_url
+        ::Payments::Webhooks::DepositRedirectionUrlBuilder
+          .call(status: redirection_status)
+      end
+
+      def redirection_status
+        ::Payments::Fiat::SafeCharge::Statuses::REDIRECTION_MAP
+          .fetch(params[:ppp_status], ::Payments::Webhooks::Statuses::FAILED)
       end
     end
   end

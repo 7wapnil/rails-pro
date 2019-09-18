@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EventsManager
   module Logger
     def log(level, payload)

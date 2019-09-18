@@ -5,6 +5,7 @@
       %th= t('attributes.status')
       %th= sort_link(filter.search, :kind, t('attributes.entry_kind'), default_order: :desc)
       %th= t('attributes.customer_name')
+      %th= t('attributes.customer_username')
       %th= t('attributes.amount')
       %th= t('attributes.result')
       %th= t('attributes.external_id')
@@ -18,6 +19,7 @@
           %td
             %b= t("kinds.#{request.kind}")
           %td= request.customer.full_name
+          %td= link_to request.customer.username, account_management_customer_path(request.customer)
           %td
             = number_with_precision request.amount, precision: 2
             = request.currency.code

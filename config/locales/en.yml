@@ -109,6 +109,7 @@ en:
     bank_statements: Bank statements
     bet_id: Bet ID
     bet_placement_time: Bet placement time
+    bet_settlement_status_achieved_at: Bet settlement time
     b_tag: Affiliate tag
     category: Category
     city: City
@@ -126,6 +127,7 @@ en:
     customer: Customer
     customer_name: Customer name
     customer_verification_status: Customer verification status
+    customer_username: Customer username
     date: Date
     date_of_birth: Date of birth
     deactivated_at: Deactivated at
@@ -209,6 +211,9 @@ en:
     street_address: Street address
     text: Text
     tournament: Tournament
+    twitch_end_time: Twitch end time
+    twitch_start_time: Twitch start time
+    twitch_url: Twitch URL
     bet_type: Bet type
     updated_at: Updated at
     username: Username
@@ -236,8 +241,17 @@ en:
       internal_validation_error: "Oops! Bet cannot be accepted. Feel free to contact administration or try again later"
       external_validation_error: "Betting service is experiencing some issues now. Bet was not accepted"
       mts_cancellation_error: "MTS rejected bet cancellation"
-      liability_limit_reached_error: 'Oops! Bet cannot be accepted according to liability limits. Try to place bet with less odds/smaller stake or contact an administration.'
+      liability_limit_reached_error: 'Max stake limit reached, please reduce your bet size'
+      payout_limit_reached_error: 'Max stake limit reached, please reduce your bet size'
       odds_too_high_error: 'Oops! Bet cannot be accepted. Odds changed.'
+
+  currencies:
+    edit:
+      title: Edit Currency
+    create:
+      success: 'Currency %{code} was created successfully'
+    update:
+      success: 'Currency settings were updated successfully'
 
   customers:
     statistics:
@@ -340,7 +354,8 @@ en:
       one: 1 event
       other: "%{count} events"
     event_scopes: Event Scopes
-    exchange_rate: "Exchange rate (against %{code})"
+    exchange_rate: "Exchange rate (for 1 %{code})"
+    reverse_exchange_rate: "Reverse exchange rate (for 1 %{code})"
     global_betting_limit: Global betting limit
     global_betting_limits: Global betting limits
     label: Label
@@ -545,6 +560,9 @@ en:
       yandex: Yandex
       qiwi: Qiwi
       safecharge_unknown: Safecharge unknown
+
+  graphql:
+    internal_server_error: 'Something went wrong with your query, fellow :)'
 
   lock_reasons:
     closed: Closed

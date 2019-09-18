@@ -2,11 +2,22 @@
 
 module Account
   class SendPasswordResetService < ApplicationService
-    attr_reader :customer
+    include Recaptcha::Verify
 
-    def initialize(customer)
+    def initialize(customer:, captcha: nil)
       @customer = customer
+      @captcha = captcha
       @retries = 3
+    end
+
+    def captcha_invalid?
+      captcha.nil? || !captcha_verified?
+    end
+
+    def invalid_captcha!
+      GraphQL::ExecutionError.new(
+        I18n.t('recaptcha.errors.verification_failed')
+      )
     end
 
     def call
@@ -19,6 +30,15 @@ module Account
     end
 
     private
+
+    attr_reader :customer, :captcha
+
+    # Need to mock `request` to make `verify_recaptcha` works
+    def request; end
+
+    def captcha_verified?
+      verify_recaptcha(response: captcha.to_s, skip_remote_ip: true)
+    end
 
     def update_reset_password_token
       @raw_token, token =

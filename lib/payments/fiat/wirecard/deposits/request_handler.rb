@@ -23,8 +23,7 @@ module Payments
             response = client.authorize_payment(transaction)
             response.parsed_response
           rescue ::HTTParty::ResponseError => error
-            Appsignal.send_error(error)
-            Rails.logger.error(error.message)
+            Rails.logger.error(error_object: error, message: error.message)
 
             raise ::Payments::GatewayError, gateway_error_message(error)
           end

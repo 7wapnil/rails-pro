@@ -3,6 +3,7 @@
 module Account
   class RequestPasswordReset < ::Base::Resolver
     argument :email, !types.String
+    argument :captcha, !types.String
 
     type types.Boolean
 
@@ -17,7 +18,12 @@ module Account
 
       raise ActiveRecord::RecordNotFound unless customer
 
-      Account::SendPasswordResetService.call(customer)
+      service = Account::SendPasswordResetService.new(customer: customer,
+                                                      captcha: args[:captcha])
+
+      return service.captcha_invalid! if service.captcha_invalid?
+
+      service.call
 
       true
     rescue ActiveRecord::RecordNotFound

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class BalanceEntry < ApplicationRecord
-  after_commit :update_summary, on: :create
+  after_commit :update_summary, on: :create, unless: :bet_entry?
 
   belongs_to :balance
   belongs_to :entry
@@ -24,5 +24,9 @@ class BalanceEntry < ApplicationRecord
 
   def update_summary
     Customers::Summaries::BalanceUpdateWorker.perform_async(Date.current, id)
+  end
+
+  def bet_entry?
+    entry&.bet?
   end
 end

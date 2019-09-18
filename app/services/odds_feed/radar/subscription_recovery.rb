@@ -25,23 +25,29 @@ module OddsFeed
                         message: RECOVERY_REQUEST_INITIATED_MESSAGE,
                         producer_code: @product.code,
                         recovery_after: recover_after)
-        unless rates_available?
-          log_job_message(:error, RECOVERY_RATES_REACHED_MESSAGE)
-          return false
-        end
+
+        validate_rates_availability!
 
         requested_at = Time.zone.now
         request_id = requested_at.to_i
 
         request_recovery(node_id, request_id)
         update_product(node_id, request_id, requested_at)
+      rescue ::Radar::RecoveryRatesReachedError => e
+        log_job_message(:error, message: e.message,
+                                error_object: e)
+        false
       end
 
-      def rates_available?
+      def validate_rates_availability!
         last_call = ::Radar::Producer.last_recovery_call_at
         return true unless last_call
 
-        last_call < MINIMAL_DELAY_BETWEEN_CALLS_IN_SECONDS.seconds.ago
+        result = last_call < MINIMAL_DELAY_BETWEEN_CALLS_IN_SECONDS.seconds.ago
+
+        return if result
+
+        raise ::Radar::RecoveryRatesReachedError, RECOVERY_RATES_REACHED_MESSAGE
       end
 
       private

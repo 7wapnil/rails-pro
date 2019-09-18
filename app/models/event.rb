@@ -10,6 +10,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     description
     start_at
     end_at
+    visible
+    twitch_url
+    twitch_start_time
+    twitch_end_time
     display_status
     home_score
     away_score
@@ -44,6 +48,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     LIVE = 'live'
   ].freeze
 
+  TWITCH_END_TIME_DELAY = 3.hours
+
   enum status: STATUSES
 
   belongs_to :title
@@ -65,6 +71,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_many :players, through: :competitors
 
   has_many :dashboard_markets, -> { for_displaying }, class_name: Market.name
+  has_many :available_markets, -> { available }, class_name: Market.name
 
   validates :name, presence: true
   validates :priority, inclusion: { in: PRIORITIES }
@@ -72,6 +79,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   conflict_target :external_id
   conflict_updatable :name,
+                     :description,
                      :status,
                      :traded_live,
                      :display_status,
@@ -208,6 +216,10 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   def bookable?
     liveodds == BOOKABLE
+  end
+
+  def available?
+    active? && visible
   end
 
   # TODO: rework producer assignment flow in odd change and fixture change

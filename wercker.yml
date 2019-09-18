@@ -2,7 +2,7 @@ box:
   id: arcanebet/arcanebet
   username: $DOCKERHUB_USERNAME
   password: $DOCKERHUB_PASSWORD
-  tag: base
+  tag: node10
 
 services:
   - postgres
@@ -15,7 +15,7 @@ build:
 
     - script:
       name: prepare database
-      code: rake db:test:prepare
+      code: bundle exec rake db:test:prepare
 
     - script:
       name: rubocop
@@ -35,7 +35,7 @@ build:
 
     - script:
       name: factorybot factories lint
-      code: rake factory_bot:lint
+      code: bundle exec rake factory_bot:lint
 
     - script:
       name: rspec

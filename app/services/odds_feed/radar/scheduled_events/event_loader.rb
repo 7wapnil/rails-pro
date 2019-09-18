@@ -15,7 +15,7 @@ module OddsFeed
           EventsManager::EventLoader.call(external_id)
           log_success
         rescue StandardError => error
-          log_failure
+          log_failure(error)
           raise(error)
         end
 
@@ -33,9 +33,10 @@ module OddsFeed
                                  event_id: external_id)
         end
 
-        def log_failure
+        def log_failure(error)
           log_job_message(:error, message: 'Failed to load event',
-                                  event_id: external_id)
+                                  event_id: external_id,
+                                  error_object: error)
         end
       end
     end

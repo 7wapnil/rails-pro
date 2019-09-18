@@ -3,6 +3,12 @@
 module OddsFeed
   module Radar
     class BetCancelHandler < RadarMessageHandler
+      SUITABLE_BET_STATUSES = [
+        Bet::ACCEPTED,
+        Bet::SETTLED,
+        Bet::PENDING_MANUAL_SETTLEMENT
+      ].freeze
+
       attr_accessor :batch_size
 
       def initialize(payload)
@@ -18,7 +24,7 @@ module OddsFeed
       private
 
       def input_data
-        @payload['bet_cancel']
+        payload['bet_cancel']
       end
 
       def markets
@@ -28,7 +34,7 @@ module OddsFeed
       def validate_message!
         return if event_id && markets.any?
 
-        raise OddsFeed::InvalidMessageError, @payload
+        raise OddsFeed::InvalidMessageError, payload
       end
 
       def event_id
@@ -50,44 +56,40 @@ module OddsFeed
       end
 
       def bets
-        @bets ||= Bet.accepted.or(Bet.settled)
-                     .joins(odd: :market)
-                     .includes(:winning, :placement_entry)
-                     .where(markets: { external_id: market_external_ids })
-                     .merge(bets_with_start_time)
-                     .merge(bets_with_end_time)
+        @bets ||= Bet
+                  .joins(odd: :market)
+                  .includes(:winning, :placement_entry)
+                  .where(markets: { external_id: market_external_ids })
+                  .where(status: SUITABLE_BET_STATUSES)
+                  .merge(bets_with_start_time)
+                  .merge(bets_with_end_time)
       end
 
       def bets_with_start_time
         return {} unless input_data['start_time']
 
         Bet.where('bets.created_at >= ?',
-                  to_datetime(input_data['start_time']))
+                  parse_timestamp(input_data['start_time']))
       end
 
       def bets_with_end_time
         return {} unless input_data['end_time']
 
         Bet.where('bets.created_at < ?',
-                  to_datetime(input_data['end_time']))
-      end
-
-      def to_datetime(timestamp)
-        Time.at(timestamp.to_i)
-            .to_datetime
-            .in_time_zone
+                  parse_timestamp(input_data['end_time']))
       end
 
       def cancel_bet(bet)
         ActiveRecord::Base.transaction do
           return_money(bet)
 
-          bet.cancelled_by_system!
+          bet.cancel_by_system!
         end
       rescue StandardError => error
         log_job_message(:error, message: 'Bet was not cancelled!',
                                 bet_id: bet.id,
-                                reason: error.message)
+                                reason: error.message,
+                                error_object: error)
       end
 
       def return_money(bet)
@@ -96,7 +98,7 @@ module OddsFeed
       end
 
       def proceed_entry_request(request)
-        EntryRequests::BetCancellationWorker.perform_async(request.id)
+        EntryRequests::ProcessingService.call(entry_request: request)
       end
     end
   end

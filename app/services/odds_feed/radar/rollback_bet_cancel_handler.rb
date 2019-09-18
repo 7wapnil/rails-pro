@@ -54,23 +54,41 @@ module OddsFeed
         @bets ||= Bet
                   .joins(:market)
                   .includes(:winning_rollback_entry, :placement_rollback_entry)
+                  .cancelled_by_system
                   .where(markets: { external_id: market_external_ids })
+                  .merge(bets_with_start_time)
+                  .merge(bets_with_end_time)
+      end
+
+      def bets_with_start_time
+        return {} unless input_data['start_time']
+
+        Bet.where('bets.created_at >= ?',
+                  parse_timestamp(input_data['start_time']))
+      end
+
+      def bets_with_end_time
+        return {} unless input_data['end_time']
+
+        Bet.where('bets.created_at < ?',
+                  parse_timestamp(input_data['end_time']))
       end
 
       def rollback_bet(bet)
         ActiveRecord::Base.transaction do
           rollback_money(bet)
 
-          return bet.settled! if bet.settlement_status
+          return settle_bet(bet) if bet.settlement_status
 
-          bet.accepted!
+          bet.rollback_system_cancellation_with_acceptance!
         end
       rescue StandardError => error
         log_job_message(
           :error,
           message: 'Bet cancel for bet was not rollbacked!',
           bet_id: bet.id,
-          reason: error.message
+          reason: error.message,
+          error_object: error
         )
       end
 
@@ -81,7 +99,11 @@ module OddsFeed
       end
 
       def proceed_entry_request(request)
-        EntryRequests::RollbackBetCancellationWorker.perform_async(request.id)
+        EntryRequests::ProcessingService.call(entry_request: request)
+      end
+
+      def settle_bet(bet)
+        bet.rollback_system_cancellation_with_settlement!
       end
     end
   end

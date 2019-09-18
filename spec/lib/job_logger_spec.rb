@@ -5,7 +5,7 @@ describe JobLogger do
   let(:logger_level) { %i[info debug fatal error].sample }
   let(:message) { Faker::Lorem.sentence }
   let(:error_message) { Faker::Lorem.sentence }
-  let(:error) { instance_double('Exception', message: error_message) }
+  let(:error) { StandardError.new(error_message) }
 
   let(:enqueued_at) { Faker::Time.backward(1) }
   let(:start_time) { (enqueued_at + 1.hour).to_f }
@@ -24,23 +24,20 @@ describe JobLogger do
     before { allow(dummy_class).to receive(:log_job_message) }
 
     context 'with Error passed' do
-      before do
-        allow(error).to receive('is_a?').with(Exception).and_return(true)
-        dummy_class.log_job_failure(error)
-      end
+      before { dummy_class.log_job_failure(error) }
 
       it 'calls log_job_message with predefined level and message' do
         expect(dummy_class).to have_received(:log_job_message)
-          .with(:error, error_message).once
+          .with(:error, message: error_message, error_object: error).once
       end
     end
 
     context 'with message passed' do
-      before { dummy_class.log_job_failure(message) }
+      before { dummy_class.log_job_failure(error) }
 
       it 'calls log_job_message with predefined level and message' do
         expect(dummy_class).to have_received(:log_job_message)
-          .with(:error, message).once
+          .with(:error, message: error_message, error_object: error).once
       end
     end
   end
@@ -133,7 +130,7 @@ describe JobLogger do
 
     it 'calls log_process with predefined level and error message' do
       expect(dummy_class).to have_received(:log_process)
-        .with(:error, error_message).once
+        .with(:error, error_message, error_object: error).once
     end
   end
 

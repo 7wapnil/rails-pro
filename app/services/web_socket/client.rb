@@ -5,11 +5,11 @@ module WebSocket
     include Singleton
     include JobLogger
 
-    def trigger_event_update(event)
+    def trigger_event_update(event, force: false)
       trigger(SubscriptionFields::EVENTS_UPDATED, event)
       trigger(SubscriptionFields::EVENT_UPDATED, event, id: event.id)
 
-      return unless event_available?(event)
+      return unless event_available?(event) || force
 
       trigger_tournament_event(event)
       trigger_category_event(event)

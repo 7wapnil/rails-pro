@@ -39,6 +39,8 @@ const processLabels = () => {
   }).on('change', (element) => {
     $(`[data-label-selector='${element.target.id}']`).prop('disabled', false)
   });
+
+  $('.event_labels_selector').select2({ width: '100%' });
 };
 
 let loaded = false;

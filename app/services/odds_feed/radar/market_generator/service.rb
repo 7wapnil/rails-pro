@@ -97,8 +97,13 @@ module OddsFeed
           return template if template
 
           error_msg = 'MarketTemplate not found'
-          log_job_message(:error, message: error_msg, external_id: external_id)
-          raise(ActiveRecord::RecordNotFound, error_msg)
+          raise ActiveRecord::RecordNotFound, error_msg
+        rescue ActiveRecord::RecordNotFound => e
+          log_job_message(:error, message: e.message,
+                                  external_id: external_id,
+                                  error_object: e)
+
+          raise e
         end
 
         def market_template_from_cache(external_id)
@@ -149,7 +154,7 @@ module OddsFeed
                      validate: false,
                      on_duplicate_key_update: {
                        conflict_target: %i[external_id],
-                       columns: %i[status value]
+                       columns: %i[status value name]
                      })
         end
 

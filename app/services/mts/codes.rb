@@ -72,7 +72,7 @@ module Mts
       -507 => DEFAULT_EXCEPTION_KEY,
       -508 => DEFAULT_EXCEPTION_KEY,
       -509 => DEFAULT_EXCEPTION_KEY,
-      -511 => DEFAULT_EXCEPTION_KEY
+      -511 => Bets::Notification::PAYOUT_LIMIT_REACHED_ERROR
     }.freeze
 
     RISK_MANAGEMENT_ERROR_CODES = {

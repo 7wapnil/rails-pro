@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Exchanger
   module Apis
     class CoinApi < BaseApi
@@ -9,44 +11,31 @@ module Exchanger
       protected
 
       def request
-        self.class.get("/exchangerate/#{@base}", query: {
-                         filter_asset_id: currencies.join(',')
-                       })
+        self.class.get("/exchangerate/#{base_currency_code}",
+                       query: { filter_asset_id: currency_codes.join(',') })
       end
 
       def parse(formatted_response)
-        rates = build_rates(formatted_response['rates'].to_a)
-        mbtc = build_mbtc(rates)
-        rates << mbtc if mbtc.present?
-
-        rates
+        formatted_response['rates']
+          .to_a
+          .map { |item| Rate.new(item['asset_id_quote'], item['rate']) }
+          .tap { |rates| replace_btc_with_m_btc(rates) }
       end
 
       private
 
-      def build_mbtc(rates)
-        btc = rates.detect { |rate| rate.code == BTC }
-        return unless btc.present?
+      def replace_btc_with_m_btc(rates)
+        btc_rate = rates.find { |rate| rate.code == BTC }
 
-        Rate.new(M_BTC, btc.value * 1000)
+        return unless btc_rate
+
+        m_btc_rate = Rate.new(m_btc_code, multiply_amount(btc_rate.value))
+
+        rates[rates.index(btc_rate)] = m_btc_rate
       end
 
-      def build_rates(rate_data)
-        rate_data.map do |item|
-          Rate.new(item['asset_id_quote'], item['rate'])
-        end
-      end
-
-      def currencies
-        return @currencies unless mbtc_requested?
-        return @currencies if @currencies.include?(BTC)
-
-        @currencies << BTC
-        @currencies
-      end
-
-      def mbtc_requested?
-        @currencies.any? { |item| item == M_BTC }
+      def m_btc_code
+        Rails.env.production? ? M_BTC : M_TBTC
       end
     end
   end

@@ -45,6 +45,9 @@
             %td= t('attributes.bet_placement_time')
             %td= bet.created_at(human: true)
           %tr
+            %td= t('attributes.bet_settlement_status_achieved_at')
+            %td= bet.bet_settlement_status_achieved_at(human: true)
+          %tr
             %td= t('attributes.status')
             %td= status_badge(bet.status)
           %tr

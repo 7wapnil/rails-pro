@@ -1,4 +1,10 @@
+# frozen_string_literal: true
+
 class CurrenciesController < ApplicationController
+  find :currency, only: :edit
+
+  decorates_assigned :currency
+
   def index
     @search = Currency.ransack(query_params)
     @currencies = @search.result.page(params[:page])
@@ -14,7 +20,6 @@ class CurrenciesController < ApplicationController
   end
 
   def edit
-    @currency = Currency.find(params[:id])
     EntryKinds::KINDS.keys.each do |kind|
       next if @currency.entry_currency_rules.exists?(kind: kind)
 
@@ -25,13 +30,13 @@ class CurrenciesController < ApplicationController
   end
 
   def create
-    @currency =
-      Currencies::Create.call(params: currency_params,
-                              current_user: current_user)
+    @currency = Currencies::Create.call(params: currency_params,
+                                        current_user: current_user)
 
-    return redirect_to currencies_path if @currency.errors.empty?
+    return render :new if @currency.errors.any?
 
-    render 'new'
+    redirect_to edit_currency_path(@currency),
+                notice: t('currencies.create.success', code: @currency.code)
   end
 
   def update
@@ -39,9 +44,10 @@ class CurrenciesController < ApplicationController
       Currencies::Update.call(params: currency_params,
                               current_user: current_user)
 
-    return redirect_to currencies_path if @currency.errors.empty?
+    return render :edit if @currency.errors.any?
 
-    render 'edit'
+    redirect_to edit_currency_path(@currency),
+                notice: t('currencies.update.success')
   end
 
   private

@@ -2,7 +2,7 @@ module JobLogger
   def log_job_failure(error)
     message = error.is_a?(Exception) ? error.message : error
 
-    log_job_message(:error, message)
+    log_job_message(:error, message: message, error_object: error)
   end
 
   protected
@@ -29,12 +29,12 @@ module JobLogger
   end
 
   def log_failure(error)
-    log_process(:error, error.message)
+    log_process(:error, error.message, error_object: error)
   end
 
   private
 
-  def log_process(level, message = nil)
+  def log_process(level, message = nil, **args)
     Rails.logger.send(level,
                       jid: job_id,
                       worker: self.class.name,
@@ -45,6 +45,7 @@ module JobLogger
                       job_execution_time: execution_time.round(3),
                       overall_processing_time: processing_time.round(3),
                       thread_id: thread_id,
+                      **args,
                       **odd_messages_info,
                       **extra_log_info)
   end

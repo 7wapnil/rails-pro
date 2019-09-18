@@ -55,8 +55,13 @@ module EntryRequests
 
     def entry_request_failed!
       message = I18n.t('errors.messages.entry_request_failed')
-      log_job_message(:error, message: message, bet_id: bet.id)
+
       raise Bets::RequestFailedError, message
+    rescue Bets::RequestFailedError => e
+      log_job_message(:error, message: e.message,
+                              bet_id: bet.id,
+                              error_object: e)
+      raise e
     end
 
     def zero_amount!

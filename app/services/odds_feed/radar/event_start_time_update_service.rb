@@ -16,7 +16,11 @@ module OddsFeed
         # TODO: Remove API call if error doesn't raise at all
         compare_time
 
-        event.update!(start_at: api_start_time)
+        event.update!(
+          start_at: api_start_time,
+          twitch_start_time: api_start_time,
+          twitch_end_time: expected_event_end_time
+        )
       end
 
       private
@@ -33,6 +37,10 @@ module OddsFeed
 
       def api_start_time
         @api_start_time ||= fixture['start_time']
+      end
+
+      def expected_event_end_time
+        api_start_time.to_time + Event::TWITCH_END_TIME_DELAY
       end
 
       def fixture

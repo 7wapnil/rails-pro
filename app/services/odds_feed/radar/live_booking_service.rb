@@ -49,7 +49,8 @@ module OddsFeed
         @event ||= Event.find_by!(external_id: @event_external_id)
       rescue ActiveRecord::RecordNotFound => e
         log_job_message(:error, message: e.message,
-                                external_id: @event_external_id)
+                                external_id: @event_external_id,
+                                error_object: e)
         raise SilentRetryJobError, e.message
       end
 

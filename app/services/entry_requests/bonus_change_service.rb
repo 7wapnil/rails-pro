@@ -24,12 +24,15 @@ module EntryRequests
     attr_reader :entry_request, :customer_bonus, :entry
 
     def charge_failed!
-      log_job_message(:error,
-                      message: 'Failed entry request passed to payment service',
-                      entry_request_id: entry_request.id)
-
       raise FailedEntryRequestError,
             'Failed entry request passed to payment service'
+    rescue FailedEntryRequestError => e
+      log_job_message(:error,
+                      message: e.message,
+                      error_object: e,
+                      entry_request_id: entry_request.id)
+
+      raise e
     end
 
     def process_entry_request!

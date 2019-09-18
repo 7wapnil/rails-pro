@@ -1,7 +1,8 @@
 class EventsController < ApplicationController
-  include Visibility
   include Labelable
   include DateIntervalFilters
+
+  find :event, only: :update
 
   def index
     @search = Event.includes(:labels, :event_scopes)
@@ -30,15 +31,23 @@ class EventsController < ApplicationController
   end
 
   def update
-    @event = Event.find(params[:id])
-    updated = @event.update(event_params)
+    return head :unprocessable_entity unless @event.update(event_params)
 
-    render nothing: true, status: :unprocessable_entity unless updated
+    WebSocket::Client.instance.trigger_event_update(@event, force: true)
+
+    respond_to do |format|
+      format.js
+      format.html do
+        redirect_back(fallback_location: events_path)
+      end
+    end
   end
 
   private
 
   def event_params
-    params.require(:event).permit(:priority)
+    params.require(:event).permit(
+      :priority, :visible, :twitch_url, :twitch_start_time, :twitch_end_time
+    )
   end
 end

@@ -32,7 +32,7 @@ module Events
 
     def base_query
       Event
-        .joins(:title, :markets)
+        .joins(:title, :available_markets)
         .joins(join_events_to_tournaments_sql)
         .preload(:dashboard_markets, :competitors)
         .visible

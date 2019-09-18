@@ -1,67 +1,100 @@
+- content_for :css do
+  = stylesheet_pack_tag 'flatpickr', media: :all, 'data-turbolinks-track': 'reload'
+
+- content_for :js do
+  = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
+
 = card header: t('entities.event'), class: 'events-info mb-3' do
-  %table.table
-    %tr
-      %td= t('attributes.event_id')
-      %td= event.id
-    %tr
-      %td= t('attributes.name')
-      %td= event.name
-    %tr
-      %td= t('attributes.sport')
-      %td= event.title.name
-    %tr
-      %td= t('attributes.description')
-      %td= event.description
-    %tr
-      %td= t('attributes.start_at')
-      %td= safe_date_localize_helper(event.start_at, format: :long, default_result: '-')
-    %tr
-      %td= t('attributes.end_at')
-      %td= safe_date_localize_helper(event.end_at, format: :long, default_result: '-')
-    %tr
-      %td= t('attributes.status')
-      %td= event.status
-    %tr
-      %td= t('entities.labels')
-      %td
-        = labels_selector(event, labels)
-        %button.btn.btn-success.mt-2.save_labels{ disabled: true,
-           data: { label_selector: "event_#{event.id}" } }= t(:save)
-    %tr
-      %td= t('entities.bets')
-      %td= event.bets.count
-    %tr
-      %td= t('attributes.wager')
-      %td= event.bets.sum(:amount)
-    %tr
-      %td= t('attributes.live_coverage')
-      %td= status_badge(event.traded_live ? 'live' : 'offline')
-    %tr
-      %td= t('attributes.priority')
-      %td= select_tag :priority, options_for_select(Event::PRIORITIES, event.priority),
-                                  class: 'priority_toggle form-control-sm',
-                                  data: { endpoint: event_path(event),
-                                          resource: 'event',
-                                          initial_value: event.priority }
-    %tr
-      %td= t('entities.scopes')
-      %td
-        %ul.list-unstyled
-          - event.event_scopes.each do |scope|
-            %li
-              %b #{scope.kind}:
-              %span= scope.name
-    %tr
-      %td= t('attributes.event_status')
-      %td= event.status
-    %tr
-      %td= t('attributes.visible')
-      %td= visibility_toggle(event, update_visibility_event_path(event))
-    %tr
-      %td= t('attributes.score')
-      %td= display_score(event)
-    %tr
-      %td= t('attributes.ready')
-      %td= event.ready
-  %hr
-  = link_back
+  = simple_form_for event do |f|
+    %table.table
+      %tr
+        %td= t('attributes.event_id')
+        %td= event.id
+      %tr
+        %td= t('attributes.external_id')
+        %td= event.external_id
+      %tr
+        %td= t('attributes.name')
+        %td= event.name
+      %tr
+        %td= t('attributes.sport')
+        %td= event.title.name
+      %tr
+        %td= t('attributes.description')
+        %td= event.description
+      %tr
+        %td= t('attributes.start_at')
+        %td= safe_date_localize_helper(event.start_at, format: :long, default_result: '-')
+      %tr
+        %td= t('attributes.end_at')
+        %td= safe_date_localize_helper(event.end_at, format: :long, default_result: '-')
+      %tr
+        %td= t('attributes.status')
+        %td= event.status
+      %tr
+        %td= t('entities.labels')
+        %td
+          = labels_selector(event.object, labels)
+          %button.btn.btn-success.mt-2.save_labels{ disabled: true,
+             data: { label_selector: "event_#{event.id}" } }= t(:save)
+      %tr
+        %td= t('entities.bets')
+        %td= event.bets.length
+      %tr
+        %td= t('attributes.wager')
+        %td= event.bets.sum(&:amount)
+      %tr
+        %td= t('attributes.live_coverage')
+        %td= status_badge(event.traded_live ? 'live' : 'offline')
+      %tr
+        %td= t('attributes.twitch_url')
+        %td
+          = f.text_field :twitch_url, class: 'form-control mt-0 mb-3 string required mr-1 rounded'
+      %tr
+        %td= t('attributes.twitch_start_time')
+        %td
+          = f.input :twitch_start_time,
+                    as: :date_picker,
+                    required: false,
+                    input_html: { class: 'form-control mt-0 mb-3 string required mr-1 rounded',
+                                  data: { time: true } },
+                    label: false
+      %tr
+        %td= t('attributes.twitch_end_time')
+        %td
+          = f.input :twitch_end_time,
+                    as: :date_picker,
+                    required: false,
+                    input_html: { class: 'form-control mt-0 mb-3 string required mr-1 rounded',
+                                  data: { time: true } },
+                    label: false
+      %tr
+        %td= t('attributes.priority')
+        %td
+          = f.select :priority, Event::PRIORITIES, {}, class: 'form-control-sm'
+      %tr
+        %td= t('entities.scopes')
+        %td
+          %ul.list-unstyled
+            - event.event_scopes.each do |scope|
+              %li
+                %b #{scope.kind}:
+                %span= scope.name
+      %tr
+        %td= t('attributes.event_status')
+        %td= event.status
+      %tr
+        %td= t('attributes.visible')
+        %td
+          %span.toggle_container
+            = f.check_box :visible, class: 'toggle_button', id: 'event_visibility_toggle'
+            %label{ for: 'event_visibility_toggle' }
+      %tr
+        %td= t('attributes.score')
+        %td= display_score(event)
+      %tr
+        %td= t('attributes.ready')
+        %td= event.ready
+    %hr
+    = link_back
+    = f.submit t(:save), class: 'btn btn-success mt-0'

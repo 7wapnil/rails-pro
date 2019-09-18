@@ -24,13 +24,9 @@ module OddsFeed
         request('/users/whoami.xml')
       end
 
+      # rubocop:disable Metrics/MethodLength
       def event(id, cache: nil)
-        unless supported_external_id?(id)
-          log_job_message(:error, message: 'Payload is not supported yet',
-                                  event_id: id)
-
-          return EventAdapter.new
-        end
+        validate_external_id!(id)
 
         route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"
         payload = request(route, cache: cache)
@@ -42,17 +38,26 @@ module OddsFeed
         end
 
         EventAdapter.new(payload)
+      rescue Events::UnsupportedPayloadError => e
+        log_job_message(:error, message: e.message,
+                                event_id: id,
+                                error_object: e)
+
+        EventAdapter.new
       end
+      # rubocop:enable Metrics/MethodLength
 
       def event_raw(id, cache: nil)
-        unless supported_external_id?(id)
-          log_job_message(:error, message: 'Event is not supported',
-                                  event_id: id)
-          raise SilentRetryJobError, "Event is not supported. Event id: #{id}"
-        end
+        validate_external_id!(id)
 
         route = "/sports/#{@language}/sport_events/#{id}/fixture.xml"
         request(route, cache: cache)
+      rescue Events::UnsupportedPayloadError => e
+        log_job_message(:error, message: e.message,
+                                event_id: id,
+                                error_object: e)
+
+        raise SilentRetryJobError, "Event is not supported. Event id: #{id}"
       end
 
       def events_for_date(date, cache: nil)
@@ -169,8 +174,10 @@ module OddsFeed
 
       private
 
-      def supported_external_id?(id)
-        id.to_s.match?(EventAdapter::MATCH_TYPE_REGEXP)
+      def validate_external_id!(id)
+        return if id.to_s.match?(EventAdapter::MATCH_TYPE_REGEXP)
+
+        raise Events::UnsupportedPayloadError, 'Payload is not supported yet'
       end
 
       def recovery_request_query_is_valid?(query)

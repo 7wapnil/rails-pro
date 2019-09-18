@@ -20,25 +20,4 @@ describe Currency do
       end
     end
   end
-
-  describe '.cached_all' do
-    subject(:currency) { create(:currency) }
-
-    before do
-      allow(described_class).to receive(:all)
-      described_class.flush_cache
-    end
-
-    it 'caches multiple calls' do
-      2.times { described_class.cached_all }
-      expect(described_class).to have_received(:all).once
-    end
-
-    it 'flush cache on commit' do
-      described_class.cached_all
-      currency.update(code: 'EUR')
-      described_class.cached_all
-      expect(described_class).to have_received(:all).twice
-    end
-  end
 end

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Exchanger::Apis::ExchangeRatesApiIo do
   subject { described_class.new('EUR', %w[USD GBP]) }
 
@@ -16,6 +18,7 @@ describe Exchanger::Apis::ExchangeRatesApiIo do
     create(:currency, code: 'USD', kind: Currency::FIAT)
     create(:currency, code: 'GBP', kind: Currency::FIAT)
 
+    allow(ENV).to receive(:[]).and_call_original
     allow(ENV).to(
       receive(:[]).with('FIXER_API_KEY').and_return('key')
     )

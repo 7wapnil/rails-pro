@@ -46,7 +46,8 @@ describe GraphQL, '#impersonate' do
     {
       message: 'Impersonation attempt with malformed token!',
       token: token,
-      ip_address: ip_address
+      ip_address: ip_address,
+      error_object: kind_of(ActiveRecord::RecordNotFound)
     }
   end
 
@@ -105,9 +106,13 @@ describe GraphQL, '#impersonate' do
       end
 
       context 'with wallet' do
-        let(:wallet_response) { user_response['wallets'].first }
         let(:wallet) { customer.wallets.first }
         let(:currency) { wallet.currency }
+        let(:wallet_response) do
+          user_response['wallets'].find do |wallet|
+            wallet.dig('currency', 'kind') == currency.kind
+          end
+        end
 
         it 'contains fields' do
           expect(wallet_response).to include(

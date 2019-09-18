@@ -17,7 +17,7 @@ describe Payments::Fiat::Wirecard::CallbackHandler do
     let(:body) do
       {
         'payment' => {
-          'transaction-type' => 'authorization'
+          'transaction-type' => 'purchase'
         }
       }
     end

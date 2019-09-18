@@ -65,7 +65,7 @@ module Radar
     }.freeze
 
     def work(msg)
-      match_result(scan_payload(msg)).perform_async(msg)
+      match_result(scan_payload(msg)).perform_async(msg, Time.zone.now)
       ack!
     end
 

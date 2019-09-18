@@ -17,7 +17,9 @@ module EventsManager
       Event.create_or_update_on_duplicate(event)
       log :info, message: 'Updated event', event_id: @external_id
 
-      update_associations(event) if load_associations?
+      update_competitors(event)
+
+      update_event_scopes(event) if load_associations?
       event.update!(ready: true)
 
       event
@@ -27,17 +29,20 @@ module EventsManager
       @options[:only_event].blank?
     end
 
-    def update_associations(event)
+    def update_event_scopes(event)
       ScopesBuilder.call(event, event_data)
       log :info, message: 'Event scopes updated', event_id: @external_id
+    end
+
+    def update_competitors(event)
+      event.event_competitors.delete_all
 
       competitors.each do |competitor|
-        event_competitor = ::EventCompetitor.new(
+        ::EventCompetitor.create(
           event: event,
           competitor: competitor,
           qualifier: competitor_qualifier(competitor)
         )
-        ::EventCompetitor.create_or_ignore_on_duplicate(event_competitor)
       end
     end
 
@@ -77,12 +82,20 @@ module EventsManager
       {
         external_id: event_data.id,
         start_at: event_data.start_at,
+        twitch_start_time: event_data.start_at,
+        twitch_end_time: expected_event_end_time,
         name: event_data.name,
         description: event_data.name,
         traded_live: event_data.traded_live?,
         liveodds: event_data.liveodds,
         title: title
       }
+    end
+
+    def expected_event_end_time
+      return unless event_data.start_at
+
+      event_data.start_at.to_time + Event::TWITCH_END_TIME_DELAY
     end
 
     def competitor_qualifier(competitor)

@@ -2,7 +2,7 @@
 
 describe GraphQL, '#requestPasswordReset' do
   let!(:customer) { create(:customer) }
-  let(:variables) { { email: customer.email } }
+  let(:variables) { { email: customer.email, captcha: '' } }
   let(:raw_token) { SecureRandom.hex(7) }
   let(:reset_password_token) { SecureRandom.hex(7) }
 
@@ -13,8 +13,8 @@ describe GraphQL, '#requestPasswordReset' do
   end
 
   let(:query) do
-    %(mutation($email: String!) {
-        requestPasswordReset(email: $email)
+    %(mutation($email: String!, $captcha: String!) {
+        requestPasswordReset(email: $email, captcha: $captcha)
       })
   end
 
@@ -42,6 +42,10 @@ describe GraphQL, '#requestPasswordReset' do
       .and_return(mailer)
 
     allow(mailer).to receive(:deliver_later)
+
+    allow_any_instance_of(Account::SendPasswordResetService).to(
+      receive(:captcha_invalid?).and_return(false)
+    )
   end
 
   xit 'returns true' do
@@ -64,8 +68,8 @@ describe GraphQL, '#requestPasswordReset' do
     result
   end
 
-  xcontext 'when customer is not found' do
-    let(:variables) { { email: Faker::Internet.email } }
+  context 'when customer is not found' do
+    let(:variables) { { email: Faker::Internet.email, captcha: '' } }
 
     it 'raises an error' do
       expect(result['errors'].first['message'])
@@ -75,7 +79,7 @@ describe GraphQL, '#requestPasswordReset' do
 
   xcontext 'on internal server error' do
     before do
-      allow(Account::SendPasswordResetService)
+      allow_any_instance_of(Account::SendPasswordResetService)
         .to receive(:call)
         .and_raise(StandardError)
     end

@@ -46,7 +46,8 @@ module ApplicationHelper
                            visible_resource.visible,
                            id: toggle_id,
                            class: 'toggle_button visibility_toggle',
-                           data: { endpoint: toggle_endpoint })
+                           data: { model: visible_resource.class.name.downcase,
+                                   endpoint: toggle_endpoint })
       concat label_tag('Visible', nil, for: toggle_id)
     end
   end

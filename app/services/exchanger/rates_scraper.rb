@@ -1,5 +1,9 @@
+# frozen_string_literal: true
+
 module Exchanger
   class RatesScraper < ApplicationService
+    include ::Payments::Crypto::SuppliedCurrencies
+
     def call
       update_fiat_rates
       update_crypto_rates
@@ -32,10 +36,12 @@ module Exchanger
         code: rate.code,
         value: rate.value
       )
-    rescue ActiveRecord::RecordNotFound
-      Rails.logger.error(message: 'Currency not found', code: rate.code)
+    rescue ActiveRecord::RecordNotFound => e
+      Rails.logger.error(
+        message: 'Currency not found', code: rate.code, error_object: e
+      )
     rescue StandardError => e
-      Rails.logger.error e.message
+      Rails.logger.error(error_object: e, message: e.message)
     end
 
     def fiat_currencies
@@ -43,7 +49,7 @@ module Exchanger
     end
 
     def crypto_currencies
-      @crypto_currencies ||= ::Currency.crypto.pluck(:code)
+      @crypto_currencies ||= ::Currency.crypto.pluck(:code) | [BTC]
     end
   end
 end

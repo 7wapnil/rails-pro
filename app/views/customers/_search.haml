@@ -1,3 +1,6 @@
+- content_for :js do
+  = javascript_pack_tag 'input_mask', 'data-turbolinks-track': 'reload'
+
 = search_form_for filter.search, url: search_path, as: :customers do |f|
   %table.table.search
     %thead
@@ -26,9 +29,11 @@
           .filter_field
             = f.label :ip_address_eq, class: 'sr-only'
             = f.search_field :ip_address_eq,
-                              class: 'form-control',
-                              placeholder: t(:search, subject: t('attributes.ip_address')),
-                              autocomplete: :off
+                             class: 'form-control',
+                             placeholder: t(:search, subject: t('attributes.ip_address')),
+                             autocomplete: :off,
+                             data: { inputmask: { mask: '9[9][9].9[9][9].9[9][9].9[9][9]',
+                                                  clearIncomplete: 'true' }.to_json[1..-2] }
         %th
           .filter_field
             #{t('attributes.id')}:

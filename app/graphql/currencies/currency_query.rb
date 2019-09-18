@@ -9,7 +9,7 @@ module Currencies
     end
 
     def resolve(_obj, _args)
-      Currency.cached_all
+      Currency.all
     end
   end
 end

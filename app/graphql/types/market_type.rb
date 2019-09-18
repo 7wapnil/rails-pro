@@ -9,7 +9,9 @@ Types::MarketType = GraphQL::ObjectType.define do
   field :priority, types.Int
   field :status, types.String
   field :odds, types[Types::OddType]
-  field :visible, types.Boolean
+  field :visible, types.Boolean do
+    resolve ->(obj, *) { obj.visible && obj.event&.available? }
+  end
   field :category, types.String do
     resolve ->(obj, *) { obj.template&.category }
   end

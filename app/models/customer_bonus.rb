@@ -25,9 +25,15 @@ class CustomerBonus < ApplicationRecord
     includes(:balance_entry).where(customer: customer)
   end
 
+  def active_until_date
+    return expires_at unless activated_at
+
+    activated_at.to_date + valid_for_days
+  end
+
   def time_exceeded?
     return false unless active? && activated_at
 
-    Time.zone.today >= (activated_at.to_date + valid_for_days)
+    Time.zone.today >= active_until_date
   end
 end

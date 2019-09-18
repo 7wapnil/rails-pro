@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Account::SendPasswordResetService do
-  let(:service) { described_class.new(customer) }
+  let(:service) { described_class.new(customer: customer, captcha: '') }
   let(:customer) { create :customer, email_verified: email_verified }
   let(:raw_token) { SecureRandom.hex(7) }
   let(:reset_password_token) { SecureRandom.hex(7) }
@@ -25,6 +25,8 @@ describe Account::SendPasswordResetService do
       .and_return(mailer)
 
     allow(mailer).to receive(:deliver_later)
+
+    allow(service).to receive(:captcha_verified?).and_return(true)
   end
 
   context 'with customer with email_verified == true' do

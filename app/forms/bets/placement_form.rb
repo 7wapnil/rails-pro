@@ -51,7 +51,7 @@ module Bets
     end
 
     def check_if_market_active!
-      return true if market.active?
+      return true if market.active? && market.event.available?
 
       raise ::Bets::PlacementError, I18n.t('errors.messages.market_inactive')
     end

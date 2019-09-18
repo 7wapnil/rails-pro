@@ -202,7 +202,8 @@ describe Radar::RollbackBetSettlementWorker do
                           market_id: control_market.external_id,
                           status: control_market.status,
                           previous_status: control_market.previous_status,
-                          reason: error_message)
+                          reason: error_message,
+                          error_object: kind_of(StandardError))
 
           subject
         end

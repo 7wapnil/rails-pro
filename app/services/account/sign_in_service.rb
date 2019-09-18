@@ -112,7 +112,7 @@ module Account
     end
 
     def send_reset_password!
-      Account::SendPasswordResetService.call(customer)
+      Account::SendPasswordResetService.call(customer: customer)
     end
 
     def obfuscate_email(email)

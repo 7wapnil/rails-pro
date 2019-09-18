@@ -9,6 +9,7 @@ module Bets
       EXTERNAL_VALIDATION_ERROR = 'external_validation_error',
       MTS_CANCELLATION_ERROR = 'mts_cancellation_error',
       LIABILITY_LIMIT_REACHED_ERROR = 'liability_limit_reached_error',
+      PAYOUT_LIMIT_REACHED_ERROR = 'payout_limit_reached_error',
       ODDS_TOO_HIGH_ERROR = 'odds_too_high_error'
     ].freeze
 
