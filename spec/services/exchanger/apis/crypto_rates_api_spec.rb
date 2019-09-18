@@ -7,7 +7,8 @@ describe Exchanger::Apis::CryptoRatesApi do
   let(:eth_expected_route) { 'https://api.cryptonator.com/api/ticker/EUR-ETH' }
   let(:price) { '0.001123' }
 
-  let(:m_btc) { ::Payments::Crypto::SuppliedCurrencies::M_TBTC }
+  let(:m_btc) { ::Payments::Crypto::SuppliedCurrencies::M_BTC }
+  let(:t_m_btc) { ::Payments::Crypto::SuppliedCurrencies::M_TBTC }
   let(:btc) { ::Payments::Crypto::SuppliedCurrencies::BTC }
   let(:btc_expected_response) do
     {
@@ -29,6 +30,7 @@ describe Exchanger::Apis::CryptoRatesApi do
   end
 
   let(:m_btc_rate) { subject.find { |rate| rate.code == m_btc } }
+  let(:t_m_btc_rate) { subject.find { |rate| rate.code == t_m_btc } }
   let(:btc_rate) { subject.find { |rate| rate.code == btc } }
 
   before do
@@ -48,7 +50,20 @@ describe Exchanger::Apis::CryptoRatesApi do
   end
 
   it 'requests rates from service' do
-    expect(subject.count).to eq(2)
+    expect(subject.count).to eq(3)
+  end
+
+  it 'updates test BTC for development environment' do
+    expect(t_m_btc_rate.value).to eq(m_btc_rate.value)
+  end
+
+  it 'does not update test BTC for production environment' do
+    allow(ENV).to receive(:[]).and_call_original
+    allow(ENV).to receive(:fetch)
+      .with('COINSPAID_MODE', 'test')
+      .and_return('production')
+
+    expect(t_m_btc_rate).to be_nil
   end
 
   it 'returns empty list on empty response' do

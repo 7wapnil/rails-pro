@@ -2,7 +2,7 @@
 
 module Exchanger
   module Apis
-    class ExchangeRatesApi < ApplicationService
+    class FiatRatesApi < ApplicationService
       include HTTParty
 
       raise_on [400, 401, 403, 429, 500, 550]
