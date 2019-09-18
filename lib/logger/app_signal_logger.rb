@@ -5,7 +5,7 @@ class AppSignalLogger < Logger
     super
 
     message = block_given? ? yield : progname
-    notify(message) if severity >= Severity::ERROR
+    notify(message) if severity >= Severity::ERROR && message.is_a?(Hash)
 
     true
   end
