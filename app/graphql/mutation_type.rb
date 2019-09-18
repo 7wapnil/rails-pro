@@ -8,8 +8,9 @@ MutationType = GraphQL::ObjectType.define do
   field :activate, function: Account::Activate.new
   field :changePassword, function: Account::ChangePassword.new
   field :verifyEmail, function: Account::VerifyEmail.new
-  field :requestPasswordReset, function: Account::RequestPasswordReset.new
-  field :resetPassword, function: Account::ResetPassword.new
+  # FIX ME: should be restored at some point
+  # field :requestPasswordReset, function: Account::RequestPasswordReset.new
+  # field :resetPassword, function: Account::ResetPassword.new
   field :impersonate, function: Account::Impersonate.new
 
   field :placeBets, function: Betting::Place.new
