@@ -3,6 +3,8 @@
 module Mts
   class RandomBetPlacementWorker < ApplicationWorker
     def perform # rubocop:disable Metrics/MethodLength
+      return unless ENV['MTS_RUN_RANDOM_BET_PLACEMENT'].eql?('true')
+
       customer = Customer.first
 
       odd = Odd
@@ -13,6 +15,8 @@ module Mts
               events: { start_at: [Time.zone.now..Date.current.end_of_day] }
             )
             .sample
+
+      return if odd.blank?
 
       bet_args = [{
         amount: 1,
