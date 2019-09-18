@@ -18,7 +18,7 @@ module Webhooks
         head :unprocessable_entity
       rescue StandardError => error
         Rails.logger.error(message: 'Technical error appeared on deposit',
-                           error_object: error.message)
+                           error_object: error)
 
         head :internal_server_error
       end

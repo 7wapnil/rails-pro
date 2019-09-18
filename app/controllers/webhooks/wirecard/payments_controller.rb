@@ -16,7 +16,7 @@ module Webhooks
         callback_redirect_for(::Payments::Webhooks::Statuses::FAILED)
       rescue StandardError => error
         Rails.logger.error(message: 'Technical error appeared on deposit',
-                           error_object: error.message)
+                           error_object: error)
 
         callback_redirect_for(::Payments::Webhooks::Statuses::SYSTEM_ERROR)
       end
