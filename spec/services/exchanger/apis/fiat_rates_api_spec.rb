@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Exchanger::Apis::ExchangeRatesApi do
+describe Exchanger::Apis::FiatRatesApi do
   subject { described_class.new('EUR', %w[USD GBP]) }
 
   let(:expected_route) do

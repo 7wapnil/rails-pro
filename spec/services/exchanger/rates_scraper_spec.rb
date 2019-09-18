@@ -22,7 +22,7 @@ describe Exchanger::RatesScraper do
     create(:currency, code: 'BTC', kind: Currency::CRYPTO)
     create(:currency, code: 'ETH', kind: Currency::CRYPTO)
 
-    allow_any_instance_of(Exchanger::Apis::ExchangeRatesApi)
+    allow_any_instance_of(Exchanger::Apis::FiatRatesApi)
       .to receive(:call)
       .and_return(fiat_rates)
 

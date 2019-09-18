@@ -33,6 +33,7 @@ module Exchanger
           .reject { |code| [M_TBTC, BTC, TBTC].include?(code) }
           .map { |code| parse(request(code)) }
           .tap { |rates| replace_btc_with_m_btc(rates) }
+          .tap { |rates| attach_m_tbtc(rates) if test_mode? }
       end
 
       def request(code)
@@ -63,13 +64,21 @@ module Exchanger
 
         return unless btc_rate
 
-        m_btc_rate = Rate.new(m_btc_code, multiply_amount(btc_rate.value))
+        m_btc_rate = Rate.new(M_BTC, multiply_amount(btc_rate.value))
 
         rates[rates.index(btc_rate)] = m_btc_rate
       end
 
-      def m_btc_code
-        Rails.env.production? ? M_BTC : M_TBTC
+      def test_mode?
+        ENV.fetch('COINSPAID_MODE', 'test') == 'test'
+      end
+
+      def attach_m_tbtc(results)
+        mbtc_result = results.find { |rate| rate.code == M_BTC }
+
+        return unless mbtc_result
+
+        results << Rate.new(M_TBTC, mbtc_result.value)
       end
 
       def log_params(message)
