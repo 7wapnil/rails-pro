@@ -2,7 +2,7 @@
 
 module Exchanger
   module Apis
-    class BaseApi < ApplicationService
+    class FiatRatesApi < ApplicationService
       include HTTParty
 
       raise_on [400, 401, 403, 429, 500, 550]
@@ -24,7 +24,7 @@ module Exchanger
         []
       end
 
-      protected
+      private
 
       attr_reader :base_currency_code, :currency_codes
 
@@ -33,14 +33,21 @@ module Exchanger
       end
 
       def request
-        raise NotImplementedError, 'Must be implemented by child classes'
+        self.class.get(
+          "#{ENV['FIXER_API_URL']}/api/latest",
+          query: {
+            base: base_currency_code,
+            symbols: currency_codes.join(','),
+            access_key: ENV['FIXER_API_KEY']
+          }
+        )
       end
 
-      def parse(_formatted_response)
-        raise NotImplementedError, 'Must be implemented by child classes'
+      def parse(formatted_response)
+        formatted_response['rates']
+          .to_a
+          .map { |code, value| Rate.new(code, value) }
       end
-
-      private
 
       def log_params(message)
         {

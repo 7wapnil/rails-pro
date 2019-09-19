@@ -14,7 +14,7 @@ module Exchanger
     def update_fiat_rates
       return unless fiat_currencies
 
-      Exchanger::Apis::ExchangeRatesApiIo
+      Exchanger::Apis::FiatRatesApi
         .call(::Currency::PRIMARY_CODE, fiat_currencies)
         .each(&method(:update_rate))
     end
@@ -22,7 +22,7 @@ module Exchanger
     def update_crypto_rates
       return unless crypto_currencies
 
-      Exchanger::Apis::CoinApi
+      Exchanger::Apis::CryptoRatesApi
         .call(::Currency::PRIMARY_CODE, crypto_currencies)
         .each(&method(:update_rate))
     end
