@@ -70,7 +70,8 @@ module Exchanger
       end
 
       def test_mode?
-        ENV.fetch('COINSPAID_MODE', 'test') == 'test'
+        puts Payments::Crypto::CoinsPaid::Currency::COINSPAID_MODE
+        Payments::Crypto::CoinsPaid::Currency::COINSPAID_MODE == 'test'
       end
 
       def attach_m_tbtc(results)

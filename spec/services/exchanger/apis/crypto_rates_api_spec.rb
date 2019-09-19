@@ -58,10 +58,10 @@ describe Exchanger::Apis::CryptoRatesApi do
   end
 
   it 'does not update test BTC for production environment' do
-    allow(ENV).to receive(:[]).and_call_original
-    allow(ENV).to receive(:fetch)
-      .with('COINSPAID_MODE', 'test')
-      .and_return('production')
+    stub_const(
+      'Payments::Crypto::CoinsPaid::Currency::COINSPAID_MODE',
+      'production'
+    )
 
     expect(t_m_btc_rate).to be_nil
   end
