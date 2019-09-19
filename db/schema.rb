@@ -13,6 +13,7 @@
 ActiveRecord::Schema.define(version: 2019_11_06_134312) do
 
   # These are extensions that must be enabled in order to support this database
+  enable_extension "pgcrypto"
   enable_extension "plpgsql"
 
   create_table "active_storage_attachments", force: :cascade do |t|
@@ -337,6 +338,13 @@ ActiveRecord::Schema.define(version: 2019_11_06_134312) do
     t.decimal "value"
     t.index ["currency_id"], name: "index_deposit_limits_on_currency_id"
     t.index ["customer_id"], name: "index_deposit_limits_on_customer_id"
+  end
+
+  create_table "em_wallet_sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "wallet_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["wallet_id"], name: "index_em_wallet_sessions_on_wallet_id"
   end
 
   create_table "entries", force: :cascade do |t|

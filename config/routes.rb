@@ -136,4 +136,10 @@ Rails.application.routes.draw do
   post '/graphql', to: 'graphql#execute'
 
   root 'dashboards#index'
+
+  namespace :api do
+    namespace :em do
+      resource :wallet, only: [:create]
+    end
+  end
 end
