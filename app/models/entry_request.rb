@@ -87,7 +87,7 @@ class EntryRequest < ApplicationRecord
   end
 
   def self.expired
-    initial.where('created_at > ?', Time.zone.yesterday.midnight)
+    initial.where('created_at < ?', Time.zone.yesterday.midnight)
   end
 
   def self.transactions
