@@ -2,7 +2,7 @@
 
 module Em
   module Requests
-    class GetAccountService < BaseRequestService
+    class GetBalanceService < BaseRequestService
       def initialize(params)
         @session_id = params.permit('SessionId')['SessionId']
         @session = Em::WalletSession.find_by(id: @session_id)
@@ -19,32 +19,28 @@ module Em
       protected
 
       def request_name
-        'GetAccount'
+        'GetBalance'
       end
 
       private
 
       attr_reader :customer, :wallet, :session_id
 
-      def country_code
-        ISO3166::Country.find_country_by_name(customer.address.country).alpha3
+      def bonus_balance
+        wallet.balances.bonus.first
       end
 
-      def birthdate
-        customer.date_of_birth.iso8601
+      def real_money_balance
+        wallet.balances.real_money.first
       end
 
       def success_response
         common_success_response.merge(
-          'SessionId' => session_id,
-          'AccountId' => customer.id,
-          'Country'   => country_code,
-          'City'      => customer.address.city,
-          'Currency'  => currency_code,
-          'UserName'  => customer.username,
-          'FirstName' => customer.first_name,
-          'LastName'  => customer.last_name,
-          'Birthdate' => birthdate
+          'SessionId'  => session_id,
+          'Balance'    => wallet.amount,
+          'Currency'   => currency_code,
+          'BonusMoney' => bonus_balance&.amount || 0.0,
+          'RealMoney'  => real_money_balance&.amount || 0.0
         )
       end
     end

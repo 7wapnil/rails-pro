@@ -18,6 +18,17 @@ module Em
           'Message'    => 'Success'
         )
       end
+
+      def user_not_found_response
+        common_response.merge(
+          'ReturnCode' => '103',
+          'Message'    => 'User not found'
+        )
+      end
+
+      def currency_code
+        wallet.currency.code
+      end
     end
   end
 end

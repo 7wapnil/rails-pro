@@ -4,7 +4,8 @@ module Api
   module Em
     class WalletsController < ActionController::API
       REQUEST_HANDLERS = {
-        'getaccount' => 'Em::Requests::GetAccountService'
+        'getaccount' => 'Em::Requests::GetAccountService',
+        'getbalance' => 'Em::Requests::GetBalanceService'
       }.freeze
       before_action :authorize_em_wallet_api
 
