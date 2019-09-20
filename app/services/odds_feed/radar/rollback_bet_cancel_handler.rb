@@ -58,6 +58,7 @@ module OddsFeed
                   .where(markets: { external_id: market_external_ids })
                   .merge(bets_with_start_time)
                   .merge(bets_with_end_time)
+                  .lock!
       end
 
       def bets_with_start_time
