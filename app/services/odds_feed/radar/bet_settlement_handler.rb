@@ -85,6 +85,7 @@ module OddsFeed
         Bet.joins(:odd)
            .accepted
            .where(odds: { external_id: external_id })
+           .lock!
       end
 
       def settle_bet(bet, outcome)
