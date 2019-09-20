@@ -63,6 +63,7 @@ module OddsFeed
                   .where(status: SUITABLE_BET_STATUSES)
                   .merge(bets_with_start_time)
                   .merge(bets_with_end_time)
+                  .lock!
       end
 
       def bets_with_start_time

@@ -61,6 +61,7 @@ module OddsFeed
         Bet.joins(:market)
            .where(status: [Bet::SETTLED, Bet::PENDING_MANUAL_SETTLEMENT])
            .where(markets: { external_id: markets_ids })
+           .lock!
       end
 
       def rollback_bet(bet)
