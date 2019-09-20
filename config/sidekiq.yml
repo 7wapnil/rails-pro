@@ -64,12 +64,6 @@
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Sends sales reports to FTP server"
 
-  mts_random_bet_placement:
-    every: <%= "#{ENV.fetch('MTS_RANDOM_BET_INTERVAL', 10)}s" %>
-    class: Mts::RandomBetPlacementWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Random bet placement for MTS testing"
-
   expirining_entry_requests_worker:
     every: <%= ENV.fetch('EXPIRING_ENTRY_REQUESTS_INTERVAL', '1d') %>
     class: Scheduled::ExpiringEntryRequestsWorker
