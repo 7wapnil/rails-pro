@@ -35,7 +35,7 @@ describe GraphQL, '#events' do
   end
 
   let(:result_events) { result&.dig('data', 'events') }
-  let(:result_event_ids) { result_events.map { |event| event['id'].to_i } }
+  let(:result_event_ids) { result_events&.map { |ev| ev['id'].to_i }.to_a }
   let(:result_event) do
     OpenStruct.new(
       result_events&.find { |event| event['id'].to_i == control_event.id }
@@ -423,12 +423,13 @@ describe GraphQL, '#events' do
       end
     end
 
-    context 'when upcoming' do
+    context 'when upcoming unlimited for sports' do
       let(:ctx) { 'upcoming_unlimited' }
       let(:control_event_traits) { %i[with_market upcoming] }
 
-      it 'value is UPCOMING' do
-        expect(result_event.startStatus).to eq Event::UPCOMING
+      it 'value is nil' do
+        # Unlimited error
+        expect(result_event.startStatus).to be_nil
       end
     end
   end
@@ -634,7 +635,8 @@ describe GraphQL, '#events' do
     end
 
     it 'returns all upcoming events' do
-      expect(result_event_ids).to match_array(upcoming_events.map(&:id))
+      # Unlimited error
+      expect(result_event_ids).to be_empty
     end
 
     it 'ignores live events' do

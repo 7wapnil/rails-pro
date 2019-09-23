@@ -508,6 +508,7 @@ en:
         events:
           context:
             invalid: "Unsupported context '%{context}'. Supported contexts: %{contexts}"
+          unlimited_query: "Sorry, but this query is block by server."
         transactions:
           kind:
             invalid: "Invalid transaction kind: '%{kind}'"
