@@ -29,6 +29,7 @@ describe ::Reports::Queries::SalesReportQuery do
     bets_stake_control_value -
       control_customers.first.entries.win.sum(&:base_currency_amount).abs
   end
+  let(:ngr) { 0.175 }
 
   before do
     control_customers.each do |customer|
@@ -87,7 +88,8 @@ describe ::Reports::Queries::SalesReportQuery do
 
     it 'returns correct deposits bonus money' do
       expect(results.first['bonus_money'].to_f)
-        .to eq(bonus_amount_control_value.to_f)
+        .to eq((bonus_amount_control_value.to_f +
+               deposit_real_money_control_value.to_f * ngr).round(2))
     end
 
     it 'returns correct bets count' do
