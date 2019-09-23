@@ -3,7 +3,17 @@
 module Em
   module Requests
     class BaseRequestService < ApplicationService
+      def initialize(params)
+        @params = params
+        @session = params.permit('SessionId')['SessionId']
+        @session = Em::WalletSession.find_by(id: @session)
+        @wallet = @session&.wallet
+        @customer = @wallet&.customer
+      end
+
       protected
+
+      attr_reader :params, :customer, :wallet, :session
 
       def common_response
         {
@@ -21,7 +31,7 @@ module Em
 
       def user_not_found_response
         common_response.merge(
-          'ReturnCode' => '103',
+          'ReturnCode' => 103,
           'Message'    => 'User not found'
         )
       end

@@ -1,5 +1,5 @@
 class CreateEmWagers < ActiveRecord::Migration[5.2]
-  def change
+  def change # rubocop:disable Metrics/MethodLength
     enable_extension 'pgcrypto' unless extension_enabled?('pgcrypto')
 
     create_table :em_wagers,

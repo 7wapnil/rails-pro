@@ -3,13 +3,6 @@
 module Em
   module Requests
     class GetAccountService < BaseRequestService
-      def initialize(params)
-        @session_id = params.permit('SessionId')['SessionId']
-        @session = Em::WalletSession.find_by(id: @session_id)
-        @wallet = @session&.wallet
-        @customer = @wallet&.customer
-      end
-
       def call
         return user_not_found_response unless customer
 
@@ -24,8 +17,6 @@ module Em
 
       private
 
-      attr_reader :customer, :wallet, :session_id
-
       def country_code
         ISO3166::Country.find_country_by_name(customer.address.country).alpha3
       end
@@ -36,7 +27,7 @@ module Em
 
       def success_response
         common_success_response.merge(
-          'SessionId' => session_id,
+          'SessionId' => session.id,
           'AccountId' => customer.id,
           'Country'   => country_code,
           'City'      => customer.address.city,
