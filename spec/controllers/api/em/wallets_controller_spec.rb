@@ -38,7 +38,7 @@ describe Api::Em::WalletsController, type: :controller do
 
   let(:common_success_response) do
     common_response.merge(
-      'ReturnCode' => '0',
+      'ReturnCode' => 0,
       'Message'    => 'Success'
     )
   end

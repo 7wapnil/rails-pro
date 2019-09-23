@@ -24,7 +24,7 @@ module Em
 
       def common_success_response
         common_response.merge(
-          'ReturnCode' => '0',
+          'ReturnCode' => 0,
           'Message'    => 'Success'
         )
       end
