@@ -74,7 +74,7 @@ describe Api::Em::WalletsController, type: :controller do
 
       let(:expected_response) do
         common_success_response.merge(
-          'AccountId' => customer.id,
+          'AccountId' => customer.id.to_s,
           'Country'   => country_code,
           'Currency'  => currency_code,
           'SessionId' => customer_session.id,
@@ -120,7 +120,7 @@ describe Api::Em::WalletsController, type: :controller do
         common_request_params.merge(
           'Request'   => request_name,
           'SessionId' => customer_session.id,
-          'AccountId' => customer.id
+          'AccountId' => customer.id.to_s
         )
       end
 
@@ -171,7 +171,7 @@ describe Api::Em::WalletsController, type: :controller do
         common_request_params.merge(
           'Request'   => request_name,
           'SessionId' => customer_session.id,
-          'AccountId' => customer.id,
+          'AccountId' => customer.id.to_s,
           'Amount'    => amount,
           'TransactionId' => transaction_id
         )
@@ -198,7 +198,7 @@ describe Api::Em::WalletsController, type: :controller do
         common_request_params.merge(
           'Request'   => request_name,
           'SessionId' => customer_session.id,
-          'AccountId' => customer.id,
+          'AccountId' => customer.id.to_s,
           'Amount'    => amount,
           'TransactionId' => transaction_id
         )
