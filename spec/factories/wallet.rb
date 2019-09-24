@@ -3,6 +3,8 @@
 FactoryBot.define do
   factory :wallet do
     amount { Faker::Number.decimal(5, 2) }
+    real_money_balance { Faker::Number.decimal(4, 2) }
+    bonus_balance { Faker::Number.decimal(4, 2) }
 
     customer
     currency
@@ -29,6 +31,12 @@ FactoryBot.define do
 
     trait :with_crypto_address do
       after(:create) { |wallet| create(:crypto_address, wallet: wallet) }
+    end
+
+    trait :empty do
+      amount { 0 }
+      real_money_balance { 0 }
+      bonus_balance { 0 }
     end
   end
 end

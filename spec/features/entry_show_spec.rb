@@ -53,24 +53,5 @@ describe Entry, '#show' do
         end
       end
     end
-
-    context 'related balance entries' do
-      let!(:balance_entries) { create_list(:balance_entry, 2, entry: entry) }
-      let(:balance_entries_card) { '.card.balance-entries' }
-
-      it 'shows balance entries card' do
-        expect_to_have_section 'balance-entries'
-      end
-
-      it 'display all balance entries' do
-        visit entry_path(entry)
-
-        within balance_entries_card do
-          displayed_ids = page.all('tr td:nth-child(1)').map(&:text).map(&:to_i)
-
-          expect(displayed_ids).to match_array(BalanceEntry.ids)
-        end
-      end
-    end
   end
 end

@@ -218,12 +218,10 @@ module StateMachines
       def update_summary_wager_amounts
         return unless placement_entry
 
-        placement_entry.balance_entries.each do |balance_entry|
-          Customers::Summaries::BalanceUpdateWorker.perform_async(
-            Date.current,
-            balance_entry.id
-          )
-        end
+        Customers::Summaries::BalanceUpdateWorker.perform_async(
+          Date.current,
+          placement_entry.id
+        )
       end
 
       def update_summary_customer_ids

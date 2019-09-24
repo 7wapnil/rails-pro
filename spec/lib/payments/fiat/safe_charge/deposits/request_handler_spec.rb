@@ -17,9 +17,6 @@ describe ::Payments::Fiat::SafeCharge::Deposits::RequestHandler do
 
   let(:customer) { create(:customer, :with_address) }
   let(:entry_request) { create(:entry_request, customer: customer) }
-  let!(:balance_entry_request) do
-    create(:balance_entry_request, entry_request: entry_request)
-  end
   let(:extra_query_params) { {} }
   let(:amount) { entry_request.amount }
 

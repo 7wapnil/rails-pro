@@ -8,14 +8,13 @@ describe ::Reports::Queries::SalesReportQuery do
   end
   let!(:test_customers) { create_list(:customer, 3) }
   let(:deposit_real_money_control_value) do
-    control_customers.first.entries.deposit.sum do |b|
-      b.balance_entries.real_money.sum(:base_currency_amount)
-    end
+    control_customers.first
+                     .entries
+                     .deposit
+                     .sum(&:base_currency_real_money_amount)
   end
   let(:bonus_amount_control_value) do
-    control_customers.first.entries.deposit.sum do |b|
-      b.balance_entries.bonus.sum(:base_currency_amount)
-    end
+    control_customers.first.entries.deposit.sum(&:base_currency_bonus_amount)
   end
   let(:bets_stake_control_value) do
     control_customers.first

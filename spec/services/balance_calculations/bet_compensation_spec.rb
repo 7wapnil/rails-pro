@@ -1,52 +1,48 @@
 # frozen_string_literal: true
 
 describe BalanceCalculations::BetCompensation do
-  subject(:service_call_response) do
-    described_class.call(entry_request: win_entry_request)
+  subject do
+    described_class.call(bet: bet, amount: winning)
   end
 
   let(:winning) { rand(100..500).to_f }
   let(:bet) { create(:bet, :with_placement_entry, amount: winning) }
-  let(:win_entry_request) do
-    create(:entry_request, :win, amount: winning, origin: bet)
-  end
 
   let(:amount) { rand(10..100).to_f }
   let(:ratio) { 0.75 }
-  let!(:real_money_balance_entry) do
-    create(:balance_entry, amount: amount * ratio,
-                           entry: bet.placement_entry,
-                           balance: create(:balance, :real_money))
+  let!(:placement_entry_balance) do
+    bet.placement_entry.update(
+      real_money_amount: real_money_balance,
+      bonus_amount: bonus_balance
+    )
   end
-  let!(:bonus_balance_entry) do
-    create(:balance_entry, amount: amount * (1 - ratio),
-                           entry: bet.placement_entry,
-                           balance: create(:balance, :bonus))
-  end
+  let!(:real_money_balance) { amount * ratio }
+  let!(:bonus_balance) { amount * (1 - ratio) }
 
   let(:real_money_winning) { (winning * ratio).round(2) }
   let(:bonus_winning) { (winning * (1 - ratio)).round(2) }
 
   context 'with placed real money and bonuses' do
     it 'calculates real and bonus amount' do
-      expect(service_call_response)
-        .to eq(real_money: real_money_winning, bonus: bonus_winning)
+      expect(subject)
+        .to eq(real_money_amount: real_money_winning,
+               bonus_amount: bonus_winning)
     end
   end
 
   context 'without placed bonuses' do
-    let(:bonus_balance_entry) {}
+    let(:bonus_balance) { 0 }
 
     it 'calculates real amount' do
-      expect(service_call_response).to eq(real_money: winning, bonus: 0)
+      expect(subject).to eq(real_money_amount: winning, bonus_amount: 0)
     end
   end
 
   context 'without placed real money' do
-    let(:real_money_balance_entry) {}
+    let(:real_money_balance) { 0 }
 
     it 'calculates bonus amount' do
-      expect(service_call_response).to eq(real_money: 0, bonus: winning)
+      expect(subject).to eq(real_money_amount: 0, bonus_amount: winning)
     end
   end
 end

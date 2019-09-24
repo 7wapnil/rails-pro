@@ -15,9 +15,7 @@ describe Customer, '#account_management' do
     it 'shows available balances' do
       3.times do |n|
         currency = create(:currency, code: "XX#{n}")
-        wallet = create(:wallet, currency: currency, customer: customer)
-        create(:balance, :bonus, wallet: wallet)
-        create(:balance, :real_money, wallet: wallet)
+        create(:wallet, currency: currency, customer: customer)
       end
 
       visit page_path
@@ -25,9 +23,8 @@ describe Customer, '#account_management' do
       within '.balances' do
         customer.wallets.each do |wallet|
           expect(page).to have_content wallet.currency_name
-          wallet.balances.each do |balance|
-            expect(page).to have_content(balance.amount)
-          end
+          expect(page).to have_content(wallet.real_money_balance)
+          expect(page).to have_content(wallet.bonus_balance)
         end
       end
     end

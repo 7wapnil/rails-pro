@@ -29,8 +29,8 @@ describe CustomerBonusDecorator, type: :decorator do
     end
 
     context 'with balance_entry' do
-      let(:customer_bonus) { create(:customer_bonus, :with_balance_entry) }
-      let(:amount) { customer_bonus.balance_entry.amount }
+      let(:customer_bonus) { create(:customer_bonus, :with_entry) }
+      let(:amount) { customer_bonus.entry.bonus_amount }
 
       it 'returns common value' do
         expect(subject.amount).to eq(amount)
@@ -49,7 +49,7 @@ describe CustomerBonusDecorator, type: :decorator do
     end
 
     context 'with balance_entry' do
-      let(:customer_bonus) { create(:customer_bonus, :with_balance_entry) }
+      let(:customer_bonus) { create(:customer_bonus, :with_entry) }
       let(:entry) { customer_bonus.entry }
       let(:link_to_entry) do
         helpers.link_to(I18n.t('entities.entry'), entry_path(entry))

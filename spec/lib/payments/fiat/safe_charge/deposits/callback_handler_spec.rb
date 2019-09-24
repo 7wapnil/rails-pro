@@ -35,9 +35,13 @@ describe Payments::Fiat::SafeCharge::Deposits::CallbackHandler do
   end
   let(:deposit) { create(:deposit) }
   let(:currency) { create(:currency, :primary) }
-  let(:wallet) { create(:wallet, currency: currency, customer: customer) }
-  let(:entry) do
-    create(:entry, kind: Entry::DEPOSIT, amount: amount, wallet: wallet)
+  let!(:wallet) do
+    create(
+      :wallet,
+      real_money_balance: 0,
+      currency: currency,
+      customer: customer
+    )
   end
   let(:mode) { Payments::Methods::NETELLER }
 
@@ -74,11 +78,10 @@ describe Payments::Fiat::SafeCharge::Deposits::CallbackHandler do
     end
 
     it 'change balance' do
-      expect(wallet.reload.real_money_balance.amount).to eq(amount.to_d)
+      expect(wallet.reload.real_money_balance).to eq(amount.to_d)
     end
 
     it 'stores payment details' do
-      subject
       expect(deposit.reload.details).to include(
         'user_payment_option_id' => '2',
         'name' => '1488228'
@@ -96,8 +99,8 @@ describe Payments::Fiat::SafeCharge::Deposits::CallbackHandler do
       expect(deposit.reload.status).to eq(Deposit::FAILED)
     end
 
-    it 'does not create real balance' do
-      expect(wallet.reload.real_money_balance).to be_nil
+    it 'does not change real balance' do
+      expect(wallet.reload.real_money_balance).to be_zero
     end
   end
 
@@ -114,8 +117,8 @@ describe Payments::Fiat::SafeCharge::Deposits::CallbackHandler do
       expect(deposit.reload.status).to eq(Deposit::FAILED)
     end
 
-    it 'does not create real balance' do
-      expect(wallet.reload.real_money_balance).to be_nil
+    it 'does not change real balance' do
+      expect(wallet.reload.real_money_balance).to be_zero
     end
   end
 end

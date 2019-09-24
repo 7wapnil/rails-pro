@@ -14,7 +14,6 @@ module EntryRequests
 
       def call
         create_entry_request!
-        create_balance_request!
         create_deposit!
         validate_entry_request!
 
@@ -39,16 +38,17 @@ module EntryRequests
           comment: comment,
           currency: transaction.wallet.currency,
           customer: transaction.customer,
-          external_id: transaction.external_id
+          external_id: transaction.external_id,
+          **balance_calculations
         }
       end
 
       def amount_value
-        @amount_value ||= calculations.values.sum
+        @amount_value ||= balance_calculations.values.sum
       end
 
-      def calculations
-        @calculations ||= BalanceCalculations::Deposit.call(
+      def balance_calculations
+        @balance_calculations ||= BalanceCalculations::Deposit.call(
           transaction.amount,
           currency,
           customer_bonus&.original_bonus,
@@ -69,8 +69,9 @@ module EntryRequests
       end
 
       def default_comment
-        "Deposit #{calculations[:real_money]} #{transaction.currency_code}" \
-        " real money and #{calculations[:bonus] || 0} " \
+        "Deposit #{balance_calculations[:real_money_amount]}" \
+        " #{transaction.currency_code}" \
+        " real money and #{balance_calculations[:bonus_amount] || 0} " \
         "#{transaction.currency_code} bonus money " \
         "(#{transaction.customer&.pending_bonus&.code || 'no'} bonus code) " \
         "for #{transaction.customer}#{initiator_comment_suffix}"
@@ -78,10 +79,6 @@ module EntryRequests
 
       def initiator_comment_suffix
         " by #{transaction.initiator}" if transaction.initiator
-      end
-
-      def create_balance_request!
-        ::BalanceRequestBuilders::Deposit.call(entry_request, calculations)
       end
 
       def create_deposit!

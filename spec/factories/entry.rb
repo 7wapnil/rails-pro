@@ -32,29 +32,27 @@ FactoryBot.define do
     end
 
     trait :with_bonus_balances do
-      balance_entries { create_list(:balance_entry, 2, :bonus) }
+      bonus_amount { Faker::Number.decimal(2, 2) }
     end
 
     trait :with_bonus_balance_entry do
-      association :bonus_balance_entry,
-                  factory: %i[balance_entry bonus],
-                  strategy: :build
+      after(:create) do |entry|
+        entry.update(bonus_amount: entry.amount)
+      end
     end
 
     trait :with_real_money_balance_entry do
-      association :real_money_balance_entry,
-                  factory: %i[balance_entry real_money],
-                  strategy: :build
+      after(:create) do |entry|
+        entry.update(real_money_amount: entry.amount)
+      end
     end
 
     trait :with_balance_entries do
       after(:create) do |entry|
-        create(:balance_entry, :bonus,
-               amount: entry.amount / 2,
-               entry: entry)
-        create(:balance_entry, :real_money,
-               amount: entry.amount / 2,
-               entry: entry)
+        entry.update(
+          real_money_amount: entry.amount / 2,
+          bonus_amount: entry.amount / 2
+        )
       end
     end
 

@@ -8,7 +8,7 @@ describe EntryRequests::DepositService do
   let(:amount) { 100 }
   let(:rollover_multiplier) { 5 }
   let(:wallet) do
-    create(:wallet, customer: customer, currency: currency, amount: 0.0)
+    create(:wallet, :empty, customer: customer, currency: currency)
   end
   let(:original_bonus) { create(:bonus, percentage: percentage) }
   let(:customer_bonus) do
@@ -54,11 +54,11 @@ describe EntryRequests::DepositService do
     end
 
     it 'increases bonus money balance amount' do
-      expect(wallet.bonus_balance.amount).to eq(25)
+      expect(wallet.bonus_balance).to eq(25)
     end
 
     it 'increases real money balance amount' do
-      expect(wallet.real_money_balance.amount).to eq(amount)
+      expect(wallet.real_money_balance).to eq(amount)
     end
   end
 
@@ -74,7 +74,7 @@ describe EntryRequests::DepositService do
     rescue ::Payments::FailedError
       wallet.reload
 
-      expect(wallet.bonus_balance).to be_nil
+      expect(wallet.bonus_balance).to be_zero
     end
   end
 
@@ -83,40 +83,21 @@ describe EntryRequests::DepositService do
 
     before { service_call }
 
-    it_behaves_like 'entries splitting with bonus' do
-      let(:real_money_amount) { 100 }
-      let(:bonus_amount) { amount * percentage / 100.0 }
-    end
-
     it 'creates deposit request with customer bonus assigned' do
       expect(created_deposit.customer_bonus).to eq(customer_bonus)
     end
 
     it 'applies customer bonus only once' do
-      expect { service_call }.not_to change(BalanceEntryRequest.bonus, :count)
+      expect { service_call }.not_to change(EntryRequest, :count)
     end
 
     it 'activates customer bonus' do
       service_call
 
       expect(customer_bonus.reload).to have_attributes(
-        balance_entry_id: entry_request.entry.bonus_balance_entry.id,
+        entry_id: entry_request.entry.id,
         status: CustomerBonus::ACTIVE
       )
-    end
-  end
-
-  context 'without customer bonus' do
-    let(:customer_bonus) {}
-
-    before do
-      wallet.reload
-      service_call
-    end
-
-    it_behaves_like 'entries splitting without bonus' do
-      let(:real_money_amount) { 100 }
-      let(:bonus_amount) { amount * percentage / 100.0 }
     end
   end
 
@@ -133,7 +114,7 @@ describe EntryRequests::DepositService do
       service_call
     rescue ::Payments::FailedError
       expect(customer_bonus.reload).to have_attributes(
-        balance_entry_id: nil,
+        entry_id: nil,
         status: CustomerBonus::FAILED
       )
     end

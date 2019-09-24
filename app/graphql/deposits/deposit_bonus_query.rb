@@ -5,8 +5,8 @@ module Deposits
     attr_reader :real_money, :bonus
 
     def initialize(args)
-      @real_money = args[:real_money]
-      @bonus = args[:bonus]
+      @real_money = args[:real_money_amount]
+      @bonus = args[:bonus_amount]
     end
   end
 

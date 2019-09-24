@@ -10,7 +10,6 @@ module EntryRequests
 
       def call
         create_entry_request!
-        create_balance_requests!
 
         entry_request
       end
@@ -24,12 +23,14 @@ module EntryRequests
       end
 
       def entry_request_attributes
-        attributes.merge(origin_attributes)
+        return attributes unless origin
+
+        attributes
+          .merge(origin_attributes)
+          .merge(balance_calculations)
       end
 
       def origin_attributes
-        return {} unless origin
-
         {
           currency: origin.currency,
           initiator: origin.customer,
@@ -38,12 +39,15 @@ module EntryRequests
         }
       end
 
-      def create_balance_requests!
-        BalanceRequestBuilders::Common.call(entry_request, amount_calculations)
+      def balance_calculations
+        BalanceCalculations::BetCompensation.call(
+          bet: origin,
+          amount: requested_total_amount
+        )
       end
 
-      def amount_calculations
-        BalanceCalculations::BetCompensation.call(entry_request: entry_request)
+      def requested_total_amount
+        attributes[:amount] || 0
       end
     end
   end

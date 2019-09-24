@@ -24,20 +24,8 @@ describe WalletEntry::AuthorizationService do
         expect(Wallet.where(customer: customer).count).to eq 0
         described_class.call(request)
         expect(Wallet.where(customer: customer).count).to eq 1
-      end
-
-      it 'creates a real money balance' do
-        expect(Balance.count).to eq 0
-
-        described_class.call(request)
-        balance = Balance
-                  .joins(:wallet)
-                  .where(wallets: { customer: customer })
-                  .first
-
-        expect(balance).to be_present
-        expect(balance.real_money?).to be true
-        expect(balance.amount).to eq request.amount
+        expect(Wallet.find_by(customer: customer).real_money_balance)
+          .to eq request.amount
       end
 
       it 'creates a wallet entry' do
@@ -51,23 +39,10 @@ describe WalletEntry::AuthorizationService do
           expect(entry.amount).to eq request.amount
           expect(entry.origin).to eq request.origin
           expect(entry.authorized_at).to eq time
+          expect(entry.real_money_amount).to eq request.amount
+          expect(entry.balance_amount_after)
+            .to eq Wallet.find_by(customer: customer).real_money_balance
         end
-      end
-
-      it 'creates balance entry record' do
-        expect(BalanceEntry.count).to eq 0
-
-        described_class.call(request)
-        balance_entry = BalanceEntry
-                        .joins(entry: { wallet: :customer })
-                        .where(entry: { wallets: { customer: customer } })
-                        .first
-
-        balance_amount = balance_entry.balance.amount
-
-        expect(balance_entry).to be_present
-        expect(balance_entry.amount).to eq request.amount
-        expect(balance_entry.balance_amount_after).to eq balance_amount
       end
 
       it 'adds entry amount into wallet' do
@@ -99,7 +74,8 @@ describe WalletEntry::AuthorizationService do
       it 'returns the created entry' do
         described_class.call(request)
 
-        current_balance_amount = entry.wallet.balances.sum(:amount)
+        current_balance_amount = entry.wallet.real_money_balance +
+                                 entry.wallet.bonus_balance
 
         expect(entry).to be_an Entry
         expect(entry.entry_request).to eq request
@@ -107,14 +83,11 @@ describe WalletEntry::AuthorizationService do
       end
 
       context 'entry confirmation' do
-        let(:wallet) do
-          create(:wallet, :fiat,
-                 amount: 500,
-                 customer: request.customer,
-                 currency: request.currency)
-        end
-        let!(:real_balance) do
-          create(:balance, :real_money, amount: wallet.amount, wallet: wallet)
+        let!(:wallet) do
+          create(:wallet, :fiat, amount: 500,
+                                 real_money_balance: 500,
+                                 customer: request.customer,
+                                 currency: request.currency)
         end
 
         include_context 'frozen_time'
@@ -164,9 +137,7 @@ describe WalletEntry::AuthorizationService do
   end
 
   context 'existing wallet' do
-    let!(:wallet) { create(:wallet, amount: 50) }
-
-    let!(:balance) { create(:balance, amount: 50, wallet: wallet) }
+    let!(:wallet) { create(:wallet, amount: 50, real_money_balance: 50) }
 
     let(:request) do
       create(:entry_request,
@@ -189,9 +160,9 @@ describe WalletEntry::AuthorizationService do
 
       it 'increments balance amount' do
         described_class.call(request)
-        balance.reload
+        wallet.reload
 
-        expect(balance.amount).to eq 60
+        expect(wallet.real_money_balance).to eq 60
       end
     end
 
@@ -218,9 +189,9 @@ describe WalletEntry::AuthorizationService do
         request.amount = -10
 
         described_class.call(request)
-        balance.reload
+        wallet.reload
 
-        expect(balance.amount).to eq 40
+        expect(wallet.real_money_balance).to eq 40
       end
 
       it 'fails to update wallet amount to negative' do
@@ -240,19 +211,19 @@ describe WalletEntry::AuthorizationService do
       end
 
       it 'fails to update balance amount to negative' do
-        balance.update_attributes!(amount: 30)
+        wallet.update_attributes!(real_money_balance: 30)
 
         error_message = I18n.t('errors.messages.amount_not_negative',
-                               subject: balance.to_s,
-                               current_amount: balance.amount,
+                               subject: wallet.to_s,
+                               current_amount: wallet.real_money_balance,
                                new_amount: -10)
 
         request.amount = -40
 
         described_class.call(request)
-        balance.reload
+        wallet.reload
 
-        expect(balance.amount).to eq 30
+        expect(wallet.real_money_balance).to eq 30
         expect(request.failed?).to be true
         expect(request.result_message).to include error_message
       end

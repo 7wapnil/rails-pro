@@ -20,10 +20,7 @@ describe EntryRequests::Factories::Withdrawal do
   end
   let(:withdraw_amount) { 50 }
   let(:currency) { create(:currency, :with_withdrawal_rule) }
-  let(:wallet) { create(:wallet, currency: currency) }
-  let!(:balance) do
-    create(:balance, :real_money, amount: 100, wallet: wallet)
-  end
+  let(:wallet) { create(:wallet, currency: currency, real_money_balance: 100) }
 
   context 'when success' do
     let(:created_request) { service.call }
@@ -51,10 +48,6 @@ describe EntryRequests::Factories::Withdrawal do
     it 'build balance entry requests' do
       entry_request = create(:entry_request)
       allow(EntryRequest).to receive(:create!).and_return(entry_request)
-
-      expect(BalanceRequestBuilders::Withdrawal)
-        .to receive(:call)
-        .with(entry_request, real_money: -withdraw_amount)
 
       service.call
     end

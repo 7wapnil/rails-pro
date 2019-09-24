@@ -55,8 +55,6 @@ describe GraphQL, '#place_bet' do
     let(:bets) { response['data']['placeBets'] }
 
     before do
-      create(:balance, kind: :bonus, wallet: wallet, amount: 100)
-      create(:balance, wallet: wallet, amount: 200)
       create(
         :entry_currency_rule,
         currency: currency,

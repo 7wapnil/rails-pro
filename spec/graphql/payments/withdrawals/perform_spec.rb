@@ -34,7 +34,6 @@ describe GraphQL, '#withdraw' do
       { code: 'token_id', value: details[:token_id] }
     ]
   end
-  let!(:balance) { create(:balance, :real_money, wallet: wallet) }
   let(:password) { 'iamverysecure' }
 
   let(:query) do

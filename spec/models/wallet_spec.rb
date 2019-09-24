@@ -5,7 +5,6 @@ describe Wallet do
 
   it { is_expected.to belong_to(:customer) }
   it { is_expected.to belong_to(:currency) }
-  it { is_expected.to have_many(:balances) }
   it { is_expected.to have_many(:entries) }
 
   it { is_expected.to delegate_method(:name).to(:currency).with_prefix }

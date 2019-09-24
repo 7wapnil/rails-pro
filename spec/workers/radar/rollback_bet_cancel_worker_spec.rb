@@ -85,12 +85,12 @@ describe Radar::RollbackBetCancelWorker do
 
   let!(:wallets) do
     bets.map do |bet|
-      create(:wallet, customer: bet.customer, currency: bet.currency)
-    end
-  end
-  let!(:balances) do
-    wallets.map do |wallet|
-      create(:balance, :real_money, amount: 10_000, wallet: wallet)
+      create(
+        :wallet,
+        customer: bet.customer,
+        currency: bet.currency,
+        real_money_balance: 10_000
+      )
     end
   end
 

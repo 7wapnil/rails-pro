@@ -48,8 +48,7 @@ describe Bets::Settle do
       end
     end
 
-    # TODO: activate context after finish current development iteration
-    xcontext 'with negative balance amount after' do
+    context 'with negative balance amount after' do
       let(:customer) { bet.placement_entry.customer }
       let(:wallet) { customer.wallet }
       let(:new_real_money_balance) { -10_000 }

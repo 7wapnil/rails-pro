@@ -34,12 +34,12 @@ describe ::Payments::Withdrawals::Customers::CreateForm, type: :model do
     create(:customer)
   end
   let(:wallet) do
-    create(:wallet, wallet_type.to_sym,
-           amount: balance_amount,
-           customer: customer)
-  end
-  let!(:balance) do
-    create(:balance, :real_money, amount: balance_amount, wallet: wallet)
+    create(
+      :wallet, wallet_type.to_sym,
+      amount: balance_amount,
+      real_money_balance: balance_amount,
+      customer: customer
+    )
   end
 
   before do
@@ -163,15 +163,11 @@ describe ::Payments::Withdrawals::Customers::CreateForm, type: :model do
              customer: customer,
              status: StateMachines::BetStateMachine::ACCEPTED)
     end
-    let(:entry_request) do
+    let!(:entry_request) do
       create(:entry_request,
+             status: EntryRequest::PENDING,
              customer: customer,
              origin: bet)
-    end
-    let!(:balance_entry_request) do
-      create(:balance_entry_request,
-             entry_request: entry_request,
-             kind: Balance::BONUS)
     end
     let(:error_message) do
       'Validation failed: ' \

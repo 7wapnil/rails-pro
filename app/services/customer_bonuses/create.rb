@@ -63,7 +63,7 @@ module CustomerBonuses
     end
 
     def bonus_amount
-      BalanceCalculations::Deposit.call(amount, currency, bonus)[:bonus]
+      BalanceCalculations::Deposit.call(amount, currency, bonus)[:bonus_amount]
     end
 
     def check_bonus_expiration!

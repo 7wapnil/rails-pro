@@ -67,14 +67,10 @@ module Reports
         <<-SQL
           SELECT
             wallets.customer_id customer_id,
-            CAST(SUM(COALESCE(balance_entries.base_currency_amount,0)) AS DECIMAL(10,2)) real_deposits,
-            CAST(SUM(COALESCE(balance_entries.base_currency_amount,0) * #{NGR_MULTIPLIER}) AS DECIMAL(10,2)) fee,
+            CAST(SUM(COALESCE(entries.base_currency_real_money_amount,0)) AS DECIMAL(10,2)) real_deposits,
             COUNT(entries.id) as deposits_count
           FROM entries
           JOIN wallets ON wallets.id = entries.wallet_id
-          JOIN balance_entries ON balance_entries.entry_id = entries.id
-          JOIN balances ON balance_entries.balance_id = balances.id
-               AND balances.kind = '#{Balance::REAL_MONEY}'
           WHERE entries.kind = '#{Entry::DEPOSIT}'
                 AND entries.created_at BETWEEN #{recent_scope}
           GROUP BY customer_id
@@ -90,14 +86,12 @@ module Reports
         <<-SQL
           SELECT
             wallets.customer_id customer_id,
-            CAST(SUM(COALESCE(balance_entries.base_currency_amount,0)) AS DECIMAL(10,2)) bonuses
+            CAST(SUM(COALESCE(entries.base_currency_bonus_amount,0)) AS DECIMAL(10,2)) bonuses
           FROM entries
           JOIN wallets ON wallets.id = entries.wallet_id
-          JOIN balance_entries ON balance_entries.entry_id = entries.id
-          JOIN balances ON balance_entries.balance_id = balances.id AND balances.kind = '#{Balance::BONUS}'
           WHERE entries.kind in (#{Entry::INCOME_ENTRY_KINDS.map { |a| "'#{a}'" }.join(', ')})
                 AND entries.created_at BETWEEN #{recent_scope}
-                AND balance_entries.base_currency_amount > 0
+                AND entries.base_currency_bonus_amount > 0
           GROUP BY customer_id
         SQL
       end

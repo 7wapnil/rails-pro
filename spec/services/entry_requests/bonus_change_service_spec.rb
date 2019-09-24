@@ -8,7 +8,7 @@ describe EntryRequests::BonusChangeService do
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
   let(:amount) { 200 }
   let(:wallet) do
-    create(:wallet, customer: customer, currency: currency, amount: 0.0)
+    create(:wallet, :empty, customer: customer, currency: currency)
   end
   let(:customer_bonus) do
     create(:customer_bonus, :initial, customer: customer, wallet: wallet)
@@ -27,12 +27,12 @@ describe EntryRequests::BonusChangeService do
     allow(Currency).to receive(:find_by!) { currency }
   end
 
-  it 'creates entry' do
-    expect { subject }.to change(Entry, :count).by(1)
+  it 'creates entry request' do
+    expect { subject }.to change(EntryRequest, :count).by(1)
   end
 
-  it 'creates bonus balance entry' do
-    expect { subject }.to change(BalanceEntry, :count).by(1)
+  it 'creates entry' do
+    expect { subject }.to change(Entry, :count).by(1)
   end
 
   context 'changes wallet amount' do
@@ -46,19 +46,19 @@ describe EntryRequests::BonusChangeService do
     end
 
     it 'increases bonus money balance amount' do
-      expect(wallet.bonus_balance.amount).to eq(200)
+      expect(wallet.bonus_balance).to eq(200)
     end
 
     it 'does not affect real money balance amount' do
-      expect(wallet.real_money_balance).to be_nil
+      expect(wallet.real_money_balance).to be_zero
     end
   end
 
-  it 'assigns balance entry to customer bonus' do
+  it 'assigns entry to customer bonus' do
     subject
 
-    expect(customer_bonus.reload.balance_entry)
-      .to eq(entry_request.reload.entry.bonus_balance_entry)
+    expect(customer_bonus.reload.entry)
+      .to eq(entry_request.reload.entry)
   end
 
   context 'with failed entry request' do
@@ -74,7 +74,7 @@ describe EntryRequests::BonusChangeService do
     it 'does not assign balance entry to customer bonus' do
       subject
     rescue EntryRequests::FailedEntryRequestError
-      expect(customer_bonus.reload.balance_entry).to be_nil
+      expect(customer_bonus.reload.entry).to be_nil
     end
   end
 end

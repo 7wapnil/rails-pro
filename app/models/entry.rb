@@ -12,18 +12,8 @@ class Entry < ApplicationRecord
   belongs_to :bet, foreign_key: :origin_id, optional: true
   belongs_to :entry_request, optional: true
 
-  has_many :balance_entries, dependent: :destroy
-  has_many :balances, through: :balance_entries
-
   has_one :currency, through: :wallet
   has_one :customer, through: :wallet
-
-  has_one :bonus_balance_entry,
-          -> { bonus },
-          class_name: BalanceEntry.name
-  has_one :real_money_balance_entry,
-          -> { real_money },
-          class_name: BalanceEntry.name
 
   delegate :code, to: :currency, prefix: true
 

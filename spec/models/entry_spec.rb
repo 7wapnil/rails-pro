@@ -16,7 +16,6 @@ describe Entry do
   it { is_expected.to belong_to(:customer_transaction) }
   it { is_expected.to belong_to(:withdrawal) }
   it { is_expected.to have_one(:currency) }
-  it { is_expected.to have_many(:balance_entries) }
 
   it { is_expected.to validate_presence_of(:amount) }
   it { is_expected.to respond_to(:external_id) }

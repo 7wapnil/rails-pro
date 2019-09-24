@@ -42,7 +42,7 @@ module CustomerBonuses
     end
 
     def lose_bonus?
-      customer_bonus.wallet.bonus_balance.amount <= 0 &&
+      customer_bonus.wallet.bonus_balance <= 0 &&
         customer_bonus.active? &&
         customer_bonus.rollover_balance.positive? &&
         Bet.pending.where(customer_bonus: customer_bonus).none?

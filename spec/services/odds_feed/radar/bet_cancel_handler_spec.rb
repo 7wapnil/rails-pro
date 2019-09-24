@@ -73,11 +73,11 @@ describe OddsFeed::Radar::BetCancelHandler do
                            .where('amount > ?', 0)
                            .find_by(origin: bet, kind: entry_kind_cancel)
 
-      expect(stake_cancellation.real_money_balance_entry.amount)
-        .to eq(-stake.real_money_balance_entry.amount)
+      expect(stake_cancellation.real_money_amount)
+        .to eq(-stake.reload.real_money_amount)
 
-      expect(stake_cancellation.bonus_balance_entry.amount)
-        .to eq(-stake.bonus_balance_entry.amount)
+      expect(stake_cancellation.bonus_amount)
+        .to eq(-stake.bonus_amount)
     end
 
     it 'subtracts correct real money and bonus ratio for winning' do
@@ -87,11 +87,11 @@ describe OddsFeed::Radar::BetCancelHandler do
                              .where('amount < ?', 0)
                              .find_by(origin: bet, kind: entry_kind_cancel)
 
-      expect(winning_cancellation.real_money_balance_entry.amount)
-        .to eq(-winning.real_money_balance_entry.amount)
+      expect(winning_cancellation.real_money_amount)
+        .to eq(-winning.real_money_amount)
 
-      expect(winning_cancellation.bonus_balance_entry.amount)
-        .to eq(-winning.bonus_balance_entry.amount)
+      expect(winning_cancellation.bonus_amount)
+        .to eq(-winning.bonus_amount)
     end
   end
 

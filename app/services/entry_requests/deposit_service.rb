@@ -27,7 +27,7 @@ module EntryRequests
 
     def success
       entry_request.deposit.succeeded!
-      customer_bonus&.activate!(entry.bonus_balance_entry)
+      customer_bonus&.activate!(entry)
     end
 
     def failure

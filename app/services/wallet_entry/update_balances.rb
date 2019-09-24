@@ -9,66 +9,53 @@ module WalletEntry
     end
 
     def call
-      create_missing_balances!
-      lock_balances!
-      process_balance_requests!
-      save_current_balance_amount!
+      lock_wallet!
+      update_balance!
+      update_entry!
     end
 
     private
 
-    attr_reader :entry, :balances
+    attr_reader :entry
 
-    def create_missing_balances!
-      entry_request
-        .balance_entry_requests
-        .map(&:kind)
-        .each { |kind| wallet.balances.find_or_create_by!(kind: kind) }
+    def lock_wallet!
+      wallet.lock!(true)
     end
 
-    def lock_balances!
-      @balances = wallet.balances.lock(true)
-    end
-
-    def process_balance_requests!
-      entry_request
-        .balance_entry_requests
-        .each(&method(:process_balance_request!))
-    end
-
-    def process_balance_request!(balance_request)
-      balance = balances.find { |item| item.kind == balance_request.kind }
-
-      update_balance!(balance, balance_request)
-      create_balance_entry!(balance, balance_request)
-    end
-
-    def update_balance!(balance, balance_request)
+    def update_balance!
       ::Forms::AmountChange.new(
-        balance,
-        amount_increment: balance_request.amount,
+        wallet,
         request: entry_request
       ).save!
     end
 
-    def create_balance_entry!(balance, balance_request)
-      base_currency_amount = Exchanger::Converter.call(balance_request.amount,
-                                                       balance.currency.code)
-
-      balance_entry = BalanceEntry.create!(
-        balance_id: balance.id,
-        entry_id: entry.id,
-        amount: balance_request.amount,
-        balance_amount_after: balance.amount,
-        base_currency_amount: base_currency_amount
+    def update_entry!
+      entry.update!(
+        real_money_amount: entry_request.real_money_amount,
+        base_currency_real_money_amount: base_currency_real_money_amount,
+        bonus_amount: entry_request.bonus_amount,
+        base_currency_bonus_amount: base_currency_bonus_amount,
+        balance_amount_after: current_balance_amount,
+        bonus_amount_after: wallet.bonus_balance
       )
-      balance_request.update_attributes!(balance_entry_id: balance_entry.id)
     end
 
-    def save_current_balance_amount!
-      current_balance_amount = balances.sum(&:amount)
+    def base_currency_real_money_amount
+      Exchanger::Converter.call(
+        entry_request.real_money_amount,
+        wallet.currency.code
+      )
+    end
 
-      entry.update_attributes!(balance_amount_after: current_balance_amount)
+    def base_currency_bonus_amount
+      Exchanger::Converter.call(
+        entry_request.bonus_amount,
+        wallet.currency.code
+      )
+    end
+
+    def current_balance_amount
+      wallet.real_money_balance + wallet.bonus_balance
     end
   end
 end

@@ -14,8 +14,8 @@ module BalanceCalculations
 
     def call
       {
-        real_money: -calculated_real_amount,
-        bonus: -calculated_bonus_amount
+        real_money_amount: -calculated_real_money_amount,
+        bonus_amount: -calculated_bonus_amount
       }
     end
 
@@ -23,16 +23,17 @@ module BalanceCalculations
 
     attr_reader :bet
 
-    def calculated_real_amount
-      @calculated_real_amount ||= (bet.amount * ratio).round(MONEY_PRECISION)
+    def calculated_real_money_amount
+      @calculated_real_money_amount ||= (bet.amount * ratio)
+                                        .round(MONEY_PRECISION)
     end
 
     def ratio
       return FULL_RATIO unless customer_bonus&.active?
 
       RatioCalculator.call(
-        real_money_amount: real_money_balance&.amount,
-        bonus_amount: bonus_balance&.amount
+        real_money_amount: real_money_balance,
+        bonus_amount: bonus_balance
       )
     end
 
@@ -44,7 +45,7 @@ module BalanceCalculations
     end
 
     def calculated_bonus_amount
-      bet.amount - calculated_real_amount
+      bet.amount - calculated_real_money_amount
     end
   end
 end

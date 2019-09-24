@@ -31,20 +31,19 @@ FactoryBot.define do
       activated_at { nil }
     end
 
-    trait :with_balance_entry do
-      association :balance_entry, factory: %i[balance_entry bonus],
-                                  strategy: :build
+    trait :with_entry do
+      association :entry, factory: :entry, strategy: :build
     end
 
     trait :with_empty_bonus_balance do
       after :create do |customer_bonus|
-        create(:balance, :bonus, wallet: customer_bonus.wallet, amount: 0)
+        customer_bonus.wallet.update(bonus_balance: 0)
       end
     end
 
     trait :with_positive_bonus_balance do
       after :create do |customer_bonus|
-        create(:balance, :bonus, wallet: customer_bonus.wallet, amount: 10)
+        customer_bonus.wallet.update(bonus_balance: 10)
       end
     end
 

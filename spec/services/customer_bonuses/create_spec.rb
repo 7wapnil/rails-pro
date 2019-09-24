@@ -21,7 +21,7 @@ describe CustomerBonuses::Create do
   let(:amount) { 100 }
   let(:rollover_multiplier) { 5 }
   let(:bonus_value) { 50 }
-  let(:calculations) { { bonus: bonus_value, real_money: 100 } }
+  let(:calculations) { { bonus_amount: bonus_value, real_money_amount: 100 } }
   let(:rollover_value) { (amount * rollover_multiplier).to_d }
 
   context 'when customer has no active bonus' do

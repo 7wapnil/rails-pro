@@ -8,10 +8,12 @@
             %b= t('entities.wallet_name', currency: wallet.currency_name)
           %td
             %b= wallet_balance(wallet)
-        - wallet.balances.each do |balance|
-          %tr
-            %td= balance.kind
-            %td= wallet_balance(balance)
+        %tr
+          %td Real Money
+          %td= wallet_balance(wallet, wallet.real_money_balance)
+        %tr
+          %td Bonus
+          %td= wallet_balance(wallet, wallet.bonus_balance)
   - else
     .text-center
       %em= t(:no_records)

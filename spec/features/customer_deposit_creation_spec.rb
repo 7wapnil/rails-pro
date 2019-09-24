@@ -4,8 +4,8 @@ describe 'creates deposit via entry request form' do
   let(:customer) { create(:customer) }
   let(:page_path) { account_management_customer_path(customer) }
   let(:amount) { 200 }
-  let(:entries_count) { BalanceEntryRequest.count }
-  let(:entries_amounts) { BalanceEntryRequest.pluck(:amount) }
+  let(:entries_count) { EntryRequest.count }
+  let(:entries_amounts) { EntryRequest.pluck(:real_money_amount) }
   let!(:currency) { create(:currency, :primary) }
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
   let(:deposit_form) { '.card.customer-entry-request-form form' }

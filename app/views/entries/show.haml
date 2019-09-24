@@ -23,11 +23,19 @@
             = number_with_precision @entry.amount, precision: 2
             = @entry.currency_code
         %tr
+          %td= t('attributes.real_money_amount')
+          %td
+            = number_with_precision @entry.real_money_amount, precision: 2
+            = @entry.currency_code
+        %tr
+          %td= t('attributes.bonus_amount')
+          %td
+            = number_with_precision @entry.bonus_amount, precision: 2
+            = @entry.currency_code
+        %tr
           %td= t('attributes.external_id')
           %td
             = @entry.external_id
 
       %hr
       = link_back
-
-= render 'balance_entries', balance_entries: @entry.balance_entries

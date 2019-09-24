@@ -38,7 +38,7 @@ module StateMachines
         event :activate do
           transitions from: :initial,
                       to: :active,
-                      after: %i[assign_balance_entry set_activated_at]
+                      after: %i[assign_entry set_activated_at]
         end
 
         event :fail do
@@ -75,8 +75,8 @@ module StateMachines
 
       private
 
-      def assign_balance_entry(balance_entry)
-        update(balance_entry: balance_entry)
+      def assign_entry(entry)
+        update(entry: entry)
       end
 
       def set_activated_at

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_05_090730) do
+ActiveRecord::Schema.define(version: 2019_09_06_031913) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -55,39 +55,6 @@ ActiveRecord::Schema.define(version: 2019_09_05_090730) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "balance_entries", force: :cascade do |t|
-    t.bigint "balance_id"
-    t.bigint "entry_id"
-    t.decimal "amount", precision: 14, scale: 2
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.decimal "balance_amount_after", precision: 14, scale: 2
-    t.decimal "base_currency_amount"
-    t.index ["balance_id"], name: "index_balance_entries_on_balance_id"
-    t.index ["entry_id"], name: "index_balance_entries_on_entry_id"
-  end
-
-  create_table "balance_entry_requests", force: :cascade do |t|
-    t.bigint "entry_request_id"
-    t.bigint "balance_entry_id"
-    t.string "kind"
-    t.decimal "amount", precision: 14, scale: 2
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["balance_entry_id"], name: "index_balance_entry_requests_on_balance_entry_id"
-    t.index ["entry_request_id", "kind"], name: "index_balance_entry_requests_on_entry_request_id_and_kind", unique: true
-    t.index ["entry_request_id"], name: "index_balance_entry_requests_on_entry_request_id"
-  end
-
-  create_table "balances", force: :cascade do |t|
-    t.bigint "wallet_id"
-    t.string "kind"
-    t.decimal "amount", precision: 14, scale: 2, default: "0.0"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["wallet_id"], name: "index_balances_on_wallet_id"
-  end
-
   create_table "bets", force: :cascade do |t|
     t.bigint "customer_id"
     t.bigint "odd_id"
@@ -100,8 +67,8 @@ ActiveRecord::Schema.define(version: 2019_09_05_090730) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.string "settlement_status"
     t.datetime "validation_ticket_sent_at"
+    t.string "settlement_status"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"
@@ -214,9 +181,9 @@ ActiveRecord::Schema.define(version: 2019_09_05_090730) do
     t.string "status", default: "initial", null: false
     t.datetime "activated_at"
     t.datetime "deactivated_at"
-    t.bigint "balance_entry_id"
-    t.index ["balance_entry_id"], name: "index_customer_bonuses_on_balance_entry_id"
+    t.bigint "entry_id"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
+    t.index ["entry_id"], name: "index_customer_bonuses_on_entry_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
   end
 
@@ -382,6 +349,11 @@ ActiveRecord::Schema.define(version: 2019_09_05_090730) do
     t.bigint "entry_request_id"
     t.decimal "balance_amount_after", precision: 14, scale: 2
     t.decimal "base_currency_amount"
+    t.decimal "real_money_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "base_currency_real_money_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "base_currency_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "bonus_amount_after", precision: 14, scale: 2, default: "0.0"
     t.index ["entry_request_id"], name: "index_entries_on_entry_request_id"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
@@ -414,6 +386,8 @@ ActiveRecord::Schema.define(version: 2019_09_05_090730) do
     t.string "origin_type"
     t.bigint "origin_id"
     t.string "external_id"
+    t.decimal "real_money_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "bonus_amount", precision: 14, scale: 2, default: "0.0"
     t.index ["initiator_type", "initiator_id"], name: "index_entry_requests_on_initiator_type_and_initiator_id"
     t.index ["origin_type", "origin_id"], name: "index_entry_requests_on_origin_type_and_origin_id"
   end
@@ -619,15 +593,14 @@ ActiveRecord::Schema.define(version: 2019_09_05_090730) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "currency_id"
+    t.decimal "real_money_balance", precision: 14, scale: 2, default: "0.0"
+    t.decimal "bonus_balance", precision: 14, scale: 2, default: "0.0"
     t.index ["currency_id"], name: "index_wallets_on_currency_id"
     t.index ["customer_id", "currency_id"], name: "index_wallets_on_customer_id_and_currency_id", unique: true
     t.index ["customer_id"], name: "index_wallets_on_customer_id"
   end
 
   add_foreign_key "addresses", "customers"
-  add_foreign_key "balance_entries", "balances"
-  add_foreign_key "balance_entries", "entries", on_delete: :cascade
-  add_foreign_key "balances", "wallets"
   add_foreign_key "bets", "currencies"
   add_foreign_key "bets", "customers"
   add_foreign_key "bets", "odds", on_delete: :cascade
@@ -636,7 +609,7 @@ ActiveRecord::Schema.define(version: 2019_09_05_090730) do
   add_foreign_key "competitor_players", "competitors", on_delete: :cascade
   add_foreign_key "competitor_players", "players", on_delete: :cascade
   add_foreign_key "crypto_addresses", "wallets"
-  add_foreign_key "customer_bonuses", "balance_entries", on_delete: :cascade
+  add_foreign_key "customer_bonuses", "entries"
   add_foreign_key "customer_data", "customers"
   add_foreign_key "customer_notes", "customers"
   add_foreign_key "customer_notes", "users"

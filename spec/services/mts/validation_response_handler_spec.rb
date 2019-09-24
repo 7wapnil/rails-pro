@@ -73,7 +73,7 @@ describe Mts::ValidationResponseHandler do
           receive(:perform_async)
             .with(
               Date.current,
-              entry.balance_entries.first.id
+              entry.id
             )
         )
 

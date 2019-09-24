@@ -12,7 +12,6 @@ module EntryRequests
 
       def call
         create_entry_request!
-        create_balance_requests!
         entry_request
       end
 
@@ -33,19 +32,10 @@ module EntryRequests
           comment: comment,
           mode: mode,
           currency: entry.currency,
-          initiator: initiator
+          initiator: initiator,
+          real_money_amount: entry.real_money_amount.abs,
+          bonus_amount: entry.bonus_amount.abs
         )
-      end
-
-      def create_balance_requests!
-        balance_entry_amounts = entry
-                                .balance_entries
-                                .includes(:balance).map do |balance_entry|
-          [balance_entry.balance.kind, balance_entry.amount.abs]
-        end
-        balance_entry_amounts = balance_entry_amounts.to_h.symbolize_keys!
-        BalanceRequestBuilders::Refund.call(entry_request,
-                                            balance_entry_amounts)
       end
     end
   end
