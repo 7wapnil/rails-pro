@@ -40,7 +40,7 @@ module Reports
             customers.b_tag AS b_tag,
             COALESCE(deposits.deposits_count, 0) AS deposits_count,
             COALESCE(deposits.real_deposits, 0) AS real_money,
-            COALESCE(bonuses.bonuses, 0) AS bonus_money,
+            CAST(COALESCE(bonuses.bonuses, 0) + COALESCE(deposits.real_deposits, 0) * #{NGR_MULTIPLIER} AS DECIMAL(10, 2)) bonus_money,
             COALESCE(bets.bets_count, 0) AS bets_count,
             COALESCE(bets.stake, 0) AS stake,
             COALESCE(bets.stake, 0) - COALESCE(wins.wins_amount, 0) AS ggr,
