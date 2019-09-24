@@ -14,7 +14,6 @@ module Events
       @query_args = query_args
       @context = query_args.context
       @filter = OpenStruct.new(query_args.filter.to_h)
-      @from_event_context = query_args.try(:from_event_context)
     end
 
     def resolve
@@ -29,7 +28,7 @@ module Events
 
     private
 
-    attr_reader :query_args, :context, :filter, :query, :from_event_context
+    attr_reader :query_args, :context, :filter, :query
 
     def base_query
       Event
@@ -55,12 +54,6 @@ module Events
     # #live, #upcoming_for_time, #upcoming_limited, #upcoming_unlimited
     def filter_by_context!
       return context_not_supported! if SUPPORTED_CONTEXTS.exclude?(context)
-      return unlimited_query! unless
-        Validators::EventsQueryParamsValidator.call(
-          filter: filter,
-          context: context,
-          from_event_context: from_event_context
-        )
 
       @query = query.upcoming if UPCOMING_CONTEXTS.include?(context)
       @query = send(context)
@@ -71,11 +64,6 @@ module Events
             I18n.t('errors.messages.graphql.events.context.invalid',
                    context: context,
                    contexts: SUPPORTED_CONTEXTS.join(', '))
-    end
-
-    def unlimited_query!
-      raise StandardError,
-            I18n.t('errors.messages.graphql.events.unlimited_query')
     end
 
     def cached_for(interval)

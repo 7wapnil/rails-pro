@@ -9,11 +9,7 @@ module Events
 
     def resolve
       @contexts.map do |context|
-        args = OpenStruct.new(
-          filter: @query_args.filter,
-          context: context,
-          from_event_context: true
-        )
+        args = OpenStruct.new(filter: @query_args.filter, context: context)
         OpenStruct.new(
           context: context,
           show: EventsQueryResolver.new(args).resolve.any?
