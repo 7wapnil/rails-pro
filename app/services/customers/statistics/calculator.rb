@@ -59,7 +59,7 @@ module Customers
 
       def entries
         @entries ||= customer.entries
-                             .joins(:currency, :real_money_balance_entry)
+                             .joins(:currency)
                              .where(updated_at_clause('entries'))
       end
 
@@ -72,7 +72,7 @@ module Customers
       def deposit_value
         successful_deposits
           .find_each(batch_size: BATCH_SIZE)
-          .sum { |entry| convert_money(entry.real_money_balance_entry) }
+          .sum { |entry| convert_money(entry, :real_money_amount) }
       end
 
       def convert_money(record, attribute = :amount)
@@ -102,20 +102,22 @@ module Customers
       def withdrawal_value
         successful_withdrawals
           .find_each(batch_size: BATCH_SIZE)
-          .sum { |entry| convert_money(entry.real_money_balance_entry) }
+          .sum { |entry| convert_money(entry, :real_money_amount) }
           .abs
       end
 
       def total_bonus_awarded
         customer
           .customer_bonuses
-          .joins(balance_entry: :entry)
-          .sum { |customer_bonus| convert_money(customer_bonus.balance_entry) }
+          .joins(:entry)
+          .sum do |customer_bonus|
+            convert_money(customer_bonus.entry, :bonus_amount)
+          end
       end
 
       def total_bonus_completed
         entries.bonus_conversion
-               .sum { |entry| convert_money(entry.real_money_balance_entry) }
+               .sum { |entry| convert_money(entry, :real_money_amount) }
       end
 
       def prematch_bets

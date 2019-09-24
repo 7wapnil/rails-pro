@@ -3,7 +3,6 @@
 module CustomerBonuses
   class Deactivate < ApplicationService
     delegate :wallet, to: :customer_bonus, allow_nil: true
-    delegate :bonus_balance, to: :wallet, allow_nil: true
 
     ACTIONS = [
       EXPIRE = :expire!,
@@ -49,14 +48,14 @@ module CustomerBonuses
     def confiscate_bonus_money!
       request = EntryRequests::Factories::BonusChange.call(
         customer_bonus: customer_bonus,
-        amount: -bonus_balance.amount
+        amount: -wallet.bonus_balance
       )
 
       EntryRequests::BonusChangeService.call(entry_request: request)
     end
 
     def positive_bonus_balance?
-      bonus_balance.amount.positive?
+      wallet.bonus_balance.positive?
     end
 
     def log_deactivation

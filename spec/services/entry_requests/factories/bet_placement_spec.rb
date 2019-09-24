@@ -17,9 +17,6 @@ describe EntryRequests::Factories::BetPlacement do
   let(:customer_bonus) { create(:customer_bonus) }
   let(:market) { create(:event, :with_market, :upcoming).markets.sample }
 
-  let(:bonus_balance) { create(:balance, :bonus, wallet: wallet) }
-  let(:real_money_balance) { create(:balance, wallet: wallet) }
-
   let(:bet_attributes) do
     {
       amount: -bet.amount,
@@ -44,16 +41,11 @@ describe EntryRequests::Factories::BetPlacement do
       max_amount: 0,
       min_amount: -100
     )
-    create(:balance, wallet: wallet, amount: bet.amount * 2)
-    create(:balance, :bonus, wallet: wallet, amount: 0)
+    wallet.update(real_money_balance: bet.amount * 2, bonus_balance: 0)
   end
 
   it 'creates entry request' do
     expect { subject }.to change(EntryRequest, :count).by(1)
-  end
-
-  it 'if creates balance entry request' do
-    expect { subject }.to change(BalanceEntryRequest, :count).by(1)
   end
 
   it 'creates entry request from bet with valid attributes' do

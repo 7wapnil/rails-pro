@@ -11,8 +11,8 @@ module BalanceCalculations
 
     def call
       {
-        real_money: amount,
-        bonus: calculate_bonus_amount
+        real_money_amount: amount,
+        bonus_amount: calculate_bonus_amount
       }
     end
 

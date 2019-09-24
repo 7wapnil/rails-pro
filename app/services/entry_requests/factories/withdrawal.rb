@@ -10,7 +10,6 @@ module EntryRequests
 
       def call
         create_entry_request!
-        create_balance_entry_request!
         create_withdrawal!
         validate_entry_request!
 
@@ -29,7 +28,8 @@ module EntryRequests
           amount: amount,
           mode: transaction.method,
           initiator: initiator,
-          comment: comment
+          comment: comment,
+          real_money_amount: amount
         )
       end
 
@@ -48,11 +48,6 @@ module EntryRequests
 
       def initiator_comment_suffix
         " by #{transaction.initiator}" if transaction.initiator
-      end
-
-      def create_balance_entry_request!
-        BalanceRequestBuilders::Withdrawal.call(entry_request,
-                                                real_money: amount)
       end
 
       def create_withdrawal!

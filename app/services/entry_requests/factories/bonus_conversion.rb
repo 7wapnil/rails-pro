@@ -12,7 +12,7 @@ module EntryRequests
 
       def call
         create_entry_request!
-        create_balance_request!
+        request_balance_update!
 
         entry_request
       end
@@ -42,12 +42,8 @@ module EntryRequests
         "for #{wallet.customer}."
       end
 
-      def create_balance_request!
-        BalanceEntryRequest.create!(
-          entry_request: entry_request,
-          amount: amount,
-          kind: Balance::REAL_MONEY
-        )
+      def request_balance_update!
+        entry_request.update(real_money_amount: amount)
       end
     end
   end

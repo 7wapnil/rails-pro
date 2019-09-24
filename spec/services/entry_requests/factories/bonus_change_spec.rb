@@ -33,10 +33,6 @@ describe EntryRequests::Factories::BonusChange do
     expect { subject }.to change(EntryRequest, :count).by(1)
   end
 
-  it 'creates bonus balance entry request' do
-    expect { subject }.to change(BalanceEntryRequest, :count).by(1)
-  end
-
   it 'returns entry request with valid attributes' do
     expect(subject).to have_attributes(
       amount: amount,
@@ -51,9 +47,9 @@ describe EntryRequests::Factories::BonusChange do
   end
 
   it 'creates balance entry request with valid attributes' do
-    expect(subject.bonus_balance_entry_request).to have_attributes(
+    expect(subject).to have_attributes(
       amount: amount,
-      kind: Balance::BONUS
+      kind: EntryKinds::BONUS_CHANGE
     )
   end
 

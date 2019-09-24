@@ -9,17 +9,6 @@ describe EntryRequests::Factories::WinPayout do
 
   let(:customer) { create(:customer, :ready_to_bet) }
 
-  let!(:real_money_balance_entry) do
-    create(:balance_entry, amount: amount * ratio,
-                           entry: bet.placement_entry,
-                           balance: create(:balance, :real_money))
-  end
-  let!(:bonus_balance_entry) do
-    create(:balance_entry, amount: amount * (1 - ratio),
-                           entry: bet.placement_entry,
-                           balance: create(:balance, :bonus))
-  end
-
   let(:attributes) do
     {
       kind: EntryRequest::WIN,
@@ -30,6 +19,13 @@ describe EntryRequests::Factories::WinPayout do
 
   let(:real_money_winning) { (winning * ratio).round(2) }
   let(:bonus_winning) { (winning * (1 - ratio)).round(2) }
+
+  before do
+    bet.placement_entry.update(
+      real_money_amount: amount * ratio,
+      bonus_amount: amount * (1 - ratio)
+    )
+  end
 
   context 'with valid attributes' do
     let(:bet) do
@@ -47,11 +43,11 @@ describe EntryRequests::Factories::WinPayout do
     end
 
     it 'creates entry request' do
-      expect { subject }.to change(EntryRequest, :count).by(1)
+      expect { subject }.to change(Entry, :count).by(0)
     end
 
-    it 'creates balance entry requests' do
-      expect { subject }.to change(BalanceEntryRequest, :count).by(2)
+    it 'creates entry requests' do
+      expect { subject }.to change(EntryRequest, :count).by(1)
     end
 
     it 'assigns passed attributes' do
@@ -62,14 +58,15 @@ describe EntryRequests::Factories::WinPayout do
       expect(subject).to have_attributes(origin_attributes)
     end
 
-    it 'creates valid real money balance entry request' do
-      expect(subject.real_money_balance_entry_request)
-        .to have_attributes(amount: real_money_winning)
+    it 'creates valid real money balance entry' do
+      # byebug
+      expect(subject)
+        .to have_attributes(real_money_amount: real_money_winning)
     end
 
-    it 'creates valid bonus balance entry request' do
-      expect(subject.bonus_balance_entry_request)
-        .to have_attributes(amount: bonus_winning)
+    it 'creates valid bonus balance entry' do
+      expect(subject)
+        .to have_attributes(bonus_amount: bonus_winning)
     end
   end
 
@@ -93,13 +90,13 @@ describe EntryRequests::Factories::WinPayout do
                               customer: customer)
     end
 
-    it 'does not create a bonus balance request' do
-      expect(subject.bonus_balance_entry_request).to be_nil
+    it 'does not change a bonus balance' do
+      expect(subject.bonus_amount).to be_zero
     end
 
     it 'adjusts entry_request amount' do
       expect(subject.amount)
-        .to eq(subject.real_money_balance_entry_request.amount)
+        .to eq(subject.real_money_amount)
     end
   end
 
@@ -115,11 +112,11 @@ describe EntryRequests::Factories::WinPayout do
     end
 
     it 'does not create a bonus balance request' do
-      expect(subject.bonus_balance_entry_request).to be_nil
+      expect(subject.bonus_amount).to be_zero
     end
 
     it 'creates balance entry requests' do
-      expect { subject }.to change(BalanceEntryRequest, :count).by(1)
+      expect { subject }.to change(EntryRequest, :count).by(1)
     end
   end
 end

@@ -31,14 +31,14 @@ module CustomerBonuses
     def remove_bonus_money_request
       EntryRequests::Factories::BonusChange.call(
         customer_bonus: customer_bonus,
-        amount: -bonus_balance.amount
+        amount: -bonus_balance
       )
     end
 
     def grant_real_money_request
       EntryRequests::Factories::BonusConversion.call(
         customer_bonus: customer_bonus,
-        amount: bonus_balance.amount
+        amount: bonus_balance
       )
     end
 

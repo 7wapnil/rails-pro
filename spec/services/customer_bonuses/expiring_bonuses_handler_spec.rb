@@ -20,15 +20,9 @@ describe CustomerBonuses::ExpiringBonusesHandler do
   end
 
   let!(:actual_bonus_balances) do
-    actual_bonuses.map do |bonus|
-      create(:balance, :bonus, wallet_id: bonus.wallet_id)
-    end
-  end
-
-  let!(:expired_bonus_balances) do
     expired_bonuses_with_balance.map do |bonus|
-      balance = Balance.find_by(kind: Balance::BONUS, wallet: bonus.wallet)
-      balance.update_attributes(amount: 10)
+      bonus.wallet.update(bonus_balance: 100, amount: 100)
+      # create(:balance, :bonus, wallet_id: bonus.wallet_id)
     end
   end
 
@@ -54,7 +48,7 @@ describe CustomerBonuses::ExpiringBonusesHandler do
   end
 
   let(:comment) do
-    "Bonus transaction: #{-control_balance.amount} " \
+    "Bonus transaction: #{-control_balance} " \
     "#{control_wallet.currency} for #{control_wallet.customer}."
   end
 
@@ -74,7 +68,7 @@ describe CustomerBonuses::ExpiringBonusesHandler do
     subject
     expect(control_entry_request).to have_attributes(
       mode: EntryRequest::INTERNAL,
-      amount: -control_balance.amount,
+      amount: -control_balance,
       comment: comment,
       customer: control_wallet.customer,
       currency: control_wallet.currency
@@ -88,21 +82,16 @@ describe CustomerBonuses::ExpiringBonusesHandler do
   it 'creates valid bonus change entry' do
     subject
     expect(control_entry).to have_attributes(
-      amount: -control_balance.amount,
+      amount: -control_balance,
       wallet: control_wallet
     )
   end
 
-  it 'creates only one bonus change balance entry' do
+  it 'create bonus change balance' do
     subject
-    expect(control_entry.balance_entries.count).to eq(1)
-  end
-
-  it 'create bonus change balance entry' do
-    subject
-    expect(control_entry.balance_entries.first).to have_attributes(
-      balance_id: control_balance.id,
-      amount: -control_balance.amount
+    expect(control_entry).to have_attributes(
+      wallet_id: control_wallet.id,
+      amount: -control_balance
     )
   end
 end

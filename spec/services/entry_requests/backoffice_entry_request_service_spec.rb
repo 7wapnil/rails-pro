@@ -4,8 +4,13 @@ describe EntryRequests::BackofficeEntryRequestService do
   let(:customer) { create(:customer) }
   let(:initiator) { create(:user) }
   let!(:currency) { create(:currency, :primary, code: 'EUR', name: 'Euro') }
-  let(:wallet) { customer.create_wallet(amount: 1000, currency: currency) }
-  let!(:balance) { wallet.create_real_money_balance(amount: 1000) }
+  let!(:wallet) do
+    customer.create_wallet(
+      amount: 1000,
+      real_money_balance: 1000,
+      currency: currency
+    )
+  end
   let(:rule) { create(:entry_currency_rule, min_amount: 0, max_amount: 500) }
   let(:entry_request) { create(:entry_request, customer: customer) }
   let(:base_params) do

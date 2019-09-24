@@ -7,14 +7,14 @@ describe CustomerBonuses::Deactivate do
 
   context 'with active customer bonus' do
     context 'with positive bonus balance' do
-      let!(:bonus_balance) { create(:balance, :bonus, wallet: wallet) }
+      let(:bonus_balance) { wallet.bonus_balance }
       let(:wallet) { customer_bonus.wallet }
 
       let(:found_entry_request) do
         EntryRequest.bonus_change.find_by(origin: customer_bonus)
       end
       let(:comment) do
-        "Bonus transaction: #{-bonus_balance.amount} #{wallet.currency} " \
+        "Bonus transaction: #{-bonus_balance} #{wallet.currency} " \
         "for #{wallet.customer}."
       end
 
@@ -29,7 +29,7 @@ describe CustomerBonuses::Deactivate do
       it 'creates bonus change entry request' do
         expect(found_entry_request).to have_attributes(
           mode: EntryRequest::INTERNAL,
-          amount: -bonus_balance.amount,
+          amount: -bonus_balance,
           comment: comment,
           customer: wallet.customer,
           currency: wallet.currency

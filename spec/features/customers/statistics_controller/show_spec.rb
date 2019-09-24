@@ -35,8 +35,8 @@ describe Customers::StatisticsController, '#show' do
                      wallet: customer.wallets.first)
       ]
     end
-    let(:successful_deposit_real_money_balance_entries) do
-      successful_deposits.map(&:real_money_balance_entry)
+    let(:successful_deposit_real_money_balance) do
+      successful_deposits.map(&:real_money_amount)
     end
 
     # WITHDRAWALS
@@ -67,8 +67,8 @@ describe Customers::StatisticsController, '#show' do
                      origin: withdrawal)
       ]
     end
-    let(:successful_withdrawal_real_money_balance_entries) do
-      successful_withdrawals.map(&:real_money_balance_entry)
+    let(:successful_withdrawal_real_money_balance) do
+      successful_withdrawals.map(&:real_money_amount)
     end
 
     # BONUSES
@@ -81,11 +81,11 @@ describe Customers::StatisticsController, '#show' do
         .map { |status| create(:customer_bonus, status, customer: customer) }
     end
     let!(:awarded_customer_bonuses) do
-      create_list(:customer_bonus, rand(1..3), :active, :with_balance_entry,
+      create_list(:customer_bonus, rand(1..3), :active, :with_entry,
                   customer: customer)
     end
-    let(:awarded_customer_bonus_balance_entries) do
-      awarded_customer_bonuses.map(&:balance_entry)
+    let(:awarded_customer_bonus_balance) do
+      awarded_customer_bonuses.map(&:entry)
     end
 
     let!(:bonus_conversion_entries) do
@@ -100,8 +100,8 @@ describe Customers::StatisticsController, '#show' do
                      wallet: customer.wallets.first)
       ]
     end
-    let(:bonus_conversion_real_money_balance_entries) do
-      bonus_conversion_entries.map(&:real_money_balance_entry)
+    let(:bonus_conversion_real_money_balance) do
+      bonus_conversion_entries.map(&:real_money_amount)
     end
 
     # BETS
@@ -176,18 +176,16 @@ describe Customers::StatisticsController, '#show' do
     # CALCULATED VALUES
 
     let(:deposit_value) do
-      successful_deposit_real_money_balance_entries.sum(&:amount).round(2)
+      successful_deposit_real_money_balance.sum.round(2)
     end
     let(:withdrawal_value) do
-      successful_withdrawal_real_money_balance_entries.sum(&:amount)
-                                                      .abs
-                                                      .round(2)
+      successful_withdrawal_real_money_balance.sum.abs.round(2)
     end
     let(:total_bonus_awarded) do
-      awarded_customer_bonus_balance_entries.sum(&:amount).round(2)
+      awarded_customer_bonus_balance.sum(&:bonus_amount).round(2)
     end
     let(:total_bonus_completed) do
-      bonus_conversion_real_money_balance_entries.sum(&:amount).round(2)
+      bonus_conversion_real_money_balance.sum.round(2)
     end
     let(:prematch_wager) { settled_prematch_bets.sum(&:amount).round(2) }
     let(:prematch_payout) { won_prematch_bets.sum(&:win_amount).round(2) }

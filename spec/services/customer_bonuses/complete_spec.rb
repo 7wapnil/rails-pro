@@ -23,10 +23,8 @@ describe CustomerBonuses::Complete do
   end
 
   context 'with an active rolled over bonus' do
-    let!(:primary_currency) { create(:currency, :primary) }
-    let(:bonus_balance) { create(:balance, :bonus) }
-    let(:real_balance) { create(:balance, :real_money) }
-    let(:wallet) { create(:wallet, balances: [bonus_balance, real_balance]) }
+    let(:wallet) { create(:wallet) }
+    let!(:currency) { create(:currency, :primary) }
     let(:customer_bonus) do
       create(:customer_bonus, wallet: wallet,
                               rollover_balance: 0)

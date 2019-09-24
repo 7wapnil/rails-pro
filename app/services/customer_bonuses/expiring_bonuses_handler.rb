@@ -4,7 +4,7 @@ module CustomerBonuses
   class ExpiringBonusesHandler < ApplicationService
     BATCH_SIZE = 200
     PRELOAD_OPTIONS = {
-      wallet: %i[currency customer bonus_balance]
+      wallet: %i[currency customer]
     }.freeze
 
     def call

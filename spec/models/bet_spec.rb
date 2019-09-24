@@ -207,17 +207,10 @@ describe Bet, type: :model do
 
     before do
       allow(EntryCurrencyRule).to receive(:find_by!) { rule }
-      create(:balance_entry_request,
-             kind: Balance::REAL_MONEY,
-             balance_entry: create(:balance_entry, amount: 10, entry: entry),
-             entry_request: entry_request,
-             amount: real_request_amount)
-
-      create(:balance_entry_request,
-             kind: Balance::BONUS,
-             balance_entry: create(:balance_entry, amount: 100, entry: entry),
-             entry_request: entry_request,
-             amount: bonus_request_amount)
+      entry_request.update(
+        real_money_amount: real_request_amount,
+        bonus_amount: bonus_request_amount
+      )
     end
 
     describe '#real_money_total' do

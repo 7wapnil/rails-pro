@@ -4,9 +4,8 @@ describe CustomerBonus do
   it { is_expected.to belong_to(:customer) }
   it { is_expected.to belong_to(:wallet) }
   it { is_expected.to belong_to(:original_bonus) }
-  it { is_expected.to belong_to(:balance_entry).inverse_of(:customer_bonus) }
+  it { is_expected.to belong_to(:entry) }
   it { is_expected.to have_many(:bets) }
-  it { is_expected.to have_one(:entry).through(:balance_entry) }
   it { is_expected.to have_one(:currency).through(:wallet) }
 
   describe '.customer_history' do

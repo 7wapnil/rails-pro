@@ -13,7 +13,7 @@ module EntryRequests
       def call
         create_entry_request!
         validate_entry_request!
-        create_balance_requests!
+        request_balance_update!
 
         entry_request
       end
@@ -63,8 +63,8 @@ module EntryRequests
         entry_request.register_failure!(error.message)
       end
 
-      def create_balance_requests!
-        BalanceRequestBuilders::Bet.call(entry_request, amount_calculations)
+      def request_balance_update!
+        entry_request.update!(amount_calculations)
       end
 
       def amount_calculations

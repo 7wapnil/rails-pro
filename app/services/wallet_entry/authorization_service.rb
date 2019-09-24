@@ -21,8 +21,8 @@ module WalletEntry
 
     def update_database!
       ActiveRecord::Base.transaction do
-        create_default_balance_entry_request! if no_balance_entry_requests?
-        update_wallet!
+        perform_default_balance_update! if no_balance_updates?
+        find_or_create_wallet!
         create_entry!
         update_balances!
         confirm_entry if auto_confirmation?
@@ -31,23 +31,19 @@ module WalletEntry
       end
     end
 
-    def no_balance_entry_requests?
-      request.balance_entry_requests.empty?
+    def no_balance_updates?
+      request.real_money_amount.zero? && request.bonus_amount.zero?
     end
 
-    def create_default_balance_entry_request!
-      BalanceEntryRequest.create(entry_request: request,
-                                 amount: amount,
-                                 kind: Balance::REAL_MONEY)
+    def perform_default_balance_update!
+      request.update(real_money_amount: amount)
     end
 
-    def update_wallet!
-      @wallet = Wallets::FindOrCreate.call(customer: request.customer,
-                                           currency: request.currency)
-      amount_increment = request.balance_entry_requests.sum(:amount)
-      ::Forms::AmountChange
-        .new(wallet, amount_increment: amount_increment, request: request)
-        .save!
+    def find_or_create_wallet!
+      @wallet = Wallets::FindOrCreate.call(
+        customer: request.customer,
+        currency: request.currency
+      )
     end
 
     def create_entry!

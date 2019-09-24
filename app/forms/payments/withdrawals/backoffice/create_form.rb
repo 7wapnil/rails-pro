@@ -44,13 +44,13 @@ module Payments
           customer
             .bets
             .pending
-            .joins(entry_requests: :bonus_balance_entry_request)
+            .joins(:entry_requests)
             .none?
         end
 
         def validate_amount
-          return unless amount
-          return if real_money_balance && amount <= real_money_balance.amount
+          return unless amount && real_money_balance
+          return if amount <= real_money_balance
 
           errors.add(
             :base,

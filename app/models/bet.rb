@@ -167,32 +167,23 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def refund_amount
-    return nil if settlement_status.nil?
+    return if settlement_status.nil?
     return 0 if void_factor.nil?
 
     amount * void_factor
   end
 
   def actual_payout
-    BalanceEntry
-      .joins(:entry)
-      .where(entries: { origin: self, kind: Entry::WIN })
+    entries
+      .where(origin: self, kind: Entry::WIN)
       .sum(:amount)
   end
 
   def real_money_total
-    return 0.0 unless entry_request&.succeeded?
-
-    @real_money_total ||= entry_request
-                          .balance_entry_requests
-                          .real_money.first.amount
+    entry_request&.succeeded? ? entry_request.real_money_amount : 0.0
   end
 
   def bonus_money_total
-    return 0.0 unless entry_request&.succeeded?
-
-    @bonus_money_total ||= entry_request
-                           .balance_entry_requests
-                           .bonus.first.amount
+    entry_request&.succeeded? ? entry_request.bonus_amount : 0.0
   end
 end

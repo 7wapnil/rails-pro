@@ -10,7 +10,6 @@ module EntryRequests
 
       def call
         create_entry_request!
-        @balance_requests = create_balance_requests!
         adjust_amount!
 
         entry_request
@@ -18,14 +17,16 @@ module EntryRequests
 
       private
 
-      attr_reader :bet, :entry_request, :attributes, :balance_requests
+      attr_reader :bet, :entry_request, :attributes
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
       end
 
       def entry_request_attributes
-        attributes.merge(origin_attributes)
+        attributes
+          .merge(origin_attributes)
+          .merge(balance_attributes)
       end
 
       def origin_attributes
@@ -39,17 +40,26 @@ module EntryRequests
         }
       end
 
-      def create_balance_requests!
-        BalanceRequestBuilders::WinPayout
-          .call(entry_request, amount_calculations)
+      def balance_attributes
+        return balance_calculations if bet&.customer_bonus&.active?
+
+        balance_calculations.slice(:real_money_amount)
       end
 
-      def amount_calculations
-        BalanceCalculations::BetCompensation.call(entry_request: entry_request)
+      def balance_calculations
+        @balance_calculations ||= BalanceCalculations::BetCompensation.call(
+          bet: bet,
+          amount: requested_total_amount
+        )
+      end
+
+      def requested_total_amount
+        attributes[:amount] || 0
       end
 
       def adjust_amount!
-        new_amount = balance_requests.map(&:amount).sum
+        new_amount = entry_request.real_money_amount +
+                     entry_request.bonus_amount
         entry_request.update(amount: new_amount)
       end
     end

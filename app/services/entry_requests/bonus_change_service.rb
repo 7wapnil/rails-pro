@@ -16,7 +16,7 @@ module EntryRequests
 
       process_entry_request!
 
-      assign_balance_entry if entry
+      assign_entry if entry
     end
 
     private
@@ -39,10 +39,10 @@ module EntryRequests
       @entry = ::WalletEntry::AuthorizationService.call(entry_request)
     end
 
-    def assign_balance_entry
+    def assign_entry
       return unless debit?
 
-      customer_bonus.update(balance_entry: entry.bonus_balance_entry)
+      customer_bonus.update(entry: entry)
     end
 
     def debit?

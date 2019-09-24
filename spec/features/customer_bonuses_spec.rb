@@ -56,7 +56,6 @@ describe Customer, '#bonuses' do
                               wallet: wallet,
                               status: CustomerBonus::ACTIVE)
     end
-    let!(:bonus_balance) { create(:balance, :bonus, wallet: wallet) }
 
     let(:found_entry_request) do
       EntryRequest.bonus_change.find_by(origin: bonus)
@@ -83,7 +82,7 @@ describe Customer, '#bonuses' do
     it 'creates bonus change entry request' do
       expect(found_entry_request).to have_attributes(
         mode: EntryRequest::INTERNAL,
-        amount: -bonus_balance.amount,
+        amount: -wallet.bonus_balance,
         customer: wallet.customer,
         currency: wallet.currency
       )

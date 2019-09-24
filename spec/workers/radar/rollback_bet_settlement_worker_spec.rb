@@ -68,11 +68,6 @@ describe Radar::RollbackBetSettlementWorker do
         create(:wallet, customer: bet.customer, currency: bet.currency)
       end
     end
-    let!(:balances) do
-      wallets.map do |wallet|
-        create(:balance, :real_money, amount: 10_000, wallet: wallet)
-      end
-    end
 
     let(:control_entry_requests) do
       [
@@ -345,12 +340,10 @@ describe Radar::RollbackBetSettlementWorker do
              customer: build(:customer),
              odd: build(:odd, market: control_markets.first))
     end
-    let(:wallet) do
+    let!(:wallet) do
       create(:wallet, customer: pending_settlement_bet.customer,
-                      currency: pending_settlement_bet.currency)
-    end
-    let!(:balance) do
-      create(:balance, :real_money, amount: 10_000, wallet: wallet)
+                      currency: pending_settlement_bet.currency,
+                      real_money_balance: 10_000)
     end
 
     it 'is reverted to ACCEPTED' do

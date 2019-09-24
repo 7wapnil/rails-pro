@@ -27,7 +27,7 @@ module UP
         create_address(customer, row)
         currency, amount = currency_and_amount(row)
         wallet = create_wallet(customer, currency)
-        create_balance(wallet, amount)
+        update_balance(wallet, amount)
       end
 
       puts "Rows processed:  #{@row_count}"
@@ -88,14 +88,10 @@ module UP
       )
     end
 
-    def create_balance(wallet, amount)
-      Balance.find_or_initialize_by(wallet: wallet,
-                                    kind: Balance::REAL_MONEY) do |b|
-        b.update_attributes!(amount: amount)
-      end
-
+    def update_balance(wallet, amount)
       wallet.update_attributes!(
-        amount: wallet.balances.pluck(:amount).sum
+        real_money_balance: amount,
+        amount: amount + wallet.bonus_balance
       )
     end
 

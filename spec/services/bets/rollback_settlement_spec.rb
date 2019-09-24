@@ -7,11 +7,10 @@ describe Bets::RollbackSettlement do
   let!(:customer_bonus) do
     create(:customer_bonus, bets: [bet], customer: bet.customer)
   end
-  let(:wallet) do
-    create(:wallet, customer: bet.customer, currency: bet.currency)
-  end
-  let!(:balance) do
-    create(:balance, :real_money, amount: 10_000, wallet: wallet)
+  let!(:wallet) do
+    create(:wallet, customer: bet.customer,
+                    currency: bet.currency,
+                    real_money_balance: 10_000)
   end
 
   let(:rollback_entry) { Entry.rollback.find_by(origin: bet) }

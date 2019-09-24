@@ -4,10 +4,8 @@ describe EntryRequests::Factories::Refund do
   subject(:service) { described_class.new(entry: entry, **attributes) }
 
   let(:entry) { create(:entry) }
-  let(:bonus_balance_entry) { create(:balance_entry, :bonus, entry: entry) }
   let(:refund_comment) { Faker::Lorem.sentence }
-  let(:created_request) { service.call }
-  let(:created_balance_requests) { created_request.balance_entry_requests }
+  let(:entry_request) { service.call }
   let(:attributes) do
     {
       comment: refund_comment
@@ -16,7 +14,7 @@ describe EntryRequests::Factories::Refund do
 
   context 'success' do
     it 'returns entry request' do
-      expect(created_request).to be_instance_of(EntryRequest)
+      expect(entry_request).to be_instance_of(EntryRequest)
     end
 
     it 'assigns correct attributes' do
@@ -28,38 +26,26 @@ describe EntryRequests::Factories::Refund do
         origin: entry.origin
       }
 
-      expect(created_request).to have_attributes(assigned_attributes)
+      expect(entry_request).to have_attributes(assigned_attributes)
     end
 
-    context 'balance entry requests creation' do
-      let(:real_balance) { create(:balance, :real_money, wallet: entry.wallet) }
-      let(:bonus_balance) { create(:balance, :bonus, wallet: entry.wallet) }
-      let!(:real_balance_entry) do
-        create(:balance_entry, entry: entry, balance: real_balance)
-      end
-      let!(:bonus_balance_entry) do
-        create(:balance_entry, entry: entry, balance: bonus_balance)
-      end
-
-      before do
-        allow(BalanceRequestBuilders::Refund)
-          .to receive(:call)
-          .and_call_original
+    context 'entry requests creation' do
+      let(:real_money_balance) { 100 }
+      let(:bonus_balance) { 20 }
+      let!(:update_entry_balance) do
+        entry.update(
+          real_money_amount: real_money_balance,
+          bonus_amount: bonus_balance
+        )
       end
 
-      it 'calls BalanceRequestBuilders::Refund with correct arguments' do
+      it 'creates entry request with correct balance attributes' do
         refund_amounts = {
-          real_money: real_balance_entry.amount,
-          bonus: bonus_balance_entry.amount
+          real_money_amount: real_money_balance,
+          bonus_amount: bonus_balance
         }
 
-        expect(BalanceRequestBuilders::Refund)
-          .to have_received(:call)
-          .with(created_request, refund_amounts)
-      end
-
-      it 'creates correct amount of balance entry requests' do
-        expect(created_balance_requests.length).to eq(2)
+        expect(entry_request).to have_attributes(refund_amounts)
       end
     end
   end

@@ -10,8 +10,7 @@ class CustomerBonus < ApplicationRecord
   belongs_to :customer
   belongs_to :wallet
   belongs_to :original_bonus, class_name: Bonus.name
-  belongs_to :balance_entry, optional: true, inverse_of: :customer_bonus
-  has_one :entry, through: :balance_entry
+  belongs_to :entry, optional: true
   has_one :currency, through: :wallet
   has_many :bets
 
@@ -22,7 +21,7 @@ class CustomerBonus < ApplicationRecord
   end
 
   def self.customer_history(customer)
-    includes(:balance_entry).where(customer: customer)
+    includes(:entry).where(customer: customer)
   end
 
   def active_until_date

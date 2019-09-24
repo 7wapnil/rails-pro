@@ -8,15 +8,11 @@ describe EntryRequests::Factories::Common do
   let(:amount) { rand(10..100).to_f }
   let(:ratio) { 0.75 }
 
-  let!(:real_money_balance_entry) do
-    create(:balance_entry, amount: amount * ratio,
-                           entry: bet.placement_entry,
-                           balance: create(:balance, :real_money))
-  end
-  let!(:bonus_balance_entry) do
-    create(:balance_entry, amount: amount * (1 - ratio),
-                           entry: bet.placement_entry,
-                           balance: create(:balance, :bonus))
+  let!(:wallet_balance) do
+    bet.placement_entry.update(
+      real_money_amount: amount * ratio,
+      bonus_amount: amount * (1 - ratio)
+    )
   end
 
   let(:attributes) do
@@ -44,10 +40,6 @@ describe EntryRequests::Factories::Common do
       expect { subject }.to change(EntryRequest, :count).by(1)
     end
 
-    it 'creates balance entry requests' do
-      expect { subject }.to change(BalanceEntryRequest, :count).by(2)
-    end
-
     it 'assigns passed attributes' do
       expect(subject).to have_attributes(attributes)
     end
@@ -57,13 +49,13 @@ describe EntryRequests::Factories::Common do
     end
 
     it 'creates valid real money balance entry request' do
-      expect(subject.real_money_balance_entry_request)
-        .to have_attributes(amount: real_money_winning)
+      expect(subject)
+        .to have_attributes(real_money_amount: real_money_winning)
     end
 
     it 'creates valid bonus balance entry request' do
-      expect(subject.bonus_balance_entry_request)
-        .to have_attributes(amount: bonus_winning)
+      expect(subject)
+        .to have_attributes(bonus_amount: bonus_winning)
     end
   end
 

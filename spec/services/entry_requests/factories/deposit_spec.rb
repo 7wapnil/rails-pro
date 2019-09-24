@@ -43,44 +43,15 @@ describe EntryRequests::Factories::Deposit do
   before do
     allow(EntryCurrencyRule).to receive(:find_by!) { rule }
     allow(Currency).to receive(:find_by!) { currency }
-    allow(BalanceRequestBuilders::Deposit).to receive(:call)
   end
 
   context 'with customer bonus' do
     before do
-      allow(BalanceRequestBuilders::Deposit)
-        .to receive(:call)
-        .and_call_original
-
       service_call
-    end
-
-    it_behaves_like 'entry requests splitting with bonus' do
-      let(:real_money_amount) { 100 }
-      let(:bonus_amount) { amount * percentage / 100.0 }
     end
 
     it 'applies customer bonus only once' do
-      expect { service_call }.not_to change(BalanceEntryRequest.bonus, :count)
-    end
-  end
-
-  context 'without customer bonus' do
-    let(:customer_bonus) {}
-
-    before do
-      allow(BalanceRequestBuilders::Deposit)
-        .to receive(:call)
-        .and_call_original
-
-      CustomerBonus.destroy_all
-      wallet.reload
-      service_call
-    end
-
-    it_behaves_like 'entry requests splitting without bonus' do
-      let(:real_money_amount) { 100 }
-      let(:bonus_amount) { amount * percentage / 100.0 }
+      expect { service_call }.not_to change(wallet, :bonus_balance)
     end
   end
 
@@ -122,7 +93,7 @@ describe EntryRequests::Factories::Deposit do
       allow(BalanceCalculations::Deposit)
         .to receive(:call)
         .with(amount, currency, original_bonus, no_bonus: false)
-        .and_return(real_money: amount, bonus: bonus)
+        .and_return(real_money_amount: amount, bonus_amount: bonus)
     end
 
     it 'creates entry request' do
@@ -164,7 +135,7 @@ describe EntryRequests::Factories::Deposit do
     before do
       allow(BalanceCalculations::Deposit)
         .to receive(:call)
-        .and_return(real_money: amount)
+        .and_return(real_money_amount: amount)
     end
 
     it 'mentions him in comment' do
@@ -185,7 +156,7 @@ describe EntryRequests::Factories::Deposit do
     before do
       allow(BalanceCalculations::Deposit)
         .to receive(:call)
-        .and_return(real_money: amount)
+        .and_return(real_money_amount: amount)
     end
 
     it 'does not mention him in comment' do

@@ -4,21 +4,32 @@ module Forms
   class AmountChange
     include ActiveModel::Model
 
-    attr_accessor :subject, :amount_increment, :request
+    attr_accessor :subject, :request, :amount_increment,
+                  :real_money_amount_increment, :bonus_amount_increment
 
     validates :amount_increment, numericality: true
-    validate :amount_not_negative, if: :requested_by_user?
+    validates :real_money_amount_increment, numericality: true
+    validates :bonus_amount_increment, numericality: true
+    validate :real_money_amount_not_negative, if: :requested_by_user?
+    validate :bonus_amount_not_negative, if: :requested_by_user?
 
-    def initialize(subject, amount_increment:, request:)
+    def initialize(subject, request:)
       @subject = subject
-      @amount_increment = amount_increment
+      @real_money_amount_increment = request.real_money_amount
+      @bonus_amount_increment = request.bonus_amount
+      @amount_increment = request.real_money_amount + request.bonus_amount
       @request = request
     end
 
     def save!
       subject.with_lock do
         validate!
-        subject.update!(amount: subject.amount + amount_increment)
+        subject.update!(
+          amount: subject.amount + amount_increment,
+          real_money_balance: subject.real_money_balance +
+                              real_money_amount_increment,
+          bonus_balance: subject.bonus_balance + bonus_amount_increment
+        )
       end
     end
 
@@ -33,6 +44,27 @@ module Forms
       message = I18n.t('errors.messages.amount_not_negative',
                        subject: subject.to_s,
                        current_amount: subject.amount,
+                       new_amount: result_amount)
+
+      errors.add(:base, message) if result_amount.negative?
+    end
+
+    def real_money_amount_not_negative
+      result_amount = subject.real_money_balance +
+                      real_money_amount_increment.to_d
+      message = I18n.t('errors.messages.amount_not_negative',
+                       subject: subject.to_s,
+                       current_amount: subject.real_money_balance,
+                       new_amount: result_amount)
+
+      errors.add(:base, message) if result_amount.negative?
+    end
+
+    def bonus_amount_not_negative
+      result_amount = subject.bonus_balance + bonus_amount_increment.to_d
+      message = I18n.t('errors.messages.amount_not_negative',
+                       subject: subject.to_s,
+                       current_amount: subject.bonus_balance,
                        new_amount: result_amount)
 
       errors.add(:base, message) if result_amount.negative?

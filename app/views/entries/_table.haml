@@ -22,17 +22,17 @@
           %td
             = l(entry.created_at, format: :long)
           %td.font-weight-bold{ class: entry_amount_class(entry) }
-            = displayed_amount(entry.real_money_balance_entry)
+            = displayed_amount(entry.real_money_amount)
           %td.font-weight-bold{ class: entry_amount_class(entry) }
-            = displayed_amount(entry.bonus_balance_entry)
+            = displayed_amount(entry.bonus_amount)
           %td.font-weight-bold{ class: entry_amount_class(entry) }
-            = displayed_amount(entry)
+            = displayed_amount(entry.amount)
           %td
             = entry.wallet.currency_code
           %td{ colspan: 2 }
-            = entry.real_money_balance_entry&.balance_amount_after || '-'
+            = entry.balance_amount_after - entry.bonus_amount_after
           %td{ colspan: 2 }
-            = entry.bonus_balance_entry&.balance_amount_after || '-'
+            = entry.bonus_amount_after || '-'
           %td.font-weight-bold{ colspan: 2, class: entry_amount_class(entry) }
             = entry.balance_amount_after
     - else

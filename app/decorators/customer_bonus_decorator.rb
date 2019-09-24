@@ -12,7 +12,7 @@ class CustomerBonusDecorator < ApplicationDecorator
   end
 
   def amount(human: false)
-    amount = balance_entry ? balance_entry.amount : 0.0
+    amount = entry ? entry.bonus_amount : 0.0
 
     human ? "#{amount} #{currency}" : amount
   end

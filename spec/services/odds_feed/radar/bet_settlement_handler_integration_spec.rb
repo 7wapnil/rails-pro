@@ -82,19 +82,19 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
           subject.handle
         end
 
-        it 'creates correct number of balance entries' do
-          expect(BalanceEntry.all.length).to eq state[:records_count]
+        it 'creates correct number of entries' do
+          expect(Entry.all.length).to eq state[:records_count]
         end
 
         if state[:win]
-          it 'adds win to balance' do
-            expect(BalanceEntry.find_by(amount: state[:win])).to be_truthy
+          it 'adds win to entry' do
+            expect(Entry.find_by(amount: state[:win])).to be_truthy
           end
         end
 
         if state[:refund] && !state[:win]
-          it 'adds refund to balance' do
-            expect(BalanceEntry.find_by(amount: state[:refund])).to be_truthy
+          it 'adds refund to entry' do
+            expect(Entry.find_by(amount: state[:refund])).to be_truthy
           end
         end
       end
@@ -117,14 +117,14 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
         expect do
           subject.handle
         rescue ::Bets::NotSupportedError
-        end.not_to change(BalanceEntryRequest, :count)
+        end.not_to change(EntryRequest, :count)
       end
 
       it 'does not create balance entries' do
         expect do
           subject.handle
         rescue ::Bets::NotSupportedError
-        end.not_to change(BalanceEntry, :count)
+        end.not_to change(Entry, :count)
       end
 
       it 'moves bet to pending manual settlement status' do
@@ -151,14 +151,14 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
         expect do
           subject.handle
         rescue ::Bets::NotSupportedError
-        end.not_to change(BalanceEntryRequest, :count)
+        end.not_to change(EntryRequest, :count)
       end
 
       it 'does not create balance entries' do
         expect do
           subject.handle
         rescue ::Bets::NotSupportedError
-        end.not_to change(BalanceEntry, :count)
+        end.not_to change(Entry, :count)
       end
 
       it 'moves bet to pending manual settlement status' do
@@ -177,6 +177,6 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
 
     subject.handle
 
-    expect(BalanceEntry.sum(&:amount)).to be_within(0.01).of(70)
+    expect(Entry.sum(&:amount)).to be_within(0.01).of(70)
   end
 end

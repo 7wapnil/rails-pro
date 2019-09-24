@@ -60,8 +60,6 @@ describe EntryRequests::BetPlacementService do
       max_amount: 0,
       min_amount: -100
     )
-    create(:balance, wallet: wallet, amount: bet.amount * 2)
-    create(:balance, :bonus, wallet: wallet, amount: 0)
   end
 
   context 'with valid betting limit' do
