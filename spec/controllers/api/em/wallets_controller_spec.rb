@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 describe Api::Em::WalletsController, type: :controller do
+  let!(:primary_currency) { create(:currency, :primary) }
   let(:em_login) { 'testlogin' }
   let(:em_password) { 'testpassword' }
   let(:em_operator_id) { 6 }

@@ -18,7 +18,11 @@ module Em
 
         return insufficient_funds_response if insufficient_funds?
 
-        success_response if create_wager!
+        create_wager!
+        create_entry_request!
+        process_entry_request!
+
+        success_response
       end
 
       protected
@@ -29,7 +33,7 @@ module Em
 
       private
 
-      attr_reader :amount
+      attr_reader :amount, :wager, :entry_request
 
       def insufficient_funds?
         amount > wallet.amount
@@ -70,10 +74,19 @@ module Em
         }
       end
 
+      def create_entry_request!
+        @entry_request =
+          EntryRequests::Factories::EmWagerPlacement.call(wager: wager)
+      end
+
+      def process_entry_request!
+        EntryRequests::ProcessingService.call(entry_request: entry_request)
+      end
+
       def success_response
         common_success_response.merge(
           'SessionId'            => session.id,
-          'AccountTransactionId' => @wager.id,
+          'AccountTransactionId' => wager.id,
           'Currency'             => currency_code,
           'Balance'              => wallet.amount - amount
         )

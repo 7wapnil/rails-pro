@@ -13,7 +13,8 @@ module EntryKinds
     system_bet_cancel: SYSTEM_BET_CANCEL = 'system_bet_cancel',
     manual_bet_cancel: MANUAL_BET_CANCEL = 'manual_bet_cancel',
     bonus_conversion: BONUS_CONVERSION = 'bonus_conversion',
-    bonus_change: BONUS_CHANGE = 'bonus_change'
+    bonus_change: BONUS_CHANGE = 'bonus_change',
+    em_wager: EM_WAGER = 'em_wager'
   }.freeze
 
   INCOME_ENTRY_KINDS = [DEPOSIT, BONUS_CHANGE].freeze
@@ -35,7 +36,8 @@ module EntryKinds
     ROLLBACK,
     SYSTEM_BET_CANCEL,
     MANUAL_BET_CANCEL,
-    BONUS_CHANGE
+    BONUS_CHANGE,
+    EM_WAGER
   ].freeze
   DELAYED_CONFIRMATION_KINDS = [WITHDRAW, BET].freeze
   ALLOWED_NEGATIVE_BALANCE_KINDS = [
