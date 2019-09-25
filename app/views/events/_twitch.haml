@@ -1,0 +1,27 @@
+%tr
+  %td= t('attributes.twitch_url')
+  %td
+    = f.text_field :twitch_url, class: 'form-control mt-0 mb-3 string required mr-1 rounded'
+%tr
+  %td= t('attributes.twitch_start_time')
+  %td
+    .input-group
+      = f.input_field :twitch_start_time,
+                          as: :date_picker,
+                          required: false,
+                          class: 'form-control mt-0 mb-3 string required mr-1 rounded',
+                          data: { time: true }
+      .input-group-append
+        .input-group-text.btn &#128197;
+
+%tr
+  %td= t('attributes.twitch_end_time')
+  %td
+    .input-group
+      = f.input_field :twitch_end_time,
+                          as: :date_picker,
+                          required: false,
+                          class: 'form-control mt-0 mb-3 string required mr-1 rounded',
+                          data: { time: true }
+      .input-group-append
+        .input-group-text.btn &#128197;

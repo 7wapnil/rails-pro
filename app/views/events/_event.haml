@@ -46,28 +46,7 @@
       %tr
         %td= t('attributes.live_coverage')
         %td= status_badge(event.traded_live ? 'live' : 'offline')
-      %tr
-        %td= t('attributes.twitch_url')
-        %td
-          = f.text_field :twitch_url, class: 'form-control mt-0 mb-3 string required mr-1 rounded'
-      %tr
-        %td= t('attributes.twitch_start_time')
-        %td
-          = f.input :twitch_start_time,
-                    as: :date_picker,
-                    required: false,
-                    input_html: { class: 'form-control mt-0 mb-3 string required mr-1 rounded',
-                                  data: { time: true } },
-                    label: false
-      %tr
-        %td= t('attributes.twitch_end_time')
-        %td
-          = f.input :twitch_end_time,
-                    as: :date_picker,
-                    required: false,
-                    input_html: { class: 'form-control mt-0 mb-3 string required mr-1 rounded',
-                                  data: { time: true } },
-                    label: false
+      = render 'twitch', f: f
       %tr
         %td= t('attributes.priority')
         %td

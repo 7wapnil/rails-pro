@@ -30,19 +30,25 @@
           .filter_title
             #{t(:search, subject: t('from'))}:
           .filter_field
-            = f.search_field :created_at_gteq,
-                              class: 'form-control form_date',
-                              placeholder: t(:search, subject: t('from')),
-                              value: params.dig(:entries, :created_at_gteq)
+            .input-group
+              = f.search_field :created_at_gteq,
+                                class: 'form-control form_date',
+                                placeholder: t(:search, subject: t('from')),
+                                value: params.dig(:entries, :created_at_gteq)
+              .input-group-append
+                .input-group-text.btn &#128197;
 
         %th
           .filter_title
             #{t(:search, subject: t('to'))}:
           .filter_field
-            = f.search_field :created_at_lteq,
-                              class: 'form-control form_date',
-                              placeholder: t(:search, subject: t('to')),
-                              value: params.dig(:entries, :created_at_lteq)
+            .input-group
+              = f.search_field :created_at_lteq,
+                                class: 'form-control form_date',
+                                placeholder: t(:search, subject: t('to')),
+                                value: params.dig(:entries, :created_at_lteq)
+              .input-group-append
+                .input-group-text.btn &#128197;
 
         %th
           = f.submit class: 'btn btn-outline-dark btn-block'

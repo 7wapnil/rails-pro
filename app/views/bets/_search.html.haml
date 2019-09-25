@@ -25,27 +25,33 @@
             .filter_field
               = f.label :customer_username_cont, class: 'sr-only'
               = f.search_field :customer_username_cont,
-                                class: 'form-control',
-                                placeholder: t(:search, subject: t('attributes.customer')),
-                                autocomplete: :off
+                              class: 'form-control',
+                              placeholder: t(:search, subject: t('attributes.customer')),
+                              autocomplete: :off
         %th
           .filter_title
             #{t(:search, subject: t('from'))}:
           .filter_field
             = f.label :created_at_gteq, class: 'sr-only'
-            = f.search_field :created_at_gteq,
-                              class: 'form-control form_date',
-                              placeholder: t(:search, subject: t('from')),
-                              value: search_date_for(:created_at_gteq, :bets)
+            .input-group
+              = f.search_field :created_at_gteq,
+                                class: 'form-control form_date',
+                                placeholder: t(:search, subject: t('from')),
+                                value: search_date_for(:created_at_gteq, :bets)
+              .input-group-append
+                .input-group-text.btn &#128197;
         %th
           .filter_title
             #{t(:search, subject: t('to'))}:
           .filter_field
             = f.label :created_at_lteq, class: 'sr-only'
-            = f.search_field :created_at_lteq,
-                              class: 'form-control form_date',
-                              placeholder: t(:search, subject: t('to')),
-                              value: search_date_for(:created_at_lteq, :bets)
+            .input-group
+              = f.search_field :created_at_lteq,
+                                class: 'form-control form_date',
+                                placeholder: t(:search, subject: t('to')),
+                                value: search_date_for(:created_at_lteq, :bets)
+              .input-group-append
+                .input-group-text.btn &#128197;
       %tr
         %th
           .filter_title

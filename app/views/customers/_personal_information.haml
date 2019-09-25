@@ -26,12 +26,15 @@
       %tr
         %td= t('attributes.date_of_birth')
         %td
-          = f.input :date_of_birth,
-                    as: :date_picker,
-                    label: false,
-                    input_html: { value: l(customer.date_of_birth, format: :date_picker),
-                                  data: { max_date: restricted_dob } },
-                    required: true
+          .input-group
+            = f.input_field :date_of_birth,
+                            as: :date_picker,
+                            label: false,
+                            value: l(customer.date_of_birth, format: :date_picker),
+                            data: { max_date: restricted_dob },
+                            required: true
+            .input-group-append
+              .input-group-text.btn &#128197;
       %tr
         %td.text-right{ colspan: 2 }
           = f.submit t(:save), class: 'btn btn-outline-dark'
