@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_06_134312) do
+ActiveRecord::Schema.define(version: 2019_09_25_111123) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -340,6 +340,25 @@ ActiveRecord::Schema.define(version: 2019_11_06_134312) do
     t.index ["customer_id"], name: "index_deposit_limits_on_customer_id"
   end
 
+  create_table "em_results", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "em_wallet_session_id"
+    t.bigint "customer_id"
+    t.decimal "amount", precision: 14, scale: 2
+    t.string "game_type"
+    t.string "gp_game_id"
+    t.integer "gp_id"
+    t.string "em_game_id"
+    t.string "product"
+    t.string "round_id"
+    t.string "device"
+    t.bigint "transaction_id", null: false
+    t.string "round_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_em_results_on_customer_id"
+    t.index ["em_wallet_session_id"], name: "index_em_results_on_em_wallet_session_id"
+  end
+
   create_table "em_wagers", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "em_wallet_session_id"
     t.bigint "customer_id"
@@ -353,6 +372,8 @@ ActiveRecord::Schema.define(version: 2019_11_06_134312) do
     t.string "device"
     t.bigint "transaction_id", null: false
     t.string "round_status"
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.index ["customer_id"], name: "index_em_wagers_on_customer_id"
     t.index ["em_wallet_session_id"], name: "index_em_wagers_on_em_wallet_session_id"
   end
@@ -666,6 +687,8 @@ ActiveRecord::Schema.define(version: 2019_11_06_134312) do
   add_foreign_key "customer_transactions", "users", column: "actioned_by_id"
   add_foreign_key "deposit_limits", "currencies"
   add_foreign_key "deposit_limits", "customers"
+  add_foreign_key "em_results", "customers"
+  add_foreign_key "em_results", "em_wallet_sessions"
   add_foreign_key "em_wagers", "customers"
   add_foreign_key "em_wagers", "em_wallet_sessions"
   add_foreign_key "entries", "entry_requests", on_delete: :cascade
