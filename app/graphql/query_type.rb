@@ -5,6 +5,9 @@ QueryType = GraphQL::ObjectType.define do
   field :wallets, function: Wallets::WalletsQuery.new
   field :currencies, function: Currencies::CurrencyQuery.new
   field :titles, function: Titles::TitlesQuery.new
+  field :esportEvents, function: Events::BySport::EsportEventsQuery.new
+  field :sportEvents, function: Events::BySport::SportEventsQuery.new
+  field :tournamentEvents, function: Events::BySport::TournamentEventsQuery.new
   field :events, function: Events::EventsQuery.new
   field :eventContexts, function: Events::ContextsQuery.new
   field :event, function: Events::EventQuery.new
