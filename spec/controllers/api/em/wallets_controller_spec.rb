@@ -9,14 +9,6 @@ describe Api::Em::WalletsController, type: :controller do
   let(:customer) { create(:customer, :with_address, :ready_to_bet) }
   let(:currency_code) { customer.wallet.currency.code }
 
-  let!(:bonus_balance) do
-    create(:balance, :bonus, wallet: customer.wallet)
-  end
-
-  let!(:real_money_balance) do
-    create(:balance, :real_money, wallet: customer.wallet)
-  end
-
   let(:customer_session) do
     create(:em_wallet_session, wallet: customer.wallet)
   end
@@ -130,8 +122,8 @@ describe Api::Em::WalletsController, type: :controller do
           'Balance'    => customer.wallet.amount.to_s,
           'Currency'   => currency_code,
           'SessionId'  => customer_session.id,
-          'BonusMoney' => bonus_balance.amount.to_s,
-          'RealMoney'  => real_money_balance.amount.to_s
+          'BonusMoney' => customer.wallet.bonus_balance.to_s,
+          'RealMoney'  => customer.wallet.real_money_balance.to_s
         )
       end
 
@@ -180,7 +172,7 @@ describe Api::Em::WalletsController, type: :controller do
 
       let(:expected_response) do
         common_success_response.merge(
-          'Balance'    => (customer.wallet.amount - amount).to_s,
+          'Balance'    => customer.wallet.reload.amount.to_s,
           'Currency'   => currency_code,
           'SessionId'  => customer_session.id
         )

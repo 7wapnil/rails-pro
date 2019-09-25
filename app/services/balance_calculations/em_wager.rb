@@ -13,8 +13,8 @@ module BalanceCalculations
 
     def call
       {
-        real_money: -calculated_real_amount,
-        bonus: -calculated_bonus_amount
+        real_money_amount: -calculated_real_money_amount,
+        bonus_amount: -calculated_bonus_amount
       }
     end
 
@@ -22,19 +22,20 @@ module BalanceCalculations
 
     attr_reader :wager
 
-    def calculated_real_amount
-      @calculated_real_amount ||= (wager.amount * ratio).round(MONEY_PRECISION)
+    def calculated_real_money_amount
+      @calculated_real_money_amount ||= (wager.amount * ratio)
+                                        .round(MONEY_PRECISION)
     end
 
     def ratio
       RatioCalculator.call(
-        real_money_amount: real_money_balance&.amount,
-        bonus_amount: bonus_balance&.amount
+        real_money_amount: real_money_balance,
+        bonus_amount: bonus_balance
       )
     end
 
     def calculated_bonus_amount
-      wager.amount - calculated_real_amount
+      wager.amount - calculated_real_money_amount
     end
   end
 end

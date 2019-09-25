@@ -10,7 +10,7 @@ module EntryRequests
 
       def call
         create_entry_request!
-        create_balance_requests!
+        request_balance_update!
 
         entry_request
       end
@@ -44,8 +44,8 @@ module EntryRequests
         passed_initiator || wager.customer
       end
 
-      def create_balance_requests!
-        BalanceRequestBuilders::EmWager.call(entry_request, amount_calculations)
+      def request_balance_update!
+        entry_request.update!(amount_calculations)
       end
 
       def amount_calculations

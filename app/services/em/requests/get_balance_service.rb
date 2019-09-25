@@ -17,21 +17,13 @@ module Em
 
       private
 
-      def bonus_balance
-        wallet.balances.bonus.first
-      end
-
-      def real_money_balance
-        wallet.balances.real_money.first
-      end
-
       def success_response
         common_success_response.merge(
           'SessionId'  => session.id,
           'Balance'    => wallet.amount,
           'Currency'   => currency_code,
-          'BonusMoney' => bonus_balance&.amount || 0.0,
-          'RealMoney'  => real_money_balance&.amount || 0.0
+          'BonusMoney' => wallet.bonus_balance || 0.0,
+          'RealMoney'  => wallet.real_money_balance || 0.0
         )
       end
     end
