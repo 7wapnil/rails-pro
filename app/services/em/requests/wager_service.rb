@@ -8,9 +8,9 @@ module Em
                         Product RoundId TransactionId
                         RoundStatus].freeze
       def initialize(params)
-        @amount = params.permit('Amount')['Amount']&.to_d
-
         super
+
+        @amount = wager_params['Amount']&.to_d
       end
 
       def call
@@ -88,7 +88,7 @@ module Em
           'SessionId'            => session.id,
           'AccountTransactionId' => wager.id,
           'Currency'             => currency_code,
-          'Balance'              => wallet.amount - amount
+          'Balance'              => wallet.reload.amount.to_d.to_s
         )
       end
     end

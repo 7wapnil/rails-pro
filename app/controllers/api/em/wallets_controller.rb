@@ -6,7 +6,8 @@ module Api
       REQUEST_HANDLERS = {
         'getaccount' => 'Em::Requests::GetAccountService',
         'getbalance' => 'Em::Requests::GetBalanceService',
-        'wager'      => 'Em::Requests::WagerService'
+        'wager'      => 'Em::Requests::WagerService',
+        'result'     => 'Em::Requests::ResultService'
       }.freeze
       before_action :authorize_em_wallet_api
 
