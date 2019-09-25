@@ -29,7 +29,7 @@ describe ::Reports::Queries::SalesReportQuery do
     bets_stake_control_value -
       control_customers.first.entries.win.sum(&:base_currency_amount).abs
   end
-  let(:ngr) { 0.175 }
+  let(:ngr) { Reports::Queries::SalesReportQuery::NGR_MULTIPLIER }
 
   before do
     control_customers.each do |customer|
