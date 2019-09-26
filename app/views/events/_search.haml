@@ -12,10 +12,9 @@
           .filter_title #{t('attributes.id')}:
           .filter_field
             = f.label :id_eq, class: 'sr-only'
-            = f.search_field :id_eq,
-                                 class: 'form-control',
-                                 placeholder: t('attributes.id'),
-                                 autocomplete: :off
+            = f.search_field :id_eq, class: 'form-control',
+                                     placeholder: t('attributes.id'),
+                                     autocomplete: :off
         %th
           .filter_title #{t('attributes.external_id')}:
           .filter_field
@@ -26,10 +25,9 @@
           .filter_title #{t('attributes.name')}:
           .filter_field
             = f.label :name_cont, class: 'sr-only'
-            = f.search_field :name_cont,
-                                 class: 'form-control',
-                                 placeholder: t(:search, subject: 'Name'),
-                                 autocomplete: :off
+            = f.search_field :name_cont, class: 'form-control',
+                                         placeholder: t(:search, subject: 'Name'),
+                                         autocomplete: :off
         %th
           .filter_title #{t('attributes.sport')}:
           .filter_field
@@ -62,19 +60,25 @@
           .filter_title #{t(:from)}:
           .filter_field
             = f.label :start_at_gteq, class: 'sr-only'
-            = f.search_field :start_at_gteq,
-                                   class: 'form-control form_date',
-                                   placeholder: t(:search, subject: t('from')),
-                                   value: query_params[:start_at_gteq]
+            .input-group
+              = f.search_field :start_at_gteq,
+                               class: 'form-control form_date',
+                               placeholder: t(:search, subject: t('from')),
+                               value: query_params[:start_at_gteq]
+              .input-group-append
+                .input-group-text.btn &#128197;
 
         %th
           .filter_title #{t(:to)}:
           .filter_field
             = f.label :start_at_lteq, class: 'sr-only'
-            = f.search_field :start_at_lteq,
-                                   class: 'form-control form_date',
-                                   placeholder: t(:search, subject: t('to')),
-                                   value: query_params[:start_at_lteq]
+            .input-group
+              = f.search_field :start_at_lteq,
+                               class: 'form-control form_date',
+                               placeholder: t(:search, subject: t('to')),
+                               value: query_params[:start_at_lteq]
+              .input-group-append
+                .input-group-text.btn &#128197;
 
         %th
           .filter_title #{t('attributes.scope_kind')}:

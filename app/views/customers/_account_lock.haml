@@ -34,8 +34,11 @@
         = hidden_field_tag 'customer[locked_until]',
                            nil,
                            id: nil
-        = text_field_tag 'customer[locked_until]',
-                          l(customer.locked_until, default: nil, format: :date_picker),
-                          label: false,
-                          class: 'form-control form_date',
-                          data: { min_date: l(Date.current, format: :date_picker) }
+        .input-group
+          = text_field_tag 'customer[locked_until]',
+                            l(customer.locked_until, default: nil, format: :date_picker),
+                            label: false,
+                            class: 'form-control form_date',
+                            data: { min_date: l(Date.current, format: :date_picker) }
+          .input-group-append
+            .input-group-text.btn &#128197;
