@@ -39,6 +39,12 @@ module Em
       def currency_code
         wallet.currency.code
       end
+
+      def request_name
+        error_msg = "#{__method__} needs to be implemented in #{self.class}"
+
+        raise NotImplementedError, error_msg
+      end
     end
   end
 end

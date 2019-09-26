@@ -3,8 +3,8 @@
 module EntryRequests
   module Factories
     class EmRollbackPlacement < ApplicationService
-      def initialize(rollback:, initiator: nil)
-        @rollback = rollback
+      def initialize(transaction:, initiator: nil)
+        @rollback = transaction
         @passed_initiator = initiator
       end
 

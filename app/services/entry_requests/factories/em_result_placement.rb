@@ -3,8 +3,8 @@
 module EntryRequests
   module Factories
     class EmResultPlacement < ApplicationService
-      def initialize(result:, initiator: nil)
-        @result = result
+      def initialize(transaction:, initiator: nil)
+        @result = transaction
         @passed_initiator = initiator
       end
 

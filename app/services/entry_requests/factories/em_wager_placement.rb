@@ -3,8 +3,8 @@
 module EntryRequests
   module Factories
     class EmWagerPlacement < ApplicationService
-      def initialize(wager:, initiator: nil)
-        @wager = wager
+      def initialize(transaction:, initiator: nil)
+        @wager = transaction
         @passed_initiator = initiator
       end
 
