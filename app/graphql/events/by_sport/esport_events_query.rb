@@ -7,8 +7,8 @@ module Events
 
       description 'Get all events'
 
-      argument :filter, EsportFilter
       argument :context, types.String
+      argument :titleId, types.ID
 
       def auth_protected?
         false

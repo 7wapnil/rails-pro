@@ -7,7 +7,6 @@ module Events
 
       description 'Get all events'
 
-      argument :filter, SportFilter
       argument :context, !types.String
       argument :titleId, !types.ID
 

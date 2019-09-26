@@ -12,10 +12,10 @@ module Events
 
       def resolve
         @query = base_query
-        @query = filter_by_time
         cache_data
+        @query = query.distinct
 
-        query.distinct
+        separate_by_time
       end
 
       private
@@ -56,8 +56,11 @@ module Events
         end
       end
 
-      def filter_by_time
-        query.upcoming.or(query.in_play)
+      def separate_by_time
+        OpenStruct.new(
+          upcoming: query.upcoming,
+          live: query.in_play
+        )
       end
     end
   end

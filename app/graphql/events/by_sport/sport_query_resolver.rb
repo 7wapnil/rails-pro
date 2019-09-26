@@ -2,11 +2,11 @@
 
 module Events
   module BySport
-    class SportQueryResolver # rubocop:disable Metrics/ClassLength
-      LIVE = 'live'
-      UPCOMING_CONTEXTS =
-        %w[upcoming_for_time upcoming_limited].freeze
-      SUPPORTED_CONTEXTS = [LIVE, *UPCOMING_CONTEXTS].freeze
+    class SportQueryResolver
+      SUPPORTED_CONTEXTS = [
+        LIVE = 'live',
+        UPCOMING = 'upcoming'
+      ].freeze
 
       UPCOMING_CONTEXT_CACHE_TTL = 5.seconds
       LIVE_CONTEXT_CACHE_TTL = 2.seconds
@@ -15,13 +15,11 @@ module Events
         @query_args = query_args
         @context = query_args.context
         @title_id = query_args.titleId.to_i
-        @filter = OpenStruct.new(query_args.filter.to_h)
       end
 
       def resolve
         @query = base_query
-        @query = filter_by_title_kind
-        @query = filter_by_event_scopes
+        @query = filter_by_title_id
         filter_by_context!
 
         query.distinct
@@ -29,7 +27,7 @@ module Events
 
       private
 
-      attr_reader :query_args, :context, :filter, :query, :title_id
+      attr_reader :query_args, :context, :query, :title_id
 
       def base_query
         Event
@@ -54,11 +52,10 @@ module Events
       end
 
       # It tries to call:
-      # #live, #upcoming_for_time, #upcoming_limited
+      # #live, #upcoming (for_time)
       def filter_by_context!
         return context_not_supported! if SUPPORTED_CONTEXTS.exclude?(context)
 
-        @query = query.upcoming if UPCOMING_CONTEXTS.include?(context)
         @query = send(context)
       end
 
@@ -83,58 +80,16 @@ module Events
         end
       end
 
-      def upcoming_for_time
+      def upcoming
+        @query = query.upcoming
         cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
           query.where('events.start_at <= ?',
                       Event::UPCOMING_DURATION.hours.from_now)
         end
       end
 
-      def upcoming_limited
-        cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
-          query.where(id: limited_per_tournament_ids)
-        end
-      end
-
-      def limited_per_tournament_ids
-        EventScope
-          .select('events.id AS event_id')
-          .joins(:scoped_events)
-          .joins(join_tournaments_to_events_sql)
-          .tournament
-          .where(events: { id: query_ids })
-          .pluck(:event_id)
-      end
-
-      def join_tournaments_to_events_sql
-        <<~SQL
-          JOIN events
-          ON scoped_events.event_id = events.id AND events.id IN (
-            SELECT events.id
-            FROM events
-            INNER JOIN scoped_events se
-            ON se.event_id = events.id AND se.event_scope_id = event_scopes.id
-            WHERE events.id IN (#{query_ids.join(', ').presence || 'NULL'})
-            ORDER BY priority, start_at ASC
-            LIMIT #{Event::UPCOMING_LIMIT}
-          )
-        SQL
-      end
-
-      def query_ids
-        @query_ids ||= query.ids
-      end
-
-      def filter_by_event_scopes
-        return query if event_scope_ids.blank?
-
-        query
-          .joins(:event_scopes)
-          .where(event_scopes: { id: event_scope_ids })
-      end
-
-      def event_scope_ids
-        @event_scope_ids ||= [filter.category_id, filter.tournament_id].compact
+      def filter_by_title_id
+        query.where(title_id: title_id)
       end
     end
   end

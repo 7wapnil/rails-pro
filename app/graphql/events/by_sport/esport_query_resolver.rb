@@ -14,13 +14,12 @@ module Events
       def initialize(query_args)
         @query_args = query_args
         @context = query_args.context
-        @filter = OpenStruct.new(query_args.filter.to_h)
+        @title_id = query_args.title_id
       end
 
       def resolve
         @query = base_query
         @query = filter_by_title_id
-        @query = filter_by_event_scopes
         filter_by_context!
 
         query.distinct
@@ -28,7 +27,7 @@ module Events
 
       private
 
-      attr_reader :query_args, :context, :filter, :query
+      attr_reader :query_args, :context, :filter, :query, :title_id
 
       def base_query
         Event
@@ -88,21 +87,9 @@ module Events
       end
 
       def filter_by_title_id
-        return query unless filter.title_id
+        return query unless title_id
 
-        query.where(title_id: filter.title_id)
-      end
-
-      def filter_by_event_scopes
-        return query if event_scope_ids.blank?
-
-        query
-          .joins(:event_scopes)
-          .where(event_scopes: { id: event_scope_ids })
-      end
-
-      def event_scope_ids
-        @event_scope_ids ||= [filter.category_id, filter.tournament_id].compact
+        query.where(title_id: title_id)
       end
     end
   end
