@@ -46,6 +46,22 @@ describe GraphQL, '#sign_in' do
       expect(result['errors'][0]['message'])
         .to eq('Wrong username, email or password')
     end
+
+    it 'creates LoginActivity record' do
+      expect { result }.to change(LoginActivity, :count).by(1)
+    end
+
+    it 'creates correct LoginActivity record' do
+      result
+
+      expect(LoginActivity.last)
+        .to have_attributes(
+          success: false,
+          failure_reason: I18n.t('errors.messages.wrong_login_credentials'),
+          scope: 'customer',
+          context: 'customers#sign_in'
+        )
+    end
   end
 
   context 'non-existing user with captcha argument' do
@@ -60,6 +76,22 @@ describe GraphQL, '#sign_in' do
     it 'returns captcha error' do
       expect(result['errors'][0]['message'])
         .to eq(I18n.t('recaptcha.errors.verification_failed'))
+    end
+
+    it 'creates LoginActivity record' do
+      expect { result }.to change(LoginActivity, :count).by(1)
+    end
+
+    it 'creates correct LoginActivity record' do
+      result
+
+      expect(LoginActivity.last)
+        .to have_attributes(
+          success: false,
+          failure_reason: I18n.t('recaptcha.errors.verification_failed'),
+          scope: 'customer',
+          context: 'customers#sign_in'
+        )
     end
   end
 
@@ -81,6 +113,22 @@ describe GraphQL, '#sign_in' do
     it 'returns wrong credentials' do
       expect(result['errors'][0]['message'])
         .to eq('Wrong username, email or password')
+    end
+
+    it 'creates LoginActivity record' do
+      expect { result }.to change(LoginActivity, :count).by(1)
+    end
+
+    it 'creates correct LoginActivity record' do
+      result
+
+      expect(LoginActivity.last)
+        .to have_attributes(
+          success: false,
+          failure_reason: I18n.t('errors.messages.wrong_login_credentials'),
+          scope: 'customer',
+          context: 'customers#sign_in'
+        )
     end
 
     context 'increment login attempts' do
@@ -146,6 +194,24 @@ describe GraphQL, '#sign_in' do
       expect(Audit::Service).to have_received(:call)
     end
 
+    it 'creates LoginActivity record' do
+      expect { result }.to change(LoginActivity, :count).by(1)
+    end
+
+    it 'creates correct LoginActivity record' do
+      result
+
+      expect(LoginActivity.last)
+        .to have_attributes(
+          success: true,
+          failure_reason: nil,
+          identity: user.username,
+          user_id: user.id,
+          scope: 'customer',
+          context: 'customers#sign_in'
+        )
+    end
+
     context 'reset login attempts' do
       before { result }
 
@@ -169,6 +235,24 @@ describe GraphQL, '#sign_in' do
       expect(result['data']['signIn']['token']).not_to be_nil
       expect(result['data']['signIn']['user']).not_to be_nil
     end
+
+    it 'creates LoginActivity record' do
+      expect { result }.to change(LoginActivity, :count).by(1)
+    end
+
+    it 'creates correct LoginActivity record' do
+      result
+
+      expect(LoginActivity.last)
+        .to have_attributes(
+          success: true,
+          failure_reason: nil,
+          identity: variables.dig(:input, :login),
+          user_id: Customer.find_by(username: 'testuser').id,
+          scope: 'customer',
+          context: 'customers#sign_in'
+        )
+    end
   end
 
   context 'first login of imported user' do
@@ -190,6 +274,7 @@ describe GraphQL, '#sign_in' do
         }
       }
     end
+    let(:failure_reason) { 'Newly imported customer. Password reset required' }
 
     it 'gets error message' do
       expect(result['errors'].first['message']).to eq(
@@ -198,6 +283,23 @@ describe GraphQL, '#sign_in' do
           email: 'te...r@em...m'
         )
       )
+    end
+
+    it 'creates LoginActivity record' do
+      expect { result }.to change(LoginActivity, :count).by(1)
+    end
+
+    it 'creates correct LoginActivity record' do
+      result
+
+      expect(LoginActivity.last)
+        .to have_attributes(
+          success: false,
+          failure_reason: failure_reason,
+          user_id: Customer.find_by(username: 'testuser').id,
+          scope: 'customer',
+          context: 'customers#sign_in'
+        )
     end
   end
 end

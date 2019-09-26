@@ -1,4 +1,5 @@
 module Account
+  # rubocop:disable Metrics/ClassLength
   class SignInService
     include Recaptcha::Verify
 
@@ -9,10 +10,12 @@ module Account
              :reset_password_sent_at,
              to: :customer, allow_nil: true
 
-    def initialize(customer:, params:)
+    def initialize(customer:, params:, request:)
       @customer = customer
       @password = params[:password]
-      @captcha  = params[:captcha]
+      @captcha = params[:captcha]
+      @identity = params[:login]
+      @login_request = request
     end
 
     def captcha_invalid?
@@ -22,9 +25,11 @@ module Account
     def invalid_captcha!
       invalid_login_attempt!
 
-      GraphQL::ExecutionError.new(
-        I18n.t('recaptcha.errors.verification_failed')
-      )
+      msg = I18n.t('recaptcha.errors.verification_failed')
+
+      login_tracker.call(success: false, failure_reason: msg)
+
+      GraphQL::ExecutionError.new(msg)
     end
 
     def invalid_password?
@@ -34,9 +39,11 @@ module Account
     def invalid_login!
       invalid_login_attempt!
 
-      GraphQL::ExecutionError.new(
-        I18n.t('errors.messages.wrong_login_credentials')
-      )
+      msg = I18n.t('errors.messages.wrong_login_credentials')
+
+      login_tracker.call(success: false, failure_reason: msg)
+
+      GraphQL::ExecutionError.new(msg)
     end
 
     def imported_customer_first_login?
@@ -45,6 +52,11 @@ module Account
 
     def reset_password!
       send_reset_password! unless recent_reset_email?
+
+      login_tracker.call(
+        success: false,
+        failure_reason: 'Newly imported customer. Password reset required'
+      )
 
       GraphQL::ExecutionError.new(
         I18n.t(
@@ -57,13 +69,23 @@ module Account
     def login_response
       return account_locked_response if customer.locked?
 
+      login_tracker.call(success: true)
+
       customer.log_event(:customer_signed_in)
       response
     end
 
     private
 
-    attr_reader :customer, :password, :captcha
+    attr_reader :customer, :password, :captcha, :identity, :login_request
+
+    def login_tracker
+      @login_tracker ||= LoginActivities::TrackLogin.new(
+        customer: customer,
+        identity: identity,
+        request: login_request
+      )
+    end
 
     # Need to mock `request` to make `verify_recaptcha` works
     def request; end
@@ -91,6 +113,9 @@ module Account
 
     def account_locked_response
       customer.log_event(:locked_customer_sign_in_attempt)
+
+      login_tracker.call(success: false,
+                         failure_reason: account_locked_message)
 
       GraphQL::ExecutionError.new(account_locked_message)
     end
@@ -129,4 +154,5 @@ module Account
         IMPORTED_CUSTOMER_RESET_INTERVAL.minutes
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

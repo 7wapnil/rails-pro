@@ -72,6 +72,11 @@ GEM
       io-like (~> 0.3.0)
     arel (9.0.0)
     ast (2.4.0)
+    authtrail (0.2.0)
+      activerecord (>= 5)
+      geocoder
+      railties (>= 5)
+      warden
     awesome_print (1.8.0)
     aws-eventstream (1.0.1)
     aws-partitions (1.105.0)
@@ -168,6 +173,7 @@ GEM
     fugit (1.1.6)
       et-orbi (~> 1.1, >= 1.1.6)
       raabro (~> 1.1)
+    geocoder (1.5.1)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     goldiloader (2.1.2)
@@ -550,6 +556,7 @@ DEPENDENCIES
   activerecord-import
   airbrake (~> 7.3)
   appsignal
+  authtrail
   awesome_print
   aws-sdk-s3
   bootsnap (>= 1.1.0)
