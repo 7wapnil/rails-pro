@@ -26,7 +26,7 @@ module EntryRequests
       def entry_request_attributes
         wager_attributes.merge(
           initiator: initiator,
-          kind: EntryRequest::BET,
+          kind: EntryRequest::EM_WAGER,
           mode: EntryRequest::INTERNAL
         )
       end

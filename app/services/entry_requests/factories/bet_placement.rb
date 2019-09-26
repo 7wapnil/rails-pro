@@ -29,7 +29,7 @@ module EntryRequests
       def entry_request_attributes
         bet_attributes.merge(
           initiator: initiator,
-          kind: EntryRequest::EM_WAGER,
+          kind: EntryRequest::BET,
           mode: EntryRequest::INTERNAL,
           comment: comment
         )

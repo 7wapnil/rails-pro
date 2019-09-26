@@ -14,12 +14,13 @@ module EntryKinds
     manual_bet_cancel: MANUAL_BET_CANCEL = 'manual_bet_cancel',
     bonus_conversion: BONUS_CONVERSION = 'bonus_conversion',
     bonus_change: BONUS_CHANGE = 'bonus_change',
-    em_wager: EM_WAGER = 'em_wager'
+    em_wager: EM_WAGER = 'em_wager',
+    em_result: EM_RESULT = 'em_result'
   }.freeze
 
   INCOME_ENTRY_KINDS = [DEPOSIT, BONUS_CHANGE].freeze
   FUND_KINDS = [DEPOSIT, WITHDRAW].freeze
-  TRADING_KINDS = [WIN, BET, REFUND].freeze
+  TRADING_KINDS = [WIN, BET, REFUND, EM_WAGER, EM_RESULT].freeze
   DEBIT_KINDS = [
     DEPOSIT,
     WIN,
@@ -28,7 +29,8 @@ module EntryKinds
     SYSTEM_BET_CANCEL,
     MANUAL_BET_CANCEL,
     BONUS_CONVERSION,
-    BONUS_CHANGE
+    BONUS_CHANGE,
+    EM_RESULT
   ].freeze
   CREDIT_KINDS = [
     WITHDRAW,

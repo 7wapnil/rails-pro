@@ -26,7 +26,7 @@ module EntryRequests
       def entry_request_attributes
         result_attributes.merge(
           initiator: initiator,
-          kind: EntryRequest::BET,
+          kind: EntryRequest::EM_RESULT,
           mode: EntryRequest::INTERNAL
         )
       end
