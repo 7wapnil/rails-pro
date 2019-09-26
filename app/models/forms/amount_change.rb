@@ -10,8 +10,8 @@ module Forms
     validates :amount_increment, numericality: true
     validates :real_money_amount_increment, numericality: true
     validates :bonus_amount_increment, numericality: true
-    validate :real_money_amount_not_negative, if: :requested_by_user?
-    validate :bonus_amount_not_negative, if: :requested_by_user?
+    validate :real_money_amount_not_negative, if: :new_outgoing_activity?
+    validate :bonus_amount_not_negative, if: :new_outgoing_activity?
 
     def initialize(subject, request:)
       @subject = subject
@@ -35,8 +35,8 @@ module Forms
 
     private
 
-    def requested_by_user?
-      EntryKinds::SYSTEM_KINDS.exclude?(request.kind.to_s)
+    def new_outgoing_activity?
+      EntryKinds::ALLOWED_NEGATIVE_BALANCE_KINDS.exclude?(request.kind.to_s)
     end
 
     def amount_not_negative
