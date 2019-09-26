@@ -8,6 +8,22 @@ default: &defaults
     - password
     - confirm_password
   log: stdout
+  request_headers:
+    - HTTP_ACCEPT
+    - HTTP_ACCEPT_CHARSET
+    - HTTP_ACCEPT_ENCODING
+    - HTTP_ACCEPT_LANGUAGE
+    - HTTP_CACHE_CONTROL
+    - HTTP_CONNECTION
+    - CONTENT_LENGTH
+    - PATH_INFO
+    - HTTP_RANGE
+    - REQUEST_METHOD
+    - REQUEST_URI
+    - SERVER_NAME
+    - SERVER_PORT
+    - SERVER_PROTOCOL
+    - REMOTE_ADDR
 
 development:
   <<: *defaults
