@@ -7,7 +7,13 @@ module Forms
     attr_accessor :subject, :amount_increment, :request
 
     validates :amount_increment, numericality: true
-    validate :amount_not_negative, if: :requested_by_user?
+    # TODO: remove the line below after merge develop
+    validate :amount_not_negative, if: :new_outgoing_activity?
+    # TODO: uncomment the block below after merge develop
+    # validates :real_money_amount_increment, numericality: true
+    # validates :bonus_amount_increment, numericality: true
+    # validate :real_money_amount_not_negative, if: :new_outgoing_activity?
+    # validate :bonus_amount_not_negative, if: :new_outgoing_activity?
 
     def initialize(subject, amount_increment:, request:)
       @subject = subject
@@ -24,8 +30,8 @@ module Forms
 
     private
 
-    def requested_by_user?
-      EntryKinds::SYSTEM_KINDS.exclude?(request.kind.to_s)
+    def new_outgoing_activity?
+      EntryKinds::ALLOWED_NEGATIVE_BALANCE_KINDS.exclude?(request.kind.to_s)
     end
 
     def amount_not_negative

@@ -33,8 +33,15 @@ module EntryKinds
     SYSTEM_BET_CANCEL,
     BONUS_CHANGE
   ].freeze
-  SYSTEM_KINDS = [ROLLBACK, SYSTEM_BET_CANCEL, BONUS_CHANGE].freeze
   DELAYED_CONFIRMATION_KINDS = [WITHDRAW, BET].freeze
+  ALLOWED_NEGATIVE_BALANCE_KINDS = [
+    BONUS_CHANGE,
+    DEPOSIT,
+    REFUND,
+    ROLLBACK,
+    SYSTEM_BET_CANCEL,
+    WIN
+  ].freeze
 
   included do
     enum kind: KINDS

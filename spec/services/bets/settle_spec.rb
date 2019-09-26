@@ -5,7 +5,7 @@ describe Bets::Settle do
     described_class.call(bet: bet, void_factor: void_factor, result: result)
   end
 
-  let!(:bet) { create(:bet, :accepted) }
+  let!(:bet) { create(:bet, :with_placement_entry, :accepted) }
   let(:void_factor) {}
   let(:result) { '0' }
   let(:last_entry_request) { EntryRequest.order(created_at: :desc).first }
@@ -26,24 +26,51 @@ describe Bets::Settle do
       }
     end
 
-    it 'creates only one entry request' do
-      expect { subject }.to change(EntryRequest, :count).by(1)
+    context 'with positive balance amount' do
+      it 'creates only one entry request' do
+        expect { subject }.to change(EntryRequest, :count).by(1)
+      end
+
+      it 'creates entry request with win params' do
+        subject
+        expect(last_entry_request)
+          .to have_attributes(win_entry_request_attributes)
+      end
+
+      it 'creates entry request with amount in predictable range' do
+        subject
+        expect(last_entry_request.amount).to be_within(0.01).of(bet.win_amount)
+      end
+
+      it 'creates entry with amount in predictable range' do
+        subject
+        expect(last_entry.amount).to be_within(0.01).of(bet.win_amount)
+      end
     end
 
-    it 'creates entry request with win params' do
-      subject
-      expect(last_entry_request)
-        .to have_attributes(win_entry_request_attributes)
-    end
+    # TODO: activate context after finish current development iteration
+    xcontext 'with negative balance amount after' do
+      let(:customer) { bet.placement_entry.customer }
+      let(:wallet) { customer.wallet }
+      let(:new_real_money_balance) { -10_000 }
+      let!(:expected_amount) do
+        new_real_money_balance + bet.amount * bet.odd_value
+      end
 
-    it 'creates entry request with amount in predictable range' do
-      subject
-      expect(last_entry_request.amount).to be_within(0.01).of(bet.win_amount)
-    end
+      before do
+        wallet.update(real_money_balance: new_real_money_balance)
 
-    it 'creates entry with amount in predictable range' do
-      subject
-      expect(last_entry.amount).to be_within(0.01).of(bet.win_amount)
+        subject
+      end
+
+      it 'creates entry with amount in predictable range' do
+        expect(wallet.reload.real_money_balance)
+          .to be_within(0.01).of(expected_amount)
+      end
+
+      it 'settles bet' do
+        expect(bet).to be_settled
+      end
     end
   end
 
