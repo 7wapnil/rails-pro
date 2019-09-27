@@ -8,7 +8,6 @@ QueryType = GraphQL::ObjectType.define do
   field :esportEvents, function: Events::BySport::EsportEventsQuery.new
   field :sportEvents, function: Events::BySport::SportEventsQuery.new
   field :tournamentEvents, function: Events::BySport::TournamentEventsQuery.new
-  field :events, function: Events::EventsQuery.new
   field :eventContexts, function: Events::ContextsQuery.new
   field :event, function: Events::EventQuery.new
   field :markets, function: Events::MarketsQuery.new

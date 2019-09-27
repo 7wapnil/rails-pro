@@ -2,19 +2,11 @@
 
 module Events
   module BySport
-    class EsportQueryResolver
-      SUPPORTED_CONTEXTS = [
-        LIVE = 'live',
-        UPCOMING = 'upcoming'
-      ].freeze
-
-      UPCOMING_CONTEXT_CACHE_TTL = 5.seconds
-      LIVE_CONTEXT_CACHE_TTL = 2.seconds
-
+    class EsportQueryResolver < BaseEventResolver
       def initialize(query_args)
         @query_args = query_args
         @context = query_args.context
-        @title_id = query_args.title_id
+        @title_id = query_args.titleId
       end
 
       def resolve
@@ -30,24 +22,8 @@ module Events
       attr_reader :query_args, :context, :filter, :query, :title_id
 
       def base_query
-        Event
-          .joins(:title, :available_markets)
-          .joins(join_events_to_tournaments_sql)
-          .preload(:dashboard_markets, :competitors)
-          .visible
-          .active
-          .order(:priority, :start_at)
+        super
           .where(titles: { kind: Title::ESPORTS })
-      end
-
-      def join_events_to_tournaments_sql
-        <<~SQL
-          INNER JOIN "scoped_events" "t_scoped_events"
-          ON "t_scoped_events"."event_id" = "events"."id"
-          INNER JOIN "event_scopes" "t_event_scopes"
-          ON "t_event_scopes"."id" = "t_scoped_events"."event_scope_id"
-            AND "t_event_scopes"."kind" = 'tournament'
-        SQL
       end
 
       # It tries to call:
@@ -63,14 +39,6 @@ module Events
               I18n.t('errors.messages.graphql.events.context.invalid',
                      context: context,
                      contexts: SUPPORTED_CONTEXTS.join(', '))
-      end
-
-      def cached_for(interval)
-        caching_key = "graphql-events-#{query_args.to_h}"
-
-        Rails.cache.fetch(caching_key, expires_in: interval) do
-          yield
-        end
       end
 
       def live
