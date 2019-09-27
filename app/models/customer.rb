@@ -65,6 +65,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_many :statistics,
            class_name: Customers::Statistic.name,
            inverse_of: :customer
+  has_many :login_activities, as: :user
 
   has_one :address, autosave: true, dependent: :destroy
   has_many :customer_bonuses, dependent: :destroy
