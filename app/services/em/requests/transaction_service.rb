@@ -18,7 +18,7 @@ module Em
         return user_not_found_response unless customer
 
         create_transaction!
-        create_entry_request!
+        create_entry_request! unless transaction.entry_request
         process_entry_request!
 
         success_response
@@ -71,8 +71,12 @@ module Em
           'SessionId'            => session.id,
           'AccountTransactionId' => transaction.id,
           'Currency'             => currency_code,
-          'Balance'              => wallet.reload.amount.to_d.to_s
+          'Balance'              => balance_amount_after.to_d.to_s
         )
+      end
+
+      def balance_amount_after
+        entry_request.reload.entry.balance_amount_after
       end
 
       def transaction_class

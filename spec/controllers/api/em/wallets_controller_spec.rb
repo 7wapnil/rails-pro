@@ -7,10 +7,12 @@ describe Api::Em::WalletsController, type: :controller do
   let(:em_operator_id) { 6 }
 
   let(:customer) { create(:customer, :with_address, :ready_to_bet) }
-  let(:currency_code) { customer.wallet.currency.code }
+  let(:wallet) { customer.wallet }
+  let(:currency_code) { wallet.currency.code }
+  let!(:balance_before) { wallet.amount }
 
   let(:customer_session) do
-    create(:em_wallet_session, wallet: customer.wallet)
+    create(:em_wallet_session, wallet: wallet)
   end
 
   let(:common_request_params) do
@@ -119,11 +121,11 @@ describe Api::Em::WalletsController, type: :controller do
 
       let(:expected_response) do
         common_success_response.merge(
-          'Balance'    => customer.wallet.amount.to_s,
+          'Balance'    => wallet.amount.to_s,
           'Currency'   => currency_code,
           'SessionId'  => customer_session.id,
-          'BonusMoney' => customer.wallet.bonus_balance.to_s,
-          'RealMoney'  => customer.wallet.real_money_balance.to_s
+          'BonusMoney' => wallet.bonus_balance.to_s,
+          'RealMoney'  => wallet.real_money_balance.to_s
         )
       end
 
@@ -157,7 +159,7 @@ describe Api::Em::WalletsController, type: :controller do
     let(:request_name) { 'Wager' }
 
     context 'with existing session' do
-      let(:amount) { (customer.wallet.amount / 2.0).round(2) }
+      let(:amount) { (balance_before / 2.0).round(2) }
       let(:transaction_id) { 123_456_789 }
 
       let(:payload) do
@@ -170,9 +172,9 @@ describe Api::Em::WalletsController, type: :controller do
         )
       end
 
-      let(:expected_response) do
+      let!(:expected_response) do
         common_success_response.merge(
-          'Balance'    => customer.wallet.reload.amount.to_s,
+          'Balance'    => (balance_before - amount).to_d.to_s,
           'Currency'   => currency_code,
           'SessionId'  => customer_session.id
         )
@@ -184,7 +186,7 @@ describe Api::Em::WalletsController, type: :controller do
     end
 
     context 'with existing session and insufficient funds' do
-      let(:amount) { (customer.wallet.amount * 2.0).round(2) }
+      let(:amount) { (balance_before * 2.0).round(2) }
       let(:transaction_id) { 123_456_789 }
 
       let(:payload) do
@@ -234,7 +236,7 @@ describe Api::Em::WalletsController, type: :controller do
     let(:request_name) { 'Result' }
 
     context 'with existing session' do
-      let(:amount) { (customer.wallet.amount / 2.0).round(2) }
+      let(:amount) { Faker::Number.decimal(4, 2).to_d }
       let(:transaction_id) { 123_456_789 }
 
       let(:payload) do
@@ -249,7 +251,7 @@ describe Api::Em::WalletsController, type: :controller do
 
       let(:expected_response) do
         common_success_response.merge(
-          'Balance'    => (customer.wallet.amount + amount).to_s,
+          'Balance'    => (balance_before + amount).to_d.to_s,
           'Currency'   => currency_code,
           'SessionId'  => customer_session.id
         )
@@ -285,7 +287,7 @@ describe Api::Em::WalletsController, type: :controller do
     let(:request_name) { 'Rollback' }
 
     context 'with existing session' do
-      let(:amount) { (customer.wallet.amount / 2.0).round(2) }
+      let(:amount) { Faker::Number.decimal(4, 2).to_d }
       let(:transaction_id) { 123_456_789 }
 
       let(:payload) do
@@ -300,7 +302,7 @@ describe Api::Em::WalletsController, type: :controller do
 
       let(:expected_response) do
         common_success_response.merge(
-          'Balance'    => (customer.wallet.amount + amount).to_s,
+          'Balance'    => (balance_before + amount).to_d.to_s,
           'Currency'   => currency_code,
           'SessionId'  => customer_session.id
         )

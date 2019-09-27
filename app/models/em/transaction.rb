@@ -7,6 +7,8 @@ module Em
     belongs_to :em_wallet_session, class_name: 'Em::WalletSession'
     belongs_to :customer
 
+    has_one :entry_request, as: :origin
+
     delegate :wallet, to: :em_wallet_session
     delegate :currency, to: :wallet
   end

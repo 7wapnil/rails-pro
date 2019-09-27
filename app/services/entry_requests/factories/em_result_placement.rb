@@ -33,10 +33,11 @@ module EntryRequests
 
       def result_attributes
         {
-          amount:   result.amount,
-          currency: result.currency,
-          customer: result.customer,
-          origin:   result
+          amount:      result.amount,
+          currency:    result.currency,
+          customer:    result.customer,
+          origin:      result,
+          external_id: result.transaction_id
         }
       end
 
