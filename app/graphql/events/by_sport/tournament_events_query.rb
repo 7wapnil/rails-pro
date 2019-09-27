@@ -3,11 +3,12 @@ module Events
     class TournamentEventsQuery < ::Base::Resolver
       include Base::Offsetable
 
-      type TournamentEventsType
+      type !types[::Events::EventType]
 
       description 'Get all events'
 
       argument :id, !types.ID
+      argument :context, types.String
 
       def auth_protected?
         false

@@ -2,8 +2,8 @@ module Events
   module BySport
     class BaseEventResolver
       SUPPORTED_CONTEXTS = [
-        LIVE = 'live',
-        UPCOMING = 'upcoming'
+        LIVE = 'live'.freeze,
+        UPCOMING = 'upcoming'.freeze
       ].freeze
 
       UPCOMING_CONTEXT_CACHE_TTL = 5.seconds

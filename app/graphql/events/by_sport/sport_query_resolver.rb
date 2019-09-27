@@ -51,7 +51,7 @@ module Events
       def upcoming
         cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
           query.upcoming.where('events.start_at <= ?',
-                      Event::UPCOMING_DURATION.hours.from_now)
+                               Event::UPCOMING_DURATION.hours.from_now)
         end
       end
 
