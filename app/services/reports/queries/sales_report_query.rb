@@ -68,6 +68,7 @@ module Reports
           SELECT
             wallets.customer_id customer_id,
             CAST(SUM(COALESCE(entries.base_currency_real_money_amount,0)) AS DECIMAL(10,2)) real_deposits,
+            CAST(SUM(COALESCE(entries.base_currency_real_money_amount,0) * #{NGR_MULTIPLIER}) AS DECIMAL(10,2)) fee,
             COUNT(entries.id) as deposits_count
           FROM entries
           JOIN wallets ON wallets.id = entries.wallet_id
