@@ -40,7 +40,7 @@ module Reports
             customers.b_tag AS b_tag,
             COALESCE(deposits.deposits_count, 0) AS deposits_count,
             COALESCE(deposits.real_deposits, 0) AS real_money,
-            COALESCE(bonuses.bonuses, 0) + CAST(COALESCE(deposits.real_deposits, 0) * #{NGR_MULTIPLIER} AS DECIMAL(10, 2)) bonus_money,
+            COALESCE(bonuses.bonuses, 0) + COALESCE(deposits.fee, 0) AS bonus_money,
             COALESCE(bets.bets_count, 0) AS bets_count,
             COALESCE(bets.stake, 0) AS stake,
             COALESCE(bets.stake, 0) - COALESCE(wins.wins_amount, 0) AS ggr,
@@ -58,9 +58,8 @@ module Reports
 
       def ngr
         <<-SQL
-          CAST((COALESCE(bets.stake, 0) - COALESCE(wins.wins_amount, 0)) -
-          (COALESCE(bonuses.bonuses, 0) +
-          (COALESCE(deposits.real_deposits, 0) * #{NGR_MULTIPLIER})) AS DECIMAL(10, 2))
+          (COALESCE(bets.stake, 0) - COALESCE(wins.wins_amount, 0)) -
+          (COALESCE(bonuses.bonuses, 0) + COALESCE(deposits.fee, 0))
         SQL
       end
 
@@ -69,6 +68,7 @@ module Reports
           SELECT
             wallets.customer_id customer_id,
             CAST(SUM(COALESCE(entries.base_currency_real_money_amount,0)) AS DECIMAL(10,2)) real_deposits,
+            CAST(SUM(COALESCE(entries.base_currency_real_money_amount,0) * #{NGR_MULTIPLIER}) AS DECIMAL(10,2)) fee,
             COUNT(entries.id) as deposits_count
           FROM entries
           JOIN wallets ON wallets.id = entries.wallet_id
