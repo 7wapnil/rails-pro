@@ -22,7 +22,7 @@
       %td= customer.last_sign_in_ip
     %tr
       %td= t('attributes.last_sign_in_at')
-      %td= customer.last_sign_in_at.present? ? l(customer.last_sign_in_at) : '-'
+      %td= customer.last_sign_in_at.present? ? l(customer.current_sign_in_at) : '-'
     %tr
       %td= t('attributes.sign_in_count')
       %td= customer.sign_in_count
