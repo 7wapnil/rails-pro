@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module LoginActivities
-  class TrackLogin < ApplicationService
+  class TrackLogin
     def initialize(params)
       @customer = params[:customer]
       @identity = params[:identity]
@@ -10,8 +10,8 @@ module LoginActivities
 
     def call(success:, failure_reason: nil)
       LoginActivity
-        .create(default_params.merge(success: success,
-                                     failure_reason: failure_reason))
+        .create!(default_params.merge(success: success,
+                                      failure_reason: failure_reason))
     end
 
     private

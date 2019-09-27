@@ -18,52 +18,10 @@ module Account
       @login_request = request
     end
 
-    def captcha_invalid?
-      (captcha || suspicious_login?) && !captcha_verified?
-    end
-
-    def invalid_captcha!
-      invalid_login_attempt!
-
-      msg = I18n.t('recaptcha.errors.verification_failed')
-
-      login_tracker.call(success: false, failure_reason: msg)
-
-      GraphQL::ExecutionError.new(msg)
-    end
-
-    def invalid_password?
-      !valid_password?(password)
-    end
-
-    def invalid_login!
-      invalid_login_attempt!
-
-      msg = I18n.t('errors.messages.wrong_login_credentials')
-
-      login_tracker.call(success: false, failure_reason: msg)
-
-      GraphQL::ExecutionError.new(msg)
-    end
-
-    def imported_customer_first_login?
-      empty_encrypted_password?
-    end
-
-    def reset_password!
-      send_reset_password! unless recent_reset_email?
-
-      login_tracker.call(
-        success: false,
-        failure_reason: 'Newly imported customer. Password reset required'
-      )
-
-      GraphQL::ExecutionError.new(
-        I18n.t(
-          'errors.messages.imported_customer_first_login',
-          email: obfuscate_email(customer.email)
-        )
-      )
+    def validate_login!
+      invalid_captcha! if captcha_invalid?
+      reset_password! if imported_customer_first_login?
+      invalid_login! if invalid_password?
     end
 
     def login_response
@@ -78,6 +36,53 @@ module Account
     private
 
     attr_reader :customer, :password, :captcha, :identity, :login_request
+
+    def captcha_invalid?
+      (captcha || suspicious_login?) && !captcha_verified?
+    end
+
+    def invalid_captcha!
+      invalid_login_attempt!
+
+      msg = I18n.t('recaptcha.errors.verification_failed')
+
+      login_tracker.call(success: false, failure_reason: msg)
+
+      raise GraphQL::ExecutionError, msg
+    end
+
+    def invalid_password?
+      !valid_password?(password)
+    end
+
+    def invalid_login!
+      invalid_login_attempt!
+
+      msg = I18n.t('errors.messages.wrong_login_credentials')
+
+      login_tracker.call(success: false, failure_reason: msg)
+
+      raise GraphQL::ExecutionError, msg
+    end
+
+    def imported_customer_first_login?
+      empty_encrypted_password?
+    end
+
+    def reset_password!
+      send_reset_password! unless recent_reset_email?
+
+      login_tracker.call(
+        success: false,
+        failure_reason: 'Newly imported customer. Password reset required'
+      )
+
+      raise GraphQL::ExecutionError,
+            I18n.t(
+              'errors.messages.imported_customer_first_login',
+              email: obfuscate_email(customer.email)
+            )
+    end
 
     def login_tracker
       @login_tracker ||= LoginActivities::TrackLogin.new(
@@ -117,7 +122,7 @@ module Account
       login_tracker.call(success: false,
                          failure_reason: account_locked_message)
 
-      GraphQL::ExecutionError.new(account_locked_message)
+      raise GraphQL::ExecutionError, account_locked_message
     end
 
     def response
