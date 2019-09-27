@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_26_121502) do
+ActiveRecord::Schema.define(version: 2019_09_27_122210) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -639,7 +639,6 @@ ActiveRecord::Schema.define(version: 2019_09_26_121502) do
 
   create_table "wallets", force: :cascade do |t|
     t.bigint "customer_id"
-    t.decimal "amount", precision: 8, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "currency_id"
