@@ -7,7 +7,7 @@ module Account
       false
     end
 
-    def resolve(_obj, args) # rubocop:disable Metrics/MethodLength
+    def resolve(_obj, args)
       auth_params = args[:input]
       customer = Customer.find_for_authentication(login: auth_params[:login])
       service = Account::SignInService.new(
@@ -16,9 +16,7 @@ module Account
         request: @request
       )
 
-      return service.invalid_captcha! if service.captcha_invalid?
-      return service.reset_password!  if service.imported_customer_first_login?
-      return service.invalid_login!   if service.invalid_password?
+      service.validate_login!
 
       customer.update_tracked_fields!(@request)
       customer.valid_login_attempt!
