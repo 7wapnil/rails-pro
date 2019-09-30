@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Api::Em::WalletsController, type: :controller do
+describe Api::EveryMatrix::WalletsController, type: :controller do
   let!(:primary_currency) { create(:currency, :primary) }
   let(:em_login) { 'testlogin' }
   let(:em_password) { 'testpassword' }

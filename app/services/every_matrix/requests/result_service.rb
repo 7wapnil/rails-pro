@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Em
+module EveryMatrix
   module Requests
     class ResultService < TransactionService
       protected
@@ -10,7 +10,7 @@ module Em
       end
 
       def transaction_class
-        Em::Result
+        EveryMatrix::Result
       end
 
       def placement_service

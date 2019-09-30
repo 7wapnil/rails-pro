@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Em
+module EveryMatrix
   module Requests
     class GetAccountService < BaseRequestService
       def call

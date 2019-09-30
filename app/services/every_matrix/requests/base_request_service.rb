@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
-module Em
+module EveryMatrix
   module Requests
     class BaseRequestService < ApplicationService
       def initialize(params)
         @params = params
         @session = params.permit('SessionId')['SessionId']
-        @session = Em::WalletSession.find_by(id: @session)
+        @session = EveryMatrix::WalletSession.find_by(id: @session)
         @wallet = @session&.wallet
         @customer = @wallet&.customer
       end

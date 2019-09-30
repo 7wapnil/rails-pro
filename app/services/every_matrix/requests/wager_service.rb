@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Em
+module EveryMatrix
   module Requests
     class WagerService < TransactionService
       def call
@@ -16,7 +16,7 @@ module Em
       end
 
       def transaction_class
-        Em::Wager
+        EveryMatrix::Wager
       end
 
       def placement_service

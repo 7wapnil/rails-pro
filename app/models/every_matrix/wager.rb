@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-module Em
+module EveryMatrix
   class Wager < Transaction; end
 end

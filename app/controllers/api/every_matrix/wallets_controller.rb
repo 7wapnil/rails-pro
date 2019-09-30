@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
 module Api
-  module Em
+  module EveryMatrix
     class WalletsController < ActionController::API
       REQUEST_HANDLERS = {
-        'getaccount' => 'Em::Requests::GetAccountService',
-        'getbalance' => 'Em::Requests::GetBalanceService',
-        'wager'      => 'Em::Requests::WagerService',
-        'result'     => 'Em::Requests::ResultService',
-        'rollback'   => 'Em::Requests::RollbackService'
+        'getaccount' => 'EveryMatrix::Requests::GetAccountService',
+        'getbalance' => 'EveryMatrix::Requests::GetBalanceService',
+        'wager'      => 'EveryMatrix::Requests::WagerService',
+        'result'     => 'EveryMatrix::Requests::ResultService',
+        'rollback'   => 'EveryMatrix::Requests::RollbackService'
       }.freeze
       before_action :authorize_em_wallet_api
 

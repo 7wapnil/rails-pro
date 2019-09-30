@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Em
+module EveryMatrix
   module Requests
     class TransactionService < BaseRequestService
       TRANSACTION_PARAMS = %w[Amount Device GameType

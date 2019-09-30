@@ -138,7 +138,7 @@ Rails.application.routes.draw do
   root 'dashboards#index'
 
   namespace :api do
-    namespace :em do
+    namespace :every_matrix do
       resource :wallet, only: [:create]
     end
   end
