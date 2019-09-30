@@ -508,6 +508,7 @@ en:
         events:
           context:
             invalid: "Unsupported context '%{context}'. Supported contexts: %{contexts}"
+            blank:   "Field 'sportEvents' is missing required arguments: context"
         transactions:
           kind:
             invalid: "Invalid transaction kind: '%{kind}'"
