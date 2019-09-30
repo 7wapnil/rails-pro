@@ -8,18 +8,19 @@ module Events
       def initialize(query_args)
         @query_args = query_args
         @tournament_id = query_args.id
-        @context = query_args.context
       end
 
       def resolve
         @query = base_query
-        filter_by_context
-        query.distinct
+        @query = upcoming_and_live
+        @query = query.distinct
+
+        separate_by_time
       end
 
       private
 
-      attr_reader :tournament_id, :query_args, :query, :context
+      attr_reader :tournament_id, :query_args, :query
 
       def base_query
         super
@@ -27,16 +28,17 @@ module Events
           .where(event_scopes: { id: tournament_id })
       end
 
-      def filter_by_context
-        @context = UPCOMING_AND_LIVE if SUPPORTED_CONTEXTS.exclude?(context)
-
-        @query = send(context)
-      end
-
       def upcoming_and_live
         cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
           query.upcoming.or(query.in_play)
         end
+      end
+
+      def separate_by_time
+        OpenStruct.new(
+          live: query.in_play,
+          upcoming: query.upcoming
+        )
       end
     end
   end
