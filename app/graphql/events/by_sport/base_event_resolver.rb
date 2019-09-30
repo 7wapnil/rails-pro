@@ -38,6 +38,33 @@ module Events
           yield
         end
       end
+
+      # It tries to call:
+      # #live, #upcoming (for_time)
+      def filter_by_context!
+        return context_not_supported! if SUPPORTED_CONTEXTS.exclude?(context)
+
+        @query = send(context)
+      end
+
+      def context_not_supported!
+        raise StandardError,
+              I18n.t('errors.messages.graphql.events.context.invalid',
+                     context: context,
+                     contexts: SUPPORTED_CONTEXTS.join(', '))
+      end
+
+      def upcoming
+        cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
+          query.upcoming
+        end
+      end
+
+      def live
+        cached_for(LIVE_CONTEXT_CACHE_TTL) do
+          query.in_play
+        end
+      end
     end
   end
 end

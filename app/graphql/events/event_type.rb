@@ -17,15 +17,6 @@ module Events
           property: :event_competitors
     field :markets, function: MarketsQuery.new
 
-    field :startedStatus, !types.String do
-      resolve ->(obj, _args, _ctx) do
-        return Event::LIVE if obj.in_play?
-        return Event::UPCOMING if obj.upcoming?
-
-        'undefined'
-      end
-    end
-
     field :priority, !types.Int
     field :visible, !types.Boolean
     field :title, Titles::TitleType

@@ -26,34 +26,6 @@ module Events
           .where(titles: { kind: Title::ESPORTS })
       end
 
-      # It tries to call:
-      # #live, #upcoming
-      def filter_by_context!
-        return context_not_supported! if SUPPORTED_CONTEXTS.exclude?(context)
-
-        @query = send(context)
-      end
-
-      def context_not_supported!
-        raise StandardError,
-              I18n.t('errors.messages.graphql.events.context.invalid',
-                     context: context,
-                     contexts: SUPPORTED_CONTEXTS.join(', '))
-      end
-
-      def live
-        cached_for(LIVE_CONTEXT_CACHE_TTL) do
-          query.in_play
-        end
-      end
-
-      def upcoming
-        @query = query.upcoming
-        cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
-          query
-        end
-      end
-
       def filter_by_title_id
         return query unless title_id
 
