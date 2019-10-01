@@ -4,6 +4,7 @@ describe EntryRequests::BetPlacementService do
   subject { described_class.call(entry_request: entry_request) }
 
   let(:bet)             { create(:bet) }
+  let!(:currency)       { create(:currency, :primary) }
   let(:rule)            { create(:entry_currency_rule) }
   let!(:entry)          { create(:entry, origin: bet) }
   let(:impersonated_by) { create(:customer) }
@@ -36,25 +37,16 @@ describe EntryRequests::BetPlacementService do
   end
 
   context 'invalid' do
-    # TODO: Refactor this nasty trick that mutes expectation state change
-    before { allow(bet).to receive(:register_failure!) }
+    let!(:bet_limit) do
+      create(:betting_limit, customer: bet.customer,
+                             title: nil,
+                             user_max_bet: 0)
+    end
 
     context 'on failed limits validation' do
-      let(:bet) { create(:bet, :sent_to_internal_validation) }
-      let(:errors) { ['error'] }
+      before { subject }
 
-      before do
-        allow(bet).to receive(:send_to_internal_validation!)
-        allow(bet).to receive(:errors).and_return(errors)
-
-        allow(BetPlacement::BettingLimitsValidationService)
-          .to receive(:call)
-          .with(bet)
-
-        subject
-      end
-
-      it { expect(bet).to be_sent_to_internal_validation }
+      it { expect(bet.reload).to be_failed }
     end
 
     context 'on live provider disconnected' do
@@ -69,7 +61,7 @@ describe EntryRequests::BetPlacementService do
         subject
       end
 
-      it { expect(bet).to be_sent_to_internal_validation }
+      it { expect(bet.reload).to be_failed }
     end
 
     context 'on pre-live provider disconnected' do
@@ -84,7 +76,7 @@ describe EntryRequests::BetPlacementService do
         subject
       end
 
-      it { expect(bet).to be_sent_to_internal_validation }
+      it { expect(bet.reload).to be_failed }
     end
 
     context 'on market becomes suspended' do
@@ -93,7 +85,7 @@ describe EntryRequests::BetPlacementService do
 
       before { subject }
 
-      it { expect(bet).to be_sent_to_internal_validation }
+      it { expect(bet.reload).to be_failed }
     end
 
     context 'on unsuccessful entry request' do
@@ -101,7 +93,7 @@ describe EntryRequests::BetPlacementService do
 
       before { subject }
 
-      it { expect(bet).to be_sent_to_internal_validation }
+      it { expect(bet.reload).to be_failed }
     end
   end
 end

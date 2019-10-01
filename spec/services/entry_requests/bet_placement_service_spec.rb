@@ -7,26 +7,18 @@ describe EntryRequests::BetPlacementService do
 
   let!(:currency) { create(:currency) }
   let!(:wallet) do
-    create(
-      :wallet,
-      :brick,
-      currency: currency
-    )
+    create(:wallet, :brick, currency: currency,
+                            real_money_balance: 200,
+                            bonus_balance: 0)
   end
-
-  let(:bonus_balance) { create(:balance, :bonus, wallet: wallet) }
-  let(:real_money_balance) { create(:balance, wallet: wallet) }
 
   let(:odd) { create(:odd, :active) }
   let!(:bet) do
-    create(
-      :bet,
-      customer: wallet.customer,
-      currency: currency,
-      odd: odd,
-      amount: 100,
-      market: create(:event, :with_market, :upcoming).markets.sample
-    )
+    create(:bet, customer: wallet.customer,
+                 currency: currency,
+                 odd: odd,
+                 amount: 100,
+                 market: create(:event, :with_market, :upcoming).markets.sample)
   end
   let(:entry_request) { EntryRequests::Factories::BetPlacement.call(bet: bet) }
 
@@ -52,29 +44,25 @@ describe EntryRequests::BetPlacementService do
     allow(WebSocket::Client.instance).to receive(:trigger_bet_update)
     allow_any_instance_of(Mts::ValidationMessagePublisherWorker)
       .to receive(:perform)
+
     prematch_producer.healthy!
-    create(
-      :entry_currency_rule,
-      currency: currency,
-      kind: EntryRequest::BET,
-      max_amount: 0,
-      min_amount: -100
-    )
+
+    create(:entry_currency_rule, currency: currency,
+                                 kind: EntryRequest::BET,
+                                 max_amount: 0,
+                                 min_amount: -100)
   end
 
   context 'with valid betting limit' do
     before do
-      create(
-        :betting_limit,
-        title: nil,
-        customer: bet.customer,
-        live_bet_delay: 10,
-        user_max_bet: bet.amount + 1,
-        max_loss: bet.amount + 1,
-        max_win: bet.amount * bet.odd_value + 1,
-        user_stake_factor: 1,
-        live_stake_factor: 1
-      )
+      create(:betting_limit, title: nil,
+                             customer: bet.customer,
+                             live_bet_delay: 10,
+                             user_max_bet: bet.amount + 1,
+                             max_loss: bet.amount + 1,
+                             max_win: bet.amount * bet.odd_value + 1,
+                             user_stake_factor: 1,
+                             live_stake_factor: 1)
     end
 
     it 'updates bet status as valid' do
@@ -121,17 +109,14 @@ describe EntryRequests::BetPlacementService do
 
   context 'with invalid betting limit' do
     before do
-      create(
-        :betting_limit,
-        title: nil,
-        customer: bet.customer,
-        live_bet_delay: 10,
-        user_max_bet: bet.amount - 1,
-        max_loss: bet.amount - 1,
-        max_win: bet.amount * bet.odd_value - 1,
-        user_stake_factor: 2,
-        live_stake_factor: 2
-      )
+      create(:betting_limit, title: nil,
+                             customer: bet.customer,
+                             live_bet_delay: 10,
+                             user_max_bet: bet.amount - 1,
+                             max_loss: bet.amount - 1,
+                             max_win: bet.amount * bet.odd_value - 1,
+                             user_stake_factor: 2,
+                             live_stake_factor: 2)
     end
 
     it 'updates bet status and message on failure' do

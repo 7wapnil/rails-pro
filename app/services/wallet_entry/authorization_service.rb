@@ -10,7 +10,9 @@ module WalletEntry
     def call
       request.validate!
       update_database!
-      handle_success
+      log_success
+
+      entry
     rescue ActiveRecord::RecordInvalid, ActiveModel::ValidationError => e
       handle_failure e
     end
@@ -26,8 +28,7 @@ module WalletEntry
         create_entry!
         update_balances!
         confirm_entry if auto_confirmation?
-
-        entry
+        request.succeeded!
       end
     end
 
@@ -71,13 +72,6 @@ module WalletEntry
 
     def confirm_entry
       entry.update(confirmed_at: Time.zone.now)
-    end
-
-    def handle_success
-      request.succeeded!
-      log_success
-
-      entry
     end
 
     def handle_failure(exception)

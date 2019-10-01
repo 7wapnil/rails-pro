@@ -68,7 +68,7 @@ describe WalletEntry::AuthorizationService do
           .to receive(:call)
           .with hash_including(event: :entry_request_created)
 
-        service.send(:handle_success)
+        service.send(:log_success)
       end
 
       it 'returns the created entry' do
@@ -113,7 +113,7 @@ describe WalletEntry::AuthorizationService do
 
       it 'updates entry request' do
         expect_any_instance_of(described_class)
-          .not_to receive(:handle_success)
+          .not_to receive(:log_success)
 
         described_class.call(request)
 
