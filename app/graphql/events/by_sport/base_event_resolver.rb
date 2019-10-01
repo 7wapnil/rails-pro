@@ -1,10 +1,7 @@
 module Events
   module BySport
     class BaseEventResolver
-      SUPPORTED_CONTEXTS = [
-        LIVE = 'live'.freeze,
-        UPCOMING = 'upcoming'.freeze
-      ].freeze
+      SUPPORTED_CONTEXTS = [Event::LIVE, Event::UPCOMING].freeze
 
       UPCOMING_CONTEXT_CACHE_TTL = 5.seconds
       LIVE_CONTEXT_CACHE_TTL = 2.seconds
@@ -52,12 +49,6 @@ module Events
               I18n.t('errors.messages.graphql.events.context.invalid',
                      context: context,
                      contexts: SUPPORTED_CONTEXTS.join(', '))
-      end
-
-      def upcoming
-        cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
-          query.upcoming
-        end
       end
 
       def live

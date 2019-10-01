@@ -3,7 +3,6 @@ module Events
     class TournamentEventsQuery < ::Base::Resolver
       include Base::Offsetable
 
-      # type !types[::Events::EventType]
       type TournamentEventsType
 
       description 'Get all events'

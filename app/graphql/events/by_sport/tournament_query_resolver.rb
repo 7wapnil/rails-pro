@@ -3,8 +3,6 @@
 module Events
   module BySport
     class TournamentQueryResolver < BaseEventResolver
-      UPCOMING_AND_LIVE = 'upcoming_and_live'
-
       def initialize(query_args)
         @query_args = query_args
         @tournament_id = query_args.id

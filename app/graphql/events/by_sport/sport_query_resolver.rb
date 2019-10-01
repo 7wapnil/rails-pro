@@ -11,7 +11,6 @@ module Events
 
       def resolve
         @query = base_query
-        @query = filter_by_title_id
         filter_by_context!
 
         query.distinct
@@ -33,10 +32,6 @@ module Events
           query.upcoming.where('events.start_at <= ?',
                                Event::UPCOMING_DURATION.hours.from_now)
         end
-      end
-
-      def filter_by_title_id
-        query.where(title_id: title_id)
       end
     end
   end

@@ -26,6 +26,12 @@ module Events
           .where(titles: { kind: Title::ESPORTS })
       end
 
+      def upcoming
+        cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
+          query.upcoming
+        end
+      end
+
       def filter_by_title_id
         return query unless title_id
 
