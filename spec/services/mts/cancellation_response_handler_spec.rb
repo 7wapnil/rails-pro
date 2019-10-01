@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 describe Mts::CancellationResponseHandler do
+  include_context 'asynchronous to synchronous'
   let(:subject_call) { described_class.call(message: message) }
+  let!(:primary_currency) { create(:currency, :primary) }
   let!(:bet) do
     create(:bet, :with_placement_entry, :sent_to_external_validation,
            validation_ticket_id: ticket_id)
@@ -42,7 +44,7 @@ describe Mts::CancellationResponseHandler do
       end
 
       it 'starts refund worker' do
-        expect(EntryRequests::RefundWorker).to receive(:perform_async)
+        expect(EntryRequests::BetCancellationWorker).to receive(:perform_async)
 
         subject_call
       end
@@ -67,7 +69,7 @@ describe Mts::CancellationResponseHandler do
       end
 
       it 'starts refund worker' do
-        expect(EntryRequests::RefundWorker).to receive(:perform_async)
+        expect(EntryRequests::BetCancellationWorker).to receive(:perform_async)
 
         subject_call
       end

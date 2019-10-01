@@ -274,6 +274,8 @@ module StateMachines
           notification_code: notification_code,
           error_object: error
         )
+
+        raise error
       end
     end
   end
