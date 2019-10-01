@@ -24,6 +24,7 @@ module EntryRequests
 
         delegate :placement_entry, to: :bet
         delegate :customer_bonus, to: :bet
+        delegate :customer, to: :bet
 
         def initialize(bet:, initiator: nil, comment: nil)
           @bet = bet
@@ -39,6 +40,7 @@ module EntryRequests
             recalculate_bonus_rollover!
             update_bet_status!
             update_bet_settlement_status!
+            log_initiator_activity!
           end
         end
 
@@ -69,6 +71,12 @@ module EntryRequests
 
         def update_bet_settlement_status!
           raise NotImplementedError, 'Define #update_bet_settlement_status!'
+        end
+
+        def log_initiator_activity!
+          entry_requests.each do |request|
+            initiator.log_event(:entry_request_created, request, customer)
+          end
         end
 
         def authorize_wallet_entry!(entry_request)

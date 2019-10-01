@@ -186,4 +186,8 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   def bonus_money_total
     entry_request&.succeeded? ? entry_request.bonus_amount : 0.0
   end
+
+  def fully_processed?
+    obj.settled? || obj.manually_settled?
+  end
 end

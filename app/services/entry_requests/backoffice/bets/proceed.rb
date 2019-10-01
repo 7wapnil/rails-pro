@@ -5,7 +5,6 @@ module EntryRequests
     module Bets
       class Proceed < ApplicationService
         delegate :entry_request, to: :bet
-        delegate :customer, to: :bet
 
         def initialize(bet, params)
           @bet = bet
@@ -49,19 +48,15 @@ module EntryRequests
         end
 
         def proceed_won_bet
-          log_creating EntryRequests::Backoffice::Bets::Won.call(**bet_params)
+          EntryRequests::Backoffice::Bets::Won.call(**bet_params)
         end
 
         def proceed_void_bet
-          EntryRequests::Backoffice::Bets::Voided
-            .call(**bet_params)
-            .each(&method(:log_creating))
+          EntryRequests::Backoffice::Bets::Voided.call(**bet_params)
         end
 
         def proceed_lost_bet
-          EntryRequests::Backoffice::Bets::Lost
-            .call(**bet_params)
-            .each(&method(:log_creating))
+          EntryRequests::Backoffice::Bets::Lost.call(**bet_params)
         end
 
         def raise_invalid_status!
@@ -76,10 +71,6 @@ module EntryRequests
             initiator: initiator,
             comment: comment
           }
-        end
-
-        def log_creating(request)
-          initiator.log_event(:entry_request_created, request, customer)
         end
       end
     end
