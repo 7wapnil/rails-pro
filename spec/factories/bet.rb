@@ -31,17 +31,18 @@ FactoryBot.define do
 
     trait :won do
       status            { StateMachines::BetStateMachine::SETTLED }
-      settlement_status { :won }
+      settlement_status { Bet::WON }
       association :winning, factory: %i[entry win]
     end
 
     trait :lost do
       status            { StateMachines::BetStateMachine::SETTLED }
-      settlement_status { :lost }
+      settlement_status { Bet::LOST }
     end
 
     trait :void do
       void_factor { 1.0 }
+      settlement_status { Bet::VOIDED }
     end
 
     trait :with_notification do

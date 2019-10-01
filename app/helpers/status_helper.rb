@@ -20,7 +20,8 @@ module StatusHelper
     'pending_manual_settlement' => 'warning',
     'settled' => 'info',
     'rejected' => 'danger',
-    'failed' => 'danger'
+    'failed' => 'danger',
+    'manually_settled' => 'info'
   }.freeze
 
   def status_badge(status)

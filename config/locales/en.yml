@@ -17,6 +17,7 @@ en:
   note: Note
   no_file: No File
   no_records: No records yet
+  proceed_manually: Proceed manually
   reject: Reject
   save: Save
   says_at: "%{who} at %{when}"
@@ -513,6 +514,13 @@ en:
       wallets:
         not_unique: 'You have the same wallet created already'
         fiat_not_unique: 'You can have only one FIAT wallet'
+      bets:
+        invalid_status: "'%{status}' is not valid bet status"
+        cannot_be_proceeded: Bet cannot be processed
+        not_accepted: Bet is not accepted
+        not_supported_void_factor: Void factor is not supported
+        unchanged_status: "Bet is already '%{status}'"
+        unprocessed: Bet has never been processed
 
   expiration_reasons:
     converted: Converted
@@ -584,6 +592,8 @@ en:
         subject: Reset your password
 
   messages:
+    bets:
+      flash: Bet successfully updated and will be processed ASAP. Check bet status in bets table
     deposit_limits:
       delete: "Are you sure you want to delete customer (%{customer_name}) deposit limit?"
     entry_request:
