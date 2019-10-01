@@ -9,58 +9,38 @@ module Mts
     end
 
     def call
-      successful_status_code? ? bet.cancel! : unsuccessful_bet_cancel
-
-      refund!
+      EntryRequests::BetCancellationWorker
+        .perform_async(refund_entry_request.id, status_code)
+    rescue ActiveRecord::RecordNotFound => error
+      log_job_error(error)
+      raise SilentRetryJobError,
+            "#{error_message}. Id: #{message['result']['ticketId']}"
     end
 
     private
 
     attr_reader :message
 
-    def status_code
-      @status_code ||= message.dig('result', 'reason', 'code')
-    end
-
-    def successful_status_code?
-      status_code == ::Mts::Codes::SUCCESSFUL_CODE
-    end
-
-    def status
-      ::Mts::Codes::CANCELLATION_ERROR_CODES[status_code]
+    def refund_entry_request
+      EntryRequests::Factories::Refund.call(entry: bet.entry)
     end
 
     def bet
       @bet ||= Bet.find_by!(validation_ticket_id: message['result']['ticketId'])
-    rescue ActiveRecord::RecordNotFound => e
-      error_message = I18n.t('errors.messages.nonexistent_bet')
-      log_job_message(:error,
-                      message: error_message,
-                      id: message['result']['ticketId'],
-                      error_object: e)
-      raise SilentRetryJobError,
-            "#{error_message}. Id: #{message['result']['ticketId']}"
     end
 
-    def refund!
-      refund = EntryRequests::Factories::Refund.call(entry: bet.entry)
-
-      EntryRequests::RefundWorker.perform_async(refund.id)
+    def status_code
+      @status_code ||= message.dig('result', 'reason', 'code')
     end
 
-    def unsuccessful_bet_cancel
-      bet.finish_external_cancellation_with_rejection!(
-        I18n.t("errors.messages.mts.#{status}"),
-        code: Bets::Notification::MTS_CANCELLATION_ERROR
-      )
+    def log_job_error(error)
+      log_job_message(:error, message: error_message,
+                              id: message['result']['ticketId'],
+                              error_object: error)
+    end
 
-      raise ::Bets::UnsuccessfulBetCancelError,
-            I18n.t("errors.messages.mts.#{status}")
-    rescue ::Bets::UnsuccessfulBetCancelError => e
-      log_job_message(:error,
-                      message: e.message,
-                      bet_id: bet.id,
-                      error_object: e)
+    def error_message
+      I18n.t('errors.messages.nonexistent_bet')
     end
   end
 end
