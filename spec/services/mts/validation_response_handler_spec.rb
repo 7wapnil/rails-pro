@@ -23,14 +23,20 @@ describe Mts::ValidationResponseHandler do
 
       before do
         allow(refund_double).to receive(:id)
-        allow(EntryRequests::RefundWorker)
-          .to receive(:perform_async).and_return(true)
+        allow(EntryRequests::BetRefundWorker)
+          .to receive(:perform_async)
       end
 
-      it 'changes bet status to rejected' do
+      it 'does not change bet status' do
         described_class.call(payload)
         bet.reload
-        expect(bet.rejected?).to eq true
+        expect(bet).to be_sent_to_external_validation
+      end
+
+      it 'calls bet refund worker' do
+        described_class.call(payload)
+
+        expect(EntryRequests::BetRefundWorker).to have_received(:perform_async)
       end
 
       it 'creates refund entry request' do
