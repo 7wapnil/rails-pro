@@ -183,6 +183,16 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
       it 'successfully responds to request' do
         expect(json).to include(expected_response)
       end
+
+      it 'is idempotent with same transaction_id' do
+        first_json = json
+
+        post(:create, params: payload)
+
+        second_json = json
+
+        expect(second_json).to eq(first_json)
+      end
     end
 
     context 'with existing session and insufficient funds' do

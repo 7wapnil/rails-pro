@@ -15,27 +15,45 @@ module EveryMatrix
       end
 
       def call
+        return transaction.response if find_transaction
+
         return user_not_found_response unless customer
 
         create_transaction!
-        create_entry_request! unless transaction.entry_request
-        process_entry_request!
 
-        success_response
+        return record_response(validation_failed) unless valid_request?
+
+        process_transaction!
+
+        record_response(success_response)
       end
 
       protected
 
-      attr_reader :amount, :transaction, :entry_request
+      attr_reader :amount, :transaction
+      delegate :entry_request, to: :transaction
+
+      def find_transaction
+        @transaction =
+          transaction_class
+          .find_by(
+            transaction_id: transaction_params['TransactionId']
+          )
+      end
+
+      def process_transaction!
+        create_entry_request!
+        process_entry_request!
+      end
 
       def create_transaction!
         @transaction =
           transaction_class
-          .find_or_initialize_by(
-            transaction_id: transaction_params['TransactionId']
+          .create!(
+            attributes.merge(
+              transaction_id: transaction_params['TransactionId']
+            )
           )
-
-        @transaction.update_attributes(attributes) if @transaction.new_record?
       end
 
       def attributes
@@ -59,7 +77,7 @@ module EveryMatrix
       end
 
       def create_entry_request!
-        @entry_request = placement_service.call(transaction: transaction)
+        placement_service.call(transaction: transaction)
       end
 
       def process_entry_request!
@@ -77,6 +95,22 @@ module EveryMatrix
 
       def balance_amount_after
         entry_request.reload.entry.balance_amount_after
+      end
+
+      def record_response(response)
+        transaction.update_attributes!(response: response)
+
+        response
+      end
+
+      def valid_request?
+        true
+      end
+
+      def validation_failed
+        error_msg = "#{__method__} needs to be implemented in #{self.class}"
+
+        raise NotImplementedError, error_msg
       end
 
       def transaction_class

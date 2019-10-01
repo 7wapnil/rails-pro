@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_27_122210) do
+ActiveRecord::Schema.define(version: 2019_10_01_065417) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -356,6 +356,7 @@ ActiveRecord::Schema.define(version: 2019_09_27_122210) do
     t.string "round_status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "response"
     t.index ["customer_id"], name: "index_em_transactions_on_customer_id"
     t.index ["em_wallet_session_id"], name: "index_em_transactions_on_em_wallet_session_id"
   end

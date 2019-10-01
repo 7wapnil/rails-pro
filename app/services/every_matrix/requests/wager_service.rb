@@ -29,6 +29,14 @@ module EveryMatrix
         wallet && (amount > wallet.amount)
       end
 
+      def valid_request?
+        !insufficient_funds?
+      end
+
+      def validation_failed
+        insufficient_funds_response
+      end
+
       def insufficient_funds_response
         common_response.merge(
           'ReturnCode' => 104,
