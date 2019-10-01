@@ -20,10 +20,10 @@ module EveryMatrix
       def success_response
         common_success_response.merge(
           'SessionId'  => session.id,
-          'Balance'    => wallet.amount,
+          'Balance'    => wallet.real_money_balance,
           'Currency'   => currency_code,
-          'BonusMoney' => wallet.bonus_balance || 0.0,
-          'RealMoney'  => wallet.real_money_balance || 0.0
+          'BonusMoney' => 0.0,
+          'RealMoney'  => wallet.real_money_balance
         )
       end
     end

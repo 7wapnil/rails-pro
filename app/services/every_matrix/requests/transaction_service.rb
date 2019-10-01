@@ -94,7 +94,7 @@ module EveryMatrix
       end
 
       def balance_amount_after
-        entry_request.reload.entry.balance_amount_after
+        wallet.reload.real_money_balance
       end
 
       def record_response(response)

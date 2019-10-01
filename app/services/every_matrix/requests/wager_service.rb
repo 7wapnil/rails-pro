@@ -4,8 +4,6 @@ module EveryMatrix
   module Requests
     class WagerService < TransactionService
       def call
-        return insufficient_funds_response if insufficient_funds?
-
         super
       end
 
@@ -26,7 +24,7 @@ module EveryMatrix
       private
 
       def insufficient_funds?
-        wallet && (amount > wallet.amount)
+        wallet && (amount > wallet.real_money_balance)
       end
 
       def valid_request?

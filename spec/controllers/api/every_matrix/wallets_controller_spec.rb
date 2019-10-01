@@ -9,7 +9,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
   let(:customer) { create(:customer, :with_address, :ready_to_bet) }
   let(:wallet) { customer.wallet }
   let(:currency_code) { wallet.currency.code }
-  let!(:balance_before) { wallet.amount }
+  let!(:balance_before) { wallet.real_money_balance }
 
   let(:customer_session) do
     create(:em_wallet_session, wallet: wallet)
@@ -121,10 +121,10 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
 
       let(:expected_response) do
         common_success_response.merge(
-          'Balance'    => wallet.amount.to_s,
+          'Balance'    => wallet.real_money_balance.to_s,
           'Currency'   => currency_code,
           'SessionId'  => customer_session.id,
-          'BonusMoney' => wallet.bonus_balance.to_s,
+          'BonusMoney' => 0.0,
           'RealMoney'  => wallet.real_money_balance.to_s
         )
       end

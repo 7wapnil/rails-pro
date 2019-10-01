@@ -3,6 +3,7 @@
 module BalanceCalculations
   class EmRollback < ApplicationService
     MONEY_PRECISION = 2
+    REAL_MONEY_ONLY_RATIO = 1.0
 
     delegate :wallet, to: :rollback
     delegate :real_money_balance, :bonus_balance, to: :wallet, allow_nil: true
@@ -28,10 +29,7 @@ module BalanceCalculations
     end
 
     def ratio
-      RatioCalculator.call(
-        real_money_amount: real_money_balance,
-        bonus_amount: bonus_balance
-      )
+      REAL_MONEY_ONLY_RATIO
     end
 
     def calculated_bonus_amount
