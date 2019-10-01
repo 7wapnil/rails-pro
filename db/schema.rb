@@ -640,6 +640,7 @@ ActiveRecord::Schema.define(version: 2019_10_01_065417) do
 
   create_table "wallets", force: :cascade do |t|
     t.bigint "customer_id"
+    t.decimal "amount", precision: 8, scale: 2, default: "0.0"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.bigint "currency_id"

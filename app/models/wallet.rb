@@ -31,12 +31,4 @@ class Wallet < ApplicationRecord
   def to_s
     "#{currency} Wallet"
   end
-
-  def amount
-    real_money_balance + bonus_balance
-  end
-
-  def saved_change_to_amount?
-    saved_change_to_real_money_balance? || saved_change_to_bonus_balance?
-  end
 end

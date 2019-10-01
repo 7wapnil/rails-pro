@@ -2,6 +2,7 @@
 
 FactoryBot.define do
   factory :wallet do
+    amount { Faker::Number.decimal(5, 2) }
     real_money_balance { Faker::Number.decimal(4, 2) }
     bonus_balance { Faker::Number.decimal(4, 2) }
 
@@ -13,8 +14,7 @@ FactoryBot.define do
     end
 
     trait :brick do
-      real_money_balance { 100_000 }
-      bonus_balance { 0 }
+      amount { 100_000 }
     end
 
     trait :fiat do
@@ -38,6 +38,7 @@ FactoryBot.define do
     end
 
     trait :empty do
+      amount { 0 }
       real_money_balance { 0 }
       bonus_balance { 0 }
     end
