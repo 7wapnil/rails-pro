@@ -27,7 +27,7 @@ module Betting
     field :message, types.String, property: :human_notification_message
     field :displayStatus, types.String,
           resolve: ->(obj, *) do
-            obj.settled? ? obj.settlement_status : obj.display_status
+            obj.fully_processed? ? obj.settlement_status : obj.display_status
           end
   end
 end
