@@ -14,63 +14,66 @@ module EntryRequests
     end
 
     def call
-      bet.send_to_internal_validation!
-
-      return notify_betslip_about_failure unless validate
-
-      bet.finish_internal_validation_successfully! do
-        bet.send_to_external_validation!
-      end
+      authorize_bet!
+    rescue Bets::PlacementError, RuntimeError => error
+      bet_register_failure!(error)
+      entry_request.register_failure!(error.message)
+    rescue Bets::RequestFailedError => error
+      bet_register_failure!(error)
+      log_job_error(error)
+    rescue AASM::InvalidTransition => error
+      log_job_error(error)
     end
 
     private
 
     attr_reader :entry_request, :bet
 
-    def validate
-      validate_bet! && validate_entry_request!
-    rescue Bets::PlacementError => error
-      bet.register_failure!(error.message, code: NOTIFICATION_ERROR_CODE)
-      entry_request.register_failure!(error.message)
-      false
-    rescue Bets::RequestFailedError => error
-      bet.register_failure!(error.message, code: NOTIFICATION_ERROR_CODE)
-      false
+    def authorize_bet!
+      ActiveRecord::Base.transaction do
+        bet.lock!
+        bet.send_to_internal_validation!
+
+        validate_bet!
+        validate_entry_request!
+        authorize_entry_request!
+
+        bet.finish_internal_validation_successfully! do
+          bet.send_to_external_validation!
+        end
+      end
     end
 
+    # TODO: rebuild form to use native errors handler
     def validate_bet!
       ::Bets::PlacementForm.new(subject: bet).validate!
     end
 
+    # TODO: rebuild form to use native errors handler
     def validate_entry_request!
-      return entry_request_failed! if entry_request.failed?
-      return zero_amount! if entry_request.amount.zero?
+      ::Bets::PlacementEntryRequestForm.new(subject: entry_request).validate!
+    end
 
+    def authorize_entry_request!
       WalletEntry::AuthorizationService.call(entry_request)
-
       return true if entry_request.succeeded?
 
       raise Bets::PlacementError, entry_request.result_message
     end
 
-    def entry_request_failed!
-      message = I18n.t('errors.messages.entry_request_failed')
-
-      raise Bets::RequestFailedError, message
-    rescue Bets::RequestFailedError => e
-      log_job_message(:error, message: e.message,
-                              bet_id: bet.id,
-                              error_object: e)
-      raise e
-    end
-
-    def zero_amount!
-      raise Bets::PlacementError,
-            I18n.t('errors.messages.real_money_blank_amount')
+    def bet_register_failure!(error)
+      bet.register_failure!(error.message, code: NOTIFICATION_ERROR_CODE)
+      notify_betslip_about_failure
     end
 
     def notify_betslip_about_failure
-      ::Bets::NotificationWorker.perform_async(bet.id)
+      WebSocket::Client.instance.trigger_bet_update(bet.reload)
+    end
+
+    def log_job_error(error)
+      log_job_message(:error, message: error.message,
+                              bet_id: bet.id,
+                              error_object: error)
     end
   end
 end
