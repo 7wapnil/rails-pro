@@ -17,6 +17,7 @@ module StateMachines
     SETTLED = 'settled'
     REJECTED = 'rejected'
     FAILED = 'failed'
+    MANUALLY_SETTLED = 'manually_settled'
 
     BET_STATUSES = {
       initial: INITIAL,
@@ -31,7 +32,8 @@ module StateMachines
       pending_manual_settlement: PENDING_MANUAL_SETTLEMENT,
       settled: SETTLED,
       rejected: REJECTED,
-      failed: FAILED
+      failed: FAILED,
+      manually_settled: MANUALLY_SETTLED
     }.freeze
 
     BET_SETTLEMENT_STATUSES = {
@@ -75,6 +77,7 @@ module StateMachines
         state :failed
         state :pending_manual_settlement
         state :settled
+        state :manually_settled
 
         after_all_events :log_transition_success
         error_on_all_events :log_transition_error
@@ -177,6 +180,11 @@ module StateMachines
                                rejected
                                pending_manual_settlement],
                       to: :cancelled
+        end
+
+        event :settle_manually do
+          transitions from: BET_STATUSES.values,
+                      to: :manually_settled
         end
       end
 

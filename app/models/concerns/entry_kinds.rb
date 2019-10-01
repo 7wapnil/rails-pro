@@ -11,6 +11,7 @@ module EntryKinds
     refund: REFUND = 'refund',
     rollback: ROLLBACK = 'rollback',
     system_bet_cancel: SYSTEM_BET_CANCEL = 'system_bet_cancel',
+    manual_bet_cancel: MANUAL_BET_CANCEL = 'manual_bet_cancel',
     bonus_conversion: BONUS_CONVERSION = 'bonus_conversion',
     bonus_change: BONUS_CHANGE = 'bonus_change'
   }.freeze
@@ -23,6 +24,7 @@ module EntryKinds
     WIN,
     REFUND,
     SYSTEM_BET_CANCEL,
+    MANUAL_BET_CANCEL,
     BONUS_CONVERSION,
     BONUS_CHANGE
   ].freeze
@@ -31,6 +33,7 @@ module EntryKinds
     BET,
     ROLLBACK,
     SYSTEM_BET_CANCEL,
+    MANUAL_BET_CANCEL,
     BONUS_CHANGE
   ].freeze
   DELAYED_CONFIRMATION_KINDS = [WITHDRAW, BET].freeze
@@ -40,6 +43,7 @@ module EntryKinds
     REFUND,
     ROLLBACK,
     SYSTEM_BET_CANCEL,
+    MANUAL_BET_CANCEL,
     WIN
   ].freeze
 

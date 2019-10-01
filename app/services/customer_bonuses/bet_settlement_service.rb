@@ -8,7 +8,7 @@ module CustomerBonuses
     end
 
     def call
-      return unless customer_bonus&.active? && bet.settled?
+      return unless customer_bonus&.active? && settled?
 
       recalculate_bonus_rollover
 
@@ -20,6 +20,10 @@ module CustomerBonuses
     private
 
     attr_reader :bet, :customer_bonus
+
+    def settled?
+      bet.settled? || bet.manually_settled?
+    end
 
     def recalculate_bonus_rollover
       RolloverCalculationService.call(bet)

@@ -48,13 +48,15 @@ module Bets
     def validate_bet!
       return if bet.accepted?
 
-      raise ::Bets::NotAcceptedError, 'Bet is not accepted'
+      raise ::Bets::NotAcceptedError,
+            I18n.t('errors.messages.bets.not_accepted')
     end
 
     def validate_void_factor!
       return if SUPPORTED_VOID_FACTORS.include?(void_factor)
 
-      raise ::Bets::NotSupportedError, 'Void factor is not supported'
+      raise ::Bets::NotSupportedError,
+            I18n.t('errors.messages.bets.not_supported_void_factor')
     end
 
     def void_factor

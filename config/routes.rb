@@ -57,6 +57,7 @@ Rails.application.routes.draw do
   resources :customers, only: [], module: :customers do
     resource :statistics, only: :show, path: 'stats'
     resources :entry_requests, only: :create
+    resources :bets, only: :update
   end
 
   resources :customer_bonuses, only: %i[create show destroy]
