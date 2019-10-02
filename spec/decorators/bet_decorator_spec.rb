@@ -28,7 +28,27 @@ describe BetDecorator, type: :decorator do
       end
     end
 
-    common_statuses = Bet.statuses.keys - pending_statuses - cancelled_statuses
+    settled_statuses = StateMachines::BetStateMachine::SETTLED_STATUSES_MASK
+    settled_statuses.each do |status|
+      context "on #{status} status" do
+        let(:settlement_status) do
+          StateMachines::BetStateMachine::BET_SETTLEMENT_STATUSES.values.sample
+        end
+        let(:bet) do
+          build(:bet, status: status,
+                      settlement_status: settlement_status)
+        end
+
+        it 'returns settlement status' do
+          expect(subject.display_status).to eq(settlement_status)
+        end
+      end
+    end
+
+    common_statuses = Bet.statuses.values -
+                      pending_statuses -
+                      cancelled_statuses -
+                      settled_statuses
     common_statuses.each do |status|
       context "on #{status} status" do
         let(:bet) { build(:bet, status: status) }

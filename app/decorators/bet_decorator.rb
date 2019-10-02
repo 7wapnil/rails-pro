@@ -20,6 +20,8 @@ class BetDecorator < ApplicationDecorator
   def display_status
     return PENDING if state_machine::PENDING_STATUSES_MASK.include?(status)
     return CANCELLED if state_machine::CANCELLED_STATUSES_MASK.include?(status)
+    return settlement_status if state_machine::SETTLED_STATUSES_MASK
+                                .include?(status)
 
     status
   end
