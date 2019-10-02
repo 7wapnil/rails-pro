@@ -104,7 +104,7 @@ deploy:
       name: update-image-tag
       code: |
         aws ssm put-parameter \
-            --name /backend/tag \
+            --name ${TAG_PARAM:-/backend/tag} \
             --value $WERCKER_GIT_COMMIT \
             --type SecureString \
             --overwrite
@@ -112,9 +112,9 @@ deploy:
     - script:
       name: prepare-migrations
       code: |
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-web
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-backend-web}
         terraform init
-        terraform workspace select $TARGET_ENV
+        terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve \
             -target module.app.aws_ecs_task_definition.this
         aws ecs describe-task-definition \
@@ -128,20 +128,20 @@ deploy:
         secret: $AWS_SECRET_ACCESS_KEY
         region: $AWS_DEFAULT_REGION
         cluster-name: arcanebet
-        task-definition-name: backend-migrate
+        task-definition-name: ${MIGRATE_DEF:-backend-migrate}
         task-definition-file: $WERCKER_SOURCE_DIR/migrate.json
 
     - script:
       name: terraform-apply
       code: |
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-web
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-backend-web}
         terraform init
-        terraform workspace select $TARGET_ENV
+        terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-worker
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${WORKER_PATH:-backend-worker}
         terraform init
-        terraform workspace select $TARGET_ENV
+        terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve
 
         cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-worker-odds-feed
@@ -159,9 +159,9 @@ deploy:
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-websocket
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${WS_PATH:-backend-websocket}
         terraform init
-        terraform workspace select $TARGET_ENV
+        terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve
 
   after-steps:
