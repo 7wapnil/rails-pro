@@ -137,7 +137,6 @@ Rails.application.routes.draw do
 
   root 'dashboards#index'
 
-  post '/api/em/wallet', to: 'api/every_matrix/wallets#create'
   namespace :api do
     namespace :every_matrix do
       resource :wallet, only: [:create]
