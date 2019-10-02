@@ -57,6 +57,11 @@ module StateMachines
       CANCELLED_BY_SYSTEM
     ].freeze
 
+    SETTLED_STATUSES_MASK = [
+      SETTLED,
+      MANUALLY_SETTLED
+    ].freeze
+
     included do
       enum status: BET_STATUSES
       enum settlement_status: BET_SETTLEMENT_STATUSES
