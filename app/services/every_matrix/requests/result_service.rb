@@ -14,7 +14,7 @@ module EveryMatrix
       end
 
       def placement_service
-        EntryRequests::Factories::EmResultPlacement
+        EntryRequests::Factories::EveryMatrix::ResultPlacement
       end
     end
   end

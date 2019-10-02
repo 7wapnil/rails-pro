@@ -14,7 +14,7 @@ module EveryMatrix
       end
 
       def placement_service
-        EntryRequests::Factories::EmRollbackPlacement
+        EntryRequests::Factories::EveryMatrix::RollbackPlacement
       end
     end
   end

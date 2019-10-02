@@ -18,7 +18,7 @@ module EveryMatrix
       end
 
       def placement_service
-        EntryRequests::Factories::EmWagerPlacement
+        EntryRequests::Factories::EveryMatrix::WagerPlacement
       end
 
       private
