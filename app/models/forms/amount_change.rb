@@ -22,15 +22,13 @@ module Forms
     end
 
     def save!
-      subject.with_lock do
-        validate!
-        subject.update!(
-          amount: subject.amount + amount_increment,
-          real_money_balance: subject.real_money_balance +
-                              real_money_amount_increment,
-          bonus_balance: subject.bonus_balance + bonus_amount_increment
-        )
-      end
+      validate!
+      subject.update!(
+        amount: subject.amount + amount_increment,
+        real_money_balance: subject.real_money_balance +
+                            real_money_amount_increment,
+        bonus_balance: subject.bonus_balance + bonus_amount_increment
+      )
     end
 
     private

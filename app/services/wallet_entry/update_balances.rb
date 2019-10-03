@@ -9,7 +9,6 @@ module WalletEntry
     end
 
     def call
-      lock_wallet!
       update_balance!
       update_entry!
     end
@@ -18,15 +17,8 @@ module WalletEntry
 
     attr_reader :entry
 
-    def lock_wallet!
-      wallet.lock!(true)
-    end
-
     def update_balance!
-      ::Forms::AmountChange.new(
-        wallet,
-        request: entry_request
-      ).save!
+      ::Forms::AmountChange.new(wallet, request: entry_request).save!
     end
 
     def update_entry!

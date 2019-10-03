@@ -24,7 +24,7 @@ module WalletEntry
     def update_database!
       ActiveRecord::Base.transaction do
         perform_default_balance_update! if no_balance_updates?
-        find_or_create_wallet!
+        find_or_create_wallet_with_lock!
         create_entry!
         update_balances!
         confirm_entry if auto_confirmation?
@@ -40,11 +40,11 @@ module WalletEntry
       request.update(real_money_amount: amount)
     end
 
-    def find_or_create_wallet!
+    def find_or_create_wallet_with_lock!
       @wallet = Wallets::FindOrCreate.call(
         customer: request.customer,
         currency: request.currency
-      )
+      ).lock!
     end
 
     def create_entry!
