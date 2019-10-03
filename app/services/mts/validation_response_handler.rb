@@ -31,16 +31,10 @@ module Mts
     end
 
     def finish_external_validation_with_rejection(bet)
-      EntryRequests::BetRefundWorker.perform_async(refund_payload(bet))
+      EntryRequests::BetRefundWorker.perform_async(refund_entry_request(bet).id,
+                                                   response.rejection_key,
+                                                   response.rejection_message)
       log_bet_failed_external_validation(bet)
-    end
-
-    def refund_payload(bet)
-      {
-        id: refund_entry_request(bet).id,
-        message: response.rejection_message,
-        code: response.rejection_key
-      }
     end
 
     def refund_entry_request(bet)
