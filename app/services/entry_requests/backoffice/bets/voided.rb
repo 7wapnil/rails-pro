@@ -24,7 +24,7 @@ module EntryRequests
         end
 
         def update_bet_settlement_status!
-          bet.voided!
+          bet.settle_manually!(settlement_status: Bet::VOIDED)
         end
 
         def create_bet_cancel_request!

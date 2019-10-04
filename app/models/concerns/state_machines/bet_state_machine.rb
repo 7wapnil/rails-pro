@@ -175,7 +175,8 @@ module StateMachines
 
         event :rollback_system_cancellation_with_settlement do
           transitions from: :cancelled_by_system,
-                      to: :settled
+                      to: :settled,
+                      after: proc { |args| settle_as(args) }
         end
 
         event :cancel do
@@ -189,13 +190,14 @@ module StateMachines
 
         event :settle_manually do
           transitions from: BET_STATUSES.values,
-                      to: :manually_settled
+                      to: :manually_settled,
+                      after: proc { |args| settle_as(args) }
         end
       end
 
       private
 
-      def settle_as(settlement_status:, void_factor:)
+      def settle_as(settlement_status:, void_factor: nil)
         update(
           settlement_status: settlement_status,
           void_factor: void_factor,

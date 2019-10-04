@@ -22,7 +22,7 @@ module EntryRequests
         end
 
         def update_bet_settlement_status!
-          bet.won!
+          bet.settle_manually!(settlement_status: Bet::WON)
         end
 
         def create_bet_entry_request!

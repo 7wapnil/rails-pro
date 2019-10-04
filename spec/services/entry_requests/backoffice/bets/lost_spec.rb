@@ -57,4 +57,15 @@ describe EntryRequests::Backoffice::Bets::Lost do
       expect(wallet.reload.real_money_balance).to eq(expected_amount)
     end
   end
+
+  context 'bet_settlement_status_achieved_at' do
+    let(:bet) { voided_bet }
+    let!(:entry) { placement_entry }
+
+    before { subject }
+
+    it 'doesnt change bet_settlement_status_achieved_at' do
+      expect(bet.reload.bet_settlement_status_achieved_at).to be_truthy
+    end
+  end
 end

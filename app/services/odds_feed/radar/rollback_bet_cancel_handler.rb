@@ -104,7 +104,9 @@ module OddsFeed
       end
 
       def settle_bet(bet)
-        bet.rollback_system_cancellation_with_settlement!
+        bet.rollback_system_cancellation_with_settlement!(
+          settlement_status: bet.settlement_status
+        )
       end
     end
   end

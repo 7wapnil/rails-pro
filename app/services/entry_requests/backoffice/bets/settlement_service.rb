@@ -38,7 +38,6 @@ module EntryRequests
             create_entry_requests!
             proceed_entry_requests!
             recalculate_bonus_rollover!
-            update_bet_status!
             update_bet_settlement_status!
             log_initiator_activity!
           end
@@ -63,10 +62,6 @@ module EntryRequests
 
         def recalculate_bonus_rollover!
           raise NotImplementedError, 'Define #recalculate_bonus_rollover!'
-        end
-
-        def update_bet_status!
-          bet.settle_manually!
         end
 
         def update_bet_settlement_status!

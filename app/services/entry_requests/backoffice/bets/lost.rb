@@ -20,7 +20,7 @@ module EntryRequests
         def recalculate_bonus_rollover!; end
 
         def update_bet_settlement_status!
-          bet.lost!
+          bet.settle_manually!(settlement_status: Bet::LOST)
         end
 
         def create_entry_request_for!(entry)

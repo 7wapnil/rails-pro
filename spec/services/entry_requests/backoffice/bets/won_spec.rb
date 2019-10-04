@@ -45,4 +45,15 @@ describe EntryRequests::Backoffice::Bets::Won do
         .to eq(expected_amount.to_f.round(2))
     end
   end
+
+  context 'bet_settlement_status_achieved_at' do
+    let(:bet) { settled_bet }
+    let!(:entry) { placement_entry }
+
+    before { subject }
+
+    it 'doesnt change bet_settlement_status_achieved_at' do
+      expect(bet.reload.bet_settlement_status_achieved_at).to be_truthy
+    end
+  end
 end
