@@ -166,6 +166,7 @@ describe ::Payments::Withdrawals::Customers::CreateForm, type: :model do
     let!(:entry_request) do
       create(:entry_request,
              status: EntryRequest::PENDING,
+             bonus_amount: 10,
              customer: customer,
              origin: bet)
     end
