@@ -20,7 +20,8 @@ module Account
 
     def validate_login!
       invalid_captcha! if captcha_invalid?
-      reset_password! if imported_customer_first_login?
+      # TODO: uncomment after blocking a hacker
+      # reset_password! if imported_customer_first_login?
       invalid_login! if invalid_password?
     end
 
