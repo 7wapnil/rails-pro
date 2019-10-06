@@ -45,6 +45,7 @@ module Payments
             .bets
             .pending
             .joins(:entry_requests)
+            .where.not(entry_requests: { bonus_amount: 0 })
             .none?
         end
 
