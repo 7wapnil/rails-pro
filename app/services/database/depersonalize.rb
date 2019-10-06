@@ -23,11 +23,10 @@ module Database
         'UPDATE customer_transactions SET details = null'
       ].freeze
 
-    # TODO: uncomment after Authtrail merge to master
     DELETE_QUERIES =
       [
         'DELETE from active_storage_blobs',
-        # "DELETE from login_activities"
+        'DELETE from login_activities'
       ].freeze
 
     def call
