@@ -12,7 +12,10 @@ describe EntryRequests::Factories::BetPlacement do
   end
 
   let(:impersonated_by) { create(:customer) }
-  let!(:wallet) { create(:wallet, :brick, currency: currency, real_money_balance: 10, bonus_balance: 10) }
+  let!(:wallet) do
+    create(:wallet, :brick, currency: currency,
+                            real_money_balance: 10, bonus_balance: 10)
+  end
   let(:currency) { create(:currency) }
   let(:customer_bonus) { create(:customer_bonus) }
   let(:market) { create(:event, :with_market, :upcoming).markets.sample }

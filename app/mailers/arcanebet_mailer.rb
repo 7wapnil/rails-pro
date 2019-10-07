@@ -1,3 +1,5 @@
+# rubocop:disable Metrics/ClassLength
+# TODO split this into several mailers
 class ArcanebetMailer < ApplicationMailer
   default from: 'noreply@arcanebet.com',
           subject: 'ArcaneBet'
@@ -28,7 +30,7 @@ class ArcanebetMailer < ApplicationMailer
     customer = params[:customer]
     domain = ENV['APP_HOST']
     customer_url = "#{domain}/customers/#{customer.id}"
-    receiver = "contact@arcanebet.com" # maybe move this to .env
+    receiver = 'contact@arcanebet.com' # maybe move this to .env
 
     smtpapi_mail(
       TEMPLATES[__method__],
@@ -130,3 +132,4 @@ class ArcanebetMailer < ApplicationMailer
     { sub: hdrs }
   end
 end
+# rubocop:enable Metrics/ClassLength
