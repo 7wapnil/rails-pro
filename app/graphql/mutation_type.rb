@@ -19,4 +19,6 @@ MutationType = GraphQL::ObjectType.define do
 
   field :deposit, function: ::Payments::Deposits::Perform.new
   field :withdraw, function: ::Payments::Withdrawals::Perform.new
+
+  field :createEveryMatrixSession, function: ::EveryMatrix::CreateSession.new
 end
