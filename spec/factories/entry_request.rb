@@ -62,6 +62,15 @@ FactoryBot.define do
       end
     end
 
+    trait :with_real_money do
+      real_money_amount { amount }
+    end
+
+    trait :with_balances_amount do
+      real_money_amount { amount / 2 }
+      bonus_amount { amount / 2 }
+    end
+
     trait :withdrawal do
       kind { :withdraw }
     end

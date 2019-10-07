@@ -26,6 +26,7 @@ describe Payments::Fiat::SafeCharge::Deposits::CallbackHandler do
   let(:entry_request) do
     create(
       :entry_request,
+      :with_real_money,
       amount: amount,
       mode: mode,
       customer: customer,

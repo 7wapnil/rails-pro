@@ -23,7 +23,6 @@ module WalletEntry
 
     def update_database!
       ActiveRecord::Base.transaction do
-        perform_default_balance_update! if no_balance_updates?
         find_or_create_wallet_with_lock!
         create_entry!
         update_balances!

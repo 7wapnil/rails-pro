@@ -67,8 +67,8 @@ ActiveRecord::Schema.define(version: 2019_09_24_131107) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.datetime "validation_ticket_sent_at"
     t.string "settlement_status"
+    t.datetime "validation_ticket_sent_at"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"

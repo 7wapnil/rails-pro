@@ -15,7 +15,9 @@ FactoryBot.define do
       after(:create) do |bet|
         wallet = bet.customer.wallets.take
         bet.update(currency: wallet.currency)
-        create(:entry, :bet, origin: bet, wallet: wallet)
+        create(:entry, :bet, :with_real_money_balance_entry,
+               origin: bet,
+               wallet: wallet)
       end
     end
 

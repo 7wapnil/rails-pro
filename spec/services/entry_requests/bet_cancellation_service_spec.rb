@@ -11,7 +11,11 @@ describe EntryRequests::BetCancellationService do
   let(:code) { Mts::Codes::SUCCESSFUL_CODE }
   let(:message) { 'Cancelled' }
   let!(:currency) { create(:currency, :primary) }
-  let(:entry) { create(:entry, wallet: wallet, amount: -100) }
+  let(:entry) do
+    create(:entry, :with_real_money_balance_entry,
+           wallet: wallet,
+           amount: -100)
+  end
   let!(:bet) do
     create(:bet, :sent_to_external_validation, placement_entry: entry,
                                                validation_ticket_id: ticket_id,

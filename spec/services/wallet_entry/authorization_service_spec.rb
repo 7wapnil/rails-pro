@@ -11,7 +11,7 @@ describe WalletEntry::AuthorizationService do
 
   context 'first entry' do
     let(:kind) { EntryKinds::DEPOSIT }
-    let(:request) { create(:entry_request, kind: kind) }
+    let(:request) { create(:entry_request, :with_real_money, kind: kind) }
     let(:customer) { request.customer }
     let(:service) { described_class.new(request) }
 
@@ -149,6 +149,7 @@ describe WalletEntry::AuthorizationService do
       before do
         request.kind = EntryKinds::DEPOSIT
         request.amount = 10
+        request.real_money_amount = request.amount
       end
 
       it 'increments wallet amount' do
@@ -178,6 +179,7 @@ describe WalletEntry::AuthorizationService do
 
       it 'decrements wallet amount' do
         request.amount = -10
+        request.real_money_amount = request.amount
 
         described_class.call(request)
         wallet.reload
@@ -187,6 +189,7 @@ describe WalletEntry::AuthorizationService do
 
       it 'decrements balance amount' do
         request.amount = -10
+        request.real_money_amount = request.amount
 
         described_class.call(request)
         wallet.reload
@@ -201,6 +204,7 @@ describe WalletEntry::AuthorizationService do
                                new_amount: -10)
 
         request.amount = -60
+        request.real_money_amount = request.amount
 
         described_class.call(request)
         wallet.reload
@@ -219,6 +223,7 @@ describe WalletEntry::AuthorizationService do
                                new_amount: -10)
 
         request.amount = -40
+        request.real_money_amount = request.amount
 
         described_class.call(request)
         wallet.reload

@@ -25,7 +25,9 @@ module EntryRequests
           comment: comment,
           customer_id: bet.customer_id,
           currency_id: bet.currency_id,
-          origin: bet
+          origin: bet,
+          real_money_amount: -refund_entry.real_money_amount,
+          bonus_amount: -refund_entry.bonus_amount
         }
       end
 

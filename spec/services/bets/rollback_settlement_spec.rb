@@ -7,10 +7,12 @@ describe Bets::RollbackSettlement do
   let!(:customer_bonus) do
     create(:customer_bonus, bets: [bet], customer: bet.customer)
   end
+  let(:initial_value) { 10_000 }
   let!(:wallet) do
     create(:wallet, customer: bet.customer,
                     currency: bet.currency,
-                    real_money_balance: 10_000)
+                    real_money_balance: initial_value,
+                    bonus_balance: initial_value)
   end
 
   let(:rollback_entry) { Entry.rollback.find_by(origin: bet) }
@@ -22,7 +24,11 @@ describe Bets::RollbackSettlement do
   end
 
   context 'on won bet' do
-    let!(:win_entry) { create(:entry, :win, origin: bet, amount: bet.amount) }
+    let!(:win_entry) do
+      create(:entry, :win, :with_balance_entries,
+             origin: bet,
+             amount: bet.amount)
+    end
 
     it 'is reverted' do
       subject
@@ -48,6 +54,18 @@ describe Bets::RollbackSettlement do
     it 'calls bonuses rollover' do
       expect(CustomerBonuses::RollbackBonusRolloverService).to receive(:call)
       subject
+    end
+
+    it 'updates real money balance' do
+      subject
+      expect(wallet.reload.real_money_balance)
+        .to eq(initial_value - win_entry.real_money_amount)
+    end
+
+    it 'updates bonus balance' do
+      subject
+      expect(wallet.reload.bonus_balance)
+        .to eq(initial_value - win_entry.bonus_amount)
     end
 
     context 'when there is no bonus assigned' do
