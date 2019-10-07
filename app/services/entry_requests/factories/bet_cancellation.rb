@@ -3,8 +3,6 @@
 module EntryRequests
   module Factories
     class BetCancellation < ApplicationService
-      delegate :placement_entry, to: :bet
-
       def initialize(bet:)
         @bet = bet
       end
@@ -29,8 +27,8 @@ module EntryRequests
         base_entry_request_attributes.merge(
           amount: placement_entry.amount.abs,
           comment: bet_cancel_comment,
-          real_money_amount: -bet_entry.real_money_amount,
-          bonus_amount: -bet_entry.bonus_amount
+          real_money_amount: placement_entry.real_money_amount.abs,
+          bonus_amount: placement_entry.bonus_amount.abs
         )
       end
 
@@ -67,8 +65,8 @@ module EntryRequests
         @winning_entry ||= bet.winning
       end
 
-      def bet_entry
-        @bet_entry ||= bet.placement_entry
+      def placement_entry
+        @placement_entry ||= bet.placement_entry
       end
 
       def win_cancel_comment

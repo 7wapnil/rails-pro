@@ -78,9 +78,9 @@ describe EntryRequests::Factories::RollbackBetCancellation do
             real_money_amount: -placement_entry.real_money_amount
           ),
            have_attributes(
-             amount: winning_entry.amount,
-             bonus_amount: winning_entry.bonus_amount,
-             real_money_amount: winning_entry.real_money_amount
+             amount: winning_entry.amount.abs,
+             bonus_amount: winning_entry.bonus_amount.abs,
+             real_money_amount: winning_entry.real_money_amount.abs
            )]
         )
     end

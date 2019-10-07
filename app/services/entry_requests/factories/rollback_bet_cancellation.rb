@@ -58,8 +58,8 @@ module EntryRequests
           customer_id: bet.customer_id,
           currency_id: bet.currency_id,
           origin: bet,
-          real_money_amount: winning_rollback_entry.real_money_amount,
-          bonus_amount: winning_rollback_entry.bonus_amount
+          real_money_amount: winning_rollback_entry.real_money_amount.abs,
+          bonus_amount: winning_rollback_entry.bonus_amount.abs
         }
       end
 

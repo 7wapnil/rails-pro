@@ -298,7 +298,7 @@ describe Radar::RollbackBetCancelWorker do
       it 'with valid attributes for winnings rollback' do
         subject
         expect(found_win_rollback_entry_request).to have_attributes(
-          amount: win_entry_request.amount,
+          amount: win_entry_request.amount.abs,
           currency_id: win_entry_request.currency_id,
           comment: win_cancel_comment
         )
@@ -337,7 +337,7 @@ describe Radar::RollbackBetCancelWorker do
       it 'with valid attributes for winnings cancellation' do
         subject
         expect(found_win_cancel_entry).to have_attributes(
-          amount: win_entry.amount,
+          amount: win_entry.amount.abs,
           wallet_id: win_entry_wallet.id
         )
       end

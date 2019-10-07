@@ -23,6 +23,7 @@ module EntryKinds
     DEPOSIT,
     WIN,
     REFUND,
+    ROLLBACK,
     SYSTEM_BET_CANCEL,
     MANUAL_BET_CANCEL,
     BONUS_CONVERSION,
