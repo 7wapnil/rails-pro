@@ -24,7 +24,7 @@ module LoginActivities
         identity: identity,
         user: customer,
         context: 'customers#sign_in',
-        ip: request.ip,
+        ip: request.remote_ip,
         user_agent: request.user_agent
       }
     end
