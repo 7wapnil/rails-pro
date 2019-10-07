@@ -3,8 +3,8 @@
 describe GraphQL, '#place_bet' do
   let!(:currency) { create(:currency, code: 'EUR') }
   let(:auth_customer) { create(:customer) }
-  let(:wallet) do
-    create(:wallet, :brick, customer: auth_customer, currency: currency)
+  let!(:wallet) do
+    create(:wallet, :brick, customer: auth_customer, currency: currency, real_money_balance: 100, bonus_balance: 100)
   end
   let(:context) { { current_customer: auth_customer } }
 
@@ -111,6 +111,28 @@ describe GraphQL, '#place_bet' do
 
     context 'with inactive odd' do
       let!(:odd) { create(:odd) }
+
+      it 'gives an error' do
+        expect(error_message)
+          .to eq I18n.t('bets.notifications.placement_error')
+      end
+    end
+
+    context 'with negative real money balance' do
+      let!(:wallet) do
+        create(:wallet, :brick, customer: auth_customer, currency: currency, real_money_balance: -10, bonus_balance: 100)
+      end
+
+      it 'gives an error' do
+        expect(error_message)
+          .to eq I18n.t('bets.notifications.placement_error')
+      end
+    end
+
+    context 'with negative bonus balance' do
+      let!(:wallet) do
+        create(:wallet, :brick, customer: auth_customer, currency: currency, real_money_balance: 100, bonus_balance: -10)
+      end
 
       it 'gives an error' do
         expect(error_message)

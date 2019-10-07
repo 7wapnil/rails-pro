@@ -3,10 +3,11 @@ class ArcanebetMailer < ApplicationMailer
           subject: 'ArcaneBet'
 
   TEMPLATES = {
-    suspicious_login:          '13ea825c-23dd-4d82-bc55-fc037d2e1a49',
-    account_verification_mail: '2f09ad2c-5db2-40ee-8c62-d2781fa7bea8',
-    email_verification_mail:   '0114629f-0d3d-4bcb-8f45-8377e4659be4',
-    reset_password_mail:       '6ce802da-57e3-4ef0-9a0a-141f840864ac'
+    suspicious_login:               '13ea825c-23dd-4d82-bc55-fc037d2e1a49',
+    account_verification_mail:      '2f09ad2c-5db2-40ee-8c62-d2781fa7bea8',
+    email_verification_mail:        '0114629f-0d3d-4bcb-8f45-8377e4659be4',
+    reset_password_mail:            '6ce802da-57e3-4ef0-9a0a-141f840864ac',
+    negative_balance_bet_placement: 'fe39d899-cf6c-48c5-9f15-dc722d7cb6f1'
   }.freeze
 
   def suspicious_login(login)
@@ -20,6 +21,20 @@ class ArcanebetMailer < ApplicationMailer
       TEMPLATES[__method__],
       customer.email,
       'changePasswordUrl': change_password_url
+    )
+  end
+
+  def negative_balance_bet_placement
+    customer = params[:customer]
+    domain = ENV['APP_HOST']
+    customer_url = "#{domain}/customers/#{customer.id}"
+    receiver = "contact@arcanebet.com" # maybe move this to .env
+
+    smtpapi_mail(
+      TEMPLATES[__method__],
+      receiver,
+      'customerName': customer.full_name,
+      'customerUrl': customer_url
     )
   end
 

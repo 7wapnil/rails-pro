@@ -6,16 +6,30 @@ module Bets
 
     attr_accessor :subject
 
-    delegate :event, :odd, :market, to: :subject
+    delegate :event, :odd, :market, :customer, to: :subject
+    delegate :wallet, to: :customer
 
     def validate!
       check_if_odd_active!
       check_if_market_active!
       limits_validation!
       check_provider_connection!
+      check_if_customer_balance_positive!
     end
 
     private
+
+    def check_if_customer_balance_positive!
+      return unless wallet
+      return if wallet.real_money_balance >= 0 && wallet.bonus_balance >= 0
+
+      ArcanebetMailer
+        .with(customer: customer)
+        .negative_balance_bet_placement
+        .deliver_now
+
+      raise ::Bets::PlacementError, 'Bet placed with negative balance'
+    end
 
     def check_if_odd_active!
       return if odd.active?
