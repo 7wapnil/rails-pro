@@ -59,7 +59,8 @@
           .filter_field
             = f.label :title_id_eq, class: 'sr-only'
             = f.select :title_id_eq,
-                        options_for_select(filter.sports, query_params[:title_id_eq]),
+                        options_for_select(filter.sports,
+                                           filter.search_params(:title_id_eq)),
                         { include_blank: true },
                         class: 'form-control'
 
@@ -69,19 +70,30 @@
           .filter_field
             = f.label :tournaments_name_eq, class: 'sr-only'
             = f.select :tournaments_name_eq,
-                        options_for_select(filter.tournaments, query_params[:tournaments_name_eq]),
+                        options_for_select(filter.tournaments,
+                                           filter.search_params(:tournaments_name_eq)),
                         { include_blank: true },
                         class: 'form-control'
         %th
           .filter_title
-            #{t('attributes.category')}:
+            #{t('attributes.status')}:
           .filter_field
-            = f.label :categories_name_in, class: 'sr-only'
-            = f.select :categories_name_in,
-                        options_for_select(filter.categories, query_params[:categories_name_in]),
+            = f.label :status_eq, class: 'sr-only'
+            = f.select :status_eq,
+                        options_for_select(BetsFilter::STATUSES,
+                                           filter.search_params(:status_eq)),
                         { include_blank: true },
-                        multiple: true, size: 1,
-                        class: 'form-control multi-select'
+                        class: 'form-control'
+        %th
+          .filter_title
+            #{t('attributes.settlement_status')}:
+          .filter_field
+            = f.label :settlement_status_eq, class: 'sr-only'
+            = f.select :settlement_status_eq,
+                        options_for_select(BetsFilter::SETTLEMENT_STATUSES,
+                                           filter.search_params(:settlement_status_eq)),
+                        { include_blank: true },
+                        class: 'form-control'
 
         %th
           = f.submit class: 'btn btn-outline-dark btn-block'

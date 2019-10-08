@@ -7,6 +7,12 @@ class BetsFilter
     customers: %i[customer],
     bets: []
   }.freeze
+  NO_SETTLEMENT_STATUS = 'no_status'
+  SETTLEMENT_STATUSES = [
+    NO_SETTLEMENT_STATUS,
+    *Bet::BET_SETTLEMENT_STATUSES.values
+  ].freeze
+  STATUSES = Bet::BET_STATUSES.values
 
   attr_reader :source
 
@@ -14,6 +20,8 @@ class BetsFilter
     @source = source
     @query_params = prepare_interval_filter(query_params, :created_at)
     @page = page
+
+    format_settlement_status!
   end
 
   def sports
@@ -42,5 +50,17 @@ class BetsFilter
     BetDecorator.decorate_collection(
       search.result.order(id: :desc).page(@page)
     )
+  end
+
+  def search_params(key)
+    @query_params.dig(key)
+  end
+
+  private
+
+  def format_settlement_status!
+    return unless @query_params[:settlement_status_eq] == NO_SETTLEMENT_STATUS
+
+    @query_params[:settlement_status_null] = true
   end
 end

@@ -173,51 +173,49 @@ describe Bet, '#index' do
         end
       end
 
-      context 'by Category' do
-        let(:france) { EventScope.find_by(name: 'France') }
-        let(:pakistan) { EventScope.find_by(name: 'Pakistan') }
-        let(:germany) { EventScope.find_by(name: 'Germany') }
-
-        let(:bet_pakistan) { create(:bet) }
-        let(:bet_france) { create(:bet) }
-        let(:bet_germany) { create(:bet) }
-
-        before do
-          bet_pakistan.event.event_scopes << pakistan
-          bet_france.event.event_scopes << france
-          bet_germany.event.event_scopes << germany
-        end
+      context 'by status' do
+        let!(:bet_cancelled) { create(:bet, :cancelled) }
+        let!(:bet_settled) { create(:bet, :settled) }
 
         it 'found by one category' do
-          select pakistan.name, from: 'Event scope Name in'
+          select Bet::CANCELLED, from: 'Status eq'
           click_on 'Search'
 
           within 'table.table.entities tbody' do
-            expect(page).to have_selector(resource_row_selector(bet_pakistan))
-            expect(page).not_to have_selector(resource_row_selector(bet_france))
-          end
-        end
-
-        it 'found by multiple categories' do
-          dropdown = page.find('select#bets_categories_name_in')
-          dropdown.select(pakistan.name)
-          dropdown.select(france.name)
-          click_on 'Search'
-
-          within 'table.table.entities tbody' do
-            bet_pakistan_selector = resource_row_selector(bet_pakistan)
-            bet_france_selector = resource_row_selector(bet_france)
-            bet_germany_selector = resource_row_selector(bet_germany)
-
-            expect(page).not_to have_selector(bet_germany_selector)
-            expect(page).to have_selector(bet_france_selector)
-            expect(page).to have_selector(bet_pakistan_selector)
+            expect(page).to have_selector(resource_row_selector(bet_cancelled))
+            expect(page)
+              .not_to have_selector(resource_row_selector(bet_settled))
           end
         end
 
         it 'not found' do
-          bet_france.event.event_scopes.delete_all
-          select france.name, from: 'Event scope Name in'
+          select Bet::MANUALLY_SETTLED, from: 'Status eq'
+          click_on 'Search'
+
+          within 'table.table.entities tbody' do
+            expect(page)
+              .to have_content(I18n.t(:not_found,
+                                      instance: I18n.t('entities.bets')))
+          end
+        end
+      end
+
+      context 'by settlement status' do
+        let!(:bet_lost) { create(:bet, :lost) }
+        let!(:bet_won) { create(:bet, :won) }
+
+        it 'found by one category' do
+          select Bet::WON, from: 'Settlement status eq'
+          click_on 'Search'
+
+          within 'table.table.entities tbody' do
+            expect(page).to have_selector(resource_row_selector(bet_won))
+            expect(page).not_to have_selector(resource_row_selector(bet_lost))
+          end
+        end
+
+        it 'not found' do
+          select Bet::VOIDED, from: 'Settlement status eq'
           click_on 'Search'
 
           within 'table.table.entities tbody' do
