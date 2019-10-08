@@ -8,6 +8,13 @@
   - mailers
   - exchange_rates
   - expired_entry_requests
+  - every_matrix_mix_data_feed
+
+:limits:
+  every_matrix_mix_data_feed: 1
+
+:process_limits:
+  every_matrix_mix_data_feed: 1
 
 :schedule:
   expiring_bonuses:
@@ -82,3 +89,9 @@
     class: Scheduled::ExpiringCustomerBonusesWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Fails expired deposit requests and connected bonuses"
+
+  every_matrix_mix_data_feed_heartbeat_worker:
+    every: <%= "#{ENV.fetch('EVERY_MATRIX_MIX_DATA_FEED_HEARTBEAT_INTERVAL', '15')}s" %>
+    class: EveryMatrix::MixDataFeed::HeartbeatWorker
+    enabled: true
+    description: "Heartbeat for EveryMatrix MixData feed connection"

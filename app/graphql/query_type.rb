@@ -10,6 +10,7 @@ QueryType = GraphQL::ObjectType.define do
   field :tournamentEvents, function: Events::BySport::TournamentEventsQuery.new
   field :eventContexts, function: Events::ContextsQuery.new
   field :event, function: Events::EventQuery.new
+  field :games, function: EveryMatrix::GamesQuery.new
   field :markets, function: Events::MarketsQuery.new
   field :documents, function: Documents::DocumentsQuery.new
   field :user, function: Account::UserQuery.new
