@@ -343,4 +343,47 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
       end
     end
   end
+
+  context 'GetTransactionStatus' do
+    let(:request_name) { 'GetTransactionStatus' }
+    let(:transaction_id) { 123_456_789 }
+    let(:payload) do
+      common_request_params.merge(
+        'Request' => request_name,
+        'TransactionId' => transaction_id
+      )
+    end
+
+    context 'with existing transaction' do
+      let!(:transaction) do
+        create(:every_matrix_transaction, transaction_id: transaction_id)
+      end
+
+      let(:expected_response) do
+        common_success_response.merge(
+          'TransactionId' => transaction_id,
+          'TransactionStatus' => 'Processed'
+        )
+      end
+
+      it 'responds with Processed status' do
+        post(:create, params: payload)
+
+        expect(json).to include(expected_response)
+      end
+    end
+
+    context 'with missing transaction' do
+      let(:expected_response) do
+        common_success_response.merge(
+          'TransactionId' => transaction_id,
+          'TransactionStatus' => 'Notexists'
+        )
+      end
+
+      it 'responds with Notexists status' do
+        expect(json).to include(expected_response)
+      end
+    end
+  end
 end

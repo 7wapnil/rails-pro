@@ -8,7 +8,9 @@ module Api
         'getbalance' => 'EveryMatrix::Requests::GetBalanceService',
         'wager'      => 'EveryMatrix::Requests::WagerService',
         'result'     => 'EveryMatrix::Requests::ResultService',
-        'rollback'   => 'EveryMatrix::Requests::RollbackService'
+        'rollback'   => 'EveryMatrix::Requests::RollbackService',
+        'gettransactionstatus' =>
+          'EveryMatrix::Requests::GetTransactionStatusService'
       }.freeze
 
       before_action :authorize_wallet_api
