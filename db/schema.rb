@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_01_065417) do
+ActiveRecord::Schema.define(version: 2019_10_08_095223) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -359,6 +359,7 @@ ActiveRecord::Schema.define(version: 2019_10_01_065417) do
     t.jsonb "response"
     t.index ["customer_id"], name: "index_em_transactions_on_customer_id"
     t.index ["em_wallet_session_id"], name: "index_em_transactions_on_em_wallet_session_id"
+    t.index ["transaction_id"], name: "index_em_transactions_on_transaction_id"
   end
 
   create_table "em_wallet_sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
