@@ -2,7 +2,7 @@
 
 module EveryMatrix
   module Requests
-    class TransactionService < BaseRequestService
+    class TransactionService < SessionRequestService
       TRANSACTION_PARAMS = %w[Amount Device GameType
                               GPGameId EMGameId GPId
                               Product RoundId TransactionId

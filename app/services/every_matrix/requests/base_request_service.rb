@@ -5,15 +5,11 @@ module EveryMatrix
     class BaseRequestService < ApplicationService
       def initialize(params)
         @params = params
-        @session = params.permit('SessionId')['SessionId']
-        @session = EveryMatrix::WalletSession.find_by(id: @session)
-        @wallet = @session&.wallet
-        @customer = @wallet&.customer
       end
 
       protected
 
-      attr_reader :params, :customer, :wallet, :session
+      attr_reader :params
 
       def common_response
         {
@@ -27,17 +23,6 @@ module EveryMatrix
           'ReturnCode' => 0,
           'Message'    => 'Success'
         )
-      end
-
-      def user_not_found_response
-        common_response.merge(
-          'ReturnCode' => 103,
-          'Message'    => 'User not found'
-        )
-      end
-
-      def currency_code
-        wallet.currency.code
       end
 
       def request_name

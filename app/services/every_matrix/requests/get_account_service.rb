@@ -2,7 +2,7 @@
 
 module EveryMatrix
   module Requests
-    class GetAccountService < BaseRequestService
+    class GetAccountService < SessionRequestService
       def call
         return user_not_found_response unless customer
 
