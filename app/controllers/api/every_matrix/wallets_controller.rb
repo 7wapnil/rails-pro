@@ -39,10 +39,10 @@ module Api
         return true if valid_login_and_password?
 
         render json: {
-          'ApiVersion': '1.0',
-          'Request': request_param['Request'],
-          'ReturnCode': 403,
-          'Message': 'Authorization failed'
+          'ApiVersion' => '1.0',
+          'Request'    => request_param['Request'],
+          'ReturnCode' => 103,
+          'Message'    => 'User not found'
         }
       end
 
