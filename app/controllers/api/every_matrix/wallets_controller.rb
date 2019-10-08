@@ -10,7 +10,8 @@ module Api
         'result'     => 'EveryMatrix::Requests::ResultService',
         'rollback'   => 'EveryMatrix::Requests::RollbackService'
       }.freeze
-      before_action :authorize_em_wallet_api
+
+      before_action :authorize_wallet_api
 
       def create
         Rails.logger.info 'PARAMS:'
@@ -32,13 +33,13 @@ module Api
         REQUEST_HANDLERS[request_param['Request'].downcase].constantize
       end
 
-      def authorize_em_wallet_api
+      def authorize_wallet_api
         return true if valid_login_and_password?
 
         render json: {
           'ApiVersion': '1.0',
           'Request': request_param['Request'],
-          'ReturnCode': '403',
+          'ReturnCode': 403,
           'Message': 'Authorization failed'
         }
       end
