@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe Account::SendPasswordResetService do
-  let(:service) { described_class.new(customer: customer, captcha: '') }
+  let(:service) { described_class.new(email: customer&.email, captcha: '') }
   let(:customer) { create :customer, email_verified: email_verified }
   let(:raw_token) { SecureRandom.hex(7) }
   let(:reset_password_token) { SecureRandom.hex(7) }
@@ -33,7 +33,10 @@ describe Account::SendPasswordResetService do
     let(:email_verified) { true }
 
     it 'updates token' do
-      expect { service.call }.to change(customer, :reset_password_token)
+      expect do
+        service.call
+        customer.reload
+      end .to change(customer, :reset_password_token)
     end
 
     it 'sends reset password email' do
@@ -46,7 +49,10 @@ describe Account::SendPasswordResetService do
     let(:email_verified) { false }
 
     it 'updates token' do
-      expect { service.call }.to change(customer, :reset_password_token)
+      expect do
+        service.call
+        customer.reload
+      end .to change(customer, :reset_password_token)
     end
 
     it 'sends reset password email' do

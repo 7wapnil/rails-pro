@@ -5,7 +5,7 @@ module Account
     include Recaptcha::Verify
 
     def initialize(email:, captcha: nil)
-      @email = email.downcase.strip
+      @email = email&.downcase&.strip
       @captcha = captcha
       @retries = 3
     end

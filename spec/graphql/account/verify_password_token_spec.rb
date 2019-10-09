@@ -15,7 +15,7 @@ describe GraphQL, '#VerifyPasswordToken' do
 
   it 'responds to expired token' do
     customer = create(:customer, email_verified: true)
-    raw_token = Account::SendPasswordResetService.call(customer: customer)
+    raw_token = Account::SendPasswordResetService.call(email: customer.email)
 
     query = %(query {
                 verifyPasswordToken(token: "#{raw_token}") {
@@ -34,7 +34,7 @@ describe GraphQL, '#VerifyPasswordToken' do
 
   it 'responds to valid token' do
     customer = create(:customer, email_verified: true)
-    raw_token = Account::SendPasswordResetService.call(customer: customer)
+    raw_token = Account::SendPasswordResetService.call(email: customer.email)
 
     query = %(query {
                 verifyPasswordToken(token: "#{raw_token}") {
