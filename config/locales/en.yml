@@ -669,7 +669,7 @@ en:
     sent_to_external_validation: External validation
     accepted: Accepted
     pending_cancellation: Pending cancellation
-    pending_manual_cancellation: Pending MTS cancellation
+    pending_mts_cancellation: Pending MTS cancellation
     cancelled: Cancelled
     rejected: Rejected
     pending_manual_settlement: Waiting for manual settlement

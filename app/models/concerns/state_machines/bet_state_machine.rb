@@ -10,7 +10,7 @@ module StateMachines
     SENT_TO_EXTERNAL_VALIDATION = 'sent_to_external_validation'
     ACCEPTED = 'accepted'
     PENDING_CANCELLATION = 'pending_cancellation'
-    PENDING_MANUAL_CANCELLATION = 'pending_manual_cancellation'
+    PENDING_MTS_CANCELLATION = 'pending_mts_cancellation'
     CANCELLED = 'cancelled'
     CANCELLED_BY_SYSTEM = 'cancelled_by_system'
     PENDING_MANUAL_SETTLEMENT = 'pending_manual_settlement'
@@ -26,7 +26,7 @@ module StateMachines
       sent_to_external_validation: SENT_TO_EXTERNAL_VALIDATION,
       accepted: ACCEPTED,
       pending_cancellation: PENDING_CANCELLATION,
-      pending_manual_cancellation: PENDING_MANUAL_CANCELLATION,
+      pending_mts_cancellation: PENDING_MTS_CANCELLATION,
       cancelled: CANCELLED,
       cancelled_by_system: CANCELLED_BY_SYSTEM,
       pending_manual_settlement: PENDING_MANUAL_SETTLEMENT,
@@ -52,7 +52,7 @@ module StateMachines
 
     CANCELLED_STATUSES_MASK = [
       PENDING_CANCELLATION,
-      PENDING_MANUAL_CANCELLATION,
+      PENDING_MTS_CANCELLATION,
       CANCELLED,
       CANCELLED_BY_SYSTEM
     ].freeze
@@ -76,7 +76,7 @@ module StateMachines
         state :accepted, after_enter: :update_summary
         state :rejected
         state :pending_cancellation
-        state :pending_manual_cancellation
+        state :pending_mts_cancellation
         state :cancelled
         state :cancelled_by_system
         state :failed
@@ -126,7 +126,7 @@ module StateMachines
                                accepted
                                rejected
                                pending_manual_settlement],
-                      to: :pending_manual_cancellation,
+                      to: :pending_mts_cancellation,
                       after: :update_error_notification
         end
 

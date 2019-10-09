@@ -17,6 +17,7 @@ module EntryRequests
         REFUNDED_BET_STATUSES = [
           Bet::CANCELLED,
           Bet::CANCELLED_BY_SYSTEM,
+          Bet::PENDING_MTS_CANCELLATION,
           Bet::REJECTED,
           Bet::FAILED,
           Bet::MANUALLY_SETTLED

@@ -34,7 +34,7 @@ module EntryRequests
 
         {
           currency: bet.currency,
-          initiator: bet.customer,
+          initiator: initiator,
           customer: bet.customer,
           origin: bet
         }
@@ -61,6 +61,10 @@ module EntryRequests
         new_amount = entry_request.real_money_amount +
                      entry_request.bonus_amount
         entry_request.update(amount: new_amount)
+      end
+
+      def initiator
+        attributes.fetch(:initiator) { bet.customer }
       end
     end
   end

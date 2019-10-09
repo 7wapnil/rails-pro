@@ -5,10 +5,11 @@ describe EntryRequests::Backoffice::Bets::Lost do
 
   subject { described_class.call(**bet_params) }
 
+  let(:user) { create(:user) }
   let(:bet_params) do
     {
       bet: bet,
-      initiator: create(:user),
+      initiator: user,
       comment: 'Lost'
     }
   end
@@ -58,7 +59,7 @@ describe EntryRequests::Backoffice::Bets::Lost do
     end
   end
 
-  context 'bet_settlement_status_achieved_at' do
+  context 'track settlement details' do
     let(:bet) { voided_bet }
     let!(:entry) { placement_entry }
 
@@ -66,6 +67,10 @@ describe EntryRequests::Backoffice::Bets::Lost do
 
     it 'doesnt change bet_settlement_status_achieved_at' do
       expect(bet.reload.bet_settlement_status_achieved_at).to be_truthy
+    end
+
+    it 'sets current user as an initiator' do
+      expect(bet.entry_requests.last.initiator).to eq(user)
     end
   end
 end

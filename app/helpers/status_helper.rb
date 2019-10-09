@@ -14,7 +14,7 @@ module StatusHelper
     'sent_to_external_validation' => 'info',
     'accepted' => 'success',
     'pending_cancellation' => 'danger',
-    'pending_manual_cancellation' => 'danger',
+    'pending_mts_cancellation' => 'danger',
     'cancelled' => 'danger',
     'cancelled_by_system' => 'danger',
     'pending_manual_settlement' => 'warning',

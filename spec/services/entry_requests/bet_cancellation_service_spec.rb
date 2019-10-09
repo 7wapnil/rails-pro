@@ -92,8 +92,8 @@ describe EntryRequests::BetCancellationService do
 
     before { subject }
 
-    it 'change status to pending manual cancellation' do
-      expect(bet.reload).to be_pending_manual_cancellation
+    it 'change status to pending mts cancellation' do
+      expect(bet.reload).to be_pending_mts_cancellation
     end
 
     it 'makes refund' do

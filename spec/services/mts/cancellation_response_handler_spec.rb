@@ -59,7 +59,7 @@ describe Mts::CancellationResponseHandler do
         subject_call
         bet.reload
 
-        expect(bet.status).to eql(Bet::PENDING_MANUAL_CANCELLATION)
+        expect(bet.status).to eql(Bet::PENDING_MTS_CANCELLATION)
       end
 
       it 'creates refund entry request' do
