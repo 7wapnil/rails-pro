@@ -68,12 +68,11 @@ describe GraphQL, '#requestPasswordReset' do
     result
   end
 
-  context 'when customer is not found' do
+  context 'when customer is not found, respose is true' do
     let(:variables) { { email: Faker::Internet.email, captcha: '' } }
 
     it 'raises an error' do
-      expect(result['errors'].first['message'])
-        .to eq(I18n.t('account.request_password_reset.not_found_error'))
+      expect(result.dig('data', 'requestPasswordReset')).to eq(true)
     end
   end
 
