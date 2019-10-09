@@ -4,8 +4,8 @@ module Account
   class SendPasswordResetService < ApplicationService
     include Recaptcha::Verify
 
-    def initialize(customer:, captcha: nil)
-      @customer = customer
+    def initialize(email:, captcha: nil)
+      @email = email.downcase.strip
       @captcha = captcha
       @retries = 3
     end
@@ -29,9 +29,13 @@ module Account
       @raw_token
     end
 
+    def customer
+      @customer ||= Customer.where('lower(email) = ?', email)&.first
+    end
+
     private
 
-    attr_reader :customer, :captcha
+    attr_reader :email, :captcha
 
     # Need to mock `request` to make `verify_recaptcha` works
     def request; end

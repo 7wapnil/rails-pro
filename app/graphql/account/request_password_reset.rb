@@ -12,23 +12,18 @@ module Account
     end
 
     def resolve(_obj, args)
-      # should be fixed after going production
-      customer =
-        Customer.where('lower(email) = ?', args[:email].downcase.strip)&.first
-
-      raise ActiveRecord::RecordNotFound unless customer
-
-      service = Account::SendPasswordResetService.new(customer: customer,
+      service = Account::SendPasswordResetService.new(email: args[:email],
                                                       captcha: args[:captcha])
 
       return service.captcha_invalid! if service.captcha_invalid?
+
+      raise ActiveRecord::RecordNotFound unless service.customer
 
       service.call
 
       true
     rescue ActiveRecord::RecordNotFound
-      raise ::ResolvingError,
-            email: I18n.t('account.request_password_reset.not_found_error')
+      true
     rescue StandardError
       raise I18n.t('account.request_password_reset.technical_error')
     end
