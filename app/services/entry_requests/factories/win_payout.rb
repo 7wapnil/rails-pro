@@ -64,7 +64,9 @@ module EntryRequests
       end
 
       def initiator
-        attributes.fetch(:initiator) { bet.customer }
+        return bet.customer unless attributes.key?(:initiator)
+
+        attributes[:initiator]
       end
     end
   end
