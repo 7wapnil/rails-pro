@@ -55,6 +55,22 @@ describe GraphQL, '#transactions' do
   end
 
   context 'basic query' do
+    let(:query) do
+      %(query transactions($filter: TransactionKind,
+                           $perPage: Int!,
+                           $page: Int!) {
+          transactions(filter: $filter, perPage: $perPage, page: $page) {
+            pagination {
+              items
+            }
+            collection {
+              id
+            }
+          }
+        })
+    end
+    let(:variables) { { filter: filter, perPage: 10, page: 1 } }
+
     context 'withdraw' do
       let(:filter) { EntryKinds::WITHDRAW }
 
@@ -84,7 +100,7 @@ describe GraphQL, '#transactions' do
     end
 
     context 'all' do
-      let(:filter) { 'null' }
+      let(:filter) { nil }
 
       it 'returns all entry request' do
         expect(result['data']['transactions']['collection'].length)
@@ -97,16 +113,8 @@ describe GraphQL, '#transactions' do
       end
     end
 
-    context 'query with no arguments' do
-      let(:query) do
-        %({
-            transactions {
-              collection {
-                id
-              }
-            }
-          })
-      end
+    context 'query with no filter' do
+      let(:variables) { { perPage: 10, page: 1 } }
 
       it 'returns all entry request' do
         expect(result['data']['transactions']['collection'].length)
