@@ -30,7 +30,7 @@ module Account
     end
 
     def customer
-      @customer ||= Customer.where('lower(email) = ?', email)&.first
+      @customer ||= Customer.find_by('lower(email) = ?', email)
     end
 
     private
