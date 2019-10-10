@@ -104,9 +104,9 @@ module ApplicationHelper
   end
 
   def search_date_for(key, parent_key = nil)
-    return query_params[key] if query_params[key]
+    return query_params[key].to_date if query_params[key] && parent_key.nil?
 
-    params&.[](parent_key)&.[](key) || l(Date.current, format: :date_picker)
+    query_params[parent_key][key].to_date if query_params[parent_key]
   end
 
   private

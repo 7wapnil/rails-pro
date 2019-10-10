@@ -30,6 +30,16 @@
                               autocomplete: :off
         %th
           .filter_title
+            #{t('attributes.sport')}:
+          .filter_field
+            = f.label :title_id_eq, class: 'sr-only'
+            = f.select :title_id_eq,
+                        options_for_select(filter.sports,
+                                           filter.search_params(:title_id_eq)),
+                        { include_blank: true },
+                        class: 'form-control'
+        %th
+          .filter_title
             #{t(:search, subject: t('from'))}:
           .filter_field
             = f.label :created_at_gteq, class: 'sr-only'
@@ -37,7 +47,7 @@
               = f.search_field :created_at_gteq,
                                 class: 'form-control form_date',
                                 placeholder: t(:search, subject: t('from')),
-                                value: search_date_for(:created_at_gteq, :bets)
+                                value: filter.search_params(:created_at_gteq)
               .input-group-append
                 .input-group-text.btn &#128197;
         %th
@@ -49,21 +59,11 @@
               = f.search_field :created_at_lteq,
                                 class: 'form-control form_date',
                                 placeholder: t(:search, subject: t('to')),
-                                value: search_date_for(:created_at_lteq, :bets)
+                                value: filter.search_params(:created_at_lteq)
               .input-group-append
                 .input-group-text.btn &#128197;
-      %tr
-        %th
-          .filter_title
-            #{t('attributes.sport')}:
-          .filter_field
-            = f.label :title_id_eq, class: 'sr-only'
-            = f.select :title_id_eq,
-                        options_for_select(filter.sports,
-                                           filter.search_params(:title_id_eq)),
-                        { include_blank: true },
-                        class: 'form-control'
 
+      %tr
         %th
           .filter_title
             #{t('attributes.tournament')}:
@@ -74,7 +74,7 @@
                                            filter.search_params(:tournaments_name_eq)),
                         { include_blank: true },
                         class: 'form-control'
-        %th
+        %th{ colspan: local_assigns[:excluded_columns]&.include?(:customer) ? 1 : 2 }
           .filter_title
             #{t('attributes.status')}:
           .filter_field

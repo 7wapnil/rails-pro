@@ -69,10 +69,10 @@ describe Bet, '#index' do
       end
 
       context 'by dates interval' do
-        it 'by default starts from today' do
-          start_date = find('#bets_created_at_gteq').value.to_date
+        it 'by default has no start date' do
+          start_date = find('#bets_created_at_gteq').value
 
-          expect(start_date).to eq(Time.zone.now.to_date)
+          expect(start_date).to be_nil
         end
       end
     end

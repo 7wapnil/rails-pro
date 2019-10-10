@@ -239,22 +239,12 @@ describe VerificationDocument, '#index' do
           create(:verification_document, created_at: Time.zone.now)
         end
 
-        it 'by default has today date' do
-          start_date = find('#query_created_at_gteq').value.to_date
-          end_date = find('#query_created_at_lteq').value.to_date
-          today = Time.zone.now.to_date
+        it 'by default has no date' do
+          start_date = find('#query_created_at_gteq').value
+          end_date = find('#query_created_at_lteq').value
 
-          expect(start_date).to eq(today)
-          expect(end_date).to eq(today)
-        end
-
-        it 'found today docs' do
-          click_on 'Search'
-
-          within 'table.table.entities tbody' do
-            expect(page).to have_css("tr#document-#{today_doc.id}")
-            expect(page).to have_css('tr', count: 1)
-          end
+          expect(start_date).to be_nil
+          expect(end_date).to be_nil
         end
 
         it 'found docs in dates range' do

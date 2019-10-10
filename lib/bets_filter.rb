@@ -20,8 +20,6 @@ class BetsFilter
     @source = source
     @query_params = prepare_interval_filter(query_params, :created_at)
     @page = page
-
-    format_settlement_status!
   end
 
   def sports
@@ -43,7 +41,7 @@ class BetsFilter
            .with_sport
            .with_tournament
            .with_category
-           .ransack(@query_params, search_key: :bets)
+           .ransack(formatted_query_params, search_key: :bets)
   end
 
   def bets
@@ -58,9 +56,14 @@ class BetsFilter
 
   private
 
-  def format_settlement_status!
-    return unless @query_params[:settlement_status_eq] == NO_SETTLEMENT_STATUS
+  def formatted_query_params
+    return @query_params unless without_settlement_status?
 
     @query_params[:settlement_status_null] = true
+    @query_params.except(:settlement_status_eq)
+  end
+
+  def without_settlement_status?
+    @query_params[:settlement_status_eq] == NO_SETTLEMENT_STATUS
   end
 end

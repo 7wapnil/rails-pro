@@ -14,7 +14,6 @@
       %th= t('attributes.status')
       %th= t('attributes.settlement')
       %th= t('attributes.sport')
-      %th= t('attributes.category')
       %th= t('attributes.tournament')
       %th= t('attributes.bet_type')
   %tbody
@@ -41,7 +40,6 @@
           %td= status_badge(bet.status)
           %td= settle_badge(bet.settlement_status)
           %td= bet.sport
-          %td= bet.category
           %td= bet.tournament
           %td
             %span.badge.badge-primary= bet.bet_type
