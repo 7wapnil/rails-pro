@@ -30,7 +30,7 @@ class ArcanebetMailer < ApplicationMailer
     customer = params[:customer]
     domain = ENV['APP_HOST']
     customer_url = "#{domain}/customers/#{customer.id}"
-    receiver = 'contact@arcanebet.com' # maybe move this to .env
+    receiver = ENV['ADMIN_NOTIFY_MAIL'] || 'contact@arcanebet.com'
 
     smtpapi_mail(
       TEMPLATES[__method__],

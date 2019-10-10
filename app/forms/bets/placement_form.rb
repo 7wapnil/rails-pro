@@ -26,7 +26,7 @@ module Bets
       ArcanebetMailer
         .with(customer: customer)
         .negative_balance_bet_placement
-        .deliver_now
+        .deliver_later
 
       raise ::Bets::PlacementError, 'Bet placed with negative balance'
     end
