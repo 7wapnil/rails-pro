@@ -49,8 +49,8 @@ describe OddsFeed::Radar::BetCancelHandler do
       bet = create(:bet, :with_placement_entry, :won, odd: odds.sample)
       subject.handle
       cancellation_entries = Entry.where(origin: bet, kind: entry_kind_cancel)
-      stake_rollback = cancellation_entries.where('amount > ?', 0).take
-      winning_rollback = cancellation_entries.where('amount < ?', 0).take
+      stake_rollback = cancellation_entries.find_by('amount > ?', 0)
+      winning_rollback = cancellation_entries.find_by('amount < ?', 0)
       expect(stake_rollback.amount).to eq(-bet.placement_entry.amount)
       expect(winning_rollback.amount).to eq(-bet.winning.amount)
     end

@@ -10,6 +10,7 @@ module WalletEntry
     def call
       request.validate!
       update_database!
+      update_summary! unless entry.bet?
       log_success
 
       entry
@@ -71,6 +72,11 @@ module WalletEntry
 
     def confirm_entry
       entry.update(confirmed_at: Time.zone.now)
+    end
+
+    def update_summary!
+      Customers::Summaries::BalanceUpdateWorker
+        .perform_async(Date.current, entry.id)
     end
 
     def handle_failure(exception)

@@ -11,7 +11,7 @@ module Customers
                                 signups_count].freeze
       NEGATIVE_INCREMENT_ATTRIBUTES = %i[bonus_wager_amount
                                          real_money_wager_amount].freeze
-      APPEND_ATTRIBUTES = [:betting_customer_ids].freeze
+      APPEND_ATTRIBUTES = %i[betting_customer_ids].freeze
 
       def initialize(day, attributes)
         @attributes = attributes

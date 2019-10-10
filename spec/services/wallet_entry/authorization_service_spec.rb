@@ -106,6 +106,32 @@ describe WalletEntry::AuthorizationService do
           end
         end
       end
+
+      context 'summary' do
+        include_context 'frozen_time'
+
+        before do
+          allow(::Customers::Summaries::BalanceUpdateWorker)
+            .to receive(:perform_async)
+
+          described_class.call(request)
+        end
+
+        it 'is re-calculated' do
+          expect(::Customers::Summaries::BalanceUpdateWorker)
+            .to have_received(:perform_async)
+            .with(Date.current, entry.id)
+        end
+
+        context 'for bet entry' do
+          let(:kind) { EntryKinds::BET }
+
+          it 'is not re-calculated' do
+            expect(::Customers::Summaries::BalanceUpdateWorker)
+              .not_to have_received(:perform_async)
+          end
+        end
+      end
     end
 
     context 'failure' do
