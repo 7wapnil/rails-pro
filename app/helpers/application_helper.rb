@@ -1,39 +1,6 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
-  def card(opts = {})
-    header = opts[:header]
-    css_class = ['card', opts[:class]].join(' ')
-
-    content_tag(:div, class: css_class) do
-      concat content_tag(:h5, class: 'card-header') { header } if header
-      concat content_tag(:div, class: 'card-body') { yield }
-    end
-  end
-
-  def card_form_for(opts = {})
-    header = opts[:header]
-    css_class = ['card', opts[:class]].join(' ')
-    html, resource, url = opts.extract!(:html, :resource, :url).values
-    return card(opts) unless html && resource && url
-
-    content_tag(:div, class: css_class) do
-      concat content_tag(:h5, class: 'card-header') { header } if header
-      concat content_tag(:div, class: 'card-body') {
-        simple_form_for resource, url: url, html: html do
-          yield
-          concat submit_button(html, resource, url)
-        end
-      }
-    end
-  end
-
-  def options_for_verification(verified)
-    options_for_select({ t('statuses.verified') => true,
-                         t('statuses.not_verified') => false },
-                       verified)
-  end
-
   def link_back(link = nil)
     link_to t(:back), link || 'javascript:history.back()',
             class: 'btn btn-outline-dark'
@@ -66,54 +33,5 @@ module ApplicationHelper
                            class: 'toggle_button locked_toggle')
       concat label_tag('Locked', nil, for: toggle_id)
     end
-  end
-
-  def labels_selector(labelable, labels, element_id = nil)
-    element_id ||= "#{labelable.class.to_s.downcase}_#{labelable.id}"
-    update_url = polymorphic_url([:update_labels, labelable])
-    placeholder = "Add #{labelable.class.to_s.downcase} label"
-
-    collection_select(:labels, :ids, labels, :id, :name,
-                      { selected: labelable.labels.ids },
-                      class: 'form-control labels_selector',
-                      id: element_id,
-                      multiple: true,
-                      data: { placeholder: placeholder,
-                              update_url: update_url })
-  end
-
-  def simple_labels_selector(labelable, labels, element_id = nil)
-    element_id ||= "#{labelable.class.to_s.downcase}_#{labelable.id}"
-    placeholder = "Add #{labelable.class.to_s.downcase} label"
-    collection_select(:labels, :ids, labels, :id, :name,
-                      { selected: labelable.labels.ids },
-                      class: 'form-control simple_labels_selector',
-                      id: element_id,
-                      multiple: true,
-                      data: { placeholder: placeholder })
-  end
-
-  def content_for_days_range(resource)
-    named_ranges = resource.class::NAMED_RANGES
-    return named_ranges if !resource.range || named_ranges.key?(resource.range)
-
-    { resource.range => I18n.t('days', days: resource.range) }
-      .merge(named_ranges)
-      .sort
-      .to_h
-  end
-
-  def search_date_for(key, parent_key = nil)
-    return query_params[key].to_date if query_params[key] && parent_key.nil?
-
-    query_params[parent_key][key].to_date if query_params[parent_key]
-  end
-
-  private
-
-  def submit_button(html, resource, url)
-    render partial: 'shared/submit_card', locals: { html: html,
-                                                    resource: resource,
-                                                    url: url }
   end
 end

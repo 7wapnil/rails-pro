@@ -12,6 +12,41 @@ module FormHelper
     end
   end
 
+  def labels_selector(labelable, labels, element_id = nil)
+    element_id ||= "#{labelable.class.to_s.downcase}_#{labelable.id}"
+    update_url = polymorphic_url([:update_labels, labelable])
+    placeholder = "Add #{labelable.class.to_s.downcase} label"
+
+    collection_select(:labels, :ids, labels, :id, :name,
+                      { selected: labelable.labels.ids },
+                      class: 'form-control labels_selector',
+                      id: element_id,
+                      multiple: true,
+                      data: { placeholder: placeholder,
+                              update_url: update_url })
+  end
+
+  def simple_labels_selector(labelable, labels, element_id = nil)
+    element_id ||= "#{labelable.class.to_s.downcase}_#{labelable.id}"
+    placeholder = "Add #{labelable.class.to_s.downcase} label"
+    collection_select(:labels, :ids, labels, :id, :name,
+                      { selected: labelable.labels.ids },
+                      class: 'form-control simple_labels_selector',
+                      id: element_id,
+                      multiple: true,
+                      data: { placeholder: placeholder })
+  end
+
+  def content_for_days_range(resource)
+    named_ranges = resource.class::NAMED_RANGES
+    return named_ranges if !resource.range || named_ranges.key?(resource.range)
+
+    { resource.range => I18n.t('days', days: resource.range) }
+      .merge(named_ranges)
+      .sort
+      .to_h
+  end
+
   private
 
   def render_radio_label_pair(opts = {})

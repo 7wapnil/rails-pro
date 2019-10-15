@@ -64,7 +64,7 @@
               = f.search_field :start_at_gteq,
                                class: 'form-control form_date',
                                placeholder: t(:search, subject: t('from')),
-                               value: query_params[:start_at_gteq]
+                               value: search_date_for(:start_at_gteq)
               .input-group-append
                 .input-group-text.btn &#128197;
 
@@ -76,7 +76,7 @@
               = f.search_field :start_at_lteq,
                                class: 'form-control form_date',
                                placeholder: t(:search, subject: t('to')),
-                               value: query_params[:start_at_lteq]
+                               value: search_date_for(:start_at_lteq)
               .input-group-append
                 .input-group-text.btn &#128197;
 

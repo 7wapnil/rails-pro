@@ -14,7 +14,8 @@
                                 class: 'form-control form_date',
                                 placeholder: t('dashboard_report.from'),
                                 value: search_date_for(:day_gteq,
-                                                       :customer_summaries)
+                                                       :customer_summaries,
+                                                       filter.custom_interval?)
               .input-group-append
                 .input-group-text.btn &#128197;
         %th
@@ -28,7 +29,8 @@
                                 class: 'form-control form_date',
                                 placeholder: t('dashboard_report.to'),
                                 value: search_date_for(:day_lteq,
-                                                       :customer_summaries)
+                                                       :customer_summaries,
+                                                       filter.custom_interval?)
               .input-group-append
                 .input-group-text.btn &#128197;
         %th

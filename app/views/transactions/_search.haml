@@ -45,7 +45,7 @@
               = f.search_field :created_at_gteq,
                                 class: 'form-control form_date',
                                 placeholder: t(:search, subject: t('from')),
-                                value: params.dig(:customer_transactions, :created_at_gteq)
+                                value: search_date_for(:created_at_gteq, :customer_transactions)
               .input-group-append
                 .input-group-text.btn &#128197;
         %th
@@ -57,7 +57,7 @@
               = f.search_field :created_at_lteq,
                                 class: 'form-control form_date',
                                 placeholder: t(:search, subject: t('to')),
-                                value: params.dig(:customer_transactions, :created_at_lteq)
+                                value: search_date_for(:created_at_lteq, :customer_transactions)
               .input-group-append
                 .input-group-text.btn &#128197;
         %th

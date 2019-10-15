@@ -49,4 +49,50 @@ module CustomersHelper
 
     entry.amount.positive? ? 'text-success' : 'text-danger'
   end
+
+  def card(opts = {})
+    header = opts[:header]
+    css_class = ['card', opts[:class]].join(' ')
+
+    content_tag(:div, class: css_class) do
+      concat content_tag(:h5, class: 'card-header') { header } if header
+      concat content_tag(:div, class: 'card-body') { yield }
+    end
+  end
+
+  def card_form_for(opts = {})
+    header = opts[:header]
+    css_class = ['card', opts[:class]].join(' ')
+    html, resource, url = opts.extract!(:html, :resource, :url).values
+    return card(opts) unless html && resource && url
+
+    content_tag(:div, class: css_class) do
+      concat content_tag(:h5, class: 'card-header') { header } if header
+      concat content_tag(:div, class: 'card-body') {
+        simple_form_for resource, url: url, html: html do
+          yield
+          concat submit_button(html, resource, url)
+        end
+      }
+    end
+  end
+
+  def options_for_verification(verified)
+    options_for_select(verification_statuses, verified)
+  end
+
+  private
+
+  def submit_button(html, resource, url)
+    render partial: 'shared/submit_card', locals: { html: html,
+                                                    resource: resource,
+                                                    url: url }
+  end
+
+  def verification_statuses
+    {
+      t('statuses.verified') => true,
+      t('statuses.not_verified') => false
+    }
+  end
 end
