@@ -55,7 +55,6 @@ module Events
     def filter_by_context!
       return context_not_supported! if SUPPORTED_CONTEXTS.exclude?(context)
 
-      @query = query.upcoming if UPCOMING_CONTEXTS.include?(context)
       @query = send(context)
     end
 
@@ -82,20 +81,19 @@ module Events
 
     def upcoming_for_time
       cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
-        query.where('events.start_at <= ?',
-                    Event::UPCOMING_DURATION.hours.from_now)
+        query.upcoming(limit_start_at: Event::UPCOMING_DURATION.hours.from_now)
       end
     end
 
     def upcoming_limited
       cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
-        query.where(id: limited_per_tournament_ids)
+        query.upcoming.where(id: limited_per_tournament_ids)
       end
     end
 
     def upcoming_unlimited
       cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
-        query
+        query.upcoming
       end
     end
 
