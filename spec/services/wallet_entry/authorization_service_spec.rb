@@ -111,24 +111,23 @@ describe WalletEntry::AuthorizationService do
         include_context 'frozen_time'
 
         before do
-          allow(::Customers::Summaries::BalanceUpdateWorker)
-            .to receive(:perform_async)
+          allow(::Customers::Summaries::UpdateBalance).to receive(:call)
 
           described_class.call(request)
         end
 
         it 'is re-calculated' do
-          expect(::Customers::Summaries::BalanceUpdateWorker)
-            .to have_received(:perform_async)
-            .with(Date.current, entry.id)
+          expect(::Customers::Summaries::UpdateBalance)
+            .to have_received(:call)
+            .with(day: Date.current, entry: entry)
         end
 
         context 'for bet entry' do
           let(:kind) { EntryKinds::BET }
 
           it 'is not re-calculated' do
-            expect(::Customers::Summaries::BalanceUpdateWorker)
-              .not_to have_received(:perform_async)
+            expect(::Customers::Summaries::UpdateBalance)
+              .not_to have_received(:call)
           end
         end
       end

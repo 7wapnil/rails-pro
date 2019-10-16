@@ -165,10 +165,8 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def update_summary
-    Customers::Summaries::UpdateWorker.perform_async(
-      Date.current,
-      signups_count: 1
-    )
+    Customers::Summaries::UpdateWorker
+      .perform_async(Date.current, signups_count: 1)
   end
 
   def validate_account_transition

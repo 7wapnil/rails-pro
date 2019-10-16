@@ -75,8 +75,7 @@ module WalletEntry
     end
 
     def update_summary!
-      Customers::Summaries::BalanceUpdateWorker
-        .perform_async(Date.current, entry.id)
+      Customers::Summaries::UpdateBalance.call(day: Date.current, entry: entry)
     end
 
     def handle_failure(exception)

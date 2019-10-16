@@ -1,23 +1,25 @@
 # frozen_string_literal: true
 
-DECIMAL_ATTRIBUTES = %i[bonus_wager_amount
+decimal_attributes = %i[bonus_wager_amount
                         real_money_wager_amount
                         bonus_payout_amount
                         real_money_payout_amount
                         bonus_deposit_amount
                         real_money_deposit_amount
                         withdraw_amount].freeze
-INTEGER_ATTRIBUTES = [:signups_count].freeze
-ARRAY_ATTRIBUTES = [:betting_customer_ids].freeze
-NOT_IMPLEMENTED_ATTRIBUTE = :xxx
+integer_attributes = %i[signups_count]
+array_attributes = %i[betting_customer_ids]
+not_implemented_attribute = :xxx
 
-describe Customers::Summaries::Updater do
-  subject { described_class.call(summary.day, attribute => value) }
+describe Customers::Summaries::Update do
+  subject { described_class.call(summary, attribute => value) }
 
   let!(:summary) { create :customers_summary }
 
+  before { allow(Rails.logger).to receive(:error) }
+
   context 'with decimal attributes' do
-    DECIMAL_ATTRIBUTES.each do |attr|
+    decimal_attributes.each do |attr|
       let(:attribute) { attr }
       let(:value) { rand(0.1..2.0).round(2).to_d }
 
@@ -26,11 +28,16 @@ describe Customers::Summaries::Updater do
           change { summary.reload.send(attribute).to_d }.by(value)
         )
       end
+
+      it 'does not call logger' do
+        expect(Rails.logger).not_to receive(:error)
+        subject
+      end
     end
   end
 
   context 'with integer attributes' do
-    INTEGER_ATTRIBUTES.each do |attr|
+    integer_attributes.each do |attr|
       let(:attribute) { attr }
       let(:value) { rand(1..10) }
 
@@ -39,11 +46,16 @@ describe Customers::Summaries::Updater do
           change { summary.reload.send(attribute) }.by(value)
         )
       end
+
+      it 'does not call logger' do
+        expect(Rails.logger).not_to receive(:error)
+        subject
+      end
     end
   end
 
   context 'with array attributes' do
-    ARRAY_ATTRIBUTES.each do |attr|
+    array_attributes.each do |attr|
       let(:attribute) { attr }
       let(:value) { rand(0..1000) }
       let(:old_array) { summary.send(attribute) }
@@ -53,15 +65,21 @@ describe Customers::Summaries::Updater do
           change { summary.reload.send(attribute) }.to(old_array << value)
         )
       end
+
+      it 'does not call logger' do
+        expect(Rails.logger).not_to receive(:error)
+        subject
+      end
     end
   end
 
   context 'with missing attribute' do
-    let(:attribute) { NOT_IMPLEMENTED_ATTRIBUTE }
+    let(:attribute) { not_implemented_attribute }
     let(:value) { nil }
 
-    it 'raises NotImplementedError' do
-      expect { subject }.to raise_error(NotImplementedError)
+    it 'logs an error' do
+      expect(Rails.logger).to receive(:error)
+      subject
     end
   end
 end

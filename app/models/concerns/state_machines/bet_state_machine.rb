@@ -73,7 +73,7 @@ module StateMachines
         state :sent_to_internal_validation
         state :validated_internally
         state :sent_to_external_validation
-        state :accepted, after_enter: :update_summary
+        state :accepted
         state :rejected
         state :pending_cancellation
         state :pending_mts_cancellation
@@ -106,7 +106,8 @@ module StateMachines
         event :finish_external_validation_with_acceptance,
               after: :on_successful_placement do
           transitions from: :sent_to_external_validation,
-                      to: :accepted
+                      to: :accepted,
+                      after: :update_summary
         end
 
         event :finish_external_validation_with_rejection do
@@ -231,19 +232,13 @@ module StateMachines
       end
 
       def update_summary_wager_amounts
-        return unless placement_entry
-
-        Customers::Summaries::BalanceUpdateWorker.perform_async(
-          Date.current,
-          placement_entry.id
-        )
+        Customers::Summaries::BalanceUpdateWorker
+          .perform_async(Date.current, placement_entry.id)
       end
 
       def update_summary_customer_ids
-        Customers::Summaries::UpdateWorker.perform_async(
-          Date.current,
-          betting_customer_ids: customer_id
-        )
+        Customers::Summaries::UpdateWorker
+          .perform_async(Date.current, betting_customer_ids: customer_id)
       end
 
       def reset_settlement_info
