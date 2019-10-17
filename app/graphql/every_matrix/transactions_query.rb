@@ -2,6 +2,8 @@
 
 module EveryMatrix
   class TransactionsQuery < ::Base::Resolver
+    HISTORY_DAYS = 30
+
     include ::Base::Pagination
 
     description 'Get Every Matrix transactions'
@@ -17,6 +19,7 @@ module EveryMatrix
     def customer_transactions
       EveryMatrix::Transaction
         .where(customer: current_customer)
+        .where('created_at > ?', HISTORY_DAYS.days.ago)
         .includes(em_wallet_session: { wallet: :currency })
         .order(created_at: :desc)
     end

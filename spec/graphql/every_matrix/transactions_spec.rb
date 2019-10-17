@@ -40,16 +40,40 @@ describe GraphQL, '#everyMatrixTransactions' do
   end
 
   context 'basic query' do
-    let!(:transactions) do
-      create_list(:every_matrix_transaction, 10, customer: customer)
+    context 'with current transactions' do
+      let!(:transactions) do
+        create_list(:every_matrix_transaction, 10, customer: customer)
+      end
+
+      it 'returns correct number of items' do
+        expect(
+          result
+            .dig('data', 'everyMatrixTransactions', 'collection')
+            .size
+        ).to eq(transactions.size)
+      end
     end
 
-    it 'returns correct response' do
-      expect(
-        result
-          .dig('data', 'everyMatrixTransactions', 'collection')
-          .first['transactionId']
-      ).to eq(transactions.last.transaction_id.to_s)
+    context 'with current and old transactions' do
+      let!(:current_transactions) do
+        create_list(:every_matrix_transaction, 5, customer: customer)
+      end
+      let!(:old_transactions) do
+        create_list(
+          :every_matrix_transaction,
+          5,
+          customer: customer,
+          created_at: EveryMatrix::TransactionsQuery::HISTORY_DAYS.days.ago
+        )
+      end
+
+      it 'returns correct number of items' do
+        expect(
+          result
+            .dig('data', 'everyMatrixTransactions', 'collection')
+            .size
+        ).to eq(current_transactions.size)
+      end
     end
   end
 end
