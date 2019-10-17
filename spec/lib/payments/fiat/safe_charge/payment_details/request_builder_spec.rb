@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-namespace = Payments::Fiat::SafeCharge::RequestBuilders
-
-describe namespace::ReceiveUserPaymentOptions do
+describe Payments::Fiat::SafeCharge::PaymentDetails::RequestBuilder do
   include_context 'safecharge_env'
   include_context 'frozen_time'
 

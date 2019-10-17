@@ -1,0 +1,13 @@
+{
+  "paymentPageUrl": "",
+  "merchantId": "427583496191624621",
+  "merchantSiteId": "142033",
+  "userTokenId": "487106",
+  "clientUniqueId": "12345",
+  "clientRequestId": "1484759782197",
+  "internalRequestId": "866",
+  "status": "ERROR",
+  "errCode": "0",
+  "reason": "Invalid checksum",
+  "version": "1.0"
+}

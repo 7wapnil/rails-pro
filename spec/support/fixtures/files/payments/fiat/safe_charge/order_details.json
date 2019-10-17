@@ -1,0 +1,17 @@
+{
+  "merchantId": "8263015379487437770",
+  "merchantSiteId": "39",
+  "merchantSiteName": "Any Site Name",
+  "version": "1",
+  "status": "SUCCESS",
+  "errCode": "0",
+  "reason": "",
+  "withdrawalOrders": [
+    {
+      "wdOrderId": "1",
+      "errorCode": "-1100",
+      "extendedErrorCode": "1002"
+    }
+  ],
+  "totalCount": "1"
+}

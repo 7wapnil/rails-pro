@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe ::Payments::Fiat::SafeCharge::PaymentMethodService do
+describe ::Payments::Fiat::SafeCharge::Deposits::ModeVerifier do
   let(:service_call) { described_class.call(params) }
 
   let!(:entry_request) { create(:entry_request) }

@@ -1,0 +1,14 @@
+{
+  "merchantId": "8263015379487437770",
+  "merchantSiteId": "39",
+  "version": "1",
+  "status": "FAIL",
+  "errCode": "0",
+  "reason": "Invalid checksum",
+  "wdRequestStatus": "PENDING",
+  "wdRequestId": "8675309",
+  "merchantWDRequestId": "12345",
+  "userId": "259",
+  "userAccountId": "5675306",
+  "pmRedirectUrl": ""
+}

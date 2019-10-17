@@ -10,6 +10,7 @@ module Payments
         FAIL = 'FAIL'
         DECLINED = 'DECLINED'
         ERROR = 'ERROR'
+        PAYOUT_APPROVED = 'Approved'
         PENDING = 'PENDING'
 
         REDIRECTION_MAP = {

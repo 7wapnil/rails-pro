@@ -1,0 +1,9 @@
+{
+  "merchantId": "8263015379487437770",
+  "merchantSiteId": "39",
+  "merchantSiteName": "Any Site Name",
+  "version": "1",
+  "status": "ERROR",
+  "errCode": "0",
+  "reason": "Invalid checksum"
+}

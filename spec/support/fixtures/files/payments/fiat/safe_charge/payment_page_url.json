@@ -1,0 +1,13 @@
+{
+  "paymentPageUrl": "url",
+  "merchantId": "427583496191624621",
+  "merchantSiteId": "142033",
+  "userTokenId": "487106",
+  "clientUniqueId": "12345",
+  "clientRequestId": "1484759782197",
+  "internalRequestId": "866",
+  "status": "SUCCESS",
+  "errCode": "0",
+  "reason": "",
+  "version": "1.0"
+}

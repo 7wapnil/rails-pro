@@ -63,15 +63,14 @@ module Payments
           end
 
           def update_entry_request_mode!
-            ::Payments::Fiat::SafeCharge::PaymentMethodService.call(
+            ::Payments::Fiat::SafeCharge::Deposits::ModeVerifier.call(
               payment_method_code: response[:payment_method],
               entry_request:       entry_request
             )
           end
 
-          # TODO: recheck what fields we will be storing in payment details
           def update_deposit_details!
-            ::Payments::Fiat::SafeCharge::Deposits::UpdateDetails.call(
+            ::Payments::Fiat::SafeCharge::PaymentDetails::RequestHandler.call(
               entry_request: entry_request,
               payment_option_id: response[:userPaymentOptionId]
             )

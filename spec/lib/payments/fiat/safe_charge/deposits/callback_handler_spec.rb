@@ -49,7 +49,7 @@ describe Payments::Fiat::SafeCharge::Deposits::CallbackHandler do
   let(:payment_options_payload) do
     JSON.parse(
       file_fixture('payments/fiat/safe_charge/get_user_UPOs.json').read
-    )['paymentMethods']
+    )
   end
 
   before do

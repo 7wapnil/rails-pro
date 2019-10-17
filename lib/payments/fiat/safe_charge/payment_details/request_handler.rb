@@ -3,8 +3,8 @@
 module Payments
   module Fiat
     module SafeCharge
-      module Deposits
-        class UpdateDetails < ApplicationService
+      module PaymentDetails
+        class RequestHandler < ApplicationService
           include ::Payments::Fiat::SafeCharge::Methods
 
           def initialize(entry_request:, payment_option_id:)
@@ -29,7 +29,7 @@ module Payments
               .customer
               .entry_requests
               .select('customer_transactions.details')
-              .joins(:deposit, :entry)
+              .joins(:deposit)
               .deposit
               .succeeded
               .where.not(id: entry_request.id)
@@ -53,14 +53,28 @@ module Payments
           end
 
           def user_payment_option_info
-            ::Payments::Fiat::SafeCharge::Client
-              .new(customer: entry_request.customer)
-              .receive_user_payment_option(payment_option_id)
+            client
+              .receive_user_payment_options(options_params)
+              .fetch('paymentMethods', [])
+              .find(&method(:payload_option_id_equal?))
+              .to_h
               .fetch('upoData', {})
           end
 
           def name_identifier
             NAME_IDENTIFIERS_MAP[entry_request.mode]
+          end
+
+          def client
+            Client.new
+          end
+
+          def options_params
+            RequestBuilder.call(customer: entry_request.customer)
+          end
+
+          def payload_option_id_equal?(payload)
+            payload.dig('userPaymentOptionId').to_s == payment_option_id
           end
         end
       end

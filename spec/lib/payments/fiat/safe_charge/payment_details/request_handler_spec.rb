@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Payments::Fiat::SafeCharge::Deposits::UpdateDetails do
+describe Payments::Fiat::SafeCharge::PaymentDetails::RequestHandler do
   include_context 'safecharge_env'
 
   subject { described_class.call(params) }
@@ -9,7 +9,7 @@ describe Payments::Fiat::SafeCharge::Deposits::UpdateDetails do
   let(:mode) { EntryRequest::SKRILL }
   let(:entry_request) { create(:entry_request, mode: mode, origin: deposit) }
   let(:customer) { entry_request.customer }
-  let(:payment_option_id) { 1 }
+  let(:payment_option_id) { '1' }
   let(:params) do
     { entry_request: entry_request, payment_option_id: payment_option_id }
   end
@@ -17,7 +17,7 @@ describe Payments::Fiat::SafeCharge::Deposits::UpdateDetails do
   let(:payment_options_payload) do
     JSON.parse(
       file_fixture('payments/fiat/safe_charge/get_user_UPOs.json').read
-    )['paymentMethods']
+    )
   end
 
   before do
@@ -74,7 +74,7 @@ describe Payments::Fiat::SafeCharge::Deposits::UpdateDetails do
   end
 
   context 'when payment option API call returns an error' do
-    let(:payment_options_payload) { [] }
+    let(:payment_options_payload) { {} }
     let(:mode) { [EntryRequest::SKRILL, EntryRequest::NETELLER].sample }
 
     it 'stores found payment option details' do

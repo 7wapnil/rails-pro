@@ -3,8 +3,8 @@
 module Payments
   module Fiat
     module SafeCharge
-      module RequestBuilders
-        class ReceiveUserPaymentOptions < ApplicationService
+      module PaymentDetails
+        class RequestBuilder < ApplicationService
           TIMESTAMP_FORMAT = '%Y%m%d%H%M%S'
 
           def initialize(customer:)
