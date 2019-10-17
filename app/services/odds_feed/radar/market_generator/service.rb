@@ -174,7 +174,7 @@ module OddsFeed
           Thread.current[:event_producer_id]
         end
 
-        def extra_log_info(market_data)
+        def extra_log_info(market_data = nil)
           {
             event_id:            event_id,
             event_producer_id:   event_producer_id,
