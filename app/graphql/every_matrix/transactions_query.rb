@@ -17,8 +17,8 @@ module EveryMatrix
     private
 
     def customer_transactions
-      EveryMatrix::Transaction
-        .where(customer: current_customer)
+      current_customer
+        .every_matrix_transactions
         .where('created_at > ?', HISTORY_DAYS.days.ago)
         .includes(em_wallet_session: { wallet: :currency })
         .order(created_at: :desc)

@@ -81,6 +81,10 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   has_one :customer_data
 
+  has_many :every_matrix_transactions,
+           class_name: EveryMatrix::Transaction.name,
+           inverse_of: :customer
+
   delegate :street_address,
            :zip_code,
            :country,
