@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_09_24_131107) do
+ActiveRecord::Schema.define(version: 2019_10_17_125202) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -173,7 +173,7 @@ ActiveRecord::Schema.define(version: 2019_09_24_131107) do
     t.integer "valid_for_days"
     t.integer "percentage"
     t.datetime "expires_at"
-    t.integer "original_bonus_id"
+    t.bigint "original_bonus_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "rollover_balance", precision: 14, scale: 2
@@ -627,6 +627,7 @@ ActiveRecord::Schema.define(version: 2019_09_24_131107) do
   add_foreign_key "competitor_players", "competitors", on_delete: :cascade
   add_foreign_key "competitor_players", "players", on_delete: :cascade
   add_foreign_key "crypto_addresses", "wallets"
+  add_foreign_key "customer_bonuses", "bonuses", column: "original_bonus_id"
   add_foreign_key "customer_bonuses", "entries"
   add_foreign_key "customer_data", "customers"
   add_foreign_key "customer_notes", "customers"

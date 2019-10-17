@@ -9,7 +9,7 @@ class CustomerBonus < ApplicationRecord
 
   belongs_to :customer
   belongs_to :wallet
-  belongs_to :original_bonus, class_name: Bonus.name
+  belongs_to :original_bonus, -> { with_deleted }, class_name: Bonus.name
   belongs_to :entry, optional: true
   has_one :currency, through: :wallet
   has_many :bets
