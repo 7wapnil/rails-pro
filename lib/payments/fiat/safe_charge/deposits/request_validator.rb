@@ -87,10 +87,10 @@ module Payments
 
           def valid_state?
             return true unless address[:country]
-            return true if available_state?
-            return false if available_states[address[:country]].any?
+            return true unless address[:state]
+            return true unless available_states[address[:country]]
 
-            address[:state].state.nil?
+            available_state?
           end
 
           def address
@@ -98,8 +98,7 @@ module Payments
           end
 
           def available_state?
-            available_states[address[:country]]
-              .include?(address[:state])
+            available_states[address[:country]].include?(address[:state])
           end
 
           def available_states
