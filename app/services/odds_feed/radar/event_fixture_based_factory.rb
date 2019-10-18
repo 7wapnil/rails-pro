@@ -27,7 +27,7 @@ module OddsFeed
           description: event_name,
           traded_live: event_traded_live?,
           liveodds: liveodds,
-          status: fixture['status']
+          status: EventStatusConverter.call(fixture['status'])
         }
       end
 
