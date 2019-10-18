@@ -19,7 +19,9 @@ module EveryMatrix
     def customer_transactions
       current_customer
         .every_matrix_transactions
-        .where('created_at > ?', HISTORY_DAYS.days.ago)
+        .joins(:entry)
+        .where('em_transactions.amount > 0')
+        .where('em_transactions.created_at > ?', HISTORY_DAYS.days.ago)
         .includes(em_wallet_session: { wallet: :currency })
         .order(created_at: :desc)
     end

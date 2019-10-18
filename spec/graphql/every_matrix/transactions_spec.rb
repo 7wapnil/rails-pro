@@ -23,7 +23,9 @@ describe GraphQL, '#everyMatrixTransactions' do
           collection {
             id
             customerId
-            amount
+            debit
+            credit
+            balance
             currencyCode
             type
             transactionId
@@ -42,7 +44,7 @@ describe GraphQL, '#everyMatrixTransactions' do
   context 'basic query' do
     context 'with current transactions' do
       let!(:transactions) do
-        create_list(:every_matrix_transaction, 10, customer: customer)
+        create_list(:every_matrix_transaction, 10, :wager, customer: customer)
       end
 
       it 'returns correct number of items' do
@@ -56,12 +58,13 @@ describe GraphQL, '#everyMatrixTransactions' do
 
     context 'with current and old transactions' do
       let!(:current_transactions) do
-        create_list(:every_matrix_transaction, 5, customer: customer)
+        create_list(:every_matrix_transaction, 5, :wager, customer: customer)
       end
       let!(:old_transactions) do
         create_list(
           :every_matrix_transaction,
           5,
+          :wager,
           customer: customer,
           created_at: EveryMatrix::TransactionsQuery::HISTORY_DAYS.days.ago
         )
