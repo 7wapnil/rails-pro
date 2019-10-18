@@ -57,6 +57,8 @@ module OddsFeed
       end
 
       def request_recovery(node_id, request_id)
+        return if ::Radar::Producer.recovery_disabled?
+
         response = api_client.product_recovery_initiate_request(
           product_code: product.code,
           after: recover_after,

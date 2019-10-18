@@ -66,6 +66,57 @@ describe Radar::Producer do
     end
   end
 
+  describe '.recovery_disabled?' do
+    context 'on development environment' do
+      before do
+        allow(Rails.env).to receive(:development?).and_return(true)
+      end
+
+      it 'is disabled' do
+        expect(described_class.recovery_disabled?).to eq(true)
+      end
+
+      context 'on RADAR_RECOVERY_ENABLED is empty string' do
+        before do
+          allow(ENV)
+            .to receive(:[])
+            .with('RADAR_RECOVERY_ENABLED')
+            .and_return('')
+        end
+
+        it 'is disabled' do
+          expect(described_class.recovery_disabled?).to eq(true)
+        end
+      end
+
+      context 'on RADAR_RECOVERY_ENABLED is false' do
+        before do
+          allow(ENV)
+            .to receive(:[])
+            .with('RADAR_RECOVERY_ENABLED')
+            .and_return('false')
+        end
+
+        it 'is disabled' do
+          expect(described_class.recovery_disabled?).to eq(true)
+        end
+      end
+
+      context 'on RADAR_RECOVERY_ENABLED is true' do
+        before do
+          allow(ENV)
+            .to receive(:[])
+            .with('RADAR_RECOVERY_ENABLED')
+            .and_return('true')
+        end
+
+        it 'is enabled' do
+          expect(described_class.recovery_disabled?).to eq(false)
+        end
+      end
+    end
+  end
+
   describe '#live?' do
     it 'returns false for prematch code' do
       real_producers_set
@@ -232,6 +283,22 @@ describe Radar::Producer do
 
       it 'keeps original state' do
         expect(producer.state).to eq original_status
+      end
+    end
+
+    context 'when recovery disabled' do
+      before do
+        allow(described_class)
+          .to receive(:recovery_disabled?)
+          .and_return(true)
+      end
+
+      it 'does not call Radar api endpoint' do
+        producer.recover!
+        expect(producer.reload).to have_attributes(
+          state: described_class::HEALTHY,
+          last_disconnection_at: nil
+        )
       end
     end
   end

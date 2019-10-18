@@ -10,8 +10,7 @@ describe OddsFeed::Radar::SubscriptionRecovery do
     let(:recovery_time) { Time.zone.at(recovery_time_timestamp) }
     let(:after_recovery_time) { recovery_time + 1.hour }
     let(:oldest_recovery_since) do
-      recovery_time -
-        described_class::OLDEST_RECOVERY_AVAILABLE_IN_HOURS.hours
+      recovery_time - described_class::OLDEST_RECOVERY_AVAILABLE_IN_HOURS.hours
     end
 
     before do
@@ -30,8 +29,20 @@ describe OddsFeed::Radar::SubscriptionRecovery do
       Timecop.freeze(recovery_time)
     end
 
-    after do
-      Timecop.return
+    after { Timecop.return }
+
+    context 'when recovery disabled' do
+      before do
+        allow(::Radar::Producer)
+          .to receive(:recovery_disabled?)
+          .and_return(true)
+      end
+
+      it 'does not call Radar api endpoint' do
+        expect(client_double)
+          .not_to receive(:product_recovery_initiate_request)
+        described_class.call(product: product)
+      end
     end
 
     context 'with last_disconnection_at expired' do

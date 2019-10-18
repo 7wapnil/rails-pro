@@ -44,6 +44,11 @@ module Radar
       def prematch
         find_by(code: PREMATCH_PROVIDER_CODE)
       end
+
+      def recovery_disabled?
+        Rails.env.development? &&
+          !ActiveRecord::Type::Boolean.new.cast(ENV['RADAR_RECOVERY_ENABLED'])
+      end
     end
 
     def live?
@@ -82,6 +87,7 @@ module Radar
       return unless unsubscribed?
 
       recovering! if OddsFeed::Radar::SubscriptionRecovery.call(product: self)
+      recovery_completed! if ::Radar::Producer.recovery_disabled?
     end
 
     def recovery_completed!
