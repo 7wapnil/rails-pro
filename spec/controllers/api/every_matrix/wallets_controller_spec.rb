@@ -74,7 +74,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
 
       let(:expected_response) do
         common_success_response.merge(
-          'AccountId' => customer.id.to_s,
+          'AccountId' => wallet.id.to_s,
           'Country'   => country_code,
           'Currency'  => currency_code,
           'SessionId' => customer_session.id,

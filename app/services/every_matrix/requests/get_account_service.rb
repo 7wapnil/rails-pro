@@ -28,7 +28,7 @@ module EveryMatrix
       def success_response
         common_success_response.merge(
           'SessionId' => session.id,
-          'AccountId' => customer.id.to_s,
+          'AccountId' => wallet.id.to_s,
           'Country'   => country_code,
           'City'      => customer.address.city,
           'Currency'  => currency_code,
