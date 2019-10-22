@@ -27,7 +27,7 @@ module OddsFeed
         'interrupted' => Event::INTERRUPTED,
         'postponed' => Event::POSTPONED,
         'abandoned' => Event::ABANDONED
-      }.stringify_keys
+      }.freeze
 
       def initialize(status_input)
         @status_input = status_input
