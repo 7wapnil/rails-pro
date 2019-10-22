@@ -17,6 +17,7 @@ module CustomerBonuses
       check_bonus_expiration!
       form = CustomerBonuses::CreateForm.new(
         amount: amount,
+        currency: currency,
         **new_bonus_attributes
       )
       form.submit!
