@@ -59,7 +59,7 @@ describe Payments::Fiat::SafeCharge::Deposits::RequestHandler do
 
     it 'raise payment error' do
       expect { subject }
-        .to raise_error(SafeCharge::InvalidPaymentUrlError, message)
+        .to raise_error(Payments::GatewayError, message)
     end
   end
 end

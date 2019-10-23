@@ -50,7 +50,7 @@ module Payments
             entry_request.register_failure!(message)
             fail_related_entities!
 
-            raise ::SafeCharge::InvalidPaymentUrlError, message
+            raise ::Payments::GatewayError, message
           end
 
           def log_external_request_error(error)
