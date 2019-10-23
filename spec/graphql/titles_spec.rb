@@ -228,6 +228,7 @@ describe GraphQL, '#titles' do
 
     let!(:upcoming_for_time_event) do
       create(:event,
+             :with_market,
              start_at:
                (Event::UPCOMING_DURATION - 1)
                  .hours.from_now,
@@ -236,6 +237,7 @@ describe GraphQL, '#titles' do
 
     let!(:event_in_future) do
       create(:event,
+             :with_market,
              start_at:
                (Event::UPCOMING_DURATION + 1)
                  .hours.from_now,

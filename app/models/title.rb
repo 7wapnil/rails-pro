@@ -29,8 +29,12 @@ class Title < ApplicationRecord
 
   scope :with_active_events, ->(limit_start_at: nil) {
     joins(:events)
-      .merge(Event.active.visible.upcoming(limit_start_at: limit_start_at))
-      .or(joins(:events).merge(Event.active.visible.in_play))
+      .merge(
+        Event
+          .upcoming(limit_start_at: limit_start_at)
+          .or(Event.in_play)
+          .to_display
+      )
       .distinct
   }
 

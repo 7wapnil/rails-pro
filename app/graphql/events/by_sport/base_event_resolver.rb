@@ -10,11 +10,9 @@ module Events
 
       def base_query
         Event
-          .joins(:title, :available_markets)
+          .to_display
           .joins(join_events_to_tournaments_sql)
           .preload(:dashboard_markets, :competitors)
-          .visible
-          .active
           .order(:priority, :start_at)
       end
 

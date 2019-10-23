@@ -103,6 +103,9 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   delegate :name, to: :title, prefix: true
 
   scope :active, -> { where(active: true) }
+  scope :having_title, -> { joins(:title) }
+  scope :having_available_markets, -> { joins(:available_markets) }
+  scope :to_display, -> { active.visible.having_title.having_available_markets }
 
   def self.with_markets_count
     query = <<-SQL
