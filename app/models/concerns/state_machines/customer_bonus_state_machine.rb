@@ -38,7 +38,9 @@ module StateMachines
         event :activate do
           transitions from: :initial,
                       to: :active,
-                      after: %i[assign_entry set_activated_at]
+                      after: %i[assign_entry
+                                set_activated_at
+                                recalculate_rolover]
         end
 
         event :fail do
@@ -77,6 +79,17 @@ module StateMachines
 
       def assign_entry(entry)
         update(entry: entry)
+      end
+
+      def recalculate_rolover
+        update(
+          rollover_initial_value: rollover_value,
+          rollover_balance: rollover_value
+        )
+      end
+
+      def rollover_value
+        @rollover_value ||= entry.bonus_amount * rollover_multiplier
       end
 
       def set_activated_at
