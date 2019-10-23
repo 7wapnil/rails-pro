@@ -31,7 +31,7 @@ class Currency < ApplicationRecord
   end
 
   def self.primary
-    find_by(primary: true)
+    find_by(code: PRIMARY_CODE)
   end
 
   def to_s

@@ -213,4 +213,34 @@ describe CustomerBonuses::Create do
       )
     end
   end
+
+  context 'test converter for rollover initial value' do
+    let(:amount)          { bonus.min_deposit }
+    let(:custom_currency) { create(:currency, :less_primary) }
+    let(:wallet) do
+      create(:wallet, customer: customer, currency: custom_currency)
+    end
+
+    context 'test with currency less than primary' do
+      it 'raise error if converted sum less than min deposit' do
+        expect { subject }.to raise_error(
+          CustomerBonuses::ActivationError,
+          I18n.t('errors.messages.bonus_minimum_requirements_failed')
+        )
+      end
+    end
+
+    context 'test with right amount' do
+      let(:amount) { (bonus.min_deposit * custom_currency.exchange_rate).ceil }
+
+      before { subject }
+
+      it 'checking rollover value with right amount' do
+        expect(customer.reload.pending_bonus).to have_attributes(
+          rollover_initial_value: rollover_value,
+          status: CustomerBonus::INITIAL
+        )
+      end
+    end
+  end
 end

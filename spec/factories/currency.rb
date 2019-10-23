@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :currency do
-    code          { Currency::FIAT_CODES.sample }
+    code          { (Currency::FIAT_CODES - [Currency::PRIMARY_CODE]).sample }
     name          { "#{code} currency name" }
     primary       { false }
     kind          { Currency::FIAT }
@@ -12,6 +12,10 @@ FactoryBot.define do
       Currency.find_by(code: code) ||
         Currency.find_by(name: name) ||
         Currency.create!(attributes)
+    end
+
+    trait :less_primary do
+      exchange_rate { rand(1.0...2.0) }
     end
 
     trait :primary do
