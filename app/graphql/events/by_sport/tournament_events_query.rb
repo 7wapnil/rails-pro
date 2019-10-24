@@ -4,6 +4,7 @@ module Events
       include Base::Offsetable
 
       type TournamentEventsType
+      cache_for EVENT_LIVE_CONTEXT_CACHE_TTL
 
       description 'Get all events'
 

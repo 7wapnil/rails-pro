@@ -3,6 +3,7 @@
 module Base
   class Resolver < GraphQL::Function
     include Decoratable
+    include ::Base::Cacheable
 
     attr_reader :current_customer
 

@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 describe GraphQL, '#tournamentEvents' do
-  let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
-  let(:cache) { Rails.cache }
-
   let(:result) do
     ArcanebetSchema.execute(query)
   end
@@ -27,12 +24,7 @@ describe GraphQL, '#tournamentEvents' do
   end
   let(:result_event_ids) { result_events.map { |event| event['id'].to_i } }
 
-  before do
-    allow(Rails).to receive(:cache).and_return(memory_store)
-    Rails.cache.clear
-
-    control_events
-  end
+  before { control_events }
 
   context 'basic query' do
     let(:query) do

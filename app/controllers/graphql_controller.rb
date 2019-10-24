@@ -2,6 +2,7 @@
 
 class GraphqlController < ApiController
   include AppSignal::GraphqlExtensions
+  include Cacheable
 
   protect_from_forgery with: :null_session
 
@@ -19,12 +20,9 @@ class GraphqlController < ApiController
   end
 
   def execute
-    result = ArcanebetSchema.execute(
-      params[:query],
-      operation_name: params[:operationName],
-      variables: ensure_hash(params[:variables]),
-      context: context
-    )
+    result = cache_if_enabled do
+      ArcanebetSchema.execute(schema_params)
+    end
 
     render json: result
   rescue StandardError => e
@@ -36,6 +34,19 @@ class GraphqlController < ApiController
   end
 
   private
+
+  def schema_params
+    {
+      document: document,
+      operation_name: params[:operationName],
+      variables: ensure_hash(params[:variables]),
+      context: context
+    }
+  end
+
+  def document
+    GraphQL.parse(params[:query])
+  end
 
   # Handle form data, JSON body, or a blank value
   def ensure_hash(ambiguous_param)

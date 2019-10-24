@@ -28,11 +28,7 @@ module Events
 
       # upcoming (for_time)
       def upcoming
-        cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
-          query.upcoming(
-            limit_start_at: Event::UPCOMING_DURATION.hours.from_now
-          )
-        end
+        query.upcoming(limit_start_at: Event::UPCOMING_DURATION.hours.from_now)
       end
     end
   end

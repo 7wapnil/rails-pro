@@ -3,9 +3,6 @@ module Events
     class BaseEventResolver
       SUPPORTED_CONTEXTS = [Event::LIVE, Event::UPCOMING].freeze
 
-      UPCOMING_CONTEXT_CACHE_TTL = 5.seconds
-      LIVE_CONTEXT_CACHE_TTL = 2.seconds
-
       protected
 
       def base_query
@@ -26,14 +23,6 @@ module Events
         SQL
       end
 
-      def cached_for(interval)
-        caching_key = "graphql-events-#{query_args.to_h}"
-
-        Rails.cache.fetch(caching_key, expires_in: interval) do
-          yield
-        end
-      end
-
       # It tries to call:
       # #live, #upcoming (for_time)
       def filter_by_context!
@@ -50,9 +39,7 @@ module Events
       end
 
       def live
-        cached_for(LIVE_CONTEXT_CACHE_TTL) do
-          query.in_play
-        end
+        query.in_play
       end
     end
   end

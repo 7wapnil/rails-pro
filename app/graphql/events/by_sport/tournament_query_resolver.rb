@@ -27,9 +27,7 @@ module Events
       end
 
       def upcoming_and_live
-        cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
-          query.upcoming.or(query.in_play)
-        end
+        query.upcoming.or(query.in_play)
       end
 
       def separate_by_time

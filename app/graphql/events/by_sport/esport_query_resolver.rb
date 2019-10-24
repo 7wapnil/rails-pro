@@ -27,9 +27,7 @@ module Events
       end
 
       def upcoming
-        cached_for(UPCOMING_CONTEXT_CACHE_TTL) do
-          query.upcoming
-        end
+        query.upcoming
       end
 
       def filter_by_title_id
