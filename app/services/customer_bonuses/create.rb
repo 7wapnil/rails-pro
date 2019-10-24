@@ -49,7 +49,7 @@ module CustomerBonuses
         activated_at: activated_at
       }
     end
-    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
+    # rubocop:enable Metrics/MethodLength
 
     def new_customer_bonus_status
       return CustomerBonus::EXPIRED unless bonus.active?
