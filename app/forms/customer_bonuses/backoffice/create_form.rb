@@ -25,7 +25,8 @@ module CustomerBonuses
       private
 
       def maximum_bonus_amount
-        return if amount.present? && amount.to_f <= max_deposit_bonus
+        return unless amount && bonus
+        return if amount.to_f <= max_deposit_bonus
 
         errors.add(:bonus, "max deposit bonus: #{max_deposit_bonus}")
       end
