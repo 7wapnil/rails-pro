@@ -22,6 +22,7 @@ describe CustomerBonuses::Create do
   let(:rollover_multiplier) { 5 }
   let(:bonus_value) { 50 }
   let(:calculations) { { bonus_amount: bonus_value, real_money_amount: 100 } }
+  let(:rollover_value) { (bonus_value * rollover_multiplier).to_d }
 
   context 'when customer has no active bonus' do
     include_context 'frozen_time'
@@ -230,8 +231,9 @@ describe CustomerBonuses::Create do
 
     context 'with right amount' do
       let(:amount) { (bonus.min_deposit * currency.exchange_rate).ceil }
+      let(:entry)  { create(:entry, bonus_amount: bonus_value) }
 
-      before { subject }
+      before { subject.activate(entry) }
 
       it 'checking rollover value with right amount' do
         expect(customer.reload.pending_bonus).to have_attributes(
