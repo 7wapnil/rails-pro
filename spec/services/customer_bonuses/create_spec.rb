@@ -214,14 +214,14 @@ describe CustomerBonuses::Create do
     end
   end
 
-  context 'test converter for rollover initial value' do
+  context 'converter for rollover initial value' do
     let(:amount)          { bonus.min_deposit }
-    let(:custom_currency) { create(:currency, :less_primary) }
+    let(:custom_currency) { create(:currency, :with_low_exchange_rate) }
     let(:wallet) do
       create(:wallet, customer: customer, currency: custom_currency)
     end
 
-    context 'test with currency less than primary' do
+    context 'currency with low exchange rate' do
       it 'raise error if converted sum less than min deposit' do
         expect { subject }.to raise_error(
           CustomerBonuses::ActivationError,
@@ -230,7 +230,7 @@ describe CustomerBonuses::Create do
       end
     end
 
-    context 'test with right amount' do
+    context 'with right amount' do
       let(:amount) { (bonus.min_deposit * custom_currency.exchange_rate).ceil }
 
       before { subject }
