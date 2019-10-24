@@ -35,9 +35,7 @@ describe CustomerBonusesController, type: :controller do
           .to have_received(:call)
           .with(wallet: wallet,
                 bonus: original_bonus,
-                amount: amount,
-                status: CustomerBonus::ACTIVE,
-                activated_at: instance_of(ActiveSupport::TimeWithZone))
+                amount: amount)
       end
 
       it 'redirects to customer bonuses page' do

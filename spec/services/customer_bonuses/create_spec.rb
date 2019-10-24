@@ -22,7 +22,6 @@ describe CustomerBonuses::Create do
   let(:rollover_multiplier) { 5 }
   let(:bonus_value) { 50 }
   let(:calculations) { { bonus_amount: bonus_value, real_money_amount: 100 } }
-  let(:rollover_value) { (amount * rollover_multiplier).to_d }
 
   context 'when customer has no active bonus' do
     include_context 'frozen_time'
@@ -34,8 +33,8 @@ describe CustomerBonuses::Create do
         original_bonus_id: bonus.id,
         customer_id: customer.id,
         wallet_id: wallet.id,
-        rollover_balance: rollover_value,
-        rollover_initial_value: rollover_value,
+        rollover_balance: nil,
+        rollover_initial_value: nil,
         code: bonus.code,
         kind: bonus.kind,
         rollover_multiplier: bonus.rollover_multiplier,
@@ -90,7 +89,8 @@ describe CustomerBonuses::Create do
       allow(BalanceCalculations::Deposit)
         .to receive(:call)
         .and_return(calculations)
-      subject
+
+      subject.activate(create(:entry, bonus_amount: bonus_value))
     end
 
     it 'assigns rollover_initial_value' do

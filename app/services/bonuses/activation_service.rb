@@ -16,7 +16,7 @@ module Bonuses
 
       create_customer_bonus!
       charge_bonus_money
-
+      @customer_bonus.activate!(customer_bonus.entry)
       log_successful_activation
 
       customer_bonus
@@ -35,9 +35,7 @@ module Bonuses
       @customer_bonus = CustomerBonuses::Create.call(
         wallet: wallet,
         bonus: bonus,
-        amount: amount,
-        status: CustomerBonus::ACTIVE,
-        activated_at: Time.zone.now
+        amount: amount
       )
     end
 

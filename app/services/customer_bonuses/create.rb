@@ -29,14 +29,12 @@ module CustomerBonuses
 
     attr_accessor :wallet, :bonus, :amount, :status, :activated_at
 
-    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    # rubocop:disable Metrics/MethodLength
     def new_bonus_attributes
       {
         original_bonus_id: bonus.id,
         customer_id: customer.id,
         wallet_id: wallet.id,
-        rollover_balance: rollover_value,
-        rollover_initial_value: rollover_value,
         code: bonus.code,
         kind: bonus.kind,
         rollover_multiplier: bonus.rollover_multiplier,
@@ -57,14 +55,6 @@ module CustomerBonuses
       return CustomerBonus::EXPIRED unless bonus.active?
 
       @status
-    end
-
-    def rollover_value
-      @rollover_value ||= bonus_amount * bonus.rollover_multiplier
-    end
-
-    def bonus_amount
-      BalanceCalculations::Deposit.call(amount, currency, bonus)[:bonus_amount]
     end
 
     def check_bonus_expiration!
