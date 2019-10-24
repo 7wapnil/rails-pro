@@ -82,6 +82,8 @@ module StateMachines
       end
 
       def recalculate_rolover
+        return if entry.blank?
+
         update(
           rollover_initial_value: rollover_value,
           rollover_balance: rollover_value
