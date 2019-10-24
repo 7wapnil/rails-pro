@@ -48,21 +48,24 @@ module Payments
           end
 
           def scrap_payment_option_name
-            user_payment_option_info[name_identifier] ||
+            payment_option_info.dig('upoData', name_identifier).presence ||
+              payment_option_info['upoName'].presence ||
               I18n.t("kinds.payment_methods.#{entry_request.mode}")
           end
 
-          def user_payment_option_info
-            client
-              .receive_user_payment_options(options_params)
+          def payment_option_info
+            response
               .fetch('paymentMethods', [])
               .find(&method(:payload_option_id_equal?))
               .to_h
-              .fetch('upoData', {})
           end
 
           def name_identifier
             NAME_IDENTIFIERS_MAP[entry_request.mode]
+          end
+
+          def response
+            @response ||= client.receive_user_payment_options(options_params)
           end
 
           def client

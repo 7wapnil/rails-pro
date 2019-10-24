@@ -24,7 +24,7 @@
     },
     {
       "userPaymentOptionId": 2,
-      "upoName": "",
+      "upoName": "alex@kek.com",
       "paymentMethodName": "apmgw_Neteller",
       "upoStatus": "enabled",
       "upoRegistrationDate": "20190730",
@@ -42,7 +42,7 @@
       },
       "upoData": {
         "nettelerSecureId": "123321",
-        "nettelerAccount": "1488228"
+        "nettelerAccount": ""
       }
     },
     {

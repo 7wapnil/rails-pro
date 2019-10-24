@@ -88,7 +88,7 @@ describe Webhooks::SafeCharge::PaymentsController, type: :controller do
         subject
         expect(deposit.reload.details).to include(
           'user_payment_option_id' => '2',
-          'name' => '1488228'
+          'name' => 'alex@kek.com'
         )
       end
     end

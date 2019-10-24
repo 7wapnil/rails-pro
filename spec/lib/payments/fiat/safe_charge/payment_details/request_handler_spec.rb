@@ -26,12 +26,32 @@ describe Payments::Fiat::SafeCharge::PaymentDetails::RequestHandler do
       .and_return(payment_options_payload)
   end
 
-  it 'stores fetched payment option details' do
-    subject
-    expect(deposit.reload.details).to include(
-      'user_payment_option_id' => '1',
-      'name' => '322322322'
-    )
+  context 'for new payment option' do
+    context 'Skrill' do
+      let(:payment_option_id) { '1' }
+      let(:mode) { EntryRequest::SKRILL }
+
+      it 'stores fetched payment option details' do
+        subject
+        expect(deposit.reload.details).to include(
+          'user_payment_option_id' => '1',
+          'name' => '322322322'
+        )
+      end
+    end
+
+    context 'Neteller' do
+      let(:payment_option_id) { '2' }
+      let(:mode) { EntryRequest::NETELLER }
+
+      it 'stores fetched payment option details' do
+        subject
+        expect(deposit.reload.details).to include(
+          'user_payment_option_id' => '2',
+          'name' => 'alex@kek.com'
+        )
+      end
+    end
   end
 
   context 'with found identical payment option' do

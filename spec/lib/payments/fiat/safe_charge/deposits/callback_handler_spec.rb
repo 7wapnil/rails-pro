@@ -85,7 +85,7 @@ describe Payments::Fiat::SafeCharge::Deposits::CallbackHandler do
     it 'stores payment details' do
       expect(deposit.reload.details).to include(
         'user_payment_option_id' => '2',
-        'name' => '1488228'
+        'name' => 'alex@kek.com'
       )
     end
   end
