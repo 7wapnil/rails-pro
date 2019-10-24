@@ -215,7 +215,7 @@ describe CustomerBonuses::Create do
   end
 
   context 'converter for rollover initial value' do
-    let(:amount)          { bonus.min_deposit }
+    let(:amount)   { bonus.min_deposit }
     let(:currency) { create(:currency, :with_low_exchange_rate) }
     let(:wallet) do
       create(:wallet, customer: customer, currency: currency)
