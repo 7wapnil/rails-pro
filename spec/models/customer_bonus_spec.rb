@@ -88,14 +88,37 @@ describe CustomerBonus do
     before { subject }
 
     describe '#activate!' do
-      subject { customer_bonus.activate!(nil) }
+      subject { customer_bonus.activate!(entry) }
 
+      let(:entry)            { create(:entry, bonus_amount: bonus_amount) }
+      let(:bonus_amount)     { rand(1..10) }
+      let(:rollover_balance) { rand(100..1000) }
       let(:customer_bonus) do
-        create(:customer_bonus, status: CustomerBonus::INITIAL)
+        create(
+          :customer_bonus,
+          status: CustomerBonus::INITIAL,
+          rollover_balance: rollover_balance
+        )
       end
 
       it 'sets #activated_at' do
         expect(customer_bonus.reload.activated_at).not_to be_nil
+      end
+
+      it 'recalculated rollover balance and initial value' do
+        expect(recalculated_balance?).to be true
+      end
+
+      it 'updated rollover balance' do
+        expect(customer_bonus.rollover_balance).not_to eq(rollover_balance)
+      end
+
+      def recalculated_balance?
+        customer_bonus.reload.rollover_initial_value == rollover_value
+      end
+
+      def rollover_value
+        customer_bonus.entry.bonus_amount * customer_bonus.rollover_multiplier
       end
     end
   end
