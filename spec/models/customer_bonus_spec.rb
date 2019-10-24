@@ -100,25 +100,21 @@ describe CustomerBonus do
           rollover_balance: rollover_balance
         )
       end
+      let(:rollover_value) do
+        customer_bonus.entry.bonus_amount * customer_bonus.rollover_multiplier
+      end
 
       it 'sets #activated_at' do
         expect(customer_bonus.reload.activated_at).not_to be_nil
       end
 
       it 'recalculated rollover balance and initial value' do
-        expect(recalculated_balance?).to be true
+        expect(customer_bonus.reload.rollover_initial_value)
+          .to eq(rollover_value)
       end
 
       it 'updated rollover balance' do
         expect(customer_bonus.rollover_balance).not_to eq(rollover_balance)
-      end
-
-      def recalculated_balance?
-        customer_bonus.reload.rollover_initial_value == rollover_value
-      end
-
-      def rollover_value
-        customer_bonus.entry.bonus_amount * customer_bonus.rollover_multiplier
       end
     end
   end
