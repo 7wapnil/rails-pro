@@ -7,5 +7,12 @@ module Radar
     def worker_class
       OddsFeed::Radar::RollbackBetCancelHandler
     end
+
+    def extra_log_info
+      {
+        start_time: payload.dig('rollback_bet_cancel', 'start_time'),
+        end_time: payload.dig('rollback_bet_cancel', 'end_time')
+      }
+    end
   end
 end
