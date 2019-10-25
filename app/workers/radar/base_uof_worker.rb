@@ -7,8 +7,10 @@ module Radar
     def perform(payload, enqueued_at = nil)
       populate_message_info_to_thread(payload)
 
+      @payload = XmlParser.parse(payload)
+
       execute_logged(enqueued_at: enqueued_at) do
-        execute(payload)
+        execute
       end
     end
 
@@ -18,8 +20,10 @@ module Radar
 
     private
 
-    def execute(payload)
-      worker_class.new(XmlParser.parse(payload)).handle
+    attr_reader :payload
+
+    def execute
+      worker_class.new(payload).handle
     end
   end
 end
