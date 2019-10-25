@@ -14,8 +14,9 @@ describe Payments::Crypto::Payout do
       details: withdrawal.details
     )
   end
+  let(:mode) { EntryRequest::BITCOIN }
   let!(:entry_request) do
-    create(:entry_request, :withdrawal, mode: EntryRequest::BITCOIN)
+    create(:entry_request, :withdrawal, :with_entry, :succeeded, mode: mode)
   end
   let!(:withdrawal) do
     create(:withdrawal, entry_request: entry_request, details: details)

@@ -493,15 +493,18 @@ en:
       backoffice:
         not_enough_money: Please check customer available balance
         pending_bets_with_bonus: Customer has pending bets containing bonus
+        negative_balance: Customer has negative real money/bonus balance
       deposit:
         method_not_supported: Deposit method is not supported
       withdrawal:
         not_enough_money: Please check your available balance
         invalid_payment_method: "Invalid payment method: %{payment_method}"
         invalid_payload: "Missing %{attr}"
+        invalid_withdrawal: Should be rejected. Balance has not been reduced
         method_not_supported: Withdraw method is not supported
         customer_not_verified: Customer should be verified to withdraw funds
         pending_bets_with_bonus: You are unable to request a withdrawal while having pending bets containing bonus
+        negative_balance: You are unable to request a withdrawal while having negative real money/bonus balance
         confirmation_error: Fail during withdrawal confirmation
         no_order_details: "Fail during fetching error details for order id: %{id}"
       withdrawals:

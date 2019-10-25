@@ -181,6 +181,20 @@ describe ::Payments::Withdrawals::Customers::CreateForm, type: :model do
     end
   end
 
+  context 'with negative bonus balance' do
+    let(:error_message) do
+      'Validation failed: ' \
+        "#{I18n.t('errors.messages.withdrawal.negative_balance')}"
+    end
+
+    before { wallet.update(bonus_balance: -10) }
+
+    it 'raises validation error on validate!' do
+      expect { subject.validate! }
+        .to raise_error(ActiveModel::ValidationError, error_message)
+    end
+  end
+
   context 'raise WithdrawalError' do
     let(:balance_amount) { withdrawal_amount - 10 }
     let(:error_message) do

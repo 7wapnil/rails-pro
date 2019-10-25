@@ -17,6 +17,8 @@ class WithdrawalsController < ApplicationController
   def confirm
     withdrawal.confirm!(current_user)
     flash[:notice] = I18n.t('messages.withdrawal_confirmed')
+  rescue Payments::InvalidTransactionError => error
+    flash[:error] = error.validation_errors.messages.first.flatten.join(': ')
   rescue StandardError => e
     flash[:error] = e.message
   ensure
@@ -40,10 +42,9 @@ class WithdrawalsController < ApplicationController
   end
 
   def create_audit_log
-    event = "withdrawal_#{action_name}".to_s
-    Audit::Service.call(event: event,
+    Audit::Service.call(event: "withdrawal_#{action_name}",
                         user: current_user,
-                        customer: withdrawal.entry.customer,
+                        customer: withdrawal.entry_request.customer,
                         context: withdrawal)
   end
 end

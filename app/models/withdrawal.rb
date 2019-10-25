@@ -15,6 +15,8 @@ class Withdrawal < CustomerTransaction
     raise comment_error if comment.empty?
 
     review!(user, REJECTED)
+    return unless entry
+
     Withdrawals::WithdrawalRejectionService.call(entry.id, comment: comment)
   end
 

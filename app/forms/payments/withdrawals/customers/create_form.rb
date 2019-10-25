@@ -3,6 +3,7 @@
 module Payments
   module Withdrawals
     module Customers
+      # rubocop:disable Metrics/ClassLength
       class CreateForm
         include ActiveModel::Model
         include ::Payments::Methods
@@ -34,6 +35,7 @@ module Payments
 
         validate :validate_payment_details
         validate :validate_no_pending_bets_with_bonus
+        validate :validate_balances, if: :wallet
         validate :validate_amount
         validate :validate_currency_rule
 
@@ -86,6 +88,15 @@ module Payments
             .none?
         end
 
+        def validate_balances
+          return if positive_balances?
+
+          errors.add(
+            :base,
+            I18n.t('errors.messages.withdrawal.negative_balance')
+          )
+        end
+
         def validate_amount
           return unless amount && real_money_balance
           return if amount <= real_money_balance
@@ -101,6 +112,12 @@ module Payments
           return amount_greater_than_allowed! if amount > rule.min_amount.abs
 
           amount_less_than_allowed! if -amount > rule.max_amount
+        end
+
+        def positive_balances?
+          wallet
+            .slice(:real_money_balance, :bonus_balance)
+            .all? { |_, balance| balance >= 0 }
         end
 
         def rule
@@ -126,6 +143,7 @@ module Payments
                             currency: currency.to_s))
         end
       end
+      # rubocop:enable Metrics/ClassLength
     end
   end
 end

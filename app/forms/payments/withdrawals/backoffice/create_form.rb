@@ -26,6 +26,7 @@ module Payments
                   format: { with: AMOUNT_FORMAT_REGEX }
 
         validate :validate_no_pending_bets_with_bonus
+        validate :validate_balances, if: :wallet
         validate :validate_amount
         validate :validate_currency_rule
 
@@ -49,6 +50,15 @@ module Payments
             .none?
         end
 
+        def validate_balances
+          return if positive_balances?
+
+          errors.add(
+            :base,
+            I18n.t('errors.messages.backoffice.negative_balance')
+          )
+        end
+
         def validate_amount
           return unless amount && real_money_balance
           return if amount <= real_money_balance
@@ -69,6 +79,12 @@ module Payments
         def rule
           @rule ||= EntryCurrencyRule.find_by(currency: currency,
                                               kind: EntryKinds::WITHDRAW)
+        end
+
+        def positive_balances?
+          wallet
+            .slice(:real_money_balance, :bonus_balance)
+            .all? { |_, balance| balance >= 0 }
         end
 
         def currency
