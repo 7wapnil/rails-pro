@@ -38,7 +38,12 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
     )
   end
 
-  let(:json) { JSON.parse(response.body) }
+  let(:post_response) do
+    post(:create, params: payload)
+
+    response
+  end
+  let(:json) { JSON.parse(post_response.body) }
 
   before do
     allow(ENV).to receive(:[]).and_call_original
@@ -50,8 +55,6 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
     allow(ENV).to receive(:[])
       .with('EVERYMATRIX_WALLET_API_PASSWORD')
       .and_return(em_password)
-
-    post(:create, params: payload)
   end
 
   context 'GetAccount' do
@@ -369,8 +372,6 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
       end
 
       it 'responds with Processed status' do
-        post(:create, params: payload)
-
         expect(json).to include(expected_response)
       end
     end
