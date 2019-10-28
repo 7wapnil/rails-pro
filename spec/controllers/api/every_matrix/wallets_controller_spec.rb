@@ -41,11 +41,13 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
   let(:json) { JSON.parse(response.body) }
 
   before do
-    allow(ENV).to receive(:fetch)
+    allow(ENV).to receive(:[]).and_call_original
+
+    allow(ENV).to receive(:[])
       .with('EVERYMATRIX_WALLET_API_USERNAME')
       .and_return(em_login)
 
-    allow(ENV).to receive(:fetch)
+    allow(ENV).to receive(:[])
       .with('EVERYMATRIX_WALLET_API_PASSWORD')
       .and_return(em_password)
 

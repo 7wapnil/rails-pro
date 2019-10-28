@@ -56,9 +56,9 @@ module Api
 
       def valid_login_and_password?
         login_params['LoginName'] ==
-          ENV.fetch('EVERYMATRIX_WALLET_API_USERNAME') &&
+          ENV['EVERYMATRIX_WALLET_API_USERNAME'] &&
           login_params['Password'] ==
-            ENV.fetch('EVERYMATRIX_WALLET_API_PASSWORD')
+            ENV['EVERYMATRIX_WALLET_API_PASSWORD']
       end
     end
   end
