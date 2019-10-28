@@ -211,7 +211,7 @@ module StateMachines
       end
 
       def on_successful_placement
-        entry.update(confirmed_at: Time.zone.now)
+        entry.confirm!
       end
 
       def update_notification(message, code:)

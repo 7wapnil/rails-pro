@@ -27,7 +27,7 @@ module WalletEntry
         find_or_create_wallet_with_lock!
         create_entry!
         update_balances!
-        confirm_entry if auto_confirmation?
+        confirm_entry! if auto_confirmation?
         request.succeeded!
       end
     end
@@ -70,8 +70,8 @@ module WalletEntry
       EntryKinds::DELAYED_CONFIRMATION_KINDS.exclude?(entry.kind)
     end
 
-    def confirm_entry
-      entry.update(confirmed_at: Time.zone.now)
+    def confirm_entry!
+      entry.confirm!
     end
 
     def update_summary!

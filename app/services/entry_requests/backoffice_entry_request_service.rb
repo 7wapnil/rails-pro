@@ -68,7 +68,7 @@ module EntryRequests
     end
 
     def process_withdraw_entry_request
-      ::EntryRequestProcessingWorker.perform_async(entry_request.id)
+      ::WithdrawalProcessBackofficeWorker.perform_async(entry_request.id)
     end
 
     def withdrawal_transaction

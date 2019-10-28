@@ -7,17 +7,16 @@ module Withdrawals
     def initialize(withdrawal)
       @withdrawal = withdrawal
       @entry_request = withdrawal.entry_request
-      @confirmed_at = Time.zone.now
     end
 
     def call
       payout!
-      confirm_entry
+      confirm_entry!
     end
 
     private
 
-    attr_reader :withdrawal, :entry_request, :confirmed_at
+    attr_reader :withdrawal, :entry_request
 
     def payout!
       ::Payments::Payout.call(transaction)
@@ -35,8 +34,8 @@ module Withdrawals
       )
     end
 
-    def confirm_entry
-      entry.update!(confirmed_at: confirmed_at)
+    def confirm_entry!
+      entry.confirm!
     end
   end
 end

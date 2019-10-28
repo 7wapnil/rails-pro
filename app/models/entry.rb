@@ -23,4 +23,8 @@ class Entry < ApplicationRecord
   validates_with EntryAmountValidator
 
   scope :confirmed, -> { where.not(confirmed_at: nil) }
+
+  def confirm!
+    update!(confirmed_at: Time.zone.now)
+  end
 end
