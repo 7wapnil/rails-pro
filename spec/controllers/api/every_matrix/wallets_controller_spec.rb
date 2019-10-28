@@ -198,6 +198,27 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
 
         expect(second_json).to eq(first_json)
       end
+
+      context 'with amount exceeding limit' do
+        before do
+          wallet.currency.entry_currency_rules.create!(
+            kind: 'em_wager',
+            min_amount: 0,
+            max_amount: 0
+          )
+        end
+
+        let(:expected_response) do
+          common_response.merge(
+            'ReturnCode' => 112,
+            'Message'    => 'MaxStakeLimitExceeded'
+          )
+        end
+
+        it 'responds with correct error code and message' do
+          expect(json).to include(expected_response)
+        end
+      end
     end
 
     context 'with existing session and insufficient funds' do

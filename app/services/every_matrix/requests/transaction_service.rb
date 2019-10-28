@@ -25,6 +25,8 @@ module EveryMatrix
 
         process_transaction!
 
+        return record_response(entry_creation_failed) unless transaction.entry
+
         record_response(success_response)
       end
 
@@ -108,6 +110,12 @@ module EveryMatrix
       end
 
       def validation_failed
+        error_msg = "#{__method__} needs to be implemented in #{self.class}"
+
+        raise NotImplementedError, error_msg
+      end
+
+      def entry_creation_failed
         error_msg = "#{__method__} needs to be implemented in #{self.class}"
 
         raise NotImplementedError, error_msg

@@ -41,6 +41,13 @@ module EveryMatrix
           'Message'    => 'Insufficient funds'
         )
       end
+
+      def entry_creation_failed
+        common_response.merge(
+          'ReturnCode' => 112,
+          'Message'    => 'MaxStakeLimitExceeded'
+        )
+      end
     end
   end
 end
