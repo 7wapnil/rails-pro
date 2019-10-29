@@ -158,13 +158,17 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
           wallet.currency.update_attribute(:code, 'mBTC')
         end
 
+        let(:expected_balance) do
+          (wallet.real_money_balance * 0.001).truncate(5).to_s
+        end
+
         let(:expected_response) do
           common_success_response.merge(
-            'Balance'    => (wallet.real_money_balance * 0.001).to_s,
+            'Balance'    => expected_balance,
             'Currency'   => 'BTC',
             'SessionId'  => customer_session.id,
             'BonusMoney' => 0.0,
-            'RealMoney'  => (wallet.real_money_balance * 0.001).to_s
+            'RealMoney'  => expected_balance
           )
         end
 
@@ -262,9 +266,13 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
 
         let(:amount) { balance_before * 0.001 / 2 }
 
+        let(:expected_balance) do
+          (balance_before * 0.001 - amount).to_d.truncate(5).to_s
+        end
+
         let(:expected_response) do
           common_success_response.merge(
-            'Balance'    => (balance_before * 0.001 - amount).to_d.to_s,
+            'Balance'    => expected_balance,
             'Currency'   => 'BTC',
             'SessionId'  => customer_session.id
           )
