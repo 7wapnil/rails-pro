@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_17_125202) do
+ActiveRecord::Schema.define(version: 2019_10_29_073505) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -59,7 +59,7 @@ ActiveRecord::Schema.define(version: 2019_10_17_125202) do
     t.bigint "customer_id"
     t.bigint "odd_id"
     t.bigint "currency_id"
-    t.decimal "amount"
+    t.decimal "amount", precision: 14, scale: 2
     t.decimal "odd_value"
     t.string "status"
     t.text "notification_message"

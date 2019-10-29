@@ -18,12 +18,13 @@ describe EntryRequests::Factories::WinPayout do
   end
 
   let(:real_money_winning) { (winning * ratio).round(2) }
-  let(:bonus_winning) { (winning * (1 - ratio)).round(2) }
+  let(:bonus_winning) { (winning - real_money_winning).round(2) }
+  let(:real_money_amount) { (amount * ratio).round(2) }
 
   before do
     bet.placement_entry.update(
-      real_money_amount: amount * ratio,
-      bonus_amount: amount * (1 - ratio)
+      real_money_amount: real_money_amount,
+      bonus_amount: amount - real_money_amount
     )
   end
 

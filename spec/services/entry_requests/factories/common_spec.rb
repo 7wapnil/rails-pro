@@ -7,11 +7,12 @@ describe EntryRequests::Factories::Common do
   let(:winning) { rand(100..500).to_f }
   let(:amount) { rand(10..100).to_f }
   let(:ratio) { 0.75 }
+  let(:real_money_amount) { (amount * ratio).round(2) }
 
   let!(:wallet_balance) do
     bet.placement_entry.update(
-      real_money_amount: amount * ratio,
-      bonus_amount: amount * (1 - ratio)
+      real_money_amount: real_money_amount,
+      bonus_amount: amount - real_money_amount
     )
   end
 
@@ -24,7 +25,7 @@ describe EntryRequests::Factories::Common do
   end
 
   let(:real_money_winning) { (winning * ratio).round(2) }
-  let(:bonus_winning) { (winning * (1 - ratio)).round(2) }
+  let(:bonus_winning) { (winning - real_money_winning).round(2) }
 
   context 'with valid attributes' do
     let(:origin_attributes) do

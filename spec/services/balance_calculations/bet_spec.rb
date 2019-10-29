@@ -19,11 +19,11 @@ describe BalanceCalculations::Bet do
 
   let(:full_balance) { rand(100..500).to_f }
   let(:ratio) { 0.75 }
-  let(:real_money_balance) { full_balance * ratio }
-  let(:bonus_balance) { full_balance * (1 - ratio) }
+  let(:real_money_balance) { (full_balance * ratio).round(2) }
+  let(:bonus_balance) { full_balance - real_money_balance }
 
   let(:real_money_winning) { -(amount * ratio).round(2) }
-  let(:bonus_winning) { -(amount * (1 - ratio)).round(2) }
+  let(:bonus_winning) { -(amount + real_money_winning).round(2) }
 
   context 'with existent bonus balance and real money balance' do
     it 'calculates real and bonus amount' do
