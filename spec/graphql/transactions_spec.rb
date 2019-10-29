@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 describe GraphQL, '#transactions' do
-  let(:context) { { current_customer: customer } }
+  let(:request) do
+    OpenStruct.new(remote_ip: Faker::Internet.ip_v4_address)
+  end
+  let(:context) { { current_customer: customer, request: request } }
   let(:variables) { {} }
   let!(:customer) { create(:customer) }
   let!(:withdrawals) do

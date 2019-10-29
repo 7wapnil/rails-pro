@@ -2,7 +2,10 @@
 
 describe GraphQL, '#customerBonuses' do
   let(:auth_customer) { create(:customer) }
-  let(:context) { { current_customer: auth_customer } }
+  let(:request) do
+    OpenStruct.new(remote_ip: Faker::Internet.ip_v4_address)
+  end
+  let(:context) { { current_customer: auth_customer, request: request } }
   let(:variables) { {} }
   let(:result) do
     ArcanebetSchema.execute(query,

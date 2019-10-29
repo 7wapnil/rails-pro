@@ -3,7 +3,10 @@
 describe GraphQL, '#payment_methods' do
   let(:auth_customer) { create(:customer) }
   let(:payment_methods) { ::Payments::Deposit::PAYMENT_METHODS }
-  let(:context) { { current_customer: auth_customer } }
+  let(:request) do
+    OpenStruct.new(remote_ip: Faker::Internet.ip_v4_address)
+  end
+  let(:context) { { current_customer: auth_customer, request: request } }
   let(:variables) { {} }
   let(:query) do
     %({ depositMethods { name code note } })

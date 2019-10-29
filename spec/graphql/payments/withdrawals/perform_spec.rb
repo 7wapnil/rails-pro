@@ -41,7 +41,10 @@ describe GraphQL, '#withdraw' do
         withdraw(input: $input)
       })
   end
-  let(:context) { { current_customer: auth_customer } }
+  let(:request) do
+    OpenStruct.new(remote_ip: Faker::Internet.ip_v4_address)
+  end
+  let(:context) { { current_customer: auth_customer, request: request } }
   let(:variables) do
     {
       input: {

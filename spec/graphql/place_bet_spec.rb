@@ -2,12 +2,16 @@
 
 describe GraphQL, '#place_bet' do
   let!(:currency) { create(:currency, code: 'EUR') }
+
   let(:auth_customer) { create(:customer) }
   let!(:wallet) do
     create(:wallet, :brick, customer: auth_customer, currency: currency,
                             real_money_balance: 100, bonus_balance: 100)
   end
-  let(:context) { { current_customer: auth_customer } }
+  let(:request) do
+    OpenStruct.new(remote_ip: Faker::Internet.ip_v4_address)
+  end
+  let(:context) { { current_customer: auth_customer, request: request } }
 
   let!(:live_producer) { create(:liveodds_producer) }
   let!(:prematch_producer) { create(:prematch_producer) }

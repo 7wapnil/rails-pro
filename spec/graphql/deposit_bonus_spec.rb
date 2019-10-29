@@ -5,7 +5,10 @@ describe GraphQL, '#deposit_bonus' do
     create(:wallet, customer: auth_customer, currency: primary_currency)
   end
   let(:currency_code) { primary_currency.code }
-  let(:context) { { current_customer: auth_customer } }
+  let(:request) do
+    OpenStruct.new(remote_ip: Faker::Internet.ip_v4_address)
+  end
+  let(:context) { { current_customer: auth_customer, request: request } }
   let(:amount) { 100.0 }
   let(:variables) do
     { amount: amount, code: code, currencyCode: currency_code }
