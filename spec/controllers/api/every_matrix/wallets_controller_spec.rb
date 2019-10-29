@@ -43,6 +43,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
 
     response
   end
+
   let(:json) { JSON.parse(post_response.body) }
 
   before do

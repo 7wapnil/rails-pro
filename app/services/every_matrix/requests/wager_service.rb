@@ -3,11 +3,7 @@
 module EveryMatrix
   module Requests
     class WagerService < TransactionService
-      def call
-        super
-      end
-
-      protected
+      private
 
       def request_name
         'Wager'
@@ -20,8 +16,6 @@ module EveryMatrix
       def placement_service
         EntryRequests::Factories::EveryMatrix::WagerPlacement
       end
-
-      private
 
       def insufficient_funds?
         wallet && (amount > wallet.real_money_balance)

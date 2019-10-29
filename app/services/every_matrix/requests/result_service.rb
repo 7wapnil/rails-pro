@@ -3,7 +3,7 @@
 module EveryMatrix
   module Requests
     class ResultService < TransactionService
-      protected
+      private
 
       def request_name
         'Result'

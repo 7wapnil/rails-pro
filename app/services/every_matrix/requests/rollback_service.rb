@@ -3,7 +3,7 @@
 module EveryMatrix
   module Requests
     class RollbackService < TransactionService
-      protected
+      private
 
       def request_name
         'Rollback'
