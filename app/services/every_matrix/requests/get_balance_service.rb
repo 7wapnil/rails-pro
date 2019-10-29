@@ -3,6 +3,8 @@
 module EveryMatrix
   module Requests
     class GetBalanceService < SessionRequestService
+      include CurrencyDenomination
+
       def call
         return user_not_found_response unless customer
 
@@ -20,10 +22,21 @@ module EveryMatrix
       def success_response
         common_success_response.merge(
           'SessionId'  => session.id,
-          'Balance'    => wallet.real_money_balance,
-          'Currency'   => currency_code,
+          'Balance'    => response_balance_amount,
+          'Currency'   => response_currency_code,
           'BonusMoney' => 0.0,
-          'RealMoney'  => wallet.real_money_balance
+          'RealMoney'  => response_balance_amount
+        )
+      end
+
+      def response_currency_code
+        denominate_currency_code(code: currency_code)
+      end
+
+      def response_balance_amount
+        denominate_response_amount(
+          code: currency_code,
+          amount: wallet.real_money_balance
         )
       end
     end

@@ -24,7 +24,7 @@ module EveryMatrix
       end
 
       def currency_code
-        wallet.currency.code
+        wallet&.currency&.code
       end
     end
   end

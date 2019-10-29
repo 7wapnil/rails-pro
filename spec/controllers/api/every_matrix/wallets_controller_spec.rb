@@ -138,6 +138,26 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
       it 'successfully responds to request' do
         expect(json).to include(expected_response)
       end
+
+      context 'with mBTC to BTC denomination' do
+        before do
+          wallet.currency.update_attribute(:code, 'mBTC')
+        end
+
+        let(:expected_response) do
+          common_success_response.merge(
+            'Balance'    => (wallet.real_money_balance * 0.001).to_s,
+            'Currency'   => 'BTC',
+            'SessionId'  => customer_session.id,
+            'BonusMoney' => 0.0,
+            'RealMoney'  => (wallet.real_money_balance * 0.001).to_s
+          )
+        end
+
+        it 'successfully responds to request' do
+          expect(json).to include(expected_response)
+        end
+      end
     end
 
     context 'with missing session' do
@@ -217,6 +237,26 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
         end
 
         it 'responds with correct error code and message' do
+          expect(json).to include(expected_response)
+        end
+      end
+
+      context 'with mBTC to BTC denomination' do
+        before do
+          wallet.currency.update_attribute(:code, 'mBTC')
+        end
+
+        let(:amount) { balance_before * 0.001 / 2 }
+
+        let(:expected_response) do
+          common_success_response.merge(
+            'Balance'    => (balance_before * 0.001 - amount).to_d.to_s,
+            'Currency'   => 'BTC',
+            'SessionId'  => customer_session.id
+          )
+        end
+
+        it 'successfully responds to request' do
           expect(json).to include(expected_response)
         end
       end

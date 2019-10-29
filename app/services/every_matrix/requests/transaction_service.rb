@@ -2,7 +2,10 @@
 
 module EveryMatrix
   module Requests
+    # rubocop:disable Metrics/ClassLength
     class TransactionService < SessionRequestService
+      include CurrencyDenomination
+
       TRANSACTION_PARAMS = %w[Amount Device GameType
                               GPGameId EMGameId GPId
                               Product RoundId TransactionId
@@ -11,7 +14,10 @@ module EveryMatrix
       def initialize(params)
         super
 
-        @amount = transaction_params['Amount']&.to_d
+        @amount = denominate_request_amount(
+          code: currency_code,
+          amount: transaction_params['Amount']&.to_d
+        )
       end
 
       def call
@@ -62,7 +68,7 @@ module EveryMatrix
         {
           customer:          customer,
           em_wallet_session: session,
-          amount:            transaction_params['Amount'].to_d,
+          amount:            amount.to_d,
           game_type:         transaction_params['GameType'],
           gp_game_id:        transaction_params['GPGameId'],
           gp_id:             transaction_params['GPId'],
@@ -90,13 +96,24 @@ module EveryMatrix
         common_success_response.merge(
           'SessionId'            => session.id,
           'AccountTransactionId' => transaction.id,
-          'Currency'             => currency_code,
-          'Balance'              => balance_amount_after.to_d.to_s
+          'Currency'             => response_currency_code,
+          'Balance'              => response_balance_amount.to_d.to_s
         )
       end
 
       def balance_amount_after
         wallet.reload.real_money_balance
+      end
+
+      def response_currency_code
+        denominate_currency_code(code: currency_code)
+      end
+
+      def response_balance_amount
+        denominate_response_amount(
+          code: currency_code,
+          amount: balance_amount_after
+        )
       end
 
       def record_response(response)
@@ -133,5 +150,6 @@ module EveryMatrix
         raise NotImplementedError, error_msg
       end
     end
+    # rubocop:enable Metrics/ClassLength
   end
 end
