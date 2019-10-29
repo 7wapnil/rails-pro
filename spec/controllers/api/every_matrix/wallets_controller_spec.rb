@@ -90,6 +90,20 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
       it 'successfully responds to request' do
         expect(json).to include(expected_response)
       end
+
+      context 'with mBTC to BTC denomination' do
+        before do
+          wallet.currency.update_attribute(:code, 'mBTC')
+        end
+
+        let(:denominated_response) do
+          expected_response.merge('Currency' => 'BTC')
+        end
+
+        it 'successfully responds to request' do
+          expect(json).to include(denominated_response)
+        end
+      end
     end
 
     context 'with missing session' do
