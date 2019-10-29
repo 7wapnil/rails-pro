@@ -28,7 +28,7 @@ module Authentication
     return {} if token.blank?
 
     JwtService.decode(token).first
-  rescue JWT::DecodeError
+  rescue JWT::DecodeError, JWT::ExpiredSignature
     {}
   end
 

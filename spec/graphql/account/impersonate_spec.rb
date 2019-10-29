@@ -10,7 +10,8 @@ describe GraphQL, '#impersonate' do
       id: customer.id,
       username: customer.username,
       email: customer.email,
-      impersonated_by: admin.id
+      impersonated_by: admin.id,
+      exp: 30.days.from_now.to_i
     }
   end
   let(:token) { JwtService.encode(jwt_payload) }

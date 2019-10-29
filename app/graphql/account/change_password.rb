@@ -7,6 +7,7 @@ module Account
     argument :newPasswordConfirmation, !types.String
 
     type !types.Boolean
+    mark_as_trackable
 
     description 'Change password'
 

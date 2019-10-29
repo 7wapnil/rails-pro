@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_29_073505) do
+ActiveRecord::Schema.define(version: 2019_10_30_100726) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,8 +67,8 @@ ActiveRecord::Schema.define(version: 2019_10_29_073505) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.datetime "validation_ticket_sent_at"
     t.string "settlement_status"
+    t.datetime "validation_ticket_sent_at"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"
@@ -318,6 +318,10 @@ ActiveRecord::Schema.define(version: 2019_10_29_073505) do
     t.boolean "agreed_with_privacy"
     t.bigint "external_id"
     t.inet "sign_up_ip"
+    t.integer "visit_count", default: 0
+    t.datetime "last_visit_at"
+    t.inet "last_visit_ip"
+    t.datetime "last_activity_at"
     t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
     t.index ["email_verification_token"], name: "index_customers_on_email_verification_token", unique: true

@@ -8,12 +8,18 @@ module Base
     attr_reader :current_customer
 
     class << self
+      attr_accessor :trackable
+
       def decorator_enabled?
         @decorator_class.present?
       end
 
       def pagination_enabled?
         type.to_s.match?(/Pagination$/)
+      end
+
+      def mark_as_trackable
+        @trackable = true
       end
     end
 
@@ -26,6 +32,7 @@ module Base
       @current_customer = ctx[:current_customer]
       @impersonated_by = ctx[:impersonated_by]
       check_auth
+      log_activity @current_customer, @request if self.class.trackable
       resolve(obj, args)
     end
 
@@ -34,6 +41,10 @@ module Base
     end
 
     protected
+
+    def log_activity(customer, request)
+      Customers::VisitLogService.call customer, request
+    end
 
     def check_auth
       not_authenticated = auth_protected? && @current_customer.blank?

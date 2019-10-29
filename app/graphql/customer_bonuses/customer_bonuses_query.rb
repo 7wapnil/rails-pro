@@ -4,6 +4,7 @@ module CustomerBonuses
   class CustomerBonusesQuery < ::Base::Resolver
     type types[CustomerBonuses::CustomerBonusType]
     decorate_with CustomerBonusDecorator
+    mark_as_trackable
 
     def resolve(_obj, _args)
       CustomerBonus

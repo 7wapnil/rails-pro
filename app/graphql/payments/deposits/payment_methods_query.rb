@@ -6,6 +6,7 @@ module Payments
       description 'Get deposit options'
 
       type !types[PaymentMethodType]
+      mark_as_trackable
 
       def resolve(_obj, _args)
         ::Payments::Deposit::PAYMENT_METHODS

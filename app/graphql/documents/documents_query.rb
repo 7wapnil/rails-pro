@@ -3,6 +3,7 @@ module Documents
     type !types[DocumentType]
 
     description 'Get uploaded documents'
+    mark_as_trackable
 
     def resolve(_obj, _args)
       VerificationDocument

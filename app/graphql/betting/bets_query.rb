@@ -6,6 +6,7 @@ module Betting
 
     type !types[BetType]
     decorate_with BetDecorator
+    mark_as_trackable
 
     description 'Get bets list for customer'
 

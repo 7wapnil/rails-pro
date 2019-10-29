@@ -3,6 +3,7 @@ module Betting
     type types[BetPlacementType]
 
     argument :bets, types[BetInput]
+    mark_as_trackable
 
     def resolve(_obj, args)
       PlaceResolver.call(

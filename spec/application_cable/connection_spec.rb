@@ -4,7 +4,8 @@ describe ApplicationCable::Connection, type: :channel do
     JwtService.encode(
       id:       customer.id,
       username: customer.username,
-      email:    customer.email
+      email:    customer.email,
+      exp:      30.days.from_now.to_i
     )
   end
 

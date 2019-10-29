@@ -4,6 +4,7 @@ module Payments
   module Withdrawals
     class Perform < ::Payments::Action
       type !types.String
+      mark_as_trackable
       description 'Process withdrawal request'
 
       argument :input, Inputs::WithdrawInput

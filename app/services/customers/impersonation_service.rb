@@ -22,7 +22,8 @@ module Customers
         id: customer.id,
         username: customer.username,
         email: customer.email,
-        impersonated_by: user.id
+        impersonated_by: user.id,
+        exp: ENV['TOKEN_EXPIRATION'].to_i.days.from_now.to_i
       )
     end
   end

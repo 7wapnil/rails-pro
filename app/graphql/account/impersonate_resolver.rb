@@ -28,7 +28,7 @@ module Account
       JwtService.decode(token)
                 .first
                 .yield_self { |payload| payload.is_a?(Hash) ? payload : {} }
-    rescue JWT::DecodeError
+    rescue JWT::DecodeError, JWT::ExpiredSignature
       {}
     end
 

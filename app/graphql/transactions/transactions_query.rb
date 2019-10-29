@@ -4,6 +4,8 @@ module Transactions
 
     type !types[TransactionType]
 
+    mark_as_trackable
+
     description 'Get all transactions'
 
     argument :filter, Transactions::KindEnum

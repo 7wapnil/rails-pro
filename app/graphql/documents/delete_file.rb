@@ -3,6 +3,7 @@ module Documents
     argument :id, !types.ID
 
     type !types.Boolean
+    mark_as_trackable
 
     description 'Delete document file'
 

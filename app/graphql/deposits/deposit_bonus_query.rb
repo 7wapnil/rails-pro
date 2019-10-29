@@ -12,6 +12,7 @@ module Deposits
 
   class DepositBonusQuery < ::Base::Resolver
     type DepositBonus
+    mark_as_trackable
 
     description 'Get deposit bonus calculation'
 

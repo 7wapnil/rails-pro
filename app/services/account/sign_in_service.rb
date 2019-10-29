@@ -134,7 +134,8 @@ module Account
       JwtService.encode(
         id:       customer.id,
         username: customer.username,
-        email:    customer.email
+        email:    customer.email,
+        exp:      ENV['TOKEN_EXPIRATION'].to_i.days.from_now.to_i
       )
     end
 

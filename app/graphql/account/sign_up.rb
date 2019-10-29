@@ -19,7 +19,9 @@ module Account
       save_customer_data(args)
       token = JwtService.encode(id: customer.id,
                                 username: customer.username,
-                                email: customer.email)
+                                email: customer.email,
+                                exp: ENV['TOKEN_EXPIRATION'].to_i
+                                       .days.from_now.to_i)
       OpenStruct.new(user: customer,
                      token: token)
     end

@@ -12,13 +12,15 @@ describe Customers::ImpersonationService do
       id: customer.id,
       username: customer.username,
       email: customer.email,
-      impersonated_by: user.id
+      impersonated_by: user.id,
+      exp: 30.days.from_now.to_i
     }
   end
 
   before do
     allow(ENV).to receive(:[])
     allow(ENV).to receive(:[]).with('FRONTEND_URL').and_return(frontend_url)
+    allow(ENV).to receive(:[]).with('TOKEN_EXPIRATION').and_return(30)
     allow(JwtService).to receive(:encode).with(payload).and_return(token)
   end
 

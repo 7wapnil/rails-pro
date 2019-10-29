@@ -4,6 +4,7 @@ module Payments
   module Deposits
     class Perform < ::Payments::Action
       type ::Payments::DepositType
+      mark_as_trackable
       description 'Process deposit request'
 
       argument :input, Inputs::DepositInput
