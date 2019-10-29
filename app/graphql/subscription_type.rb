@@ -43,6 +43,13 @@ SubscriptionType = GraphQL::ObjectType.define do
   field SubscriptionFields::BET_UPDATED,
         Betting::BetType,
         subscription_scope: :customer_id do
-          argument :id, types.ID
-        end
+    argument :id, types.ID
+  end
+
+  field SubscriptionFields::PLAY_ITEMS_UPDATED, EveryMatrix::PlayItemType do
+    argument :context, types.String
+  end
+  field SubscriptionFields::CATEGORIES_UPDATED, EveryMatrix::CategoryType do
+    argument :kind, types.String
+  end
 end

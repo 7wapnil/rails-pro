@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe GraphQL, '#createEveryMatrixSession' do
   let(:context) { {} }
   let(:variables) { {} }
@@ -7,32 +9,51 @@ describe GraphQL, '#createEveryMatrixSession' do
                             variables: variables)
   end
   let(:query) do
-    %(mutation createEveryMatrixSession($walletId: Int!) {
-        createEveryMatrixSession(walletId: $walletId) {
-          sessionId
+    %(mutation createEveryMatrixSession($walletId: Int, $playItemId: String!) {
+        createEveryMatrixSession(walletId: $walletId, playItemId: $playItemId) {
+          launchUrl
         }
       })
   end
+  let(:game) { create(:every_matrix_game) }
+  let(:base_launch_url) { game.url }
 
   context 'with authenticated customer' do
     let(:auth_customer) { create(:customer, :ready_to_bet) }
     let(:context) { { current_customer: auth_customer } }
+    let(:token) do
+      EveryMatrix::WalletSession
+        .where(wallet_id: auth_customer.wallet.id)
+        .last
+        .id
+    end
 
     context 'with own walletId' do
-      let(:variables) { { walletId: auth_customer.wallet.id } }
+      let(:variables) do
+        {
+          walletId: auth_customer.wallet.id,
+          playItemId: game.id
+        }
+      end
 
-      it 'resonds with session id' do
-        expect(
-          response['data']['createEveryMatrixSession']['sessionId']
-        ).not_to be_nil
+      it 'responds with launch url' do
+        expect(response['data']['createEveryMatrixSession']['launchUrl'])
+          .to eq(
+            base_launch_url + token
+          )
       end
     end
 
     context 'with someone else\'s wallet' do
       let(:other_customer) { create(:customer, :ready_to_bet) }
-      let(:variables) { { walletId: other_customer.wallet.id } }
+      let(:variables) do
+        {
+          walletId: other_customer.wallet.id,
+          playItemId: game.id
+        }
+      end
 
-      it 'resonds with error' do
+      it 'responds with error' do
         expect(response['errors']).not_to be_empty
       end
     end
@@ -40,10 +61,11 @@ describe GraphQL, '#createEveryMatrixSession' do
 
   context 'without authenticated customer' do
     let(:other_customer) { create(:customer, :ready_to_bet) }
-    let(:variables) { { walletId: other_customer.wallet.id } }
+    let(:variables) { { playItemId: game.id } }
 
-    it 'resonds with error' do
-      expect(response['errors']).not_to be_empty
+    it 'responds base launch url' do
+      expect(response['data']['createEveryMatrixSession']['launchUrl'])
+        .to eq(base_launch_url)
     end
   end
 end

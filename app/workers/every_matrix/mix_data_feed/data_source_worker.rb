@@ -2,10 +2,11 @@
 
 module EveryMatrix
   module MixDataFeed
-    class RecentWinnerHandler < MixDataFeed::BaseHandler
+    class DataSourceWorker < MixDataFeed::BaseWorker
       private
 
-      def handle_update_message
+      def handler_class
+        DataSourceHandler
       end
     end
   end

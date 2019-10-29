@@ -2,11 +2,15 @@
 
 module EveryMatrix
   module MixDataFeed
-    class TableHandler < MixDataFeed::BaseHandler
+    class TableHandler < MixDataFeed::PlayItemHandler
       private
 
-      def handle_update_message
+      def assign_details!(table)
+        Tables::DetailsGenerator.call(data: data['property'], table: table)
+      end
 
+      def play_item_type
+        EveryMatrix::Table.name
       end
     end
   end

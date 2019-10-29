@@ -1,8 +1,8 @@
+# frozen_string_literal: true
+
 module Events
   module BySport
     class EsportEventsQuery < ::Base::Resolver
-      include Base::Offsetable
-
       type !types[::Events::EventType]
       cache_for :cache_expiration
 

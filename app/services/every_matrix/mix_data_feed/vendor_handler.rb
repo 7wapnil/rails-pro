@@ -6,7 +6,22 @@ module EveryMatrix
       private
 
       def handle_update_message
+        vendor = EveryMatrix::Vendor
+                 .find_or_initialize_by(vendor_id: data['vendorID'])
 
+        vendor.update!(params)
+      end
+
+      def params
+        {
+          enabled: data['enabled'],
+          has_live_casino: data['hasLiveCasino'],
+          languages: data['languages'],
+          currencies: data['currencies'],
+          logo_url: data.dig('presentation', 'logo', '*'),
+          name: data['name'],
+          restricted_territories: data['restrictedTerritories']
+        }
       end
     end
   end

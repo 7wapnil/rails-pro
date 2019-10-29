@@ -10,7 +10,6 @@ QueryType = GraphQL::ObjectType.define do
   field :tournamentEvents, function: Events::BySport::TournamentEventsQuery.new
   field :eventContexts, function: Events::ContextsQuery.new
   field :event, function: Events::EventQuery.new
-  field :games, function: EveryMatrix::GamesQuery.new
   field :markets, function: Events::MarketsQuery.new
   field :documents, function: Documents::DocumentsQuery.new
   field :user, function: Account::UserQuery.new
@@ -21,5 +20,9 @@ QueryType = GraphQL::ObjectType.define do
   field :transactions, function: Transactions::TransactionsQuery.new
   field :customerBonuses, function: CustomerBonuses::CustomerBonusesQuery.new
   field :depositMethods, function: ::Payments::Deposits::PaymentMethodsQuery.new
+
+  field :games, function: EveryMatrix::GamesQuery.new
+  field :tables, function: EveryMatrix::TablesQuery.new
+  field :categories, function: EveryMatrix::CategoriesQuery.new
   field :everyMatrixTransactions, function: ::EveryMatrix::TransactionsQuery.new
 end

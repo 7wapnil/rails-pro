@@ -110,6 +110,10 @@ Rails.application.routes.draw do
     end
   end
 
+  namespace :every_matrix do
+    resources :categories, only: %i[index edit update]
+  end
+
   namespace :webhooks do
     namespace :safe_charge do
       resource :payment, only: %i[create show]

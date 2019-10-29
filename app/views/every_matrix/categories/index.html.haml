@@ -1,0 +1,17 @@
+%table.table.entities
+  %thead
+    %tr
+      %th ID
+      %th Name
+      %th Label
+      %th Position
+      %th Kind
+  %tbody
+    - @categories.each do |category|
+      %tr
+        %td= link_to category.id, edit_every_matrix_category_path(category)
+        %td= category.name
+        %td= category.label
+        %td= category.position
+        %td= category.kind
+

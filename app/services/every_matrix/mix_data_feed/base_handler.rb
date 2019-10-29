@@ -41,11 +41,10 @@ module EveryMatrix
       end
 
       def new_connection_status
-        case
-        when recovery? then EveryMatrix::Connection::RECOVERING
-        when action == INITIALIZE_COMPLETE then EveryMatrix::Connection::HEALTHY
-        else connection_state.status
-        end
+        return EveryMatrix::Connection::RECOVERING if recovery?
+        return EveryMatrix::Connection::HEALTHY if action == INITIALIZE_COMPLETE
+
+        connection_state.status
       end
 
       def recovery?

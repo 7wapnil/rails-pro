@@ -3,13 +3,14 @@
 module EveryMatrix
   module MixDataFeed
     class Listener
-      FEED_URL = 'http://casino2.stage.everymatrix.com/jsonFeeds/mix'
+      FEED_URL = ENV['EVERY_MATRIX_FEED_URL']
       FEED_TYPES = [
         GAME = 'game',
         TABLE = 'table',
-        RECENT_WINNER = 'recentwinner',
         VENDOR = 'vendor',
-        CONTENT_PROVIDER = 'contentprovider'
+        CONTENT_PROVIDER = 'contentprovider',
+        DATA_SOURCE = 'datasource'
+        # RECENT_WINNER = 'recentwinner'
       ].freeze
 
       ROW_SEPARATOR = "\r\n"
@@ -88,12 +89,11 @@ module EveryMatrix
       end
 
       def on_complete(response)
-        message = case
-                  when response.success? then 'Response received'
-                  when response.timed_out? then 'Connection timed out'
-                  when response.code.zero? then response.return_message
-                  else "Failure. Body: #{response.body}, Code: #{response.code}"
-                  end
+        if response.success? then 'Response received'
+        elsif response.timed_out? then 'Connection timed out'
+        elsif response.code.zero? then response.return_message
+        else "Failure. Body: #{response.body}, Code: #{response.code}"
+        end
 
         raise EveryMatrix::ConnectionClosedError, message
       end
@@ -111,9 +111,10 @@ module EveryMatrix
         case feed_type
         when GAME then GameWorker
         when TABLE then TableWorker
-        when RECENT_WINNER then RecentWinnerWorker
         when VENDOR then VendorWorker
         when CONTENT_PROVIDER then ContentProviderWorker
+        when DATA_SOURCE then DataSourceWorker
+        # when RECENT_WINNER then RecentWinnerWorker
         else raise "Wrong feed type: #{feed_type}"
         end
       end

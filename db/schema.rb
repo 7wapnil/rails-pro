@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_08_095223) do
+ActiveRecord::Schema.define(version: 2019_10_23_094644) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -481,6 +481,111 @@ ActiveRecord::Schema.define(version: 2019_10_08_095223) do
     t.index ["title_id"], name: "index_events_on_title_id"
   end
 
+  create_table "every_matrix_categories", force: :cascade do |t|
+    t.string "name"
+    t.string "label", default: ""
+    t.integer "position"
+    t.string "kind"
+    t.index ["name"], name: "index_every_matrix_categories_on_name"
+  end
+
+  create_table "every_matrix_content_providers", force: :cascade do |t|
+    t.string "name", null: false
+    t.string "logo_url"
+    t.boolean "enabled", default: false
+    t.string "representation_name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["name"], name: "index_every_matrix_content_providers_on_name"
+    t.index ["representation_name"], name: "index_every_matrix_content_providers_on_representation_name"
+  end
+
+  create_table "every_matrix_game_details", force: :cascade do |t|
+    t.string "help_url"
+    t.decimal "top_prize", precision: 14, scale: 2
+    t.decimal "min_hit_frequency", precision: 9, scale: 4, default: "0.0"
+    t.decimal "max_hit_frequency", precision: 9, scale: 4, default: "0.0"
+    t.boolean "free_spin_supported", default: false
+    t.boolean "free_spin_bonus_supported", default: false
+    t.boolean "launch_game_in_html_5", default: false
+    t.string "play_item_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["play_item_id"], name: "index_every_matrix_game_details_on_play_item_id"
+  end
+
+  create_table "every_matrix_play_item_categories", force: :cascade do |t|
+    t.string "play_item_id", null: false
+    t.bigint "category_id", null: false
+    t.index ["category_id"], name: "index_every_matrix_play_item_categories_on_category_id"
+    t.index ["play_item_id"], name: "index_every_matrix_play_item_categories_on_play_item_id"
+  end
+
+  create_table "every_matrix_play_items", primary_key: "external_id", id: :string, force: :cascade do |t|
+    t.string "type", null: false
+    t.string "slug"
+    t.decimal "theoretical_payout", precision: 14, scale: 2, default: "0.0"
+    t.decimal "third_party_fee", precision: 14, scale: 2, default: "0.0"
+    t.decimal "fpp", precision: 14, scale: 2, default: "0.0"
+    t.text "restricted_territories", default: [], array: true
+    t.text "languages", default: [], array: true
+    t.text "currencies", default: [], array: true
+    t.string "terminal", default: [], array: true
+    t.string "tags", default: [], array: true
+    t.string "url"
+    t.datetime "external_created_at"
+    t.datetime "external_updated_at"
+    t.decimal "popularity_coefficient", precision: 6, scale: 4, default: "0.0"
+    t.integer "popularity_ranking", default: 0
+    t.boolean "play_mode_fun", default: false
+    t.boolean "play_mode_anonymity", default: false
+    t.boolean "play_mode_real_money", default: false
+    t.string "name"
+    t.string "short_name"
+    t.string "description"
+    t.string "thumbnail_url"
+    t.string "logo_url"
+    t.string "background_image_url"
+    t.string "small_icon_url"
+    t.string "medium_icon_url"
+    t.string "large_icon_url"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.bigint "every_matrix_vendor_id"
+    t.bigint "every_matrix_content_provider_id"
+    t.integer "position"
+    t.index ["every_matrix_content_provider_id"], name: "index_play_items_on_content_providers_id"
+    t.index ["every_matrix_vendor_id"], name: "index_play_items_on_vendors_id"
+    t.index ["type"], name: "index_every_matrix_play_items_on_type"
+  end
+
+  create_table "every_matrix_table_details", force: :cascade do |t|
+    t.boolean "is_vip_table", default: false
+    t.boolean "is_open", default: false
+    t.boolean "is_seats_unlimited", default: false
+    t.boolean "is_bet_behind_available", default: false
+    t.decimal "max_limit", precision: 9, scale: 4, default: "0.0"
+    t.decimal "min_limit", precision: 9, scale: 4, default: "0.0"
+    t.string "play_item_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["play_item_id"], name: "index_every_matrix_table_details_on_play_item_id"
+  end
+
+  create_table "every_matrix_vendors", force: :cascade do |t|
+    t.string "name", null: false
+    t.bigint "vendor_id", null: false
+    t.string "logo_url"
+    t.text "restricted_territories", default: [], array: true
+    t.boolean "enabled", default: false
+    t.text "languages", default: [], array: true
+    t.text "currencies", default: [], array: true
+    t.boolean "has_live_casino", default: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["vendor_id"], name: "index_every_matrix_vendors_on_vendor_id"
+  end
+
   create_table "label_joins", force: :cascade do |t|
     t.bigint "label_id"
     t.integer "labelable_id"
@@ -684,6 +789,12 @@ ActiveRecord::Schema.define(version: 2019_10_08_095223) do
   add_foreign_key "event_scopes", "titles"
   add_foreign_key "events", "radar_producers", column: "producer_id"
   add_foreign_key "events", "titles"
+  add_foreign_key "every_matrix_game_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
+  add_foreign_key "every_matrix_play_item_categories", "every_matrix_categories", column: "category_id"
+  add_foreign_key "every_matrix_play_item_categories", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
+  add_foreign_key "every_matrix_play_items", "every_matrix_content_providers"
+  add_foreign_key "every_matrix_play_items", "every_matrix_vendors"
+  add_foreign_key "every_matrix_table_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
   add_foreign_key "label_joins", "labels"
   add_foreign_key "markets", "events", on_delete: :cascade
   add_foreign_key "markets", "market_templates", column: "template_id", on_delete: :nullify

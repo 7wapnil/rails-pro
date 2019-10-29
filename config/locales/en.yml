@@ -29,6 +29,7 @@ en:
   sign_up: Sign Up
   system: System
   odds_feed: Odds Feed
+  casino: Casino
   to: To
   upload: Upload
   view: View
@@ -309,6 +310,7 @@ en:
       zero: No bonuses
       one: 1 bonus
       other: "%{count} bonuses"
+    categories: Categories
     comment: Comment
     comments: Comments
     comment_count:

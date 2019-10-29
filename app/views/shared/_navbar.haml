@@ -29,6 +29,17 @@
                     class: 'nav-link'
 
       %li.nav-item.dropdown
+        = link_to t(:casino), '#',
+                  class: 'nav-link dropdown-toggle',
+                  'data-toggle': 'dropdown',
+                  aria: { haspopup: true, expanded: false }
+
+        .dropdown-menu
+          = link_to t('entities.categories'),
+                    every_matrix_categories_path,
+                    class: 'nav-link'
+
+      %li.nav-item.dropdown
         = link_to t('entities.customers'), '#',
                   class: 'nav-link dropdown-toggle',
                   'data-toggle': 'dropdown',

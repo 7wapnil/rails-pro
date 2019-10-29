@@ -47,6 +47,18 @@ module WebSocket
               application_status)
     end
 
+    def trigger_play_items_update(play_item, context)
+      trigger(SubscriptionFields::PLAY_ITEMS_UPDATED,
+              play_item,
+              context: context)
+    end
+
+    def trigger_categories_update(category)
+      trigger(SubscriptionFields::CATEGORIES_UPDATED,
+              category,
+              kind: category.kind)
+    end
+
     private
 
     def trigger(name, object, args = {}, scope = nil)

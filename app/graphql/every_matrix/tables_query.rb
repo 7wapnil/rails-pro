@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module EveryMatrix
-  class GamesQuery < ::Base::Resolver
+  class TablesQuery < ::Base::Resolver
     ITEMS_LIMIT = 50
 
     type !types[PlayItemType]
@@ -15,7 +15,7 @@ module EveryMatrix
     end
 
     def resolve(_obj, args)
-      EveryMatrix::Game.items_per_category(args['context']).limit(ITEMS_LIMIT)
+      EveryMatrix::Table.items_per_category(args['context']).limit(ITEMS_LIMIT)
     end
   end
 end

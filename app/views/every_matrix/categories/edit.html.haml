@@ -1,0 +1,6 @@
+= simple_form_for @category do |f|
+  = f.input :name
+  = f.input :label
+  = f.input :position
+  = f.input :kind, collection: EveryMatrix::Category.kinds
+  = f.submit "Save"
