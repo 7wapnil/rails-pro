@@ -23,7 +23,7 @@ module Customers
         username: customer.username,
         email: customer.email,
         impersonated_by: user.id,
-        exp: ENV['TOKEN_EXPIRATION'].to_i.days.from_now.to_i
+        exp: ENV.fetch('TOKEN_EXPIRATION', 30).to_f.days.from_now.to_i
       )
     end
   end

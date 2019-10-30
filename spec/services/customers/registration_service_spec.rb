@@ -33,6 +33,11 @@ describe Customers::RegistrationService do
     expect(Audit::Service).to have_received(:call)
   end
 
+  it 'logs visit' do
+    expect(Customers::VisitLogService).to receive(:call)
+    described_class.call(valid_input, request)
+  end
+
   it 'sends activation email' do
     subject = described_class.new(valid_input)
     allow(subject).to receive(:send_email_verification_email)

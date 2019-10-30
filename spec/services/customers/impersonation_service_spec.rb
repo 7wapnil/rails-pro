@@ -20,7 +20,7 @@ describe Customers::ImpersonationService do
   before do
     allow(ENV).to receive(:[])
     allow(ENV).to receive(:[]).with('FRONTEND_URL').and_return(frontend_url)
-    allow(ENV).to receive(:[]).with('TOKEN_EXPIRATION').and_return(30)
+    allow(ENV).to receive(:fetch).with('TOKEN_EXPIRATION', 30).and_return(30)
     allow(JwtService).to receive(:encode).with(payload).and_return(token)
   end
 

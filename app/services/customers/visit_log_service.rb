@@ -1,45 +1,37 @@
 module Customers
   class VisitLogService < ApplicationService
-    attr_reader :customer, :request
+    attr_reader :customer, :request, :sign_in
 
-    def initialize(customer, request)
+    CUSTOMER_VISIT_OFFSET = ENV.fetch('CUSTOMER_VISIT_OFFSET', 1).to_f.hours
+
+    def initialize(customer, request, sign_in: false)
       @customer = customer
-
       @request = request
+      @sign_in = sign_in
     end
 
     def call
-      update_tracked_fields!
+      customer.update(last_activity_at: Time.zone.now, **new_visit_attributes)
     end
 
     private
 
-    def update_tracked_fields
-      customer.visit_count   ||= 1
-      customer.last_visit_at ||= Time.now.utc
+    def new_visit_attributes
+      return {} unless new_visit?
 
-      if calculate_offset
-        customer.last_visit_at = Time.now.utc
-
-        customer.last_visit_ip = extract_ip_from
-
-        customer.visit_count += 1
-      end
-
-      customer.last_activity_at = Time.now.utc
+      {
+        last_visit_at: Time.zone.now,
+        last_visit_ip: request.remote_ip,
+        visit_count: customer.visit_count + 1
+      }
     end
 
-    def update_tracked_fields!
-      update_tracked_fields
-      customer.save(validate: false)
+    def new_visit?
+      customer.last_visit_at.blank? || sign_in || calculate_offset
     end
 
     def calculate_offset
-      customer.last_visit_at + ENV['VISIT_OFFSET'].to_i.hour <= Time.now.utc
-    end
-
-    def extract_ip_from
-      request.remote_ip
+      customer.last_visit_at + CUSTOMER_VISIT_OFFSET <= Time.zone.now
     end
   end
 end

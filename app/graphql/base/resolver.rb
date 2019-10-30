@@ -32,7 +32,7 @@ module Base
       @current_customer = ctx[:current_customer]
       @impersonated_by = ctx[:impersonated_by]
       check_auth
-      log_activity @current_customer, @request if self.class.trackable
+      log_activity(@current_customer, @request) if self.class.trackable
       resolve(obj, args)
     end
 
@@ -43,7 +43,7 @@ module Base
     protected
 
     def log_activity(customer, request)
-      Customers::VisitLogService.call customer, request
+      Customers::VisitLogService.call(customer, request)
     end
 
     def check_auth

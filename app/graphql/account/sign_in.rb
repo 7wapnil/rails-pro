@@ -19,6 +19,7 @@ module Account
       service.validate_login!
 
       customer.update_tracked_fields!(@request)
+      Customers::VisitLogService.call(customer, @request, sign_in: true)
       customer.valid_login_attempt!
 
       @current_customer = customer

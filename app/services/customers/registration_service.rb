@@ -33,6 +33,7 @@ module Customers
       customer.log_event :customer_signed_up, customer
       return if request.nil?
 
+      Customers::VisitLogService.call(customer, request, sign_in: true)
       customer.update_tracked_fields!(request)
     end
 

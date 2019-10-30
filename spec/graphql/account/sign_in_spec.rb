@@ -188,6 +188,12 @@ describe GraphQL, '#sign_in' do
       expect(result['data']['signIn']['user']).not_to be_nil
     end
 
+    it 'logs visit' do
+      expect(Customers::VisitLogService).to receive(:call)
+
+      result
+    end
+
     it 'logs audit event' do
       allow(Audit::Service).to receive(:call)
       expect(result['data']['signIn']['token']).not_to be_nil
