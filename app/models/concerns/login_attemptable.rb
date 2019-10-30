@@ -21,7 +21,8 @@ module LoginAttemptable
     def invalid_login_attempt!
       update_columns(failed_attempts: failed_attempts + 1)
 
-      notify_account_owner if attempts_just_exceeded?
+      # FIXME: re-enable the notification when the attack issue resolved
+      # notify_account_owner if attempts_just_exceeded?
 
       false
     end

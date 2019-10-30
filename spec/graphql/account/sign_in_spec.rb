@@ -135,7 +135,7 @@ describe GraphQL, '#sign_in' do
       it { expect { result }.to change { user.reload.failed_attempts }.by(1) }
     end
 
-    context 'notify about suspicious login' do
+    xcontext 'notify about suspicious login' do
       let(:attempts) { LoginAttemptable::LOGIN_ATTEMPTS_CAP }
 
       before do
