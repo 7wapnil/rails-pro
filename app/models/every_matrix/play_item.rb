@@ -18,7 +18,7 @@ module EveryMatrix
         ON every_matrix_play_item_categories.play_item_id = every_matrix_play_items.external_id
         JOIN every_matrix_categories
         ON every_matrix_categories.id = every_matrix_play_item_categories.category_id
-        AND every_matrix_categories.name = '#{category}'
+        AND every_matrix_categories.id = #{EveryMatrix::Category.find_by!(name: category).id}
       SQL
 
       joins(join_query)
