@@ -60,14 +60,10 @@ class BetDecorator < ApplicationDecorator
   end
 
   def bet_type
-    case market&.producer&.code
-    when Radar::Producer::LIVE_PROVIDER_CODE
-      t('bets.bet_types.live')
-    when Radar::Producer::PREMATCH_PROVIDER_CODE
-      t('bets.bet_types.prematch')
-    else
-      t('bets.bet_types.unknown')
-    end
+    return unless event
+    return t('bets.bet_types.live') if created_at > event_start_at
+
+    t('bets.bet_types.prematch')
   end
 
   private

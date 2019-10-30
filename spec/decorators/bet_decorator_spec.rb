@@ -125,33 +125,4 @@ describe BetDecorator, type: :decorator do
       end
     end
   end
-
-  describe '#bet_type' do
-    let(:market)   { create(:market, producer: producer) }
-    let(:bet)      { create(:bet, market: market) }
-
-    context 'with live producer code' do
-      let(:producer) { create(:liveodds_producer) }
-
-      it 'returns live message' do
-        expect(subject.bet_type).to eq(I18n.t('bets.bet_types.live'))
-      end
-    end
-
-    context 'with prematch producer code' do
-      let(:producer) { create(:prematch_producer) }
-
-      it 'returns prematch message' do
-        expect(subject.bet_type).to eq(I18n.t('bets.bet_types.prematch'))
-      end
-    end
-
-    context 'with unknow producer code' do
-      let(:producer) { create(:producer) }
-
-      it 'returns unknow message' do
-        expect(subject.bet_type).to eq(I18n.t('bets.bet_types.unknown'))
-      end
-    end
-  end
 end
