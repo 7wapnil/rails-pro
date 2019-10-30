@@ -148,7 +148,10 @@ describe Customers::Statistics::Calculator do
       ]
     end
     let(:won_prematch_bets) do
-      create_list(:bet, rand(1..3), :settled, :won, prematch_attributes)
+      [
+        create_list(:bet, rand(1..3), :settled, :won, prematch_attributes),
+        create(:bet, :won, :manually_settled, prematch_attributes)
+      ].flatten
     end
     let!(:settled_prematch_bets) do
       [

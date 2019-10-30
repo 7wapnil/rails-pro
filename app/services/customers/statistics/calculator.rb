@@ -128,7 +128,7 @@ module Customers
       def settled_bets
         @settled_bets ||= customer.bets
                                   .joins(:event, :currency)
-                                  .settled
+                                  .where(status: Bet::SETTLED_STATUSES_MASK)
                                   .where(updated_at_clause('bets'))
       end
 
