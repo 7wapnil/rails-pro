@@ -15,7 +15,7 @@ describe GraphQL, '#createEveryMatrixSession' do
         }
       })
   end
-  let(:game) { create(:every_matrix_game) }
+  let(:game) { create(:casino_game) }
   let(:base_launch_url) { game.url }
 
   context 'with authenticated customer' do
@@ -39,7 +39,7 @@ describe GraphQL, '#createEveryMatrixSession' do
       it 'responds with launch url' do
         expect(response['data']['createEveryMatrixSession']['launchUrl'])
           .to eq(
-            base_launch_url + token
+            "#{base_launch_url}?language=en&funMode=False&_sid=#{token}"
           )
       end
     end

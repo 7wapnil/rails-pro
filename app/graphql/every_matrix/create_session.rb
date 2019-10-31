@@ -14,25 +14,14 @@ module EveryMatrix
     end
 
     def resolve(_obj, args)
-      @play_item = EveryMatrix::PlayItem.find(args['playItemId'])
-
-      return free_game unless args['walletId']
-
       params = args
                .to_h
-               .reject { |param| param == 'playItemId' }
                .deep_transform_keys!(&:underscore)
       params[:subject] = @current_customer
       form = ::Forms::EveryMatrix::CreateSession.new(params)
       form.validate!
 
-      OpenStruct.new(launchUrl: @play_item.url + form.session.id.to_s)
-    end
-
-    private
-
-    def free_game
-      OpenStruct.new(launchUrl: @play_item.url)
+      OpenStruct.new(launchUrl: form.launch_url)
     end
   end
 end

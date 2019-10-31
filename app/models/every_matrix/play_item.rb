@@ -7,6 +7,7 @@ module EveryMatrix
     belongs_to :content_provider, foreign_key: :every_matrix_content_provider_id
     belongs_to :vendor, foreign_key: :every_matrix_vendor_id
 
+    has_many :wallet_sessions
     has_many :play_item_categories
     has_many :categories,
              through: :play_item_categories,

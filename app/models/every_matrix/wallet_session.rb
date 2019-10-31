@@ -5,6 +5,7 @@ module EveryMatrix
     self.table_name = 'em_wallet_sessions'
 
     belongs_to :wallet
+    belongs_to :play_item, foreign_key: :play_item_id
     delegate :customer, to: :wallet
   end
 end

@@ -5,8 +5,7 @@ module EveryMatrix
     class RecentWinnerHandler < MixDataFeed::BaseHandler
       private
 
-      def handle_update_message
-      end
+      def handle_update_message; end
     end
   end
 end

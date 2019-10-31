@@ -2,7 +2,7 @@
 
 module EveryMatrix
   class GamesQuery < ::Base::Resolver
-    ITEMS_LIMIT = 50
+    ITEMS_LIMIT = 35
 
     type !types[PlayItemType]
 

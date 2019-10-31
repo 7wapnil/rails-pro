@@ -8,8 +8,6 @@ module EveryMatrix
       @categories = EveryMatrix::Category.all.order(:id)
     end
 
-    def edit; end
-
     def update
       return render 'edit' unless @category.update(category_params)
 

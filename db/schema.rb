@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_23_094644) do
+ActiveRecord::Schema.define(version: 2019_10_31_125936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -366,6 +366,8 @@ ActiveRecord::Schema.define(version: 2019_10_23_094644) do
     t.bigint "wallet_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "play_item_id", null: false
+    t.index ["play_item_id"], name: "index_em_wallet_sessions_on_play_item_id"
     t.index ["wallet_id"], name: "index_em_wallet_sessions_on_wallet_id"
   end
 
@@ -778,6 +780,7 @@ ActiveRecord::Schema.define(version: 2019_10_23_094644) do
   add_foreign_key "deposit_limits", "customers"
   add_foreign_key "em_transactions", "customers"
   add_foreign_key "em_transactions", "em_wallet_sessions"
+  add_foreign_key "em_wallet_sessions", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
   add_foreign_key "entries", "entry_requests", on_delete: :cascade
   add_foreign_key "entries", "wallets"
   add_foreign_key "entry_currency_rules", "currencies"

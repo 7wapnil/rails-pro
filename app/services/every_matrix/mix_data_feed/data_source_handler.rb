@@ -21,6 +21,8 @@ module EveryMatrix
         end
       end
 
+      # TODO: refactor the way we handle categories to improve performance
+
       def process_play_items
         play_items_data.each do |key, value|
           category = EveryMatrix::Category.find_by(name: key)
