@@ -3,7 +3,7 @@ describe GraphQL, '#user' do
     OpenStruct.new(remote_ip: Faker::Internet.ip_v4_address)
   end
   let(:customer) { create(:customer) }
-  let!(:wallet) { create(:wallet, :fiat, customer: customer) }
+  let!(:wallet) { create(:wallet, :non_primary_fiat, customer: customer) }
   let!(:crypto_wallet) { create(:wallet, :crypto, customer: customer) }
   let(:context) { { request: request, current_customer: customer } }
   let(:variables) { {} }

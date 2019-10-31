@@ -6,6 +6,11 @@ describe GraphqlController, type: :controller do
     JSON.parse(response.body)
   end
 
+  let(:memory_store) { ActiveSupport::Cache.lookup_store(:memory_store) }
+  let(:cache) { Rails.cache }
+
+  before { allow(Rails).to receive(:cache).and_return(memory_store) }
+
   describe '#cacheable' do
     let(:title) { create(:title, name: 'Counter-Strike', kind: Title::ESPORTS) }
     let(:tournament) { create(:event_scope, kind: EventScope::TOURNAMENT) }

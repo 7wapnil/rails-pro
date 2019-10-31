@@ -21,6 +21,10 @@ FactoryBot.define do
       association :currency
     end
 
+    trait :non_primary_fiat do
+      association :currency, :non_primary
+    end
+
     trait :crypto do
       association :currency, :crypto
     end

@@ -24,6 +24,10 @@ FactoryBot.define do
       primary { true }
     end
 
+    trait :non_primary do
+      code { Currency::FIAT_CODES.without(Currency::PRIMARY_CODE).sample }
+    end
+
     trait :crypto do
       code { Faker::CryptoCoin.acronym }
       kind { Currency::CRYPTO }
