@@ -164,6 +164,14 @@ deploy:
         terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve
 
+        runCasino=${CASINO_ENV:-""}
+        if [ "$runCasino" != "" ]; then
+          cd $TERRAFORM_CONFIG_DIR/terraform/services/casino/backend-listener-every-matrix
+          terraform init
+          terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
+          terraform apply -auto-approve
+        fi
+
   after-steps:
     - slack-notifier:
       url: $SLACK_URL
