@@ -95,7 +95,7 @@ module EveryMatrix
         else "Failure. Body: #{response.body}, Code: #{response.code}"
         end
 
-        raise EveryMatrix::ConnectionClosedError, message
+        raise EveryMatrix::ConnectionClosedError, response.return_message
       end
 
       def process_row(raw_data)
