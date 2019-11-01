@@ -173,12 +173,6 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
     amount * void_factor
   end
 
-  def actual_payout
-    entries
-      .where(origin: self, kind: Entry::WIN)
-      .sum(:amount)
-  end
-
   def real_money_total
     entry_request&.succeeded? ? entry_request.real_money_amount : 0.0
   end

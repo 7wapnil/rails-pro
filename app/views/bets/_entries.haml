@@ -1,0 +1,7 @@
+- entries.each do |entry|
+  .row
+    .col= link_to t("kinds.#{entry.kind}"), entry_path(entry)
+    .col
+      = number_with_precision(entry.amount, precision: 2)
+      = entry.currency_code
+  %hr

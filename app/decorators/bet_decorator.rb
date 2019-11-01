@@ -48,10 +48,6 @@ class BetDecorator < ApplicationDecorator
     human ? number_with_precision(super(), precision: PRECISION) : super()
   end
 
-  def actual_payout(human: false)
-    human ? number_with_precision(super(), precision: PRECISION) : super()
-  end
-
   def human_notification_message
     return notification_message unless notification_code
 

@@ -1,4 +1,4 @@
-.mt-4
+.mt-4.mb-4
   = card header: t('entities.bet'), class: 'bet-info' do
     .row
       .col
@@ -69,9 +69,7 @@
               = bet.currency_code
           %tr
             %td= t('attributes.actual_payout')
-            %td
-              = bet.actual_payout(human: true)
-              = bet.currency_code
+            %td= render 'entries', entries: bet.entries
     %hr
     = simple_form_for [bet.customer, bet.object] do |f|
       .row
