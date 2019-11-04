@@ -23,7 +23,17 @@ module EveryMatrix
       # TODO: extend functionality to dynamically add params
 
       def real_money_launch_url
-        "#{play_item.url}?language=en&funMode=False&_sid=#{session_id}"
+        uri = URI(play_item.url)
+        query = Rack::Utils.parse_nested_query(uri.query)
+        uri.query = Rack::Utils.build_query(
+          query.merge(
+            'language' => 'en',
+            'funMode'  => 'False',
+            '_sid'     => session_id
+          )
+        )
+
+        uri.to_s
       end
     end
   end
