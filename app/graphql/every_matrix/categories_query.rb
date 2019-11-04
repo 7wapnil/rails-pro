@@ -13,7 +13,18 @@ module EveryMatrix
     end
 
     def resolve(_obj, args)
-      EveryMatrix::Category.where(kind: args['kind'])
+      browser = Browser.new(@request.user_agent)
+
+      EveryMatrix::Category.where(
+        kind: args['kind'],
+        platform_type: platform_type(browser.device)
+      )
+    end
+
+    def platform_type(device)
+      return Category::MOBILE if device.mobile? || device.tablet?
+
+      Category::DESKTOP
     end
   end
 end

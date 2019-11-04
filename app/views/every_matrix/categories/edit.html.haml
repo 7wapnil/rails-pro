@@ -3,4 +3,5 @@
   = f.input :label
   = f.input :position
   = f.input :kind, collection: EveryMatrix::Category.kinds
+  = f.input :platform_type, collection: EveryMatrix::Category.platform_types
   = f.submit 'Save'

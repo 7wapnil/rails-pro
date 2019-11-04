@@ -3,29 +3,66 @@
 module EveryMatrix
   module MixDataFeed
     class DataSourceHandler < MixDataFeed::BaseHandler
+      DATA_SOURCE_FILTER = [
+        Category::CASINO_DESKTOP,
+        Category::LIVE_CASINO_DESKTOP,
+        Category::CASINO_MOBILE,
+        Category::LIVE_CASINO_MOBILE
+      ].freeze
+
+      DESKTOP_DATA_SOURCES = [
+        Category::CASINO_DESKTOP, Category::LIVE_CASINO_DESKTOP
+      ].freeze
+
       private
 
       def handle_update_message
+        return if DATA_SOURCE_FILTER.exclude?(data_source_name)
+
         process_categories
         process_play_items
       end
 
+      def data_source_name
+        data['id'].downcase
+      end
+
       def process_categories
         categories.each do |category_data|
-          category = EveryMatrix::Category
-                     .find_or_initialize_by(name: category_data['id'])
+          next if category_exist?(name_with_platform(category_data['id']))
 
-          category.update(
-            label: category_data['id'].underscore.humanize.titleize
+          EveryMatrix::Category.create(
+            name: name_with_platform(category_data['id']),
+            label: category_data['id'].underscore.humanize.titleize,
+            platform_type: platform_type
           )
         end
+      end
+
+      def category_exist?(category_name)
+        EveryMatrix::Category.exists?(name: name_with_platform(category_name))
+      end
+
+      def name_with_platform(name)
+        "#{name}-#{platform_type}"
+      end
+
+      def platform_type
+        return Category::DESKTOP if desktop_data_source?
+
+        Category::MOBILE
+      end
+
+      def desktop_data_source?
+        DESKTOP_DATA_SOURCES.include?(data_source_name)
       end
 
       # TODO: refactor the way we handle categories to improve performance
 
       def process_play_items
         play_items_data.each do |key, value|
-          category = EveryMatrix::Category.find_by(name: key)
+          category =
+            EveryMatrix::Category.find_by(name: name_with_platform(key))
           category.play_item_categories.destroy_all
 
           value.each_with_index do |data, index|

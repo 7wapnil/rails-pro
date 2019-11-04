@@ -21,7 +21,7 @@ module EveryMatrix
     def category_params
       params
         .require(:every_matrix_category)
-        .permit(:icon, :name, :position, :kind, :label)
+        .permit(:icon, :name, :position, :kind, :label, :platform_type)
     end
 
     def trigger_categories_update(category)

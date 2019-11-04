@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_31_125936) do
+ActiveRecord::Schema.define(version: 2019_11_04_111507) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -488,6 +488,7 @@ ActiveRecord::Schema.define(version: 2019_10_31_125936) do
     t.string "label", default: ""
     t.integer "position"
     t.string "kind"
+    t.string "platform_type"
     t.index ["name"], name: "index_every_matrix_categories_on_name"
   end
 

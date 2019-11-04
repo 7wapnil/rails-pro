@@ -70,6 +70,7 @@ gem 'recaptcha'
 gem 'countries'
 gem 'authtrail'
 gem 'typhoeus'
+gem 'browser', require: 'browser/browser'
 
 gem 'faker', github: 'stympy/faker', branch: 'master', require: false
 gem 'factory_bot_rails', require: false

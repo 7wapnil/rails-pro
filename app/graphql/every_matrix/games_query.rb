@@ -2,8 +2,6 @@
 
 module EveryMatrix
   class GamesQuery < ::Base::Resolver
-    ITEMS_LIMIT = 35
-
     type !types[PlayItemType]
 
     description 'List of casino games'
@@ -15,7 +13,13 @@ module EveryMatrix
     end
 
     def resolve(_obj, args)
-      EveryMatrix::Game.items_per_category(args['context']).limit(ITEMS_LIMIT)
+      browser = Browser.new(@request.user_agent)
+
+      EveryMatrix::PlayItemsResolver.call(
+        model: EveryMatrix::Game,
+        category: args['context'],
+        device: browser.device
+      )
     end
   end
 end
