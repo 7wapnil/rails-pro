@@ -253,7 +253,7 @@ module StateMachines
         Rails.logger.info(
           message: 'Bet status changed',
           from_state: aasm.from_state,
-          to_state: aasm.to_state,
+          to_state: aasm.to_state || aasm.current_state,
           bet_id: id,
           customer_id: customer_id,
           odd_id: odd_id,
@@ -267,7 +267,7 @@ module StateMachines
         Rails.logger.error(
           message: 'Bet status change failed',
           from_state: error.originating_state,
-          to_state: aasm.to_state,
+          to_state: aasm.to_state || aasm.current_state,
           bet_id: id,
           customer_id: customer_id,
           odd_id: odd_id,

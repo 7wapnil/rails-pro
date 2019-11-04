@@ -6,7 +6,7 @@ module Radar
                     retry: 1
 
     def worker_class
-      OddsFeed::Radar::Alive::Handler
+      OddsFeed::Radar::AliveHandler
     end
 
     def extra_log_info

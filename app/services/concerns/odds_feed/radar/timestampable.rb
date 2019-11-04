@@ -3,10 +3,12 @@
 module OddsFeed
   module Radar
     module Timestampable
+      TIMESTAMP_FORMAT = '%Q'
+
       protected
 
       def parse_timestamp(timestamp)
-        Time.at(timestamp[0..-4].to_i).to_datetime
+        Time.zone.strptime(timestamp, TIMESTAMP_FORMAT)
       end
     end
   end

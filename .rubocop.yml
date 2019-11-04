@@ -32,6 +32,11 @@ Metrics/BlockLength:
 Lint/HandleExceptions:
   Enabled: false
 
+Lint/AmbiguousBlockAssociation:
+  Enabled: true
+  Exclude:
+    - 'spec/**/*'
+
 RSpec/DescribeClass:
   Exclude:
     - 'spec/features/*'

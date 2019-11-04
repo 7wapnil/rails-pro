@@ -37,20 +37,20 @@ describe CustomerBonuses::RolloverCalculationService do
       bet = create(:bet, **bet_attributes.merge(status: :accepted))
 
       expect { described_class.call(bet) }
-        .not_to change(bonus, :rollover_balance)
+        .not_to change { bonus.reload.rollover_balance }
 
       expect { described_class.call(bet) }
-        .not_to change(bet, :counted_towards_rollover)
+        .not_to change { bet.reload.counted_towards_rollover }
     end
 
     it 'when bet is without a bonus' do
       bet = create(:bet, **bet_attributes.merge(customer_bonus: nil))
 
       expect { described_class.call(bet) }
-        .not_to change(bonus, :rollover_balance)
+        .not_to change { bonus.reload.rollover_balance }
 
       expect { described_class.call(bet) }
-        .not_to change(bet, :counted_towards_rollover)
+        .not_to change { bet.reload.counted_towards_rollover }
     end
 
     it 'when bonus is not active' do
@@ -64,10 +64,10 @@ describe CustomerBonuses::RolloverCalculationService do
       bet = create(:bet, **bet_attributes.merge(customer_bonus: customer_bonus))
 
       expect { described_class.call(bet) }
-        .not_to change(bonus, :rollover_balance)
+        .not_to change { bonus.reload.rollover_balance }
 
       expect { described_class.call(bet) }
-        .not_to change(bet, :counted_towards_rollover)
+        .not_to change { bet.reload.counted_towards_rollover }
     end
 
     it 'when odds are lower than min_odds_per_bet' do
@@ -75,10 +75,10 @@ describe CustomerBonuses::RolloverCalculationService do
       bet = create(:bet, **bet_attributes.merge(odd: odd, odd_value: 1.49))
 
       expect { described_class.call(bet) }
-        .not_to change(bonus, :rollover_balance)
+        .not_to change { bonus.reload.rollover_balance }
 
       expect { described_class.call(bet) }
-        .not_to change(bet, :counted_towards_rollover)
+        .not_to change { bet.reload.counted_towards_rollover }
     end
   end
   # rubocop:enable RSpec/MultipleExpectations

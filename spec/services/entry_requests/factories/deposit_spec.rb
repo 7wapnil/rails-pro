@@ -51,7 +51,7 @@ describe EntryRequests::Factories::Deposit do
     end
 
     it 'applies customer bonus only once' do
-      expect { service_call }.not_to change(wallet, :bonus_balance)
+      expect { service_call }.not_to change { wallet.reload.bonus_balance }
     end
   end
 

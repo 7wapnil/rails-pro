@@ -45,8 +45,6 @@ describe EntryRequests::BetPlacementService do
     allow_any_instance_of(Mts::ValidationMessagePublisherWorker)
       .to receive(:perform)
 
-    prematch_producer.healthy!
-
     create(:entry_currency_rule, currency: currency,
                                  kind: EntryRequest::BET,
                                  max_amount: 0,
@@ -78,10 +76,9 @@ describe EntryRequests::BetPlacementService do
   end
 
   context 'with disconnected provider' do
-    it 'fails when provider disconnected' do
-      live_producer.healthy!
-      prematch_producer.unsubscribed!
+    let!(:prematch_producer) { create(:prematch_producer, :unsubscribed) }
 
+    it 'fails when provider disconnected' do
       subject.call
 
       expect(bet)

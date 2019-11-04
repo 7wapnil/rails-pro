@@ -50,31 +50,25 @@ describe EntryRequests::BetPlacementService do
     end
 
     context 'on live provider disconnected' do
+      let!(:live_producer) { create(:liveodds_producer, :unsubscribed) }
+
       let(:event) { build(:event, :live) }
       let(:market) { build(:market, event: event) }
       let(:bet) { build(:bet, market: market) }
 
-      before do
-        live_producer.unsubscribed!
-        prematch_producer.healthy!
-
-        subject
-      end
+      before { subject }
 
       it { expect(bet.reload).to be_failed }
     end
 
     context 'on pre-live provider disconnected' do
+      let!(:prematch_producer) { create(:prematch_producer, :unsubscribed) }
+
       let(:event)  { build(:event, :upcoming) }
       let(:market) { build(:market, event: event) }
       let(:bet)    { build(:bet, market: market) }
 
-      before do
-        live_producer.healthy!
-        prematch_producer.unsubscribed!
-
-        subject
-      end
+      before { subject }
 
       it { expect(bet.reload).to be_failed }
     end

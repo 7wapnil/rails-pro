@@ -1,61 +1,66 @@
-describe OddsFeed::Radar::SnapshotCompleteHandler do
-  let(:producer) { create(:producer, state: Radar::Producer::RECOVERING) }
+# frozen_string_literal: true
 
-  before do
-    allow(producer).to receive(:recovery_completed!)
-    allow(::Radar::Producer).to receive(:find).with(producer.id) { producer }
+describe OddsFeed::Radar::SnapshotCompleteHandler do
+  subject { described_class.new(payload).handle }
+
+  let(:producer) { create(:producer, :recovering) }
+  let(:payload_recovery_id) { producer.recovery_snapshot_id }
+
+  let(:payload) do
+    XmlParser.parse(
+      '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>' \
+        '<snapshot_complete ' \
+        "request_id=\"#{payload_recovery_id}\" " \
+        "timestamp=\"1234578\" product=\"#{producer.id}\"/>"
+    )
   end
 
-  describe '.handle' do
-    context 'when snapshot complete for given producer' do
-      let(:payload) do
-        XmlParser.parse(
-          '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
-      "<snapshot_complete request_id=\"#{producer.recovery_snapshot_id}\" "\
-      " timestamp=\"1234578\" product=\"#{producer.id}\"/>"
-        )
-      end
+  it 'completes recovery' do
+    subject
+    expect(producer.reload).to have_attributes(
+      state: ::Radar::Producer::HEALTHY,
+      recovery_requested_at: nil,
+      recovery_snapshot_id: nil,
+      recovery_node_id: nil,
+      last_disconnected_at: nil
+    )
+  end
 
-      before do
-        described_class.new(payload).handle
-      end
-
-      it 'calls recovery_completed!' do
-        expect(producer).to have_received(:recovery_completed!).once
-      end
+  context 'on AASM transition error' do
+    let(:producer) do
+      create(:producer, :recovering, state: ::Radar::Producer::HEALTHY)
+    end
+    let(:error_message) do
+      "Event 'complete_recovery' cannot transition from " \
+      "'#{::Radar::Producer::HEALTHY}'."
     end
 
-    context 'when snapshot id does not match' do
-      let(:payload) do
-        XmlParser.parse(
-          '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
-      "<snapshot_complete request_id=\"#{producer.recovery_snapshot_id + 1}\" "\
-      " timestamp=\"1234578\" product=\"#{producer.id}\"/>"
-        )
-      end
+    it 'raises an error' do
+      expect { subject }.to raise_error(AASM::InvalidTransition, error_message)
+    end
+  end
 
-      it 'raises corresponding exception' do
-        expect { described_class.new(payload).handle }
-          .to raise_error(StandardError, 'Unknown snapshot completed')
-      end
+  context 'when snapshot id does not match' do
+    let(:payload_recovery_id) { 0 }
+
+    it 'does not raise an error' do
+      expect { subject }.not_to raise_error
     end
 
-    context 'when producer is not recoverable' do
-      let(:payload) do
-        XmlParser.parse(
-          '<?xml version="1.0" encoding="UTF-8" standalone="yes"?>'\
-      "<snapshot_complete request_id=\"#{producer.recovery_snapshot_id + 1}\" "\
-      " timestamp=\"1234578\" product=\"#{producer.id}\"/>"
+    it 'logs an error' do
+      expect(Rails.logger)
+        .to receive(:error)
+        .with(
+          hash_including(
+            message: 'Out-dated snapshot completed',
+            producer_id: producer.id,
+            producer_state: producer.state,
+            producer_request_id: producer.recovery_snapshot_id,
+            payload_request_id: payload_recovery_id,
+            error_object: kind_of(::Radar::UnknownSnapshotError)
+          )
         )
-      end
-
-      [Radar::Producer::HEALTHY, Radar::Producer::UNSUBSCRIBED].each do |state|
-        it "does not recover #{state} producer" do
-          producer.update(state: state)
-
-          expect(described_class.new(payload).handle).to be_falsey
-        end
-      end
+      subject
     end
   end
 end

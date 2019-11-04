@@ -47,7 +47,7 @@ describe GraphQL, '#activate' do
       create(:customer, activation_token: token, activated: false)
     end
 
-    it 'returns true on successful activation' do
+    it 'proceeds successfully' do
       expect(result['data']['activate']).to be_truthy
     end
   end

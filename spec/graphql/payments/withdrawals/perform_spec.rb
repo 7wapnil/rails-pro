@@ -67,7 +67,7 @@ describe GraphQL, '#withdraw' do
       allow(EntryRequests::WithdrawalWorker).to receive(:perform_async)
     end
 
-    it 'returns true on success' do
+    it 'proceeds successfully' do
       expect(response['data']['withdraw']).to be_truthy
     end
 

@@ -1,5 +1,5 @@
 # frozen_string_literal: true
 
-module Snapshots
+module Radar
   class UnknownSnapshotError < StandardError; end
 end

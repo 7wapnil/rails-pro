@@ -11,7 +11,7 @@ radar_producers.each do |producer_data|
       id: producer_data[:id],
       code: producer_data[:code],
       state: Radar::Producer::HEALTHY,
-      last_successful_subscribed_at: Time.zone.now
+      last_subscribed_at: Time.zone.now
     )
   end
 end

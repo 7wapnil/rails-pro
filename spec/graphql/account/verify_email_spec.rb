@@ -49,7 +49,7 @@ describe GraphQL, '#verify_email' do
       create(:customer, email_verification_token: token, email_verified: false)
     end
 
-    it 'returns true on successful activation' do
+    it 'proceeds successfully' do
       customer
       expect(result['data']['verifyEmail']['success']).to be_truthy
     end

@@ -3,7 +3,7 @@ class AddProducerIdToEvents < ActiveRecord::Migration[5.2]
     add_reference :events,
                   :producer,
                   index: true,
-                  foreign_key: { to_table: Radar::Producer.table_name }
+                  foreign_key: { to_table: :radar_providers }
   end
 
   def down

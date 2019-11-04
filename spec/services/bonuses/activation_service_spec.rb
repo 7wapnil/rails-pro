@@ -105,7 +105,7 @@ describe Bonuses::ActivationService do
       expect do
         subject
       rescue StandardError
-      end.not_to change(customer, :active_bonus)
+      end.not_to change { customer.reload.active_bonus }
     end
 
     it 'raises an error' do

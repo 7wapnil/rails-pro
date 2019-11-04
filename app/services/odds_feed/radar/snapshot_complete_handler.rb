@@ -4,42 +4,41 @@ module OddsFeed
   module Radar
     class SnapshotCompleteHandler < RadarMessageHandler
       def handle
-        return false unless producer.recovering?
+        producer.with_lock do
+          return invalid_snapshot_id! unless recovery_id_match?
 
-        correct_snapshot_id = producer.recovery_snapshot_id == request_id
-        return invalid_snapshot_id! unless correct_snapshot_id
-
-        producer.recovery_completed!
+          producer.complete_recovery!
+        end
       end
 
       private
 
       def producer
-        @producer ||= ::Radar::Producer.find(product_id)
+        @producer ||= ::Radar::Producer.find(scrap_field('product'))
       end
 
-      def product_id
-        payload_body['product'].to_i
+      def scrap_field(key)
+        payload['snapshot_complete'][key]
       end
 
-      def payload_body
-        payload['snapshot_complete']
+      def recovery_id_match?
+        producer.recovery_snapshot_id == request_id
       end
 
       def request_id
-        payload_body['request_id'].to_i
+        @request_id ||= scrap_field('request_id').to_i
       end
 
       def invalid_snapshot_id!
-        raise Snapshots::UnknownSnapshotError, 'Unknown snapshot completed'
-      rescue Snapshots::UnknownSnapshotError => e
+        raise ::Radar::UnknownSnapshotError, 'Out-dated snapshot completed'
+      rescue ::Radar::UnknownSnapshotError => e
         log_job_message(:error,
                         message: e.message,
-                        error_object: e,
+                        producer_id: producer.id,
+                        producer_state: producer.state,
                         producer_request_id: producer.recovery_snapshot_id,
-                        payload_request_id: request_id)
-
-        raise SilentRetryJobError, e.message
+                        payload_request_id: request_id,
+                        error_object: e)
       end
     end
   end

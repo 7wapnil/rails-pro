@@ -7,7 +7,7 @@
 :schedule:
   missing_heartbeat_check:
     include_metadata: true
-    every: <%= ENV.fetch('MISSING_HEARTBEAT_CHECK_INTERVAL', '20s') %>
+    every: <%= ENV.fetch('MISSING_HEARTBEAT_CHECK_INTERVAL', '15s') %>
     class: Radar::MissingHeartbeatWorker
-    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
-    description: "Checks if any Radar producers connection status expired and sends recovery requests"
+    enabled: true
+    description: "Checks if any Radar producers connection status expired"

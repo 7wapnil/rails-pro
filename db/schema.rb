@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_10_30_100726) do
+ActiveRecord::Schema.define(version: 2019_11_06_134312) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -67,8 +67,8 @@ ActiveRecord::Schema.define(version: 2019_10_30_100726) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.string "settlement_status"
     t.datetime "validation_ticket_sent_at"
+    t.string "settlement_status"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"
@@ -541,16 +541,16 @@ ActiveRecord::Schema.define(version: 2019_10_30_100726) do
     t.index ["external_id"], name: "index_players_on_external_id", unique: true
   end
 
-  create_table "radar_providers", force: :cascade do |t|
+  create_table "radar_producers", force: :cascade do |t|
     t.string "code"
     t.string "state"
-    t.datetime "last_successful_subscribed_at"
-    t.datetime "recover_requested_at"
+    t.datetime "last_subscribed_at"
+    t.datetime "recovery_requested_at"
     t.integer "recovery_snapshot_id"
     t.integer "recovery_node_id"
-    t.datetime "last_disconnection_at"
-    t.index ["code"], name: "index_radar_providers_on_code"
-    t.index ["recovery_snapshot_id"], name: "index_radar_providers_on_recovery_snapshot_id"
+    t.datetime "last_disconnected_at"
+    t.index ["code"], name: "index_radar_producers_on_code"
+    t.index ["recovery_snapshot_id"], name: "index_radar_producers_on_recovery_snapshot_id"
   end
 
   create_table "scoped_events", force: :cascade do |t|
@@ -650,12 +650,12 @@ ActiveRecord::Schema.define(version: 2019_10_30_100726) do
   add_foreign_key "event_competitors", "events", on_delete: :cascade
   add_foreign_key "event_scopes", "event_scopes"
   add_foreign_key "event_scopes", "titles"
-  add_foreign_key "events", "radar_providers", column: "producer_id"
+  add_foreign_key "events", "radar_producers", column: "producer_id"
   add_foreign_key "events", "titles"
   add_foreign_key "label_joins", "labels"
   add_foreign_key "markets", "events", on_delete: :cascade
   add_foreign_key "markets", "market_templates", column: "template_id", on_delete: :nullify
-  add_foreign_key "markets", "radar_providers", column: "producer_id"
+  add_foreign_key "markets", "radar_producers", column: "producer_id"
   add_foreign_key "odds", "markets", on_delete: :cascade
   add_foreign_key "scoped_events", "event_scopes"
   add_foreign_key "scoped_events", "events", on_delete: :cascade
