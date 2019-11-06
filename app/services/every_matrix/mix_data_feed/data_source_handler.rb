@@ -40,7 +40,7 @@ module EveryMatrix
       end
 
       def category_exist?(category_name)
-        EveryMatrix::Category.exists?(name: name_with_platform(category_name))
+        EveryMatrix::Category.exists?(name: category_name)
       end
 
       def name_with_platform(name)
