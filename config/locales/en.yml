@@ -154,8 +154,11 @@ en:
     label_kind: Label kind
     label_name: Label name
     last_name: Last name
+    last_activity_at: Last activity at
     last_sign_in_at: Last sign in at
     last_sign_in_ip: Last sign in IP
+    last_visit_at: Last visit at
+    last_visit_ip: Last visit IP
     live: Live
     live_coverage: Live coverage
     lock: Lock
@@ -224,6 +227,7 @@ en:
     valid_for_days: Valid for days
     visibility: Visibility
     visible: Visible
+    visit_count: Visit count
     wager: Wager
     wallet: Wallet
     winning_amount: Winnings

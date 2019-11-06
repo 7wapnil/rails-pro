@@ -27,6 +27,18 @@
       %td= t('attributes.sign_in_count')
       %td= customer.sign_in_count
     %tr
+      %td= t('attributes.last_visit_ip')
+      %td= customer.last_visit_ip
+    %tr
+      %td= t('attributes.last_visit_at')
+      %td= customer.last_visit_at.present? ? l(customer.last_visit_at) : '-'
+    %tr
+      %td= t('attributes.last_activity_at')
+      %td= customer.last_activity_at.present? ? l(customer.last_activity_at) : '-'
+    %tr
+      %td= t('attributes.visit_count')
+      %td= customer.visit_count
+    %tr
       %td= t('attributes.email_verified')
       = hidden_field_tag 'customer[email_verified]', false
       %td= check_box_tag 'customer[email_verified]', nil,
