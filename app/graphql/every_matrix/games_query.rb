@@ -13,12 +13,11 @@ module EveryMatrix
     end
 
     def resolve(_obj, args)
-      browser = Browser.new(@request.user_agent)
-
       EveryMatrix::PlayItemsResolver.call(
         model: EveryMatrix::Game,
         category: args['context'],
-        device: browser.device
+        device: Browser.new(@request.user_agent).device,
+        country: @request.location.country_code.upcase
       )
     end
   end

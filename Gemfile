@@ -69,6 +69,7 @@ gem 'cryptocompare'
 gem 'recaptcha'
 gem 'countries'
 gem 'authtrail'
+gem 'geocoder'
 gem 'typhoeus'
 gem 'browser', require: 'browser/browser'
 
