@@ -9,11 +9,14 @@ module EveryMatrix
     end
 
     def update
-      return render 'edit' unless @category.update(category_params)
+      result = Categories::UpdateService.call(
+        category: @category,
+        params: category_params
+      )
 
-      trigger_categories_update(@category)
+      return redirect_to every_matrix_categories_path if result
 
-      redirect_to every_matrix_categories_path
+      render :edit
     end
 
     private
@@ -22,10 +25,6 @@ module EveryMatrix
       params
         .require(:every_matrix_category)
         .permit(:icon, :name, :position, :kind, :label, :platform_type)
-    end
-
-    def trigger_categories_update(category)
-      WebSocket::Client.instance.trigger_categories_update(category)
     end
   end
 end

@@ -4,24 +4,33 @@ module EveryMatrix
   class PlayItemsResolver < ApplicationService
     ITEMS_LIMIT = 35
 
-    def initialize(model:, category:, device:, country: '')
+    def initialize(model:, category_name:, device:, country: '')
       @model = model
-      @category = category
+      @category_name = category_name
       @device = device
       @country = country
     end
 
     def call
       model
-        .items_per_category(category)
-        .where(every_matrix_categories: { platform_type: platform_type })
+        .joins(:categories)
+        .where(condition)
         .reject_country(country)
         .limit(ITEMS_LIMIT)
     end
 
     private
 
-    attr_reader :model, :category, :device, :country
+    attr_reader :model, :category_name, :device, :country
+
+    def condition
+      {
+        every_matrix_categories: {
+          name: category_name,
+          platform_type: platform_type
+        }
+      }
+    end
 
     def platform_type
       return Category::MOBILE if device.mobile? || device.tablet?

@@ -71,7 +71,6 @@ module EveryMatrix
 
             create_play_item_category(play_item, category)
             update_play_item_position(play_item, index)
-            trigger_play_item_update(play_item, category.name)
           end
         end
       end
@@ -81,16 +80,16 @@ module EveryMatrix
 
         @play_items_data = {}
 
-        categories.map.with_index do |data, index|
+        categories.each.with_index do |data, index|
           @play_items_data[categories[index]['id']] =
-            dig_items(data['items']).flatten
+            dig_items(data['items'])
         end
 
         @play_items_data
       end
 
       def dig_items(items)
-        items.map do |item|
+        items.flat_map do |item|
           item['isGroup'] ? dig_items(item['items']) : item
         end
       end
@@ -108,12 +107,6 @@ module EveryMatrix
 
       def update_play_item_position(play_item, index)
         play_item&.update!(position: index)
-      end
-
-      def trigger_play_item_update(play_item, context)
-        WebSocket::Client
-          .instance
-          .trigger_play_items_update(play_item, context)
       end
     end
   end

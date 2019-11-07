@@ -13,22 +13,10 @@ module EveryMatrix
              through: :play_item_categories,
              foreign_key: :every_matrix_play_item_external_id
 
-    scope :reject_country, ->(country) {
-      return if country.blank?
+    def self.reject_country(country)
+      return all if country.blank?
 
       where.not(':country = ANY(restricted_territories)', country: country)
-    }
-
-    def self.items_per_category(category)
-      join_query = <<~SQL
-        JOIN every_matrix_play_item_categories
-        ON every_matrix_play_item_categories.play_item_id = every_matrix_play_items.external_id
-        JOIN every_matrix_categories
-        ON every_matrix_categories.id = every_matrix_play_item_categories.category_id
-        AND every_matrix_categories.id = #{EveryMatrix::Category.find_by!(name: category).id}
-      SQL
-
-      joins(join_query)
     end
   end
 end

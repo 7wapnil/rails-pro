@@ -14,11 +14,12 @@ module EveryMatrix
     end
 
     def resolve(_obj, args)
-      params = args
-               .to_h
-               .deep_transform_keys!(&:underscore)
-      params[:subject] = @current_customer
-      form = ::Forms::EveryMatrix::CreateSession.new(params)
+      form = ::Forms::EveryMatrix::CreateSession.new(
+        wallet_id: args['walletId'],
+        play_item_id: args['playItemId'],
+        subject: @current_customer
+      )
+
       form.validate!
 
       OpenStruct.new(launchUrl: form.launch_url)

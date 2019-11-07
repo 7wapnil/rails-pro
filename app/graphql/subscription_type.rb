@@ -46,9 +46,6 @@ SubscriptionType = GraphQL::ObjectType.define do
     argument :id, types.ID
   end
 
-  field SubscriptionFields::PLAY_ITEMS_UPDATED, EveryMatrix::PlayItemType do
-    argument :context, types.String
-  end
   field SubscriptionFields::CATEGORIES_UPDATED, EveryMatrix::CategoryType do
     argument :kind, types.String
   end
