@@ -2,8 +2,9 @@
 
 module Radar
   class AliveWorker < BaseUofWorker
-    sidekiq_options queue: :radar_odds_feed_low,
-                    retry: 1
+    # TODO: change queue to radar_odds_feed_low
+    # after improvement of feed processing performance
+    sidekiq_options queue: :radar_heartbeat, retry: 1
 
     def worker_class
       OddsFeed::Radar::AliveHandler

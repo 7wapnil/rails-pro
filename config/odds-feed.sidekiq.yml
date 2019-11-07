@@ -1,8 +1,17 @@
-:concurrency: 1
+:concurrency: 2
+
 :queues:
+  - radar_heartbeat
   - radar_odds_feed_high
   - radar_odds_feed_low
-  - radar_missing_heartbeat
+
+:limits:
+  radar_heartbeat: 1
+  radar_odds_feed_high: 1
+  radar_odds_feed_low: 1
+
+:blocking:
+  - radar_odds_feed_high
 
 :schedule:
   missing_heartbeat_check:
