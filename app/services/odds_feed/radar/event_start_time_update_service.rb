@@ -30,9 +30,10 @@ module OddsFeed
       def compare_time
         return if api_start_time.to_datetime == fixture_start_time
 
-        log_job_message(:warn, message: 'Start time mismatch',
-                               api_start_time: api_start_time,
-                               fixture_start_time: fixture_start_time)
+        log_job_message(:warn,
+                        message: 'Start time mismatch',
+                        api_start_time: api_start_time&.to_datetime,
+                        fixture_start_time: fixture_start_time&.to_datetime)
       end
 
       def api_start_time

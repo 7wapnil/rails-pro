@@ -12,7 +12,7 @@ module JobLogger
     end
 
     def populate_enqueued_at_to_thread
-      Thread.current[:enqueued_at] = @enqueued_at
+      Thread.current[:enqueued_at] = @enqueued_at&.to_datetime
     end
 
     def populate_message_info_to_thread(payload)

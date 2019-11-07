@@ -103,15 +103,15 @@ module JobLogger
   end
 
   def current_time
-    Time.now.to_f
+    @current_time ||= Time.zone.now.to_datetime
   end
 
   def performing_time
-    enqueued_at.to_i.zero? ? 0 : current_time - enqueued_at.to_f
+    enqueued_at.to_i.zero? ? 0 : current_time.to_f - enqueued_at.to_f
   end
 
   def execution_time
-    current_time - start_time
+    current_time.to_f - start_time
   end
 
   def processing_time

@@ -87,11 +87,11 @@ module StateMachines
           {
             producer_id: id,
             code: code,
-            last_subscribed_at: last_subscribed_at,
-            recovery_requested_at: recovery_requested_at,
+            last_subscribed_at: last_subscribed_at&.to_datetime,
+            recovery_requested_at: recovery_requested_at&.to_datetime,
             recovery_snapshot_id: recovery_snapshot_id,
             recovery_node_id: recovery_node_id,
-            last_disconnected_at: last_disconnected_at
+            last_disconnected_at: last_disconnected_at&.to_datetime
           }
         end
 

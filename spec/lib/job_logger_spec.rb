@@ -7,9 +7,9 @@ describe JobLogger do
   let(:error_message) { Faker::Lorem.sentence }
   let(:error) { StandardError.new(error_message) }
 
-  let(:enqueued_at) { Faker::Time.backward(1) }
+  let(:enqueued_at) { Faker::Time.backward(1).to_datetime }
   let(:start_time) { (enqueued_at + 1.hour).to_f }
-  let(:current_time) { Time.now.to_f }
+  let(:current_time) { Time.zone.now.to_datetime }
 
   before do
     allow(dummy_class).to receive(:job_id) { job_id }
@@ -48,7 +48,7 @@ describe JobLogger do
       {
         jid:          job_id,
         class_name:   dummy_class.class.name,
-        current_time: Time.now.to_f,
+        current_time: Time.zone.now.to_datetime,
         thread_id:    Thread.current.object_id
       }
     end
@@ -98,7 +98,7 @@ describe JobLogger do
 
       it 'calls extended logger' do
         arguments =
-          default_expectation_arguments.merge payload_hash
+          default_expectation_arguments.merge(payload_hash)
         expect(logger_double)
           .to have_received('send')
           .with(logger_level, **arguments).once
@@ -135,10 +135,13 @@ describe JobLogger do
   end
 
   describe 'private #log_process' do
-    let(:job_performing_time) { (current_time - enqueued_at.to_f).round(3) }
-    let(:job_execution_time) { (current_time - start_time).round(3) }
+    let(:job_performing_time) do
+      (current_time.to_f - enqueued_at.to_f).round(3)
+    end
+    let(:job_execution_time) { (current_time.to_f - start_time).round(3) }
     let(:overall_processing_time) do
-      (current_time - enqueued_at.to_f + current_time - start_time).round(3)
+      (current_time.to_f - enqueued_at.to_f +
+        current_time.to_f - start_time).round(3)
     end
 
     before do

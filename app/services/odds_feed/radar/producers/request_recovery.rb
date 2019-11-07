@@ -99,11 +99,11 @@ module OddsFeed
 
         def extra_log_info
           {
-            recovery_from: recovery_from,
+            recovery_from: recovery_from&.to_datetime,
             node_id: node_id,
             request_id: request_id,
-            recovery_requested_at: requested_at,
-            last_recovery_call_at: last_recovery_call_at,
+            recovery_requested_at: requested_at.to_datetime,
+            last_recovery_call_at: last_recovery_call_at&.to_datetime,
             delay_between_recovery: recovery_delay
           }
         end
