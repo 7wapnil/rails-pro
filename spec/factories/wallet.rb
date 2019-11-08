@@ -2,9 +2,9 @@
 
 FactoryBot.define do
   factory :wallet do
-    amount { Faker::Number.decimal(5, 2) }
     real_money_balance { Faker::Number.decimal(4, 2) }
     bonus_balance { Faker::Number.decimal(4, 2) }
+    amount { real_money_balance.to_d + bonus_balance.to_d }
 
     customer
     currency

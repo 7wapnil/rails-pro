@@ -18,7 +18,7 @@ module EveryMatrix
       end
 
       def insufficient_funds?
-        wallet && (amount > wallet.real_money_balance)
+        wallet && (amount > wallet.amount)
       end
 
       def valid_request?

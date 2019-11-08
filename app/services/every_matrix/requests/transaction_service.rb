@@ -106,7 +106,7 @@ module EveryMatrix
       end
 
       def balance_amount_after
-        wallet.reload.real_money_balance
+        wallet.reload.amount
       end
 
       def response_currency_code

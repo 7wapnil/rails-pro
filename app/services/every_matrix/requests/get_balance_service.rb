@@ -22,10 +22,10 @@ module EveryMatrix
       def success_response
         common_success_response.merge(
           'SessionId'  => session.id,
-          'Balance'    => response_balance_amount,
+          'Balance'    => response_balance,
           'Currency'   => response_currency_code,
-          'BonusMoney' => 0.0,
-          'RealMoney'  => response_balance_amount
+          'BonusMoney' => response_bonus_money,
+          'RealMoney'  => response_real_money
         )
       end
 
@@ -33,10 +33,24 @@ module EveryMatrix
         denominate_currency_code(code: currency_code)
       end
 
-      def response_balance_amount
+      def response_real_money
         denominate_response_amount(
           code: currency_code,
           amount: wallet.real_money_balance
+        )
+      end
+
+      def response_bonus_money
+        denominate_response_amount(
+          code: currency_code,
+          amount: wallet.bonus_balance
+        )
+      end
+
+      def response_balance
+        denominate_response_amount(
+          code: currency_code,
+          amount: wallet.amount
         )
       end
     end

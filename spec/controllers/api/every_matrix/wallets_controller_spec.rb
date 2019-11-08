@@ -9,7 +9,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
   let(:customer) { create(:customer, :with_address, :ready_to_bet) }
   let(:wallet) { customer.wallet }
   let(:currency_code) { wallet.currency.code }
-  let!(:balance_before) { wallet.real_money_balance }
+  let!(:balance_before) { wallet.amount }
 
   let(:customer_session) do
     create(:em_wallet_session, wallet: wallet)
@@ -141,10 +141,10 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
 
       let(:expected_response) do
         common_success_response.merge(
-          'Balance'    => wallet.real_money_balance.to_s,
+          'Balance'    => wallet.amount.to_s,
           'Currency'   => currency_code,
           'SessionId'  => customer_session.id,
-          'BonusMoney' => 0.0,
+          'BonusMoney' => wallet.bonus_balance.to_s,
           'RealMoney'  => wallet.real_money_balance.to_s
         )
       end
@@ -159,6 +159,14 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
         end
 
         let(:expected_balance) do
+          (wallet.amount * 0.001).truncate(5).to_s
+        end
+
+        let(:expected_bonus_money) do
+          (wallet.bonus_balance * 0.001).truncate(5).to_s
+        end
+
+        let(:expected_real_money) do
           (wallet.real_money_balance * 0.001).truncate(5).to_s
         end
 
@@ -167,8 +175,8 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
             'Balance'    => expected_balance,
             'Currency'   => 'BTC',
             'SessionId'  => customer_session.id,
-            'BonusMoney' => 0.0,
-            'RealMoney'  => expected_balance
+            'BonusMoney' => expected_bonus_money,
+            'RealMoney'  => expected_real_money
           )
         end
 
@@ -203,7 +211,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
     let(:request_name) { 'Wager' }
 
     context 'with existing session' do
-      let(:amount) { (balance_before / 2.0).round(2) }
+      let(:amount) { (wallet.real_money_balance / 2.0).round(2) }
       let(:transaction_id) { 123_456_789 }
 
       let(:payload) do
@@ -264,7 +272,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
           wallet.currency.update_attribute(:code, 'mBTC')
         end
 
-        let(:amount) { balance_before * 0.001 / 2 }
+        let(:amount) { wallet.real_money_balance * 0.001 / 2 }
 
         let(:expected_balance) do
           (balance_before * 0.001 - amount).to_d.truncate(5).to_s
