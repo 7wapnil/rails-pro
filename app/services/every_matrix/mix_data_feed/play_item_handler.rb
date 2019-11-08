@@ -64,7 +64,8 @@ module EveryMatrix
           small_icon_url: https(presentation.dig('icons', '44', '*')),
           medium_icon_url: https(presentation.dig('icons', '72', '*')),
           large_icon_url: https(presentation.dig('icons', '114', '*')),
-          terminal: https(data.dig('property', 'terminal'))
+          terminal: https(data.dig('property', 'terminal')),
+          bonus_contribution: bonus['contribution']
         }
       end
       # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
@@ -92,6 +93,10 @@ module EveryMatrix
 
       def presentation
         data['presentation']
+      end
+
+      def bonus
+        data['bonus']
       end
 
       def https(string)
