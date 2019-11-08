@@ -66,6 +66,7 @@ class BonusesController < ApplicationController
               :min_deposit,
               :valid_for_days,
               :percentage,
-              :repeatable)
+              :repeatable,
+              :casino)
   end
 end

@@ -46,7 +46,8 @@ module CustomerBonuses
         percentage: bonus.percentage,
         expires_at: bonus.expires_at,
         status: new_customer_bonus_status,
-        activated_at: activated_at
+        activated_at: activated_at,
+        casino: bonus.casino
       }
     end
     # rubocop:enable Metrics/MethodLength
