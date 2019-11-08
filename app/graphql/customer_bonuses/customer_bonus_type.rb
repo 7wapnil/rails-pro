@@ -25,5 +25,6 @@ module CustomerBonuses
     field :amount, !types.String do
       resolve ->(obj, _atgs, _ctx) { obj.amount(human: true) }
     end
+    field :casino, !types.Boolean
   end
 end

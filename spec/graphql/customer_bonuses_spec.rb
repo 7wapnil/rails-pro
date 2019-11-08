@@ -42,6 +42,7 @@ describe GraphQL, '#customerBonuses' do
           status
           expiresAt
           amount
+          casino
         }
       })
     end
@@ -84,7 +85,8 @@ describe GraphQL, '#customerBonuses' do
           'status' => CustomerBonus::CANCELLED,
           'expiresAt' =>
             control_cancelled_customer_bonus.active_until_date(human: true),
-          'amount' => control_cancelled_customer_bonus.amount(human: true)
+          'amount' => control_cancelled_customer_bonus.amount(human: true),
+          'casino' => false
         )
     end
 
@@ -97,7 +99,8 @@ describe GraphQL, '#customerBonuses' do
           'rolloverInitialValue' => rollover_initial_value.to_d,
           'status' => CustomerBonus::ACTIVE,
           'expiresAt' => control_date,
-          'amount' => control_customer_bonus.amount(human: true)
+          'amount' => control_customer_bonus.amount(human: true),
+          'casino' => false
         )
     end
 
