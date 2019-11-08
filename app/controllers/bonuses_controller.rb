@@ -53,7 +53,7 @@ class BonusesController < ApplicationController
 
   private
 
-  def bonus_params
+  def bonus_params # rubocop:disable Metrics/MethodLength
     params
       .require(:bonus)
       .permit(:code,

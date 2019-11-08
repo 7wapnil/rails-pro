@@ -20,7 +20,7 @@ module EveryMatrix
         )
       end
 
-      def call
+      def call # rubocop:disable Metrics/LineLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
         return transaction.response if find_transaction
 
         return user_not_found_response unless customer
