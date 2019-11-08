@@ -33,6 +33,10 @@ module EveryMatrix
 
         return record_response(entry_creation_failed) unless transaction.entry
 
+        if respond_to?(:post_process) && respond_to?(:post_process_failed)
+          return record_response(post_process_failed) unless post_process
+        end
+
         record_response(success_response)
       end
 

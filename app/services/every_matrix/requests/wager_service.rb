@@ -42,6 +42,12 @@ module EveryMatrix
           'Message'    => 'MaxStakeLimitExceeded'
         )
       end
+
+      def post_process
+        WagerSettlementService.call(transaction)
+      end
+
+      def post_process_failed; end
     end
   end
 end
