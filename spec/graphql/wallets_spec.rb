@@ -12,7 +12,15 @@ describe GraphQL, '#wallets' do
   end
 
   describe 'query' do
-    let(:query) { %({ wallets { id amount currency { code name } } }) }
+    let(:query) do
+      %({ wallets {
+        id
+        amount
+        realMoneyBalance
+        bonusBalance
+        currency { code name }
+      } })
+    end
 
     it 'returns list of auth customer wallets' do
       5.times do |n|
@@ -30,6 +38,9 @@ describe GraphQL, '#wallets' do
       expect(result_wallet['id']).to eq(wallet.id.to_s)
       expect(result_wallet['currency']['code']).to eq(wallet.currency.code)
       expect(result_wallet['currency']['name']).to eq(wallet.currency.name)
+      expect(result_wallet['amount']).to eq(wallet.amount)
+      expect(result_wallet['realMoneyBalance']).to eq(wallet.real_money_balance)
+      expect(result_wallet['bonusBalance']).to eq(wallet.bonus_balance)
     end
 
     it 'returns default wallet when customer has no any' do
