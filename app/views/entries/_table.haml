@@ -18,7 +18,7 @@
           %td.id
             = link_to("##{entry.id}", entry)
           %td
-            = t('kinds.' + entry.kind)
+            = link_to_entry_origin_type(entry)
           %td
             = l(entry.created_at, format: :long)
           %td.font-weight-bold{ class: entry_amount_class(entry) }

@@ -81,6 +81,14 @@ module CustomersHelper
     options_for_select(verification_statuses, verified)
   end
 
+  def link_to_entry_origin_type(entry)
+    if entry.origin_type == Bet.to_s
+      link_to(t('kinds.' + entry.kind), bet_path(entry.origin_id))
+    else
+      t('kinds.' + entry.kind)
+    end
+  end
+
   private
 
   def submit_button(html, resource, url)
