@@ -21,11 +21,10 @@ module EveryMatrix
 
       def success_response
         common_success_response.merge(
-          'SessionId'  => session.id,
-          'Balance'    => response_balance,
-          'Currency'   => response_currency_code,
-          'BonusMoney' => response_bonus_money,
-          'RealMoney'  => response_real_money
+          BalanceCalculationService.call(session: session).merge(
+            'SessionId' => session.id,
+            'Currency'  => response_currency_code
+          )
         )
       end
 

@@ -46,6 +46,10 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
 
   let(:json) { JSON.parse(post_response.body) }
 
+  let!(:customer_bonus) do
+    create(:customer_bonus, customer: customer, wallet: wallet, casino: true)
+  end
+
   before do
     allow(ENV).to receive(:[]).and_call_original
 

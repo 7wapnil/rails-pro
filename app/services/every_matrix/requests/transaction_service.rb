@@ -98,10 +98,13 @@ module EveryMatrix
 
       def success_response
         common_success_response.merge(
-          'SessionId'            => session.id,
-          'AccountTransactionId' => transaction.id,
-          'Currency'             => response_currency_code,
-          'Balance'              => response_balance_amount.to_d.to_s
+          BalanceCalculationService.call(
+            session: session,
+            balance_only: true
+          ).merge(
+            'SessionId'            => session.id,
+            'AccountTransactionId' => transaction.id
+          )
         )
       end
 
