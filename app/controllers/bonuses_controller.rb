@@ -67,6 +67,8 @@ class BonusesController < ApplicationController
               :valid_for_days,
               :percentage,
               :repeatable,
-              :casino)
+              :casino,
+              :sportsbook,
+              :sportsbook_multiplier)
   end
 end

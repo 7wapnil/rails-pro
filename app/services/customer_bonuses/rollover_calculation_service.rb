@@ -20,7 +20,8 @@ module CustomerBonuses
 
     def eligible?
       bet.settled? &&
-        customer_bonus && customer_bonus.active? &&
+        customer_bonus&.active? &&
+        customer_bonus&.sportsbook? &&
         bet.odd_value >= customer_bonus.min_odds_per_bet
     end
 
@@ -36,7 +37,10 @@ module CustomerBonuses
     end
 
     def bet_rollover_amount
-      [customer_bonus.max_rollover_per_bet, bet.amount].min
+      [
+        customer_bonus.max_rollover_per_bet,
+        bet.amount * customer_bonus.sportsbook_multiplier
+      ].min
     end
   end
 end

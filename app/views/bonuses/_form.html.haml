@@ -20,14 +20,16 @@
                         input_html: { 'data-default-date': l(bonus.expires_at || Date.current) }
         .input-group-append
           .input-group-text.btn &#128197;
-      = f.input :repeatable
+      = f.input :sportsbook
+      = f.input :sportsbook_multiplier, input_html: { min: 0 }, required: true
+      = f.input :casino
     .col-6
       = f.input :max_deposit_match, input_html: { min: 0 }, required: true
       = f.input :min_odds_per_bet, input_html: { min: 0 }, required: true
       = f.input :min_deposit, input_html: { min: 0 }, required: true
       = f.input :valid_for_days, input_html: { min: 0 }, required: true
       = f.input :percentage, required: true
-      = f.input :casino
+      = f.input :repeatable
   .row
     .col
       = f.submit class: 'btn btn-outline-dark', required: true

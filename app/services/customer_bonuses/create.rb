@@ -47,7 +47,9 @@ module CustomerBonuses
         expires_at: bonus.expires_at,
         status: new_customer_bonus_status,
         activated_at: activated_at,
-        casino: bonus.casino
+        casino: bonus.casino,
+        sportsbook: bonus.sportsbook,
+        sportsbook_multiplier: bonus.sportsbook_multiplier
       }
     end
     # rubocop:enable Metrics/MethodLength

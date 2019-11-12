@@ -21,8 +21,14 @@
                 %td= t('attributes.percentage')
                 %td= number_to_percentage(@bonus.percentage, precision: 0)
               %tr
-                %td= t('attributes.repeatable')
-                %td= @bonus.repeatable
+                %td= t('attributes.sportsbook')
+                %td= @bonus.sportsbook
+              %tr
+                %td= t('attributes.sportsbook_multiplier')
+                %td= @bonus.sportsbook_multiplier
+              %tr
+                %td= t('attributes.casino')
+                %td= @bonus.casino
         .col-6
           = card do
             %table.table
@@ -39,8 +45,8 @@
                 %td= t('attributes.expires_at')
                 %td= l @bonus.expires_at
               %tr
-                %td= t('attributes.casino')
-                %td= @bonus.casino
+                %td= t('attributes.repeatable')
+                %td= @bonus.repeatable
 
       %hr
       = link_back

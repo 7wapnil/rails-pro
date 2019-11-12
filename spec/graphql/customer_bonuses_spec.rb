@@ -43,6 +43,7 @@ describe GraphQL, '#customerBonuses' do
           expiresAt
           amount
           casino
+          sportsbook
         }
       })
     end
@@ -86,7 +87,8 @@ describe GraphQL, '#customerBonuses' do
           'expiresAt' =>
             control_cancelled_customer_bonus.active_until_date(human: true),
           'amount' => control_cancelled_customer_bonus.amount(human: true),
-          'casino' => false
+          'casino' => false,
+          'sportsbook' => true
         )
     end
 
@@ -100,7 +102,8 @@ describe GraphQL, '#customerBonuses' do
           'status' => CustomerBonus::ACTIVE,
           'expiresAt' => control_date,
           'amount' => control_customer_bonus.amount(human: true),
-          'casino' => false
+          'casino' => false,
+          'sportsbook' => true
         )
     end
 

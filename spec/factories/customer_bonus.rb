@@ -15,6 +15,8 @@ FactoryBot.define do
     rollover_initial_value { rollover_balance }
     status                 { CustomerBonus::ACTIVE }
     activated_at           { Time.zone.now + 1.minute }
+    sportsbook             { true }
+    sportsbook_multiplier  { 1 }
 
     sequence(:code) { |n| "FOOBAR#{n}" }
 
