@@ -19,6 +19,7 @@ describe GraphQL, '#wallets' do
         realMoneyBalance
         bonusBalance
         currency { code name }
+        customerBonus { id }
       } })
     end
 
@@ -40,7 +41,8 @@ describe GraphQL, '#wallets' do
       expect(result_wallet['currency']['name']).to eq(wallet.currency.name)
       expect(result_wallet['amount'].to_d).to eq(wallet.amount)
       expect(result_wallet['realMoneyBalance']).to eq(wallet.real_money_balance)
-      expect(result_wallet['bonusBalance']).to eq(wallet.bonus_balance)
+      expect(result_wallet['bonusBalance'].to_d).to eq(wallet.bonus_balance)
+      expect(result_wallet['customerBonus']).to be_nil
     end
 
     it 'returns default wallet when customer has no any' do
@@ -50,6 +52,14 @@ describe GraphQL, '#wallets' do
 
       expect(result_wallet['amount']).to eq(0)
       expect(result_wallet['currency']['code']).to eq(default_currency.code)
+    end
+
+    it 'returns customerBonus when present' do
+      wallet = create(:wallet, customer: auth_customer)
+      customer_bonus = create(:customer_bonus, wallet: wallet)
+      result_wallet = result['data']['wallets'].first
+
+      expect(result_wallet['customerBonus']['id']).to eq(customer_bonus.id.to_s)
     end
   end
 end

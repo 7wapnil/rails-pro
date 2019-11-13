@@ -8,5 +8,11 @@ module Wallets
     field :bonusBalance, !types.Float, property: :bonus_balance
 
     field :currency, Currencies::CurrencyType
+    field :customerBonus, CustomerBonuses::CustomerBonusType,
+          resolve: ->(obj, *) do
+            return unless obj.customer_bonus&.active?
+
+            obj.customer_bonus
+          end
   end
 end
