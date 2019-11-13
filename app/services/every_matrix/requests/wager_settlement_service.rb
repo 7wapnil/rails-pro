@@ -17,6 +17,8 @@ module EveryMatrix
         return complete_bonus! if complete_bonus?
 
         lose_bonus! if lose_bonus?
+
+        true
       end
 
       private
