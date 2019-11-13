@@ -592,6 +592,8 @@ en:
     self_exclusion: Self-exclusion
 
   mailers:
+    daily_report_mailer:
+      subject: Daily report
     arcanebet_mailer:
       suspicious_login:
         subject: Suspicious login attempt

@@ -5,7 +5,7 @@ module Reports
     # rubocop:disable Metrics/ClassLength
     class DailyStatsQuery < ApplicationService
       def call
-        ActiveRecord::Base.connection.execute(daily_stats_query).to_a[0]
+        ActiveRecord::Base.connection.execute(daily_stats_query).to_a.first
       end
 
       private

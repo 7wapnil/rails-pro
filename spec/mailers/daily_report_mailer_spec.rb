@@ -1,10 +1,12 @@
+# frozen_string_literal: true
+
 describe DailyReportMailer do
   it 'must have default from address' do
     expect(subject.default_params[:from]).to eq('noreply@arcanebet.com')
   end
 
   it 'must have default subject' do
-    expect(subject.default_params[:subject]).to eq('Daily Report')
+    expect(subject.default_params[:subject]).to eq('Daily report')
   end
 
   context 'emails' do
