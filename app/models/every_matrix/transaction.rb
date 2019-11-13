@@ -22,7 +22,6 @@ module EveryMatrix
 
     has_one :wallet, through: :em_wallet_session
     has_one :currency, through: :wallet
-    has_one :play_item, through: :em_wallet_session
     has_one :vendor, through: :play_item
     has_one :content_provider, through: :play_item
   end
