@@ -3,6 +3,12 @@
 module EveryMatrix
   module Requests
     class WagerService < TransactionService
+      def post_process
+        WagerSettlementService.call(transaction)
+      end
+
+      def post_process_failed; end
+
       private
 
       def request_name
@@ -42,12 +48,6 @@ module EveryMatrix
           'Message'    => 'MaxStakeLimitExceeded'
         )
       end
-
-      def post_process
-        WagerSettlementService.call(transaction)
-      end
-
-      def post_process_failed; end
     end
   end
 end

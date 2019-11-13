@@ -236,8 +236,22 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
         )
       end
 
+      before do
+        allow(EveryMatrix::Requests::WagerSettlementService).to(
+          receive(:call).and_return(true)
+        )
+      end
+
       it 'successfully responds to request' do
         expect(json).to include(expected_response)
+      end
+
+      it 'triggers wager settlement service' do
+        json
+
+        expect(EveryMatrix::Requests::WagerSettlementService).to(
+          have_received(:call)
+        )
       end
 
       it 'is idempotent with same transaction_id' do
