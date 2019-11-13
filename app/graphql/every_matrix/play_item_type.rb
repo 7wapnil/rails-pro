@@ -4,7 +4,7 @@ module EveryMatrix
   PlayItemType = GraphQL::ObjectType.define do
     name 'PlayItemType'
 
-    field :id, types.String, property: :id
+    field :id, types.String, property: :external_id
     field :name, types.String do
       resolve ->(obj, *) { obj.name || obj.short_name }
     end

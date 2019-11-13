@@ -48,5 +48,6 @@ SubscriptionType = GraphQL::ObjectType.define do
 
   field SubscriptionFields::CATEGORIES_UPDATED, EveryMatrix::CategoryType do
     argument :kind, types.String
+    argument :device, types.String
   end
 end

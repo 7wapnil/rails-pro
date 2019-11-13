@@ -16,6 +16,7 @@ module EveryMatrix
         .joins(:categories)
         .where(condition)
         .reject_country(country)
+        .order(:position)
         .limit(ITEMS_LIMIT)
     end
 
@@ -27,15 +28,9 @@ module EveryMatrix
       {
         every_matrix_categories: {
           name: category_name,
-          platform_type: platform_type
+          platform_type: device
         }
       }
-    end
-
-    def platform_type
-      return Category::MOBILE if device.mobile? || device.tablet?
-
-      Category::DESKTOP
     end
   end
 end

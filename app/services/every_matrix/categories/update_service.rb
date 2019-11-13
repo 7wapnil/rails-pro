@@ -17,7 +17,9 @@ module EveryMatrix
       attr_reader :category, :params
 
       def trigger_categories_update
-        WebSocket::Client.instance.trigger_categories_update(category)
+        WebSocket::Client
+          .instance
+          .trigger_categories_update(category, category.platform_type)
       end
     end
   end

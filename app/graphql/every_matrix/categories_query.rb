@@ -2,6 +2,8 @@
 
 module EveryMatrix
   class CategoriesQuery < ::Base::Resolver
+    include DeviceChecker
+
     type !types[CategoryType]
 
     description 'List of casino games'
@@ -13,18 +15,10 @@ module EveryMatrix
     end
 
     def resolve(_obj, args)
-      browser = Browser.new(@request.user_agent)
-
       EveryMatrix::Category.where(
         kind: args['kind'],
-        platform_type: platform_type(browser.device)
+        platform_type: platform_type(@request)
       )
-    end
-
-    def platform_type(device)
-      return Category::MOBILE if device.mobile? || device.tablet?
-
-      Category::DESKTOP
     end
   end
 end

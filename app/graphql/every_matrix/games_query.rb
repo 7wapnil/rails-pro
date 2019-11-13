@@ -2,6 +2,8 @@
 
 module EveryMatrix
   class GamesQuery < ::Base::Resolver
+    include DeviceChecker
+
     type !types[PlayItemType]
 
     description 'List of casino games'
@@ -16,7 +18,7 @@ module EveryMatrix
       EveryMatrix::PlayItemsResolver.call(
         model: EveryMatrix::Game,
         category_name: args['context'],
-        device: Browser.new(@request.user_agent).device,
+        device: platform_type(@request),
         country: @request.location.country_code.upcase
       )
     end

@@ -2,7 +2,7 @@
 
 module EveryMatrix
   class TablesQuery < ::Base::Resolver
-    ITEMS_LIMIT = 35
+    include DeviceChecker
 
     type !types[PlayItemType]
 
@@ -15,7 +15,12 @@ module EveryMatrix
     end
 
     def resolve(_obj, args)
-      EveryMatrix::Table.items_per_category(args['context']).limit(ITEMS_LIMIT)
+      EveryMatrix::PlayItemsResolver.call(
+        model: EveryMatrix::Table,
+        category_name: args['context'],
+        device: platform_type(@request),
+        country: @request.location.country_code.upcase
+      )
     end
   end
 end

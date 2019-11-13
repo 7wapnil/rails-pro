@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module EveryMatrix
   EveryMatrixTransactionType = GraphQL::ObjectType.define do
     DEBIT_TYPES = %w[EveryMatrix::Wager].freeze
