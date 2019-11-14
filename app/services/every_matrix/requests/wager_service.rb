@@ -7,7 +7,12 @@ module EveryMatrix
         WagerSettlementService.call(transaction)
       end
 
-      def post_process_failed; end
+      def post_process_failed
+        common_response.merge(
+          'ReturnCode' => 104,
+          'Message'    => 'Insufficient funds (from post-processing)'
+        )
+      end
 
       private
 

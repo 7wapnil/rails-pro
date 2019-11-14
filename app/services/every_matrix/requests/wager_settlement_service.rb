@@ -10,11 +10,14 @@ module EveryMatrix
       end
 
       def call
-        return unless customer_bonus.active? && customer_bonus.casino?
+        return true unless customer_bonus.active? && customer_bonus.casino?
 
         recalculate_bonus_rollover
 
-        return complete_bonus! if complete_bonus?
+        if complete_bonus?
+          complete_bonus!
+          return true
+        end
 
         lose_bonus! if lose_bonus?
 
