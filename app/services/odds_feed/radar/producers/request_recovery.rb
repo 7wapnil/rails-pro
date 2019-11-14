@@ -46,6 +46,7 @@ module OddsFeed
         attr_reader :producer, :node_id, :requested_at, :request_id, :response
 
         def request_recovery_with_api!
+          log_job_message(:info, message: 'Sending recovery request to Radar')
           @response = ::OddsFeed::Radar::Client
                       .instance
                       .product_recovery_initiate_request(
@@ -55,6 +56,7 @@ module OddsFeed
                         request_id: request_id
                       )
                       .fetch('response')
+          log_job_message(:info, message: 'Recovery request sent to Radar')
         rescue StandardError => error
           raise ::Radar::UnsuccessfulRecoveryError, error.message
         end
