@@ -49,7 +49,8 @@ module CustomerBonuses
         activated_at: activated_at,
         casino: bonus.casino,
         sportsbook: bonus.sportsbook,
-        sportsbook_multiplier: bonus.sportsbook_multiplier
+        sportsbook_multiplier: bonus.sportsbook_multiplier,
+        max_rollover_per_spin: bonus.max_rollover_per_spin
       }
     end
     # rubocop:enable Metrics/MethodLength

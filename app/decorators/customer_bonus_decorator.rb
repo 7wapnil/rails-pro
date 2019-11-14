@@ -21,6 +21,10 @@ class CustomerBonusDecorator < ApplicationDecorator
     human ? "#{super()} #{currency}" : super()
   end
 
+  def max_rollover_per_spin(human: false)
+    human ? "#{super()} #{currency}" : super()
+  end
+
   def max_deposit_match(human: false)
     human ? "#{super()} #{currency}" : super()
   end

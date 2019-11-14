@@ -12,6 +12,7 @@
       = f.input :kind, collection: Bonus.kinds.keys, include_blank: false
       = f.input :rollover_multiplier, input_html: { min: 0 }, required: true
       = f.input :max_rollover_per_bet, input_html: { min: 0 }, required: true
+      = f.input :max_rollover_per_spin, input_html: { min: 0 }, required: true
       = f.label :expires_at
       .input-group
         = f.input_field :expires_at,

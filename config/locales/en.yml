@@ -173,6 +173,7 @@ en:
     max_amount: Max amount
     max_deposit_match: Max amount
     max_rollover_per_bet: Max rollover per bet
+    max_rollover_per_spin: Max rollover per spin
     message: Message
     notification_code: Notification code
     notification_message: Notification message

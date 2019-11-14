@@ -69,6 +69,7 @@ class BonusesController < ApplicationController
               :repeatable,
               :casino,
               :sportsbook,
-              :sportsbook_multiplier)
+              :sportsbook_multiplier,
+              :max_rollover_per_spin)
   end
 end

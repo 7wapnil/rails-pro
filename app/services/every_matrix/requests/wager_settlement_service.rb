@@ -36,7 +36,7 @@ module EveryMatrix
 
       def rollover_amount
         [
-          customer_bonus.max_rollover_per_bet,
+          customer_bonus.max_rollover_per_spin,
           transaction.amount * play_item.bonus_contribution
         ].min
       end
