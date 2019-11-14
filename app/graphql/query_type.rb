@@ -27,4 +27,5 @@ QueryType = GraphQL::ObjectType.define do
   field :everyMatrixTransactions, function: ::EveryMatrix::TransactionsQuery.new
   field :gamesOverview, function: ::EveryMatrix::GamesOverviewQuery.new
   field :tablesOverview, function: ::EveryMatrix::TablesOverviewQuery.new
+  field :searchCasinoGames, function: EveryMatrix::SearchCasinoGamesQuery.new
 end
