@@ -64,6 +64,12 @@
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Sends sales reports to FTP server"
 
+  daily_stats_report:
+    cron: '0 6 * * * CET'
+    class: Scheduled::DailyReportWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Sends daily stats report"
+
   expirining_entry_requests_worker:
     every: <%= ENV.fetch('EXPIRING_ENTRY_REQUESTS_INTERVAL', '1d') %>
     class: Scheduled::ExpiringEntryRequestsWorker

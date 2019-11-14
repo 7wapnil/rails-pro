@@ -1,19 +1,21 @@
 class DailyReportMailer < ApplicationMailer
+  default from: 'noreply@arcanebet.com',
+          subject: 'Daily Report'
+
   TEMPLATES = {
-    daily_report_mail: ''
+    daily_report_mail: 'cc35259a-0e1f-47e5-94bd-ba8faa03d7fe'
   }.freeze
 
   def daily_report_mail
     data = params[:data]
-    receivers = ENV['DAILY_REPORT_EMAILS'] || ['obahriy@leobit.com']
+    receivers = ENV
+                .fetch('DAILY_REPORT_EMAILS', '').split(',')
 
-    receivers.each do |receiver|
-      smtpapi_mail(
-        TEMPLATES[__method__],
-        receiver,
-        data
-      )
-    end
+    smtpapi_mail(
+      TEMPLATES[__method__],
+      receivers,
+      data
+    )
   end
 
   private
@@ -49,7 +51,7 @@ class DailyReportMailer < ApplicationMailer
 
     hdrs = {}
     substitutions.each_pair do |key, value|
-      hdrs["%#{key}%"] = [value]
+      hdrs["%#{key.camelize(:lower)}%"] = value ? [value] : ['-']
     end
 
     { sub: hdrs }
