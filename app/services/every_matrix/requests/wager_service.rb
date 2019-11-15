@@ -29,7 +29,18 @@ module EveryMatrix
       end
 
       def insufficient_funds?
-        wallet && (amount > wallet.amount)
+        wallet && (amount > available_amount)
+      end
+
+      def available_amount
+        return wallet.amount if bonus?
+
+        wallet.real_money_balance
+      end
+
+      def bonus?
+        transaction.customer_bonus&.active? &&
+          transaction.customer_bonus&.casino?
       end
 
       def valid_request?
