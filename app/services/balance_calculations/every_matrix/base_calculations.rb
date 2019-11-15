@@ -30,14 +30,14 @@ module BalanceCalculations
                                           .round(MONEY_PRECISION)
       end
 
-      def with_casino_bonus?
-        customer_bonus&.active? && customer_bonus&.casino?
-      end
-
       def ratio
-        return REAL_MONEY_ONLY_RATIO unless with_casino_bonus?
+        return REAL_MONEY_ONLY_RATIO unless bonus?
 
         real_money_balance / wallet_amount
+      end
+
+      def bonus?
+        customer_bonus&.active? && customer_bonus&.casino?
       end
 
       def calculated_bonus_amount

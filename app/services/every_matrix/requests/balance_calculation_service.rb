@@ -28,10 +28,10 @@ module EveryMatrix
       private
 
       attr_reader :session, :balance_only
+
       delegate :wallet, to: :session
       delegate :amount, :real_money_balance, :bonus_balance,
-               to: :wallet
-      delegate :currency, :customer_bonus,
+               :currency, :customer_bonus,
                to: :wallet
       delegate :code, to: :currency, prefix: true
 

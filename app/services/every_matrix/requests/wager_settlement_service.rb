@@ -10,16 +10,12 @@ module EveryMatrix
       end
 
       def call
-        return true unless customer_bonus.active? && customer_bonus.casino?
+        return true unless bonus?
 
         recalculate_bonus_rollover
 
-        if complete_bonus?
-          complete_bonus!
-          return true
-        end
-
-        lose_bonus! if lose_bonus?
+        return complete_bonus! if complete_bonus?
+        return lose_bonus! if lose_bonus?
 
         true
       end
@@ -28,13 +24,17 @@ module EveryMatrix
 
       attr_reader :transaction, :customer_bonus, :play_item
 
+      def bonus?
+        customer_bonus&.active? && customer_bonus&.casino?
+      end
+
       def recalculate_bonus_rollover
         customer_bonus.with_lock do
           customer_bonus.rollover_balance -= rollover_amount
           customer_bonus.save!
         end
 
-        customer_bonus.reload
+        customer_bonus
       end
 
       def rollover_amount
@@ -46,6 +46,8 @@ module EveryMatrix
 
       def complete_bonus!
         ::CustomerBonuses::Complete.call(customer_bonus: customer_bonus)
+
+        true
       end
 
       def lose_bonus!
@@ -53,6 +55,8 @@ module EveryMatrix
           bonus: customer_bonus,
           action: ::CustomerBonuses::Deactivate::LOSE
         )
+
+        true
       end
 
       def complete_bonus?

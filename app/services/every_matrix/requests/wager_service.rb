@@ -39,8 +39,7 @@ module EveryMatrix
       end
 
       def bonus?
-        transaction.customer_bonus&.active? &&
-          transaction.customer_bonus&.casino?
+        customer_bonus&.active? && customer_bonus&.casino?
       end
 
       def valid_request?

@@ -20,7 +20,7 @@ module EveryMatrix
         )
       end
 
-      def call # rubocop:disable Metrics/LineLength, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
+      def call
         return transaction.response if find_transaction
 
         return user_not_found_response unless customer
@@ -33,9 +33,7 @@ module EveryMatrix
 
         return record_response(entry_creation_failed) unless transaction.entry
 
-        if respond_to?(:post_process) && respond_to?(:post_process_failed)
-          return record_response(post_process_failed) unless post_process
-        end
+        return record_response(post_process_failed) unless post_process
 
         record_response(success_response)
       end
@@ -43,7 +41,9 @@ module EveryMatrix
       protected
 
       attr_reader :amount, :transaction
-      delegate :entry_request, to: :transaction
+
+      delegate :entry_request, :customer_bonus,
+               to: :transaction
 
       def find_transaction
         @transaction =
@@ -109,7 +109,7 @@ module EveryMatrix
       end
 
       def balance_amount_after
-        wallet.reload.amount
+        wallet.amount
       end
 
       def response_currency_code
@@ -152,6 +152,16 @@ module EveryMatrix
       end
 
       def placement_service
+        error_msg = "#{__method__} needs to be implemented in #{self.class}"
+
+        raise NotImplementedError, error_msg
+      end
+
+      def post_process
+        true
+      end
+
+      def post_process_failed
         error_msg = "#{__method__} needs to be implemented in #{self.class}"
 
         raise NotImplementedError, error_msg
