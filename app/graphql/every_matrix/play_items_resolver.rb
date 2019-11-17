@@ -2,8 +2,6 @@
 
 module EveryMatrix
   class PlayItemsResolver < ApplicationService
-    ITEMS_LIMIT = 35
-
     def initialize(model:, category_name:, device:, country: '')
       @model = model
       @category_name = category_name
@@ -17,7 +15,6 @@ module EveryMatrix
         .where(condition)
         .reject_country(country)
         .order(:position)
-        .limit(ITEMS_LIMIT)
     end
 
     private

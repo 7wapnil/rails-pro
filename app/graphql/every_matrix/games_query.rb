@@ -2,6 +2,7 @@
 
 module EveryMatrix
   class GamesQuery < ::Base::Resolver
+    include ::Base::Pagination
     include DeviceChecker
 
     type !types[PlayItemType]
