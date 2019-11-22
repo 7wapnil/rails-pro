@@ -70,7 +70,7 @@ module EntryRequests
         end
 
         def log_initiator_activity!
-          entry_requests.each do |request|
+          entry_requests.compact.each do |request|
             initiator.log_event(:entry_request_created, request, customer)
           end
         end
