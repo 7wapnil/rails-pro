@@ -1,7 +1,8 @@
+const ALLOWED_NAME_SYMBOLS_REGEX = /^([a-zA-Z\-\s]{1})$/
+
 document.addEventListener('turbolinks:load', () => {
   function allowOnlyLetters(event) {
-    const inputValue = event.which;
-    if (!(inputValue >= 65 && inputValue <= 120)) {
+    if (!ALLOWED_NAME_SYMBOLS_REGEX.test(event.key)) {
       event.preventDefault();
     }
   }
