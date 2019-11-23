@@ -6,10 +6,12 @@ module CustomerBonuses
 
     field :id, !types.ID
     field :code, !types.String
-    field :rolloverBalance, !types.Float,
-          property: :rollover_balance
-    field :rolloverInitialValue, !types.Float,
-          property: :rollover_initial_value
+    field :rolloverBalance, !types.Float do
+      resolve ->(obj, _args, _ctx) { obj.rollover_balance.to_f }
+    end
+    field :rolloverInitialValue, !types.Float do
+      resolve ->(obj, _args, _ctx) { obj.rollover_initial_value.to_f }
+    end
     field :status, !types.String
     field :maxRolloverPerBet, !types.Float,
           property: :max_rollover_per_bet
