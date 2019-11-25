@@ -16,15 +16,7 @@ module Api
       before_action :authorize_wallet_api
 
       def create
-        Rails.logger.info 'PARAMS:'
-        Rails.logger.info params
-        Rails.logger.info
-
         response_json = request_handler.call(params)
-
-        Rails.logger.info 'RESPONSE'
-        Rails.logger.info response_json
-        Rails.logger.info
 
         render json: response_json
       end
