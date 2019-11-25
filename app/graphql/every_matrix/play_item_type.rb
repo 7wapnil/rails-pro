@@ -13,5 +13,6 @@ module EveryMatrix
     field :shortName, types.String, property: :short_name
     field :logoUrl, types.String, property: :thumbnail_url
     field :backgroundImageUrl, types.String, property: :background_image_url
+    field :slug, types.String
   end
 end
