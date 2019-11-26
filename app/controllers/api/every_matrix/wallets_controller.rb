@@ -18,13 +18,19 @@ module Api
       def create
         response_json = request_handler.call(params)
 
+        log_request(:info, params, response_json)
+
         render json: response_json
       end
 
       private
 
       def request_handler
-        REQUEST_HANDLERS[request_param['Request'].downcase].constantize
+        REQUEST_HANDLERS[request_name].constantize
+      end
+
+      def request_name
+        request_param['Request'].downcase
       end
 
       def authorize_wallet_api
@@ -51,6 +57,14 @@ module Api
           ENV['EVERYMATRIX_WALLET_API_USERNAME'] &&
           login_params['Password'] ==
             ENV['EVERYMATRIX_WALLET_API_PASSWORD']
+      end
+
+      def log_request(level, params, response_json)
+        Rails.logger.send(level,
+                          message: 'EveryMatrix Wallet API request',
+                          request_name: request_name,
+                          params: params,
+                          response: response_json)
       end
     end
   end
