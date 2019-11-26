@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module CustomerBonuses
-  CustomerBonusType = GraphQL::ObjectType.define do
-    name 'CustomerBonus'
+  BonusType = GraphQL::ObjectType.define do
+    name 'Bonus'
 
     field :id, !types.ID
     field :code, !types.String

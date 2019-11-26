@@ -14,6 +14,6 @@ class AgeValidator < ActiveModel::Validator
 
   def store_error_message
     error_message = I18n.t('errors.messages.age_adult')
-    @record.errors[:date_of_birth] << error_message
+    @record.errors.add(:date_of_birth, error_message)
   end
 end

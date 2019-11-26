@@ -1,4 +1,6 @@
-describe GraphQL do
+# frozen_string_literal: true
+
+describe GraphQL, '#signUp' do
   let(:request) do
     OpenStruct.new(remote_ip: Faker::Internet.ip_v4_address)
   end
@@ -11,8 +13,8 @@ describe GraphQL do
   end
 
   let(:query) do
-    %(mutation($input: RegisterInput!, $customerData: CustomerDataInput) {
-        signUp(input: $input, customerData: $customerData) {
+    %(mutation($input: RegisterInput!, $userData: UserDataInput) {
+        signUp(input: $input, userData: $userData) {
           user { id }
           token
         }
@@ -37,18 +39,9 @@ describe GraphQL do
       { input: {
         username: 'test',
         email: 'wrongemail',
-        firstName: 'Test',
-        lastName: 'User',
         dateOfBirth: '01-01-2018',
         password: '123456',
-        passwordConfirmation: '123456',
-        gender: Customer::FEMALE,
         country: 'Canada',
-        city: 'Toronto',
-        state: 'State',
-        zipCode: '123',
-        streetAddress: 'Street Addr',
-        phone: '1232132132',
         agreedWithPromotional: true,
         agreedWithPrivacy: false,
         currency: 'EUR'
@@ -61,7 +54,8 @@ describe GraphQL do
 
     it 'returns collection of validation errors' do
       paths = result['errors'].map { |err| err['path'][0].to_sym }
-      expect(paths).to match_array(%i[signUp agreedWithPrivacy email phone])
+      expect(paths)
+        .to match_array(%i[agreedWithPrivacy email dateOfBirth])
     end
   end
 
@@ -70,18 +64,9 @@ describe GraphQL do
       {
         username: 'test',
         email: 'test@email.com',
-        firstName: 'Test',
-        lastName: 'User',
         dateOfBirth: '01-01-1998',
         password: '123456',
-        passwordConfirmation: '123456',
-        gender: Customer::FEMALE,
         country: 'Canada',
-        city: 'Toronto',
-        state: 'State',
-        zipCode: '123',
-        streetAddress: 'Street Addr',
-        phone: '37258383943',
         agreedWithPromotional: true,
         agreedWithPrivacy: true,
         bTag: 'AFFILIATE_ID',
@@ -121,8 +106,6 @@ describe GraphQL do
         result
         expect(Customer.find_by(email: 'test@email.com'))
           .to have_attributes(username: 'test',
-                              first_name: 'Test',
-                              last_name: 'User',
                               b_tag: 'AFFILIATE_ID')
       end
 
@@ -133,7 +116,7 @@ describe GraphQL do
 
     context 'with fe tracking' do
       let(:variables) do
-        { input: input, customerData: customer_data }
+        { input: input, userData: customer_data }
       end
       let(:customer_data) do
         {
@@ -182,18 +165,9 @@ describe GraphQL do
       { input: {
         username: 'test',
         email: 'test@email.com',
-        firstName: 'Test',
-        lastName: 'User',
         dateOfBirth: '01-01-1998',
         password: '123456',
-        passwordConfirmation: '123456',
-        gender: Customer::FEMALE,
         country: 'Canada',
-        city: 'Toronto',
-        state: 'State',
-        zipCode: '123',
-        streetAddress: 'Street Addr',
-        phone: '37258383943',
         agreedWithPromotional: true,
         agreedWithPrivacy: false,
         bTag: 'AFFILIATE_ID',

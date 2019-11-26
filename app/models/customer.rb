@@ -11,6 +11,9 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_secure_token :email_verification_token
   acts_as_paranoid
 
+  DEPOSIT_INFO_FIELDS = %w[first_name last_name phone].freeze
+  ADDRESS_INFO_FIELDS = %w[country city street_address].freeze
+
   enum gender: {
     male:   MALE   = 'male',
     female: FEMALE = 'female'
@@ -72,7 +75,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   has_one :active_bonus, -> { active }, class_name: CustomerBonus.name
   has_one :pending_bonus, -> { initial }, class_name: CustomerBonus.name
 
-  accepts_nested_attributes_for :address
+  accepts_nested_attributes_for :address, update_only: true
 
   has_one :wallet, -> { order(:created_at) }
   has_one :fiat_wallet,
@@ -98,8 +101,6 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   validate :validate_account_transition
   validates :username,
             :email,
-            :first_name,
-            :last_name,
             :date_of_birth,
             presence: true
 
@@ -107,7 +108,8 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   validates :email, uniqueness: { case_sensitive: false }
   validates :verified, :activated, :locked, inclusion: { in: [true, false] }
 
-  validates :phone, phone: true, on: :create
+  validates :phone, phone: true, allow_blank: true
+
   validates_with AgeValidator
   ransack_alias :ip_address, :last_sign_in_ip_or_current_sign_in_ip
 

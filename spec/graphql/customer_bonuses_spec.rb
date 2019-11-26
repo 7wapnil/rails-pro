@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe GraphQL, '#customerBonuses' do
+describe GraphQL, '#bonuses' do
   let(:auth_customer) { create(:customer) }
   let(:request) do
     OpenStruct.new(remote_ip: Faker::Internet.ip_v4_address)
@@ -34,7 +34,7 @@ describe GraphQL, '#customerBonuses' do
   describe 'query' do
     let(:query) do
       %({
-        customerBonuses {
+        bonuses {
           id
           code
           rolloverBalance
@@ -61,7 +61,7 @@ describe GraphQL, '#customerBonuses' do
     end
 
     it 'returns control expired customer bonus info' do
-      expect(result['data']['customerBonuses'].last)
+      expect(result['data']['bonuses'].last)
         .to include(
           'id' => control_expired_customer_bonus.id.to_s,
           'code' => control_expired_customer_bonus.code,
@@ -76,7 +76,7 @@ describe GraphQL, '#customerBonuses' do
     end
 
     it 'returns control cancelled customer bonus info' do
-      expect(result['data']['customerBonuses'][-2])
+      expect(result['data']['bonuses'][-2])
         .to include(
           'id' => control_cancelled_customer_bonus.id.to_s,
           'code' => control_cancelled_customer_bonus.code,
@@ -93,7 +93,7 @@ describe GraphQL, '#customerBonuses' do
     end
 
     it 'returns control customer bonus info' do
-      expect(result['data']['customerBonuses'].first)
+      expect(result['data']['bonuses'].first)
         .to include(
           'id' => control_customer_bonus.id.to_s,
           'code' => control_customer_bonus.code,
@@ -108,7 +108,7 @@ describe GraphQL, '#customerBonuses' do
     end
 
     it 'returns list of customer bonuses' do
-      expect(result['data']['customerBonuses'].count).to eq(control_count)
+      expect(result['data']['bonuses'].count).to eq(control_count)
     end
   end
 end

@@ -40,13 +40,15 @@ GraphQL::Errors.configure(ArcanebetSchema) do
   end
 
   rescue_from ActiveModel::ValidationError do |exception, _obj, _args, ctx|
-    exception.model.errors.details.keys.map do |attribute|
+    exception.model.errors.details.keys.each do |attribute|
       error = GraphQL::ExecutionError.new(
         exception.model.errors.full_messages_for(attribute).first
       )
       error.path = [camelize_symbol(attribute)]
       ctx.add_error(error)
     end
+
+    nil
   end
 
   rescue_from StandardError do |exception|

@@ -14,31 +14,31 @@ describe AgeValidator do
 
     it 'adds error message when age is less than 18' do
       record = instance_double('record',
-                               errors: errors_messages,
+                               errors: ActiveModel::Errors.new(record),
                                date_of_birth: adult_age.year.ago + 1.day)
 
       described_class.new.validate(record)
-      expect(errors_messages[:date_of_birth]).to include(message)
+      expect(record.errors[:date_of_birth]).to include(message)
     end
 
     it "doesn't add error message when age is greater than adult age" do
       record = instance_double('record',
-                               errors: errors_messages,
+                               errors: ActiveModel::Errors.new(record),
                                date_of_birth: adult_age.year.ago - 1.day)
 
       described_class.new.validate(record)
 
-      expect(errors_messages[:date_of_birth]).not_to include(message)
+      expect(record.errors[:date_of_birth]).not_to include(message)
     end
 
     it "doesn't add error message when age is equals adult age" do
       record = instance_double('record',
-                               errors: errors_messages,
+                               errors: ActiveModel::Errors.new(record),
                                date_of_birth: adult_age.years.ago)
 
       described_class.new.validate(record)
 
-      expect(errors_messages[:date_of_birth]).not_to include(message)
+      expect(record.errors[:date_of_birth]).not_to include(message)
     end
   end
 end

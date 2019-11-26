@@ -1,6 +1,8 @@
+# frozen_string_literal: true
+
 module Account
-  CustomerDataInput = GraphQL::InputObjectType.define do
-    name 'CustomerDataInput'
+  UserDataInput = GraphQL::InputObjectType.define do
+    name 'UserDataInput'
 
     argument :trafficTypeLast, types.String
     argument :utmSourceLast, types.String

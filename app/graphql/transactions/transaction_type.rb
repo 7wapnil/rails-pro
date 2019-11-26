@@ -1,9 +1,10 @@
+# frozen_string_literal: true
+
 module Transactions
   TransactionType = GraphQL::ObjectType.define do
     name 'Transactions'
 
     field :id, !types.ID
-    field :customerId, types.ID, property: :customer_id
     field :status, types.String,
           resolve: ->(obj, _args, _ctx) do
             return obj.status if obj.refund?

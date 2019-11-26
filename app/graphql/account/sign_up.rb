@@ -1,9 +1,9 @@
+# frozen_string_literal: true
+
 module Account
   class SignUp < ::Base::Resolver
     argument :input, !Account::RegisterInput
-    argument :customerData,
-             Account::CustomerDataInput,
-             default_value: nil
+    argument :userData, Account::UserDataInput, default_value: nil
 
     type Account::AccountType
 
@@ -17,21 +17,21 @@ module Account
 
       @customer = ::Customers::RegistrationService.call(input.to_h, @request)
       save_customer_data(args)
-      token = JwtService.encode(id: customer.id,
-                                username: customer.username,
-                                email: customer.email,
-                                exp: ENV.fetch('TOKEN_EXPIRATION', 30).to_f
-                                       .days.from_now.to_i)
-      OpenStruct.new(user: customer,
-                     token: token)
+      token = JwtService.encode(
+        id: customer.id,
+        username: customer.username,
+        email: customer.email,
+        exp: ENV.fetch('TOKEN_EXPIRATION', 30).to_f.days.from_now.to_i
+      )
+      OpenStruct.new(user: customer, token: token)
     end
-
-    attr_reader :customer
 
     private
 
+    attr_reader :customer
+
     def save_customer_data(args)
-      customer_data_attrs = args['customerData']&.to_h
+      customer_data_attrs = args['userData']&.to_h
       return if customer_data_attrs.blank?
 
       customer_data = customer_data_attrs.transform_keys! do |key|

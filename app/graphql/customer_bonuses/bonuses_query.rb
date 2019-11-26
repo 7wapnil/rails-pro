@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module CustomerBonuses
-  class CustomerBonusesQuery < ::Base::Resolver
-    type types[CustomerBonuses::CustomerBonusType]
+  class BonusesQuery < ::Base::Resolver
+    type types[CustomerBonuses::BonusType]
     decorate_with CustomerBonusDecorator
     mark_as_trackable
 

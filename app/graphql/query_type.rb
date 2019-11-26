@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 QueryType = GraphQL::ObjectType.define do
   name 'Query'
 
@@ -18,7 +20,7 @@ QueryType = GraphQL::ObjectType.define do
         function: Account::VerifyPasswordToken::Resolver.new
   field :bets, function: Betting::BetsQuery.new
   field :transactions, function: Transactions::TransactionsQuery.new
-  field :customerBonuses, function: CustomerBonuses::CustomerBonusesQuery.new
+  field :bonuses, function: CustomerBonuses::BonusesQuery.new
   field :depositMethods, function: ::Payments::Deposits::PaymentMethodsQuery.new
   field :validateComboBets, function: ::Betting::ValidateComboBetsQuery.new
 

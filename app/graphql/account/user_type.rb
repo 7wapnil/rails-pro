@@ -10,9 +10,9 @@ module Account
           property: :date_of_birth
     field :phone, types.String
     field :gender, types.String
-    field :firstName, !types.String,
+    field :firstName, types.String,
           property: :first_name
-    field :lastName, !types.String,
+    field :lastName, types.String,
           property: :last_name
     field :agreedWithPromotional, !types.Boolean,
           property: :agreed_with_promotional
@@ -34,5 +34,11 @@ module Account
           types[::Payments::Withdrawals::PaymentMethodType],
           property: :available_withdrawal_methods
     field :wallets, types[::Wallets::WalletType]
+    field :needMoreInfo, types.Boolean do
+      resolve ->(obj, _args, _ctx) do
+        Customer::ADDRESS_INFO_FIELDS.any? { |attr| obj.address[attr].nil? } ||
+          Customer::DEPOSIT_INFO_FIELDS.any? { |attr| obj[attr].nil? }
+      end
+    end
   end
 end

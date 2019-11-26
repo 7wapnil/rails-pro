@@ -1,15 +1,6 @@
 # frozen_string_literal: true
 
 module Deposits
-  class CalculatedBonus
-    attr_reader :real_money, :bonus
-
-    def initialize(args)
-      @real_money = args[:real_money_amount]
-      @bonus = args[:bonus_amount]
-    end
-  end
-
   class DepositBonusQuery < ::Base::Resolver
     type DepositBonus
     mark_as_trackable
@@ -33,7 +24,7 @@ module Deposits
         currency,
         bonus
       )
-      CalculatedBonus.new(bonus_hash)
+      Deposits::CalculatedBonus.new(bonus_hash)
     end
 
     private
