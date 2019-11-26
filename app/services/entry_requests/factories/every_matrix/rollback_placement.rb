@@ -7,7 +7,7 @@ module EntryRequests
         protected
 
         def entry_request_kind
-          EntryRequest::EM_ROLLBACK
+          EntryRequest::EVERY_MATRIX_ROLLBACK
         end
 
         def balance_calculations_service

@@ -14,14 +14,17 @@ module EntryKinds
     manual_bet_cancel: MANUAL_BET_CANCEL = 'manual_bet_cancel',
     bonus_conversion: BONUS_CONVERSION = 'bonus_conversion',
     bonus_change: BONUS_CHANGE = 'bonus_change',
-    em_wager: EM_WAGER = 'em_wager',
-    em_result: EM_RESULT = 'em_result',
-    em_rollback: EM_ROLLBACK = 'em_rollback'
+    em_wager: EVERY_MATRIX_WAGER = 'em_wager',
+    em_result: EVERY_MATRIX_RESULT = 'em_result',
+    em_rollback: EVERY_MATRIX_ROLLBACK = 'em_rollback'
   }.freeze
 
   INCOME_ENTRY_KINDS = [DEPOSIT, BONUS_CHANGE].freeze
   FUND_KINDS = [DEPOSIT, WITHDRAW].freeze
-  TRADING_KINDS = [WIN, BET, REFUND, EM_WAGER, EM_RESULT, EM_ROLLBACK].freeze
+  TRADING_KINDS = [WIN, BET, REFUND,
+                   EVERY_MATRIX_WAGER,
+                   EVERY_MATRIX_RESULT,
+                   EVERY_MATRIX_ROLLBACK].freeze
   DEBIT_KINDS = [
     DEPOSIT,
     WIN,
@@ -31,8 +34,8 @@ module EntryKinds
     MANUAL_BET_CANCEL,
     BONUS_CONVERSION,
     BONUS_CHANGE,
-    EM_RESULT,
-    EM_ROLLBACK
+    EVERY_MATRIX_RESULT,
+    EVERY_MATRIX_ROLLBACK
   ].freeze
   CREDIT_KINDS = [
     WITHDRAW,
@@ -41,7 +44,7 @@ module EntryKinds
     SYSTEM_BET_CANCEL,
     MANUAL_BET_CANCEL,
     BONUS_CHANGE,
-    EM_WAGER
+    EVERY_MATRIX_WAGER
   ].freeze
   DELAYED_CONFIRMATION_KINDS = [WITHDRAW, BET].freeze
   ALLOWED_NEGATIVE_BALANCE_KINDS = [

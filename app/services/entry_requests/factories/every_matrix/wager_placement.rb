@@ -7,7 +7,7 @@ module EntryRequests
         protected
 
         def entry_request_kind
-          EntryRequest::EM_WAGER
+          EntryRequest::EVERY_MATRIX_WAGER
         end
 
         def balance_calculations_service
