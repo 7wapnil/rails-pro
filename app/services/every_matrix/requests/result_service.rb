@@ -16,6 +16,13 @@ module EveryMatrix
       def placement_service
         EntryRequests::Factories::EveryMatrix::ResultPlacement
       end
+
+      def entry_creation_failed
+        common_response.merge(
+          'ReturnCode' => 112,
+          'Message'    => transaction.entry_request.result['message']
+        )
+      end
     end
   end
 end
