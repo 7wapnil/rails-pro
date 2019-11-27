@@ -27,6 +27,10 @@
             bets_customer_path(customer),
             class: 'list-group-item list-group-item-action',
             'data-target-action': 'customers#bets'
+  = link_to t('navigation.customer.casino_transactions'),
+            customer_every_matrix_transactions_path(customer),
+            class: 'list-group-item list-group-item-action',
+            'data-target-action': 'every_matrix_transactions#index'
   = link_to t('navigation.customer.betting_limits'),
             betting_limits_customer_path(customer),
             class: 'list-group-item list-group-item-action',

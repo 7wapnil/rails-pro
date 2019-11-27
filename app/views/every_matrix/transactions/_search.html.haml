@@ -1,0 +1,75 @@
+- content_for :css do
+  = stylesheet_pack_tag 'flatpickr', media: :all,
+                        'data-turbolinks-track': 'reload'
+
+- content_for :js do
+  = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
+
+= search_form_for filter.search, url: search_path, as: :transactions do |f|
+  %table.table
+    %thead
+      %tr
+        %th
+          .filter_title
+            #{t('attributes.transaction_id')}:
+          .filter_field
+            = f.label :id_eq, class: 'sr-only'
+            = f.search_field :id_eq,
+                              class: 'form-control',
+                              placeholder: t('attributes.transaction_id'),
+                              autocomplete: :off
+        - unless local_assigns[:excluded_columns]&.include?(:customer)
+          %th
+            .filter_title
+              #{t('attributes.customer')}:
+            .filter_field
+              = f.label :customer_username_cont, class: 'sr-only'
+              = f.search_field :customer_username_cont,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: t('attributes.customer')),
+                              autocomplete: :off
+        %th
+          .filter_title
+            #{t(:search, subject: t('from'))}:
+          .filter_field
+            = f.label :created_at_gteq, class: 'sr-only'
+            .input-group
+              = f.search_field :created_at_gteq,
+                                class: 'form-control form_date',
+                                placeholder: t(:search, subject: t('from')),
+                                value: search_date_for(:created_at_gteq, :transactions)
+              .input-group-append
+                .input-group-text.btn &#128197;
+        %th
+          .filter_title
+            #{t(:search, subject: t('to'))}:
+          .filter_field
+            = f.label :created_at_lteq, class: 'sr-only'
+            .input-group
+              = f.search_field :created_at_lteq,
+                                class: 'form-control form_date',
+                                placeholder: t(:search, subject: t('to')),
+                                value: search_date_for(:created_at_lteq, :transactions)
+              .input-group-append
+                .input-group-text.btn &#128197;
+      %tr
+        %th
+          .filter_title
+            #{t('attributes.em_transaction_id')}:
+          .filter_field
+            = f.label :round_id_eq, class: 'sr-only'
+            = f.search_field :round_id_eq,
+                              class: 'form-control',
+                              placeholder: t('attributes.em_transaction_id'),
+                              autocomplete: :off
+        %th
+          .filter_title
+            #{t('attributes.transaction_type')}:
+          .filter_field
+            = f.label :type, class: 'sr-only'
+            = f.select :type_eq,
+                       EveryMatrix::Transaction::TYPES,
+                       { include_blank: true },
+                       class: 'form-control'
+        %th
+          = f.submit class: 'btn btn-outline-dark btn-block'

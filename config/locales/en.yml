@@ -92,6 +92,16 @@ en:
         last_updated_at: Last calculated at
 
   attributes:
+    transaction_id: Transaction ID
+    transaction_type: Transaction Type
+    em_transaction_id: EM Transaction ID
+    transaction_type: Type
+    transaction_amount_before: Amount before
+    transaction_amount_after: Amount after
+    game_name: Game name
+    vendor: Vendor
+    content_provider: Content Provider
+
     account_information: Account information
     account_lock: Account lock
     account_kind: Account type
@@ -218,6 +228,7 @@ en:
     street_address: Street address
     text: Text
     tournament: Tournament
+    transactions_spin: Transactions
     twitch_end_time: Twitch end time
     twitch_start_time: Twitch start time
     twitch_url: Twitch URL
@@ -633,6 +644,7 @@ en:
       account_management: Account management
       activity: Activity
       bets: Bets
+      casino_transactions: Casino Spins
       betting_limits: Betting Limits
       bonuses: Bonuses
       deposit_limit: Deposit Limit

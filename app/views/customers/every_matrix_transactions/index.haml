@@ -1,0 +1,15 @@
+- content_for :page_content do
+  = render 'every_matrix/transactions/search',
+           excluded_columns: EveryMatrix::TransactionsFilter::EXCLUDED_COLUMNS[:customers],
+           search_path: customer_every_matrix_transactions_path(@customer),
+           filter: @filter
+  = render 'every_matrix/transactions/table',
+           excluded_columns: EveryMatrix::TransactionsFilter::EXCLUDED_COLUMNS[:customers],
+           filter: @filter
+  = paginate @filter.transactions
+
+- content_for :js do
+  = javascript_pack_tag 'customers/navigation_links'
+
+= render 'customers/base_template', customer: @customer, note: nil,
+  customer_notes_widget: nil

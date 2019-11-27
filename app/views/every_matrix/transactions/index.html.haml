@@ -1,0 +1,12 @@
+%h1.display-4
+  = t('attributes.transactions_spin')
+
+= render 'search',
+          filter: @filter,
+          search_path: every_matrix_transactions_path,
+          excluded_columns: []
+= render 'table',
+          filter: @filter,
+          excluded_columns: []
+
+= paginate @filter.transactions

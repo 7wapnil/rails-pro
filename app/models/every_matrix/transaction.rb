@@ -2,6 +2,15 @@
 
 module EveryMatrix
   class Transaction < ApplicationRecord
+    TYPES = {
+      Wager: WAGER = 'EveryMatrix::Wager',
+      Result: RESULT = 'EveryMatrix::Result',
+      Rollback: ROLLBACK = 'EveryMatrix::Rollback'
+    }.freeze
+
+    DEBIT_TYPES = [WAGER].freeze
+    CREDIT_TYPES = [RESULT, ROLLBACK].freeze
+
     self.table_name = 'em_transactions'
 
     belongs_to :em_wallet_session, class_name: 'EveryMatrix::WalletSession'

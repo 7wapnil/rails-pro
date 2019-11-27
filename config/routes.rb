@@ -58,6 +58,7 @@ Rails.application.routes.draw do
     resource :statistics, only: :show, path: 'stats'
     resources :entry_requests, only: :create
     resources :bets, only: :update
+    resources :every_matrix_transactions, only: :index
   end
 
   resources :customer_bonuses, only: %i[create show destroy]
@@ -112,6 +113,7 @@ Rails.application.routes.draw do
 
   namespace :every_matrix do
     resources :categories, only: %i[index edit update]
+    resources :transactions, only: %i[index show]
   end
 
   namespace :webhooks do
