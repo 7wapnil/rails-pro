@@ -2,13 +2,14 @@
 
 module Database
   class Depersonalize < ApplicationService
+    TIMESTAMP = "REPLACE(EXTRACT(EPOCH FROM created_at)::VARCHAR, '.', '')"
     UPDATE_QUERIES =
       [
         "UPDATE customers SET
-              email = 'user' || id || '@email.com',
-              first_name = 'first name',
-              last_name = 'last name',
-              username = 'user' || id,
+              email = 'user' || '-' || id || '-' || #{TIMESTAMP} || '@mail.com',
+              first_name = 'User',
+              last_name = 'ID #' || id,
+              username = 'user' || '-' || id || '-' || #{TIMESTAMP},
               current_sign_in_ip = null,
               last_sign_in_ip = null,
               sign_up_ip = null,
