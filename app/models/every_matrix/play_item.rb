@@ -13,6 +13,14 @@ module EveryMatrix
              through: :play_item_categories,
              foreign_key: :every_matrix_play_item_external_id
 
+    has_many :recommended_game_relationships,
+             class_name: EveryMatrix::RecommendedGamesRelationship.name,
+             foreign_key: :original_game_id
+    has_many :recommended_games,
+             through: :recommended_game_relationships,
+             foreign_key: :recommended_game_id,
+             class_name: EveryMatrix::PlayItem.name
+
     def self.reject_country(country)
       return all if country.blank?
 

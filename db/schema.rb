@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_04_111507) do
+ActiveRecord::Schema.define(version: 2019_11_13_142103) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -68,8 +68,8 @@ ActiveRecord::Schema.define(version: 2019_11_04_111507) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.datetime "validation_ticket_sent_at"
     t.string "settlement_status"
+    t.datetime "validation_ticket_sent_at"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"
@@ -557,9 +557,19 @@ ActiveRecord::Schema.define(version: 2019_11_04_111507) do
     t.bigint "every_matrix_vendor_id"
     t.bigint "every_matrix_content_provider_id"
     t.integer "position"
+    t.datetime "last_updated_recommended_games_at"
     t.index ["every_matrix_content_provider_id"], name: "index_play_items_on_content_providers_id"
     t.index ["every_matrix_vendor_id"], name: "index_play_items_on_vendors_id"
     t.index ["type"], name: "index_every_matrix_play_items_on_type"
+  end
+
+  create_table "every_matrix_recommended_games_relationships", force: :cascade do |t|
+    t.string "original_game_id"
+    t.string "recommended_game_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["original_game_id"], name: "index_original_game_on_play_item"
+    t.index ["recommended_game_id"], name: "index_recommended_game_on_play_item"
   end
 
   create_table "every_matrix_table_details", force: :cascade do |t|
@@ -798,6 +808,8 @@ ActiveRecord::Schema.define(version: 2019_11_04_111507) do
   add_foreign_key "every_matrix_play_item_categories", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
   add_foreign_key "every_matrix_play_items", "every_matrix_content_providers"
   add_foreign_key "every_matrix_play_items", "every_matrix_vendors"
+  add_foreign_key "every_matrix_recommended_games_relationships", "every_matrix_play_items", column: "original_game_id", primary_key: "external_id"
+  add_foreign_key "every_matrix_recommended_games_relationships", "every_matrix_play_items", column: "recommended_game_id", primary_key: "external_id"
   add_foreign_key "every_matrix_table_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
   add_foreign_key "label_joins", "labels"
   add_foreign_key "markets", "events", on_delete: :cascade
