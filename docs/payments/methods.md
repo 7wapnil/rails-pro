@@ -62,11 +62,30 @@
 }
 ```
 
-## Paysafecard
+## paysafecard
 
 **Deposit:** `true`
 
 **Withdraw:** `false`
+
+## iDebit
+
+**Deposit:** `true`
+
+**Withdraw:** `true`
+
+```
+{
+    description: 'iDebit option name',
+    code: :name,
+    type: :string
+},
+{
+    description: 'iDebit option id',
+    code: :user_payment_option_id,
+    type: :string
+}
+```
 
 ## Bitcoin
 

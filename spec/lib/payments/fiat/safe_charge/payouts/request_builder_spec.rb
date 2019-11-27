@@ -6,10 +6,11 @@ describe Payments::Fiat::SafeCharge::Payouts::RequestBuilder do
 
   subject { described_class.call(transaction: transaction) }
 
+  let(:payment_method) { Payments::Methods::NETELLER }
   let(:transaction) do
     ::Payments::Transactions::Payout.new(
       id: entry_request.id,
-      method: Payments::Methods::NETELLER,
+      method: payment_method,
       withdrawal: create(:withdrawal),
       details: { 'user_payment_option_id' => payment_option_id },
       customer: entry_request.customer,
@@ -57,5 +58,13 @@ describe Payments::Fiat::SafeCharge::Payouts::RequestBuilder do
       timeStamp: timestamp,
       checksum: Digest::SHA256.hexdigest(checksum_string)
     )
+  end
+
+  context 'when iDebit payout' do
+    let(:payment_method) { ::Payments::Methods::IDEBIT }
+
+    it 'extended userTokenId appended' do
+      expect(subject[:userTokenId]).to eq("000#{customer.id}")
+    end
   end
 end

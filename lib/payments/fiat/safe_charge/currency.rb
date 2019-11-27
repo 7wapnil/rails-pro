@@ -83,6 +83,9 @@ module Payments
             SEK
             USD
           ].freeze,
+          ::Payments::Fiat::SafeCharge::Methods::APMGW_IDEBIT => %w[
+            CAD USD
+          ].freeze,
           ::Payments::Fiat::SafeCharge::Methods::APMGW_SOFORT => %w[
             EUR GBP
           ].freeze,

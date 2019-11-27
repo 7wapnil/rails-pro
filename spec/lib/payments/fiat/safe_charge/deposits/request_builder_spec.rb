@@ -5,10 +5,11 @@ describe ::Payments::Fiat::SafeCharge::Deposits::RequestBuilder do
 
   subject { described_class.call(transaction) }
 
+  let(:payment_method) { Payments::Methods::CREDIT_CARD }
   let(:transaction) do
     ::Payments::Transactions::Deposit.new(
       id: entry_request.id,
-      method: Payments::Methods::CREDIT_CARD,
+      method: payment_method,
       customer: entry_request.customer,
       currency_code: entry_request.currency.code,
       amount: entry_request.amount
@@ -59,6 +60,14 @@ describe ::Payments::Fiat::SafeCharge::Deposits::RequestBuilder do
           userTokenId: customer.id,
           amount: amount
         )
+    end
+
+    context 'when iDebit deposit' do
+      let(:payment_method) { ::Payments::Methods::IDEBIT }
+
+      it 'extended userTokenId appended' do
+        expect(subject[:userTokenId]).to eq("000#{customer.id}")
+      end
     end
   end
 

@@ -6,6 +6,7 @@ module Payments
     NETELLER = 'neteller'
     SKRILL = 'skrill'
     PAYSAFECARD = 'paysafecard'
+    IDEBIT = 'idebit'
     SOFORT = 'sofort'
     IDEAL = 'ideal'
     WEBMONEY = 'webmoney'
@@ -32,6 +33,11 @@ module Payments
       PAYSAFECARD => {
         provider: ::Payments::Fiat::SafeCharge::Provider,
         name: ::Payments::Fiat::SafeCharge::Methods::APMGW_PAYSAFECARD,
+        currency_kind: ::Currency::FIAT
+      },
+      IDEBIT => {
+        provider: ::Payments::Fiat::SafeCharge::Provider,
+        name: ::Payments::Fiat::SafeCharge::Methods::APMGW_IDEBIT,
         currency_kind: ::Currency::FIAT
       },
       SOFORT => {
@@ -68,11 +74,12 @@ module Payments
     }.freeze
 
     ALTERNATIVE_PAYMENT_METHODS = [
-      SKRILL, NETELLER, PAYSAFECARD, SOFORT, IDEAL, WEBMONEY, YANDEX, QIWI
+      SKRILL, NETELLER, PAYSAFECARD, IDEBIT, SOFORT, IDEAL,
+      WEBMONEY, YANDEX, QIWI
     ].freeze
 
     CHOSEN_PAYMENT_METHODS = [
-      CREDIT_CARD, SKRILL, NETELLER
+      CREDIT_CARD, SKRILL, NETELLER, IDEBIT
     ].freeze
     ENTERED_PAYMENT_METHODS = [BITCOIN].freeze
 

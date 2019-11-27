@@ -31,7 +31,7 @@ module Payments
             {
               merchantId: ENV['SAFECHARGE_MERCHANT_ID'],
               merchantSiteId: ENV['SAFECHARGE_MERCHANT_SITE_ID'],
-              userTokenId: customer.id,
+              userTokenId: user_token_id,
               clientUniqueId: customer.id,
               clientRequestId: transaction.id,
               currency: currency_code,
@@ -51,6 +51,10 @@ module Payments
           private
 
           attr_reader :transaction
+
+          def user_token_id
+            transaction.method == IDEBIT ? "000#{customer.id}" : customer.id
+          end
 
           def amount_details
             {

@@ -3,6 +3,7 @@
 class EntryRequest < ApplicationRecord
   include EntryKinds
   include Loggable
+  include ::Payments::Methods
 
   belongs_to :customer
   belongs_to :currency
@@ -27,16 +28,17 @@ class EntryRequest < ApplicationRecord
     internal: INTERNAL = 'internal',
     safecharge_unknown: SAFECHARGE_UNKNOWN = 'safecharge_unknown',
     simulated: SIMULATED = 'simulated',
-    credit_card: CREDIT_CARD = 'credit_card',
-    skrill: SKRILL = 'skrill',
-    neteller: NETELLER = 'neteller',
-    paysafecard: PAYSAFECARD = 'paysafecard',
-    sofort: SOFORT = 'sofort',
-    ideal: IDEAL = 'ideal',
-    bitcoin: BITCOIN = 'bitcoin',
-    webmoney: WEBMONEY = 'webmoney',
-    yandex: YANDEX = 'yandex',
-    qiwi: QIWI = 'qiwi'
+    credit_card: CREDIT_CARD,
+    skrill: SKRILL,
+    neteller: NETELLER,
+    idebit: IDEBIT,
+    paysafecard: PAYSAFECARD,
+    sofort: SOFORT,
+    ideal: IDEAL,
+    bitcoin: BITCOIN,
+    webmoney: WEBMONEY,
+    yandex: YANDEX,
+    qiwi: QIWI
   }
 
   validates :amount,

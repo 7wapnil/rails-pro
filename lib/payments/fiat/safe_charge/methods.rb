@@ -10,6 +10,7 @@ module Payments
         APMGW_PAYSAFECARD = 'apmgw_PaySafeCard'
         APMGW_SOFORT = 'apmgw_Sofort'
         APMGW_IDEAL = 'apmgw_iDeal'
+        APMGW_IDEBIT = 'apmgw_iDebit'
         APMGW_WEBMONEY = 'apmgw_WebMoney'
         APMGW_YANDEXMONEY = 'apmgw_YANDEXMONEY'
         APMGW_QIWI = 'apmgw_QIWI'
@@ -19,6 +20,7 @@ module Payments
           APMGW_MONEYBOOKERS => ::Payments::Methods::SKRILL,
           APMGW_NETELLER => ::Payments::Methods::NETELLER,
           APMGW_PAYSAFECARD => ::Payments::Methods::PAYSAFECARD,
+          APMGW_IDEBIT => ::Payments::Methods::IDEBIT,
           APMGW_SOFORT => ::Payments::Methods::SOFORT,
           APMGW_IDEAL => ::Payments::Methods::IDEAL,
           APMGW_WEBMONEY => ::Payments::Methods::WEBMONEY,
@@ -29,7 +31,8 @@ module Payments
         NAME_IDENTIFIERS_MAP = {
           ::Payments::Methods::CREDIT_CARD => 'ccCardNumber',
           ::Payments::Methods::SKRILL => 'account_id',
-          ::Payments::Methods::NETELLER => 'nettelerAccount'
+          ::Payments::Methods::NETELLER => 'nettelerAccount',
+          ::Payments::Methods::IDEBIT => 'iDebit_account_id'
         }.freeze
       end
     end

@@ -31,7 +31,7 @@ module Payments
             {
               merchantId: ENV['SAFECHARGE_MERCHANT_ID'],
               merchantSiteId: ENV['SAFECHARGE_MERCHANT_SITE_ID'],
-              userTokenId: customer.id,
+              userTokenId: user_token_id,
               userPMId: transaction.details['user_payment_option_id'],
               amount: transaction.amount.abs,
               currency: currency_code,
@@ -41,9 +41,14 @@ module Payments
             }
           end
 
+          def user_token_id
+            transaction.method == IDEBIT ? "000#{customer.id}" : customer.id
+          end
+
           def payment_option
-            { userPaymentOptionId:
-                transaction.details['user_payment_option_id'] }
+            {
+              userPaymentOptionId: transaction.details['user_payment_option_id']
+            }
           end
 
           def comment

@@ -20,11 +20,11 @@ describe GraphQL, '#payment_methods' do
   let(:sample_payment_method) { result['data']['depositMethods'].sample }
   let(:payment_method_code) { sample_payment_method['code'] }
   let(:payment_method_name) do
-    I18n.t("payments.deposit.payment_methods.#{payment_method_code}.title",
+    I18n.t("payments.deposits.payment_methods.#{payment_method_code}.title",
            default: payment_method_code.humanize)
   end
   let(:payment_method_note) do
-    I18n.t("payments.deposit.payment_methods.#{payment_method_code}.note",
+    I18n.t("payments.deposits.payment_methods.#{payment_method_code}.note",
            default: nil)
   end
 

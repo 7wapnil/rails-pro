@@ -1,4 +1,4 @@
-## Payment method fields
+## Payment method fields <sub><sup>(only for withdrawal payment methods)</sup></sub>
 
 ```
 ## PaymentMethodBitcoin
@@ -25,6 +25,13 @@ name: String!
 userPaymentOptionId: String!
 
 ## PaymentMethodSkrill
+
+id: ID!
+title: String!
+name: String!
+userPaymentOptionId: String!
+
+## PaymentMethodIdebit
 
 id: ID!
 title: String!

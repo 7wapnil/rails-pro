@@ -11,6 +11,8 @@ module Customers
     end
 
     def call
+      return unless customer
+
       customer.update(last_activity_at: Time.zone.now, **new_visit_attributes)
     end
 

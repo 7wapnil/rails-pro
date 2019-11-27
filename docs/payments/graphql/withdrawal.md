@@ -24,6 +24,7 @@ Types definition:
 - neteller, 'Neteller'
 - skrill, 'Skrill'
 - bitcoin, 'Bitcoin'
+- idebit, 'iDebit'
 
 # PaymentMethodDetail
 

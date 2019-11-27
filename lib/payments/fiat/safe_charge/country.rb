@@ -106,6 +106,7 @@ module Payments
             SA SE SI SK
             UY
           ].freeze,
+          ::Payments::Fiat::SafeCharge::Methods::APMGW_IDEBIT => %w[CA].freeze,
           ::Payments::Fiat::SafeCharge::Methods::APMGW_SOFORT => %w[
             AT BE CH DE ES FR GB IT NL PL SK
           ].freeze,

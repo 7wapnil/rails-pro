@@ -65,6 +65,8 @@ module Payments
             Payments::Withdrawals::Customers::Methods::NetellerForm
           when SKRILL
             Payments::Withdrawals::Customers::Methods::SkrillForm
+          when IDEBIT
+            Payments::Withdrawals::Customers::Methods::IdebitForm
           when BITCOIN
             Payments::Withdrawals::Customers::Methods::BitcoinForm
           end

@@ -7,13 +7,13 @@ module Payments
 
       field :name, !types.String,
             resolve: ->(obj, _args, _ctx) do
-              I18n.t("payments.deposit.payment_methods.#{obj}.title",
+              I18n.t("payments.deposits.payment_methods.#{obj}.title",
                      default: obj.humanize)
             end
 
       field :note, types.String,
             resolve: ->(obj, _args, _ctx) do
-              I18n.t("payments.deposit.payment_methods.#{obj}.note",
+              I18n.t("payments.deposits.payment_methods.#{obj}.note",
                      default: nil)
             end
 

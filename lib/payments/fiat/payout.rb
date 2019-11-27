@@ -8,7 +8,8 @@ module Payments
       PAYMENT_METHODS = [
         ::Payments::Methods::CREDIT_CARD,
         ::Payments::Methods::NETELLER,
-        ::Payments::Methods::SKRILL
+        ::Payments::Methods::SKRILL,
+        ::Payments::Methods::IDEBIT
       ].freeze
 
       def execute_operation

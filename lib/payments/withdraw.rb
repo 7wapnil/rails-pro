@@ -5,10 +5,8 @@ module Payments
     include Methods
 
     PAYMENT_METHODS = [
-      ::Payments::Methods::CREDIT_CARD,
-      ::Payments::Methods::NETELLER,
-      ::Payments::Methods::SKRILL,
-      ::Payments::Methods::BITCOIN
+      *::Payments::Fiat::Payout::PAYMENT_METHODS,
+      *::Payments::Crypto::Payout::PAYMENT_METHODS
     ].freeze
 
     delegate :customer, to: :transaction

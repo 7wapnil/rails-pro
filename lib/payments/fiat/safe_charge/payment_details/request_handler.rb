@@ -73,7 +73,7 @@ module Payments
           end
 
           def options_params
-            RequestBuilder.call(customer: entry_request.customer)
+            RequestBuilder.call(entry_request: entry_request)
           end
 
           def payload_option_id_equal?(payload)

@@ -491,6 +491,8 @@ en:
             inconsistent: Last four credit card digits should be the same as were used for deposit
           skrill:
             inconsistent: Skrill payment option should be the same as was used for deposit
+          idebit:
+            inconsistent: iDebit payment option should be the same as was used for deposit
           neteller:
             inconsistent: Neteller payment option should be the same as was used for deposit
 
@@ -572,6 +574,7 @@ en:
       skrill: Skrill
       neteller: Neteller
       paysafecard: PaySafeCard
+      idebit: iDebit
       sofort: Sofort
       ideal: iDeal
       bitcoin: Bitcoin
@@ -701,6 +704,9 @@ en:
         neteller:
           title: Neteller
           range: 'Range: %{min_amount} - %{max_amount} %{code}'
+        idebit:
+          title: iDebit
+          range: 'Range: %{min_amount} - %{max_amount} %{code}'
         bitcoin:
           title: Bitcoin
           range: 'Range: %{min_amount} - %{max_amount} %{code}'
@@ -718,6 +724,11 @@ en:
 
         errors:
           unknown_status: "Unknown status received: '%{status}'"
+      payment_methods:
+        paysafecard:
+          title: paysafecard
+        idebit:
+          title: iDebit
 
   webhooks:
     safe_charge:

@@ -7,8 +7,10 @@ module Payments
         class RequestBuilder < ApplicationService
           TIMESTAMP_FORMAT = '%Y%m%d%H%M%S'
 
-          def initialize(customer:)
-            @customer = customer
+          delegate :customer, to: :entry_request
+
+          def initialize(entry_request:)
+            @entry_request = entry_request
           end
 
           def call
@@ -17,16 +19,20 @@ module Payments
 
           private
 
-          attr_reader :customer
+          attr_reader :entry_request
 
           def payload
             @payload ||= {
               merchantId: ENV['SAFECHARGE_MERCHANT_ID'],
               merchantSiteId: ENV['SAFECHARGE_MERCHANT_SITE_ID'],
-              userTokenId: customer.id,
+              userTokenId: user_token_id,
               clientRequestId: timestamp.to_i,
               timeStamp: timestamp.strftime(TIMESTAMP_FORMAT)
             }
+          end
+
+          def user_token_id
+            entry_request.idebit? ? "000#{customer.id}" : customer.id
           end
 
           def checksum

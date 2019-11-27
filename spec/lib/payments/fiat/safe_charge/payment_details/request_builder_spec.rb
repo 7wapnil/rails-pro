@@ -4,9 +4,10 @@ describe Payments::Fiat::SafeCharge::PaymentDetails::RequestBuilder do
   include_context 'safecharge_env'
   include_context 'frozen_time'
 
-  subject { described_class.call(customer: customer) }
+  subject { described_class.call(entry_request: entry_request) }
 
-  let(:customer) { create(:customer) }
+  let(:entry_request) { create(:entry_request) }
+  let(:customer) { entry_request.customer }
   let(:timestamp) { Time.zone.now }
 
   let(:checksum_string) do
@@ -29,5 +30,13 @@ describe Payments::Fiat::SafeCharge::PaymentDetails::RequestBuilder do
       timeStamp: timestamp.strftime(described_class::TIMESTAMP_FORMAT),
       checksum: Digest::SHA256.hexdigest(checksum_string)
     )
+  end
+
+  context 'when iDebit deposit' do
+    let(:entry_request) { create(:entry_request, mode: EntryRequest::IDEBIT) }
+
+    it 'returns expanded userTokenId' do
+      expect(subject[:userTokenId]).to eq("000#{customer.id}")
+    end
   end
 end
