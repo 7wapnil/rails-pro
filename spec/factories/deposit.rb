@@ -43,5 +43,14 @@ FactoryBot.define do
         }
       end
     end
+
+    trait :idebit do
+      details do
+        {
+          name: SecureRandom.hex(7),
+          user_payment_option_id: SecureRandom.hex(7)
+        }
+      end
+    end
   end
 end

@@ -116,6 +116,14 @@ describe GraphQL, '#user' do
              mode: EntryRequest::BITCOIN,
              origin: create(:deposit, details: bitcoin_deposit.details))
     end
+    let(:idebit_entry_request) do
+      create(:entry_request, :with_entry,
+             customer: customer,
+             currency: wallet.currency,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::IDEBIT,
+             origin: create(:deposit, :idebit))
+    end
 
     let!(:successful_entry_requests) do
       [
@@ -125,7 +133,8 @@ describe GraphQL, '#user' do
         second_skrill_entry_request,
         neteller_entry_request,
         second_neteller_entry_request,
-        duplicated_bitcoin_entry_request
+        duplicated_bitcoin_entry_request,
+        idebit_entry_request
       ]
     end
 
@@ -166,6 +175,12 @@ describe GraphQL, '#user' do
                 name
               }
               ... on PaymentMethodNeteller {
+                id
+                title
+                userPaymentOptionId
+                name
+              }
+              ... on PaymentMethodIdebit {
                 id
                 title
                 userPaymentOptionId
@@ -228,6 +243,11 @@ describe GraphQL, '#user' do
              currency: wallet.currency,
              status: EntryRequest::SUCCEEDED,
              mode: EntryRequest::BITCOIN)
+      create(:entry_request, :with_entry,
+             customer: customer,
+             currency: wallet.currency,
+             status: EntryRequest::SUCCEEDED,
+             mode: EntryRequest::IDEBIT)
     end
 
     it 'returns all available withdrawal methods' do
@@ -310,6 +330,30 @@ describe GraphQL, '#user' do
 
     context 'neteller fields' do
       let(:object) { neteller_entry_request }
+      let(:control_wallet) { wallet }
+      let(:title) { details.name }
+
+      it 'are returned correct' do
+        expect(response_fields).to include(
+          'id' => object.id.to_s,
+          'code' => object.mode,
+          'name' => name,
+          'note' => note,
+          'description' => nil,
+          'currencyCode' => nil,
+          'currencyKind' => Currency::FIAT,
+          'details' => {
+            'id' => object.id.to_s,
+            'title' => title,
+            'name' => details.name,
+            'userPaymentOptionId' => details.user_payment_option_id
+          }
+        )
+      end
+    end
+
+    context 'iDebit fields' do
+      let(:object) { idebit_entry_request }
       let(:control_wallet) { wallet }
       let(:title) { details.name }
 

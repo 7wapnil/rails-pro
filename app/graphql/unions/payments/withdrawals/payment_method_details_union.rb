@@ -8,13 +8,15 @@ module Payments
       possible_types ::Payments::Methods::BitcoinType,
                      ::Payments::Methods::CreditCardType,
                      ::Payments::Methods::NetellerType,
-                     ::Payments::Methods::SkrillType
+                     ::Payments::Methods::SkrillType,
+                     ::Payments::Methods::IdebitType
 
       TYPES_MAP = {
         ::Payments::Methods::CREDIT_CARD => ::Payments::Methods::CreditCardType,
         ::Payments::Methods::SKRILL => ::Payments::Methods::SkrillType,
         ::Payments::Methods::NETELLER => ::Payments::Methods::NetellerType,
-        ::Payments::Methods::BITCOIN => ::Payments::Methods::BitcoinType
+        ::Payments::Methods::BITCOIN => ::Payments::Methods::BitcoinType,
+        ::Payments::Methods::IDEBIT => ::Payments::Methods::IdebitType
       }.freeze
 
       def self.resolve_type(obj, _ctx)
