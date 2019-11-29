@@ -587,6 +587,8 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.datetime "updated_at", null: false
     t.jsonb "response"
     t.decimal "real_money_ratio", default: "1.0", null: false
+    t.bigint "customer_bonus_id"
+    t.index ["customer_bonus_id"], name: "index_every_matrix_transactions_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_every_matrix_transactions_on_customer_id"
     t.index ["transaction_id"], name: "index_every_matrix_transactions_on_transaction_id"
     t.index ["wallet_session_id"], name: "index_every_matrix_transactions_on_wallet_session_id"
@@ -823,6 +825,7 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
   add_foreign_key "every_matrix_recommended_games_relationships", "every_matrix_play_items", column: "original_game_id", primary_key: "external_id"
   add_foreign_key "every_matrix_recommended_games_relationships", "every_matrix_play_items", column: "recommended_game_id", primary_key: "external_id"
   add_foreign_key "every_matrix_table_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
+  add_foreign_key "every_matrix_transactions", "customer_bonuses"
   add_foreign_key "every_matrix_transactions", "customers"
   add_foreign_key "every_matrix_transactions", "every_matrix_wallet_sessions", column: "wallet_session_id"
   add_foreign_key "every_matrix_wallet_sessions", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"

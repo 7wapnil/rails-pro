@@ -16,6 +16,7 @@ module EveryMatrix
     belongs_to :wallet_session, class_name: 'EveryMatrix::WalletSession'
     belongs_to :customer
     has_one :play_item, through: :wallet_session
+    belongs_to :customer_bonus, optional: true
 
     has_one :entry_request, as: :origin
     has_one :entry, as: :origin
