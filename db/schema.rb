@@ -586,6 +586,7 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.jsonb "response"
+    t.decimal "real_money_ratio", default: "1.0", null: false
     t.index ["customer_id"], name: "index_every_matrix_transactions_on_customer_id"
     t.index ["transaction_id"], name: "index_every_matrix_transactions_on_transaction_id"
     t.index ["wallet_session_id"], name: "index_every_matrix_transactions_on_wallet_session_id"

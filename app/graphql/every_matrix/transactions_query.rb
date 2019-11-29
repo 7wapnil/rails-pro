@@ -21,7 +21,8 @@ module EveryMatrix
         .every_matrix_transactions
         .joins(:entry)
         .where('every_matrix_transactions.amount > 0')
-        .where('every_matrix_transactions.created_at > ?', HISTORY_DAYS.days.ago)
+        .where('every_matrix_transactions.created_at > ?',
+               HISTORY_DAYS.days.ago)
         .includes(wallet_session: { wallet: :currency })
         .order(created_at: :desc)
     end
