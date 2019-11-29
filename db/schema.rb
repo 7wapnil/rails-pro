@@ -354,37 +354,6 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.index ["customer_id"], name: "index_deposit_limits_on_customer_id"
   end
 
-  create_table "em_transactions", force: :cascade do |t|
-    t.string "type"
-    t.uuid "em_wallet_session_id"
-    t.bigint "customer_id"
-    t.decimal "amount", precision: 14, scale: 2
-    t.string "game_type"
-    t.string "gp_game_id"
-    t.integer "gp_id"
-    t.string "em_game_id"
-    t.string "product"
-    t.string "round_id"
-    t.string "device"
-    t.bigint "transaction_id", null: false
-    t.string "round_status"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.jsonb "response"
-    t.index ["customer_id"], name: "index_em_transactions_on_customer_id"
-    t.index ["em_wallet_session_id"], name: "index_em_transactions_on_em_wallet_session_id"
-    t.index ["transaction_id"], name: "index_em_transactions_on_transaction_id"
-  end
-
-  create_table "em_wallet_sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.bigint "wallet_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.string "play_item_id", null: false
-    t.index ["play_item_id"], name: "index_em_wallet_sessions_on_play_item_id"
-    t.index ["wallet_id"], name: "index_em_wallet_sessions_on_wallet_id"
-  end
-
   create_table "entries", force: :cascade do |t|
     t.bigint "wallet_id"
     t.string "kind"
@@ -600,6 +569,28 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.index ["play_item_id"], name: "index_every_matrix_table_details_on_play_item_id"
   end
 
+  create_table "every_matrix_transactions", force: :cascade do |t|
+    t.string "type"
+    t.uuid "wallet_session_id"
+    t.bigint "customer_id"
+    t.decimal "amount", precision: 14, scale: 2
+    t.string "game_type"
+    t.string "gp_game_id"
+    t.integer "gp_id"
+    t.string "em_game_id"
+    t.string "product"
+    t.string "round_id"
+    t.string "device"
+    t.bigint "transaction_id", null: false
+    t.string "round_status"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.jsonb "response"
+    t.index ["customer_id"], name: "index_every_matrix_transactions_on_customer_id"
+    t.index ["transaction_id"], name: "index_every_matrix_transactions_on_transaction_id"
+    t.index ["wallet_session_id"], name: "index_every_matrix_transactions_on_wallet_session_id"
+  end
+
   create_table "every_matrix_vendors", force: :cascade do |t|
     t.string "name", null: false
     t.bigint "vendor_id", null: false
@@ -612,6 +603,15 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["vendor_id"], name: "index_every_matrix_vendors_on_vendor_id"
+  end
+
+  create_table "every_matrix_wallet_sessions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.bigint "wallet_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "play_item_id", null: false
+    t.index ["play_item_id"], name: "index_every_matrix_wallet_sessions_on_play_item_id"
+    t.index ["wallet_id"], name: "index_every_matrix_wallet_sessions_on_wallet_id"
   end
 
   create_table "label_joins", force: :cascade do |t|
@@ -803,9 +803,6 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
   add_foreign_key "customer_transactions", "users", column: "actioned_by_id"
   add_foreign_key "deposit_limits", "currencies"
   add_foreign_key "deposit_limits", "customers"
-  add_foreign_key "em_transactions", "customers"
-  add_foreign_key "em_transactions", "em_wallet_sessions"
-  add_foreign_key "em_wallet_sessions", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
   add_foreign_key "entries", "entry_requests", on_delete: :cascade
   add_foreign_key "entries", "wallets"
   add_foreign_key "entry_currency_rules", "currencies"
@@ -825,6 +822,9 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
   add_foreign_key "every_matrix_recommended_games_relationships", "every_matrix_play_items", column: "original_game_id", primary_key: "external_id"
   add_foreign_key "every_matrix_recommended_games_relationships", "every_matrix_play_items", column: "recommended_game_id", primary_key: "external_id"
   add_foreign_key "every_matrix_table_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
+  add_foreign_key "every_matrix_transactions", "customers"
+  add_foreign_key "every_matrix_transactions", "every_matrix_wallet_sessions", column: "wallet_session_id"
+  add_foreign_key "every_matrix_wallet_sessions", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
   add_foreign_key "label_joins", "labels"
   add_foreign_key "markets", "events", on_delete: :cascade
   add_foreign_key "markets", "market_templates", column: "template_id", on_delete: :nullify

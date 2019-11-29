@@ -11,16 +11,16 @@ module EveryMatrix
     DEBIT_TYPES = [WAGER].freeze
     CREDIT_TYPES = [RESULT, ROLLBACK].freeze
 
-    self.table_name = 'em_transactions'
+    self.table_name = 'every_matrix_transactions'
 
-    belongs_to :em_wallet_session, class_name: 'EveryMatrix::WalletSession'
+    belongs_to :wallet_session, class_name: 'EveryMatrix::WalletSession'
     belongs_to :customer
-    has_one :play_item, through: :em_wallet_session
+    has_one :play_item, through: :wallet_session
 
     has_one :entry_request, as: :origin
     has_one :entry, as: :origin
 
-    has_one :wallet, through: :em_wallet_session
+    has_one :wallet, through: :wallet_session
     has_one :currency, through: :wallet
     has_one :vendor, through: :play_item
     has_one :content_provider, through: :play_item

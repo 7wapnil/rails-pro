@@ -8,6 +8,8 @@ module EveryMatrix
       table: LIVE_CASINO = 'Live casino'
     }.freeze
 
+    delegate :play_item, to: :wallet_session, allow_nil: true
+
     delegate :code, to: :currency, allow_nil: true, prefix: true
 
     delegate :username, to: :customer, allow_nil: true, prefix: true

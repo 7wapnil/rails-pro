@@ -20,9 +20,9 @@ module EveryMatrix
       current_customer
         .every_matrix_transactions
         .joins(:entry)
-        .where('em_transactions.amount > 0')
-        .where('em_transactions.created_at > ?', HISTORY_DAYS.days.ago)
-        .includes(em_wallet_session: { wallet: :currency })
+        .where('every_matrix_transactions.amount > 0')
+        .where('every_matrix_transactions.created_at > ?', HISTORY_DAYS.days.ago)
+        .includes(wallet_session: { wallet: :currency })
         .order(created_at: :desc)
     end
   end

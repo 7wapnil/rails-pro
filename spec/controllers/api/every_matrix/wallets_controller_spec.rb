@@ -11,7 +11,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
   let(:currency_code) { wallet.currency.code }
 
   let(:customer_session) do
-    create(:em_wallet_session, wallet: wallet)
+    create(:wallet_session, wallet: wallet)
   end
 
   let(:common_request_params) do

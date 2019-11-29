@@ -5,7 +5,7 @@ FactoryBot.define do
     amount { rand(1_000) }
     transaction_id { rand(1e9) }
     customer
-    em_wallet_session
+    wallet_session
     entry
 
     trait :wager do
