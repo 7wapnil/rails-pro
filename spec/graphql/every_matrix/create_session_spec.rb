@@ -16,7 +16,18 @@ describe GraphQL, '#createEveryMatrixSession' do
       })
   end
   let(:game) { create(:casino_game) }
-  let(:base_launch_url) { game.url }
+  let(:base_launch_url) do
+    "#{game.url}?#{{ casinolobbyurl: 'https://example.com/casino' }.to_query}"
+  end
+  let(:site_url) { 'https://example.com' }
+
+  before do
+    allow(ENV).to receive(:[])
+
+    allow(ENV).to receive(:[])
+      .with('FRONTEND_URL')
+      .and_return(site_url)
+  end
 
   context 'with authenticated customer' do
     let(:auth_customer) { create(:customer, :ready_to_bet) }
@@ -39,7 +50,7 @@ describe GraphQL, '#createEveryMatrixSession' do
       it 'responds with launch url' do
         expect(response['data']['createEveryMatrixSession']['launchUrl'])
           .to eq(
-            "#{base_launch_url}?language=en&funMode=False&_sid=#{token}"
+            "#{base_launch_url}&language=en&funMode=False&_sid=#{token}"
           )
       end
     end

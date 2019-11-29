@@ -14,5 +14,8 @@ module EveryMatrix
     field :logoUrl, types.String, property: :thumbnail_url
     field :backgroundImageUrl, types.String, property: :background_image_url
     field :slug, types.String
+    field :type, types.String do
+      resolve ->(obj, *) { obj.type.demodulize.downcase }
+    end
   end
 end

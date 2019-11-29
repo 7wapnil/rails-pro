@@ -110,10 +110,6 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.datetime "updated_at", null: false
     t.integer "percentage"
     t.boolean "repeatable", default: true, null: false
-    t.boolean "casino", default: false, null: false
-    t.boolean "sportsbook", default: true, null: false
-    t.decimal "sportsbook_multiplier", default: "1.0", null: false
-    t.decimal "max_rollover_per_spin"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -187,10 +183,6 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.datetime "activated_at"
     t.datetime "deactivated_at"
     t.bigint "entry_id"
-    t.boolean "casino", default: false, null: false
-    t.boolean "sportsbook", default: true, null: false
-    t.decimal "sportsbook_multiplier", default: "1.0", null: false
-    t.decimal "max_rollover_per_spin"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["entry_id"], name: "index_customer_bonuses_on_entry_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -497,7 +489,7 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.decimal "max_hit_frequency", precision: 9, scale: 4, default: "0.0"
     t.boolean "free_spin_supported", default: false
     t.boolean "free_spin_bonus_supported", default: false
-    t.boolean "launch_game_in_html_5", default: false
+    t.string "launch_game_in_html_5", default: ""
     t.string "play_item_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -544,7 +536,6 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.bigint "every_matrix_vendor_id"
     t.bigint "every_matrix_content_provider_id"
     t.integer "position"
-    t.decimal "bonus_contribution", default: "1.0", null: false
     t.datetime "last_updated_recommended_games_at"
     t.index ["every_matrix_content_provider_id"], name: "index_play_items_on_content_providers_id"
     t.index ["every_matrix_vendor_id"], name: "index_play_items_on_vendors_id"
