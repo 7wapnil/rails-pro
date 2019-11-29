@@ -590,6 +590,7 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.bigint "customer_bonus_id"
     t.index ["customer_bonus_id"], name: "index_every_matrix_transactions_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_every_matrix_transactions_on_customer_id"
+    t.index ["round_id"], name: "index_every_matrix_transactions_on_round_id"
     t.index ["transaction_id"], name: "index_every_matrix_transactions_on_transaction_id"
     t.index ["wallet_session_id"], name: "index_every_matrix_transactions_on_wallet_session_id"
   end
