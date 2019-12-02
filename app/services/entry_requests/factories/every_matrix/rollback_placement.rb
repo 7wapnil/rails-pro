@@ -11,7 +11,7 @@ module EntryRequests
         end
 
         def balance_calculations_service
-          BalanceCalculations::EveryMatrix::Rollback
+          BalanceCalculations::EveryMatrix::DebitCalculations
         end
       end
     end

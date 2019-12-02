@@ -8,7 +8,7 @@ module BalanceCalculations
 
       delegate :wallet, to: :transaction
       delegate :amount, to: :wallet, prefix: true
-      delegate :customer_bonus, :real_money_balance, :bonus_balance,
+      delegate :real_money_balance, :bonus_balance,
                to: :wallet, allow_nil: true
 
       def initialize(transaction:)
@@ -31,9 +31,9 @@ module BalanceCalculations
       end
 
       def ratio
-        return REAL_MONEY_ONLY_RATIO unless bonus?
+        error_msg = "#{__method__} needs to be implemented in #{self.class}"
 
-        real_money_balance / wallet_amount
+        raise NotImplementedError, error_msg
       end
 
       def bonus?

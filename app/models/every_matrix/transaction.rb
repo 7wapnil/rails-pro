@@ -25,5 +25,9 @@ module EveryMatrix
     has_one :currency, through: :wallet
     has_one :vendor, through: :play_item
     has_one :content_provider, through: :play_item
+
+    def wager
+      Wager.where(round_id: round_id).order(:created_at).first
+    end
   end
 end

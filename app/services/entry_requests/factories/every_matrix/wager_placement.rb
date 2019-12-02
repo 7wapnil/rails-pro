@@ -11,7 +11,7 @@ module EntryRequests
         end
 
         def balance_calculations_service
-          BalanceCalculations::EveryMatrix::Wager
+          BalanceCalculations::EveryMatrix::CreditCalculations
         end
       end
     end
