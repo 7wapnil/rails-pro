@@ -163,6 +163,7 @@ module Customers
                 .joins(:currency)
                 .pending
                 .or(Bet.joins(:currency).initial)
+                .includes(:currency)
                 .find_each(batch_size: BATCH_SIZE)
                 .sum { |bet| convert_money(bet) }
       end

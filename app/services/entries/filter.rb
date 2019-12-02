@@ -23,7 +23,7 @@ module Entries
 
     def entries
       search.sorts = ['created_at desc'] if search.sorts.empty?
-      search.result.page(@page).per(@per_page)
+      search.result.page(@page).per(@per_page).includes(:wallet)
     end
 
     private

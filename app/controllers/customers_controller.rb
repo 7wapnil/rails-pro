@@ -47,8 +47,12 @@ class CustomersController < ApplicationController
   def account_management
     @currencies = [Currency.primary]
     @entry_request = EntryRequest.new(customer: @customer)
-    @requests = @customer.entry_requests.page(params[:entry_requests_page])
+    @requests = @customer.entry_requests
+                              .page(params[:entry_requests_page])
+                              .includes(:currency)
+
     @entries = @customer.entries.page(params[:entries_page])
+                    .includes(:wallet, :currency)
   end
 
   def activity
