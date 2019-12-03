@@ -28,11 +28,12 @@ module Base
     end
 
     def call(obj, args, ctx)
-      @request = ctx[:request]
-      @current_customer = ctx[:current_customer]
-      @impersonated_by = ctx[:impersonated_by]
-      check_auth
-      log_activity(@current_customer, @request) if self.class.trackable
+      collect_request_info!(ctx)
+
+      authentication_check!
+      check_if_customer_blocked! if current_customer
+
+      log_activity(current_customer, @request) if self.class.trackable
       resolve(obj, args)
     end
 
@@ -42,13 +43,26 @@ module Base
 
     protected
 
-    def log_activity(customer, request)
-      Customers::VisitLogService.call(customer, request)
+    def collect_request_info!(ctx)
+      @request = ctx[:request]
+      @current_customer = ctx[:current_customer]
+      @impersonated_by = ctx[:impersonated_by]
     end
 
-    def check_auth
-      not_authenticated = auth_protected? && @current_customer.blank?
-      raise GraphQL::ExecutionError, 'AUTH_REQUIRED' if not_authenticated
+    def authentication_check!
+      return unless auth_protected? && current_customer.blank?
+
+      raise GraphQL::ExecutionError, 'AUTH_REQUIRED'
+    end
+
+    def check_if_customer_blocked!
+      return unless current_customer.locked?
+
+      raise GraphQL::ExecutionError, 'BANNED'
+    end
+
+    def log_activity(customer, request)
+      Customers::VisitLogService.call(customer, request)
     end
   end
 end
