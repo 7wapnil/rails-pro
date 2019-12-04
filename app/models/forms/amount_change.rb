@@ -5,11 +5,13 @@ module Forms
     include ActiveModel::Model
 
     attr_accessor :subject, :request, :amount_increment,
-                  :real_money_amount_increment, :bonus_amount_increment
+                  :real_money_amount_increment, :bonus_amount_increment,
+                  :cancelled_bonus_amount_increment
 
     validates :amount_increment, numericality: true
     validates :real_money_amount_increment, numericality: true
     validates :bonus_amount_increment, numericality: true
+    validates :cancelled_bonus_amount_increment, numericality: true
     validate :real_money_amount_not_negative, if: :new_outgoing_activity?
     validate :bonus_amount_not_negative, if: :new_outgoing_activity?
 
@@ -17,6 +19,7 @@ module Forms
       @subject = subject
       @real_money_amount_increment = request.real_money_amount
       @bonus_amount_increment = request.bonus_amount
+      @cancelled_bonus_amount_increment = request.cancelled_bonus_amount || 0
       @amount_increment = request.real_money_amount + request.bonus_amount
       @request = request
     end
@@ -27,7 +30,9 @@ module Forms
         amount: subject.amount + amount_increment,
         real_money_balance: subject.real_money_balance +
                             real_money_amount_increment,
-        bonus_balance: subject.bonus_balance + bonus_amount_increment
+        bonus_balance: subject.bonus_balance + bonus_amount_increment,
+        cancelled_bonus_balance: subject.cancelled_bonus_balance +
+                                 cancelled_bonus_amount_increment
       )
     end
 

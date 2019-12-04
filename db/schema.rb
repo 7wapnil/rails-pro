@@ -373,6 +373,9 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.decimal "bonus_amount", precision: 14, scale: 2, default: "0.0"
     t.decimal "base_currency_bonus_amount", precision: 14, scale: 2, default: "0.0"
     t.decimal "bonus_amount_after", precision: 14, scale: 2, default: "0.0"
+    t.decimal "cancelled_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "base_currency_cancelled_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "cancelled_bonus_amount_after", precision: 14, scale: 2, default: "0.0"
     t.index ["entry_request_id"], name: "index_entries_on_entry_request_id"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
@@ -407,6 +410,7 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.string "external_id"
     t.decimal "real_money_amount", precision: 14, scale: 2, default: "0.0"
     t.decimal "bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "cancelled_bonus_amount", precision: 14, scale: 2, default: "0.0"
     t.index ["initiator_type", "initiator_id"], name: "index_entry_requests_on_initiator_type_and_initiator_id"
     t.index ["origin_type", "origin_id"], name: "index_entry_requests_on_origin_type_and_origin_id"
   end
@@ -784,6 +788,7 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.bigint "currency_id"
     t.decimal "real_money_balance", precision: 14, scale: 2, default: "0.0"
     t.decimal "bonus_balance", precision: 14, scale: 2, default: "0.0"
+    t.decimal "cancelled_bonus_balance", precision: 14, scale: 2, default: "0.0"
     t.index ["currency_id"], name: "index_wallets_on_currency_id"
     t.index ["customer_id", "currency_id"], name: "index_wallets_on_customer_id_and_currency_id", unique: true
     t.index ["customer_id"], name: "index_wallets_on_customer_id"

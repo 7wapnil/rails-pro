@@ -104,6 +104,7 @@ en:
     awarded_amount: Awarded amount
     real_money_amount: Cash amount
     bonus_amount: Bonus amount
+    cancelled_bonus_amount: Cancelled bonus amount
     authorized_at: Authorized at
     balance: Balance
     real_money_balance: Cash balance

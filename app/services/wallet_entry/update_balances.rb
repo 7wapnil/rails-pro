@@ -28,7 +28,9 @@ module WalletEntry
         bonus_amount: entry_request.bonus_amount,
         base_currency_bonus_amount: base_currency_bonus_amount,
         balance_amount_after: current_balance_amount,
-        bonus_amount_after: wallet.bonus_balance
+        bonus_amount_after: wallet.bonus_balance,
+        cancelled_bonus_amount: entry_request.cancelled_bonus_amount,
+        cancelled_bonus_amount_after: wallet.cancelled_bonus_balance
       )
     end
 
