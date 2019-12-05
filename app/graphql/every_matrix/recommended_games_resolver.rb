@@ -15,9 +15,6 @@ module EveryMatrix
       update_recommended!
 
       original_game.recommended_games
-                   .joins(:categories)
-                   .where(device_platform_condition)
-                   .distinct
                    .reject_country(country)
                    .limit(LIMIT_RECOMMENDED_GAMES)
     end
@@ -38,14 +35,6 @@ module EveryMatrix
 
     def latest_update
       original_game.last_updated_recommended_games_at.to_i
-    end
-
-    def device_platform_condition
-      {
-        every_matrix_categories: {
-          platform_type: device
-        }
-      }
     end
   end
 end

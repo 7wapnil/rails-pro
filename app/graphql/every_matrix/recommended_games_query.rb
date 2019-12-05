@@ -8,7 +8,7 @@ module EveryMatrix
 
     description 'Get recommended games'
 
-    argument :original_game_id, !types.Int
+    argument :originalGameId, !types.String
 
     def auth_protected?
       false
@@ -16,7 +16,7 @@ module EveryMatrix
 
     def resolve(_obj, args)
       RecommendedGamesResolver.call(
-        original_game_id: args.original_game_id,
+        original_game_id: args[:originalGameId],
         device: platform_type(@request),
         country: @request.location.country_code.upcase
       )

@@ -3,6 +3,8 @@
 module EveryMatrix
   module RecommendedGames
     class FetchGamesFromApi < ApplicationService
+      LIMIT_GAMES_FOR_SAVE = 10
+
       def initialize(game)
         @game = game
       end
@@ -25,10 +27,18 @@ module EveryMatrix
       def select_play_items
         EveryMatrix::PlayItem.where(external_id: response_game_ids)
                              .where.not(external_id: game.id)
+                             .order(order_by_rank)
+                             .limit(LIMIT_GAMES_FOR_SAVE)
+      end
+
+      def order_by_rank
+        Arel.sql(
+          "position(external_id::text in '#{response_game_ids.join(',')}')"
+        )
       end
 
       def response_game_ids
-        response['games']&.map { |game| game['id'] }
+        @response_game_ids ||= response['games']&.map { |game| game['id'].to_s }
       end
 
       def build_request
