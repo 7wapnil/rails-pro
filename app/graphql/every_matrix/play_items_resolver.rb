@@ -24,7 +24,7 @@ module EveryMatrix
     def condition
       {
         every_matrix_categories: {
-          name: category_name,
+          context: category_name,
           platform_type: device
         }
       }

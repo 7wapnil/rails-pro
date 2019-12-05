@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_11_13_142103) do
+ActiveRecord::Schema.define(version: 2019_12_05_111720) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(version: 2019_11_13_142103) do
     t.bigint "customer_id"
     t.bigint "odd_id"
     t.bigint "currency_id"
-    t.decimal "amount", precision: 14, scale: 2
+    t.decimal "amount"
     t.decimal "odd_value"
     t.string "status"
     t.text "notification_message"
@@ -68,8 +68,8 @@ ActiveRecord::Schema.define(version: 2019_11_13_142103) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.string "settlement_status"
     t.datetime "validation_ticket_sent_at"
+    t.string "settlement_status"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"
@@ -174,7 +174,7 @@ ActiveRecord::Schema.define(version: 2019_11_13_142103) do
     t.integer "valid_for_days"
     t.integer "percentage"
     t.datetime "expires_at"
-    t.bigint "original_bonus_id"
+    t.integer "original_bonus_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "rollover_balance", precision: 14, scale: 2
@@ -484,12 +484,12 @@ ActiveRecord::Schema.define(version: 2019_11_13_142103) do
   end
 
   create_table "every_matrix_categories", force: :cascade do |t|
-    t.string "name"
+    t.string "context"
     t.string "label", default: ""
     t.integer "position"
     t.string "kind"
     t.string "platform_type"
-    t.index ["name"], name: "index_every_matrix_categories_on_name"
+    t.index ["context"], name: "index_every_matrix_categories_on_context"
   end
 
   create_table "every_matrix_content_providers", force: :cascade do |t|
@@ -779,7 +779,6 @@ ActiveRecord::Schema.define(version: 2019_11_13_142103) do
   add_foreign_key "competitor_players", "competitors", on_delete: :cascade
   add_foreign_key "competitor_players", "players", on_delete: :cascade
   add_foreign_key "crypto_addresses", "wallets"
-  add_foreign_key "customer_bonuses", "bonuses", column: "original_bonus_id"
   add_foreign_key "customer_bonuses", "entries"
   add_foreign_key "customer_data", "customers"
   add_foreign_key "customer_notes", "customers"

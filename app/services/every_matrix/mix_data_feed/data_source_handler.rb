@@ -32,7 +32,7 @@ module EveryMatrix
           next if category_exist?(name_with_platform(category_data['id']))
 
           EveryMatrix::Category.create(
-            name: name_with_platform(category_data['id']),
+            context: name_with_platform(category_data['id']),
             label: category_data['id'].underscore.humanize.titleize,
             platform_type: platform_type
           )
@@ -40,7 +40,7 @@ module EveryMatrix
       end
 
       def category_exist?(category_name)
-        EveryMatrix::Category.exists?(name: category_name)
+        EveryMatrix::Category.exists?(context: category_name)
       end
 
       def name_with_platform(name)
@@ -62,7 +62,7 @@ module EveryMatrix
       def process_play_items
         play_items_data.each do |key, value|
           category =
-            EveryMatrix::Category.find_by(name: name_with_platform(key))
+            EveryMatrix::Category.find_by(context: name_with_platform(key))
           category.play_item_categories.destroy_all
 
           value.each_with_index do |data, index|

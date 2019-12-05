@@ -6,7 +6,7 @@ module EveryMatrix
 
     field :id, types.ID
     field :label, types.String
-    field :context, types.String, property: :name
+    field :context, types.String
     field :position, types.Int
     field :playItems, types[PlayItemType] do
       resolve ->(obj, _args, ctx) do

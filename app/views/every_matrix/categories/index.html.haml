@@ -10,7 +10,7 @@
     - @categories.each do |category|
       %tr
         %td= link_to category.id, edit_every_matrix_category_path(category)
-        %td= category.name
+        %td= category.context
         %td= category.label
         %td= category.position
         %td= category.kind
