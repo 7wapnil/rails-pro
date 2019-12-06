@@ -92,19 +92,29 @@ describe Customers::StatisticDecorator, type: :decorator do
         expect(decorated_amount).to eq('0.00%')
       end
     end
-
-    context 'with unknown category' do
-      let(:control_category) { 'allo' }
-
-      it 'returns decorated zero' do
-        expect(decorated_amount).to eq('0.00%')
-      end
-    end
   end
 
   describe '#wager' do
     context 'total' do
       let(:category) { Customers::StatisticDecorator::TOTAL }
+      let(:bet_value) { object.prematch_wager + object.live_sports_wager }
+      let(:casino_value) { object.casino_game_wager + object.live_casino_wager }
+      let(:value) { bet_value + casino_value }
+
+      it 'returns raw amount' do
+        expect(subject.wager(category)).to eq(value)
+      end
+
+      it_behaves_like 'decorated amount' do
+        let(:amount) { subject.wager(category, human: true) }
+        let(:control_amount) { value }
+        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:currency_symbol) { '&#8364;' }
+      end
+    end
+
+    context 'total bets' do
+      let(:category) { Customers::StatisticDecorator::TOTAL_BETS }
       let(:value) { object.prematch_wager + object.live_sports_wager }
 
       it 'returns raw amount' do
@@ -135,7 +145,7 @@ describe Customers::StatisticDecorator, type: :decorator do
     end
 
     context 'live' do
-      let(:category) { Customers::StatisticDecorator::LIVE }
+      let(:category) { Customers::StatisticDecorator::LIVE_SPORTS }
 
       it 'returns raw amount' do
         expect(subject.wager(category)).to eq(object.live_sports_wager)
@@ -148,11 +158,57 @@ describe Customers::StatisticDecorator, type: :decorator do
         let(:currency_symbol) { '&#8364;' }
       end
     end
+
+    context 'total casino game' do
+      let(:category) { Customers::StatisticDecorator::TOTAL_CASINO }
+      let(:value) { object.casino_game_wager + object.live_casino_wager }
+
+      it 'returns raw amount' do
+        expect(subject.wager(category)).to eq(value)
+      end
+
+      it_behaves_like 'decorated amount' do
+        let(:amount) { subject.wager(category, human: true) }
+        let(:control_amount) { value }
+        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:currency_symbol) { '&#8364;' }
+      end
+    end
+
+    context 'casino game' do
+      let(:category) { Customers::StatisticDecorator::CASINO_GAME }
+
+      it 'returns raw amount' do
+        expect(subject.wager(category)).to eq(object.casino_game_wager)
+      end
+
+      it_behaves_like 'decorated amount' do
+        let(:amount) { subject.wager(category, human: true) }
+        let(:control_amount) { object.casino_game_wager }
+        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:currency_symbol) { '&#8364;' }
+      end
+    end
+
+    context 'casino live game' do
+      let(:category) { Customers::StatisticDecorator::LIVE_CASINO }
+
+      it 'returns raw amount' do
+        expect(subject.wager(category)).to eq(object.live_casino_wager)
+      end
+
+      it_behaves_like 'decorated amount' do
+        let(:amount) { subject.wager(category, human: true) }
+        let(:control_amount) { object.live_casino_wager }
+        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:currency_symbol) { '&#8364;' }
+      end
+    end
   end
 
   describe '#payout' do
     context 'total' do
-      let(:category) { Customers::StatisticDecorator::TOTAL }
+      let(:category) { Customers::StatisticDecorator::TOTAL_BETS }
       let(:value) { object.prematch_payout + object.live_sports_payout }
 
       it 'returns raw amount' do
@@ -183,7 +239,7 @@ describe Customers::StatisticDecorator, type: :decorator do
     end
 
     context 'live' do
-      let(:category) { Customers::StatisticDecorator::LIVE }
+      let(:category) { Customers::StatisticDecorator::LIVE_SPORTS }
 
       it 'returns raw amount' do
         expect(subject.payout(category)).to eq(object.live_sports_payout)
@@ -198,12 +254,12 @@ describe Customers::StatisticDecorator, type: :decorator do
     end
   end
 
-  describe '#average_bet_value' do
+  describe '#average_wager_value' do
     let(:control_category) { Customers::StatisticDecorator::CATEGORIES.sample }
     let(:value) do
-      subject.wager(control_category) / subject.bet_count(control_category)
+      subject.wager(control_category) / subject.count_items(control_category)
     end
-    let(:decorated_amount) { subject.average_bet_value(control_category) }
+    let(:decorated_amount) { subject.average_wager_value(control_category) }
 
     Customers::StatisticDecorator::CATEGORIES.each do |category|
       context(category) do
@@ -220,7 +276,13 @@ describe Customers::StatisticDecorator, type: :decorator do
 
     context 'with zero bet count' do
       let(:object) do
-        build(:customer_statistic, prematch_bet_count: 0, live_bet_count: 0)
+        build(
+          :customer_statistic,
+          prematch_bet_count: 0,
+          live_bet_count: 0,
+          casino_game_count: 0,
+          live_casino_count: 0
+        )
       end
 
       it 'returns decorated zero' do
@@ -237,13 +299,13 @@ describe Customers::StatisticDecorator, type: :decorator do
     end
   end
 
-  describe '#bet_count' do
+  describe '#count_items' do
     context 'total' do
-      let(:category) { Customers::StatisticDecorator::TOTAL }
+      let(:category) { Customers::StatisticDecorator::TOTAL_BETS }
       let(:value) { object.prematch_bet_count + object.live_bet_count }
 
       it 'returns correct count' do
-        expect(subject.bet_count(category)).to eq(value)
+        expect(subject.count_items(category)).to eq(value)
       end
     end
 
@@ -251,15 +313,15 @@ describe Customers::StatisticDecorator, type: :decorator do
       let(:category) { Customers::StatisticDecorator::PREMATCH }
 
       it 'returns correct count' do
-        expect(subject.bet_count(category)).to eq(object.prematch_bet_count)
+        expect(subject.count_items(category)).to eq(object.prematch_bet_count)
       end
     end
 
     context 'live' do
-      let(:category) { Customers::StatisticDecorator::LIVE }
+      let(:category) { Customers::StatisticDecorator::LIVE_SPORTS }
 
       it 'returns correct count' do
-        expect(subject.bet_count(category)).to eq(object.live_bet_count)
+        expect(subject.count_items(category)).to eq(object.live_bet_count)
       end
     end
   end

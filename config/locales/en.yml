@@ -282,6 +282,8 @@ en:
         title: Sports Betting
       profit_and_revenue:
         title: 'Profit / Revenue'
+      casino_performance:
+        title: "Casino performance"
   date:
     formats:
       date_picker: "%-d %B %Y"

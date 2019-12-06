@@ -146,6 +146,32 @@ describe Customers::StatisticsController, '#show' do
       ].flatten
     end
 
+    let!(:casino_games) do
+      create_list(
+        :every_matrix_transaction,
+        rand(3..4),
+        :wager,
+        customer: customer,
+        em_wallet_session: create(
+          :em_wallet_session,
+          wallet: customer.wallets.first
+        )
+      )
+    end
+
+    let!(:won_casino_games) do
+      create_list(
+        :every_matrix_transaction,
+        rand(2..3),
+        :result,
+        customer: customer,
+        em_wallet_session: create(
+          :em_wallet_session,
+          wallet: customer.wallets.first
+        )
+      )
+    end
+
     let(:live_attributes) { { market: market, customer: customer } }
     let!(:live_bets) do
       [
@@ -193,15 +219,23 @@ describe Customers::StatisticsController, '#show' do
     let(:live_sports_wager) { settled_live_bets.sum(&:amount).round(2) }
     let(:live_sports_payout) { won_live_bets.sum(&:win_amount).round(2) }
     let(:live_bet_count) { settled_live_bets.length }
-    let(:total_wager) { prematch_wager + live_sports_wager }
-    let(:total_payout) { prematch_payout + live_sports_payout }
+    let(:casino_game_wager) { casino_games.sum(&:amount) }
+    let(:casino_game_payout) { won_casino_games.sum(&:amount) }
+
+    let(:total_bet_wager) { prematch_wager + live_sports_wager }
+    let(:total_bet_payout) { prematch_payout + live_sports_payout }
+    let(:total_wager) { total_bet_wager + casino_game_wager }
+    let(:total_payout) { total_bet_payout + casino_game_payout }
     let(:total_bet_count) { prematch_bet_count + live_bet_count }
     let(:total_gross_gaming_revenue) { total_wager - total_payout }
     let(:prematch_gross_gaming_revenue) { prematch_wager - prematch_payout }
-    let(:live_gross_gaming_revenue) { live_sports_wager - live_sports_payout }
+    let(:live_bet_gross_gaming_revenue) do
+      live_sports_wager - live_sports_payout
+    end
+    let(:casino_gross_gaming_revenue) { casino_game_wager - casino_game_payout }
     let(:total_margin) { total_gross_gaming_revenue / total_wager }
     let(:prematch_margin) { prematch_gross_gaming_revenue / prematch_wager }
-    let(:live_margin) { live_gross_gaming_revenue / live_sports_wager }
+    let(:live_margin) { live_bet_gross_gaming_revenue / live_sports_wager }
     let(:total_pending_bet_sum) do
       [pending_prematch_bets, pending_live_bets].flatten.sum(&:amount).round(2)
     end
@@ -218,20 +252,25 @@ describe Customers::StatisticsController, '#show' do
         prematch_bet_count: prematch_bet_count,
         prematch_wager: prematch_wager,
         prematch_payout: prematch_payout,
+        casino_game_wager: casino_game_wager,
+        casino_game_payout: casino_game_payout,
         live_bet_count: live_bet_count,
         live_sports_wager: live_sports_wager,
         live_sports_payout: live_sports_payout,
         total_wager: total_wager,
+        total_bet_wager: total_bet_wager,
+        total_bet_payout: total_bet_payout,
         total_payout: total_payout,
         total_bet_count: total_bet_count,
         total_pending_bet_sum: total_pending_bet_sum,
         total_gross_gaming_revenue: total_gross_gaming_revenue,
         prematch_gross_gaming_revenue: prematch_gross_gaming_revenue,
-        live_gross_gaming_revenue: live_gross_gaming_revenue,
+        live_bet_gross_gaming_revenue: live_bet_gross_gaming_revenue,
+        casino_gross_gaming_revenue: casino_gross_gaming_revenue,
         total_margin: total_margin,
         prematch_margin: prematch_margin,
         live_margin: live_margin,
-        average_total_bet_value: total_wager / total_bet_count,
+        average_total_bet_value: total_bet_wager / total_bet_count,
         average_prematch_bet_value: prematch_wager / prematch_bet_count,
         average_live_bet_value: live_sports_wager / live_bet_count
       }
@@ -294,10 +333,11 @@ describe Customers::StatisticsController, '#show' do
 
     it 'page contains aggregated float statistic fields' do
       attributes = %i[
+        casino_game_wager casino_game_payout
         total_gross_gaming_revenue prematch_gross_gaming_revenue
-        live_gross_gaming_revenue average_total_bet_value
-        average_prematch_bet_value average_live_bet_value
-        total_wager total_payout
+        casino_gross_gaming_revenue live_bet_gross_gaming_revenue
+        average_total_bet_value average_prematch_bet_value
+        average_live_bet_value total_bet_wager total_bet_payout
       ]
       attributes.each do |attribute|
         label = Customers::Statistic.human_attribute_name(attribute)

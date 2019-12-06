@@ -44,12 +44,8 @@ module Customers
           withdrawal_count: successful_withdrawals.count,
           withdrawal_value: withdrawal_value,
           total_bonus_completed: total_bonus_completed,
-          prematch_bet_count: prematch_bets.count,
-          prematch_wager: prematch_wager,
-          prematch_payout: prematch_payout,
-          live_bet_count: live_bets.count,
-          live_sports_wager: live_sports_wager,
-          live_sports_payout: live_sports_payout
+          **BetsCalculator.call(customer),
+          **CasinoCalculator.call(customer)
         }.map { |attribute, value| sum_up_attribute(attribute, value) }.to_h
       end
 
@@ -118,44 +114,6 @@ module Customers
       def total_bonus_completed
         entries.bonus_conversion
                .sum { |entry| convert_money(entry, :real_money_amount) }
-      end
-
-      def prematch_bets
-        @prematch_bets ||= settled_bets
-                           .where('bets.created_at <= events.start_at')
-      end
-
-      def settled_bets
-        @settled_bets ||= customer.bets
-                                  .joins(:event, :currency)
-                                  .where(status: Bet::SETTLED_STATUSES_MASK)
-                                  .where(updated_at_clause('bets'))
-      end
-
-      def prematch_wager
-        prematch_bets.find_each(batch_size: BATCH_SIZE)
-                     .sum { |bet| convert_money(bet) }
-      end
-
-      def prematch_payout
-        prematch_bets.won
-                     .find_each(batch_size: BATCH_SIZE)
-                     .sum { |bet| convert_money(bet, :win_amount) }
-      end
-
-      def live_bets
-        @live_bets ||= settled_bets.where('bets.created_at > events.start_at')
-      end
-
-      def live_sports_wager
-        live_bets.find_each(batch_size: BATCH_SIZE)
-                 .sum { |bet| convert_money(bet) }
-      end
-
-      def live_sports_payout
-        live_bets.won
-                 .find_each(batch_size: BATCH_SIZE)
-                 .sum { |bet| convert_money(bet, :win_amount) }
       end
 
       def total_pending_bet_sum

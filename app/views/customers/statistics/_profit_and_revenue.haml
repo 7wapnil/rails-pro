@@ -10,10 +10,20 @@
         = Customers::Statistic.human_attribute_name(:prematch_gross_gaming_revenue)
       %td= stats.gross_gaming_revenue(Customers::StatisticDecorator::PREMATCH, human: true)
 
-    %tr.live_gross_gaming_revenue
+    %tr.live_bet_gross_gaming_revenue
       %td{ colspan: 2 }
-        = Customers::Statistic.human_attribute_name(:live_gross_gaming_revenue)
-      %td= stats.gross_gaming_revenue(Customers::StatisticDecorator::LIVE, human: true)
+        = Customers::Statistic.human_attribute_name(:live_bet_gross_gaming_revenue)
+      %td= stats.gross_gaming_revenue(Customers::StatisticDecorator::LIVE_SPORTS, human: true)
+
+    %tr.casino_gross_gaming_revenue
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:casino_gross_gaming_revenue)
+      %td= stats.gross_gaming_revenue(Customers::StatisticDecorator::CASINO_GAME, human: true)
+
+    %tr.live_casino_gross_gaming_revenue
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:live_casino_gross_gaming_revenue)
+      %td= stats.gross_gaming_revenue(Customers::StatisticDecorator::LIVE_CASINO, human: true)
 
   %table.table.vertical-with-labels
     %tr.total_margin
@@ -29,4 +39,14 @@
     %tr.live_margin
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:live_margin)
-      %td= stats.margin(Customers::StatisticDecorator::LIVE)
+      %td= stats.margin(Customers::StatisticDecorator::LIVE_SPORTS)
+
+    %tr.casino_margin
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:casino_margin)
+      %td= stats.margin(Customers::StatisticDecorator::CASINO_GAME)
+
+    %tr.live_casino_margin
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:live_casino_margin)
+      %td= stats.margin(Customers::StatisticDecorator::LIVE_CASINO)

@@ -110,6 +110,10 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.datetime "updated_at", null: false
     t.integer "percentage"
     t.boolean "repeatable", default: true, null: false
+    t.boolean "casino", default: false, null: false
+    t.boolean "sportsbook", default: true, null: false
+    t.decimal "sportsbook_multiplier", default: "1.0", null: false
+    t.decimal "max_rollover_per_spin"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -183,6 +187,10 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.datetime "activated_at"
     t.datetime "deactivated_at"
     t.bigint "entry_id"
+    t.boolean "casino", default: false, null: false
+    t.boolean "sportsbook", default: true, null: false
+    t.decimal "sportsbook_multiplier", default: "1.0", null: false
+    t.decimal "max_rollover_per_spin"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["entry_id"], name: "index_customer_bonuses_on_entry_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -250,6 +258,12 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.datetime "last_updated_at"
     t.decimal "total_bonus_awarded", precision: 14, scale: 2, default: "0.0"
     t.decimal "total_bonus_completed", precision: 14, scale: 2, default: "0.0"
+    t.integer "casino_game_count", default: 0
+    t.decimal "casino_game_wager", precision: 14, scale: 2, default: "0.0"
+    t.decimal "casino_game_payout", precision: 14, scale: 2, default: "0.0"
+    t.integer "live_casino_count", default: 0
+    t.decimal "live_casino_wager", precision: 14, scale: 2, default: "0.0"
+    t.decimal "live_casino_payout", precision: 14, scale: 2, default: "0.0"
     t.index ["customer_id"], name: "index_customer_statistics_on_customer_id"
   end
 
@@ -557,6 +571,7 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.bigint "every_matrix_vendor_id"
     t.bigint "every_matrix_content_provider_id"
     t.integer "position"
+    t.decimal "bonus_contribution", default: "1.0", null: false
     t.datetime "last_updated_recommended_games_at"
     t.index ["every_matrix_content_provider_id"], name: "index_play_items_on_content_providers_id"
     t.index ["every_matrix_vendor_id"], name: "index_play_items_on_vendors_id"
