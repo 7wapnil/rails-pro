@@ -17,7 +17,8 @@ module EveryMatrix
     end
 
     def search
-      @source.includes(:customer, em_wallet_session: [wallet: :currency])
+      @source.includes(:customer, :currency, :play_item,
+                       :vendor, :content_provider)
              .ransack(@query_params, search_key: :transactions)
     end
 

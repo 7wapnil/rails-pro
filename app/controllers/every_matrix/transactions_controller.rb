@@ -3,6 +3,7 @@
 module EveryMatrix
   class TransactionsController < ApplicationController
     find :transaction, only: %i[show], class: EveryMatrix::Transaction
+    decorates_assigned :transaction
 
     def index
       @filter = EveryMatrix::TransactionsFilter.new(

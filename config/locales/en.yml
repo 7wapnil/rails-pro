@@ -92,16 +92,6 @@ en:
         last_updated_at: Last calculated at
 
   attributes:
-    transaction_id: Transaction ID
-    transaction_type: Transaction Type
-    em_transaction_id: EM Transaction ID
-    transaction_type: Type
-    transaction_amount_before: Amount before
-    transaction_amount_after: Amount after
-    game_name: Game name
-    vendor: Vendor
-    content_provider: Content Provider
-
     account_information: Account information
     account_lock: Account lock
     account_kind: Account type
@@ -249,6 +239,21 @@ en:
     confirmed_at: Confirmed at
     balance_id: Balance ID
     balance_kind: Balance type
+    # Transaction`s attributes
+    transaction_id: Transaction ID
+    em_transaction_id: EM Transaction ID
+    transaction_type: Type
+    transaction_amount_before: Amount before
+    transaction_amount_after: Amount after
+    base_currency_amount: Base currency amount
+    game_name: Game name
+    vendor_name: Vendor name
+    content_provider_name: Content provider name
+    game_round_id: Game round Id
+    platform_type: Platform type
+    category_type: Category type
+    round_status: Round status
+    game_id: Game Id
 
   bets:
     bet_types:

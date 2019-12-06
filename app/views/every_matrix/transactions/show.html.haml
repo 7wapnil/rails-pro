@@ -1,0 +1,60 @@
+.mt-4
+  = card header: t('entities.transaction'), class: 'transaction-info' do
+    .row
+      .col
+        %table.table
+          %tr
+            %td= t('attributes.id')
+            %td= transaction.id
+          %tr
+            %td= t('attributes.customer')
+            %td= link_to transaction.customer_username, transaction.customer
+          %tr
+            %td= t('attributes.em_transaction_id')
+            %td= transaction.round_id
+          %tr
+            %td= t('attributes.game_round_id')
+            %td= transaction.round_id
+          %tr
+            %td= t('attributes.created_at')
+            %td= transaction.created_at(human: true)
+          %tr
+            %td= t('attributes.transaction_type')
+            %td= settle_type(transaction.type(human: true))
+          %tr
+            %td= t('attributes.platform_type')
+            %td= transaction.device
+          %tr
+            %td= t('attributes.category_type')
+            %td= transaction.play_item_type
+      .col
+        %table.table
+          %tr
+            %td= t('attributes.currency')
+            %td= transaction.currency_code
+          %tr
+            %td= t('attributes.amount')
+            %td= transaction.amount(human: true)
+          %tr
+            %td= t('attributes.base_currency_amount')
+            %td= transaction.base_currency_amount(human: true)
+          %tr
+            %td= t('attributes.round_status')
+            %td= transaction.round_status
+          %tr
+            %td= t('attributes.game_id')
+            %td= transaction.play_item_id
+          %tr
+            %td= t('attributes.game_name')
+            %td= transaction.casino_play_item_name
+          %tr
+            %td= t('attributes.vendor_name')
+            %td= transaction.vendor_name
+          %tr
+            %td= t('attributes.content_provider_name')
+            %td= transaction.content_provider_name
+
+    .row
+      .col
+        %hr
+        = link_back

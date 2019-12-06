@@ -2,7 +2,6 @@
   %thead
     %tr
       %th= sort_link filter.search, :id, t('attributes.transaction_id'), default_order: :asc
-      %th= t('attributes.em_transaction_id')
       %th= t('attributes.transaction_type')
       - unless excluded_columns.include?(:customer)
         %th= t('attributes.customer')
@@ -20,8 +19,7 @@
       - filter.transactions.each do |transaction|
         %tr{ id: "transaction-#{transaction.id}" }
           %td= link_to transaction.id, transaction
-          %td= transaction.round_id
-          %td= transaction.type(human: true)
+          %td= settle_type(transaction.type(human: true))
           - unless excluded_columns.include?(:customer)
             %td= link_to transaction.customer_username, transaction.customer
           %td
@@ -45,7 +43,7 @@
           %td= transaction.currency_code
           %td= transaction.created_at(human: true)
           %td= transaction.round_status
-          %td= transaction.play_item_name
+          %td= transaction.casino_play_item_name
           %td= transaction.vendor_name
           %td= transaction.content_provider_name
     - else

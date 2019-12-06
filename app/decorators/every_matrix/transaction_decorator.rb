@@ -3,23 +3,31 @@
 module EveryMatrix
   class TransactionDecorator < ApplicationDecorator
     PRECISION = 2
-
-    delegate :play_item, to: :em_wallet_session, allow_nil: true
+    TRANSLATION_MAP = {
+      game: CASINO = 'Casino',
+      table: LIVE_CASINO = 'Live casino'
+    }.freeze
 
     delegate :code, to: :currency, allow_nil: true, prefix: true
 
     delegate :username, to: :customer, allow_nil: true, prefix: true
 
-    delegate :name, to: :play_item, allow_nil: true, prefix: true
-
-    delegate :vendor, to: :play_item,  allow_nil: true
-    delegate :content_provider, to: :play_item, allow_nil: true
+    delegate :id, :short_name, :name,
+             to: :play_item, allow_nil: true, prefix: true
 
     delegate :name, to: :vendor, prefix: true
     delegate :name, to: :content_provider, prefix: true
 
     def type(human: false)
       human ? super().demodulize : super()
+    end
+
+    def casino_play_item_name
+      play_item_name || play_item_short_name
+    end
+
+    def play_item_type
+      TRANSLATION_MAP[play_item.type.demodulize.downcase.to_sym]
     end
 
     def amount(human: false)
