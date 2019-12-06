@@ -19,7 +19,7 @@ module EveryMatrix
 
       def entry_creation_failed
         common_response.merge(
-          'ReturnCode' => 112,
+          'ReturnCode' => MAX_STAKE_LIMIT_EXCEEDED_CODE,
           'Message'    => transaction.entry_request.result['message']
         )
       end

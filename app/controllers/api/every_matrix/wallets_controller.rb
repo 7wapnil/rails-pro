@@ -3,6 +3,8 @@
 module Api
   module EveryMatrix
     class WalletsController < ActionController::API
+      include ::EveryMatrix::Requests::ErrorCodes
+
       REQUEST_HANDLERS = {
         'getaccount' => 'EveryMatrix::Requests::GetAccountService',
         'getbalance' => 'EveryMatrix::Requests::GetBalanceService',
@@ -39,8 +41,8 @@ module Api
         render json: {
           'ApiVersion' => '1.0',
           'Request'    => request_param['Request'],
-          'ReturnCode' => 103,
-          'Message'    => 'User not found'
+          'ReturnCode' => USER_NOT_FOUND_CODE,
+          'Message'    => USER_NOT_FOUND_MESAGE
         }
       end
 

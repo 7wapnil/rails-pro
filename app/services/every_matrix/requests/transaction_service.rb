@@ -97,14 +97,16 @@ module EveryMatrix
       end
 
       def success_response
-        common_success_response.merge(
-          BalanceCalculationService.call(
-            session: session,
-            balance_only: true
-          ).merge(
-            'SessionId'            => session.id,
-            'AccountTransactionId' => transaction.id
-          )
+        common_success_response.merge(balance_calculation_response)
+      end
+
+      def balance_calculation_response
+        BalanceCalculationService.call(
+          session: session,
+          balance_only: true
+        ).merge(
+          'SessionId'            => session.id,
+          'AccountTransactionId' => transaction.id
         )
       end
 

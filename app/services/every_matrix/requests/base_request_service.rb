@@ -3,6 +3,8 @@
 module EveryMatrix
   module Requests
     class BaseRequestService < ApplicationService
+      include ErrorCodes
+
       def initialize(params)
         @params = params
       end
@@ -20,8 +22,8 @@ module EveryMatrix
 
       def common_success_response
         common_response.merge(
-          'ReturnCode' => 0,
-          'Message'    => 'Success'
+          'ReturnCode' => SUCCESS_CODE,
+          'Message'    => SUCCESS_MESSAGE
         )
       end
 

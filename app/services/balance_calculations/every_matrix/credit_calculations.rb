@@ -6,10 +6,7 @@ module BalanceCalculations
       delegate :customer_bonus, to: :wallet, allow_nil: true
 
       def call
-        transaction.update_columns(
-          real_money_ratio: ratio,
-          customer_bonus_id: (customer_bonus&.id if bonus?)
-        )
+        update_transaction
 
         {
           real_money_amount: -calculated_real_money_amount,
@@ -17,12 +14,25 @@ module BalanceCalculations
         }
       end
 
+      private
+
+      def update_transaction
+        transaction.update_columns(
+          real_money_ratio: ratio,
+          customer_bonus_id: (customer_bonus&.id if bonus?)
+        )
+      end
+
       def ratio
-        @ratio ||= if bonus?
-                     real_money_balance / wallet_amount
-                   else
-                     REAL_MONEY_ONLY_RATIO
-                   end
+        @ratio ||= calculate_ratio
+      end
+
+      def calculate_ratio
+        if bonus?
+          real_money_balance / wallet_amount
+        else
+          REAL_MONEY_ONLY_RATIO
+        end
       end
     end
   end

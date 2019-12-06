@@ -9,8 +9,8 @@ module EveryMatrix
 
       def post_process_failed
         common_response.merge(
-          'ReturnCode' => 104,
-          'Message'    => 'Insufficient funds (from post-processing)'
+          'ReturnCode' => INSUFFICIENT_FUNDS_CODE,
+          'Message'    => "#{INSUFFICIENT_FUNDS_MESSAGE} (from post-processing)"
         )
       end
 
@@ -52,15 +52,15 @@ module EveryMatrix
 
       def insufficient_funds_response
         common_response.merge(
-          'ReturnCode' => 104,
-          'Message'    => 'Insufficient funds'
+          'ReturnCode' => INSUFFICIENT_FUNDS_CODE,
+          'Message'    => INSUFFICIENT_FUNDS_MESSAGE
         )
       end
 
       def entry_creation_failed
         common_response.merge(
-          'ReturnCode' => 112,
-          'Message'    => 'MaxStakeLimitExceeded'
+          'ReturnCode' => MAX_STAKE_LIMIT_EXCEEDED_CODE,
+          'Message'    => MAX_STAKE_LIMIT_EXCEEDED_MESSAGE
         )
       end
     end

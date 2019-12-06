@@ -20,6 +20,7 @@ module EveryMatrix
 
     has_one :entry_request, as: :origin
     has_one :entry, as: :origin
+    has_one :play_item, through: :wallet_session
 
     has_one :wallet, through: :wallet_session
     has_one :currency, through: :wallet
