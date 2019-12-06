@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Importable
   extend ActiveSupport::Concern
 
@@ -12,7 +14,7 @@ module Importable
       columns = conflict_updatable_cols || []
       raise ArgumentError, 'Conflict target not found' unless target
 
-      import([record],
+      import([record].flatten,
              validate: validate,
              recursive: recursive,
              on_duplicate_key_update: {

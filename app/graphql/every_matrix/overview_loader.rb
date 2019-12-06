@@ -42,15 +42,15 @@ module EveryMatrix
 
     def play_items_per_category_sql(category_ids)
       <<~SQL
-        SELECT id, external_id
+        SELECT id, external_id, play_items.position
         FROM every_matrix_categories, LATERAL (
-          SELECT every_matrix_play_items.external_id
+          SELECT every_matrix_play_items.external_id, every_matrix_play_item_categories.position
           FROM every_matrix_play_items
           JOIN every_matrix_play_item_categories
-          ON every_matrix_play_item_categories.play_item_id = every_matrix_play_items.external_id
+          ON every_matrix_play_items.external_id = every_matrix_play_item_categories.play_item_id
           WHERE every_matrix_categories.id = every_matrix_play_item_categories.category_id
           AND NOT '#{country_code}' = ANY(every_matrix_play_items.restricted_territories)
-          ORDER BY every_matrix_play_items.position ASC
+          ORDER BY every_matrix_play_item_categories.position ASC
           LIMIT #{LIMIT_PER_CATEGORY}) play_items
         WHERE every_matrix_categories.id IN (#{category_ids.join(', ').presence || 'NULL'})
       SQL
@@ -65,8 +65,10 @@ module EveryMatrix
 
     def fulfill_category(batch, category)
       play_item_ids = batch.map { |row| row['external_id'] }
+
       play_items =
-        @records.select { |play_item| play_item_ids.include?(play_item.id) }
+        play_item_ids
+        .map { |id| @records.find { |record| record.id == id } }
 
       fulfill(category, play_items)
     end

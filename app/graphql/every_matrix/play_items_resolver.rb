@@ -14,7 +14,7 @@ module EveryMatrix
         .joins(:categories)
         .where(condition)
         .reject_country(country)
-        .order(:position)
+        .order('every_matrix_play_item_categories.position ASC')
     end
 
     private

@@ -507,7 +507,9 @@ ActiveRecord::Schema.define(version: 2019_12_10_065657) do
   create_table "every_matrix_play_item_categories", force: :cascade do |t|
     t.string "play_item_id", null: false
     t.bigint "category_id", null: false
+    t.integer "position"
     t.index ["category_id"], name: "index_every_matrix_play_item_categories_on_category_id"
+    t.index ["play_item_id", "category_id"], name: "category_play_item_upsert", unique: true
     t.index ["play_item_id"], name: "index_every_matrix_play_item_categories_on_play_item_id"
   end
 
@@ -543,9 +545,8 @@ ActiveRecord::Schema.define(version: 2019_12_10_065657) do
     t.datetime "updated_at", null: false
     t.bigint "every_matrix_vendor_id"
     t.bigint "every_matrix_content_provider_id"
-    t.integer "position"
-    t.datetime "last_updated_recommended_games_at"
     t.decimal "bonus_contribution", default: "1.0", null: false
+    t.datetime "last_updated_recommended_games_at"
     t.string "game_code"
     t.index ["every_matrix_content_provider_id"], name: "index_play_items_on_content_providers_id"
     t.index ["every_matrix_vendor_id"], name: "index_play_items_on_vendors_id"

@@ -1,0 +1,97 @@
+{
+  "domainID": 2067,
+  "type": "datasource",
+  "action": "update",
+  "id": "Casino-desktop",
+  "seq": 0,
+  "data": {
+    "id": "Casino-desktop",
+    "type": "mix",
+    "categories": [
+      {
+        "id": "new",
+        "name": {
+          "en": "New"
+        },
+        "description": {},
+        "icon": {},
+        "flags": [],
+        "isGroup": false,
+        "items": [
+          {
+            "id": "32372",
+            "name": {
+              "*": "The Good, The Bad \u0026 The Wild"
+            },
+            "position": "Casino-desktop~new~0001.0003",
+            "type": "casino-games",
+            "isGroup": false,
+            "items": []
+          },
+          {
+            "id": "32263",
+            "name": {
+              "*": "Lost Vegas Survivors Scratch"
+            },
+            "position": "Casino-desktop~new~0001.0002",
+            "type": "casino-games",
+            "isGroup": false,
+            "items": []
+          },
+          {
+            "id": "32406",
+            "name": {
+              "*": "Jungle Jim and the Lost Sphinx"
+            },
+            "position": "Casino-desktop~new~0001.0005",
+            "type": "casino-games",
+            "isGroup": false,
+            "items": []
+          }
+        ]
+      },
+      {
+        "id": "favorites",
+        "name": {
+          "en": "Favorites"
+        },
+        "description": {},
+        "icon": {},
+        "flags": [],
+        "isGroup": false,
+        "items": [
+          {
+            "id": "31232",
+            "name": {
+              "*": "Burning Diamonds"
+            },
+            "position": "Casino-desktop~favorites~0002.0002",
+            "type": "casino-games",
+            "isGroup": false,
+            "items": []
+          },
+          {
+            "id": "31221",
+            "name": {
+              "*": "Triple Flame"
+            },
+            "position": "Casino-desktop~favorites~0002.0001",
+            "type": "casino-games",
+            "isGroup": false,
+            "items": []
+          },
+          {
+            "id": "31539",
+            "name": {
+              "*": "Atlantic Wilds"
+            },
+            "position": "Casino-desktop~favorites~0002.0003",
+            "type": "casino-games",
+            "isGroup": false,
+            "items": []
+          }
+        ]
+      }
+    ]
+  }
+}
