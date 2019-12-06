@@ -152,8 +152,8 @@ describe Customers::StatisticsController, '#show' do
         rand(3..4),
         :wager,
         customer: customer,
-        em_wallet_session: create(
-          :em_wallet_session,
+        wallet_session: create(
+          :wallet_session,
           wallet: customer.wallets.first
         )
       )
@@ -165,8 +165,8 @@ describe Customers::StatisticsController, '#show' do
         rand(2..3),
         :result,
         customer: customer,
-        em_wallet_session: create(
-          :em_wallet_session,
+        wallet_session: create(
+          :wallet_session,
           wallet: customer.wallets.first
         )
       )
