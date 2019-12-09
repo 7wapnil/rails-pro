@@ -9,10 +9,10 @@ module Customers
 
       def call
         {
-          prematch_bet_count: prematch_bets.count,
+          prematch_bet_count: prematch_bets.length,
           prematch_wager: prematch_wager,
           prematch_payout: prematch_payout,
-          live_bet_count: live_bets.count,
+          live_bet_count: live_bets.length,
           live_sports_wager: live_sports_wager,
           live_sports_payout: live_sports_payout
         }
@@ -24,12 +24,13 @@ module Customers
 
       def prematch_bets
         @prematch_bets ||= settled_bets
-                           .where('bets.created_at <= events.start_at')
+                           .having('bets.created_at <= MIN(events.start_at)')
       end
 
       def settled_bets
         @settled_bets ||= customer.bets
-                                  .joins(:event, :currency)
+                                  .joins(:currency, bet_legs: :event)
+                                  .group('bets.id')
                                   .where(status: Bet::SETTLED_STATUSES_MASK)
                                   .where(updated_at_clause('bets'))
       end
@@ -46,7 +47,8 @@ module Customers
       end
 
       def live_bets
-        @live_bets ||= settled_bets.where('bets.created_at > events.start_at')
+        @live_bets ||= settled_bets
+                       .having('bets.created_at > MIN(events.start_at)')
       end
 
       def live_sports_wager

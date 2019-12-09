@@ -58,7 +58,7 @@ module EntryRequests
       end
 
       def validate_entry_request!
-        ::Bets::PlacementForm.new(subject: bet).validate!
+        bet_validator.new(subject: bet).validate!
       rescue Bets::PlacementError => error
         entry_request.register_failure!(error.message)
       end
@@ -69,6 +69,12 @@ module EntryRequests
 
       def amount_calculations
         BalanceCalculations::Bet.call(bet: bet)
+      end
+
+      def bet_validator
+        return ::Bets::ComboBets::PlacementForm if bet.combo_bets?
+
+        ::Bets::SingleBets::PlacementForm
       end
     end
   end

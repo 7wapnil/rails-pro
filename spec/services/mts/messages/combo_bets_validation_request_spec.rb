@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-describe Mts::Messages::ValidationRequest do
+describe Mts::Messages::ComboBetsValidationRequest do
   describe 'generates example message' do
     subject { described_class.new([bet]) }
 
@@ -36,10 +36,13 @@ describe Mts::Messages::ValidationRequest do
        "limitId": #{limit_id} }, "oddsChange": "none", "selections":
       [{"eventId":  "sr:match:11050343",
         "id": "uof:3/sr:sport:110/186/4?setnr=1&gamenr=2",
-        "odds": 28700 }],
-      "bets": [{"id": "MTS_Test_1486541079460000_0",
-      "selectionRefs": [{"selectionIndex": 0, "banker": false }],
-      "selectedSystems": [1], "stake": {"value": #{base_currency_amount * 10_000}, "type": "total"} }] }
+        "odds": 28700 },
+       {"eventId":  "sr:match:11050343",
+        "id": "uof:3/sr:sport:110/196/4?setnr=1&gamenr=2",
+        "odds": 38700 }],
+      "bets": [{"id": "MTS_Test_1486541079460000_bet_0",
+      "selectionRefs": [{"selectionIndex": 0, "banker": false }, {"selectionIndex": 1, "banker": false }],
+      "selectedSystems": [2], "stake": {"value": #{base_currency_amount * 10_000}, "type": "total"} }] }
       EXAMPLE_JSON
     end
 
@@ -55,25 +58,40 @@ describe Mts::Messages::ValidationRequest do
              producer_id: 3,
              external_id: 'sr:match:11050343')
     end
-    let(:market_template) { create(:market_template, external_id: '186') }
-    let(:market) do
-      create(:market, event: event,
-                      template_specifiers: 'setnr=1|gamenr=2',
-                      template: market_template)
+    let(:market_templates) do
+      [create(:market_template, external_id: '186'),
+       create(:market_template, external_id: '196')]
     end
-    let(:odd) do
-      create(:odd,
-             market: market,
-             value: 2.87,
-             external_id: 'sr:match:11050343:186/setnr=1|gamenr=2:4',
-             outcome_id: '4')
+    let(:markets) do
+      market_templates.map do |template|
+        create(:market, event: event,
+                        template_specifiers: 'setnr=1|gamenr=2',
+                        template: template)
+      end
+    end
+    let(:odds) do
+      markets.map.with_index do |market, index|
+        template_external_id = market_templates[index].external_id
+        external_id_tail = "#{template_external_id}/setnr=1|gamenr=2:4"
+
+        create(:odd, market: market,
+                     value: 2.87 + index,
+                     external_id: "sr:match:11050343:#{external_id_tail}",
+                     outcome_id: '4')
+      end
     end
     let(:bet) do
-      create(:bet, amount: 1, base_currency_amount: base_currency_amount,
-                   odd_value: odd.value,
+      create(:bet, amount: 1,
+                   base_currency_amount: base_currency_amount,
                    currency: euro,
-                   customer: customer,
-                   odd: odd)
+                   customer: customer)
+    end
+    let!(:bet_legs) do
+      odds.map do |odd|
+        create(:bet_leg, bet: bet,
+                         odd: odd,
+                         odd_value: odd.value)
+      end
     end
 
     let(:experiment_time) { Time.strptime('1486541079460', '%s') }

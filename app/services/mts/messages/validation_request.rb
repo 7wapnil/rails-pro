@@ -2,8 +2,7 @@
 
 module Mts
   module Messages
-    # TODO: Extract parts to different classes
-    class ValidationRequest # rubocop:disable Metrics/ClassLength
+    class ValidationRequest
       include JobLogger
 
       SUPPORTED_BETS_PER_REQUEST = 1
@@ -13,7 +12,7 @@ module Mts
       DEFAULT_ODDS_CHANGE_BEHAVIOUR = 'none'
       STAKE_MULTIPLIER = 10_000
 
-      attr_reader :bets
+      attr_reader :bet
 
       def initialize(bets)
         if bets.length > SUPPORTED_BETS_PER_REQUEST
@@ -21,7 +20,7 @@ module Mts
           raise NotImplementedError
         end
 
-        @bets = bets
+        @bet = bets.first
       end
 
       def to_h
@@ -79,26 +78,11 @@ module Mts
       end
 
       def selections
-        @bets.map do |bet|
-          {
-            event_id: bet.odd.market.event.external_id,
-            id: Mts::UofId.id(bet.odd),
-            odds: Mts::MtsDecimal.from_number(bet.odd_value)
-          }
-        end
+        raise NotImplementedError
       end
 
       def formatted_bets
-        @bets.map.with_index do |bet, index|
-          {
-            id: [ticket_id, index].join('_'),
-            selected_systems: single_bet_selected_systems,
-            stake: {
-              value: (bet.base_currency_amount * STAKE_MULTIPLIER).to_i,
-              type: DEFAULT_STAKE_TYPE
-            }
-          }.merge(selection_refs(bet))
-        end
+        raise NotImplementedError
       end
 
       # InternetDistributionChannel blueprint
@@ -132,24 +116,11 @@ module Mts
       end
 
       def customer
-        @customer ||= @bets.first.customer
+        @customer ||= bet.customer
       end
 
       def bets_currency
-        @bets.first.currency.code
-      end
-
-      def single_bet_selected_systems
-        [1]
-      end
-
-      def selection_refs(_bet)
-        { selection_refs: [
-          {
-            selection_index: 0,
-            banker: false
-          }
-        ] }
+        bet.currency.code
       end
     end
   end

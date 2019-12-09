@@ -8,6 +8,11 @@ module OddsFeed
         Bet::SETTLED,
         Bet::PENDING_MANUAL_SETTLEMENT
       ].freeze
+      SUITABLE_BET_LEG_SETTLEMENT_STATUSES = [
+        BetLeg::WON,
+        BetLeg::LOST,
+        nil
+      ].freeze
 
       attr_accessor :batch_size
 
@@ -18,7 +23,7 @@ module OddsFeed
 
       def handle
         validate_message!
-        cancel_bets
+        cancel_bet_legs
       end
 
       private
@@ -51,19 +56,30 @@ module OddsFeed
         end
       end
 
-      def cancel_bets
-        bets.find_each(batch_size: batch_size) { |bet| cancel_bet(bet) }
+      def cancel_bet_legs
+        bet_legs.find_each(batch_size: batch_size) do |bet_leg|
+          cancel_bet_leg(bet_leg, bet_leg.bet)
+        end
       end
 
-      def bets
-        @bets ||= Bet
-                  .joins(odd: :market)
-                  .includes(:winning, :placement_entry)
-                  .where(markets: { external_id: market_external_ids })
-                  .where(status: SUITABLE_BET_STATUSES)
-                  .merge(bets_with_start_time)
-                  .merge(bets_with_end_time)
-                  .lock!
+      def bet_legs
+        @bet_legs ||= BetLeg
+                      .joins(:bet, odd: :market)
+                      .includes(bet: %i[bet_legs winning placement_entry])
+                      .where(markets: { external_id: market_external_ids })
+                      .merge(bet_legs_with_suitable_settlement_statuses)
+                      .merge(bets_with_suitable_statuses)
+                      .merge(bets_with_start_time)
+                      .merge(bets_with_end_time)
+                      .lock!
+      end
+
+      def bet_legs_with_suitable_settlement_statuses
+        BetLeg.where(settlement_status: SUITABLE_BET_LEG_SETTLEMENT_STATUSES)
+      end
+
+      def bets_with_suitable_statuses
+        Bet.where(status: SUITABLE_BET_STATUSES)
       end
 
       def bets_with_start_time
@@ -80,26 +96,18 @@ module OddsFeed
                   parse_timestamp(input_data['end_time']))
       end
 
-      def cancel_bet(bet)
-        ActiveRecord::Base.transaction do
-          return_money(bet)
-
-          bet.cancel_by_system!
-        end
+      def cancel_bet_leg(bet_leg, bet)
+        ::Bets::Cancel.call(bet: bet, bet_leg: bet_leg)
       rescue StandardError => error
-        log_job_message(:error, message: 'Bet was not cancelled!',
+        log_error_message(error, bet, bet_leg)
+      end
+
+      def log_error_message(error, bet, bet_leg)
+        log_job_message(:error, message: 'Bet leg was not cancelled!',
                                 bet_id: bet.id,
+                                bet_leg_id: bet_leg.id,
                                 reason: error.message,
                                 error_object: error)
-      end
-
-      def return_money(bet)
-        requests = EntryRequests::Factories::BetCancellation.call(bet: bet)
-        requests.each { |request| proceed_entry_request(request) }
-      end
-
-      def proceed_entry_request(request)
-        EntryRequests::ProcessingService.call(entry_request: request)
       end
     end
   end

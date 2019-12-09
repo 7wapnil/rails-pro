@@ -2,7 +2,7 @@
 
 module BetExternalValidation
   class Service < ApplicationService
-    delegate :customer, :producer, to: :bet
+    delegate :customer, to: :bet
 
     def initialize(bet)
       @bet = bet
@@ -19,9 +19,16 @@ module BetExternalValidation
     attr_reader :bet
 
     def live_bet_delay
-      return @live_bet_delay unless producer&.live?
+      return @live_bet_delay unless live_producer?
 
       @live_bet_delay ||= [global_live_bet_delay, title_live_bet_delay].max
+    end
+
+    def live_producer?
+      bet.bet_legs
+         .joins(:producer)
+         .where(radar_producers: { code: Radar::Producer::LIVE_PROVIDER_CODE })
+         .any?
     end
 
     def global_live_bet_delay

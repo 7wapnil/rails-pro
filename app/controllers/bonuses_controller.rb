@@ -53,23 +53,24 @@ class BonusesController < ApplicationController
 
   private
 
-  def bonus_params # rubocop:disable Metrics/MethodLength
-    params
-      .require(:bonus)
-      .permit(:code,
-              :kind,
-              :rollover_multiplier,
-              :max_rollover_per_bet,
-              :expires_at,
-              :max_deposit_match,
-              :min_odds_per_bet,
-              :min_deposit,
-              :valid_for_days,
-              :percentage,
-              :repeatable,
-              :casino,
-              :sportsbook,
-              :sportsbook_multiplier,
-              :max_rollover_per_spin)
+  # rubocop:disable Metrics/MethodLength
+  def bonus_params
+    params.require(:bonus)
+          .permit(:code,
+                  :kind,
+                  :rollover_multiplier,
+                  :max_rollover_per_bet,
+                  :expires_at,
+                  :max_deposit_match,
+                  :min_odds_per_bet,
+                  :min_deposit,
+                  :valid_for_days,
+                  :percentage,
+                  :repeatable,
+                  :limit_per_each_bet_leg,
+                  :sportsbook,
+                  :sportsbook_multiplier,
+                  :max_rollover_per_spin)
   end
+  # rubocop:enable Metrics/MethodLength
 end

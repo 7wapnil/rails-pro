@@ -7,6 +7,8 @@ class Odd < ApplicationRecord
   }
 
   belongs_to :market
+  has_one :event, through: :market
+  has_many :competitors, through: :event
   has_many :bets, dependent: :destroy
 
   validates :name, :status, presence: true

@@ -36,16 +36,18 @@ class BetsFilter
   end
 
   def search
-    @source.includes(:market)
-           .with_winning_amount
-           .with_sport
-           .with_tournament
-           .with_category
-           .ransack(formatted_query_params, search_key: :bets)
+    @search ||= @source.joins(join_bet_search_relations)
+                       .group('bets.id')
+                       .includes(
+                         :customer,
+                         :currency,
+                         scoped_bet_legs: %i[market event]
+                       )
+                       .ransack(formatted_query_params, search_key: :bets)
   end
 
   def bets
-    BetDecorator.decorate_collection(
+    @bets ||= BetDecorator.decorate_collection(
       search.result.order(id: :desc).page(@page)
     )
   end
@@ -65,5 +67,20 @@ class BetsFilter
 
   def without_settlement_status?
     @query_params[:settlement_status_eq] == NO_SETTLEMENT_STATUS
+  end
+
+  def join_bet_search_relations
+    <<~SQL
+      INNER JOIN (#{bet_leg_with_relations_sql}) scoped_bet_legs ON
+        scoped_bet_legs.bet_id = bets.id
+    SQL
+  end
+
+  def bet_leg_with_relations_sql
+    BetLeg.select('bet_legs.*')
+          .with_category
+          .with_tournament
+          .with_sport
+          .to_sql
   end
 end

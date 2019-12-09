@@ -4,7 +4,6 @@ describe Bet, type: :model do
   subject { build(:bet) }
 
   it { is_expected.to belong_to(:customer) }
-  it { is_expected.to belong_to(:odd) }
   it { is_expected.to belong_to(:currency) }
   it { is_expected.to belong_to(:customer_bonus) }
 
@@ -14,12 +13,7 @@ describe Bet, type: :model do
 
   it { is_expected.to have_many(:entry_requests) }
   it { is_expected.to have_many(:entries) }
-
-  it do
-    expect(subject).to validate_numericality_of(:odd_value)
-      .is_equal_to(subject.odd.value)
-      .on(:create)
-  end
+  it { is_expected.to have_many(:bet_legs) }
 
   it do
     expect(subject).to validate_numericality_of(:void_factor)
@@ -56,12 +50,12 @@ describe Bet, type: :model do
 
     it 'Returns expired prematch bets' do
       timeout = ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT_SECONDS', 3).to_i
-      expired_bets = create_list(:bet, 2,
-                                 validation_ticket_sent_at: (timeout + 3)
-                                                              .seconds
-                                                              .ago,
-                                 status: :sent_to_external_validation)
-      create_list(:bet, 3,
+      expired_bets = create_list(
+        :bet, 2, :with_bet_leg,
+        validation_ticket_sent_at: (timeout + 3).seconds.ago,
+        status: :sent_to_external_validation
+      )
+      create_list(:bet, 3, :with_bet_leg,
                   validation_ticket_sent_at: 1.seconds.ago,
                   status: :sent_to_external_validation)
       expected_bets = described_class.expired_prematch
@@ -113,11 +107,10 @@ describe Bet, type: :model do
     BET_SETTLEMENT_OUTCOMES_EXAMPLES.each do |example|
       it example[:name] do
         bet =
-          build(:bet,
-                amount: example[:amount],
-                odd_value: example[:odd_value],
-                void_factor: example[:void_factor],
-                settlement_status: example[:settlement_status])
+          build(:bet, amount: example[:amount],
+                      void_factor: example[:void_factor],
+                      settlement_status: example[:settlement_status],
+                      bet_legs_attributes: [example.slice(:odd_value)])
 
         expect(bet.win_amount).to be_within(0.01).of(example[:win_amount])
       end
@@ -128,11 +121,10 @@ describe Bet, type: :model do
     BET_SETTLEMENT_OUTCOMES_EXAMPLES.each do |example|
       it example[:name] do
         bet =
-          build(:bet,
-                amount: example[:amount],
-                odd_value: example[:odd_value],
-                void_factor: example[:void_factor],
-                settlement_status: example[:settlement_status])
+          build(:bet, amount: example[:amount],
+                      void_factor: example[:void_factor],
+                      settlement_status: example[:settlement_status],
+                      bet_legs_attributes: [example.slice(:odd_value)])
 
         expect(bet.refund_amount)
           .to be_within(0.01).of(example[:refund_amount])
@@ -141,16 +133,18 @@ describe Bet, type: :model do
   end
 
   describe 'with_winning_ammount' do
+    before { create(:bet, :with_bet_leg) }
+
     it 'finds bets with calculated winning amounts' do
-      FactoryBot.create(:bet)
       result = described_class.with_winning_amount.first
       expect(result.winning_amount).to eq(result.amount * result.odd_value)
     end
   end
 
   describe 'sort_by_winning_amount_asc' do
+    before { create_list(:bet, 2, :with_bet_leg) }
+
     it 'finds bets with calculated winning amounts sorted asc' do
-      create_list(:bet, 2)
       result = described_class.sort_by_winning_amount_asc
       first = result.first
       last = result.last
@@ -159,8 +153,9 @@ describe Bet, type: :model do
   end
 
   describe 'sort_by_winning_amount_desc' do
+    before { create_list(:bet, 2, :with_bet_leg) }
+
     it 'finds bets with calculated winning amounts sorted desc' do
-      create_list(:bet, 2)
       result = described_class.sort_by_winning_amount_desc
       first = result.first
       last = result.last
@@ -192,7 +187,7 @@ describe Bet, type: :model do
   end
 
   context 'bonus and real money totals' do
-    let(:bet) { create(:bet) }
+    let(:bet) { create(:bet, :with_bet_leg) }
     let(:entry_request) do
       create(:entry_request,
              origin: bet,

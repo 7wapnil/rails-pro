@@ -6,8 +6,6 @@ module EntryRequests
 
     NOTIFICATION_ERROR_CODE = Bets::Notification::INTERNAL_VALIDATION_ERROR
 
-    delegate :odd, :market, to: :bet
-
     def initialize(entry_request:)
       @entry_request = entry_request
       @bet = entry_request.origin
@@ -46,7 +44,7 @@ module EntryRequests
 
     # TODO: rebuild form to use native errors handler
     def validate_bet!
-      ::Bets::PlacementForm.new(subject: bet).validate!
+      validator.new(subject: bet).validate!
     end
 
     # TODO: rebuild form to use native errors handler
@@ -74,6 +72,12 @@ module EntryRequests
       log_job_message(:error, message: error.message,
                               bet_id: bet.id,
                               error_object: error)
+    end
+
+    def validator
+      return ::Bets::ComboBets::PlacementForm if bet.combo_bets?
+
+      ::Bets::SingleBets::PlacementForm
     end
   end
 end

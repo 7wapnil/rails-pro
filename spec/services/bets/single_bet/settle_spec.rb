@@ -1,11 +1,14 @@
 # frozen_string_literal: true
 
-describe Bets::Settle do
+describe Bets::SingleBet::Settle do
   subject do
-    described_class.call(bet: bet, void_factor: void_factor, result: result)
+    described_class.call(bet_leg: bet_leg,
+                         void_factor: void_factor,
+                         result: result)
   end
 
-  let!(:bet) { create(:bet, :with_placement_entry, :accepted) }
+  let!(:bet) { create(:bet, :with_placement_entry, :with_bet_leg, :accepted) }
+  let!(:bet_leg) { bet.bet_legs.first }
   let(:void_factor) {}
   let(:result) { '0' }
   let(:last_entry_request) { EntryRequest.order(created_at: :desc).first }
@@ -157,10 +160,13 @@ describe Bets::Settle do
   end
 
   context 'when settled bet has been passed' do
-    let!(:bet) { create(:bet, :with_placement_entry, :settled) }
+    let!(:bet) do
+      create(:bet, :with_settled_bet_leg, :with_placement_entry, :settled)
+    end
 
     it 'raises an error' do
-      expect { subject }.to raise_error('Bet is not accepted')
+      expect { subject }
+        .to raise_error(I18n.t('errors.messages.bets.settled_bet_leg'))
     end
 
     it 'does not change bet status' do
@@ -184,7 +190,7 @@ describe Bets::Settle do
   end
 
   context 'when error appears on last operation' do
-    let!(:bet) { create(:bet, :accepted) }
+    let!(:bet) { create(:bet, :with_bet_leg, :accepted) }
     let(:result) { described_class::WIN_RESULT }
 
     before do
@@ -216,10 +222,11 @@ describe Bets::Settle do
   end
 
   context 'when rejected bet has been passed' do
-    let!(:bet) { create(:bet, :rejected) }
+    let!(:bet) { create(:bet, :with_settled_bet_leg, :rejected) }
 
     it 'raises an error' do
-      expect { subject }.to raise_error('Bet is not accepted')
+      expect { subject }
+        .to raise_error(I18n.t('errors.messages.bets.settled_bet_leg'))
     end
 
     it 'does not change bet status' do

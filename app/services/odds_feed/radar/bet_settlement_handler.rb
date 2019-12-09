@@ -77,20 +77,24 @@ module OddsFeed
           outcome_id: outcome['id']
         ).generate
 
-        find_bets_by_odd_id(external_id)
-          .each { |bet| settle_bet(bet, outcome) }
+        find_bet_legs_by_odd_id(external_id).each do |bet_leg|
+          bet_leg.lock!
+          bet_leg.bet.lock!
+
+          settle_bet(bet_leg, outcome)
+        end
       end
 
-      def find_bets_by_odd_id(external_id)
-        Bet.joins(:odd)
-           .accepted
-           .where(odds: { external_id: external_id })
-           .lock!
+      def find_bet_legs_by_odd_id(external_id)
+        BetLeg.joins(:bet, :odd)
+              .where(bets: { status: Bet::ACCEPTED })
+              .where(odds: { external_id: external_id })
+              .includes(:bet)
       end
 
-      def settle_bet(bet, outcome)
+      def settle_bet(bet_leg, outcome)
         ::Bets::SettlementWorker.perform_async(
-          bet.id,
+          bet_leg.id,
           outcome['void_factor'],
           outcome['result']
         )

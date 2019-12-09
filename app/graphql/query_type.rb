@@ -20,6 +20,7 @@ QueryType = GraphQL::ObjectType.define do
   field :transactions, function: Transactions::TransactionsQuery.new
   field :customerBonuses, function: CustomerBonuses::CustomerBonusesQuery.new
   field :depositMethods, function: ::Payments::Deposits::PaymentMethodsQuery.new
+  field :validateComboBets, function: ::Betting::ValidateComboBetsQuery.new
 
   field :games, function: EveryMatrix::GamesQuery.new
   field :tables, function: EveryMatrix::TablesQuery.new

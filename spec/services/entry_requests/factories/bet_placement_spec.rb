@@ -8,7 +8,7 @@ describe EntryRequests::Factories::BetPlacement do
                  currency: currency,
                  customer_bonus: customer_bonus,
                  amount: 100,
-                 market: market)
+                 bet_legs: [bet_leg])
   end
 
   let(:impersonated_by) { create(:customer) }
@@ -18,6 +18,7 @@ describe EntryRequests::Factories::BetPlacement do
   end
   let(:currency) { create(:currency) }
   let(:customer_bonus) { create(:customer_bonus) }
+  let(:bet_leg) { create(:bet_leg, market: market) }
   let(:market) { create(:event, :with_market, :upcoming).markets.sample }
 
   let(:bet_attributes) do

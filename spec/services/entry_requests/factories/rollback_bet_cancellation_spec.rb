@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe EntryRequests::Factories::RollbackBetCancellation do
-  subject { described_class.call(bet: bet) }
+  subject { described_class.call(bet: bet, bet_leg: bet.bet_legs.first) }
 
   include_context 'base_currency'
 
@@ -26,11 +26,14 @@ describe EntryRequests::Factories::RollbackBetCancellation do
            wallet: wallet)
   end
 
+  let(:odd) { create(:odd, market: create(:market)) }
+
   context 'lost bet' do
     let(:bet) do
       create(:bet, :cancelled_by_system,
              customer: customer,
-             currency: base_currency)
+             currency: base_currency,
+             odd: odd)
     end
 
     it 'creates correct entry request' do
@@ -44,7 +47,7 @@ describe EntryRequests::Factories::RollbackBetCancellation do
 
   context 'won bet' do
     let(:bet) do
-      create(:bet, :won, :cancelled_by_system, customer: customer)
+      create(:bet, :won, :cancelled_by_system, customer: customer, odd: odd)
     end
 
     let(:win_entry_request) do

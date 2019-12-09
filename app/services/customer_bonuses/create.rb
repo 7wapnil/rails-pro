@@ -47,6 +47,7 @@ module CustomerBonuses
         expires_at: bonus.expires_at,
         status: new_customer_bonus_status,
         activated_at: activated_at,
+        limit_per_each_bet_leg: bonus.limit_per_each_bet_leg,
         casino: bonus.casino,
         sportsbook: bonus.sportsbook,
         sportsbook_multiplier: bonus.sportsbook_multiplier,

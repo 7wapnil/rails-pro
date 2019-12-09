@@ -7,9 +7,10 @@ module Betting
 
     def resolve(_obj, args)
       PlaceResolver.call(
-        args: args,
+        bets_payload: args[:bets],
         impersonated_by: @impersonated_by,
-        customer: @current_customer
+        customer: @current_customer,
+        combo_bets: false
       )
     end
   end

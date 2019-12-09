@@ -14,7 +14,7 @@
       = f.input :max_rollover_per_bet, input_html: { min: 0 }, required: true
       = f.input :max_rollover_per_spin, input_html: { min: 0 }, required: true
       = f.label :expires_at
-      .input-group
+      .input-group.mb-3
         = f.input_field :expires_at,
                         as: :date_picker,
                         required: true,
@@ -27,10 +27,11 @@
     .col-6
       = f.input :max_deposit_match, input_html: { min: 0 }, required: true
       = f.input :min_odds_per_bet, input_html: { min: 0 }, required: true
+      = f.input :limit_per_each_bet_leg, label: t('attributes.limit_per_each_bet_leg')
       = f.input :min_deposit, input_html: { min: 0 }, required: true
       = f.input :valid_for_days, input_html: { min: 0 }, required: true
       = f.input :percentage, required: true
       = f.input :repeatable
   .row
     .col
-      = f.submit class: 'btn btn-outline-dark', required: true
+      = f.submit class: 'btn btn-outline-dark mb-2', required: true

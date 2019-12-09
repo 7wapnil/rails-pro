@@ -9,7 +9,7 @@ module OddsFeed
 
       def handle
         rollback_markets
-        rollback_bets
+        rollback_bet_legs
       end
 
       private
@@ -53,19 +53,23 @@ module OddsFeed
                                 error_object: error)
       end
 
-      def rollback_bets
-        bets.find_each(batch_size: BATCH_SIZE) { |bet| rollback_bet(bet) }
+      def rollback_bet_legs
+        bet_legs.find_each(batch_size: BATCH_SIZE) do |bet_leg|
+          rollback_bet_leg(bet_leg)
+        end
       end
 
-      def bets
-        Bet.joins(:market)
-           .where(status: [Bet::SETTLED, Bet::PENDING_MANUAL_SETTLEMENT])
-           .where(markets: { external_id: markets_ids })
-           .lock!
+      def bet_legs
+        BetLeg.joins(:bet, :market)
+              .where(bets: { status: [Bet::ACCEPTED,
+                                      Bet::SETTLED,
+                                      Bet::PENDING_MANUAL_SETTLEMENT] })
+              .where(markets: { external_id: markets_ids })
+              .lock!
       end
 
-      def rollback_bet(bet)
-        ::Bets::RollbackSettlementWorker.perform_async(bet.id)
+      def rollback_bet_leg(bet_leg)
+        ::Bets::RollbackSettlementWorker.perform_async(bet_leg.id)
       end
     end
   end

@@ -18,24 +18,26 @@ describe GraphQL, '#place_bet' do
 
   let(:query) do
     %(mutation placeBets($bets: [BetInput]) {
-        placeBets(bets: $bets) {
-            id
-            message
-            success
-            bet {
-                 id
-                 amount
-                 market {
-                    id
-                    name
-                 }
-                 odd {
-                    id
-                    name
-                 }
+      placeBets(bets: $bets) {
+        message
+        success
+        oddId
+        bet {
+          id
+          amount
+          betLegs {
+            market {
+             id
+             name
             }
+            odd {
+              id
+              name
+            }
+          }
         }
-      })
+      }
+    })
   end
 
   let(:response) do
@@ -50,8 +52,12 @@ describe GraphQL, '#place_bet' do
           {
             amount: 10,
             currencyCode: 'EUR',
-            oddId: odd.id.to_s,
-            oddValue: odd.value
+            odds: [
+              {
+                id: odd.id.to_s,
+                value: odd.value
+              }
+            ]
           }
         end
       }
@@ -81,19 +87,22 @@ describe GraphQL, '#place_bet' do
       bets.map { |bet_response| bet_response['bet'] }.each do |bet|
         expect(bet['amount']).to be_a Numeric
 
-        expect(bet['market']).to be_a Hash
-        expect(bet['market']['id']).to be_a String
-        expect(bet['market']['name']).to be_a String
+        bet['betLegs'].each do |leg|
+          expect(leg['market']).to be_a Hash
+          expect(leg['market']['id']).to be_a String
+          expect(leg['market']['name']).to be_a String
 
-        expect(bet['odd']).to be_a Hash
-        expect(bet['odd']['id']).to be_a String
-        expect(bet['odd']['name']).to be_a String
+          expect(leg['odd']).to be_a Hash
+          expect(leg['odd']['id']).to be_a String
+          expect(leg['odd']['name']).to be_a String
+        end
       end
     end
   end
 
   context 'errors' do
-    let(:error_message) { response['data']['placeBets'].first['message'] }
+    let(:placeBets) { response['data']['placeBets'] }
+    let(:error_message) { placeBets.first['message'] }
     let(:odd) { instance_double(Odd, id: 1, value: 1.85) }
     let(:bet_currency) { currency }
     let(:variables) do
@@ -101,8 +110,12 @@ describe GraphQL, '#place_bet' do
         bets: [{
           amount: 10,
           currencyCode: bet_currency.code,
-          oddId: odd.id.to_s,
-          oddValue: odd.value
+          odds: [
+            {
+              id: odd.id.to_s,
+              value: odd.value
+            }
+          ]
         }]
       }
     end
@@ -112,6 +125,10 @@ describe GraphQL, '#place_bet' do
     it 'does not find not-existing odd and gives an error' do
       expect(error_message)
         .to eq I18n.t('bets.notifications.placement_error')
+    end
+
+    it 'returns odd id for problem bet' do
+      expect(placeBets.first['oddId']).to eq(odd.id.to_s)
     end
 
     context 'with inactive odd' do
@@ -166,8 +183,12 @@ describe GraphQL, '#place_bet' do
       {
         amount: 10,
         currencyCode: 'EUR',
-        oddId: odd.id.to_s,
-        oddValue: odd.value
+        odds: [
+          {
+            id: odd.id.to_s,
+            value: odd.value
+          }
+        ]
       }
     end
 
@@ -175,8 +196,12 @@ describe GraphQL, '#place_bet' do
       {
         amount: 0,
         currencyCode: 'TEST CURRENCY',
-        oddId: odd.id.to_s,
-        oddValue: odd.value
+        odds: [
+          {
+            id: odd.id.to_s,
+            value: odd.value
+          }
+        ]
       }
     end
 
@@ -211,8 +236,12 @@ describe GraphQL, '#place_bet' do
         {
           amount: 0,
           currencyCode: 'EUR',
-          oddId: odd.id.to_s,
-          oddValue: odd.value
+          odds: [
+            {
+              id: odd.id.to_s,
+              value: odd.value
+            }
+          ]
         }
       end
 

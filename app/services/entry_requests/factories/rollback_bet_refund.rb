@@ -5,8 +5,9 @@ module EntryRequests
     class RollbackBetRefund < ApplicationService
       delegate :refund_entry, to: :bet
 
-      def initialize(bet:)
-        @bet = bet
+      def initialize(bet_leg:)
+        @bet_leg = bet_leg
+        @bet = bet_leg.bet
       end
 
       def call
@@ -15,7 +16,7 @@ module EntryRequests
 
       private
 
-      attr_reader :bet
+      attr_reader :bet, :bet_leg
 
       def entry_request_attributes
         {
@@ -33,7 +34,7 @@ module EntryRequests
 
       def comment
         "Rollback bet refund #{refund_entry.amount} #{bet.currency} " \
-        "for #{bet.customer} on #{bet.event}."
+        "for #{bet.customer} on #{bet_leg.event}."
       end
     end
   end

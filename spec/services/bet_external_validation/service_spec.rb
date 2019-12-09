@@ -2,7 +2,7 @@
 
 describe BetExternalValidation::Service do
   describe '.call' do
-    let(:bet) { create(:bet, :sent_to_external_validation) }
+    let(:bet) { create(:bet, :sent_to_external_validation, :with_bet_leg) }
 
     context 'stubbed mode' do
       context 'with stubbed call' do
@@ -39,7 +39,7 @@ describe BetExternalValidation::Service do
       let(:service) { described_class.new(bet) }
 
       before do
-        allow(bet.producer).to receive(:live?).and_return(true)
+        allow(service).to receive(:live_producer?).and_return(true)
       end
 
       it 'live_bet_delay = 0, when limit = 0' do

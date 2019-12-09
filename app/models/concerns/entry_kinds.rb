@@ -11,6 +11,7 @@ module EntryKinds
     refund: REFUND = 'refund',
     rollback: ROLLBACK = 'rollback',
     system_bet_cancel: SYSTEM_BET_CANCEL = 'system_bet_cancel',
+    system_bet_resettle: SYSTEM_BET_RESETTLE = 'system_bet_resettle',
     manual_bet_cancel: MANUAL_BET_CANCEL = 'manual_bet_cancel',
     bonus_conversion: BONUS_CONVERSION = 'bonus_conversion',
     bonus_change: BONUS_CHANGE = 'bonus_change',

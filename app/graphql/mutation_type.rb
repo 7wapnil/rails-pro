@@ -13,6 +13,7 @@ MutationType = GraphQL::ObjectType.define do
   field :impersonate, function: Account::Impersonate.new
 
   field :placeBets, function: Betting::Place.new
+  field :placeComboBets, function: Betting::PlaceComboBets.new
   field :deleteFile, function: Documents::DeleteFile.new
 
   field :depositBonus, function: Deposits::DepositBonusQuery.new

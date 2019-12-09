@@ -82,6 +82,11 @@ describe Radar::RollbackBetCancelWorker do
     ]
   end
   let!(:bets) { [*won_bets, *common_bets, *excluded_bets] }
+  let!(:canceled_bet_legs) do
+    bets.each do |bet|
+      bet.bet_legs.first.cancelled_by_system!
+    end
+  end
 
   let!(:wallets) do
     bets.map do |bet|
@@ -257,11 +262,13 @@ describe Radar::RollbackBetCancelWorker do
     end
 
     context 'and creates rollback entry requests' do
+      let(:win_bet_event) { win_bet.bet_legs.first.event }
+      let(:placement_bet_event) { placement_bet.bet_legs.first.event }
       let(:win_entry_request) { win_entry_requests.sample }
       let(:win_bet) { win_entry_request.origin }
       let(:win_cancel_comment) do
         "Rollback winning cancellation - #{win_entry_request.amount} " \
-        "#{win_bet.currency} for #{win_bet.customer} on #{win_bet.event}."
+        "#{win_bet.currency} for #{win_bet.customer} on #{win_bet_event}."
       end
 
       let(:placement_entry_request) { placement_entry_requests.sample }
@@ -269,7 +276,7 @@ describe Radar::RollbackBetCancelWorker do
       let(:bet_cancel_comment) do
         "Rollback bet cancellation - #{placement_entry_request.amount} " \
         "#{placement_bet.currency} for #{placement_bet.customer} " \
-        "on #{placement_bet.event}."
+        "on #{placement_bet_event}."
       end
 
       let(:found_win_rollback_entry_request) do

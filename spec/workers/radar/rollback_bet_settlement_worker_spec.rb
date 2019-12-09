@@ -251,15 +251,16 @@ describe Radar::RollbackBetSettlementWorker do
       end
 
       context 'entry requests' do
+        let(:settled_bet_event) { settled_bet.bet_legs.first.event }
         let(:win_comment) do
           "Rollback won amount #{settlement_entry_request.amount} " \
           "#{settled_bet.currency} for #{settled_bet.customer} on " \
-          "#{settled_bet.event}."
+          "#{settled_bet_event}."
         end
         let(:voided_comment) do
           "Rollback bet refund #{settlement_entry_request.amount} " \
           "#{settled_bet.currency} for #{settled_bet.customer} on " \
-          "#{settled_bet.event}."
+          "#{settled_bet_event}."
         end
         let(:comment) { settled_bet.won? ? win_comment : voided_comment }
 

@@ -12,7 +12,7 @@ module OddsFeed
 
       def handle
         validate_message!
-        rollback_bets
+        rollback_bet_legs
       end
 
       private
@@ -45,20 +45,22 @@ module OddsFeed
         end
       end
 
-      def rollback_bets
-        bets.find_each(batch_size: batch_size)
-            .each { |bet| rollback_bet(bet) }
+      def rollback_bet_legs
+        bet_legs.find_each(batch_size: batch_size)
+                .each { |bet_leg| rollback_bet_leg(bet_leg.bet, bet_leg) }
       end
 
-      def bets
-        @bets ||= Bet
-                  .joins(:market)
-                  .includes(:winning_rollback_entry, :placement_rollback_entry)
-                  .cancelled_by_system
-                  .where(markets: { external_id: market_external_ids })
-                  .merge(bets_with_start_time)
-                  .merge(bets_with_end_time)
-                  .lock!
+      def bet_legs
+        @bet_legs ||= BetLeg
+                      .joins(:bet, :market)
+                      .includes(:event, bet: %i[winning_rollback_entry
+                                                placement_rollback_entry
+                                                winning_resettle_entry])
+                      .cancelled_by_system
+                      .where(markets: { external_id: market_external_ids })
+                      .merge(bets_with_start_time)
+                      .merge(bets_with_end_time)
+                      .lock!
       end
 
       def bets_with_start_time
@@ -75,38 +77,18 @@ module OddsFeed
                   parse_timestamp(input_data['end_time']))
       end
 
-      def rollback_bet(bet)
-        ActiveRecord::Base.transaction do
-          rollback_money(bet)
-
-          return settle_bet(bet) if bet.settlement_status
-
-          bet.rollback_system_cancellation_with_acceptance!
-        end
+      def rollback_bet_leg(bet, bet_leg)
+        ::Bets::RollbackCancel.call(bet: bet, bet_leg: bet_leg)
       rescue StandardError => error
-        log_job_message(
-          :error,
-          message: 'Bet cancel for bet was not rollbacked!',
-          bet_id: bet.id,
-          reason: error.message,
-          error_object: error
-        )
+        log_error_message(error, bet, bet_leg)
       end
 
-      def rollback_money(bet)
-        requests = EntryRequests::Factories::RollbackBetCancellation
-                   .call(bet: bet)
-        requests.each { |request| proceed_entry_request(request) }
-      end
-
-      def proceed_entry_request(request)
-        EntryRequests::ProcessingService.call(entry_request: request)
-      end
-
-      def settle_bet(bet)
-        bet.rollback_system_cancellation_with_settlement!(
-          settlement_status: bet.settlement_status
-        )
+      def log_error_message(error, bet, bet_leg)
+        log_job_message(:error, message: 'Bet cancel was not rollbacked!',
+                                bet_id: bet.id,
+                                bet_leg_id: bet_leg.id,
+                                reason: error.message,
+                                error_object: error)
       end
     end
   end

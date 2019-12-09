@@ -3,17 +3,22 @@
 class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include StateMachines::BetStateMachine
 
+  PRECISION = 2
+  VOIDED_ODD_VALUE = 1
+
   belongs_to :customer
-  belongs_to :odd
   belongs_to :currency
   belongs_to :customer_bonus, optional: true
 
   has_one :entry, as: :origin
   has_one :entry_request, as: :origin
-  has_one :market, through: :odd
-  has_one :event, through: :market
-  has_one :producer, through: :event
-  has_one :title, through: :event
+
+  has_many :bet_legs, dependent: :destroy
+  has_many :odds, through: :bet_legs
+  has_many :markets, through: :odds
+  has_many :events, through: :markets
+  has_many :producers, through: :events
+  has_many :titles, through: :events
 
   has_one :placement_entry,
           -> { unscoped.bet.order(:created_at) },
@@ -35,25 +40,25 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
           -> { system_bet_cancel.where('entries.amount < 0') },
           class_name: Entry.name,
           as: :origin
+  has_one :winning_resettle_entry,
+          -> { system_bet_resettle.where('entries.amount > 0') },
+          class_name: Entry.name,
+          as: :origin
 
   has_many :entry_requests, as: :origin, dependent: :nullify
   has_many :entries, as: :origin, dependent: :nullify
-  has_many :tournaments,
-           -> { where(kind: EventScope::TOURNAMENT) },
-           through: :event,
-           source: :event_scopes,
-           class_name: EventScope.name
-  has_many :categories,
-           -> { where(kind: EventScope::CATEGORY) },
-           through: :event,
-           source: :event_scopes,
-           class_name: EventScope.name
+  has_many :tournaments, through: :bet_legs
+  has_many :categories, through: :bet_legs
 
-  validates :odd_value,
-            numericality: {
-              equal_to: ->(bet) { bet.odd.value },
-              on: :create
-            }
+  has_many :scoped_bet_legs,
+           -> do
+             select('bet_legs.*')
+               .with_category
+               .with_tournament
+               .with_sport
+           end,
+           class_name: BetLeg.name
+
   validates :void_factor,
             numericality: {
               greater_than_or_equal_to: 0,
@@ -61,12 +66,12 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
             },
             allow_nil: true
 
-  delegate :market, to: :odd
-
   scope :sort_by_winning_amount_asc,
         -> { with_winning_amount.order('winning_amount') }
   scope :sort_by_winning_amount_desc,
         -> { with_winning_amount.order('winning_amount DESC') }
+
+  accepts_nested_attributes_for :bet_legs
 
   class << self
     def pending
@@ -79,46 +84,14 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
       )
     end
 
-    def with_category
-      sub_query = <<~SQL
-        SELECT  event_scopes.name FROM event_scopes
-         INNER JOIN scoped_events ON event_scopes.id = scoped_events.event_scope_id
-         INNER JOIN events ON scoped_events.event_id = events.id
-         INNER JOIN markets ON events.id = markets.event_id
-         INNER JOIN odds ON markets.id = odds.market_id
-         WHERE odds.id = bets.odd_id AND event_scopes.kind = '#{EventScope::CATEGORY}' LIMIT 1
-      SQL
-      sql = "bets.*, (#{sub_query}) AS category"
-      select(sql)
-    end
-
-    def with_tournament
-      sub_query = <<~SQL
-        SELECT  event_scopes.name FROM event_scopes
-         INNER JOIN scoped_events ON event_scopes.id = scoped_events.event_scope_id
-         INNER JOIN events ON scoped_events.event_id = events.id
-         INNER JOIN markets ON events.id = markets.event_id
-         INNER JOIN odds ON markets.id = odds.market_id
-         WHERE odds.id = bets.odd_id AND event_scopes.kind = '#{EventScope::TOURNAMENT}' LIMIT 1
-      SQL
-      sql = "bets.*, (#{sub_query}) AS tournament"
-      select(sql)
-    end
-
-    def with_sport
-      sub_query = <<~SQL
-        SELECT  COALESCE(titles.name, titles.external_name) FROM titles
-         INNER JOIN events ON events.title_id = titles.id
-         INNER JOIN markets ON markets.event_id = events.id
-         INNER JOIN odds ON markets.id = odds.market_id
-         WHERE odds.id = bets.odd_id LIMIT 1
-      SQL
-      sql = "bets.*, (#{sub_query}) AS sport"
-      select(sql)
-    end
-
     def with_winning_amount
-      select('bets.*, (bets.amount * bets.odd_value) AS winning_amount')
+      sql = <<~SQL
+        bets.*,
+        (bets.amount * ROUND(
+          EXP(SUM(LN(bet_legs.odd_value))
+        ), 2)) AS winning_amount
+      SQL
+      select(sql).joins(:bet_legs).group('bets.id')
     end
 
     def ransackable_scopes(_auth_object = nil)
@@ -135,7 +108,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
       condition = 'bets.validation_ticket_sent_at <= :expired_at
                          AND events.traded_live = true'
       sent_to_external_validation
-        .joins(odd: { market: [:event] })
+        .joins(bet_legs: { odd: { market: %i[event] } })
         .where(condition,
                expired_at: timeout.seconds.ago)
     end
@@ -145,10 +118,21 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
       condition = 'bets.validation_ticket_sent_at <= :expired_at
                          AND events.traded_live = false'
       sent_to_external_validation
-        .joins(odd: { market: [:event] })
+        .joins(bet_legs: { odd: { market: %i[event] } })
         .where(condition,
                expired_at: timeout.seconds.ago)
     end
+  end
+
+  def odd_value
+    bet_legs
+      .inject(1) do |product, leg|
+        voided_leg = leg.cancelled_by_system? || leg.voided?
+        leg_odd_value = voided_leg ? VOIDED_ODD_VALUE : leg.odd_value
+
+        product * leg_odd_value
+      end
+      .round(PRECISION)
   end
 
   def potential_win
@@ -160,7 +144,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def win_amount
-    return nil unless settlement_status
+    return unless settlement_status
     return 0 unless won?
 
     (amount - refund_amount) * odd_value

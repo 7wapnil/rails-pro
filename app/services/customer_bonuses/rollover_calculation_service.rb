@@ -20,9 +20,9 @@ module CustomerBonuses
 
     def eligible?
       bet.settled? &&
-        customer_bonus&.active? &&
-        customer_bonus&.sportsbook? &&
-        bet.odd_value >= customer_bonus.min_odds_per_bet
+        customer_bonus.present? &&
+        customer_bonus.active? && customer_bonus.sportsbook? &&
+        bet_match_bonus_rules?
     end
 
     def tag_bet_rollover!
@@ -36,11 +36,24 @@ module CustomerBonuses
       end
     end
 
+    def bet_match_bonus_rules?
+      return false if bet.odd_value < customer_bonus.min_odds_per_bet
+      return true unless combo_bets_rules?
+
+      bet.bet_legs.all? do |bet_leg|
+        bet_leg.odd_value >= customer_bonus.min_odds_per_bet
+      end
+    end
+
     def bet_rollover_amount
       [
         customer_bonus.max_rollover_per_bet,
         bet.amount * customer_bonus.sportsbook_multiplier
       ].min
+    end
+
+    def combo_bets_rules?
+      bet.combo_bets? && customer_bonus.limit_per_each_bet_leg
     end
   end
 end

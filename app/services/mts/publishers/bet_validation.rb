@@ -17,7 +17,7 @@ module Mts
       end
 
       def message
-        @message ||= ::Mts::Messages::ValidationRequest.new([bet])
+        @message ||= request_builder.new([bet])
       end
 
       def formatted_message
@@ -27,6 +27,12 @@ module Mts
       def update_bet
         bet.update(validation_ticket_id: message.ticket_id,
                    validation_ticket_sent_at: Time.zone.now)
+      end
+
+      def request_builder
+        return ::Mts::Messages::ComboBetsValidationRequest if bet.combo_bets?
+
+        ::Mts::Messages::SingleBetValidationRequest
       end
     end
   end

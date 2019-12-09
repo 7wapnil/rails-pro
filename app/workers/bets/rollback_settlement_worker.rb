@@ -4,10 +4,10 @@ module Bets
   class RollbackSettlementWorker < ApplicationWorker
     sidekiq_options queue: :default, retry: 0
 
-    def perform(bet_id)
-      @bet = Bet.find(bet_id)
+    def perform(bet_leg_id)
+      @bet_leg = BetLeg.includes(:bet).find(bet_leg_id)
 
-      Bets::RollbackSettlement.call(bet: @bet)
+      Bets::RollbackSettlement.call(bet_leg: @bet_leg)
     end
 
     def extra_log_info

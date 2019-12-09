@@ -2,35 +2,41 @@
   = card header: t('entities.bet'), class: 'bet-info' do
     .row
       .col
-        %table.table
-          %tr
-            %td= t('attributes.id')
-            %td= bet.id
-          %tr
-            %td= t('attributes.customer')
-            %td= link_to bet.customer_username, bet.customer
-          %tr
-            %td= t('entities.bonus')
-            %td= link_to_if bet.customer_bonus, bet.customer_bonus_code, bet.customer_bonus
-          %tr
-            %td= t('attributes.event')
-            %td= link_to bet.event_name, bet.event
-          %tr
-            %td= t('attributes.market')
-            %td= bet.market_name
-          %tr
-            %td= t('attributes.selection')
-            %td= bet.odd_name
-          %tr
-            %td= t('attributes.odd_value')
-            %td= bet.odd_value
-          %tr
-            %td= t('attributes.counted_towards_rollover')
-            %td= bet.counted_towards_rollover
-          %tr
-            %td= t('attributes.bet_type')
-            %td
-              %span.badge.badge-primary= bet.bet_type
+        .row
+          %table.table
+            %tr
+              %td= t('attributes.id')
+              %td= bet.id
+            %tr
+              %td= t('attributes.customer')
+              %td= link_to bet.customer_username, bet.customer
+            %tr
+              %td= t('entities.bonus')
+              %td= link_to_if bet.customer_bonus, bet.customer_bonus_code, bet.customer_bonus
+            %tr
+              %td= t('attributes.counted_towards_rollover')
+              %td= bet.counted_towards_rollover
+            %tr
+              %td= t('attributes.bet_type')
+              %td
+                %span.badge.badge-primary= bet.bet_type
+        .row
+          %hr
+        .row
+          %table.table
+            %thead
+              %tr
+                %th= t('attributes.event')
+                %th= t('attributes.market')
+                %th= t('attributes.selection')
+                %th= t('attributes.odd_value')
+            %tbody
+              - bet.bet_legs.each do |bet_leg|
+                %tr
+                  %td= link_to bet_leg.event.name, bet_leg.event
+                  %td= bet_leg.market.name
+                  %td= bet_leg.odd.name
+                  %td= bet_leg.odd_value
       .col
         %table.table
           %tr

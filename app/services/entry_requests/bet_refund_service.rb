@@ -4,11 +4,12 @@ module EntryRequests
   class BetRefundService < ApplicationService
     include JobLogger
 
-    def initialize(entry_request:, message:, code:)
+    def initialize(entry_request:, message:, code:, details:)
       @entry_request = entry_request
       @bet = entry_request.origin
       @refund_message = message
       @refund_code = code
+      @rejection_details = details
     end
 
     def call
@@ -19,7 +20,8 @@ module EntryRequests
 
     private
 
-    attr_reader :entry_request, :bet, :refund_message, :refund_code
+    attr_reader :entry_request, :bet, :refund_message, :refund_code,
+                :rejection_details
 
     def authorize_refund!
       ActiveRecord::Base.transaction do
@@ -32,6 +34,7 @@ module EntryRequests
           refund_message,
           code: refund_code
         )
+        update_bet_legs_notification
 
         notify_betslip_about_refund
       end
@@ -50,6 +53,15 @@ module EntryRequests
       raise Bets::RequestFailedError, entry_request.result_message
     end
 
+    def update_bet_legs_notification
+      bet.bet_legs.each do |bet_leg|
+        rejection_params = bet_leg_rejection_params(bet_leg.id)
+        next unless rejection_params
+
+        bet_leg.update(rejection_params)
+      end
+    end
+
     def notify_betslip_about_refund
       WebSocket::Client.instance.trigger_bet_update(bet.reload)
     end
@@ -58,6 +70,10 @@ module EntryRequests
       log_job_message(:error, message: error.message,
                               bet_id: bet.id,
                               error_object: error)
+    end
+
+    def bet_leg_rejection_params(bet_leg_id)
+      rejection_details[bet_leg_id.to_s]&.symbolize_keys
     end
   end
 end

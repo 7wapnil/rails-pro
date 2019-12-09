@@ -31,7 +31,7 @@ module Betting
     attr_reader :args, :customer, :query
 
     def base_query
-      Bet.includes(:currency, odd: { market: { event: :title } })
+      Bet.includes(:currency, bet_legs: %i[odd market event title])
          .where(customer: customer)
          .order(created_at: :desc)
     end

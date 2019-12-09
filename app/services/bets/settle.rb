@@ -10,8 +10,9 @@ module Bets
 
     delegate :customer_bonus, to: :bet
 
-    def initialize(bet:, void_factor:, result:)
-      @bet = bet
+    def initialize(bet_leg:, void_factor:, result:)
+      @bet_leg = bet_leg
+      @bet = bet_leg.bet
       @raw_void_factor = void_factor
       @result = result
     end
@@ -20,36 +21,48 @@ module Bets
       ActiveRecord::Base.transaction do
         lock_important_entities!
         validate_settlement!
-        settle_bet!
-        perform_payout!
-        settle_customer_bonus!
+
+        settle!
       end
-    rescue ::Bets::NotAcceptedError => error
+    rescue ::Bets::SettledBetLegError => error
       raise error
     rescue StandardError => error
       bet.send_to_manual_settlement!(error.message)
       raise error
     end
 
-    private
-
-    attr_reader :bet, :raw_void_factor, :result, :entry_request
+    protected
 
     def lock_important_entities!
-      bet.lock!
-      customer_bonus&.lock!
+      raise NotImplementedError, "Define ##{__method__}"
     end
 
+    def settle!
+      raise NotImplementedError, "Define ##{__method__}"
+    end
+
+    def settlement_status
+      raise NotImplementedError, "Define ##{__method__}"
+    end
+
+    def void_factor
+      raise NotImplementedError, "Define ##{__method__}"
+    end
+
+    private
+
+    attr_reader :bet_leg, :bet, :raw_void_factor, :result, :entry_request
+
     def validate_settlement!
-      validate_bet!
+      validate_bet_leg!
       validate_void_factor!
     end
 
-    def validate_bet!
-      return if bet.accepted?
+    def validate_bet_leg!
+      return if bet_leg.settlement_status.nil?
 
-      raise ::Bets::NotAcceptedError,
-            I18n.t('errors.messages.bets.not_accepted')
+      raise ::Bets::SettledBetLegError,
+            I18n.t('errors.messages.bets.settled_bet_leg')
     end
 
     def validate_void_factor!
@@ -59,8 +72,8 @@ module Bets
             I18n.t('errors.messages.bets.not_supported_void_factor')
     end
 
-    def void_factor
-      @void_factor ||= Float(raw_void_factor)
+    def bet_leg_void_factor
+      @bet_leg_void_factor ||= Float(raw_void_factor)
     rescue TypeError, ArgumentError
       raw_void_factor
     end
@@ -72,8 +85,8 @@ module Bets
       )
     end
 
-    def settlement_status
-      return Bet::VOIDED if void_factor == ACTIVE_VOID_FACTOR
+    def raw_settlement_status
+      return Bet::VOIDED if bet_leg_void_factor == ACTIVE_VOID_FACTOR
 
       result == WIN_RESULT ? Bet::WON : Bet::LOST
     end

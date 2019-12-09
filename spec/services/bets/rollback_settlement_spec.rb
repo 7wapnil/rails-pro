@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 
 describe Bets::RollbackSettlement do
-  subject { described_class.call(bet: bet) }
+  subject { described_class.call(bet_leg: bet_leg) }
 
-  let(:bet) { create(:bet, :settled, :won) }
+  let(:bet) { create(:bet, :settled, :won, :with_bet_leg) }
+  let(:bet_leg) { bet.bet_legs.first }
   let!(:customer_bonus) do
     create(:customer_bonus, bets: [bet], customer: bet.customer)
   end
@@ -126,7 +127,7 @@ describe Bets::RollbackSettlement do
   end
 
   context 'on lost bet' do
-    let(:bet) { create(:bet, :settled, :lost) }
+    let(:bet) { create(:bet, :settled, :lost, :with_bet_leg) }
 
     it 'is reverted' do
       subject
@@ -148,7 +149,7 @@ describe Bets::RollbackSettlement do
   end
 
   context 'on voided bet' do
-    let(:bet) { create(:bet, :settled, :voided) }
+    let(:bet) { create(:bet, :settled, :voided, :with_bet_leg) }
     let!(:refund_entry) do
       create(:entry, :refund, origin: bet, amount: bet.amount)
     end
@@ -181,7 +182,7 @@ describe Bets::RollbackSettlement do
   end
 
   context 'on pending manual settlement bet' do
-    let(:bet) { create(:bet, :pending_manual_settlement) }
+    let(:bet) { create(:bet, :pending_manual_settlement, :with_bet_leg) }
 
     it 'is reverted' do
       subject
@@ -204,7 +205,7 @@ describe Bets::RollbackSettlement do
   end
 
   context 'on invalid bet' do
-    let(:bet) { create(:bet, :rejected) }
+    let(:bet) { create(:bet, :rejected, :with_bet_leg) }
 
     it 'is not reverted' do
       subject
@@ -220,8 +221,9 @@ describe Bets::RollbackSettlement do
     end
 
     it 'raises an error' do
-      expect { subject }
-        .to raise_error('Bet has not been sent to settlement yet')
+      expect { subject }.to raise_error(
+        'Bet has not been sent to settlement yet/was not accepted'
+      )
     end
 
     it 'does not call bonuses rollover' do

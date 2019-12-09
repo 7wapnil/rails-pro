@@ -49,11 +49,15 @@ shared_context 'manual settlement' do
 
   let(:base_bet_params) do
     {
-      odd: odd,
-      odd_value: odd.value,
       currency: currency,
       customer: customer,
-      amount: bet_amount
+      amount: bet_amount,
+      bet_legs_attributes: [
+        {
+          odd: odd,
+          odd_value: odd.value
+        }
+      ]
     }
   end
   let(:placed_bet) { create(:bet, :accepted, **base_bet_params) }

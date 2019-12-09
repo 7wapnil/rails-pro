@@ -8,7 +8,7 @@ describe Bet, '#index' do
       create(:event_scope, :category, name: 'Pakistan')
       create(:event_scope, :category, name: 'France')
       create(:event_scope, :category, name: 'Germany')
-      create_list(:bet, per_page_count / 2)
+      create_list(:bet, per_page_count / 2, :with_bet_leg)
 
       login_as create(:admin_user), scope: :user
       visit bets_path
@@ -16,21 +16,25 @@ describe Bet, '#index' do
 
     it 'shows bets list' do
       within 'table.table.entities' do
-        Bet.limit(per_page_count).each do |bet|
-          expect(page).to have_content(bet.id)
-          expect(page).to have_content(bet.customer.username)
-          expect(page).to have_content(bet.odd.market.event.name)
-          expect(page).to have_content(bet.odd.market.name)
-          expect(page).to have_content(bet.odd.name)
-          expect(page).to have_content(bet.odd_value)
-          expect(page).to have_content(bet.amount)
-        end
+        Bet.limit(per_page_count)
+           .includes(bet_legs: { odd: :market })
+           .each do |bet|
+             bet_leg = bet.bet_legs.first
+
+             expect(page).to have_content(bet.id)
+             expect(page).to have_content(bet.customer.username)
+             expect(page).to have_content(bet_leg.odd.market.event.name)
+             expect(page).to have_content(bet_leg.odd.market.name)
+             expect(page).to have_content(bet_leg.odd.name)
+             expect(page).to have_content(bet_leg.odd_value)
+             expect(page).to have_content(bet.amount)
+           end
       end
     end
 
     context 'pagination' do
       it 'is shown' do
-        create_list(:bet, per_page_count)
+        create_list(:bet, per_page_count, :with_bet_leg)
         visit bets_path
         expect(page).to have_selector('ul.pagination')
       end
@@ -101,29 +105,31 @@ describe Bet, '#index' do
       end
 
       context 'by Sport' do
+        let(:bet) { Bet.first }
+        let(:bet_leg) { bet.bet_legs.first }
+        let(:picked_sport) { bet_leg.title }
+
         it 'is found' do
-          bet = Bet.first
-          picked_sport = bet.title.external_name
           available_sports = page.find('#bets_title_id_eq')
                                  .all('option')
                                  .map(&:text)
                                  .reject(&:blank?)
-          select picked_sport, from: 'Title ID equals'
+          select picked_sport.external_name, from: 'Event Title equals'
           click_on('Search')
 
           within 'table.table.entities tbody' do
             expect(page).to have_selector(resource_row_selector(bet))
-            expect(page).to have_content(bet.title.external_name)
-            (available_sports - [picked_sport]).each do |sport|
+            expect(page).to have_content(picked_sport.external_name)
+            (available_sports - [picked_sport.external_name]).each do |sport|
               expect(page).not_to have_content(sport)
             end
           end
         end
 
         it 'is not found' do
-          bet = Bet.first
-          picked_sport = bet.title.decorate.name
-          Bet.joins(:event).where(events: { title_id: bet.title.id }).delete_all
+          Bet.joins(bet_legs: :event)
+             .where(events: { title_id: bet_leg.title.id })
+             .destroy_all
           select picked_sport, from: 'Title ID equals'
           click_on('Search')
 
@@ -137,10 +143,11 @@ describe Bet, '#index' do
 
       context 'by Tournament' do
         let(:tournament) { EventScope.tournament.first }
+        let(:bet) { create(:bet, :with_bet_leg) }
+        let!(:bet_leg) { bet.bet_legs.first }
 
         it 'is found' do
-          bet = create(:bet)
-          bet.event.event_scopes << tournament
+          bet_leg.event.event_scopes << tournament
           picked_tournament = tournament.name
           available_tournaments = page.find('#bets_tournaments_name_eq')
                                       .all('option')
@@ -151,7 +158,7 @@ describe Bet, '#index' do
 
           within 'table.table.entities tbody' do
             expect(page).to have_selector(resource_row_selector(bet))
-            expect(page).to have_content(bet.title.name)
+            expect(page).to have_content(bet_leg.title.name)
             (available_tournaments - [picked_tournament]).each do |tournament|
               expect(page).not_to have_content(tournament)
             end
@@ -172,8 +179,8 @@ describe Bet, '#index' do
       end
 
       context 'by status' do
-        let!(:bet_cancelled) { create(:bet, :cancelled) }
-        let!(:bet_settled) { create(:bet, :settled) }
+        let!(:bet_cancelled) { create(:bet, :cancelled, :with_bet_leg) }
+        let!(:bet_settled) { create(:bet, :settled, :with_bet_leg) }
 
         it 'found by one category' do
           select Bet::CANCELLED, from: 'Status eq'
@@ -199,8 +206,8 @@ describe Bet, '#index' do
       end
 
       context 'by settlement status' do
-        let!(:bet_lost) { create(:bet, :lost) }
-        let!(:bet_won) { create(:bet, :won) }
+        let!(:bet_lost) { create(:bet, :lost, :with_bet_leg) }
+        let!(:bet_won) { create(:bet, :won, :with_bet_leg) }
 
         it 'found by one category' do
           select Bet::WON, from: 'Settlement status eq'

@@ -3,8 +3,9 @@
 module EntryRequests
   module Factories
     class Rollback < ApplicationService
-      def initialize(bet:)
-        @bet = bet
+      def initialize(bet_leg:)
+        @bet_leg = bet_leg
+        @bet = bet_leg.bet
       end
 
       def call
@@ -13,7 +14,7 @@ module EntryRequests
 
       private
 
-      attr_reader :bet
+      attr_reader :bet, :bet_leg
 
       def entry_request_attributes
         {
@@ -35,7 +36,7 @@ module EntryRequests
 
       def comment
         "Rollback won amount #{winning_entry.amount} #{bet.currency} " \
-        "for #{bet.customer} on #{bet.event}."
+        "for #{bet.customer} on #{bet_leg.event}."
       end
     end
   end

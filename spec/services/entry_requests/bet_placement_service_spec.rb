@@ -12,13 +12,13 @@ describe EntryRequests::BetPlacementService do
                             bonus_balance: 0)
   end
 
-  let(:odd) { create(:odd, :active) }
+  let(:market) { create(:event, :with_market, :upcoming).markets.sample }
+  let(:odd) { create(:odd, :active, market: market) }
   let!(:bet) do
     create(:bet, customer: wallet.customer,
                  currency: currency,
                  odd: odd,
-                 amount: 100,
-                 market: create(:event, :with_market, :upcoming).markets.sample)
+                 amount: 100)
   end
   let(:entry_request) { EntryRequests::Factories::BetPlacement.call(bet: bet) }
 
@@ -130,7 +130,7 @@ describe EntryRequests::BetPlacementService do
 
   context 'with suspended market' do
     before do
-      bet.market.update!(status: Market::SUSPENDED)
+      market.update!(status: Market::SUSPENDED)
       subject.call
     end
 

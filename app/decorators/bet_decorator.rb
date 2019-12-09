@@ -6,16 +6,11 @@ class BetDecorator < ApplicationDecorator
   CANCELLED = 'cancelled'
 
   delegate :code, to: :currency, allow_nil: true, prefix: true
-
-  delegate :name, to: :odd, allow_nil: true, prefix: true
-
-  delegate :name, to: :market, allow_nil: true, prefix: true
-
-  delegate :name, :start_at, to: :event, allow_nil: true, prefix: true
-
   delegate :username, to: :customer, allow_nil: true, prefix: true
-
   delegate :code, to: :customer_bonus, allow_nil: true, prefix: true
+
+  decorates_association :scoped_bet_legs, with: BetLegDecorator
+  decorates_association :bet_legs, with: BetLegDecorator
 
   def display_status
     return PENDING if state_machine::PENDING_STATUSES_MASK.include?(status)
@@ -56,15 +51,16 @@ class BetDecorator < ApplicationDecorator
   end
 
   def bet_type
-    return unless event
-    return t('bets.bet_types.live') if created_at > event_start_at
-
-    t('bets.bet_types.prematch')
+    live? ? t('bets.bet_types.live') : t('bets.bet_types.prematch')
   end
 
   private
 
   def state_machine
     StateMachines::BetStateMachine
+  end
+
+  def live?
+    bet_legs.map(&:event).any? { |event| event.start_at < created_at }
   end
 end

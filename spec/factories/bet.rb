@@ -4,12 +4,34 @@ FactoryBot.define do
   factory :bet do
     amount { Faker::Number.decimal(2, 2) }
     base_currency_amount { amount * Faker::Number.decimal(2, 2).to_f }
-    odd_value { odd.value }
-    status    { StateMachines::BetStateMachine::INITIAL }
+    status { StateMachines::BetStateMachine::INITIAL }
 
     currency
-    association :odd, factory: %i[odd active]
     association :customer, :ready_to_bet
+
+    transient do
+      odd { {} }
+    end
+
+    after(:create) do |bet, evaluator|
+      next if evaluator.odd.blank?
+
+      create(:bet_leg, bet: bet,
+                       odd: evaluator.odd,
+                       odd_value: evaluator.odd.value)
+    end
+
+    trait :with_settled_bet_leg do
+      after(:create) do |bet, evaluator|
+        odd = evaluator.odd.blank? ? create(:odd) : evaluator.odd
+
+        create(:bet_leg, bet: bet,
+                         odd: odd,
+                         odd_value: odd.value,
+                         settlement_status: bet.settlement_status ||
+                                            BetLeg::VOIDED)
+      end
+    end
 
     trait :with_placement_entry do
       after(:create) do |bet|
@@ -57,9 +79,19 @@ FactoryBot.define do
       notification_code { Bets::Notification::EXCEPTION_CODES.sample }
     end
 
+    trait :with_bet_leg do
+      after(:create) do |bet|
+        create(:bet_leg, bet: bet)
+      end
+    end
+
+    trait :combo_bets do
+      combo_bets { true }
+    end
+
     trait :with_random_market do
-      after :build do |instance|
-        instance.market = FactoryBot.random_or_create :market
+      after(:create) do |bet|
+        create(:bet_leg, :with_random_market, bet: bet)
       end
     end
 

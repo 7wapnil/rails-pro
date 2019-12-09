@@ -14,7 +14,8 @@ describe CustomerBonuses::RolloverCalculationService do
       min_odds_per_bet: 1.5,
       max_rollover_per_bet: 50,
       rollover_initial_value: 1000,
-      rollover_balance: 1000
+      rollover_balance: 1000,
+      limit_per_each_bet_leg: true
     )
   end
 
@@ -25,7 +26,6 @@ describe CustomerBonuses::RolloverCalculationService do
       status: :settled,
       customer_bonus: bonus,
       odd: odd,
-      odd_value: 1.85,
       amount: 10,
       currency: primary_currency
     }
@@ -72,7 +72,18 @@ describe CustomerBonuses::RolloverCalculationService do
 
     it 'when odds are lower than min_odds_per_bet' do
       odd = create(:odd, value: 1.49)
-      bet = create(:bet, **bet_attributes.merge(odd: odd, odd_value: 1.49))
+      bet = create(:bet, **bet_attributes.merge(odd: odd))
+
+      expect { described_class.call(bet) }
+        .not_to change { bonus.reload.rollover_balance }
+
+      expect { described_class.call(bet) }
+        .not_to change { bet.reload.counted_towards_rollover }
+    end
+
+    it 'when one of bet legs has lower odds than min_odds_per_bet' do
+      bet = create(:bet, **bet_attributes, combo_bets: true)
+      create(:bet_leg, bet: bet, odd_value: 1.49)
 
       expect { described_class.call(bet) }
         .not_to change { bonus.reload.rollover_balance }

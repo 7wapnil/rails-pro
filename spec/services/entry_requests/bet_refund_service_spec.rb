@@ -5,12 +5,14 @@ describe EntryRequests::BetRefundService do
     described_class.call(
       entry_request: entry_request,
       message: message,
-      code: code
+      code: code,
+      details: details
     )
   end
 
   let(:message) { 'Rejected' }
   let(:code) { 'rejection_code' }
+  let(:details) { {} }
 
   let!(:currency) { create(:currency, :primary) }
   let!(:wallet) do
@@ -20,22 +22,31 @@ describe EntryRequests::BetRefundService do
   end
   let!(:balance_amount_before) { wallet.real_money_balance }
 
-  let(:odd) { create(:odd, :active) }
+  let(:odd) { create(:odd, :active, market: market) }
   let(:market) { create(:event, :with_market, :upcoming).markets.sample }
-  let(:bet_satus) { Bet::SENT_TO_EXTERNAL_VALIDATION }
+  let(:bet_status) { Bet::SENT_TO_EXTERNAL_VALIDATION }
   let!(:bet) do
     create(:bet, :with_placement_entry, customer: wallet.customer,
                                         currency: currency,
-                                        odd: odd,
                                         amount: 100,
-                                        status: bet_satus,
-                                        market: market)
+                                        status: bet_status,
+                                        odd: odd)
   end
   let(:entry_request) do
     EntryRequests::Factories::Refund.call(entry: bet.entry, comment: message)
   end
 
   context 'with new entry request' do
+    let(:bet_leg) { bet.bet_legs.first }
+    let(:details) do
+      {
+        bet_leg.id.to_s => {
+          notification_message: message,
+          notification_code: code
+        }
+      }
+    end
+
     before do
       allow(WebSocket::Client.instance).to receive(:trigger_bet_update)
 
@@ -48,6 +59,14 @@ describe EntryRequests::BetRefundService do
 
     it 'stores rejection reason' do
       expect(bet)
+        .to have_attributes(
+          notification_message: message,
+          notification_code: code
+        )
+    end
+
+    it 'stores rejection reason in failed bet leg' do
+      expect(bet_leg.reload)
         .to have_attributes(
           notification_message: message,
           notification_code: code

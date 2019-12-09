@@ -44,7 +44,7 @@ module EntryRequests
 
       def bet_cancel_comment
         "Cancel bet - #{placement_entry.amount.abs} #{bet.currency} " \
-        "for #{bet.customer} on #{bet.event}."
+        "for #{bet.customer} on #{event}."
       end
 
       def create_win_cancel_request!
@@ -71,7 +71,11 @@ module EntryRequests
 
       def win_cancel_comment
         "Cancel winnings - #{winning_entry.amount} #{bet.currency} " \
-        "for #{bet.customer} on #{bet.event}."
+        "for #{bet.customer} on #{event}."
+      end
+
+      def event
+        bet.bet_legs.first&.event
       end
     end
   end

@@ -118,6 +118,7 @@ describe Customers::Statistics::Calculator do
 
     let(:event) { create(:event) }
     let(:market) { create(:market, event: event) }
+    let(:odd) { create(:odd, market: market) }
 
     let(:external_validation_state) do
       StateMachines::BetStateMachine::SENT_TO_EXTERNAL_VALIDATION
@@ -125,64 +126,74 @@ describe Customers::Statistics::Calculator do
 
     let(:prematch_attributes) do
       {
-        market: market,
+        odd: odd,
         created_at: event.start_at - 1.hour,
         customer: customer
       }
     end
     let!(:prematch_bets) do
       [
-        create(:bet, :cancelled, prematch_attributes),
-        create(:bet, :rejected, prematch_attributes),
-        create(:bet, :failed, prematch_attributes)
+        create(:bet, :cancelled, :with_bet_leg, prematch_attributes),
+        create(:bet, :rejected, :with_bet_leg, prematch_attributes),
+        create(:bet, :failed, :with_bet_leg, prematch_attributes)
       ]
     end
 
     let!(:pending_prematch_bets) do
       [
-        create(:bet, prematch_attributes),
-        create(:bet, :sent_to_internal_validation, prematch_attributes),
-        create(:bet, :validated_internally, prematch_attributes),
-        create(:bet, status: external_validation_state, **prematch_attributes),
-        create(:bet, :accepted, prematch_attributes)
+        create(:bet, :with_bet_leg, prematch_attributes),
+        create(:bet, :with_bet_leg, :sent_to_internal_validation,
+               prematch_attributes),
+        create(:bet, :with_bet_leg, :validated_internally,
+               prematch_attributes),
+        create(:bet, :with_bet_leg, status: external_validation_state,
+                                    **prematch_attributes),
+        create(:bet, :with_bet_leg, :accepted, prematch_attributes)
       ]
     end
     let(:won_prematch_bets) do
       [
-        create_list(:bet, rand(1..3), :settled, :won, prematch_attributes),
-        create(:bet, :won, :manually_settled, prematch_attributes)
+        create_list(:bet, rand(1..3), :settled, :won, :with_bet_leg,
+                    prematch_attributes),
+        create(:bet, :won, :manually_settled, :with_bet_leg,
+               prematch_attributes)
       ].flatten
     end
     let!(:settled_prematch_bets) do
       [
-        create_list(:bet, rand(1..3), :settled, prematch_attributes),
+        create_list(:bet, rand(1..3), :settled, :with_bet_leg,
+                    prematch_attributes),
         won_prematch_bets
       ].flatten
     end
 
-    let(:live_attributes) { { market: market, customer: customer } }
+    let(:live_attributes) { { odd: odd, customer: customer } }
     let!(:live_bets) do
       [
-        create(:bet, :cancelled, live_attributes),
-        create(:bet, :rejected, live_attributes),
-        create(:bet, :failed, live_attributes)
+        create(:bet, :cancelled, :with_bet_leg, live_attributes),
+        create(:bet, :rejected, :with_bet_leg, live_attributes),
+        create(:bet, :failed, :with_bet_leg, live_attributes)
       ]
     end
     let!(:pending_live_bets) do
       [
-        create(:bet, live_attributes),
-        create(:bet, :sent_to_internal_validation, live_attributes),
-        create(:bet, :validated_internally, live_attributes),
-        create(:bet, status: external_validation_state, **live_attributes),
-        create(:bet, :accepted, live_attributes)
+        create(:bet, :with_bet_leg, live_attributes),
+        create(:bet, :sent_to_internal_validation, :with_bet_leg,
+               live_attributes),
+        create(:bet, :validated_internally, :with_bet_leg, live_attributes),
+        create(:bet, :with_bet_leg, status: external_validation_state,
+                                    **live_attributes),
+        create(:bet, :accepted, :with_bet_leg, live_attributes)
       ]
     end
     let(:won_live_bets) do
-      create_list(:bet, rand(1..3), :settled, :won, live_attributes)
+      create_list(:bet, rand(1..3), :settled, :won, :with_bet_leg,
+                  live_attributes)
     end
     let!(:settled_live_bets) do
       [
-        create_list(:bet, rand(1..3), :settled, live_attributes),
+        create_list(:bet, rand(1..3), :settled, :with_bet_leg,
+                    live_attributes),
         won_live_bets
       ].flatten
     end

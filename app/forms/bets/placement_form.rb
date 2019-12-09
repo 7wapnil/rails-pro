@@ -6,12 +6,13 @@ module Bets
 
     attr_accessor :subject
 
-    delegate :event, :odd, :market, :customer, to: :subject
+    delegate :customer, to: :subject
     delegate :wallet, to: :customer
 
     def validate!
-      check_if_odd_active!
+      check_if_odds_active!
       check_if_market_active!
+      check_if_leg_odds_match_event_odds! unless subject.odds_change?
       limits_validation!
       check_provider_connection!
       check_if_customer_balance_positive!
@@ -31,17 +32,22 @@ module Bets
       raise ::Bets::PlacementError, 'Bet placed with negative balance'
     end
 
-    def check_if_odd_active!
-      return if odd.active?
+    def check_if_odds_active!
+      return if odds.all?(&:active?)
 
       raise ::Bets::PlacementError, I18n.t('errors.messages.bet_odd_inactive')
     end
 
-    def limits_validation!
-      BetPlacement::BettingLimitsValidationService.call(subject)
-      return if subject.errors.empty?
+    def check_if_leg_odds_match_event_odds!
+      subject.bet_legs.each do |leg|
+        next if leg.odd_value == leg.odd.value
 
-      raise ::Bets::PlacementError, I18n.t('errors.messages.betting_limits')
+        raise ::Bets::PlacementError, I18n.t('errors.messages.bet_odd_outdated')
+      end
+    end
+
+    def limits_validation!
+      raise NotImplementedError, "Define ##{__method__}"
     end
 
     def check_provider_connection!
@@ -57,17 +63,35 @@ module Bets
     end
 
     def rejected_as_in_play_offline_event
-      event.in_play? && Radar::Producer.live.unsubscribed?
+      events.any?(&:in_play?) && Radar::Producer.live.unsubscribed?
     end
 
     def rejected_as_offline_upcoming_event
-      event.upcoming? && Radar::Producer.prematch.unsubscribed?
+      events.any?(&:upcoming?) && Radar::Producer.prematch.unsubscribed?
     end
 
     def check_if_market_active!
-      return if market.active? && market.event.available?
+      return if markets.all?(&:active?) &&
+                events.all?(&:available?)
 
       raise ::Bets::PlacementError, I18n.t('errors.messages.market_inactive')
+    end
+
+    def bet_legs
+      @bet_legs ||= subject.bet_legs
+                           .includes(odd: { market: :event })
+    end
+
+    def odds
+      @odds ||= bet_legs.map(&:odd)
+    end
+
+    def markets
+      @markets ||= odds.map(&:market)
+    end
+
+    def events
+      @events ||= markets.map(&:event)
     end
   end
 end
