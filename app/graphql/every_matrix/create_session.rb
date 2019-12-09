@@ -3,7 +3,7 @@
 module EveryMatrix
   class CreateSession < ::Base::Resolver
     argument :walletId, types.Int
-    argument :playItemId, !types.String
+    argument :playItemSlug, !types.String
 
     type EveryMatrix::SessionType
 
@@ -16,13 +16,13 @@ module EveryMatrix
     def resolve(_obj, args)
       form = ::Forms::EveryMatrix::CreateSession.new(
         wallet_id: args['walletId'],
-        play_item_id: args['playItemId'],
+        play_item_slug: args['playItemSlug'],
         subject: @current_customer
       )
 
       form.validate!
 
-      OpenStruct.new(launchUrl: form.launch_url)
+      OpenStruct.new(launchUrl: form.launch_url, playItem: form.play_item)
     end
   end
 end

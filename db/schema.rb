@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_05_111720) do
+ActiveRecord::Schema.define(version: 2019_12_07_234842) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -544,10 +544,11 @@ ActiveRecord::Schema.define(version: 2019_12_05_111720) do
     t.bigint "every_matrix_vendor_id"
     t.bigint "every_matrix_content_provider_id"
     t.integer "position"
-    t.decimal "bonus_contribution", default: "1.0", null: false
     t.datetime "last_updated_recommended_games_at"
+    t.decimal "bonus_contribution", default: "1.0", null: false
     t.index ["every_matrix_content_provider_id"], name: "index_play_items_on_content_providers_id"
     t.index ["every_matrix_vendor_id"], name: "index_play_items_on_vendors_id"
+    t.index ["slug"], name: "index_every_matrix_play_items_on_slug"
     t.index ["type"], name: "index_every_matrix_play_items_on_type"
   end
 

@@ -9,8 +9,10 @@ describe GraphQL, '#createEveryMatrixSession' do
                             variables: variables)
   end
   let(:query) do
-    %(mutation createEveryMatrixSession($walletId: Int, $playItemId: String!) {
-        createEveryMatrixSession(walletId: $walletId, playItemId: $playItemId) {
+    %(mutation createEveryMatrixSession($walletId: Int,
+                                        $playItemSlug: String!) {
+        createEveryMatrixSession(walletId: $walletId,
+                                 playItemSlug: $playItemSlug) {
           launchUrl
         }
       })
@@ -43,7 +45,7 @@ describe GraphQL, '#createEveryMatrixSession' do
       let(:variables) do
         {
           walletId: auth_customer.wallet.id,
-          playItemId: game.id
+          playItemSlug: game.slug
         }
       end
 
@@ -60,7 +62,7 @@ describe GraphQL, '#createEveryMatrixSession' do
       let(:variables) do
         {
           walletId: other_customer.wallet.id,
-          playItemId: game.id
+          playItemSlug: game.slug
         }
       end
 
@@ -72,7 +74,7 @@ describe GraphQL, '#createEveryMatrixSession' do
 
   context 'without authenticated customer' do
     let(:other_customer) { create(:customer, :ready_to_bet) }
-    let(:variables) { { playItemId: game.id } }
+    let(:variables) { { playItemSlug: game.slug } }
 
     it 'responds base launch url' do
       expect(response['data']['createEveryMatrixSession']['launchUrl'])

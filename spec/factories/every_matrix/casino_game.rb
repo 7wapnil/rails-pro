@@ -5,6 +5,7 @@ FactoryBot.define do
     sequence(:external_id, 10, &:to_s)
     url { Faker::Internet.url }
     name { Faker::Lorem.word }
+    slug { Faker::Internet.slug }
 
     vendor { create(:every_matrix_vendor) }
     content_provider { create(:every_matrix_content_provider) }

@@ -3,5 +3,6 @@ module EveryMatrix
     name 'Session'
 
     field :launchUrl, !types.String
+    field :playItem, PlayItemType
   end
 end

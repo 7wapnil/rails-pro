@@ -6,7 +6,7 @@ module Forms
       include ActiveModel::Model
       include ActiveModel::Validations::Callbacks
 
-      attr_accessor :play_item_id,
+      attr_accessor :play_item_slug,
                     :wallet_id,
                     :subject
 
@@ -15,13 +15,17 @@ module Forms
         validates :wallet, presence: true
       end
 
-      validates :play_item_id, presence: true
+      validates :play_item_slug, presence: true
 
       def launch_url
         ::EveryMatrix::Requests::LaunchUrlBuilder.call(
           play_item: play_item,
           session_id: session&.id
         )
+      end
+
+      def play_item
+        @play_item ||= ::EveryMatrix::PlayItem.find_by!(slug: play_item_slug)
       end
 
       private
@@ -41,10 +45,6 @@ module Forms
           wallet_id: wallet_id,
           play_item: play_item
         )
-      end
-
-      def play_item
-        @play_item ||= ::EveryMatrix::PlayItem.find(play_item_id)
       end
     end
   end
