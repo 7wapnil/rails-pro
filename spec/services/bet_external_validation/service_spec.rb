@@ -23,7 +23,8 @@ describe BetExternalValidation::Service do
       end
     end
 
-    context 'non stubbed mode' do
+    # TODO: uncomment context before move to staging
+    xcontext 'non stubbed mode' do
       before do
         expect(Mts::Mode).to receive(:stubbed?).and_return(false)
         described_class.call(bet)
