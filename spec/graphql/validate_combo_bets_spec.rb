@@ -4,9 +4,13 @@ describe GraphQL, '#validate_combo_bets' do
   let(:query) do
     %(query validateComboBets($odds: [ID]) {
       validateComboBets(odds: $odds) {
-        oddId
         valid
-        errorMessages
+        generalMessages
+        odds {
+          oddId
+          valid
+          errorMessages
+        }
       }
     })
   end
@@ -15,10 +19,15 @@ describe GraphQL, '#validate_combo_bets' do
     ArcanebetSchema.execute(query, context: {}, variables: variables)
   end
   let(:variables) { { odds: odds.map(&:id) } }
-  let(:odd_statuses) { response['data']['validateComboBets'] }
+  let(:response_data) { response['data']['validateComboBets'] }
+  let(:odd_statuses) { response_data['odds'] }
 
   context 'when uniq attributes' do
     let(:odds) { create_list(:odd, 3) }
+
+    it 'returns general status as valid' do
+      expect(response_data['valid']).to be_truthy
+    end
 
     it 'returns all odds with status valid' do
       expect(odd_statuses).to be_all { |odd| odd['valid'] }
@@ -45,6 +54,10 @@ describe GraphQL, '#validate_combo_bets' do
                                 competitor: competitor)
       create(:event_competitor, event: markets.last.event,
                                 competitor: competitor)
+    end
+
+    it 'returns general status as invalid' do
+      expect(response_data['valid']).to be_falsey
     end
 
     it 'returns all odds with status invalid' do

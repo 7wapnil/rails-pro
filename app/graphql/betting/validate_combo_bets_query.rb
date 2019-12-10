@@ -2,7 +2,7 @@
 
 module Betting
   class ValidateComboBetsQuery < ::Base::Resolver
-    type !types[::Betting::OddValidationType]
+    type ::Betting::ComboBetsValidationType
 
     description 'Validate odds for combo-bets'
 

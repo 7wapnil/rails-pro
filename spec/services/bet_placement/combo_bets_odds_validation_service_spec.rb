@@ -7,7 +7,7 @@ describe BetPlacement::ComboBetsOddsValidationService do
     let(:odds) { create_list(:odd, 3) }
 
     it 'returns all odds with status valid' do
-      expect(subject).to be_all(&:valid?)
+      expect(subject).to be_valid
     end
   end
 
@@ -16,7 +16,13 @@ describe BetPlacement::ComboBetsOddsValidationService do
     let(:control_odd) { create(:odd, market: uniq_odds.last.market) }
     let(:odds) { [uniq_odds, control_odd].flatten }
 
-    let(:odd_response) { subject.find { |odd| odd.odd_id == control_odd.id } }
+    let(:odd_response) do
+      subject.odds.find { |odd| odd.odd_id == control_odd.id }
+    end
+
+    it 'returns invalid status' do
+      expect(subject).not_to be_valid
+    end
 
     it 'returns invalid status for odd with offence' do
       expect(odd_response).not_to be_valid
@@ -44,13 +50,34 @@ describe BetPlacement::ComboBetsOddsValidationService do
                                 competitor: competitor)
     end
 
+    it 'returns invalid status' do
+      expect(subject).not_to be_valid
+    end
+
     it 'returns all odds with status invalid' do
-      expect(subject).to be_all { |odd| !odd.valid? }
+      expect(subject.odds).to be_all { |odd| !odd.valid? }
     end
 
     it 'returns error message for odd with offence' do
-      expect(subject.last.error_messages)
+      expect(subject.odds.last.error_messages)
         .to include(I18n.t('bets.notifications.conflicting_competitor'))
+    end
+  end
+
+  context 'when too many odds' do
+    let(:odd_count_limit) do
+      ::BetPlacement::ComboBetsOddsValidationService::ODDS_COUNT_LIMIT
+    end
+    let(:odds) { create_list(:odd, odd_count_limit + 1) }
+
+    it 'returns invalid status' do
+      expect(subject).not_to be_valid
+    end
+
+    it 'returns related general error message' do
+      expect(subject.general_messages)
+        .to include(I18n.t('errors.messages.too_many_bet_legs',
+                           limit: odd_count_limit))
     end
   end
 end

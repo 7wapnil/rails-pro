@@ -27,7 +27,7 @@ module Bets
       def match_combo_bets_rules?
         ::BetPlacement::ComboBetsOddsValidationService
           .call(odds.map(&:id))
-          .all?(&:valid?)
+          .valid?
       end
     end
   end
