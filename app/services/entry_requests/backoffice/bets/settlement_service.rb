@@ -83,10 +83,14 @@ module EntryRequests
         end
 
         def placed?
+          return false if bet.voided?
+
           PLACED_BET_STATUSES.member?(bet.status)
         end
 
         def voided?
+          return false if bet.won?
+
           REFUNDED_BET_STATUSES.member?(bet.status) || bet.voided?
         end
       end

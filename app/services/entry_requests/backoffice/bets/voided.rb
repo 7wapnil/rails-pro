@@ -14,7 +14,7 @@ module EntryRequests
           create_bet_cancel_request! if placed?
           create_win_cancel_request! if bet.won?
 
-          @entry_requests = [bet_cancel_request, win_cancel_request].compact
+          @entry_requests = [win_cancel_request, bet_cancel_request].compact
         end
 
         def recalculate_bonus_rollover!
