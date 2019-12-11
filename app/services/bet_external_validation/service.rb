@@ -39,8 +39,9 @@ module BetExternalValidation
 
     def title_live_bet_delay
       BettingLimit
-        .find_by(customer: customer, title: bet.odd.market.event.title)
-        &.live_bet_delay || 0
+        .where(customer: customer, title: bet.titles)
+        .pluck(:live_bet_delay)
+        .max || 0
     end
 
     def publisher

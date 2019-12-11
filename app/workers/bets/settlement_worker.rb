@@ -5,7 +5,7 @@ module Bets
     sidekiq_options queue: :default, retry: 0
 
     def perform(bet_leg_id, void_factor, result)
-      @bet_leg = BetLeg.find(bet_leg_id)
+      @bet_leg = BetLeg.includes(:bet).find(bet_leg_id)
       @void_factor = void_factor
       @result = result
 
@@ -23,7 +23,7 @@ module Bets
     def extra_log_info
       {
         bet_leg_id: @bet_leg.id,
-        bet_status: @bet.status,
+        bet_status: @bet_leg.bet.status,
         void_factor: @void_factor,
         result: @result
       }
