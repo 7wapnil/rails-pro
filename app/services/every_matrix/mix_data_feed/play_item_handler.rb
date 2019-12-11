@@ -38,6 +38,7 @@ module EveryMatrix
         {
           type: play_item_type,
           slug: data['slug'],
+          game_code: data['gameCode'],
           vendor: vendor,
           tags: data['categories'],
           content_provider: content_provider,
