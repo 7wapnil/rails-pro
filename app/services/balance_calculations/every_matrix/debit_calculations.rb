@@ -7,11 +7,22 @@ module BalanceCalculations
       delegate :customer_bonus, to: :wager, allow_nil: true
 
       def call
+        update_transaction
+
         {
           real_money_amount: calculated_real_money_amount,
           bonus_amount: calculated_bonus_amount,
           cancelled_bonus_amount: calculated_cancelled_bonus_amount
         }
+      end
+
+      private
+
+      def update_transaction
+        transaction.update_columns(
+          real_money_ratio: ratio,
+          customer_bonus_id: transaction.wager&.customer_bonus&.id
+        )
       end
 
       def ratio
