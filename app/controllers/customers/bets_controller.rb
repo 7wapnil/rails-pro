@@ -9,7 +9,7 @@ module Customers
       EntryRequests::Backoffice::Bets::Proceed.call(@bet, bet_params)
 
       flash[:success] = t('messages.bets.flash')
-      redirect_to bets_customer_path(@customer)
+      redirect_to bet_path(@bet)
     rescue Bets::InvalidStatusError, Bets::AuthorizeWalletEntryError => error
       flash[:error] = error.message
       redirect_back fallback_location: root_path

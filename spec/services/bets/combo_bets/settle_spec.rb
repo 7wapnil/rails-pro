@@ -191,8 +191,11 @@ describe Bets::ComboBets::Settle do
     let(:void_factor) { Bets::Settle::ACTIVE_VOID_FACTOR }
     let!(:unsettled_bet_leg) { create(:bet_leg, bet: bet) }
     let(:expected_odd_value) do
-      (bet.bet_legs[1].odd_value * bet.bet_legs[2].odd_value)
-        .round(Bet::PRECISION)
+      bet.bet_legs
+         .reject(&:voided?)
+         .map(&:odd_value)
+         .reduce(:*)
+         .round(Bet::PRECISION)
     end
 
     it 'does not change bet status' do

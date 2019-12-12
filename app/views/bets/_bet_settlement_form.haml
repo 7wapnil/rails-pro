@@ -1,0 +1,14 @@
+.col
+  = simple_form_for [bet.customer, bet.object] do |f|
+    .row
+      .col
+        = f.input :settlement_status,
+                  collection: Bet::BET_SETTLEMENT_STATUSES,
+                  include_blank: false
+        = f.fields_for :entry_request do |e|
+          = e.input :comment,
+                    as: :text,
+                    input_html: { class: 'form-control mt-0 mb-3 string required mr-1 rounded' }
+    .row
+      .col
+        = f.submit I18n.t('proceed_manually'), class: 'btn btn-outline-danger', required: true

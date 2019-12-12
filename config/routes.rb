@@ -58,6 +58,7 @@ Rails.application.routes.draw do
     resource :statistics, only: :show, path: 'stats'
     resources :entry_requests, only: :create
     resources :bets, only: :update
+    resource :bet_legs, only: :update
     resources :every_matrix_transactions, only: :index
   end
 

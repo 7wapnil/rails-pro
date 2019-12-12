@@ -26,7 +26,8 @@ module Mts
     end
 
     def retry_external_validation
-      bet.update(odd_value: bet.odd.value)
+      renew_outdated_bet_legs
+
       BetExternalValidation::Service.call(bet)
       WebSocket::Client.instance.trigger_bet_update(bet)
 
@@ -34,7 +35,7 @@ module Mts
     end
 
     def repeatable?
-      response.rejected? && bet.odds_change? && new_odd_value?
+      response.rejected? && bet.odds_change? && outdated_bet_legs.any?
     end
 
     def finish_external_validation_with_acceptance
@@ -50,6 +51,20 @@ module Mts
       log_bet_failed_external_validation
     end
 
+    def renew_outdated_bet_legs
+      outdated_bet_legs.each do |bet_leg|
+        bet_leg.update(odd_value: bet_leg.odd.value)
+      end
+    end
+
+    def outdated_bet_legs
+      @outdated_bet_legs ||= bet.bet_legs
+                                .joins(:odd)
+                                .includes(:odd)
+                                .where('bet_legs.odd_value != odds.value')
+                                .load
+    end
+
     def refund_entry_request
       EntryRequests::Factories::Refund.call(
         entry: bet.entry,
@@ -61,10 +76,6 @@ module Mts
       log_job_message(:info, message: 'Bet failed external validation.',
                              payload: response.rejection_json,
                              bet_id: bet.id)
-    end
-
-    def new_odd_value?
-      bet.odd.value != bet.odd_value
     end
 
     def log_bet_retry_external_validation

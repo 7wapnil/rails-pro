@@ -87,7 +87,7 @@ module OddsFeed
 
       def find_bet_legs_by_odd_id(external_id)
         BetLeg.joins(:bet, :odd)
-              .where(bets: { status: Bet::ACCEPTED })
+              .where(bet_legs: { settlement_status: nil })
               .where(odds: { external_id: external_id })
               .includes(:bet)
       end

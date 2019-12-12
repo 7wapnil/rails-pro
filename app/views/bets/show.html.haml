@@ -30,6 +30,7 @@
                 %th= t('attributes.market')
                 %th= t('attributes.selection')
                 %th= t('attributes.odd_value')
+                %th= t('attributes.settlement')
             %tbody
               - bet.bet_legs.each do |bet_leg|
                 %tr
@@ -37,6 +38,7 @@
                   %td= bet_leg.market.name
                   %td= bet_leg.odd.name
                   %td= bet_leg.odd_value
+                  %td= settle_badge(bet_leg.settlement_status)
       .col
         %table.table
           %tr
@@ -77,20 +79,13 @@
             %td= t('attributes.actual_payout')
             %td= render 'entries', entries: bet.entries
     %hr
-    = simple_form_for [bet.customer, bet.object] do |f|
-      .row
+    .row
+      = render 'bet_settlement_form', bet: bet
+      - if bet.combo_bets?
+        = render 'bet_leg_settlement_form', bet: bet
+      - else
         .col
-          = f.input :settlement_status,
-                    collection: Bet::BET_SETTLEMENT_STATUSES,
-                    include_blank: false
-          = f.fields_for :entry_request do |e|
-            = e.input :comment,
-                      as: :text,
-                      input_html: { class: 'form-control mt-0 mb-3 string required mr-1 rounded' }
-        .col
-      .row
-        .col
-          = f.submit I18n.t('proceed_manually'), class: 'btn btn-outline-danger', required: true
+
     .row
       .col
         %hr

@@ -43,7 +43,7 @@ module EntryRequests
 
         def bet_request_attributes
           {
-            kind: EntryKinds::MANUAL_BET_CANCEL,
+            kind: EntryKinds::MANUAL_BET_PLACEMENT,
             mode: EntryRequest::INTERNAL,
             amount: placement_entry.amount,
             real_money_amount: placement_entry.real_money_amount,

@@ -10,7 +10,10 @@ class BetsController < ApplicationController
   end
 
   def show
-    @bet = Bet.includes(:currency, :customer, bet_legs: :odd)
+    @bet = Bet.includes(:currency,
+                        :customer,
+                        bet_legs: %i[odd market event],
+                        entries: %i[wallet currency])
               .with_winning_amount
               .find(params[:id])
   end

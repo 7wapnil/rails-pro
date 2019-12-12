@@ -1,0 +1,14 @@
+.col
+  = simple_form_for :bet_legs, url: customer_bet_legs_path(bet.customer), method: :patch do |f|
+    .row
+      .col
+        = f.input :bet_leg,
+                  collection: bet.bet_leg_collection,
+                  include_blank: false
+        = f.input :settlement_status,
+                  collection: BetLeg::SETTLEMENT_STATUSES,
+                  include_blank: true
+        %br
+    .row
+      .col
+        = f.submit I18n.t('settle_bet_leg'), class: 'btn btn-outline-danger', required: true

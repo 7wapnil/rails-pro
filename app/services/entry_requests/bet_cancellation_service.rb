@@ -28,6 +28,7 @@ module EntryRequests
         authorize_entry_request!
 
         update_bet_status!
+        notify_betslip
       end
     end
 
@@ -52,6 +53,10 @@ module EntryRequests
         code: Bets::Notification::MTS_CANCELLATION_ERROR
       )
       log_unsuccessful_bet_cancel_error
+    end
+
+    def notify_betslip
+      WebSocket::Client.instance.trigger_bet_update(bet)
     end
 
     def successful_status_code?

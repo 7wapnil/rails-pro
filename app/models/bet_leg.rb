@@ -15,6 +15,7 @@ class BetLeg < ApplicationRecord
 
   belongs_to :bet
   belongs_to :odd
+  belongs_to :settlement_initiator, optional: true, class_name: User.name
 
   has_one :market, through: :odd
   has_one :event, through: :market

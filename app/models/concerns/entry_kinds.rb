@@ -13,6 +13,7 @@ module EntryKinds
     system_bet_cancel: SYSTEM_BET_CANCEL = 'system_bet_cancel',
     system_bet_resettle: SYSTEM_BET_RESETTLE = 'system_bet_resettle',
     manual_bet_cancel: MANUAL_BET_CANCEL = 'manual_bet_cancel',
+    manual_bet_placement: MANUAL_BET_PLACEMENT = 'manual_bet_placement',
     bonus_conversion: BONUS_CONVERSION = 'bonus_conversion',
     bonus_change: BONUS_CHANGE = 'bonus_change',
     em_wager: EVERY_MATRIX_WAGER = 'em_wager',
@@ -33,6 +34,7 @@ module EntryKinds
     ROLLBACK,
     SYSTEM_BET_CANCEL,
     MANUAL_BET_CANCEL,
+    MANUAL_BET_PLACEMENT,
     BONUS_CONVERSION,
     BONUS_CHANGE,
     EVERY_MATRIX_RESULT,
@@ -44,6 +46,7 @@ module EntryKinds
     ROLLBACK,
     SYSTEM_BET_CANCEL,
     MANUAL_BET_CANCEL,
+    MANUAL_BET_PLACEMENT,
     BONUS_CHANGE,
     EVERY_MATRIX_WAGER
   ].freeze
@@ -55,6 +58,7 @@ module EntryKinds
     ROLLBACK,
     SYSTEM_BET_CANCEL,
     MANUAL_BET_CANCEL,
+    MANUAL_BET_PLACEMENT,
     WIN
   ].freeze
 

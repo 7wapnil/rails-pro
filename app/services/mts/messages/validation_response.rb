@@ -18,7 +18,8 @@ module Mts
       end
 
       def bet
-        @bet ||= Bet.find_by!(validation_ticket_id: ticket_id)
+        @bet ||= Bet.includes(:bet_legs)
+                    .find_by!(validation_ticket_id: ticket_id)
       end
 
       def ticket_id

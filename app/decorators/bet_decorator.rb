@@ -54,6 +54,15 @@ class BetDecorator < ApplicationDecorator
     live? ? t('bets.bet_types.live') : t('bets.bet_types.prematch')
   end
 
+  def bet_leg_collection
+    bet_legs.map do |bet_leg|
+      [
+        "#{bet_leg.event.name} | #{bet_leg.market.name} | #{bet_leg.odd.name}",
+        bet_leg.id
+      ]
+    end
+  end
+
   private
 
   def state_machine

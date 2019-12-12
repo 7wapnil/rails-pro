@@ -22,6 +22,7 @@ en:
   save: Save
   says_at: "%{who} at %{when}"
   search: "Search %{subject}"
+  settle_bet_leg: Settle bet leg manually
   show_more: Show more
   sidekiq: Sidekiq
   sign_in: Sign In
@@ -289,7 +290,7 @@ en:
       placement_error: "Oops! Bet cannot be accepted. Feel free to contact administration or try again later"
       internal_validation_error: "Oops! Bet cannot be accepted. Feel free to contact administration or try again later"
       external_validation_error: "Betting service is experiencing some issues now. Bet was not accepted"
-      mts_cancellation_error: "MTS rejected bet cancellation"
+      mts_cancellation_error: "Betting service is experiencing some issues now. Bet was not accepted"
       liability_limit_reached_error: 'Max stake limit reached, please reduce your bet size'
       payout_limit_reached_error: 'Max stake limit reached, please reduce your bet size'
       odds_too_high_error: 'Oops! Bet cannot be accepted. Odds changed.'
@@ -664,6 +665,8 @@ en:
         subject: Reset your password
 
   messages:
+    bet_legs:
+      flash: Bet leg settlement status successfully updated
     bets:
       flash: Bet successfully updated and will be processed ASAP. Check bet status in bets table
     deposit_limits:
