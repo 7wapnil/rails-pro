@@ -25,6 +25,7 @@ module CustomerBonuses
     field :amount, !types.String do
       resolve ->(obj, _atgs, _ctx) { obj.amount(human: true) }
     end
+    field :minOddsPerBet, !types.Boolean, property: :limit_per_each_bet_leg
     field :casino, !types.Boolean
     field :sportsbook, !types.Boolean
   end
