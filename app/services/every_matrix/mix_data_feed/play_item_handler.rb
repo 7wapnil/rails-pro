@@ -65,7 +65,7 @@ module EveryMatrix
           small_icon_url: https(presentation.dig('icons', '44', '*')),
           medium_icon_url: https(presentation.dig('icons', '72', '*')),
           large_icon_url: https(presentation.dig('icons', '114', '*')),
-          terminal: https(data.dig('property', 'terminal')),
+          terminal: data.dig('property', 'terminal'),
           bonus_contribution: bonus['contribution']
         }
       end
