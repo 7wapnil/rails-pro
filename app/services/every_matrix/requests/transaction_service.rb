@@ -73,7 +73,7 @@ module EveryMatrix
       def attributes
         {
           customer:          customer,
-          wallet_session: session,
+          wallet_session:    session,
           amount:            amount.to_d,
           game_type:         transaction_params['GameType'],
           gp_game_id:        transaction_params['GPGameId'],
