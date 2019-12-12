@@ -15,7 +15,9 @@
         = Customers::Statistic.human_attribute_name(:total_casino_payout)
       %td= stats.payout(Customers::StatisticDecorator::TOTAL_CASINO, human: true)
 
-  %table.table.vertical-with-labels
+    %tr
+      %td{ colspan: 3 }
+
     %tr.casino_game_count
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:casino_game_count)
@@ -31,7 +33,9 @@
         = Customers::Statistic.human_attribute_name(:casino_game_payout)
       %td= stats.payout(Customers::StatisticDecorator::CASINO_GAME, human: true)
 
-  %table.table.vertical-with-labels
+    %tr
+      %td{ colspan: 3 }
+
     %tr.live_casino_count
       %td{ colspan: 2 }
         = Customers::Statistic.human_attribute_name(:live_casino_count)
@@ -47,18 +51,20 @@
         = Customers::Statistic.human_attribute_name(:live_casino_payout)
       %td= stats.payout(Customers::StatisticDecorator::LIVE_CASINO, human: true)
 
-  %table.table.vertical-with-labels
-    %tr.live_casino_count
+    %tr
+      %td{ colspan: 3 }
+
+    %tr.average_wager_total_casino
       %td{ colspan: 2 }
-        = Customers::Statistic.human_attribute_name(:live_casino_count)
+        = Customers::Statistic.human_attribute_name(:average_wager_total_casino)
       %td= stats.average_wager_value(Customers::StatisticDecorator::TOTAL_CASINO)
 
-    %tr.live_casino_wager
+    %tr.average_wager_casino_game
       %td{ colspan: 2 }
-        = Customers::Statistic.human_attribute_name(:live_casino_wager)
-      %td= stats.average_wager_value(Customers::StatisticDecorator::TOTAL_CASINO)
+        = Customers::Statistic.human_attribute_name(:average_wager_casino_game)
+      %td= stats.average_wager_value(Customers::StatisticDecorator::CASINO_GAME)
 
-    %tr.live_casino_payout
+    %tr.average_wager_live_casino
       %td{ colspan: 2 }
-        = Customers::Statistic.human_attribute_name(:live_casino_payout)
-      %td= stats.average_wager_value(Customers::StatisticDecorator::TOTAL_CASINO)
+        = Customers::Statistic.human_attribute_name(:average_wager_live_casino)
+      %td= stats.average_wager_value(Customers::StatisticDecorator::LIVE_CASINO)
