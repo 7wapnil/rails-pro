@@ -11,12 +11,12 @@ module Customers
 
       def call
         {
-          casino_game_count: casino_games.count,
-          casino_game_wager: casino_game_wager,
-          casino_game_payout: casino_game_payout,
-          live_casino_count: live_casino_games.count,
-          live_casino_wager: live_casino_wager,
-          live_casino_payout: live_casino_payout
+          casino_game_count:  wager_games(casino_games).count,
+          casino_game_wager:  converted_amount(wager_games(casino_games)),
+          casino_game_payout: converted_amount(payout_games(casino_games)),
+          live_casino_count:  wager_games(live_casino_games).count,
+          live_casino_wager:  converted_amount(wager_games(live_casino_games)),
+          live_casino_payout: converted_amount(payout_games(live_casino_games))
         }
       end
 
@@ -36,30 +36,22 @@ module Customers
         )
       end
 
-      def casino_game_wager
-        casino_games.where(type: EveryMatrix::Wager.name)
-                    .sum(&method(:convert_money))
-      end
-
-      def casino_game_payout
-        casino_games.where(type: EveryMatrix::Result.name)
-                    .sum(&method(:convert_money))
-      end
-
       def live_casino_games
         @live_casino_games ||= casino_transactions.where(
           "every_matrix_play_items.type = '#{EveryMatrix::Table.name}'"
         )
       end
 
-      def live_casino_wager
-        live_casino_games.where(type: EveryMatrix::Wager.name)
-                         .sum(&method(:convert_money))
+      def wager_games(source)
+        source.where(type: EveryMatrix::Wager.name)
       end
 
-      def live_casino_payout
-        live_casino_games.where(type: EveryMatrix::Result.name)
-                         .sum(&method(:convert_money))
+      def payout_games(source)
+        source.where(type: EveryMatrix::Result.name)
+      end
+
+      def converted_amount(source)
+        source.sum(&method(:convert_money))
       end
     end
   end

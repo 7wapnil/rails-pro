@@ -83,6 +83,7 @@ en:
         total_payout: Total sports payout
         total_wager: Total sports wager
         total_gross_gaming_revenue: Gross Gaming Revenue (GGR)
+        ggr: GGR
         prematch_gross_gaming_revenue: Prematch Gross Gaming Revenue (GGR)
         live_gross_gaming_revenue: Live Gross Gaming Revenue (GGR)
         total_margin: Sports margin

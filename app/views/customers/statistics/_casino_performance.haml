@@ -15,6 +15,11 @@
         = Customers::Statistic.human_attribute_name(:total_casino_payout)
       %td= stats.payout(Customers::StatisticDecorator::TOTAL_CASINO, human: true)
 
+    %tr.total_ggr
+      %td{ colspan: 2 }
+        = Customers::Statistic.human_attribute_name(:ggr)
+      %td= stats.gross_gaming_revenue(Customers::StatisticDecorator::TOTAL_CASINO, human: true)
+
     %tr
       %td{ colspan: 3 }
 
