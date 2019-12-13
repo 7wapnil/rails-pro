@@ -77,7 +77,7 @@ module EveryMatrix
     end
 
     def fetch_amount_after
-      response['Balance'].to_f
+      response&.dig('Balance').to_f
     end
 
     def calculate_amount_before

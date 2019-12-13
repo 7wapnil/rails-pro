@@ -5,13 +5,18 @@ module Customers
     class Update < ApplicationService
       INCREMENT_ATTRIBUTES = %i[bonus_payout_amount
                                 real_money_payout_amount
+                                casino_bonus_payout_amount
+                                casino_real_money_payout_amount
                                 bonus_deposit_amount
                                 real_money_deposit_amount
                                 withdraw_amount
                                 signups_count].freeze
       NEGATIVE_INCREMENT_ATTRIBUTES = %i[bonus_wager_amount
-                                         real_money_wager_amount].freeze
-      APPEND_ATTRIBUTES = %i[betting_customer_ids].freeze
+                                         real_money_wager_amount
+                                         casino_bonus_wager_amount
+                                         casino_real_money_wager_amount].freeze
+      APPEND_ATTRIBUTES = %i[betting_customer_ids
+                             casino_customer_ids].freeze
 
       def initialize(summary, attributes)
         @summary = summary

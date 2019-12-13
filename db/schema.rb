@@ -280,6 +280,11 @@ ActiveRecord::Schema.define(version: 2019_12_10_065657) do
     t.integer "betting_customer_ids", default: [], null: false, array: true
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "casino_customer_ids", default: [], null: false, array: true
+    t.decimal "casino_bonus_wager_amount", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "casino_real_money_wager_amount", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "casino_bonus_payout_amount", precision: 14, scale: 2, default: "0.0", null: false
+    t.decimal "casino_real_money_payout_amount", precision: 14, scale: 2, default: "0.0", null: false
     t.index ["day"], name: "index_customer_summaries_on_day", unique: true
   end
 

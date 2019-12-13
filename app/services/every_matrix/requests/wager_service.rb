@@ -3,6 +3,14 @@
 module EveryMatrix
   module Requests
     class WagerService < TransactionService
+      def call
+        super.tap do |response|
+          next if response&.dig('ReturnCode') != SUCCESS_CODE
+
+          update_summary_casino_customer_ids!
+        end
+      end
+
       def post_process
         WagerSettlementService.call(transaction)
       end
@@ -15,6 +23,13 @@ module EveryMatrix
       end
 
       private
+
+      def update_summary_casino_customer_ids!
+        Customers::Summaries::UpdateWorker.perform_async(
+          Date.current,
+          casino_customer_ids: customer.id
+        )
+      end
 
       def request_name
         'Wager'

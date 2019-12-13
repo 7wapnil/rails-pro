@@ -35,6 +35,8 @@ module EveryMatrix
 
         return record_response(post_process_failed) unless post_process
 
+        update_summary_casino_wager_amounts!
+
         record_response(success_response)
       end
 
@@ -94,6 +96,13 @@ module EveryMatrix
 
       def process_entry_request!
         EntryRequests::ProcessingService.call(entry_request: entry_request)
+      end
+
+      def update_summary_casino_wager_amounts!
+        Customers::Summaries::BalanceUpdateWorker.perform_async(
+          Date.current,
+          transaction.entry.id
+        )
       end
 
       def success_response

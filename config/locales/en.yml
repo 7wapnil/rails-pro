@@ -776,12 +776,21 @@ en:
     to: End date
     submit: Update
     no_data_for_date_range: No data available for selected date range
-    bonus_wager_amount: Total bonus wager amount
-    real_money_wager_amount: Total wager cash amount
-    bonus_payout_amount: Total bonus payout amount
-    real_money_payout_amount: Total payout cash amount
-    total_wager_amount: Total wager amount
-    total_payout_amount: Total payout amount
+    bonus_wager_amount: Bet bonus wager amount
+    real_money_wager_amount: Bet wager cash amount
+    bonus_payout_amount: Bet bonus payout amount
+    real_money_payout_amount: Bet payout cash amount
+    total_bet_wager_amount: Total wager sports amount
+    total_bet_payout_amount: Total payout sports amount
+    total_casino_wager_amount: Total wager casino amount
+    total_casino_payout_amount: Total payout casino amount
+    ggr_casino_amount: GGR casino
+    ggr_casino_bonus_amount: Bonus GGR casino
+    total_ggr_amount: Total GGR
+    sports_ratio_by_ggr: Sports ratio in total GGR %
+    casino_ratio_by_ggr: Casino ratio in total GGR %
+    active_casino_customers_count: Active casino players
+    casino_games_count: Total number of casino games
     bonus_deposit_amount: Total bonus awarded
     real_money_deposit_amount: Total deposits amount
     bonus_pnl_percentage: Bonus profit/loss %

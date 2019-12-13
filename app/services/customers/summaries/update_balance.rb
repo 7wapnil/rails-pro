@@ -46,6 +46,10 @@ module Customers
           :withdraw_amount
         when EntryKinds::BET
           :"#{balance_kind}_wager_amount"
+        when EntryKinds::EVERY_MATRIX_WAGER
+          :"casino_#{balance_kind}_wager_amount"
+        when EntryKinds::EVERY_MATRIX_RESULT
+          :"casino_#{balance_kind}_payout_amount"
         end
       end
 
