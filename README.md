@@ -8,7 +8,7 @@ Project docs can be found in the [docs directory](./docs).
 
 ## Project setup
 
-### With docker-compose
+### 1. With docker-compose
 
 The project ships with `docker-compose.example.yml` file meant for local development. In order to use it you need to have Docker and Docker Compose installed on your machine.
 
@@ -35,7 +35,7 @@ yarn install
 exit
 ```
 
-### Directly on the host
+### 2. Directly on the host
 
 1. Install all the necessary databases (postgres, mongodb, redis) with Homebrew:
 
