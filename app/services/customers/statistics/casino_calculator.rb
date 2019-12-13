@@ -3,7 +3,7 @@
 module Customers
   module Statistics
     class CasinoCalculator < Calculator
-      EM_TABLE = 'every_matrix_play_items'
+      EM_TABLE = 'every_matrix_transactions'
 
       def initialize(customer)
         @customer = customer
