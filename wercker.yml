@@ -139,6 +139,21 @@ deploy:
         terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve
 
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-backend-worker-odds-feed}
+        terraform init
+        terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
+        terraform apply -auto-approve
+
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-backend-listener}
+        terraform init
+        terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
+        terraform apply -auto-approve
+
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-backend-callbacks}
+        terraform init
+        terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
+        terraform apply -auto-approve
+
         cd $TERRAFORM_CONFIG_DIR/terraform/services/${WORKER_PATH:-backend-worker}
         terraform init
         terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
