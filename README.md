@@ -116,7 +116,7 @@ rake odds_feed:markets:categorize
 
 ## Running the project in develoment
 
-### With docker-compose
+### 1. With docker-compose
 
 After all dependencies and data is set up, you can run the entire stack With
 
@@ -124,7 +124,7 @@ After all dependencies and data is set up, you can run the entire stack With
 docker-compose up
 ```
 
-### Directly on the host
+### 2. Directly on the host
 
 This project has a handful of services that can be tricky to run each in a separate terminal tab or window. Managing multiple processes is easier with tools like [foreman](https://github.com/ddollar/foreman).
 
