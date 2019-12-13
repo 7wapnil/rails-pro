@@ -483,6 +483,7 @@ en:
       unsupported_payment_method: "Payment method '%{code}' is not implemented"
       nonexistent_bet: "Bet with validation ticket does not exist"
       password_invalid: Incorrect password
+      unavailable_country: This game is unavailable
       unsupported_withdraw_method: "Payment method %{name} is not supported"
       reset_password_empty_token: Empty reset token
       reset_password_token_not_found: No user found for password reset token

@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 describe GraphQL, '#createEveryMatrixSession' do
-  let(:context) { {} }
+  let(:location)  { OpenStruct.new(country_code: 'US') }
+  let(:request)   { OpenStruct.new(location: location) }
+  let(:context)   { { request: request } }
   let(:variables) { {} }
   let(:response) do
     ArcanebetSchema.execute(query,
@@ -33,7 +35,7 @@ describe GraphQL, '#createEveryMatrixSession' do
 
   context 'with authenticated customer' do
     let(:auth_customer) { create(:customer, :ready_to_bet) }
-    let(:context) { { current_customer: auth_customer } }
+    let(:context) { { current_customer: auth_customer, request: request } }
     let(:token) do
       EveryMatrix::WalletSession
         .where(wallet_id: auth_customer.wallet.id)
