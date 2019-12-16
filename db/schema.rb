@@ -498,6 +498,39 @@ ActiveRecord::Schema.define(version: 2019_12_30_211311) do
     t.index ["representation_name"], name: "index_every_matrix_content_providers_on_representation_name"
   end
 
+  create_table "every_matrix_free_spin_bonus_play_items", force: :cascade do |t|
+    t.bigint "every_matrix_free_spin_bonus_id"
+    t.string "every_matrix_play_item_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["every_matrix_free_spin_bonus_id"], name: "index_play_item_free_spin_bonus_id"
+    t.index ["every_matrix_play_item_id"], name: "index_free_spin_bonus_play_item_id"
+  end
+
+  create_table "every_matrix_free_spin_bonus_wallets", force: :cascade do |t|
+    t.bigint "every_matrix_free_spin_bonus_id"
+    t.bigint "wallet_id"
+    t.string "status"
+    t.string "last_request_name"
+    t.json "last_request_result"
+    t.json "last_request_body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["every_matrix_free_spin_bonus_id"], name: "index_customer_free_spin_bonus_id"
+    t.index ["wallet_id"], name: "index_every_matrix_free_spin_bonus_wallets_on_wallet_id"
+  end
+
+  create_table "every_matrix_free_spin_bonuses", force: :cascade do |t|
+    t.bigint "every_matrix_vendor_id"
+    t.integer "bonus_source", default: 2, null: false
+    t.integer "number_of_free_rounds"
+    t.date "free_rounds_end_date"
+    t.json "additional_parameters"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["every_matrix_vendor_id"], name: "index_every_matrix_free_spin_bonuses_on_every_matrix_vendor_id"
+  end
+
   create_table "every_matrix_game_details", force: :cascade do |t|
     t.string "help_url"
     t.decimal "top_prize", precision: 14, scale: 2
@@ -811,6 +844,7 @@ ActiveRecord::Schema.define(version: 2019_12_30_211311) do
     t.decimal "real_money_balance", precision: 14, scale: 2, default: "0.0"
     t.decimal "bonus_balance", precision: 14, scale: 2, default: "0.0"
     t.decimal "cancelled_bonus_balance", precision: 14, scale: 2, default: "0.0"
+    t.string "every_matrix_user_id"
     t.index ["currency_id"], name: "index_wallets_on_currency_id"
     t.index ["customer_id", "currency_id"], name: "index_wallets_on_customer_id_and_currency_id", unique: true
     t.index ["customer_id"], name: "index_wallets_on_customer_id"
@@ -846,6 +880,9 @@ ActiveRecord::Schema.define(version: 2019_12_30_211311) do
   add_foreign_key "event_scopes", "titles"
   add_foreign_key "events", "radar_producers", column: "producer_id"
   add_foreign_key "events", "titles"
+  add_foreign_key "every_matrix_free_spin_bonus_play_items", "every_matrix_free_spin_bonuses"
+  add_foreign_key "every_matrix_free_spin_bonus_play_items", "every_matrix_play_items", primary_key: "external_id"
+  add_foreign_key "every_matrix_free_spin_bonus_wallets", "every_matrix_free_spin_bonuses"
   add_foreign_key "every_matrix_game_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
   add_foreign_key "every_matrix_play_item_categories", "every_matrix_categories", column: "category_id"
   add_foreign_key "every_matrix_play_item_categories", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
