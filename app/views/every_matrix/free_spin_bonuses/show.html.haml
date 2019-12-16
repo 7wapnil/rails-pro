@@ -1,0 +1,53 @@
+.mt-4
+  = card header: t('entities.free_spin_bonus'), class: 'free-spin-bonus-info' do
+    .row
+      .col
+        %table.table
+          %tr
+            %td= t('attributes.id')
+            %td= @free_spin_bonus.id
+          %tr
+            %td= t('attributes.vendor_name')
+            %td= @free_spin_bonus.vendor.name
+          %tr
+            %td= t('attributes.free_rounds_end_date')
+            %td= l(@free_spin_bonus.free_rounds_end_date)
+          %tr
+            %td= t('attributes.created_at')
+            %td= l(@free_spin_bonus.created_at)
+          %tr
+            %td= t('attributes.additional_parameters')
+            %td
+              %pre
+                = JSON.pretty_generate(JSON.parse(@free_spin_bonus.additional_parameters))
+        %table.table
+          %tr
+            %th{ colspan: 1 }
+              Games
+          - @free_spin_bonus.play_items.each do |play_item|
+            %tr
+              %td= play_item.name
+
+      .col
+        %table.table
+          %tr
+            %th{ colspan: 3 }
+              Wallets
+          - @free_spin_bonus.free_spin_bonus_wallets.each do |free_spin_bounus_wallet|
+            %tr
+              %td
+                = link_to(free_spin_bounus_wallet.customer.username,
+                 free_spin_bounus_wallet.customer)
+              %td= free_spin_bounus_wallet.wallet.currency.code
+              %td
+                = link_to(free_spin_bounus_wallet.status,
+                 every_matrix_free_spin_bonus_wallet_path(free_spin_bounus_wallet))
+
+    .row
+      .col
+        %hr
+        = link_back
+        = link_to(t('actions.forfeit'),
+                    every_matrix_free_spin_bonus_path(@free_spin_bonus),
+                    method: :delete,
+                    class: 'btn btn-danger float-right')

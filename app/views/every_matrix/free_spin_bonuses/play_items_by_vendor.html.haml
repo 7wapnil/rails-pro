@@ -1,0 +1,6 @@
+= label_tag :play_item_ids, t('attributes.games')
+= select_tag :play_item_ids,
+             options_from_collection_for_select(@play_items, :id, :name),
+             multiple: true,
+             class: 'form-control select required',
+             size: 12

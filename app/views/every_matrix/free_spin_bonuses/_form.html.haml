@@ -1,0 +1,54 @@
+- content_for :css do
+  = stylesheet_pack_tag 'flatpickr', media: :all, 'data-turbolinks-track': 'reload'
+
+- content_for :js do
+  = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
+
+
+= simple_form_for free_spin_bonus, html: { multipart: true } do |f|
+  .row
+    .col-6
+      = f.input :every_matrix_vendor_id,
+                collection: available_vendors,
+                include_blank: false,
+                label: t('attributes.vendor'),
+                label_required: true,
+                input_html: { onchange: 'reload_play_items(this)' }
+      #play-items
+        Loading games...
+      %br
+    .col-6
+      = label_tag :customers_csv, t('attributes.customers_csv')
+      %br
+      = file_field_tag :customers_csv
+      %br
+      = f.input :number_of_free_rounds,
+                input_html: { min: 1, value: free_spin_bonus.number_of_free_rounds || 1 },
+       required: true
+      = f.label :free_rounds_end_date
+      .input-group
+        = f.input_field :free_rounds_end_date,
+                        as: :date_picker,
+                        required: true
+        .input-group-append
+          .input-group-text.btn &#128197;
+      = f.input :additional_parameters, type: :text
+  .row
+    .col
+      = f.submit class: 'btn btn-outline-dark', required: true
+
+:javascript
+  function reload_play_items(el) {
+    let vendorId = el.value
+    console.log("vendorId = " + vendorId)
+    let xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState === 4){
+        document.getElementById('play-items').innerHTML = xhr.responseText;
+      }
+    };
+    xhr.open('GET', '/every_matrix/free_spin_bonuses/play_items_by_vendor?vendor_id=' + vendorId);
+    xhr.send();
+  }
+
+  reload_play_items(document.getElementById('every_matrix_free_spin_bonus_every_matrix_vendor_id'))

@@ -11,6 +11,22 @@ module EveryMatrix
              class_name: 'EveryMatrix::FreeSpinBonusWallet',
              foreign_key: :every_matrix_free_spin_bonus_id,
              inverse_of: :free_spin_bonus
+    has_many :initial_free_spin_bonus_wallets,
+             -> { initial },
+             class_name: 'EveryMatrix::FreeSpinBonusWallet',
+             foreign_key: :every_matrix_free_spin_bonus_id
+    has_many :awarded_free_spin_bonus_wallets,
+             -> { awarded },
+             class_name: 'EveryMatrix::FreeSpinBonusWallet',
+             foreign_key: :every_matrix_free_spin_bonus_id
+    has_many :forfeited_free_spin_bonus_wallets,
+             -> { forfeited },
+             class_name: 'EveryMatrix::FreeSpinBonusWallet',
+             foreign_key: :every_matrix_free_spin_bonus_id
+    has_many :error_free_spin_bonus_wallets,
+             -> { with_error },
+             class_name: 'EveryMatrix::FreeSpinBonusWallet',
+             foreign_key: :every_matrix_free_spin_bonus_id
     has_many :wallets, through: :free_spin_bonus_wallets
     has_many :free_spin_bonus_play_items,
              class_name: 'EveryMatrix::FreeSpinBonusPlayItem',

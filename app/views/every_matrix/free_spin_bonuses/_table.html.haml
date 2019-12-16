@@ -1,0 +1,40 @@
+%table.table.entities
+  %thead
+    %tr
+      %th= sort_link filter.search, :id, t('attributes.id'), default_order: :asc
+      %th= t('attributes.vendor')
+      %th= t('attributes.number_of_free_rounds')
+      %th= t('attributes.number_of_games')
+      %th= t('attributes.number_of_wallets')
+      %th= t('attributes.initial')
+      %th= t('attributes.awarded')
+      %th= t('attributes.forfeited')
+      %th= t('attributes.error')
+      %th= sort_link filter.search, :free_rounds_end_date, t('attributes.free_rounds_end_date')
+      %th= sort_link filter.search, :created_at, t('attributes.created_at')
+      %th= t('attributes.actions')
+  %tbody
+    - if filter.free_spin_bonuses.any?
+      - filter.free_spin_bonuses.each do |free_spin_bonus|
+        %tr{ id: "free_spin_bonus-#{free_spin_bonus.id}" }
+          %td= link_to free_spin_bonus.id, free_spin_bonus
+          %td= free_spin_bonus.vendor.name
+          %td= free_spin_bonus.number_of_free_rounds
+          %td= free_spin_bonus.play_items_count
+          %td= free_spin_bonus.free_spin_bonus_wallets_count
+          %td= free_spin_bonus.initial_free_spin_bonus_wallets_count
+          %td= free_spin_bonus.awarded_free_spin_bonus_wallets_count
+          %td= free_spin_bonus.forfeited_free_spin_bonus_wallets_count
+          %td= free_spin_bonus.error_free_spin_bonus_wallets_count
+          %td= l(free_spin_bonus.free_rounds_end_date)
+          %td= l(free_spin_bonus.created_at)
+          %td
+            = link_to(t('actions.forfeit'),
+                      every_matrix_free_spin_bonus_path(free_spin_bonus),
+                      method: :delete,
+                      class: 'btn btn-danger float-right')
+    - else
+      %tr
+        %td{ colspan: 12 }
+          .text-center
+            = t(:not_found, instance: t('entities.free_spin_bonuses'))

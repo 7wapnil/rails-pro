@@ -49,11 +49,15 @@ en:
   instance_overview: "%{instance} overview"
   not_found: "No %{instance} found"
 
+  bonus_forfeit_requested: "%{number} bonus(es) requested to be forfeited"
+  bonus_award_requested: "%{number} bonus(es) requested to be awarded"
+
   actions:
     expire: Expire
     impersonate: Impersonate
     reset_password: Reset password
     verify: Verify
+    forfeit: Forfeit awarded
 
   activemodel:
     errors:
@@ -134,6 +138,7 @@ en:
     customer_name: Customer name
     customer_verification_status: Customer verification status
     customer_username: Customer username
+    customers_csv: Customers CSV file
     date: Date
     date_of_birth: Date of birth
     deactivated_at: Deactivated at
@@ -149,6 +154,8 @@ en:
     expires_at: Expires at
     external_id: External ID
     first_name: First name
+    free_spin_bonus_id: Free spin bonus ID
+    free_rounds_end_date: End date
     gender: Gender
     id: ID
     info: Info
@@ -179,6 +186,9 @@ en:
     message: Message
     notification_code: Notification code
     notification_message: Notification message
+    number_of_free_rounds: Free rounds
+    number_of_games: Games
+    number_of_wallets: Wallets
     min_amount: Min amount
     min_deposit: Min deposit
     min_odds_per_bet: Min odds per bet
@@ -387,6 +397,8 @@ en:
       other: "%{count} events"
     event_scopes: Event Scopes
     exchange_rate: "Exchange rate (for 1 %{code})"
+    free_spin_bonus: Free spin bonus
+    free_spin_bonuses: Free spin bonuses
     reverse_exchange_rate: "Reverse exchange rate (for 1 %{code})"
     global_betting_limit: Global betting limit
     global_betting_limits: Global betting limits

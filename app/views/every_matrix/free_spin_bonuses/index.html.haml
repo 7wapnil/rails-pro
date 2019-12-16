@@ -1,0 +1,11 @@
+%h1.display-4
+  = t('entities.free_spin_bonuses')
+  = link_to t(:create),
+            new_every_matrix_free_spin_bonus_path,
+            class: 'btn btn-outline-primary float-right'
+
+= render 'table',
+          filter: @filter,
+          excluded_columns: []
+
+= paginate @filter.free_spin_bonuses

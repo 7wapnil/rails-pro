@@ -9,6 +9,7 @@
   - exchange_rates
   - expired_entry_requests
   - every_matrix_mix_data_feed
+  - every_matrix_free_spin_bonuses
 
 :limits:
   every_matrix_mix_data_feed: 1

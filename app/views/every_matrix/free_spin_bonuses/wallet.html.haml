@@ -1,0 +1,41 @@
+.mt-4
+  = card header: t('entities.free_spin_bonus_wallet'), class: 'free-spin-bonus-info' do
+    .row
+      .col
+        %table.table
+          %tr
+            %td= t('attributes.customer')
+            %td
+              = link_to(@free_spin_bonus_wallet.customer.username,
+                 @free_spin_bonus_wallet.customer)
+          %tr
+            %td= t('attributes.free_spin_bonus')
+            %td
+              = link_to(@free_spin_bonus_wallet.every_matrix_free_spin_bonus_id,
+                 every_matrix_free_spin_bonus_path(@free_spin_bonus_wallet.free_spin_bonus))
+          %tr
+            %td= t('attributes.status')
+            %td= @free_spin_bonus_wallet.status
+          %tr
+            %td= t('attributes.created_at')
+            %td= l(@free_spin_bonus_wallet.created_at)
+          %tr
+            %td= t('attributes.updated_at')
+            %td= l(@free_spin_bonus_wallet.updated_at)
+          %tr
+            %td= t('attributes.last_request_name')
+            %td= @free_spin_bonus_wallet.last_request_name
+          %tr
+            %td= t('attributes.last_request_body')
+            %td
+              %pre
+                = JSON.pretty_generate(JSON.parse(@free_spin_bonus_wallet.last_request_body.to_s))
+          %tr
+            %td= t('attributes.last_request_result')
+            %td
+              %pre
+                = JSON.pretty_generate(JSON.parse(@free_spin_bonus_wallet.last_request_result.to_s))
+    .row
+      .col
+        %hr
+        = link_back

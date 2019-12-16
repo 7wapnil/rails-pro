@@ -13,5 +13,6 @@ module EveryMatrix
     belongs_to :free_spin_bonus,
                foreign_key: :every_matrix_free_spin_bonus_id,
                class_name: 'EveryMatrix::FreeSpinBonus'
+    delegate :customer, to: :wallet
   end
 end
