@@ -134,32 +134,17 @@ deploy:
     - script:
       name: terraform-apply
       code: |
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-backend-web}
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}/backend-web
         terraform init
         terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-backend-worker-odds-feed}
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}/backend-worker
         terraform init
         terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-backend-listener}
-        terraform init
-        terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
-        terraform apply -auto-approve
-
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-backend-callbacks}
-        terraform init
-        terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
-        terraform apply -auto-approve
-
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${WORKER_PATH:-backend-worker}
-        terraform init
-        terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
-        terraform apply -auto-approve
-
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-worker-odds-feed
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}/backend-worker-odds-feed
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
@@ -182,6 +167,11 @@ deploy:
         runCasino=${CASINO_ENV:-""}
         if [ "$runCasino" != "" ]; then
           cd $TERRAFORM_CONFIG_DIR/terraform/services/casino/backend-listener-every-matrix
+          terraform init
+          terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
+          terraform apply -auto-approve
+
+          cd $TERRAFORM_CONFIG_DIR/terraform/services/casino/backend-callbacks
           terraform init
           terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
           terraform apply -auto-approve
@@ -234,10 +224,11 @@ deploy-unified-odds-listener:
     - script:
       name: terraform-apply
       code: |
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-listener
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}/backend-listener
         terraform init
-        terraform workspace select $TARGET_ENV
+        terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve
+
 
   after-steps:
     - slack-notifier:
