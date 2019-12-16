@@ -31,6 +31,9 @@ module EveryMatrix
              through: :recommended_game_relationships,
              foreign_key: :recommended_game_id,
              class_name: EveryMatrix::PlayItem.name
+    has_one :game_details,
+            foreign_key: :play_item_id,
+            class_name: EveryMatrix::GameDetails.name
 
     class << self
       def reject_country(country)
