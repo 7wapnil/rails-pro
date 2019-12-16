@@ -18,6 +18,10 @@ class Wallet < ApplicationRecord
     joins(:currency).where(currencies: { kind: Currency::FIAT })
   end
 
+  def self.crypto
+    joins(:currency).where(currencies: { kind: Currency::CRYPTO })
+  end
+
   def self.build_default
     new(amount: 0, currency: Currency.build_default)
   end
