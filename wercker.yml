@@ -134,17 +134,17 @@ deploy:
     - script:
       name: terraform-apply
       code: |
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}/backend-web
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}backend-web
         terraform init
         terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}/backend-worker
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}backend-worker
         terraform init
         terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}/backend-worker-odds-feed
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}backend-worker-odds-feed
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
@@ -224,7 +224,7 @@ deploy-unified-odds-listener:
     - script:
       name: terraform-apply
       code: |
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}/backend-listener
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}backend-listener
         terraform init
         terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve
