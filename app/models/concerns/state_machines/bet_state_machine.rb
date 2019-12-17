@@ -151,6 +151,12 @@ module StateMachines
                       after: proc { |args| settle_as(args) }
         end
 
+        event :resettle do
+          transitions from: %i[settled accepted pending_manual_settlement],
+                      to: :settled,
+                      after: proc { |args| settle_as(args) }
+        end
+
         event :send_to_manual_settlement do
           transitions from: %i[accepted settled voided],
                       to: :pending_manual_settlement,

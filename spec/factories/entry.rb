@@ -5,6 +5,7 @@ FactoryBot.define do
     kind          { Entry::DEPOSIT }
     amount        { Faker::Number.decimal(4, 2) }
     base_currency_amount { Faker::Number.decimal(4, 2) }
+    real_money_amount { amount }
     authorized_at { nil }
     sequence(:external_id) { |n| "ID_#{n}" }
 

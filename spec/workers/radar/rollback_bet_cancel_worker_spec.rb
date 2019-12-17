@@ -143,6 +143,10 @@ describe Radar::RollbackBetCancelWorker do
     win_entry_requests.map do |request|
       wallet = Wallet.find_by(currency: request.currency,
                               customer: request.customer)
+      create(:entry, :win, origin: request.origin,
+                           amount: -request.amount,
+                           entry_request: request,
+                           wallet: wallet)
       create(:entry, kind: request.kind,
                      origin: request.origin,
                      amount: request.amount,
@@ -154,6 +158,10 @@ describe Radar::RollbackBetCancelWorker do
     placement_entry_requests.map do |request|
       wallet = Wallet.find_by(currency: request.currency,
                               customer: request.customer)
+      create(:entry, :bet, origin: request.origin,
+                           amount: -request.amount,
+                           entry_request: request,
+                           wallet: wallet)
       create(:entry, kind: request.kind,
                      origin: request.origin,
                      amount: request.amount,

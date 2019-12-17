@@ -10,20 +10,27 @@ FactoryBot.define do
     association :customer, :ready_to_bet
 
     transient do
-      odd { {} }
+      odd { nil }
+      winning { nil }
     end
 
     after(:create) do |bet, evaluator|
-      next if evaluator.odd.blank?
+      next if evaluator.odd.nil?
 
       create(:bet_leg, bet: bet,
                        odd: evaluator.odd,
                        odd_value: evaluator.odd.value)
     end
 
+    after(:create) do |bet, evaluator|
+      next unless evaluator.winning.is_a?(Entry)
+
+      evaluator.winning.update(origin: bet)
+    end
+
     trait :with_settled_bet_leg do
       after(:create) do |bet, evaluator|
-        odd = evaluator.odd.blank? ? create(:odd) : evaluator.odd
+        odd = evaluator.odd || create(:odd)
 
         create(:bet_leg, bet: bet,
                          odd: odd,
@@ -39,7 +46,8 @@ FactoryBot.define do
         bet.update(currency: wallet.currency)
         create(:entry, :bet, :with_real_money_balance_entry,
                origin: bet,
-               wallet: wallet)
+               wallet: wallet,
+               amount: -bet.amount)
       end
     end
 
@@ -60,9 +68,16 @@ FactoryBot.define do
     end
 
     trait :won do
-      status            { StateMachines::BetStateMachine::SETTLED }
+      status { StateMachines::BetStateMachine::SETTLED }
       settlement_status { Bet::WON }
-      association :winning, factory: %i[entry win]
+
+      after(:create) do |bet, evaluator|
+        next if evaluator.winning
+
+        wallet = bet.customer.wallet || create(:wallet)
+        bet.update(currency: wallet.currency)
+        create(:entry, :win, origin: bet, wallet: wallet)
+      end
     end
 
     trait :lost do

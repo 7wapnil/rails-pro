@@ -4,6 +4,8 @@ module Bets
   class Cancel < ApplicationService
     VOIDED_ODD_VALUE = 1
 
+    delegate :placement_entry, to: :bet
+
     def initialize(bet_leg:, bet:)
       @bet_leg = bet_leg
       @bet = bet
@@ -30,7 +32,7 @@ module Bets
 
       bet.bet_legs
          .reject { |leg| leg.id == bet_leg.id }
-         .all? { |leg| !leg.status.nil? && !leg.lost? }
+         .all? { |leg| !leg.settlement_status.nil? && !leg.lost? }
     end
 
     def return_money
@@ -39,9 +41,10 @@ module Bets
     end
 
     def resettle
-      bet.settle!(settlement_status: resettlement_status)
+      bet.resettle!(settlement_status: resettlement_status)
       return unless bet.won?
 
+      proceed_entry_request(place_entry_request)
       proceed_entry_request(win_entry_request)
     end
 
@@ -53,10 +56,24 @@ module Bets
       EntryRequests::ProcessingService.call(entry_request: request)
     end
 
+    def place_entry_request
+      ::EntryRequest.create!(
+        kind: EntryKinds::BET,
+        mode: EntryRequest::INTERNAL,
+        amount: placement_entry.amount,
+        real_money_amount: placement_entry.real_money_amount,
+        bonus_amount: placement_entry.bonus_amount,
+        comment: 'Resettlement',
+        customer_id: bet.customer_id,
+        currency_id: bet.currency_id,
+        origin: bet
+      )
+    end
+
     def win_entry_request
       ::EntryRequests::Factories::WinPayout.call(
         origin: bet,
-        kind: EntryRequest::SYSTEM_BET_CANCEL,
+        kind: EntryKinds::WIN,
         mode: EntryRequest::INTERNAL,
         amount: bet.amount * won_odds_product,
         comment: "WIN for bet #{bet.id}"

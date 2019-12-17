@@ -5,6 +5,11 @@ module OddsFeed
     class BetSettlementHandler < RadarMessageHandler
       include WebsocketEventEmittable
 
+      SUITABLE_BET_STATUSES = [
+        Bet::ACCEPTED,
+        Bet::SETTLED,
+        Bet::PENDING_MANUAL_SETTLEMENT
+      ].freeze
       CERTAINTY_LIMIT = 2
       UNCERTAIN_PRODUCER = '1'
 
@@ -89,6 +94,7 @@ module OddsFeed
         BetLeg.joins(:bet, :odd)
               .where(bet_legs: { settlement_status: nil })
               .where(odds: { external_id: external_id })
+              .where(bets: { status: SUITABLE_BET_STATUSES })
               .includes(:bet)
       end
 

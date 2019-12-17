@@ -9,20 +9,16 @@ describe EntryRequests::Factories::RollbackBetCancellation do
   let(:initial_bonus_balance) { wallet.bonus_balance }
   let(:wallet) { create(:wallet, currency: base_currency) }
   let(:customer) { wallet.customer }
-  let(:placement_entry_request) do
-    create(:entry_request, :system_bet_cancel, :internal,
-           amount: bet.amount,
-           origin: bet,
-           initiator: customer,
-           customer: customer,
-           currency: bet.currency)
-  end
   let!(:placement_entry) do
-    create(:entry, :with_balance_entries,
-           kind: placement_entry_request.kind,
-           origin: placement_entry_request.origin,
-           amount: placement_entry_request.amount,
-           entry_request: placement_entry_request,
+    create(:entry, :with_balance_entries, :bet,
+           origin: bet,
+           amount: -bet.amount,
+           wallet: wallet)
+  end
+  let!(:cancel_placement_entry) do
+    create(:entry, :with_balance_entries, :system_bet_cancel,
+           origin: bet,
+           amount: placement_entry.amount.abs,
            wallet: wallet)
   end
 
@@ -39,8 +35,8 @@ describe EntryRequests::Factories::RollbackBetCancellation do
     it 'creates correct entry request' do
       expect(subject.last)
         .to have_attributes(
-          bonus_amount: -placement_entry.bonus_amount,
-          real_money_amount: -placement_entry.real_money_amount
+          bonus_amount: placement_entry.bonus_amount,
+          real_money_amount: placement_entry.real_money_amount
         )
     end
   end
@@ -50,21 +46,17 @@ describe EntryRequests::Factories::RollbackBetCancellation do
       create(:bet, :won, :cancelled_by_system, customer: customer, odd: odd)
     end
 
-    let(:win_entry_request) do
-      create(:entry_request, :system_bet_cancel, :internal,
-             amount: -bet.amount,
+    let(:winning_entry) do
+      create(:entry, :with_balance_entries, :win,
              origin: bet,
-             initiator: customer,
-             customer: customer,
-             currency: bet.currency)
+             amount: bet.amount,
+             wallet: wallet)
     end
 
-    let!(:winning_entry) do
-      create(:entry, :with_balance_entries,
-             kind: win_entry_request.kind,
-             origin: win_entry_request.origin,
-             amount: win_entry_request.amount,
-             entry_request: win_entry_request,
+    let!(:cancel_winning_entry) do
+      create(:entry, :with_balance_entries, :system_bet_cancel,
+             origin: bet,
+             amount: -winning_entry.amount,
              wallet: wallet)
     end
 
@@ -76,14 +68,14 @@ describe EntryRequests::Factories::RollbackBetCancellation do
       expect(subject)
         .to match_array(
           [have_attributes(
-            amount: -placement_entry.amount,
-            bonus_amount: -placement_entry.bonus_amount,
-            real_money_amount: -placement_entry.real_money_amount
+            amount: -cancel_placement_entry.amount,
+            bonus_amount: -cancel_placement_entry.bonus_amount,
+            real_money_amount: -cancel_placement_entry.real_money_amount
           ),
            have_attributes(
-             amount: winning_entry.amount.abs,
-             bonus_amount: winning_entry.bonus_amount.abs,
-             real_money_amount: winning_entry.real_money_amount.abs
+             amount: cancel_winning_entry.amount.abs,
+             bonus_amount: cancel_winning_entry.bonus_amount.abs,
+             real_money_amount: cancel_winning_entry.real_money_amount.abs
            )]
         )
     end

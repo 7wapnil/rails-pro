@@ -55,7 +55,7 @@ module OddsFeed
                       .joins(:bet, :market)
                       .includes(:event, bet: %i[winning_rollback_entry
                                                 placement_rollback_entry
-                                                winning_resettle_entry])
+                                                winning])
                       .cancelled_by_system
                       .where(markets: { external_id: market_external_ids })
                       .merge(bets_with_start_time)

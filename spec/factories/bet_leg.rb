@@ -13,8 +13,16 @@ FactoryBot.define do
       end
     end
 
-    trait :won do
-      settlement_status { BetLeg::WON }
+    BetLeg::SETTLEMENT_STATUSES.keys.each do |status|
+      trait status do
+        settlement_status { status.to_s }
+      end
+    end
+
+    BetLeg::STATUSES.keys.each do |status|
+      trait status do
+        status { status.to_s }
+      end
     end
   end
 end

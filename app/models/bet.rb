@@ -40,10 +40,6 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
           -> { system_bet_cancel.where('entries.amount < 0') },
           class_name: Entry.name,
           as: :origin
-  has_one :winning_resettle_entry,
-          -> { system_bet_resettle.where('entries.amount > 0') },
-          class_name: Entry.name,
-          as: :origin
 
   has_many :entry_requests, as: :origin, dependent: :nullify
   has_many :entries, as: :origin, dependent: :nullify

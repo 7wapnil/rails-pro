@@ -11,7 +11,7 @@ module EntryRequests
         create_bet_cancel_request!
         create_win_cancel_request! if bet.won?
 
-        [bet_cancel_request, win_cancel_request].compact
+        [win_cancel_request, bet_cancel_request].compact
       end
 
       private

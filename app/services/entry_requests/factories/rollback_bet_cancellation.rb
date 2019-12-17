@@ -3,9 +3,8 @@
 module EntryRequests
   module Factories
     class RollbackBetCancellation < ApplicationService
-      delegate :placement_rollback_entry,
-               :winning_rollback_entry,
-               :winning_resettle_entry,
+      delegate :placement_rollback_entry, :placement_entry,
+               :winning_rollback_entry, :winning,
                to: :bet
 
       def initialize(bet:, bet_leg:)
@@ -14,9 +13,9 @@ module EntryRequests
       end
 
       def call
-        create_bet_rollback_request!
-        create_win_rollback_request! if winning_rollback_entry
-        create_resettle_rollback_request! if winning_resettle_entry
+        create_bet_rollback_request! if place_cancelled?
+        create_win_rollback_request! if winning_rollback?
+        create_resettle_rollback_request! if winning_cancel?
 
         entry_requests.compact
       end
@@ -31,17 +30,29 @@ module EntryRequests
                                 .create!(bet_rollback_request_attrs)
       end
 
+      def place_cancelled?
+        return false unless placement_entry && placement_rollback_entry
+
+        placement_entry.id < placement_rollback_entry.id
+      end
+
       def bet_rollback_request_attrs
         {
+          **base_request_attrs,
           kind: EntryKinds::ROLLBACK,
-          mode: EntryRequest::INTERNAL,
           amount: -placement_rollback_entry.amount,
           comment: bet_rollback_comment,
-          customer_id: bet.customer_id,
-          currency_id: bet.currency_id,
-          origin: bet,
           real_money_amount: -placement_rollback_entry.real_money_amount,
           bonus_amount: -placement_rollback_entry.bonus_amount
+        }
+      end
+
+      def base_request_attrs
+        {
+          mode: EntryRequest::INTERNAL,
+          customer_id: bet.customer_id,
+          currency_id: bet.currency_id,
+          origin: bet
         }
       end
 
@@ -55,15 +66,19 @@ module EntryRequests
                                 .create!(win_rollback_request_attrs)
       end
 
+      def winning_rollback?
+        return false if bet.combo_bets?
+        return false unless winning && winning_rollback_entry
+
+        winning.id < winning_rollback_entry.id
+      end
+
       def win_rollback_request_attrs
         {
+          **base_request_attrs,
           kind: EntryKinds::ROLLBACK,
-          mode: EntryRequest::INTERNAL,
           amount: winning_rollback_entry.amount.abs,
           comment: win_rollback_comment,
-          customer_id: bet.customer_id,
-          currency_id: bet.currency_id,
-          origin: bet,
           real_money_amount: winning_rollback_entry.real_money_amount.abs,
           bonus_amount: winning_rollback_entry.bonus_amount.abs
         }
@@ -79,22 +94,26 @@ module EntryRequests
                                      .create!(resettle_rollback_request_attrs)
       end
 
+      def winning_cancel?
+        return false unless bet.combo_bets? && winning
+        return true unless winning_rollback_entry
+
+        winning.id > winning_rollback_entry.id
+      end
+
       def resettle_rollback_request_attrs
         {
-          kind: EntryKinds::ROLLBACK,
-          mode: EntryRequest::INTERNAL,
-          amount: -winning_resettle_entry.amount.abs,
+          **base_request_attrs,
+          kind: EntryKinds::SYSTEM_BET_CANCEL,
+          amount: -winning.amount.abs,
           comment: resettle_rollback_comment,
-          customer_id: bet.customer_id,
-          currency_id: bet.currency_id,
-          origin: bet,
-          real_money_amount: -winning_resettle_entry.real_money_amount.abs,
-          bonus_amount: -winning_resettle_entry.bonus_amount.abs
+          real_money_amount: -winning.real_money_amount.abs,
+          bonus_amount: -winning.bonus_amount.abs
         }
       end
 
       def resettle_rollback_comment
-        "Rollback winning resettlement - #{winning_resettle_entry.amount} " \
+        "Rollback winning resettlement - #{winning.amount} " \
         "#{bet.currency} for #{bet.customer} on #{bet_leg.event}."
       end
 
