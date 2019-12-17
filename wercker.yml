@@ -112,7 +112,7 @@ deploy:
     - script:
       name: prepare-migrations
       code: |
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-backend-web}
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}backend-web
         terraform init
         terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve \
@@ -146,7 +146,7 @@ deploy:
 
         cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}backend-worker-odds-feed
         terraform init
-        terraform workspace select $TARGET_ENV
+        terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve
 
         cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-worker-mts
@@ -159,7 +159,7 @@ deploy:
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${WS_PATH:-backend-websocket}
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}backend-websocket
         terraform init
         terraform workspace select ${CASINO_ENV:-${TARGET_ENV}}
         terraform apply -auto-approve
