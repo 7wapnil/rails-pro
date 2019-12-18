@@ -14,6 +14,9 @@ module EveryMatrix
 
       MAX_STAKE_LIMIT_EXCEEDED_CODE = 112
       MAX_STAKE_LIMIT_EXCEEDED_MESSAGE = 'MaxStakeLimitExceeded'
+
+      TRANSACTION_NOT_FOUND_CODE = 108
+      TRANSACTION_NOT_FOUND_MESSAGE = 'TransactionNotFound'
     end
   end
 end

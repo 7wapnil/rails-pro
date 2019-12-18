@@ -424,10 +424,9 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
         end
 
         let(:expected_response) do
-          common_success_response.merge(
-            'Balance'    => (balance_before + amount).to_d.to_s,
-            'Currency'   => currency_code,
-            'SessionId'  => customer_session.id
+          common_response.merge(
+            'ReturnCode' => 108,
+            'Message'    => 'TransactionNotFound'
           )
         end
 
@@ -870,10 +869,9 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
         end
 
         let(:expected_response) do
-          common_success_response.merge(
-            'Balance'    => (balance_before + amount).to_d.to_s,
-            'Currency'   => currency_code,
-            'SessionId'  => customer_session.id
+          common_response.merge(
+            'ReturnCode' => 108,
+            'Message'    => 'TransactionNotFound'
           )
         end
 

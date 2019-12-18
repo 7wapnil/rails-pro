@@ -23,6 +23,18 @@ module EveryMatrix
           'Message'    => transaction.entry_request.result['message']
         )
       end
+
+      def valid_request?
+        transaction.wager_entry.present? &&
+          transaction.amount == transaction.wager.amount
+      end
+
+      def validation_failed
+        common_response.merge(
+          'ReturnCode' => TRANSACTION_NOT_FOUND_CODE,
+          'Message'    => TRANSACTION_NOT_FOUND_MESSAGE
+        )
+      end
     end
   end
 end

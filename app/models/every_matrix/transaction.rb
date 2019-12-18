@@ -27,8 +27,11 @@ module EveryMatrix
     has_one :vendor, through: :play_item
     has_one :content_provider, through: :play_item
 
-    def wager
-      Wager.where(round_id: round_id).order(:created_at).first
-    end
+    has_one :wager,
+            foreign_key: :round_id,
+            primary_key: :round_id,
+            class_name: 'EveryMatrix::Wager'
+
+    delegate :entry, to: :wager, allow_nil: true, prefix: true
   end
 end
