@@ -17,6 +17,11 @@ describe EntryRequests::Backoffice::Bets::Won do
   let(:real_balance_amount) { wallet.real_money_balance }
   let(:placed_amount) { placement_entry.real_money_amount.abs }
 
+  it 'recalculates bonus rollover' do
+    subject
+    expect(bet.reload).to be_counted_towards_rollover
+  end
+
   context 'voided bet' do
     let(:bet) { rejected_bet }
     let(:voided_amount) { placement_entry.real_money_amount.abs }

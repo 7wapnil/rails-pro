@@ -7,12 +7,10 @@ module CustomerBonuses
     end
 
     def call
-      return if bet.odd_value < customer_bonus.min_odds_per_bet
+      return unless eligible?
 
-      customer_bonus.with_lock do
-        balance = customer_bonus.rollover_balance
-        customer_bonus.update!(rollover_balance: balance + rollover_amount)
-      end
+      tag_bet_rollover!
+      recalculate_rollover!
     end
 
     private
@@ -21,7 +19,20 @@ module CustomerBonuses
 
     delegate :customer_bonus, to: :bet
 
-    def rollover_amount
+    def eligible?
+      customer_bonus && bet.counted_towards_rollover?
+    end
+
+    def tag_bet_rollover!
+      bet.update!(counted_towards_rollover: false)
+    end
+
+    def recalculate_rollover!
+      customer_bonus.rollover_balance += bet_rollover_amount
+      customer_bonus.save!
+    end
+
+    def bet_rollover_amount
       [customer_bonus.max_rollover_per_bet, bet.amount].min
     end
   end

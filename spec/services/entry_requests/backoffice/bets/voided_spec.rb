@@ -16,6 +16,18 @@ describe EntryRequests::Backoffice::Bets::Voided do
 
   let(:real_balance_amount) { wallet.real_money_balance }
   let(:placement_amount) { placement_entry.real_money_amount.abs }
+  let(:bet) { placed_bet }
+
+  context 'bonus rollover' do
+    let(:counted_towards_rollover) { true }
+
+    before { placement_entry }
+
+    it 'rolbacks bonus rollover' do
+      subject
+      expect(bet.reload).not_to be_counted_towards_rollover
+    end
+  end
 
   context 'placement bet' do
     let(:bet) { placed_bet }

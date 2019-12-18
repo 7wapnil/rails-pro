@@ -29,5 +29,10 @@ namespace :production_data do
     task delete_invalid_audit_logs: :environment do
       AuditLog.where(event: 'entry_request_created', context: nil).delete_all
     end
+
+    task refresh_counted_towards_rollover: :environment do
+      Bet.where(status: Bet::ACCEPTED, counted_towards_rollover: true)
+         .update_all(counted_towards_rollover: false)
+    end
   end
 end

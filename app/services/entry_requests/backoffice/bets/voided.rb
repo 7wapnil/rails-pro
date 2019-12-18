@@ -18,8 +18,6 @@ module EntryRequests
         end
 
         def recalculate_bonus_rollover!
-          return unless customer_bonus
-
           CustomerBonuses::RollbackBonusRolloverService.call(bet: bet)
         end
 

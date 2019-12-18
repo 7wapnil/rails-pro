@@ -9,6 +9,7 @@ module CustomerBonuses
 
     def call
       return unless customer_bonus&.active? && settled?
+      return if bet.voided?
 
       recalculate_bonus_rollover
 

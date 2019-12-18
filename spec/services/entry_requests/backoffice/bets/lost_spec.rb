@@ -14,6 +14,15 @@ describe EntryRequests::Backoffice::Bets::Lost do
     }
   end
 
+  context 'bonus rollover' do
+    before { placement_entry }
+
+    it 'recalculates bonus rollover' do
+      subject
+      expect(bet.reload).to be_counted_towards_rollover
+    end
+  end
+
   context 'placement bet' do
     let(:bet) { placed_bet }
     let!(:expected_amount) { wallet.real_money_balance }

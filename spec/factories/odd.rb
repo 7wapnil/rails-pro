@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :odd do
     name       { 'MiTH' }
     won        { true }
-    value      { Faker::Number.decimal(1, 2) }
+    value      { Faker::Number.decimal(1, 2).to_f + 1 }
     status     { Odd::INACTIVE }
     outcome_id { '' }
 

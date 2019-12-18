@@ -21,6 +21,13 @@ shared_context 'manual settlement' do
                     real_money_balance: wallet_real_balance,
                     bonus_balance: wallet_bonus_balance)
   end
+  let!(:customer_bonus) do
+    create(:customer_bonus, customer: customer,
+                            wallet: wallet,
+                            status: CustomerBonus::ACTIVE,
+                            rollover_balance: wallet_amount,
+                            min_odds_per_bet: 1)
+  end
   let(:odd) { create(:odd) }
 
   let(:placement_entry) do
@@ -51,15 +58,12 @@ shared_context 'manual settlement' do
     {
       currency: currency,
       customer: customer,
-      amount: bet_amount,
-      bet_legs_attributes: [
-        {
-          odd: odd,
-          odd_value: odd.value
-        }
-      ]
+      customer_bonus: customer_bonus,
+      counted_towards_rollover: counted_towards_rollover,
+      amount: bet_amount
     }
   end
+  let(:counted_towards_rollover) { false }
   let(:placed_bet) { create(:bet, :accepted, **base_bet_params) }
   let(:rejected_bet) { create(:bet, :rejected, **base_bet_params) }
   let(:settled_bet) { create(:bet, :settled, **base_bet_params) }

@@ -7,9 +7,11 @@ describe CustomerBonuses::RollbackBonusRolloverService do
     create(:bet, :rejected, customer: customer,
                             amount: bet_amount,
                             odd: create(:odd, value: odd_value),
-                            customer_bonus: customer_bonus)
+                            customer_bonus: customer_bonus,
+                            counted_towards_rollover: counted_towards_rollover)
   end
   let(:odd_value) { 2.5 }
+  let(:counted_towards_rollover) { true }
   let(:customer_bonus) do
     create(:customer_bonus,
            customer: customer,
@@ -44,8 +46,9 @@ describe CustomerBonuses::RollbackBonusRolloverService do
       end
     end
 
-    context 'bet ood value < customer bonus min odds per bet' do
+    context 'bet has not been counted towards rollover' do
       let(:odd_value) { customer_bonus.min_odds_per_bet - 1 }
+      let(:counted_towards_rollover) { false }
 
       it 'does not revert rollover balance' do
         subject

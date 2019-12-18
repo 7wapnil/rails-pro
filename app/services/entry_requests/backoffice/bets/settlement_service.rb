@@ -38,8 +38,8 @@ module EntryRequests
             lock_important_entities!
             create_entry_requests!
             proceed_entry_requests!
-            recalculate_bonus_rollover!
             update_bet_settlement_status!
+            recalculate_bonus_rollover!
             log_initiator_activity!
           end
         end

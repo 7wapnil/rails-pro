@@ -17,7 +17,9 @@ module EntryRequests
           @entry_requests = Array.wrap(entry_request)
         end
 
-        def recalculate_bonus_rollover!; end
+        def recalculate_bonus_rollover!
+          CustomerBonuses::BetSettlementService.call(bet)
+        end
 
         def update_bet_settlement_status!
           bet.settle_manually!(settlement_status: Bet::LOST)

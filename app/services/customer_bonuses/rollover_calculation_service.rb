@@ -19,7 +19,8 @@ module CustomerBonuses
     attr_reader :bet, :customer_bonus
 
     def eligible?
-      bet.settled? &&
+      (bet.settled? || bet.manually_settled?) &&
+        !bet.counted_towards_rollover? &&
         customer_bonus.present? &&
         customer_bonus.active? && customer_bonus.sportsbook? &&
         bet_match_bonus_rules?
@@ -30,10 +31,8 @@ module CustomerBonuses
     end
 
     def recalculate_rollover!
-      customer_bonus.with_lock do
-        customer_bonus.rollover_balance -= bet_rollover_amount
-        customer_bonus.save!
-      end
+      customer_bonus.rollover_balance -= bet_rollover_amount
+      customer_bonus.save!
     end
 
     def bet_match_bonus_rules?

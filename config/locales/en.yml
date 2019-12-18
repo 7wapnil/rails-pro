@@ -17,7 +17,7 @@ en:
   note: Note
   no_file: No File
   no_records: No records yet
-  proceed_manually: Proceed manually
+  process_manually: Process manually
   reject: Reject
   save: Save
   says_at: "%{who} at %{when}"
