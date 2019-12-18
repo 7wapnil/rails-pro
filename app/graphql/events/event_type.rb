@@ -60,5 +60,6 @@ module Events
     end
 
     field :categories, !types[Events::MarketCategoryType]
+    field :isEnabled, types.Boolean, property: :available?
   end
 end

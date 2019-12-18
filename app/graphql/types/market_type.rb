@@ -15,4 +15,5 @@ Types::MarketType = GraphQL::ObjectType.define do
   field :category, types.String do
     resolve ->(obj, *) { obj.template&.category }
   end
+  field :isEnabled, types.Boolean, property: :enabled?
 end

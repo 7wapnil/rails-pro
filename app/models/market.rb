@@ -58,6 +58,10 @@ class Market < ApplicationRecord
       .order(priority: :asc, id: :asc)
   end
 
+  def enabled?
+    visible? && active?
+  end
+
   private
 
   def define_priority

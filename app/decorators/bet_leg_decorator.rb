@@ -2,9 +2,13 @@
 
 class BetLegDecorator < ApplicationDecorator
   delegate :odd, :event, :market, :title, to: :bet_leg, allow_nil: true
-  delegate :name, to: :odd, allow_nil: true, prefix: true
-  delegate :name, to: :market, allow_nil: true, prefix: true
-  delegate :name, :start_at, to: :event, allow_nil: true, prefix: true
+
+  delegate :name, :active?,
+           to: :odd, allow_nil: true, prefix: true
+  delegate :name, :status, :visible?, :enabled?,
+           to: :market, allow_nil: true, prefix: true
+  delegate :name, :start_at, :available?,
+           to: :event, allow_nil: true, prefix: true
 
   def human_notification_message
     return notification_message unless notification_code

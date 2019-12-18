@@ -222,7 +222,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   end
 
   def available?
-    active? && visible
+    active? && visible?
   end
 
   # TODO: rework producer assignment flow in odd change and fixture change

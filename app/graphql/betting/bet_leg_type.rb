@@ -16,8 +16,15 @@ module Betting
       end
     end
 
+    field :eventEnabled, types.Boolean, property: :event_available?
+
+    field :marketStatus, types.String, property: :market_status
+    field :marketVisible, types.String, property: :market_visible?
+    field :marketEnabled, types.Boolean, property: :market_enabled?
+
     field :oddId, !types.ID, property: :odd_id
     field :oddValue, !types.Float, property: :odd_value
+    field :oddEnabled, types.Boolean, property: :odd_active?
 
     field :displayStatus, types.String, property: :display_status
     field :notificationCode, types.String, property: :notification_code
