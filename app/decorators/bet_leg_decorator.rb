@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class BetLegDecorator < ApplicationDecorator
+  PENDING = 'pending'
+  CANCELLED = 'cancelled'
+
   delegate :odd, :event, :market, :title, to: :bet_leg, allow_nil: true
 
   delegate :name, :active?,
@@ -18,8 +21,8 @@ class BetLegDecorator < ApplicationDecorator
   end
 
   def display_status
-    return I18n.t("settles.#{settlement_status}") if settlement_status
+    return CANCELLED if cancelled_by_system?
 
-    I18n.t('statuses.pending')
+    settlement_status || PENDING
   end
 end
