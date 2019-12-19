@@ -34,6 +34,7 @@ module Customers
           .call(summary, attribute_name => real_money_amount)
       end
 
+      # rubocop:disable Metrics/MethodLength, Metrics/CyclomaticComplexity
       def summary_attribute_name(balance_kind)
         case entry.kind
         when EntryKinds::DEPOSIT
@@ -52,6 +53,7 @@ module Customers
           :"casino_#{balance_kind}_payout_amount"
         end
       end
+      # rubocop:enable Metrics/MethodLength, Metrics/CyclomaticComplexity
 
       def real_money_amount
         entry.base_currency_real_money_amount

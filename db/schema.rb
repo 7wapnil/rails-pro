@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_10_065657) do
+ActiveRecord::Schema.define(version: 2019_12_17_095550) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -60,7 +60,7 @@ ActiveRecord::Schema.define(version: 2019_12_10_065657) do
     t.bigint "customer_id"
     t.bigint "odd_id"
     t.bigint "currency_id"
-    t.decimal "amount"
+    t.decimal "amount", precision: 14, scale: 2
     t.decimal "odd_value"
     t.string "status"
     t.text "notification_message"
@@ -178,7 +178,7 @@ ActiveRecord::Schema.define(version: 2019_12_10_065657) do
     t.integer "valid_for_days"
     t.integer "percentage"
     t.datetime "expires_at"
-    t.integer "original_bonus_id"
+    t.bigint "original_bonus_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "rollover_balance", precision: 14, scale: 2
@@ -491,6 +491,9 @@ ActiveRecord::Schema.define(version: 2019_12_10_065657) do
     t.string "representation_name", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "visible", default: false
+    t.boolean "as_vendor", default: false
+    t.string "internal_image_name", default: ""
     t.index ["name"], name: "index_every_matrix_content_providers_on_name"
     t.index ["representation_name"], name: "index_every_matrix_content_providers_on_representation_name"
   end
@@ -618,6 +621,8 @@ ActiveRecord::Schema.define(version: 2019_12_10_065657) do
     t.boolean "has_live_casino", default: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.boolean "visible", default: false
+    t.string "internal_image_name", default: ""
     t.index ["vendor_id"], name: "index_every_matrix_vendors_on_vendor_id"
   end
 
@@ -811,6 +816,7 @@ ActiveRecord::Schema.define(version: 2019_12_10_065657) do
   add_foreign_key "competitor_players", "competitors", on_delete: :cascade
   add_foreign_key "competitor_players", "players", on_delete: :cascade
   add_foreign_key "crypto_addresses", "wallets"
+  add_foreign_key "customer_bonuses", "bonuses", column: "original_bonus_id"
   add_foreign_key "customer_bonuses", "entries"
   add_foreign_key "customer_data", "customers"
   add_foreign_key "customer_notes", "customers"

@@ -29,7 +29,7 @@ module CustomerBonuses
 
     attr_accessor :wallet, :bonus, :amount, :status, :activated_at
 
-    # rubocop:disable Metrics/MethodLength
+    # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
     def new_bonus_attributes
       {
         original_bonus_id: bonus.id,
@@ -53,7 +53,7 @@ module CustomerBonuses
         max_rollover_per_spin: bonus.max_rollover_per_spin
       }
     end
-    # rubocop:enable Metrics/MethodLength
+    # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
     def new_customer_bonus_status
       return CustomerBonus::EXPIRED unless bonus.active?
