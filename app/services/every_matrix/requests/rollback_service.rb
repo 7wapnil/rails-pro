@@ -10,7 +10,7 @@ module EveryMatrix
       end
 
       def transaction_class
-        EveryMatrix::Result
+        EveryMatrix::Rollback
       end
 
       def placement_service
