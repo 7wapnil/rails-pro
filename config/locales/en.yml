@@ -35,6 +35,7 @@ en:
   balance_interactions: Balance interactions
   balance_interaction_requests: Balance interaction requests
   not_available: 'N/A'
+  not_set: Not set
 
   activate_instance: "Activate %{instance}"
   activated: "%{instance} activated"

@@ -1,17 +1,4 @@
 module FormHelper
-  def build_enum_radio_group(opts = {})
-    tag.div(class: 'form-group') do
-      opts[:collection].map do |item|
-        item_id = [
-          opts[:resource].class.name.underscore.to_sym,
-          opts[:attribute_name],
-          item.first
-        ].join('_')
-        concat render_radio_label_pair(opts.merge(item: item, item_id: item_id))
-      end
-    end
-  end
-
   def labels_selector(labelable, labels, element_id = nil)
     element_id ||= "#{labelable.class.to_s.downcase}_#{labelable.id}"
     update_url = polymorphic_url([:update_labels, labelable])
@@ -49,13 +36,6 @@ module FormHelper
 
   private
 
-  def render_radio_label_pair(opts = {})
-    tag.div(class: 'form-check form-check-inline') do
-      concat render_radio_tag(opts)
-      concat render_radio_label_tag(opts)
-    end
-  end
-
   def render_radio_tag(opts = {})
     resource_name = opts[:resource].class.name.underscore.downcase
     input_name = "#{resource_name}[#{opts[:attribute_name]}]"
@@ -65,15 +45,6 @@ module FormHelper
       opts[:resource].send(opts[:attribute_name]) == opts[:item].first,
       id: opts[:item_id],
       class: 'form-check-input'
-    )
-  end
-
-  def render_radio_label_tag(opts = {})
-    label_tag(
-      t("#{opts[:translation_key]}.#{opts[:item].first}"),
-      nil,
-      for: opts[:item_id],
-      class: 'form-check-label'
     )
   end
 end

@@ -3,7 +3,7 @@
   .mt-4= render 'customers/entry_request_form', entry_request: @entry_request,
                                                 customer: @customer
   .mt-4.mb-4= render 'customers/balance_interactions', entries: @entries
-  .mt-4.mb-4= render 'customers/entry_requests', entry_requests: @entry_requests
+  .mt-4.mb-4= render 'customers/entry_requests', entry_requests: @requests
 
 - content_for :js do
   = javascript_pack_tag 'customers/navigation_links'

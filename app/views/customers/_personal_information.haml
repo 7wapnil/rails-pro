@@ -19,10 +19,18 @@
       %tr
         %td= t('attributes.gender')
         %td
-          = build_enum_radio_group(resource: customer,
-                                   attribute_name: :gender,
-                                   collection: Customer.genders,
-                                   translation_key: :genders)
+          .form-group
+            = f.collection_radio_buttons :gender, Customer.genders.keys, :itself,
+              ->(gender) { t("genders.#{gender}") },
+              label: false,
+              item_wrapper_class: 'form-check form-check-inline' do |b|
+              = b.radio_button class: 'form-check-input'
+              = b.label class: 'form-check-label'
+
+            .form-check.form-check-inline
+              = f.radio_button :gender, '', class: 'form-check-input'
+              = f.label :gender, t('not_set'), class: 'form-check-label'
+
       %tr
         %td= t('attributes.date_of_birth')
         %td
