@@ -706,7 +706,7 @@ en:
           title: Neteller
           range: 'Range: %{min_amount} - %{max_amount} %{code}'
         idebit:
-          title: iDebit
+          title: iDebit - Online Banking Transfers
           range: 'Range: %{min_amount} - %{max_amount} %{code}'
         bitcoin:
           title: Bitcoin
