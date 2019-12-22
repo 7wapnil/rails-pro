@@ -35,7 +35,7 @@ describe Radar::RollbackBetSettlementWorker do
         create(:bet, :settled, :won,
                customer: build(:customer),
                odd: build(:odd, market: control_markets.first)),
-        create(:bet, :settled,
+        create(:bet, :settled, :lost,
                customer: build(:customer),
                odd: build(:odd, market: control_markets.first)),
         create(:bet, :settled, :won,
@@ -244,7 +244,7 @@ describe Radar::RollbackBetSettlementWorker do
         it 'calls rollover bonus service' do
           expect(CustomerBonuses::RollbackBonusRolloverService)
             .to receive(:call)
-            .exactly(control_bets.count).times
+            .exactly(control_bets.reject(&:voided?).count).times
 
           subject
         end

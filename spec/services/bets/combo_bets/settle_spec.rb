@@ -249,6 +249,51 @@ describe Bets::ComboBets::Settle do
     end
   end
 
+  context 'loses bet leg when another bet leg on pending manual settlement' do
+    let!(:bet) do
+      create(:bet, :combo_bets, :with_placement_entry, :with_bet_leg,
+             :pending_manual_settlement)
+    end
+    let!(:unsettled_bet_leg) do
+      create(:bet_leg, :pending_manual_settlement, bet: bet)
+    end
+
+    before do
+      allow(CustomerBonuses::BetSettlementService).to receive(:call)
+    end
+
+    it 'loses bet' do
+      subject
+      expect(bet).to be_lost
+    end
+
+    it 'loses bet leg' do
+      subject
+      expect(bet_leg).to be_lost
+    end
+
+    it 'keeps bet on pending manual settlement' do
+      subject
+      expect(bet.reload).to be_pending_manual_settlement
+    end
+
+    it 'does not create entry request' do
+      expect { subject }.not_to change(EntryRequest, :count)
+    end
+
+    it 'does not create any entry' do
+      expect do
+        subject
+      rescue ::Bets::NotSupportedError
+      end.not_to change(Entry, :count)
+    end
+
+    it 'calls bonuses rollover' do
+      expect(CustomerBonuses::BetSettlementService).to receive(:call)
+      subject
+    end
+  end
+
   context 'when settled bet has been passed' do
     let!(:bet) do
       create(:bet, :combo_bets, :with_settled_bet_leg,

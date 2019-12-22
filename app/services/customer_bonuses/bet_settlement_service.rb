@@ -23,7 +23,7 @@ module CustomerBonuses
     attr_reader :bet, :customer_bonus
 
     def settled?
-      bet.settled? || bet.manually_settled?
+      bet.settled? || bet.manually_settled? || bet.pending_manual_settlement?
     end
 
     def recalculate_bonus_rollover

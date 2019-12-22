@@ -163,6 +163,14 @@ module StateMachines
                       after: :update_error_notification
         end
 
+        event :resend_to_manual_settlement do
+          transitions from: :pending_manual_settlement,
+                      to: :pending_manual_settlement,
+                      after: ->(settlement_status: nil) do
+                        settle_as(settlement_status: settlement_status)
+                      end
+        end
+
         event :rollback_settlement do
           transitions from: %i[settled pending_manual_settlement],
                       to: :accepted,
@@ -171,8 +179,7 @@ module StateMachines
 
         event :cancel_by_system do
           transitions from: %i[accepted settled pending_manual_settlement],
-                      to: :cancelled_by_system,
-                      after: :reset_settlement_info
+                      to: :cancelled_by_system
         end
 
         event :rollback_system_cancellation_with_acceptance do

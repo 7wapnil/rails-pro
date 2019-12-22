@@ -7,7 +7,8 @@ module Bets
 
       def settle!
         settle_bet_leg!
-        return if !lost? && unsettled_bet_legs?
+        return if already_lost_bet? || !lost? && unsettled_bet_legs?
+        return lose_bet_without_settlement! if lose_with_pending_bet_legs?
 
         settle_bet!
         perform_payout!
@@ -27,13 +28,28 @@ module Bets
         )
       end
 
+      def already_lost_bet?
+        bet.lost? && bet.bet_legs.any?(&:lost?)
+      end
+
       def unsettled_bet_legs?
         bet.bet_legs
            .any? do |leg|
              next false if leg.id == bet_leg.id
 
-             leg.settlement_status.nil? && leg.status.nil?
+             leg.settlement_status.nil? && !leg.cancelled_by_system?
            end
+      end
+
+      def lose_with_pending_bet_legs?
+        lost? &&
+          bet.pending_manual_settlement? &&
+          bet.bet_legs.any?(&:pending_manual_settlement?)
+      end
+
+      def lose_bet_without_settlement!
+        bet.resend_to_manual_settlement!(settlement_status: Bet::LOST)
+        settle_customer_bonus!
       end
 
       def settlement_status

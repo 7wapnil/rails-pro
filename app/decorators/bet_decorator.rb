@@ -4,6 +4,7 @@ class BetDecorator < ApplicationDecorator
   PRECISION = 2
   PENDING = 'pending'
   CANCELLED = 'cancelled'
+  LOST = 'lost'
 
   delegate :code, to: :currency, allow_nil: true, prefix: true
   delegate :username, to: :customer, allow_nil: true, prefix: true
@@ -13,6 +14,7 @@ class BetDecorator < ApplicationDecorator
   decorates_association :bet_legs, with: BetLegDecorator
 
   def display_status
+    return LOST if unresolved_lost_bet?
     return PENDING if state_machine::PENDING_STATUSES_MASK.include?(status)
     return CANCELLED if state_machine::CANCELLED_STATUSES_MASK.include?(status)
     return settlement_status if state_machine::SETTLED_STATUSES_MASK
@@ -64,6 +66,10 @@ class BetDecorator < ApplicationDecorator
   end
 
   private
+
+  def unresolved_lost_bet?
+    combo_bets? && lost? && pending_manual_settlement?
+  end
 
   def state_machine
     StateMachines::BetStateMachine

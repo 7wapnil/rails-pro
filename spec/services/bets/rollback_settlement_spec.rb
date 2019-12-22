@@ -175,8 +175,9 @@ describe Bets::RollbackSettlement do
       )
     end
 
-    it 'calls bonuses rollover' do
-      expect(CustomerBonuses::RollbackBonusRolloverService).to receive(:call)
+    it 'does not call bonuses rollover' do
+      expect(CustomerBonuses::RollbackBonusRolloverService)
+        .not_to receive(:call)
       subject
     end
   end
@@ -231,6 +232,112 @@ describe Bets::RollbackSettlement do
         .not_to receive(:call)
       subject
     rescue StandardError
+    end
+  end
+
+  context 'on pending manual settlement when another lost bet leg' do
+    let(:bet) do
+      create(:bet, :lost, :pending_manual_settlement,
+             :with_bet_leg, :combo_bets)
+    end
+    let(:bet_leg) { bet.bet_legs.first }
+
+    before do
+      create(:bet_leg, :lost, bet: bet)
+    end
+
+    it 'approves bet lost' do
+      subject
+      expect(bet.reload).to have_attributes(
+        void_factor: nil,
+        status: StateMachines::BetStateMachine::SETTLED,
+        settlement_status: Bet::LOST
+      )
+    end
+
+    it 'cleans bet leg statuses' do
+      subject
+      expect(bet_leg.reload).to have_attributes(status: nil,
+                                                settlement_status: nil)
+    end
+
+    it 'does not create rollback entry' do
+      expect { subject }.not_to change(Entry, :count)
+    end
+
+    it 'does not call bonuses rollover' do
+      expect(CustomerBonuses::RollbackBonusRolloverService)
+        .not_to receive(:call)
+      subject
+    end
+  end
+
+  context 'on multiple pending manual settlement for bet leg' do
+    let(:bet) do
+      create(:bet, :pending_manual_settlement, :combo_bets)
+    end
+    let(:bet_leg) { create(:bet_leg, :pending_manual_settlement, bet: bet) }
+
+    before do
+      create(:bet_leg, :pending_manual_settlement, bet: bet)
+    end
+
+    it 'keeps bet status' do
+      subject
+      expect(bet.reload).to have_attributes(
+        status: StateMachines::BetStateMachine::PENDING_MANUAL_SETTLEMENT,
+        settlement_status: nil
+      )
+    end
+
+    it 'cleans bet leg statuses' do
+      subject
+      expect(bet_leg.reload).to have_attributes(status: nil,
+                                                settlement_status: nil)
+    end
+
+    it 'does not create rollback entry' do
+      expect { subject }.not_to change(Entry, :count)
+    end
+
+    it 'does not call bonuses rollover' do
+      expect(CustomerBonuses::RollbackBonusRolloverService)
+        .not_to receive(:call)
+      subject
+    end
+  end
+
+  context 'on lost bet leg and another bet leg on pending manual settlement' do
+    let(:bet) do
+      create(:bet, :lost, :pending_manual_settlement, :combo_bets)
+    end
+    let(:bet_leg) { create(:bet_leg, :lost, bet: bet) }
+
+    before do
+      create(:bet_leg, :pending_manual_settlement, bet: bet)
+    end
+
+    it 'rollback bet status to accepted' do
+      subject
+      expect(bet.reload).to have_attributes(
+        status: StateMachines::BetStateMachine::PENDING_MANUAL_SETTLEMENT,
+        settlement_status: nil
+      )
+    end
+
+    it 'cleans bet leg statuses' do
+      subject
+      expect(bet_leg.reload).to have_attributes(status: nil,
+                                                settlement_status: nil)
+    end
+
+    it 'does not create rollback entry' do
+      expect { subject }.not_to change(Entry, :count)
+    end
+
+    it 'calls bonuses rollover' do
+      expect(CustomerBonuses::RollbackBonusRolloverService).to receive(:call)
+      subject
     end
   end
 end

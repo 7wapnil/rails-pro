@@ -6,8 +6,12 @@ class BetLeg < ApplicationRecord
     won: WON = 'won',
     voided: VOIDED = 'voided'
   }.freeze
+
+  CANCELLED_BY_SYSTEM = 'cancelled_by_system'
+  PENDING_MANUAL_SETTLEMENT = 'pending_manual_settlement'
   STATUSES = {
-    cancelled_by_system: CANCELLED_BY_SYSTEM = 'cancelled_by_system'
+    cancelled_by_system: CANCELLED_BY_SYSTEM,
+    pending_manual_settlement: PENDING_MANUAL_SETTLEMENT
   }.freeze
 
   enum settlement_status: SETTLEMENT_STATUSES

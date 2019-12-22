@@ -28,6 +28,7 @@ module Bets
       raise error
     rescue StandardError => error
       bet.send_to_manual_settlement!(error.message)
+      bet_leg.pending_manual_settlement!
       raise error
     end
 
