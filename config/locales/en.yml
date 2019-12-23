@@ -109,6 +109,7 @@ en:
     actual_payout: Actual payout
     amount: Amount
     awarded_amount: Awarded amount
+    awarded: Awarded
     real_money_amount: Cash amount
     bonus_amount: Bonus amount
     cancelled_bonus_amount: Cancelled bonus amount
@@ -148,6 +149,7 @@ en:
     email: Email
     end_at: End at
     entry_kind: Entry type
+    error: Error
     event: Event
     event_id: Event ID
     event_status: Event status
@@ -156,12 +158,15 @@ en:
     expires_at: Expires at
     external_id: External ID
     first_name: First name
+    forfeited: Forfeited
     free_spin_bonus_id: Free spin bonus ID
     free_rounds_end_date: End date
     gender: Gender
     id: ID
     info: Info
+    initial: Initial
     initiator: Initiator
+    in_progress: In progress
     ip_address: IP Address
     kind: Kind
     label_description: Label description
@@ -212,6 +217,7 @@ en:
     promotional: Receive promotional content
     promotional_agreement: Promotional agreement
     email_verified: Verified email
+    vendor: Vendor
     verification_sent: User notified about verification
     repeatable: Repeatable
     requested_at: Requested at

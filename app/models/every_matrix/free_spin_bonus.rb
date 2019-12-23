@@ -27,6 +27,10 @@ module EveryMatrix
              -> { with_error },
              class_name: 'EveryMatrix::FreeSpinBonusWallet',
              foreign_key: :every_matrix_free_spin_bonus_id
+    has_many :in_progress_free_spin_bonus_wallets,
+             -> { in_progress },
+             class_name: 'EveryMatrix::FreeSpinBonusWallet',
+             foreign_key: :every_matrix_free_spin_bonus_id
     has_many :wallets, through: :free_spin_bonus_wallets
     has_many :free_spin_bonus_play_items,
              class_name: 'EveryMatrix::FreeSpinBonusPlayItem',

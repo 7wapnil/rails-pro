@@ -15,6 +15,7 @@ module EveryMatrix
           :play_items,
           :free_spin_bonus_wallets,
           :initial_free_spin_bonus_wallets,
+          :in_progress_free_spin_bonus_wallets,
           :awarded_free_spin_bonus_wallets,
           :forfeited_free_spin_bonus_wallets,
           :error_free_spin_bonus_wallets
