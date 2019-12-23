@@ -121,6 +121,9 @@ Rails.application.routes.draw do
     get 'free_spin_bonuses/wallet/:id',
         to: 'free_spin_bonuses#wallet',
         as: 'free_spin_bonus_wallet'
+    get 'free_spin_bonuses/retry/:id',
+        to: 'free_spin_bonuses#retry',
+        as: 'retry_free_spin_bonus'
     resources :free_spin_bonuses, only: %i[index show new create destroy]
   end
 

@@ -58,13 +58,8 @@ module EveryMatrix
           state :forfeited
           state :forfeited_with_error
 
-          event :send_to_award do
-            transitions from: :initial,
-                        to: :sent_to_award
-          end
-
           event :send_to_create_user do
-            transitions from: :initial,
+            transitions from: %i[initial user_created_with_error],
                         to: :sent_to_create_user
           end
 
@@ -79,7 +74,7 @@ module EveryMatrix
           end
 
           event :send_to_award do
-            transitions from: %i[initial user_created],
+            transitions from: %i[initial user_created awarded_with_error],
                         to: :sent_to_award
           end
 
@@ -94,7 +89,7 @@ module EveryMatrix
           end
 
           event :send_to_forfeit do
-            transitions from: %i[awarded awarded_with_error],
+            transitions from: %i[awarded forfeited_with_error],
                         to: :sent_to_forfeit
           end
 

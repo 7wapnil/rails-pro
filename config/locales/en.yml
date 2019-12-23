@@ -51,6 +51,7 @@ en:
 
   bonus_forfeit_requested: "%{number} bonus(es) requested to be forfeited"
   bonus_award_requested: "%{number} bonus(es) requested to be awarded"
+  bonus_retry_requested: "%{number} bonus(es) requested to be retried"
 
   actions:
     expire: Expire
@@ -58,6 +59,7 @@ en:
     reset_password: Reset password
     verify: Verify
     forfeit: Forfeit awarded
+    retry_errors: Retry errors
 
   activemodel:
     errors:
