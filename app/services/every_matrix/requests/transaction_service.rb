@@ -44,8 +44,7 @@ module EveryMatrix
 
       attr_reader :amount, :transaction
 
-      delegate :entry_request, :customer_bonus,
-               to: :transaction
+      delegate :entry_request, to: :transaction
 
       def find_transaction
         @transaction =
