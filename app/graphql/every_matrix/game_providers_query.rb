@@ -2,8 +2,6 @@
 
 module EveryMatrix
   class GameProvidersQuery < ::Base::Resolver
-    include ::Base::Pagination
-
     type !types[ProviderType]
 
     description 'List of providers'
@@ -13,7 +11,7 @@ module EveryMatrix
     end
 
     def resolve(_obj, _args)
-      EveryMatrix::ContentProvider.distinct
+      GamesProviderResolver.call
     end
   end
 end

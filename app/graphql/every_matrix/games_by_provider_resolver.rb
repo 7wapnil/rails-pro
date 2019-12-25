@@ -2,36 +2,44 @@
 
 module EveryMatrix
   class GamesByProviderResolver < ApplicationService
-    def initialize(provider_id:, device:, country: '')
-      @provider_id = provider_id
+    def initialize(provider_name:, device:, country: '')
+      @provider_name = provider_name.titleize.delete(' ').downcase
       @device = device
       @country = country
     end
 
     def call
-      provider
+      return EveryMatrix::PlayItem.none unless subject
+
+      subject
         .play_items
-        .joins(:categories)
-        .where(device_platform_condition)
+        .public_send(device_platform_scope)
         .reject_country(country)
-        .order(:position)
         .distinct
     end
 
     private
 
-    attr_reader :provider_id, :device, :country
+    attr_reader :provider_name, :device, :country
 
-    def provider
-      EveryMatrix::ContentProvider.find(provider_id)
+    def subject
+      vendor || content_provider
     end
 
-    def device_platform_condition
-      {
-        every_matrix_categories: {
-          platform_type: device
-        }
-      }
+    def vendor
+      @vendor ||= EveryMatrix::Vendor.find_by('LOWER(name) = ?', provider_name)
+    end
+
+    def content_provider
+      @content_provider ||=
+        EveryMatrix::ContentProvider
+        .find_by('LOWER(representation_name) = ?', provider_name)
+    end
+
+    def device_platform_scope
+      return :desktop if device == PlayItem::DESKTOP
+
+      :mobile
     end
   end
 end

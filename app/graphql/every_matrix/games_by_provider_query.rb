@@ -9,7 +9,7 @@ module EveryMatrix
 
     description 'List of games by provider'
 
-    argument :providerId, !types.ID
+    argument :providerName, !types.String
 
     def auth_protected?
       false
@@ -17,7 +17,7 @@ module EveryMatrix
 
     def resolve(_obj, args)
       EveryMatrix::GamesByProviderResolver.call(
-        provider_id: args['providerId'],
+        provider_name: args['providerName'],
         device: platform_type(@request),
         country: @request.location.country_code.upcase
       )

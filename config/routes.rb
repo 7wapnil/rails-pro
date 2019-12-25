@@ -114,6 +114,8 @@ Rails.application.routes.draw do
   namespace :every_matrix do
     resources :categories, only: %i[index edit update]
     resources :transactions, only: %i[index show]
+    resources :content_providers, only: %i[index edit update]
+    resources :vendors, only: %i[index edit update]
   end
 
   namespace :webhooks do

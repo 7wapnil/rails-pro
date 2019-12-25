@@ -413,6 +413,8 @@ en:
     titles: Titles
     transaction: Transaction
     transactions: Transactions
+    content_providers: Content Providers
+    vendors: Vendors
     transactions_count:
       zero: No transactions
       one: 1 transaction

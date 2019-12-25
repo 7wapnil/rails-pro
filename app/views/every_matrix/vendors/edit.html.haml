@@ -1,0 +1,8 @@
+= simple_form_for @vendor do |f|
+  = f.input :name
+  = f.input :logo_url, as: :string
+  = f.input :enabled
+  = f.input :vendor_id, label: :external_id, disabled: true
+  = f.input :visible
+  = f.input :internal_image_name
+  = f.submit 'Save'

@@ -4,7 +4,7 @@ module EveryMatrix
   class OverviewLoader < BatchLoader
     include DeviceChecker
 
-    LIMIT_PER_CATEGORY = 10
+    LIMIT_PER_CATEGORY = 20
     JOINER = ' OR '
 
     def initialize(model, request)

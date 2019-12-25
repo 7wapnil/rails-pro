@@ -1,0 +1,20 @@
+= render 'search', vendors: @vendors, search: @search
+
+%table.table.entities
+  %thead
+    %tr
+      %th ID
+      %th Name
+      %th Internal Image Name
+      %th External vendor id
+      %th Visible
+  %tbody
+    - @vendors.each do |vendor|
+      %tr
+        %td= vendor.id
+        %td= link_to vendor.name, edit_every_matrix_vendor_path(vendor)
+        %td= vendor.internal_image_name
+        %td= vendor.vendor_id
+        %td= vendor.visible
+
+= paginate @vendors

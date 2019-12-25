@@ -1,0 +1,23 @@
+= render 'search', content_providers: @content_providers, search: @search
+
+%table.table.entities
+  %thead
+    %tr
+      %th ID
+      %th Name
+      %th Show as vendor
+      %th Internal Image Name
+      %th Representation name
+      %th Visible
+  %tbody
+    - @content_providers.each do |content_provider|
+      %tr
+        %td= content_provider.id
+        %td= link_to(content_provider.name,
+          edit_every_matrix_content_provider_path(content_provider))
+        %td= content_provider.as_vendor
+        %td= content_provider.internal_image_name
+        %td= content_provider.representation_name
+        %td= content_provider.visible
+
+= paginate @content_providers

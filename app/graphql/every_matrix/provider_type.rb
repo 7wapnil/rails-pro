@@ -6,8 +6,8 @@ module EveryMatrix
 
     field :id, types.ID
     field :name, types.String
-    field :logoUrl, types.String, property: :logo_url
+    field :logoUrl, types.String
     field :enabled, types.String
-    field :representationName, types.String, property: :representation_name
+    field :internalImageName, types.String
   end
 end

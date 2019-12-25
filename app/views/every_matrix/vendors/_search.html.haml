@@ -1,0 +1,22 @@
+= search_form_for search do |f|
+  %table.table
+    %thead
+      %tr
+        %th
+          .filter_title #{t('attributes.id')}:
+          .filter_field
+            = f.label :id_eq, class: 'sr-only'
+            = f.search_field :id_eq, class: 'form-control',
+                                     placeholder: t('attributes.id'),
+                                     autocomplete: :off
+
+        %th
+          .filter_title #{t('attributes.name')}:
+          .filter_field
+            = f.label :name_cont, class: 'sr-only'
+            = f.search_field :name_cont, class: 'form-control',
+                                         placeholder: t('attributes.name'),
+                                         autocomplete: :off
+
+        %th
+          = f.submit class: 'btn btn-outline-dark btn-block'
