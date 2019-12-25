@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_17_095550) do
+ActiveRecord::Schema.define(version: 2019_12_23_093709) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -476,12 +476,10 @@ ActiveRecord::Schema.define(version: 2019_12_17_095550) do
   end
 
   create_table "every_matrix_categories", force: :cascade do |t|
-    t.string "context"
     t.string "label", default: ""
     t.integer "position"
     t.string "kind"
-    t.string "platform_type"
-    t.index ["context"], name: "index_every_matrix_categories_on_context"
+    t.string "context"
   end
 
   create_table "every_matrix_content_providers", force: :cascade do |t|

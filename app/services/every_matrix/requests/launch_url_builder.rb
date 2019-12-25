@@ -7,8 +7,8 @@ module EveryMatrix
       LIVE_CASINO = 'live-casino'
 
       SLUG_MAP = {
-        EveryMatrix::Game.name => CASINO,
-        EveryMatrix::Table.name => LIVE_CASINO
+        EveryMatrix::Game.name => PlayItem::CASINO,
+        EveryMatrix::Table.name => PlayItem::LIVE_CASINO
       }.freeze
 
       def initialize(play_item:, session_id: nil)

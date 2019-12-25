@@ -2,8 +2,6 @@
 
 module EveryMatrix
   class GamesOverviewQuery < ::Base::Resolver
-    include DeviceChecker
-
     type types[EveryMatrix::OverviewType]
 
     description 'Casino Games overview'
@@ -13,9 +11,7 @@ module EveryMatrix
     end
 
     def resolve(_obj, _args)
-      EveryMatrix::Category
-        .where(platform_type: platform_type(@request))
-        .casino
+      EveryMatrix::Category.casino
     end
   end
 end

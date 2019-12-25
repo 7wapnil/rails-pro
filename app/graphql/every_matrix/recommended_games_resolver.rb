@@ -15,6 +15,7 @@ module EveryMatrix
       update_recommended!
 
       original_game.recommended_games
+                   .public_send(device)
                    .reject_country(country)
                    .limit(LIMIT_RECOMMENDED_GAMES)
     end

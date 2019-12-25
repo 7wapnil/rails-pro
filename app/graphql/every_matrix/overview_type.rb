@@ -15,9 +15,7 @@ module EveryMatrix
     end
     field :playItems, types[PlayItemType] do
       resolve ->(obj, _args, ctx) do
-        OverviewLoader
-          .for(PlayItem, ctx[:request].location.country_code.upcase)
-          .load(obj.id)
+        OverviewLoader.for(PlayItem, ctx[:request]).load(obj.id)
       end
     end
   end

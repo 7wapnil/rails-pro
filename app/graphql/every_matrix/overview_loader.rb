@@ -2,10 +2,14 @@
 
 module EveryMatrix
   class OverviewLoader < BatchLoader
-    LIMIT_PER_CATEGORY = 10
+    include DeviceChecker
 
-    def initialize(model, country_code = '')
-      @country_code = country_code
+    LIMIT_PER_CATEGORY = 10
+    JOINER = ' OR '
+
+    def initialize(model, request)
+      @terminal = platform_type(request)
+      @country_code = request.location.country_code.upcase
       super(model)
     end
 
@@ -22,10 +26,10 @@ module EveryMatrix
 
     private
 
-    attr_reader :country_code
+    attr_reader :terminal, :country_code
 
     def scope
-      EveryMatrix::PlayItem
+      model
         .eager_load(:categories)
         .where(external_id: scrap_play_item_ids)
     end
@@ -50,10 +54,29 @@ module EveryMatrix
           ON every_matrix_play_items.external_id = every_matrix_play_item_categories.play_item_id
           WHERE every_matrix_categories.id = every_matrix_play_item_categories.category_id
           AND NOT '#{country_code}' = ANY(every_matrix_play_items.restricted_territories)
+          AND (#{query_per_device})
           ORDER BY every_matrix_play_item_categories.position ASC
           LIMIT #{LIMIT_PER_CATEGORY}) play_items
         WHERE every_matrix_categories.id IN (#{category_ids.join(', ').presence || 'NULL'})
       SQL
+    end
+
+    def query_per_device
+      return mobile_query if terminal == PlayItem::MOBILE
+
+      desktop_query
+    end
+
+    def mobile_query
+      PlayItem::MOBILE_PLATFORMS.map(&method(:base_query)).join(JOINER)
+    end
+
+    def base_query(platform)
+      "'#{platform}' = ANY(every_matrix_play_items.terminal)"
+    end
+
+    def desktop_query
+      PlayItem::DESKTOP_PLATFORM.map(&method(:base_query)).join(JOINER)
     end
 
     def populate_categories!

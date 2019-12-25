@@ -256,7 +256,6 @@ en:
     vendor_name: Vendor name
     content_provider_name: Content provider name
     game_round_id: Game round Id
-    platform_type: Platform type
     category_type: Category type
     round_status: Round status
     game_id: Game Id

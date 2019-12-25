@@ -2,8 +2,6 @@
 
 module EveryMatrix
   class CategoriesQuery < ::Base::Resolver
-    include DeviceChecker
-
     type !types[CategoryType]
 
     description 'List of casino games'
@@ -15,10 +13,7 @@ module EveryMatrix
     end
 
     def resolve(_obj, args)
-      EveryMatrix::Category.where(
-        kind: args['kind'],
-        platform_type: platform_type(@request)
-      )
+      EveryMatrix::Category.where(kind: args['kind'])
     end
   end
 end

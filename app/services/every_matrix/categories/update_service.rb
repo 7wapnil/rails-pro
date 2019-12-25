@@ -19,7 +19,7 @@ module EveryMatrix
       def trigger_categories_update
         WebSocket::Client
           .instance
-          .trigger_categories_update(category, category.platform_type)
+          .trigger_categories_update(category)
       end
     end
   end

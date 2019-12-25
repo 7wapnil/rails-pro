@@ -13,6 +13,7 @@ module EveryMatrix
       model
         .joins(:categories)
         .where(condition)
+        .public_send(device)
         .reject_country(country)
         .order('every_matrix_play_item_categories.position ASC')
     end
@@ -24,8 +25,7 @@ module EveryMatrix
     def condition
       {
         every_matrix_categories: {
-          context: category_name,
-          platform_type: device
+          context: category_name
         }
       }
     end

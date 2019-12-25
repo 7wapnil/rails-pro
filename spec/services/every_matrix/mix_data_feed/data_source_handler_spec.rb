@@ -3,10 +3,6 @@
 describe EveryMatrix::MixDataFeed::DataSourceHandler do
   subject { described_class.call(payload) }
 
-  def context_with_platform(context)
-    "#{context}-desktop"
-  end
-
   context 'with valid data source' do
     let(:payload_categories) { payload['data']['categories'] }
     let(:payload_ids) do
@@ -43,7 +39,7 @@ describe EveryMatrix::MixDataFeed::DataSourceHandler do
         payload_categories.each do |category|
           persisted_ids =
             EveryMatrix::Category
-            .find_by(context: context_with_platform(category['id']))
+            .find_by(context: category['id'])
             .play_item_categories
             .order(:position)
             .pluck(:play_item_id)
@@ -62,7 +58,7 @@ describe EveryMatrix::MixDataFeed::DataSourceHandler do
       context 'outdated play items' do
         let(:category) do
           create(:category, :with_play_items,
-                 context: context_with_platform(payload_categories[0]['id']))
+                 context: payload_categories[0]['id'])
         end
 
         it 'removes play items' do
@@ -85,7 +81,7 @@ describe EveryMatrix::MixDataFeed::DataSourceHandler do
         let(:category) do
           create(
             :category,
-            context: context_with_platform(payload_categories[0]['id'])
+            context: payload_categories[0]['id']
           )
         end
 
@@ -121,7 +117,7 @@ describe EveryMatrix::MixDataFeed::DataSourceHandler do
       let(:category) do
         create(
           :category,
-          context: context_with_platform(payload_categories[0]['id'])
+          context: payload_categories[0]['id']
         )
       end
       let(:update_service) do

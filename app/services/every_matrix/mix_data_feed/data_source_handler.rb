@@ -3,16 +3,7 @@
 module EveryMatrix
   module MixDataFeed
     class DataSourceHandler < MixDataFeed::BaseHandler
-      DATA_SOURCE_FILTER = [
-        Category::CASINO_DESKTOP,
-        Category::LIVE_CASINO_DESKTOP,
-        Category::CASINO_MOBILE,
-        Category::LIVE_CASINO_MOBILE
-      ].freeze
-
-      DESKTOP_DATA_SOURCES = [
-        Category::CASINO_DESKTOP, Category::LIVE_CASINO_DESKTOP
-      ].freeze
+      DATA_SOURCE_FILTER = %w[arcane-casino arcane-live-casino].freeze
 
       private
 
@@ -33,32 +24,15 @@ module EveryMatrix
       end
 
       def process_category!(category_data)
-        context = name_with_platform(category_data['id'])
-        label = category_data['id'].underscore.humanize.titleize
-
         EveryMatrix::Category
-          .create_with(label: label, platform_type: platform_type)
-          .find_or_create_by(context: context)
-      end
-
-      def name_with_platform(context)
-        "#{context}-#{platform_type}"
-      end
-
-      def platform_type
-        return Category::DESKTOP if desktop_data_source?
-
-        Category::MOBILE
-      end
-
-      def desktop_data_source?
-        DESKTOP_DATA_SOURCES.include?(data_source_name)
+          .create_with(label: category_data['id'].underscore.humanize.titleize)
+          .find_or_create_by(context: category_data['id'])
       end
 
       def process_play_items
         play_items_data.each do |key, raw_play_items|
           PlayItemCategories::ProcessPlayItemsService.call(
-            category_name: name_with_platform(key),
+            category_name: key,
             raw_play_items: raw_play_items,
             categories: @categories,
             data_source_name: data_source_name

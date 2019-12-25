@@ -4,9 +4,7 @@ module EveryMatrix
   module MixDataFeed
     module PlayItemCategories
       class ProcessPlayItemsService < ApplicationService
-        GAMES_DATA_SOURCE = [
-          Category::CASINO_DESKTOP, Category::CASINO_MOBILE
-        ].freeze
+        GAMES_DATA_SOURCE = 'arcane-casino'
 
         def initialize(params)
           @category_name = params[:category_name]
@@ -43,7 +41,7 @@ module EveryMatrix
         end
 
         def play_item_type
-          return EveryMatrix::Game if GAMES_DATA_SOURCE.include?(data_source)
+          return EveryMatrix::Game if GAMES_DATA_SOURCE == data_source
 
           EveryMatrix::Table
         end

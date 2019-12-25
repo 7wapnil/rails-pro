@@ -47,11 +47,9 @@ module WebSocket
               application_status)
     end
 
-    def trigger_categories_update(category, device)
+    def trigger_categories_update(category)
       trigger(SubscriptionFields::CATEGORIES_UPDATED,
-              category,
-              kind: category.kind,
-              device: device)
+              category, kind: category.kind)
     end
 
     private

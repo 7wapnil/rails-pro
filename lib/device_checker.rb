@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module DeviceChecker
-  MOBILE = EveryMatrix::Category::MOBILE
-  DESKTOP = EveryMatrix::Category::DESKTOP
+  MOBILE = EveryMatrix::PlayItem::MOBILE
+  DESKTOP = EveryMatrix::PlayItem::DESKTOP
 
   def platform_type(request)
     device = device(request)

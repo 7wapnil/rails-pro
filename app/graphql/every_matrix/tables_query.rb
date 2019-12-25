@@ -7,7 +7,7 @@ module EveryMatrix
 
     type !types[PlayItemType]
 
-    description 'List of casino games'
+    description 'List of casino tables'
 
     argument :context, !types.String
 

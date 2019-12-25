@@ -2,10 +2,10 @@
   "domainID": 2067,
   "type": "datasource",
   "action": "update",
-  "id": "Casino-desktop",
+  "id": "Casino",
   "seq": 0,
   "data": {
-    "id": "Casino-desktop",
+    "id": "arcane-casino",
     "type": "mix",
     "categories": [
       {

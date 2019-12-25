@@ -4,11 +4,6 @@ module EveryMatrix
   class Category < ApplicationRecord
     self.table_name = :every_matrix_categories
 
-    CASINO_DESKTOP = 'casino-desktop'
-    LIVE_CASINO_DESKTOP = 'live-casino-desktop'
-    CASINO_MOBILE = 'casino-mobile'
-    LIVE_CASINO_MOBILE = 'live-casino-mobile'
-
     has_many :play_item_categories, dependent: :destroy
     has_many :play_items,
              through: :play_item_categories,
@@ -19,11 +14,6 @@ module EveryMatrix
     enum kind: {
       casino: CASINO_TYPE = 'casino',
       live_casino: TABLE_TYPE = 'live_casino'
-    }
-
-    enum platform_type: {
-      desktop: DESKTOP = 'desktop',
-      mobile: MOBILE = 'mobile'
     }
   end
 end
