@@ -62,7 +62,7 @@ describe Customer, '#show' do
       within 'form.personal-information-form' do
         fill_in :customer_first_name, with: 'Test'
         fill_in :customer_last_name, with: 'User'
-        choose :customer_gender_male
+        select Customer::MALE, from: :customer_gender
         fill_in :customer_date_of_birth, with: '1 January 1990'
         click_submit
       end

@@ -7,29 +7,24 @@
         %td
           = f.input :first_name,
                     label: false,
-                    required: true,
                     input_html: { data: { only_letters: true } }
       %tr
         %td= t('attributes.last_name')
         %td
           = f.input :last_name,
                     label: false,
-                    required: true,
                     input_html: { data: { only_letters: true } }
       %tr
         %td= t('attributes.gender')
         %td
-          .form-group
-            = f.collection_radio_buttons :gender, Customer.genders.keys, :itself,
-              ->(gender) { t("genders.#{gender}") },
-              label: false,
-              item_wrapper_class: 'form-check form-check-inline' do |b|
-              = b.radio_button class: 'form-check-input'
-              = b.label class: 'form-check-label'
-
-            .form-check.form-check-inline
-              = f.radio_button :gender, '', class: 'form-check-input'
-              = f.label :gender, t('not_set'), class: 'form-check-label'
+          = collection_select :customer, :gender,
+            Customer.genders.keys,
+            :itself,
+            ->(gender) { t("genders.#{gender}") },
+            { include_blank: t('not_set') },
+            label: false,
+            class: 'form-control',
+            id: 'customer_gender'
 
       %tr
         %td= t('attributes.date_of_birth')
