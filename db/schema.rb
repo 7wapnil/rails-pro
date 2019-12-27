@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_23_093709) do
+ActiveRecord::Schema.define(version: 2019_12_27_103350) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -476,10 +476,11 @@ ActiveRecord::Schema.define(version: 2019_12_23_093709) do
   end
 
   create_table "every_matrix_categories", force: :cascade do |t|
+    t.string "context"
     t.string "label", default: ""
     t.integer "position"
     t.string "kind"
-    t.string "context"
+    t.index ["context"], name: "index_every_matrix_categories_on_context"
   end
 
   create_table "every_matrix_content_providers", force: :cascade do |t|
@@ -508,6 +509,14 @@ ActiveRecord::Schema.define(version: 2019_12_23_093709) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["play_item_id"], name: "index_every_matrix_game_details_on_play_item_id"
+  end
+
+  create_table "every_matrix_jackpots", force: :cascade do |t|
+    t.integer "base_currency_amount", default: 0
+    t.string "external_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["external_id"], name: "index_every_matrix_jackpots_on_external_id"
   end
 
   create_table "every_matrix_play_item_categories", force: :cascade do |t|

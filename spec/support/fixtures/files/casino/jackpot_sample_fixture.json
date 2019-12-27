@@ -1,0 +1,31 @@
+{
+  "domainID": 2067,
+  "type": "jackpot",
+  "action": "update",
+  "id": 1,
+  "seq": 0,
+  "data": {
+    "id": 1,
+    "vendor": "NetEnt",
+    "vendorID": 100,
+    "creation": {
+      "time": "2012-06-18T12:18:34.0330000Z"
+    },
+    "property": {
+      "mappedJackpotID": "frog3"
+    },
+    "type": "Local",
+    "contributions": {},
+    "games": {},
+    "amounts": {
+      "EUR": 5000
+    },
+    "presentation": {
+      "jackpotName": {
+        "*": "Super Frog"
+      }
+    },
+    "hash": 1445440979899341626,
+    "hash2": 8145824941553971367
+  }
+}

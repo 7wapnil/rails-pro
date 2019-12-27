@@ -4,14 +4,15 @@ module EveryMatrix
   module MixDataFeed
     class Listener
       FEED_URL = ENV['EVERY_MATRIX_FEED_URL']
-      FEED_TYPES = [
-        GAME = 'game',
-        TABLE = 'table',
-        VENDOR = 'vendor',
-        CONTENT_PROVIDER = 'contentprovider',
-        DATA_SOURCE = 'datasource'
+      FEED_TYPES = {
+        GAME = 'game' => GameWorker,
+        TABLE = 'table' => TableWorker,
+        VENDOR = 'vendor' => VendorWorker,
+        CONTENT_PROVIDER = 'contentprovider' => ContentProviderWorker,
+        DATA_SOURCE = 'datasource' => DataSourceWorker,
+        JACKPOT = 'jackpot' => JackpotWorker
         # RECENT_WINNER = 'recentwinner'
-      ].freeze
+      }.freeze
 
       ROW_SEPARATOR = "\r\n"
       WHITESPACE_REGEX = /(\A\r\n)|((\r\n|\r)\z)/
@@ -40,7 +41,7 @@ module EveryMatrix
         ::Typhoeus::Request.new(
           "#{FEED_URL}/#{ENV['EVERY_MATRIX_OPERATOR_KEY']}",
           method: :get,
-          params: { types: FEED_TYPES.join(',') },
+          params: { types: FEED_TYPES.keys.join(',') },
           headers: request_headers
         )
       end
@@ -108,15 +109,13 @@ module EveryMatrix
       end
 
       def processing_worker_class(feed_type)
-        case feed_type
-        when GAME then GameWorker
-        when TABLE then TableWorker
-        when VENDOR then VendorWorker
-        when CONTENT_PROVIDER then ContentProviderWorker
-        when DATA_SOURCE then DataSourceWorker
-        # when RECENT_WINNER then RecentWinnerWorker
-        else raise "Wrong feed type: #{feed_type}"
-        end
+        feed_type_error(feed_type) if FEED_TYPES.keys.exclude?(feed_type)
+
+        FEED_TYPES[feed_type]
+      end
+
+      def feed_type_error(type)
+        raise "Wrong feed type: #{type}"
       end
     end
   end
