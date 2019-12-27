@@ -23,7 +23,10 @@ module EveryMatrix
         .where('every_matrix_transactions.amount > 0')
         .where('every_matrix_transactions.created_at > ?',
                HISTORY_DAYS.days.ago)
-        .includes(wallet_session: { wallet: :currency })
+        .includes(
+          :content_provider, :vendor, :currency,
+          :wallet_session, :wallet, :play_item
+        )
         .order(created_at: :desc)
     end
   end
