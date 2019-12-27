@@ -10,37 +10,28 @@ module EveryMatrix
       @query = query
       @country = country
       @device = device
-      @context = context
-      @model = fetch_model
+      @model = fetch_model(context)
     end
 
     def call
       model.joins(:content_provider, :categories)
            .reject_country(country)
            .where(name_includes_search_query, query: "%#{query}%")
-           .where(device_platform_condition)
+           .public_send(device)
            .group(:external_id)
            .order(sort_by_name)
     end
 
     private
 
-    attr_reader :query, :country, :device, :context, :model
+    attr_reader :query, :country, :device, :model
 
-    def fetch_model
+    def fetch_model(context)
       case context
       when CASINO_CONTEXT then EveryMatrix::Game
       when LIVE_CASINO_CONTEXT then EveryMatrix::Table
       else EveryMatrix::PlayItem
       end
-    end
-
-    def device_platform_condition
-      {
-        every_matrix_categories: {
-          platform_type: device
-        }
-      }
     end
 
     def name_includes_search_query
