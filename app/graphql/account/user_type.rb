@@ -8,7 +8,9 @@ module Account
     field :verified, !types.Boolean
     field :dateOfBirth, !types.String,
           property: :date_of_birth
-    field :phone, types.String
+    field :phone, types.String do
+      resolve ->(obj, *) { obj.phone && "+#{obj.phone}" }
+    end
     field :gender, types.String
     field :firstName, types.String,
           property: :first_name

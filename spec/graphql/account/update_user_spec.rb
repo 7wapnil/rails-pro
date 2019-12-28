@@ -19,7 +19,9 @@ describe GraphQL, '#updateUser' do
         firstName
         lastName
         phone
+        addressState
         addressCity
+        addressZipCode
         addressStreetAddress
         needMoreInfo
       }
@@ -44,7 +46,9 @@ describe GraphQL, '#updateUser' do
         input: {
           firstName: 'qweqw',
           lastName: '',
+          state: 'London',
           city: '',
+          zipCode: '79000',
           streetAddress: 'Baker st',
           phone: '+12065550100'
         }
@@ -67,7 +71,9 @@ describe GraphQL, '#updateUser' do
         input: {
           firstName: 'qweqw',
           lastName: 'test1',
+          state: 'London',
           city: 'London',
+          zipCode: '79000',
           streetAddress: 'Baker st',
           phone: '+12065550100'
         }
@@ -82,9 +88,11 @@ describe GraphQL, '#updateUser' do
       expect(OpenStruct.new(result['data']['updateUser'])).to have_attributes(
         firstName: 'qweqw',
         lastName: 'test1',
+        addressState: 'London',
         addressCity: 'London',
+        addressZipCode: '79000',
         addressStreetAddress: 'Baker st',
-        phone: '12065550100'
+        phone: '+12065550100'
       )
     end
 

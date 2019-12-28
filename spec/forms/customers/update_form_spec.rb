@@ -10,7 +10,9 @@ describe Customers::UpdateForm, type: :model do
       first_name: 'test',
       last_name: 'test1',
       city: 'London',
+      state: 'London',
       street_address: 'Baker st',
+      zip_code: '79000',
       phone: '+12065550100'
     }
   end
@@ -19,7 +21,9 @@ describe Customers::UpdateForm, type: :model do
     it { is_expected.to validate_presence_of(:subject) }
     it { is_expected.to validate_presence_of(:first_name) }
     it { is_expected.to validate_presence_of(:last_name) }
+    it { is_expected.to validate_presence_of(:state) }
     it { is_expected.to validate_presence_of(:city) }
+    it { is_expected.to validate_presence_of(:zip_code) }
     it { is_expected.to validate_presence_of(:street_address) }
     it { is_expected.to validate_presence_of(:phone) }
   end

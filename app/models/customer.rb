@@ -12,7 +12,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   acts_as_paranoid
 
   DEPOSIT_INFO_FIELDS = %w[first_name last_name phone].freeze
-  ADDRESS_INFO_FIELDS = %w[country city street_address].freeze
+  ADDRESS_INFO_FIELDS = %w[country city street_address state zip_code].freeze
 
   enum gender: {
     male:   MALE   = 'male',

@@ -6,7 +6,9 @@ module Account
 
     argument :firstName, !types.String
     argument :lastName, !types.String
+    argument :state, !types.String
     argument :city, !types.String
+    argument :zipCode, !types.String
     argument :streetAddress, !types.String
     argument :phone, !types.String
   end

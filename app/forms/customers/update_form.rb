@@ -8,14 +8,18 @@ module Customers
                   :first_name,
                   :last_name,
                   :city,
+                  :zip_code,
                   :street_address,
+                  :state,
                   :phone
 
     validates :subject,
               :first_name,
               :last_name,
               :city,
+              :zip_code,
               :street_address,
+              :state,
               :phone,
               presence: true
 
@@ -35,7 +39,9 @@ module Customers
         last_name: last_name,
         phone: phone,
         address_attributes: {
+          state: state,
           city: city,
+          zip_code: zip_code,
           street_address: street_address
         }
       }
