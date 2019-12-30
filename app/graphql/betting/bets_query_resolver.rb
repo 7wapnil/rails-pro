@@ -4,12 +4,6 @@ module Betting
   class BetsQueryResolver
     DATE_FORMAT_REGEXP = %r[^[0-9]{2}/[0-9]{2}/[0-9]{4}$]
 
-    DATE_RANGES = {
-      'today' => Time.zone.now.all_day,
-      'week' => Time.zone.now.all_week,
-      'month' => Time.zone.now.all_month
-    }.freeze
-
     def initialize(args:, customer:)
       @args = args
       @customer = customer
@@ -68,14 +62,24 @@ module Betting
 
     def dates_selector
       return if args[:dateRange].blank?
-
       return specific_day if args[:dateRange].match(DATE_FORMAT_REGEXP)
 
-      DATE_RANGES[args[:dateRange]]
+      base_date_range
     end
 
     def specific_day
       Date.parse(args[:dateRange]).all_day
+    end
+
+    def base_date_range
+      case args[:dateRange]
+      when 'today'
+        Time.zone.now.all_day
+      when 'week'
+        Time.zone.now.all_week
+      else
+        Time.zone.now.all_month
+      end
     end
   end
 end
