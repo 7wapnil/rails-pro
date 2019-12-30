@@ -4,7 +4,7 @@
 module EveryMatrix
   class FreeSpinBonusesController < ApplicationController
     find :free_spin_bonus,
-         only: %i[show retry],
+         only: %i[show],
          class: EveryMatrix::FreeSpinBonus,
          eager_load: {
            free_spin_bonus_wallets: {
@@ -86,23 +86,6 @@ module EveryMatrix
     end
 
     def wallet; end
-
-    def retry
-      free_spin_bonus_wallet_ids =
-        @free_spin_bonus.error_free_spin_bonus_wallets.pluck(:id)
-
-      free_spin_bonus_wallet_ids.each do |free_spin_bonus_wallet_id|
-        FreeSpinBonuses::RetryWorker.perform_async(free_spin_bonus_wallet_id)
-      end
-
-      redirect_to(
-        every_matrix_free_spin_bonuses_path,
-        flash: {
-          notice: t('bonus_retry_requested',
-                    number: free_spin_bonus_wallet_ids.count)
-        }
-      )
-    end
 
     private
 
