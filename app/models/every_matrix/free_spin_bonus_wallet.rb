@@ -2,9 +2,9 @@
 
 module EveryMatrix
   class FreeSpinBonusWallet < ApplicationRecord
-    self.table_name = 'every_matrix_free_spin_bonus_wallets'
-
     include EveryMatrix::StateMachines::FreeSpinBonusWalletStateMachine
+
+    self.table_name = 'every_matrix_free_spin_bonus_wallets'
 
     scope :with_error, -> { where(status: ERROR_STATUSES) }
     scope :in_progress, -> { where(status: IN_PROGRESS_STATUSES) }
