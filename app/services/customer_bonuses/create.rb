@@ -50,7 +50,7 @@ module CustomerBonuses
         casino: bonus.casino,
         sportsbook: bonus.sportsbook,
         sportsbook_multiplier: bonus.sportsbook_multiplier,
-        max_rollover_per_spin: bonus.max_rollover_per_spin
+        max_rollover_per_spin: max_rollover_per_spin
       }
     end
     # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
@@ -71,6 +71,8 @@ module CustomerBonuses
     end
 
     def convert_to_wallet_currency(amount)
+      return unless amount
+
       Exchanger::Converter.call(
         amount,
         Currency.primary,
@@ -91,6 +93,11 @@ module CustomerBonuses
     def min_deposit
       @min_deposit ||=
         convert_to_wallet_currency(bonus.min_deposit)
+    end
+
+    def max_rollover_per_spin
+      @max_rollover_per_spin ||=
+        convert_to_wallet_currency(bonus.max_rollover_per_spin)
     end
   end
 end
