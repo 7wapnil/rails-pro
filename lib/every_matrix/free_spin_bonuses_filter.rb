@@ -3,13 +3,12 @@
 module EveryMatrix
   class FreeSpinBonusesFilter
     def initialize(query_params: {}, page: nil)
-      @source = EveryMatrix::FreeSpinBonus
       @query_params = query_params
       @page = page
     end
 
     def search
-      @source
+      EveryMatrix::FreeSpinBonus
         .includes(
           :vendor,
           :play_items,
