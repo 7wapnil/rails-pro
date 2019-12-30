@@ -37,7 +37,7 @@ module EveryMatrix
         end
       end
 
-      def create_free_spin_bonus_wallets!
+      def create_free_spin_bonus_wallets! # rubocop:disable Metrics/MethodLength
         @free_spin_bonus_wallet_ids = []
 
         return unless customers_csv

@@ -12,4 +12,3 @@ module EveryMatrix
     end
   end
 end
-

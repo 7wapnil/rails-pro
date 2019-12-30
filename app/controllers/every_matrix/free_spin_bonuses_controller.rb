@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-# rubocop:disable Metrics/ClassLength
 module EveryMatrix
   class FreeSpinBonusesController < ApplicationController
     find :free_spin_bonus,
@@ -98,4 +97,3 @@ module EveryMatrix
     end
   end
 end
-# rubocop:enable Metrics/ClassLength
