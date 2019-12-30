@@ -125,6 +125,7 @@ Rails.application.routes.draw do
         to: 'free_spin_bonuses#retry',
         as: 'retry_free_spin_bonus'
     resources :free_spin_bonuses, only: %i[index show new create destroy]
+    resources :vendor_play_items, only: %i[show]
   end
 
   namespace :webhooks do

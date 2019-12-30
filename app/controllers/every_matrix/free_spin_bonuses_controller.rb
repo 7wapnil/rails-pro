@@ -54,9 +54,7 @@ module EveryMatrix
         )
         .order(:name)
 
-      respond_to do |format|
-        format.js
-      end
+      render layout: false
     end
 
     def create

@@ -40,14 +40,13 @@
 :javascript
   function reload_play_items(el) {
     let vendorId = el.value
-    console.log("vendorId = " + vendorId)
     let xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
       if (xhr.readyState === 4){
         document.getElementById('play-items').innerHTML = xhr.responseText;
       }
     };
-    xhr.open('GET', '/every_matrix/free_spin_bonuses/play_items_by_vendor?vendor_id=' + vendorId);
+    xhr.open('GET', '/every_matrix/vendor_play_items/' + vendorId);
     xhr.send();
   }
 
