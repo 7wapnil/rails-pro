@@ -2,8 +2,8 @@
 
 module EveryMatrix
   class GamesByProviderResolver < ApplicationService
-    def initialize(provider_name:, device:, country: '')
-      @provider_name = provider_name.titleize.delete(' ').downcase
+    def initialize(provider_slug:, device:, country: '')
+      @provider_slug = provider_slug
       @device = device
       @country = country
     end
@@ -20,20 +20,22 @@ module EveryMatrix
 
     private
 
-    attr_reader :provider_name, :device, :country
+    attr_reader :provider_slug, :device, :country
 
     def subject
       vendor || content_provider
     end
 
     def vendor
-      @vendor ||= EveryMatrix::Vendor.find_by('LOWER(name) = ?', provider_name)
+      @vendor ||= EveryMatrix::Vendor.visible.find_by(slug: provider_slug)
     end
 
     def content_provider
       @content_provider ||=
         EveryMatrix::ContentProvider
-        .find_by('LOWER(representation_name) = ?', provider_name)
+        .visible
+        .as_vendor
+        .find_by(slug: provider_slug)
     end
 
     def device_platform_scope

@@ -6,6 +6,7 @@ module EveryMatrix
 
     field :id, types.ID
     field :name, types.String
+    field :slug, types.String
     field :logoUrl, types.String
     field :enabled, types.String
     field :internalImageName, types.String

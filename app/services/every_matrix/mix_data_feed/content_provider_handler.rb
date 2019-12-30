@@ -15,13 +15,18 @@ module EveryMatrix
       def update_params
         {
           logo_url: presentation.dig('logo', '*'),
-          representation_name: presentation.dig('contentProviderName', '*'),
-          enabled: data['enabled']
+          representation_name: representation_name,
+          enabled: data['enabled'],
+          slug: representation_name.underscore.dasherize.tr(' ', '-')
         }
       end
 
       def presentation
         data['presentation']
+      end
+
+      def representation_name
+        presentation.dig('contentProviderName', '*')
       end
     end
   end

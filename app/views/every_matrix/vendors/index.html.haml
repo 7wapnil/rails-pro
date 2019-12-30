@@ -5,6 +5,7 @@
     %tr
       %th ID
       %th Name
+      %th Slug
       %th Internal Image Name
       %th External vendor id
       %th Visible
@@ -13,6 +14,7 @@
       %tr
         %td= vendor.id
         %td= link_to vendor.name, edit_every_matrix_vendor_path(vendor)
+        %td= vendor.slug
         %td= vendor.internal_image_name
         %td= vendor.vendor_id
         %td= vendor.visible

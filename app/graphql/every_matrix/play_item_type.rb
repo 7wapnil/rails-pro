@@ -17,5 +17,6 @@ module EveryMatrix
     field :type, types.String do
       resolve ->(obj, *) { obj.type.demodulize.downcase }
     end
+    field :freeMode, types.String, property: :play_mode_fun
   end
 end

@@ -20,6 +20,7 @@ module EveryMatrix
           currencies: data['currencies'],
           logo_url: data.dig('presentation', 'logo', '*'),
           name: data['name'],
+          slug: data['name'].underscore.dasherize.tr(' ', '-'),
           restricted_territories: data['restrictedTerritories']
         }
       end

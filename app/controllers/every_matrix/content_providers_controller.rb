@@ -24,7 +24,7 @@ module EveryMatrix
         .require(:every_matrix_content_provider)
         .permit(
           :name, :visible, :representation_name, :as_vendor,
-          :logo_url, :internal_image_name
+          :logo_url, :internal_image_name, :slug
         )
     end
   end
