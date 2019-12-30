@@ -7,21 +7,22 @@ module EveryMatrix
       FORFEIT_COMMENT = 'Arcanebet forfeits FreeRound bonus'
 
       def call
-        return false unless wallet.every_matrix_user_id
+        return unless wallet.every_matrix_user_id
 
         free_spin_bonus_wallet.send_to_forfeit!
-        if result['Success']
-          free_spin_bonus_wallet.forfeit!
-        else
-          free_spin_bonus_wallet.forfeit_with_error!
-        end
-
+        update_status_on_result!
         update_last_request(name: 'ForfeitBonus', body: body, result: result)
 
         result['Success']
       end
 
       private
+
+      def update_status_on_result!
+        return free_spin_bonus_wallet.forfeit! if result['Success']
+
+        free_spin_bonus_wallet.forfeit_with_error!
+      end
 
       def user_exists?
         wallet.every_matrix_user_id

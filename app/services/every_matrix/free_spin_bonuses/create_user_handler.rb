@@ -7,21 +7,25 @@ module EveryMatrix
 
       def call
         free_spin_bonus_wallet.send_to_create_user!
-
-        if result['Success']
-          free_spin_bonus_wallet.create_user!
-          wallet.update_attribute(:every_matrix_user_id,
-                                  result['InternalUserId'])
-        else
-          free_spin_bonus_wallet.create_user_with_error!
-        end
-
+        update_status_on_result!
         update_last_request(name: 'CreateUser', body: body, result: result)
 
         result['Success']
       end
 
       private
+
+      def update_status_on_result!
+        return handle_user_created! if result['Success']
+
+        free_spin_bonus_wallet.create_user_with_error!
+      end
+
+      def handle_user_created!
+        free_spin_bonus_wallet.create_user!
+        wallet.update_attribute(:every_matrix_user_id,
+                                result['InternalUserId'])
+      end
 
       def url
         ENV['EVERY_MATRIX_CREATE_USER_URL']

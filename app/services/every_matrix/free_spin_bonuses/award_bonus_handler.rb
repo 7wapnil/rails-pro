@@ -7,15 +7,10 @@ module EveryMatrix
       DATE_FORMAT = '%Y-%m-%dT23:59:59'
 
       def call
-        return false unless wallet.every_matrix_user_id || create_user!
+        return unless wallet.every_matrix_user_id || create_user!
 
         free_spin_bonus_wallet.send_to_award!
-        if result['Success']
-          free_spin_bonus_wallet.award!
-        else
-          free_spin_bonus_wallet.award_with_error!
-        end
-
+        update_status_on_result!
         update_last_request(name: 'AwardBonus', body: body, result: result)
 
         result['Success']
@@ -25,6 +20,12 @@ module EveryMatrix
 
       def create_user!
         CreateUserHandler.call(free_spin_bonus_wallet: free_spin_bonus_wallet)
+      end
+
+      def update_status_on_result!
+        return free_spin_bonus_wallet.award! if result['Success']
+
+        free_spin_bonus_wallet.award_with_error!
       end
 
       def url
@@ -55,7 +56,7 @@ module EveryMatrix
           "BonusSource": free_spin_bonus.bonus_source,
           "LoginName": api_login,
           "Password": api_password,
-          "UserId": wallet_user_id,
+          "UserId": wallet.every_matrix_user_id,
           "GameIds": play_item_game_codes,
           "BonusId": free_spin_bonus.id,
           "NumberOfFreeRounds": free_spin_bonus.number_of_free_rounds,
@@ -70,11 +71,6 @@ module EveryMatrix
 
       def api_password
         ENV['EVERY_MATRIX_FREE_SPINS_PASSWORD']
-      end
-
-      def wallet_user_id
-        @wallet_user_id ||=
-          wallet.every_matrix_user_id
       end
 
       def play_item_game_codes
