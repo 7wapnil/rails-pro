@@ -13,11 +13,6 @@ module EveryMatrix
            free_spin_bonus_play_items: :play_item
          }
 
-    find :free_spin_bonus_wallet,
-         only: %i[wallet],
-         class: EveryMatrix::FreeSpinBonusWallet,
-         eager_load: { wallet: :customer }
-
     protect_from_forgery except: :play_items_by_vendor
 
     def index
@@ -84,8 +79,6 @@ module EveryMatrix
         }
       )
     end
-
-    def wallet; end
 
     private
 

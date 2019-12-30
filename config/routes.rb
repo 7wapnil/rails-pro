@@ -116,14 +116,10 @@ Rails.application.routes.draw do
     resources :transactions, only: %i[index show]
     resources :content_providers, only: %i[index edit update]
     resources :vendors, only: %i[index edit update]
-    get 'free_spin_bonuses/play_items_by_vendor',
-        to: 'free_spin_bonuses#play_items_by_vendor'
-    get 'free_spin_bonuses/wallet/:id',
-        to: 'free_spin_bonuses#wallet',
-        as: 'free_spin_bonus_wallet'
     resources :free_spin_bonuses, only: %i[index show new create destroy]
-    resources :vendor_play_items, only: %i[show]
     resources :free_spin_bonus_retries, only: %i[update]
+    resources :free_spin_bonus_wallets, only: %i[show]
+    resources :vendor_play_items, only: %i[show]
   end
 
   namespace :webhooks do
