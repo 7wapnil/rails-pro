@@ -8,10 +8,7 @@ module EveryMatrix
       end
 
       def call
-        awarded_wallets = free_spin_bonus.free_spin_bonus_wallets.awarded
-        awarded_wallets.each do |free_spin_bonus_wallet|
-          ForfeitBonusWorker.perform_async(free_spin_bonus_wallet.id)
-        end
+        process_wallets
 
         awarded_wallets.count
       end
@@ -19,6 +16,16 @@ module EveryMatrix
       private
 
       attr_reader :free_spin_bonus
+
+      def awarded_wallets
+        @awarded_wallets ||= free_spin_bonus.free_spin_bonus_wallets.awarded
+      end
+
+      def process_wallets
+        awarded_wallets.each do |free_spin_bonus_wallet|
+          ForfeitBonusWorker.perform_async(free_spin_bonus_wallet.id)
+        end
+      end
     end
   end
 end
