@@ -112,7 +112,7 @@ deploy:
     - script:
       name: prepare-migrations
       code: |
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}backend-web
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-web
         terraform init
         terraform workspace select ${TARGET_ENV}
         terraform apply -auto-approve \
@@ -120,7 +120,7 @@ deploy:
         aws ecs describe-task-definition \
             --query 'taskDefinition.containerDefinitions' \
             --task-definition $(terraform output task_definition) > td.json
-        jq 'map(select(.name == "backend-web"|"casino-backend-web")) | .[].command=["rake","db:migrate"] | .[].cpu=50 | .[].memory=256' \
+        jq 'map(select(.name == "backend-web")) | .[].command=["rake","db:migrate"] | .[].cpu=50 | .[].memory=256' \
             td.json > $WERCKER_SOURCE_DIR/migrate.json
 
     - 1science/aws-ecs:
@@ -134,17 +134,17 @@ deploy:
     - script:
       name: terraform-apply
       code: |
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}backend-web
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-web
         terraform init
         terraform workspace select ${TARGET_ENV}
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}backend-worker
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-worker
         terraform init
         terraform workspace select ${TARGET_ENV}
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}backend-worker-odds-feed
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-worker-odds-feed
         terraform init
         terraform workspace select ${TARGET_ENV}
         terraform apply -auto-approve
@@ -159,7 +159,7 @@ deploy:
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}backend-websocket
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-websocket
         terraform init
         terraform workspace select ${TARGET_ENV}
         terraform apply -auto-approve
@@ -221,7 +221,7 @@ deploy-unified-odds-listener:
     - script:
       name: terraform-apply
       code: |
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/${BACKEND_PATH:-""}backend-listener
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-listener
         terraform init
         terraform workspace select ${TARGET_ENV}
         terraform apply -auto-approve
