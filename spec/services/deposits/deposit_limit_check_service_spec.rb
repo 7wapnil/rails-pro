@@ -68,6 +68,17 @@ describe Deposits::DepositLimitCheckService do
       end
     end
 
+    context 'when volume is equal to limit' do
+      before do
+        create(:entry_request, under_limit_attributes
+                                 .merge(amount: max_existing_deposits_volume))
+      end
+
+      it 'returns true' do
+        expect(service_call).to be_truthy
+      end
+    end
+
     context 'when over limit deposits volume' do
       before do
         create(:entry_request,

@@ -11,7 +11,7 @@ module Deposits
     def call
       return true unless deposit_limits
 
-      potential_new_deposits_total < deposit_limits.value
+      potential_new_deposits_total <= deposit_limits.value
     end
 
     private
