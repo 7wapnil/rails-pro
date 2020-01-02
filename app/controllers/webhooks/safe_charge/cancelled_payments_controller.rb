@@ -32,7 +32,8 @@ module Webhooks
 
       def redirection_url
         ::Payments::Webhooks::DepositRedirectionUrlBuilder.call(
-          status: ::Payments::Webhooks::Statuses::CANCELLED
+          status: ::Payments::Webhooks::Statuses::CANCELLED,
+          request_id: params[:request_id]
         )
       end
     end

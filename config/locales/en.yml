@@ -695,6 +695,7 @@ en:
     reset_password_error: Could not copy password to clipboard
     withdrawal_confirmed: Withdrawal confirmed.
     withdrawal_rejected: Withdrawal rejected.
+    success_deposit: Deposit was processed successfully
     reset_password_token:
       valid: 'Reset password token is valid'
       invalid: 'Reset password token is invalid'
@@ -812,10 +813,6 @@ en:
         paysafecard:
           title: paysafecard
 
-  webhooks:
-    safe_charge:
-      redirections:
-        success_message: 'Deposit was proceeded successfully'
   time:
     formats:
       date_picker: "%-d %B %Y"

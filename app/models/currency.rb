@@ -11,6 +11,9 @@ class Currency < ApplicationRecord
   has_many :entry_currency_rules
   has_many :wallets
 
+  has_one :deposit_currency_rule,
+          -> { where(kind: EntryKinds::DEPOSIT) },
+          class_name: EntryCurrencyRule.name
   has_one :withdraw_currency_rule,
           -> { where(kind: EntryKinds::WITHDRAW) },
           class_name: EntryCurrencyRule.name
