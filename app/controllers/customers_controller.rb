@@ -51,7 +51,8 @@ class CustomersController < ApplicationController
                          .page(params[:entry_requests_page])
                          .includes(:currency)
 
-    @entries = @customer.entries.page(params[:entries_page])
+    @entries = @customer.entries
+                        .page(params[:entries_page])
                         .includes(:wallet, :currency)
   end
 
