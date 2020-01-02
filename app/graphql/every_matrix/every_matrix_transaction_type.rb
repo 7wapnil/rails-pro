@@ -5,7 +5,7 @@ module EveryMatrix
     name 'EveryMatrixTransactions'
 
     field :id, !types.ID
-    field :customerId, types.ID, property: :customer_id
+    field :userId, types.ID, property: :customer_id
     field :debit, types.Float, resolve: ->(obj, _args, _ctx) do
       obj.amount if EveryMatrix::Transaction::DEBIT_TYPES.include?(obj.type)
     end

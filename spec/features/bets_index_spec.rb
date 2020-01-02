@@ -110,7 +110,7 @@ describe Bet, '#index' do
         let(:picked_sport) { bet_leg.title }
 
         it 'is found' do
-          available_sports = page.find('#bets_title_id_eq')
+          available_sports = page.find('#bets_events_title_id_eq')
                                  .all('option')
                                  .map(&:text)
                                  .reject(&:blank?)
@@ -130,7 +130,7 @@ describe Bet, '#index' do
           Bet.joins(bet_legs: :event)
              .where(events: { title_id: bet_leg.title.id })
              .destroy_all
-          select picked_sport, from: 'Title ID equals'
+          select picked_sport.decorate.name, from: 'Event Title equals'
           click_on('Search')
 
           within 'table.table.entities tbody' do

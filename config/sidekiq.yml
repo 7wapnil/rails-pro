@@ -50,7 +50,7 @@
     description: "Creates every event data copies in archivation database"
 
   radar_events_preloading:
-    every: <%= ENV.fetch('RADAR_EVENTS_PROLOADER_INTERVAL', '1d') %>
+    every: <%= ENV.fetch('RADAR_EVENTS_PRELOADER_INTERVAL', '1d') %>
     class: Radar::ScheduledEvents::EventScheduleLoadingWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
 

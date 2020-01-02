@@ -56,6 +56,23 @@ ActiveRecord::Schema.define(version: 2019_12_30_211311) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "bet_legs", force: :cascade do |t|
+    t.bigint "bet_id"
+    t.bigint "odd_id"
+    t.decimal "odd_value"
+    t.text "notification_message"
+    t.string "notification_code"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "status"
+    t.string "settlement_status"
+    t.decimal "void_factor", precision: 2, scale: 1
+    t.bigint "settlement_initiator_id"
+    t.index ["bet_id"], name: "index_bet_legs_on_bet_id"
+    t.index ["odd_id"], name: "index_bet_legs_on_odd_id"
+    t.index ["settlement_initiator_id"], name: "index_bet_legs_on_settlement_initiator_id"
+  end
+
   create_table "bets", force: :cascade do |t|
     t.bigint "customer_id"
     t.bigint "odd_id"
@@ -75,6 +92,8 @@ ActiveRecord::Schema.define(version: 2019_12_30_211311) do
     t.string "notification_code"
     t.boolean "counted_towards_rollover", default: false
     t.datetime "bet_settlement_status_achieved_at"
+    t.boolean "odds_change", default: false
+    t.boolean "combo_bets", default: false
     t.index ["currency_id"], name: "index_bets_on_currency_id"
     t.index ["customer_bonus_id"], name: "index_bets_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_bets_on_customer_id"
@@ -114,6 +133,7 @@ ActiveRecord::Schema.define(version: 2019_12_30_211311) do
     t.boolean "sportsbook", default: true, null: false
     t.decimal "sportsbook_multiplier", default: "1.0", null: false
     t.decimal "max_rollover_per_spin"
+    t.boolean "limit_per_each_bet_leg", default: false
   end
 
   create_table "comments", force: :cascade do |t|
@@ -191,6 +211,7 @@ ActiveRecord::Schema.define(version: 2019_12_30_211311) do
     t.boolean "sportsbook", default: true, null: false
     t.decimal "sportsbook_multiplier", default: "1.0", null: false
     t.decimal "max_rollover_per_spin"
+    t.boolean "limit_per_each_bet_leg", default: false
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["entry_id"], name: "index_customer_bonuses_on_entry_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -851,6 +872,9 @@ ActiveRecord::Schema.define(version: 2019_12_30_211311) do
   end
 
   add_foreign_key "addresses", "customers"
+  add_foreign_key "bet_legs", "bets"
+  add_foreign_key "bet_legs", "odds"
+  add_foreign_key "bet_legs", "users", column: "settlement_initiator_id"
   add_foreign_key "bets", "currencies"
   add_foreign_key "bets", "customers"
   add_foreign_key "bets", "odds", on_delete: :cascade

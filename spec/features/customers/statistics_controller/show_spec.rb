@@ -152,7 +152,6 @@ describe Customers::StatisticsController, '#show' do
       ].flatten
     end
 
-    let(:live_attributes) { { odd: odd, customer: customer } }
     let!(:casino_games) do
       create_list(
         :every_matrix_transaction,
@@ -207,7 +206,7 @@ describe Customers::StatisticsController, '#show' do
       )
     end
 
-    let(:live_attributes) { { market: market, customer: customer } }
+    let(:live_attributes) { { odd: odd, customer: customer } }
     let!(:live_bets) do
       [
         create(:bet, :cancelled, :with_bet_leg, live_attributes),

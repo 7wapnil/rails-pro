@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Wallets
   WalletType = GraphQL::ObjectType.define do
     name 'Wallet'
@@ -7,7 +9,7 @@ module Wallets
     field :realMoneyBalance, !types.Float, property: :real_money_balance
     field :bonusBalance, !types.Float, property: :bonus_balance
     field :currency, Currencies::CurrencyType
-    field :customerBonus, CustomerBonuses::CustomerBonusType do
+    field :userBonus, CustomerBonuses::BonusType do
       resolve ->(obj, *) do
         return unless obj.customer_bonus&.active?
 

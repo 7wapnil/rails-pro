@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe GraphQL, '#wallets' do
   let(:auth_customer) { create(:customer) }
   let(:request) do
@@ -19,7 +21,7 @@ describe GraphQL, '#wallets' do
         realMoneyBalance
         bonusBalance
         currency { code name }
-        customerBonus { id }
+        userBonus { id }
       } })
     end
 
@@ -39,7 +41,7 @@ describe GraphQL, '#wallets' do
       expect(result_wallet['id']).to eq(wallet.id.to_s)
       expect(result_wallet['currency']['code']).to eq(wallet.currency.code)
       expect(result_wallet['currency']['name']).to eq(wallet.currency.name)
-      expect(result_wallet['customerBonus']).to be_nil
+      expect(result_wallet['userBonus']).to be_nil
       expect(result_wallet['amount'].to_d).to eq(wallet.amount)
       expect(result_wallet['bonusBalance'].to_d).to eq(wallet.bonus_balance)
       expect(result_wallet['realMoneyBalance'].to_d)
@@ -60,7 +62,7 @@ describe GraphQL, '#wallets' do
       customer_bonus = create(:customer_bonus, wallet: wallet)
       result_wallet = result['data']['wallets'].first
 
-      expect(result_wallet['customerBonus']['id']).to eq(customer_bonus.id.to_s)
+      expect(result_wallet['userBonus']['id']).to eq(customer_bonus.id.to_s)
     end
   end
 end

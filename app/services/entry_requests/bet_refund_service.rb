@@ -35,9 +35,9 @@ module EntryRequests
           code: refund_code
         )
         update_bet_legs_notification
-
-        notify_betslip_about_refund
       end
+
+      notify_betslip_about_refund
     end
 
     def validate_entry_request!
@@ -58,12 +58,12 @@ module EntryRequests
         rejection_params = bet_leg_rejection_params(bet_leg.id)
         next unless rejection_params
 
-        bet_leg.update(rejection_params)
+        bet_leg.update!(rejection_params)
       end
     end
 
     def notify_betslip_about_refund
-      WebSocket::Client.instance.trigger_bet_update(bet.reload)
+      WebSocket::Client.instance.trigger_bet_update(bet)
     end
 
     def log_job_error(error)

@@ -22,7 +22,7 @@ describe GraphQL, '#everyMatrixTransactions' do
           }
           collection {
             id
-            customerId
+            userId
             debit
             credit
             balance
