@@ -7,6 +7,10 @@ module Payments
         @transaction = transaction
       end
 
+      def validate_customer
+        customer_validation_handler.call(transaction)
+      end
+
       def receive_deposit_address
         raise ::NotImplementedError
       end
@@ -16,6 +20,10 @@ module Payments
       end
 
       protected
+
+      def customer_validation_handler
+        raise NotImplementedError
+      end
 
       def payout_request_handler
         raise NotImplementedError

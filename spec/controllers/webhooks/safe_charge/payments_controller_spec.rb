@@ -127,11 +127,23 @@ describe Webhooks::SafeCharge::PaymentsController, type: :controller do
 
     let(:frontend_url) { Faker::Internet.domain_name }
     let(:state) { :success }
-    let(:message) do
-      I18n.t('webhooks.safe_charge.redirections.success_message')
-    end
+    let(:message) { I18n.t('messages.success_deposit') }
     let(:query_params) do
-      URI.encode_www_form(depositState: state, depositStateMessage: message)
+      URI.encode_www_form(
+        depositState: state,
+        depositStateMessage: message,
+        depositDetails: base_64_deposit_summary
+      )
+    end
+    let(:base_64_deposit_summary) do
+      Base64.encode64(URI.encode_www_form(deposit_summary))
+    end
+    let(:deposit_summary) do
+      {
+        realMoneyAmount: entry_request.real_money_amount,
+        bonusAmount: entry_request.bonus_amount,
+        paymentMethod: entry_request.mode
+      }
     end
     let(:redirection_url) { "#{frontend_url}?#{query_params}" }
 
