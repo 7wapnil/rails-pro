@@ -12,7 +12,7 @@ module EveryMatrix
     belongs_to :wallet
     belongs_to :free_spin_bonus,
                foreign_key: :every_matrix_free_spin_bonus_id,
-               class_name: 'EveryMatrix::FreeSpinBonus'
+               class_name: EveryMatrix::FreeSpinBonus.name
     delegate :customer, to: :wallet
   end
 end
