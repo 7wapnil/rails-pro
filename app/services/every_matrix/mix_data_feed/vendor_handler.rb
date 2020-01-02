@@ -18,11 +18,17 @@ module EveryMatrix
           has_live_casino: data['hasLiveCasino'],
           languages: data['languages'],
           currencies: data['currencies'],
-          logo_url: data.dig('presentation', 'logo', '*'),
+          logo_url: https(data.dig('presentation', 'logo', '*')),
           name: data['name'],
           slug: data['name'].underscore.dasherize.tr(' ', '-'),
           restricted_territories: data['restrictedTerritories']
         }
+      end
+
+      def https(string)
+        return unless string
+
+        "https:#{string}"
       end
     end
   end

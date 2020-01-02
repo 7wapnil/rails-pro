@@ -14,7 +14,7 @@ module EveryMatrix
 
       def update_params
         {
-          logo_url: presentation.dig('logo', '*'),
+          logo_url: https(presentation.dig('logo', '*')),
           representation_name: representation_name,
           enabled: data['enabled'],
           slug: representation_name.underscore.dasherize.tr(' ', '-')
@@ -27,6 +27,12 @@ module EveryMatrix
 
       def representation_name
         presentation.dig('contentProviderName', '*')
+      end
+
+      def https(string)
+        return unless string
+
+        "https:#{string}"
       end
     end
   end

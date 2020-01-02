@@ -1,5 +1,6 @@
 = simple_form_for @vendor do |f|
   = f.input :name
+  = f.input :slug
   = f.input :logo_url, as: :string
   = f.input :enabled
   = f.input :vendor_id, label: :external_id, disabled: true
