@@ -38,7 +38,7 @@ module Webhooks
 
       def redirection_url
         ::Payments::Webhooks::DepositRedirectionUrlBuilder
-          .call(status: redirection_status)
+          .call(status: redirection_status, request_id: params[:request_id])
       end
 
       def redirection_status
