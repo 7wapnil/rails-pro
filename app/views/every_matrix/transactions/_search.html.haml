@@ -37,7 +37,7 @@
               = f.search_field :created_at_gteq,
                                 class: 'form-control form_date',
                                 placeholder: t(:search, subject: t('from')),
-                                value: search_date_for(:created_at_gteq, :transactions)
+                                value: search_date_for(:created_at_gteq, :transactions, false)
               .input-group-append
                 .input-group-text.btn &#128197;
         %th
@@ -49,7 +49,7 @@
               = f.search_field :created_at_lteq,
                                 class: 'form-control form_date',
                                 placeholder: t(:search, subject: t('to')),
-                                value: search_date_for(:created_at_lteq, :transactions)
+                                value: search_date_for(:created_at_lteq, :transactions, false)
               .input-group-append
                 .input-group-text.btn &#128197;
       %tr

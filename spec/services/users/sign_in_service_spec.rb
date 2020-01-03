@@ -5,10 +5,10 @@ describe Users::SignInService do
 
   after { Recaptcha.configuration.skip_verify_env.push('test') }
 
-  let(:model)    { User }
-  let(:email)    { Faker::Internet.email }
+  let(:model) { User }
+  let(:email) { Faker::Internet.email }
   let(:attempts) { rand(2..5) }
-  let(:session)  { { last_login: email, attempts: attempts } }
+  let(:session) { { last_login: email, attempts: attempts } }
   let(:params) do
     {
       model:   model,
@@ -38,7 +38,7 @@ describe Users::SignInService do
 
     context 'with another last login in session' do
       let(:another_email) { Faker::Internet.email }
-      let(:session)       { Hash[:last_login, another_email] }
+      let(:session) { Hash[:last_login, another_email] }
 
       it { expect(subject.last_login).to eq(another_email) }
     end
@@ -47,7 +47,7 @@ describe Users::SignInService do
   describe '#calculate_attempts' do
     context 'with another last login' do
       let(:another_email) { Faker::Internet.email }
-      let(:session)       { Hash[:last_login, another_email] }
+      let(:session) { Hash[:last_login, another_email] }
 
       it do
         expect(subject.calculate_attempts)
@@ -61,7 +61,7 @@ describe Users::SignInService do
   end
 
   describe '#suspicious?' do
-    let(:attempts)        { Users::SignInService::FIRST_ATTEMPT }
+    let(:attempts) { Users::SignInService::FIRST_ATTEMPT }
     let(:failed_attempts) { LoginAttemptable::LOGIN_ATTEMPTS_CAP }
 
     context 'when found user is suspicious' do

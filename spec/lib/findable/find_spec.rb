@@ -5,11 +5,11 @@ require 'rails_helper'
 describe Findable::Find do
   subject { described_class.call(params) }
 
-  let(:value)          { Faker::GameOfThrones.character }
-  let(:attribute)      { :email }
+  let(:value) { Faker::GameOfThrones.character }
+  let(:attribute) { :email }
   let(:resource_class) { Customer }
-  let(:resource)       { create(:customer) }
-  let(:params)         { full_params }
+  let(:resource) { create(:customer) }
+  let(:params) { full_params }
 
   let(:full_params) do
     {
@@ -26,8 +26,8 @@ describe Findable::Find do
     it { expect(subject).to eq(resource) }
 
     context 'and relation manipulations' do
-      let(:joins)      { Faker::GameOfThrones.character }
-      let(:preload)    { Faker::WorldOfWarcraft.name }
+      let(:joins) { Faker::GameOfThrones.character }
+      let(:preload) { Faker::WorldOfWarcraft.name }
       let(:eager_load) { Faker::Superhero.name }
 
       let(:params) do

@@ -1,8 +1,8 @@
 describe OddsFeed::Radar::EventAdapter::TitleSelector do
   subject { described_class.call(payload: payload) }
 
-  let(:id)      { Faker::Internet.user_name }
-  let(:name)    { Faker::GameOfThrones.name }
+  let(:id) { Faker::Internet.user_name }
+  let(:name) { Faker::GameOfThrones.name }
   let(:payload) { { 'id' => id, 'name' => name } }
 
   context 'found title' do

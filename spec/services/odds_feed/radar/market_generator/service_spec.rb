@@ -64,8 +64,8 @@ describe OddsFeed::Radar::MarketGenerator::Service do
     end
 
     let(:web_socket) { double }
-    let(:odds)       { build_stubbed_list(:odd, 5) }
-    let(:markets)    { build_stubbed_list(:market, markets_data.count) }
+    let(:odds) { build_stubbed_list(:odd, 5) }
+    let(:markets) { build_stubbed_list(:market, markets_data.count) }
 
     let(:market_data_id) { 47 }
     let(:market_data_based_market_external_id) { 'sr:match:1234:47/score=41.5' }

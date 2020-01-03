@@ -16,7 +16,7 @@ describe OddsFeed::Radar::MarketGenerator::MarketData do
 
   describe '#name' do
     let(:market_name) { Faker::Science.element }
-    let(:name)        { Faker::WorldOfWarcraft.hero }
+    let(:name) { Faker::WorldOfWarcraft.hero }
 
     before do
       allow_any_instance_of(OddsFeed::Radar::MarketGenerator::TemplateLoader)
@@ -34,8 +34,8 @@ describe OddsFeed::Radar::MarketGenerator::MarketData do
 
   describe '#odd_name' do
     let(:template_odd_name) { Faker::Number.number(4) }
-    let(:external_id)       { 'sr:competitor:1234' }
-    let(:odd_name)          { Faker::Number.number(4) }
+    let(:external_id) { 'sr:competitor:1234' }
+    let(:odd_name) { Faker::Number.number(4) }
 
     before do
       allow_any_instance_of(OddsFeed::Radar::MarketGenerator::TemplateLoader)

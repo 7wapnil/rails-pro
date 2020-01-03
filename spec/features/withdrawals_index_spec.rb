@@ -122,7 +122,7 @@ describe 'Withdrawals index page' do
     context 'By withdrawal request ID' do
       let(:id_field) { 'withdrawals_id_eq' }
 
-      it 'found' do
+      it 'is found' do
         withdrawal = create(:withdrawal)
         visit withdrawals_path
         fill_in(id_field, with: withdrawal.id)
@@ -134,7 +134,7 @@ describe 'Withdrawals index page' do
         end
       end
 
-      it 'not found' do
+      it 'is not found' do
         visit withdrawals_path
         fill_in(id_field, with: -1)
         click_on('Search')
@@ -150,7 +150,7 @@ describe 'Withdrawals index page' do
     context 'By status' do
       let(:status_drop_down) { 'withdrawals_status_eq' }
 
-      it 'found' do
+      it 'is found' do
         withdrawal = create(:withdrawal)
         visit withdrawals_path
         select Withdrawal::PENDING, from: status_drop_down
@@ -162,7 +162,7 @@ describe 'Withdrawals index page' do
         end
       end
 
-      it 'not found' do
+      it 'is not found' do
         visit withdrawals_path
         select Withdrawal::REJECTED, from: status_drop_down
         click_on('Search')
@@ -205,7 +205,7 @@ describe 'Withdrawals index page' do
         end
       end
 
-      it 'not found' do
+      it 'is not found' do
         withdrawal = create(:withdrawal)
         visit withdrawals_path
         lower_bound = withdrawal.created_at + 1.day
@@ -224,7 +224,7 @@ describe 'Withdrawals index page' do
       let(:actor_email) { 'withdrawals_actioned_by_email_cont' }
       let(:status_drop_down) { 'withdrawals_status_eq' }
 
-      it 'found' do
+      it 'is found' do
         withdrawal = create(:withdrawal, :processing)
         visit withdrawals_path
         select Withdrawal::PROCESSING, from: status_drop_down
@@ -237,7 +237,7 @@ describe 'Withdrawals index page' do
         end
       end
 
-      it 'not found' do
+      it 'is not found' do
         visit withdrawals_path
         fill_in(actor_email, with: Faker::Internet.email)
         click_on('Search')
@@ -255,7 +255,7 @@ describe 'Withdrawals index page' do
         'withdrawals_entry_request_customer_username_cont'
       end
 
-      it 'found' do
+      it 'is found' do
         withdrawal = create(:withdrawal)
         visit withdrawals_path
         username = withdrawal.entry_request.customer.username
@@ -268,7 +268,7 @@ describe 'Withdrawals index page' do
         end
       end
 
-      it 'not found' do
+      it 'is not found' do
         visit withdrawals_path
         fill_in(customer_name, with: Faker::Lorem.word)
         click_on('Search')

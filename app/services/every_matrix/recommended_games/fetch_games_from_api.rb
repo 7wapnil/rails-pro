@@ -33,7 +33,7 @@ module EveryMatrix
 
       def order_by_rank
         Arel.sql(
-          "position(external_id::text in '#{response_game_ids.join(',')}')"
+          "position(external_id::text in '#{response_game_ids&.join(',')}')"
         )
       end
 

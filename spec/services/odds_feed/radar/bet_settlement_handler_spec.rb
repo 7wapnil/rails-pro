@@ -61,7 +61,7 @@ describe OddsFeed::Radar::BetSettlementHandler do
                  external_id: 'sr:match:3432:13/hcp=3.5:sr:player:999')
   end
 
-  let(:total_bets_count)     { 28 }
+  let(:total_bets_count) { 28 }
   let(:first_odd_bets_count) { 6 }
 
   let(:mocked_entry_request) { double }

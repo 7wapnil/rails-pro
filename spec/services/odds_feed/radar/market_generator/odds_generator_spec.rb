@@ -4,7 +4,7 @@ describe OddsFeed::Radar::MarketGenerator::OddsGenerator do
   subject { described_class.call(market, market_data) }
 
   let(:market) { build_stubbed(:market) }
-  let(:event)  { build_stubbed(:event) }
+  let(:event) { build_stubbed(:event) }
 
   let(:market_template) do
     create(:market_template,
@@ -33,7 +33,7 @@ describe OddsFeed::Radar::MarketGenerator::OddsGenerator do
 
   context 'invalid data' do
     let(:invalid_odds_count) { rand(odds_count) }
-    let(:valid_odds_count)   { odds_count - invalid_odds_count }
+    let(:valid_odds_count) { odds_count - invalid_odds_count }
 
     context 'with outcome missing' do
       before { payload['outcome'] = '' }

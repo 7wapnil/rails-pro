@@ -5,15 +5,15 @@ require 'rails_helper'
 describe Findable::Finder do
   subject { described_class.call(params) }
 
-  let(:controller)               { ApplicationController.new }
-  let(:value)                    { Faker::Internet.email }
-  let(:controller_params)        { { entity: { nested: { email: value } } } }
-  let(:resource_name)            { :user }
-  let(:resource_class)           { Customer }
-  let(:by)                       { %i[entity nested email] }
-  let(:attribute)                { :email }
-  let(:strict)                   { false }
-  let(:fallback_parameter)       { Faker::GameOfThrones.character }
+  let(:controller) { ApplicationController.new }
+  let(:value) { Faker::Internet.email }
+  let(:controller_params) { { entity: { nested: { email: value } } } }
+  let(:resource_name) { :user }
+  let(:resource_class) { Customer }
+  let(:by) { %i[entity nested email] }
+  let(:attribute) { :email }
+  let(:strict) { false }
+  let(:fallback_parameter) { Faker::GameOfThrones.character }
   let(:fallback_value_parameter) { Faker::GameOfThrones.character }
 
   let(:full_params) do
@@ -135,8 +135,8 @@ describe Findable::Finder do
 
     context 'default' do
       let(:current_user) { create(:customer) }
-      let(:id)           { current_user.id }
-      let(:params)       { full_params.slice(:controller, :resource_name) }
+      let(:id) { current_user.id }
+      let(:params) { full_params.slice(:controller, :resource_name) }
 
       before { controller.params = Hash[:id, id] }
 
@@ -167,7 +167,7 @@ describe Findable::Finder do
 
     context 'default' do
       let(:default_attribute) { :id }
-      let(:params)            { full_params.slice(:controller, :resource_name) }
+      let(:params) { full_params.slice(:controller, :resource_name) }
 
       it do
         expect(Findable::Find)
@@ -210,7 +210,7 @@ describe Findable::Finder do
 
     context 'as method' do
       let(:method_name) { Faker::Lorem.word.to_sym }
-      let(:value)       { Faker::Bank.name }
+      let(:value) { Faker::Bank.name }
       let(:params) do
         full_params
           .slice(:controller, :resource_name)
@@ -255,7 +255,7 @@ describe Findable::Finder do
 
     context 'as method' do
       let(:method_name) { Faker::Lorem.word.to_sym }
-      let(:value)       { Faker::Bank.name }
+      let(:value) { Faker::Bank.name }
 
       let(:params) do
         full_params

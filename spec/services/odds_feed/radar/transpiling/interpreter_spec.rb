@@ -157,9 +157,9 @@ describe OddsFeed::Radar::Transpiling::Interpreter do
     end
 
     context 'unallowed name variable should not been parsed' do
-      let(:token)      { '%unallowed_name' }
+      let(:token) { '%unallowed_name' }
       let(:raw_string) { "{#{token}} was correctly parsed" }
-      let(:message)    { "Name transpiler can't read variable: `#{token}`" }
+      let(:message) { "Name transpiler can't read variable: `#{token}`" }
       let(:interpreter) do
         described_class.new(event)
       end

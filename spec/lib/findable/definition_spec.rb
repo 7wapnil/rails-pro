@@ -6,15 +6,15 @@ describe Findable::Definition do
   subject { described_class.call(params) }
 
   let(:controller_class) { ApplicationController }
-  let(:resource_name)    { Faker::Lorem.word }
-  let(:resource)         { build_stubbed(:customer) }
+  let(:resource_name) { Faker::Lorem.word }
+  let(:resource) { build_stubbed(:customer) }
   let(:finder_name) do
     "find_#{resource_name}#{only_suffix}#{except_suffix}!".to_sym
   end
-  let(:only_suffix)      { '_only_show' }
-  let(:except_suffix)    { '_except_index' }
-  let(:only)             { %i[show] }
-  let(:except)           { %i[index] }
+  let(:only_suffix) { '_only_show' }
+  let(:except_suffix) { '_except_index' }
+  let(:only) { %i[show] }
+  let(:except) { %i[index] }
 
   let(:params) do
     {
@@ -33,9 +33,9 @@ describe Findable::Definition do
     before { allow(controller_class).to receive(:define_method) }
 
     context 'to all actions' do
-      let(:only)          { nil }
-      let(:only_suffix)   { nil }
-      let(:except)        { nil }
+      let(:only) { nil }
+      let(:only_suffix) { nil }
+      let(:except) { nil }
       let(:except_suffix) { nil }
 
       it do

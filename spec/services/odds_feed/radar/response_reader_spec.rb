@@ -2,12 +2,12 @@ describe OddsFeed::Radar::ResponseReader do
   subject { described_class.call(params) }
 
   let(:response) { OpenStruct.new(parsed_response: data) }
-  let(:data)     { Faker::Types.complex_rb_hash }
+  let(:data) { Faker::Types.complex_rb_hash }
 
-  let(:path)      { '/users/whoami.xml' }
+  let(:path) { '/users/whoami.xml' }
   let(:cache_key) { "#{OddsFeed::Radar::ResponseReader::CLIENT_KEY}:#{path}" }
-  let(:cache)     {}
-  let(:options)   { { access_token: Faker::Number.number(4) } }
+  let(:cache) {}
+  let(:options) { { access_token: Faker::Number.number(4) } }
 
   let(:params) do
     {
@@ -72,9 +72,9 @@ describe OddsFeed::Radar::ResponseReader do
     end
 
     context 'invalid' do
-      let(:message)     { Faker::Lorem.paragraph }
+      let(:message) { Faker::Lorem.paragraph }
       let(:error_class) { StandardError }
-      let(:error)       { error_class.new(message) }
+      let(:error) { error_class.new(message) }
 
       before { allow(response).to receive(:parsed_response).and_raise(error) }
 

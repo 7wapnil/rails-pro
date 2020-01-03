@@ -90,8 +90,8 @@ describe CustomerBonus do
     describe '#activate!' do
       subject { customer_bonus.activate!(entry) }
 
-      let(:entry)            { create(:entry, bonus_amount: bonus_amount) }
-      let(:bonus_amount)     { rand(1..10) }
+      let(:entry) { create(:entry, bonus_amount: bonus_amount) }
+      let(:bonus_amount) { rand(1..10) }
       let(:rollover_balance) { rand(100..1000) }
       let(:customer_bonus) do
         create(

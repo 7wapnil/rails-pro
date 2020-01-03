@@ -14,7 +14,7 @@ module EveryMatrix
     end
 
     def call
-      model.joins(:content_provider, :categories)
+      model.joins(:content_provider)
            .reject_country(country)
            .where(name_includes_search_query, query: "%#{query}%")
            .public_send(device)
@@ -36,6 +36,7 @@ module EveryMatrix
 
     def name_includes_search_query
       <<~SQL
+        every_matrix_play_items.name ILIKE :query OR
         every_matrix_play_items.short_name ILIKE :query OR
         every_matrix_content_providers.name ILIKE :query
       SQL

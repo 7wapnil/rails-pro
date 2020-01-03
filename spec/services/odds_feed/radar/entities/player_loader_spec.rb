@@ -5,8 +5,8 @@ describe OddsFeed::Radar::Entities::PlayerLoader do
     XmlParser.parse(file_fixture('radar_player_profile.xml').read)
   end
   let(:player_payload) { payload.dig('player_profile', 'player') }
-  let(:external_id)    { player_payload['id'] }
-  let(:name)           { player_payload['full_name'] }
+  let(:external_id) { player_payload['id'] }
+  let(:name) { player_payload['full_name'] }
 
   let(:cache_settings) do
     {

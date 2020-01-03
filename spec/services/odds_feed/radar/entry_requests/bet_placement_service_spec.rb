@@ -3,10 +3,10 @@
 describe EntryRequests::BetPlacementService do
   subject { described_class.call(entry_request: entry_request) }
 
-  let(:bet)             { create(:bet) }
-  let!(:currency)       { create(:currency, :primary) }
-  let(:rule)            { create(:entry_currency_rule) }
-  let!(:entry)          { create(:entry, origin: bet) }
+  let(:bet) { create(:bet) }
+  let!(:currency) { create(:currency, :primary) }
+  let(:rule) { create(:entry_currency_rule) }
+  let!(:entry) { create(:entry, origin: bet) }
   let(:impersonated_by) { create(:customer) }
   let(:entry_request) do
     create(:entry_request, :succeeded,
@@ -64,9 +64,9 @@ describe EntryRequests::BetPlacementService do
     context 'on pre-live provider disconnected' do
       let!(:prematch_producer) { create(:prematch_producer, :unsubscribed) }
 
-      let(:event)  { build(:event, :upcoming) }
+      let(:event) { build(:event, :upcoming) }
       let(:market) { build(:market, event: event) }
-      let(:bet)    { build(:bet, market: market) }
+      let(:bet) { build(:bet, market: market) }
 
       before { subject }
 
@@ -75,7 +75,7 @@ describe EntryRequests::BetPlacementService do
 
     context 'on market becomes suspended' do
       let(:market) { build(:market, :suspended) }
-      let(:bet)    { build(:bet, market: market) }
+      let(:bet) { build(:bet, market: market) }
 
       before { subject }
 

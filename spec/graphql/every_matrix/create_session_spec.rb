@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 describe GraphQL, '#createEveryMatrixSession' do
-  let(:location)  { OpenStruct.new(country_code: 'US') }
-  let(:request)   { OpenStruct.new(location: location) }
-  let(:context)   { { request: request } }
+  let(:location) { OpenStruct.new(country_code: 'US') }
+  let(:request) { OpenStruct.new(location: location) }
+  let(:context) { { request: request } }
   let(:variables) { {} }
   let(:response) do
     ArcanebetSchema.execute(query,

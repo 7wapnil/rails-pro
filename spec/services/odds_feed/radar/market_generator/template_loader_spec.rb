@@ -13,7 +13,7 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
            specific_outcome_name: outcome['name'])
   end
   let(:variant_id) { rand(0..5).to_s }
-  let(:args)       { [event, template, variant_id] }
+  let(:args) { [event, template, variant_id] }
 
   let(:payload) do
     XmlParser.parse(
@@ -134,7 +134,7 @@ describe OddsFeed::Radar::MarketGenerator::TemplateLoader do
 
     context 'template not found' do
       let(:external_id) { Faker::Bank.account_number }
-      let(:message)     { 'Odd template not found' }
+      let(:message) { 'Odd template not found' }
       let(:subject_with_template) { described_class.new(*args) }
 
       before do

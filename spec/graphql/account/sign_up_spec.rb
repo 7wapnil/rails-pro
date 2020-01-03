@@ -202,7 +202,7 @@ describe GraphQL do
     end
 
     it 'returns a validation error' do
-      expect(result['errors'][0]['message']).not_to be_blank
+      expect(result['errors'][0]['message']).not_to be_empty
     end
 
     it 'does not create a customer' do

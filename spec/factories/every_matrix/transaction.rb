@@ -8,16 +8,20 @@ FactoryBot.define do
     wallet_session
     entry
 
+    trait :random do
+      type { [EveryMatrix::Wager, EveryMatrix::Result].sample.name }
+    end
+
     trait :wager do
-      type { 'EveryMatrix::Wager' }
+      type { EveryMatrix::Wager.name }
     end
 
     trait :result do
-      type { 'EveryMatrix::Result' }
+      type { EveryMatrix::Result.name }
     end
 
     trait :rollback do
-      type { 'EveryMatrix::Rollback' }
+      type { EveryMatrix::Rollback.name }
     end
   end
 end

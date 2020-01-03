@@ -1,5 +1,5 @@
 shared_examples 'LoginAttemptable' do
-  let(:attempts)    { LoginAttemptable::LOGIN_ATTEMPTS_CAP }
+  let(:attempts) { LoginAttemptable::LOGIN_ATTEMPTS_CAP }
   let(:auth_entity) do
     create(described_class.model_name.i18n_key, failed_attempts: attempts)
   end

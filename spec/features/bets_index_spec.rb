@@ -44,8 +44,7 @@ describe Bet, '#index' do
       context 'by ID' do
         it 'by default in DESC direction' do
           within 'table.table.entities tbody' do
-            rows = page.all('tr')
-            bets_ids = rows.map do |row|
+            bets_ids = page.all('tr').map do |row|
               row[:id].delete('bet-').to_i
             end
             sorted_ids = bets_ids.sort { |x, y| y <=> x }
@@ -57,8 +56,7 @@ describe Bet, '#index' do
         it 'in ASC direction' do
           click_link('Bet ID')
           within 'table.table.entities tbody' do
-            rows = page.all('tr')
-            bets_ids = rows.map do |row|
+            bets_ids = page.all('tr').map do |row|
               row[:id].delete('bet-').to_i
             end
             sorted_ids = bets_ids.sort { |x, y| x <=> y }
@@ -79,7 +77,7 @@ describe Bet, '#index' do
 
     describe 'filtering' do
       context 'by Bet ID' do
-        it 'found' do
+        it 'is found' do
           bet = Bet.all.sample
           fill_in('Bet ID', with: bet.id)
           click_on('Search')
@@ -90,7 +88,7 @@ describe Bet, '#index' do
           end
         end
 
-        it 'not found' do
+        it 'is not found' do
           fill_in('Bet ID', with: -1)
           click_on('Search')
 
@@ -103,7 +101,7 @@ describe Bet, '#index' do
       end
 
       context 'by Sport' do
-        it 'found' do
+        it 'is found' do
           bet = Bet.first
           picked_sport = bet.title.external_name
           available_sports = page.find('#bets_title_id_eq')
@@ -122,7 +120,7 @@ describe Bet, '#index' do
           end
         end
 
-        it 'not found' do
+        it 'is not found' do
           bet = Bet.first
           picked_sport = bet.title.decorate.name
           Bet.joins(:event).where(events: { title_id: bet.title.id }).delete_all
@@ -140,7 +138,7 @@ describe Bet, '#index' do
       context 'by Tournament' do
         let(:tournament) { EventScope.tournament.first }
 
-        it 'found' do
+        it 'is found' do
           bet = create(:bet)
           bet.event.event_scopes << tournament
           picked_tournament = tournament.name
@@ -160,7 +158,7 @@ describe Bet, '#index' do
           end
         end
 
-        it 'not found' do
+        it 'is not found' do
           picked_tournament = tournament.name
           select picked_tournament, from: 'Event scope Name equals'
           click_on('Search')
@@ -188,7 +186,7 @@ describe Bet, '#index' do
           end
         end
 
-        it 'not found' do
+        it 'is not found' do
           select Bet::MANUALLY_SETTLED, from: 'Status eq'
           click_on 'Search'
 
@@ -214,7 +212,7 @@ describe Bet, '#index' do
           end
         end
 
-        it 'not found' do
+        it 'is not found' do
           select Bet::VOIDED, from: 'Settlement status eq'
           click_on 'Search'
 

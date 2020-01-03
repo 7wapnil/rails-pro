@@ -107,7 +107,7 @@ describe Market do
       market = create(:market, status: initial_state)
       market.status = new_state
       market.valid?
-      expect(market.errors[:status]).to be_blank
+      expect(market.errors[:status]).to be_empty
     end
   end
 

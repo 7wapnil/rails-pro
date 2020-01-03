@@ -28,7 +28,7 @@ describe GraphQL, '#auth_info' do
 
   context 'existing user' do
     let(:failed_attempts) { LoginAttemptable::LOGIN_ATTEMPTS_CAP }
-    let(:customer)  { create(:customer, failed_attempts: failed_attempts) }
+    let(:customer) { create(:customer, failed_attempts: failed_attempts) }
     let(:variables) { Hash[:login, customer.email] }
 
     it { expect(auth_info['isSuspicious']).to be_truthy }

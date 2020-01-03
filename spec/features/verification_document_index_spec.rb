@@ -128,7 +128,7 @@ describe VerificationDocument, '#index' do
           create_list(:verification_document, 2, customer: customer)
         end
 
-        it 'found' do
+        it 'is found' do
           fill_in(I18n.t('attributes.username'), with: customer.username)
           click_on 'Search'
 
@@ -140,7 +140,7 @@ describe VerificationDocument, '#index' do
           end
         end
 
-        it 'not found' do
+        it 'is not found' do
           fill_in(I18n.t('attributes.username'), with: 'unknown_username')
           click_on 'Search'
 
@@ -161,7 +161,7 @@ describe VerificationDocument, '#index' do
         let(:input_name) { 'Kind equals' }
         let!(:doc) { create(:verification_document, kind: :credit_card) }
 
-        it 'found' do
+        it 'is found' do
           select doc.kind.humanize, from: input_name
           click_on 'Search'
 
@@ -171,7 +171,7 @@ describe VerificationDocument, '#index' do
           end
         end
 
-        it 'not found' do
+        it 'is not found' do
           available_types.delete(doc.kind.humanize)
           option_name = available_types.first
 
@@ -202,7 +202,7 @@ describe VerificationDocument, '#index' do
 
         before { click_on I18n.t('navigation.document.recently_actioned') }
 
-        it 'found' do
+        it 'is found' do
           select confirmed_doc.status.humanize, from: 'Status'
           click_on 'Search'
 
@@ -212,7 +212,7 @@ describe VerificationDocument, '#index' do
           end
         end
 
-        it 'not found' do
+        it 'is not found' do
           select rejected_doc.status.humanize, from: 'Status'
           click_on 'Search'
 
@@ -262,7 +262,7 @@ describe VerificationDocument, '#index' do
           end
         end
 
-        it 'not found' do
+        it 'is not found' do
           fill_in 'Search From', with: future_doc.created_at.to_date + 1.day
           click_on 'Search'
 

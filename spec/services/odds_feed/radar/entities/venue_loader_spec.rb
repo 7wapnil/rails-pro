@@ -5,8 +5,8 @@ describe OddsFeed::Radar::Entities::VenueLoader do
     XmlParser.parse(file_fixture('radar_venue_summary.xml').read)
   end
   let(:venue_payload) { payload.dig('venue_summary', 'venue') }
-  let(:external_id)   { venue_payload['id'] }
-  let(:name)          { venue_payload['name'] }
+  let(:external_id) { venue_payload['id'] }
+  let(:name) { venue_payload['name'] }
 
   let(:cache_settings) do
     {

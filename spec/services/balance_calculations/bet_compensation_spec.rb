@@ -24,10 +24,10 @@ describe BalanceCalculations::BetCompensation do
 
   context 'with inregular number and round' do
     let(:real_money_balance) { 5.0 }
-    let(:bonus_balance)      { 3.0 }
-    let(:total_balance)      { bonus_balance + real_money_balance }
-    let(:ratio)              { bonus_balance / total_balance }
-    let(:winning)            { 9.0 }
+    let(:bonus_balance) { 3.0 }
+    let(:total_balance) { bonus_balance + real_money_balance }
+    let(:ratio) { bonus_balance / total_balance }
+    let(:winning) { 9.0 }
 
     it 'round works correct' do
       entry = Entry.new(
