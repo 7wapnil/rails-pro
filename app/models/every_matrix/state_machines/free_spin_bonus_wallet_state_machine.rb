@@ -79,7 +79,7 @@ module EveryMatrix
             transitions from: %i[initial
                                  user_created
                                  awarded_with_error
-                                 send_to_award],
+                                 sent_to_award],
                         to: :sent_to_award
           end
 
@@ -96,7 +96,7 @@ module EveryMatrix
           event :send_to_forfeit do
             transitions from: %i[awarded
                                  forfeited_with_error
-                                 send_to_forfeit],
+                                 sent_to_forfeit],
                         to: :sent_to_forfeit
           end
 
