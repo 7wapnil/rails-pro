@@ -4,6 +4,7 @@ module EveryMatrix
   module FreeSpinBonuses
     class CreateUserHandler < BaseRequestHandler
       DEFAULT_LANG = 'EN'
+      DEFAULT_GENDER = 'Male'
 
       def call
         free_spin_bonus_wallet.send_to_create_user!
@@ -73,7 +74,7 @@ module EveryMatrix
       end
 
       def gender
-        @gender ||= customer.gender.capitalize
+        @gender ||= customer.gender&.capitalize || DEFAULT_GENDER
       end
     end
   end
