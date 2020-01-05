@@ -68,6 +68,7 @@ class BonusesController < ApplicationController
                   :percentage,
                   :repeatable,
                   :limit_per_each_bet_leg,
+                  :casino,
                   :sportsbook,
                   :sportsbook_multiplier,
                   :max_rollover_per_spin)
