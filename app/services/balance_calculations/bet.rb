@@ -29,12 +29,16 @@ module BalanceCalculations
     end
 
     def ratio
-      return FULL_RATIO unless customer_bonus&.active?
+      return FULL_RATIO unless bonus?
 
       RatioCalculator.call(
         real_money_amount: real_money_balance,
         bonus_amount: bonus_balance
       )
+    end
+
+    def bonus?
+      customer_bonus&.active? && customer_bonus&.sportsbook?
     end
 
     def wallet
