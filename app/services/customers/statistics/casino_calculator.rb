@@ -31,15 +31,17 @@ module Customers
       end
 
       def casino_games
-        @casino_games ||= casino_transactions.where(
-          "every_matrix_play_items.type = '#{EveryMatrix::Game.name}'"
-        )
+        @casino_games ||=
+          casino_transactions
+          .joins(:entry)
+          .where("every_matrix_play_items.type = '#{EveryMatrix::Game.name}'")
       end
 
       def live_casino_games
-        @live_casino_games ||= casino_transactions.where(
-          "every_matrix_play_items.type = '#{EveryMatrix::Table.name}'"
-        )
+        @live_casino_games ||=
+          casino_transactions
+          .joins(:entry)
+          .where("every_matrix_play_items.type = '#{EveryMatrix::Table.name}'")
       end
 
       def wager_games(source)
