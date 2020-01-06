@@ -39,6 +39,9 @@
             %td= t('attributes.base_currency_amount')
             %td= transaction.base_currency_amount(human: true)
           %tr
+            %td= t('attributes.free_spin_bonus_id')
+            %td= transaction.every_matrix_free_spin_bonus
+          %tr
             %td= t('attributes.round_status')
             %td= transaction.round_status
           %tr

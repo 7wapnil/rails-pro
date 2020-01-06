@@ -72,4 +72,13 @@
                        { include_blank: true },
                        class: 'form-control'
         %th
+          .filter_title
+            #{t('attributes.free_spin_bonus_id')}:
+          .filter_field
+            = f.label :type, class: 'sr-only'
+            = f.select :every_matrix_free_spin_bonus_id_eq,
+                       EveryMatrix::FreeSpinBonus.pluck(:id).sort.reverse,
+                       { include_blank: true },
+                       class: 'form-control'
+        %th
           = f.submit class: 'btn btn-outline-dark btn-block'

@@ -2,6 +2,8 @@
 
 module EveryMatrix
   class TransactionDecorator < ApplicationDecorator
+    include ActionView::Helpers::UrlHelper
+
     PRECISION = 2
     TRANSLATION_MAP = {
       game: CASINO = 'Casino',
@@ -60,6 +62,15 @@ module EveryMatrix
 
     def created_at(human: false)
       human ? l(super(), format: :long) : super()
+    end
+
+    def every_matrix_free_spin_bonus
+      return unless every_matrix_free_spin_bonus_id
+
+      link_to(
+        every_matrix_free_spin_bonus_id,
+        every_matrix_free_spin_bonus_path(every_matrix_free_spin_bonus_id)
+      )
     end
 
     private
