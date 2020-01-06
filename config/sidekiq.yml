@@ -13,9 +13,11 @@
 
 :limits:
   every_matrix_mix_data_feed: 1
+  every_matrix_free_spin_bonuses: 1
 
 :process_limits:
   every_matrix_mix_data_feed: 1
+  every_matrix_free_spin_bonuses: 1
 
 :schedule:
   expiring_bonuses:
