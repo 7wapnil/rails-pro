@@ -36,8 +36,9 @@ module Mts
       def update_bet
         bet.with_lock do
           bet.timed_out_external_validation!
-          emit_websocket
         end
+
+        emit_websocket
       end
 
       def additional_params

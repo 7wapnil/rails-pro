@@ -104,7 +104,7 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
       condition = 'bets.validation_ticket_sent_at <= :expired_at
                          AND events.traded_live = true'
       sent_to_external_validation
-        .joins(bet_legs: { odd: { market: %i[event] } })
+        .joins(bet_legs: :event)
         .where(condition,
                expired_at: timeout.seconds.ago)
     end
@@ -112,9 +112,12 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
     def expired_prematch
       timeout = ENV.fetch('MTS_PREMATCH_VALIDATION_TIMEOUT_SECONDS', 3).to_i
       condition = 'bets.validation_ticket_sent_at <= :expired_at
-                         AND events.traded_live = false'
+                         AND events.id IS NULL'
+      live_events_join = 'LEFT JOIN events ON events.id = markets.event_id AND
+                                              events.traded_live = true'
       sent_to_external_validation
-        .joins(bet_legs: { odd: { market: %i[event] } })
+        .joins(bet_legs: :market)
+        .joins(live_events_join)
         .where(condition,
                expired_at: timeout.seconds.ago)
     end
