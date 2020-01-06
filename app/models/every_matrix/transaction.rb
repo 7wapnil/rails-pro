@@ -2,6 +2,8 @@
 
 module EveryMatrix
   class Transaction < ApplicationRecord
+    self.table_name = 'every_matrix_transactions'
+
     TYPES = {
       Wager: WAGER = 'EveryMatrix::Wager',
       Result: RESULT = 'EveryMatrix::Result',
@@ -11,12 +13,13 @@ module EveryMatrix
     DEBIT_TYPES = [WAGER].freeze
     CREDIT_TYPES = [RESULT, ROLLBACK].freeze
 
-    self.table_name = 'every_matrix_transactions'
-
     belongs_to :wallet_session, class_name: 'EveryMatrix::WalletSession'
     belongs_to :customer
     has_one :play_item, through: :wallet_session
     belongs_to :customer_bonus, optional: true
+    belongs_to :every_matrix_free_spin_bonus,
+               class_name: 'EveryMatrix::FreeSpinBonus',
+               optional: true
 
     has_one :entry_request, as: :origin
     has_one :entry, as: :origin

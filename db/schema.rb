@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2019_12_30_211311) do
+ActiveRecord::Schema.define(version: 2020_01_06_132207) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -665,8 +665,10 @@ ActiveRecord::Schema.define(version: 2019_12_30_211311) do
     t.jsonb "response"
     t.decimal "real_money_ratio", default: "1.0", null: false
     t.bigint "customer_bonus_id"
+    t.bigint "every_matrix_free_spin_bonus_id"
     t.index ["customer_bonus_id"], name: "index_every_matrix_transactions_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_every_matrix_transactions_on_customer_id"
+    t.index ["every_matrix_free_spin_bonus_id"], name: "index_transaction_free_spin_bonus_id"
     t.index ["round_id"], name: "index_every_matrix_transactions_on_round_id"
     t.index ["transaction_id"], name: "index_every_matrix_transactions_on_transaction_id"
     t.index ["wallet_session_id"], name: "index_every_matrix_transactions_on_wallet_session_id"
@@ -917,6 +919,7 @@ ActiveRecord::Schema.define(version: 2019_12_30_211311) do
   add_foreign_key "every_matrix_table_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
   add_foreign_key "every_matrix_transactions", "customer_bonuses"
   add_foreign_key "every_matrix_transactions", "customers"
+  add_foreign_key "every_matrix_transactions", "every_matrix_free_spin_bonuses"
   add_foreign_key "every_matrix_transactions", "every_matrix_wallet_sessions", column: "wallet_session_id"
   add_foreign_key "every_matrix_wallet_sessions", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
   add_foreign_key "label_joins", "labels"

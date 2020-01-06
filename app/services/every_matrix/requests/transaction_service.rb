@@ -9,7 +9,7 @@ module EveryMatrix
       TRANSACTION_PARAMS = %w[Amount Device GameType
                               GPGameId EMGameId GPId
                               Product RoundId TransactionId
-                              RoundStatus].freeze
+                              RoundStatus BonusId].freeze
 
       def initialize(params)
         super
@@ -67,19 +67,20 @@ module EveryMatrix
           )
       end
 
-      def attributes
+      def attributes # rubocop:disable Metrics/MethodLength
         {
-          customer:          customer,
-          wallet_session:    session,
-          amount:            amount.to_d,
-          game_type:         transaction_params['GameType'],
-          gp_game_id:        transaction_params['GPGameId'],
-          gp_id:             transaction_params['GPId'],
-          em_game_id:        transaction_params['EMGameId'],
-          product:           transaction_params['Product'],
-          round_id:          transaction_params['RoundId'],
-          device:            transaction_params['Device'],
-          round_status:      transaction_params['RoundStatus']
+          customer:                        customer,
+          wallet_session:                  session,
+          amount:                          amount.to_d,
+          game_type:                       transaction_params['GameType'],
+          gp_game_id:                      transaction_params['GPGameId'],
+          gp_id:                           transaction_params['GPId'],
+          em_game_id:                      transaction_params['EMGameId'],
+          product:                         transaction_params['Product'],
+          round_id:                        transaction_params['RoundId'],
+          device:                          transaction_params['Device'],
+          round_status:                    transaction_params['RoundStatus'],
+          every_matrix_free_spin_bonus_id: transaction_params['BonusId']
         }
       end
 
