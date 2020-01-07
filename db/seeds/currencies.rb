@@ -28,15 +28,20 @@ currency_mapping = [
 ]
 
 entry_currency_rule_ranges = {
-  EntryKinds::DEPOSIT => { min: 0, max: 10_000 },
-  EntryKinds::WIN => { min: 0, max: 10_000 },
-  EntryKinds::WITHDRAW => { min: -10_000, max: 0 },
-  EntryKinds::BET => { min: -10_000, max: 0 },
-  EntryKinds::REFUND => { min: 0, max: 10_000 },
-  EntryKinds::ROLLBACK => { min: -10_000, max: 10_000 },
-  EntryKinds::SYSTEM_BET_CANCEL => { min: -10_000, max: 10_000 },
-  EntryKinds::BONUS_CONVERSION => { min: 0, max: 10_000 },
-  EntryKinds::BONUS_CHANGE => { min: -10_000, max: 10_000 }
+  EntryKinds::DEPOSIT => { min: 0, max: 100_000_000 },
+  EntryKinds::WIN => { min: 0, max: 100_000_000 },
+  EntryKinds::WITHDRAW => { min: -100_000_000, max: 0 },
+  EntryKinds::BET => { min: -100_000_000, max: 0 },
+  EntryKinds::REFUND => { min: 0, max: 100_000_000 },
+  EntryKinds::ROLLBACK => { min: -100_000_000, max: 100_000_000 },
+  EntryKinds::SYSTEM_BET_CANCEL => { min: -100_000_000, max: 100_000_000 },
+  EntryKinds::BONUS_CONVERSION => { min: 0, max: 100_000_000 },
+  EntryKinds::BONUS_CHANGE => { min: -100_000_000, max: 100_000_000 },
+  EntryKinds::MANUAL_BET_CANCEL => { min: 0, max: 100_000_000 },
+  EntryKinds::MANUAL_BET_PLACEMENT => { min: 0, max: 100_000_000 },
+  EntryKinds::EVERY_MATRIX_WAGER => { min: -100_000_000, max: 0 },
+  EntryKinds::EVERY_MATRIX_RESULT => { min: 0, max: 100_000_000 },
+  EntryKinds::EVERY_MATRIX_ROLLBACK => { min: 0, max: 100_000_000 }
 }.symbolize_keys
 
 currency_mapping.each do |payload|
