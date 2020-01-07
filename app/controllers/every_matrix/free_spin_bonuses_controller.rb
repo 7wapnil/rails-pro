@@ -54,7 +54,7 @@ module EveryMatrix
     def create
       requested_number = EveryMatrix::FreeSpinBonuses::CreateService.call(
         bonus_params:  bonus_params.to_h,
-        play_item_ids: play_item_ids,
+        play_item_ids: [play_item_id],
         customers_csv: params[:customers_csv]
       )
 
@@ -92,8 +92,8 @@ module EveryMatrix
         )
     end
 
-    def play_item_ids
-      params.require(:play_item_ids)
+    def play_item_id
+      params.require(:play_item_id)
     end
   end
 end
