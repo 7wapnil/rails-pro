@@ -17,8 +17,7 @@ module EveryMatrix
       form = ::Forms::EveryMatrix::CreateSession.new(
         wallet_id: args['walletId'],
         play_item_slug: args['playItemSlug'],
-        subject: @current_customer,
-        country: @request.location.country_code.upcase
+        subject: @current_customer
       )
 
       form.validate!

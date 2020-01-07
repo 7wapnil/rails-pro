@@ -5,10 +5,9 @@ module EveryMatrix
     LIMIT_RECOMMENDED_GAMES = 4
     HOURS_BETWEEN_UPDATES = 24
 
-    def initialize(original_game_id:, device:, country: '')
+    def initialize(original_game_id:, device:)
       @original_game_id = original_game_id
       @device = device
-      @country = country
     end
 
     def call
@@ -16,13 +15,12 @@ module EveryMatrix
 
       original_game.recommended_games
                    .public_send(device)
-                   .reject_country(country)
                    .limit(LIMIT_RECOMMENDED_GAMES)
     end
 
     private
 
-    attr_reader :original_game_id, :country, :device
+    attr_reader :original_game_id, :device
 
     def original_game
       @original_game ||= EveryMatrix::PlayItem.find(original_game_id)

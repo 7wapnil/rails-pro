@@ -8,8 +8,7 @@ module Forms
 
       attr_accessor :play_item_slug,
                     :wallet_id,
-                    :subject,
-                    :country
+                    :subject
 
       with_options if: :real_money_mode? do
         validates :subject, presence: true
@@ -17,7 +16,6 @@ module Forms
       end
 
       validates :play_item_slug, presence: true
-      validate  :check_country
 
       def launch_url
         ::EveryMatrix::Requests::LaunchUrlBuilder.call(
@@ -31,12 +29,6 @@ module Forms
       end
 
       private
-
-      def check_country
-        return if play_item.restricted_territories.exclude?(country)
-
-        errors.add(:country_code, I18n.t('errors.messages.unavailable_country'))
-      end
 
       def real_money_mode?
         wallet_id.present? && subject.present?

@@ -2,11 +2,10 @@
 
 module EveryMatrix
   class PlayItemsResolver < ApplicationService
-    def initialize(model:, category_name:, device:, country: '')
+    def initialize(model:, category_name:, device:)
       @model = model
       @category_name = category_name
       @device = device
-      @country = country
     end
 
     def call
@@ -14,13 +13,12 @@ module EveryMatrix
         .joins(:categories)
         .where(condition)
         .public_send(device)
-        .reject_country(country)
         .order('every_matrix_play_item_categories.position ASC')
     end
 
     private
 
-    attr_reader :model, :category_name, :device, :country
+    attr_reader :model, :category_name, :device
 
     def condition
       {

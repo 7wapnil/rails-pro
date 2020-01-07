@@ -19,8 +19,7 @@ module EveryMatrix
       EveryMatrix::PlayItemsResolver.call(
         model: EveryMatrix::Game,
         category_name: args['context'],
-        device: platform_type(@request),
-        country: @request.location.country_code.upcase
+        device: platform_type(@request)
       )
     end
   end
