@@ -9,7 +9,6 @@ module EveryMatrix
 
     def initialize(model, request)
       @terminal = platform_type(request)
-      @country_code = request.location.country_code.upcase
       super(model)
     end
 
@@ -26,7 +25,7 @@ module EveryMatrix
 
     private
 
-    attr_reader :terminal, :country_code
+    attr_reader :terminal
 
     def scope
       model
@@ -53,7 +52,6 @@ module EveryMatrix
           JOIN every_matrix_play_item_categories
           ON every_matrix_play_items.external_id = every_matrix_play_item_categories.play_item_id
           WHERE every_matrix_categories.id = every_matrix_play_item_categories.category_id
-          AND NOT '#{country_code}' = ANY(every_matrix_play_items.restricted_territories)
           AND (#{query_per_device})
           ORDER BY every_matrix_play_item_categories.position ASC
           LIMIT #{LIMIT_PER_CATEGORY}) play_items
