@@ -12,7 +12,15 @@ module Payments
   end
 
   class FailedError < GatewayError
-    def message
+    attr_reader :humanized
+    alias_method :humanized?, :humanized
+
+    def initialize(msg = nil)
+      super(msg || default_message)
+      @humanized = msg.present?
+    end
+
+    def default_message
       I18n.t('errors.messages.payment_failed_error')
     end
   end

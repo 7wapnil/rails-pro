@@ -1,8 +1,9 @@
 # frozen_string_literal: true
 
 describe ::Payments::Webhooks::DepositRedirectionUrlBuilder do
-  subject { described_class.call(status: status) }
+  subject { described_class.call(**params) }
 
+  let(:params) { { status: status } }
   let(:frontend_url) { Faker::Internet.url }
   let(:query_params) do
     URI.encode_www_form(
@@ -46,6 +47,17 @@ describe ::Payments::Webhooks::DepositRedirectionUrlBuilder do
     let(:message) {}
 
     it 'generates url with empty fields' do
+      expect(subject).to eq(expected_url)
+    end
+  end
+
+  context 'when received custom error message' do
+    let(:params) { { status: status, custom_message: message } }
+    let(:status) { ::Payments::Webhooks::Statuses::CANCELLED }
+    let(:state) { :error }
+    let(:message) { 'message' }
+
+    it 'generates correct url' do
       expect(subject).to eq(expected_url)
     end
   end

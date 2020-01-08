@@ -101,8 +101,19 @@ module Payments
                      reason: status_details['description'])
             )
             fail_related_entities
+            raise_payment_failed_error!
+          end
 
-            raise ::Payments::FailedError
+          def raise_payment_failed_error!
+            raise ::Payments::FailedError, humanized_fail_message
+          end
+
+          def humanized_fail_message
+            I18n.t('errors.messages.deposit_external_fail') if declined?
+          end
+
+          def declined?
+            DECLINED_STATUSES.include?(status_details['code'])
           end
         end
       end

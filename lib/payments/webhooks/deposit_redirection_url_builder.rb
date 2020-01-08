@@ -10,8 +10,9 @@ module Payments
         ::Payments::Webhooks::Statuses::SYSTEM_ERROR => :fail
       }.freeze
 
-      def initialize(status:)
+      def initialize(status:, custom_message: nil)
         @status = status
+        @custom_message = custom_message
       end
 
       def call
@@ -20,17 +21,20 @@ module Payments
 
       private
 
-      attr_reader :status
+      attr_reader :status, :custom_message
 
       def query_params
-        URI.encode_www_form(depositState: state, depositStateMessage: message)
+        URI.encode_www_form(
+          depositState: state,
+          depositStateMessage: custom_message || general_message
+        )
       end
 
       def state
         STATES_MAP[status]
       end
 
-      def message
+      def general_message
         case status
         when ::Payments::Webhooks::Statuses::SUCCESS
           I18n.t('webhooks.safe_charge.redirections.success_message')

@@ -508,6 +508,7 @@ en:
       cancelled_by_customer: Payment was cancelled by customer
       deposit_cancelled: Deposit was cancelled
       deposit_failed: Your deposit was failed. Please, try again
+      deposit_external_fail: The transaction was declined by your financial institution. Please try using another deposit method
       unsupported_payment_method: "Payment method '%{code}' is not implemented"
       nonexistent_bet: "Bet with validation ticket does not exist"
       password_invalid: Incorrect password

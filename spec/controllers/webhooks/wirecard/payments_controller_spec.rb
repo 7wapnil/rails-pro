@@ -88,7 +88,7 @@ describe Webhooks::Wirecard::PaymentsController, type: :controller do
       let(:state) { Payments::Fiat::Wirecard::TransactionStates::SUCCESSFUL }
       let(:description) { 'Created' }
 
-      it 'change withdrawal status to succeeded' do
+      it 'changes withdrawal status to succeeded' do
         subject
 
         expect(withdrawal.reload.status).to eq(Withdrawal::SUCCEEDED)
@@ -102,7 +102,7 @@ describe Webhooks::Wirecard::PaymentsController, type: :controller do
       let(:state) { Payments::Fiat::Wirecard::TransactionStates::FAILED }
       let(:description) { 'Failed' }
 
-      it 'change withdrawal status to pending' do
+      it 'changes withdrawal status to pending' do
         subject
 
         expect(withdrawal.reload.status).to eq(Withdrawal::PENDING)
@@ -115,7 +115,7 @@ describe Webhooks::Wirecard::PaymentsController, type: :controller do
       let(:state) { Payments::Fiat::Wirecard::TransactionStates::SUCCESSFUL }
       let(:description) { 'Created' }
 
-      it 'keep withdrawal status' do
+      it 'keeps withdrawal status' do
         subject
       rescue Deposits::AuthenticationError => _e
         expect(withdrawal.reload.status).to eq(Withdrawal::PROCESSING)
@@ -184,7 +184,7 @@ describe Webhooks::Wirecard::PaymentsController, type: :controller do
         allow(EntryRequests::DepositWorker).to receive(:perform_async)
       end
 
-      it 'store payment details' do
+      it 'stores payment details' do
         subject
 
         expect(deposit.reload.details)
@@ -197,10 +197,47 @@ describe Webhooks::Wirecard::PaymentsController, type: :controller do
       let(:state) { Payments::Fiat::Wirecard::TransactionStates::FAILED }
       let(:description) { 'Failed' }
 
-      it 'change deposit status to failed' do
-        subject
+      before do
+        allow(Payments::Webhooks::DepositRedirectionUrlBuilder)
+          .to receive(:call)
+          .and_call_original
 
+        subject
+      end
+
+      it 'changes deposit status to failed' do
         expect(deposit.reload.status).to eq(Withdrawal::FAILED)
+      end
+
+      it 'does not pass any error message' do
+        expect(Payments::Webhooks::DepositRedirectionUrlBuilder)
+          .to have_received(:call)
+          .with(status: state, custom_message: nil)
+      end
+    end
+
+    context 'when canceled by provider' do
+      let(:code) { Payments::Fiat::Wirecard::Statuses::PROVIDER_SYSTEM_ERROR }
+      let(:state) { Payments::Fiat::Wirecard::TransactionStates::FAILED }
+      let(:description) { 'Failed' }
+      let(:error_message) { I18n.t('errors.messages.deposit_external_fail') }
+
+      before do
+        allow(Payments::Webhooks::DepositRedirectionUrlBuilder)
+          .to receive(:call)
+          .and_call_original
+
+        subject
+      end
+
+      it 'changes deposit status to failed' do
+        expect(deposit.reload.status).to eq(Withdrawal::FAILED)
+      end
+
+      it 'raises humanized error message' do
+        expect(Payments::Webhooks::DepositRedirectionUrlBuilder)
+          .to have_received(:call)
+          .with(status: state, custom_message: error_message)
       end
     end
 
@@ -210,7 +247,7 @@ describe Webhooks::Wirecard::PaymentsController, type: :controller do
       let(:state) { Payments::Fiat::Wirecard::TransactionStates::SUCCESSFUL }
       let(:description) { 'Created' }
 
-      it 'keep deposit status' do
+      it 'keeps deposit status' do
         subject
       rescue Deposits::AuthenticationError => _e
         expect(deposit.reload.status).to eq(Withdrawal::PENDING)
