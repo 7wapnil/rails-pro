@@ -28,8 +28,9 @@ module EntryRequests
         authorize_entry_request!
 
         update_bet_status!
-        notify_betslip
       end
+
+      notify_betslip
     end
 
     def validate_entry_request!

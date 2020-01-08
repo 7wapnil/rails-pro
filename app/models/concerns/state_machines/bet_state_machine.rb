@@ -124,9 +124,7 @@ module StateMachines
         event :finish_external_cancellation_with_rejection do
           transitions from: %i[pending_cancellation
                                sent_to_external_validation
-                               accepted
-                               rejected
-                               pending_manual_settlement],
+                               accepted],
                       to: :pending_mts_cancellation,
                       after: :update_error_notification
         end
@@ -267,30 +265,31 @@ module StateMachines
           message: 'Bet status changed',
           from_state: aasm.from_state,
           to_state: aasm.to_state || aasm.current_state,
-          bet_id: id,
-          customer_id: customer_id,
-          odd_id: odd_id,
-          notification_message: notification_message,
-          settlement_status: settlement_status,
-          notification_code: notification_code
+          **general_log_attributes
         )
       end
 
       def log_transition_error(error)
         Rails.logger.error(
           message: 'Bet status change failed',
-          from_state: error.originating_state,
-          to_state: aasm.to_state || aasm.current_state,
+          from_state: aasm.current_state,
+          error_object: error,
+          **general_log_attributes
+        )
+
+        raise error
+      end
+
+      def general_log_attributes
+        {
+          event: aasm.current_event,
           bet_id: id,
           customer_id: customer_id,
           odd_id: odd_id,
           notification_message: notification_message,
           settlement_status: settlement_status,
-          notification_code: notification_code,
-          error_object: error
-        )
-
-        raise error
+          notification_code: notification_code
+        }
       end
     end
   end
