@@ -4,7 +4,7 @@ module EveryMatrix
   class SearchPlayItemsResolver < ApplicationService
     MAX_LIMIT = 35
     CASINO_CONTEXT = 'casino'
-    LIVE_CASINO_CONTEXT = 'live_casino'
+    LIVE_CASINO_CONTEXT = 'live-casino'
 
     def initialize(query:, device:, context:)
       @query = query
