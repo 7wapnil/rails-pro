@@ -2,9 +2,10 @@
 
 module EveryMatrix
   class GamesByProviderResolver < ApplicationService
-    def initialize(provider_slug:, device:)
+    def initialize(provider_slug:, device:, country: '')
       @provider_slug = provider_slug
       @device = device
+      @country = country
     end
 
     def call
@@ -13,12 +14,13 @@ module EveryMatrix
       subject
         .play_items
         .public_send(device_platform_scope)
+        .reject_country(country)
         .distinct
     end
 
     private
 
-    attr_reader :provider_slug, :device
+    attr_reader :provider_slug, :device, :country
 
     def subject
       vendor || content_provider

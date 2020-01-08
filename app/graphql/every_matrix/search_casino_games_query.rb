@@ -20,6 +20,7 @@ module EveryMatrix
       EveryMatrix::SearchPlayItemsResolver.call(
         query: args['query'],
         device: platform_type(@request),
+        country: @request.location.country_code.upcase,
         context: args['context']
       )
     end

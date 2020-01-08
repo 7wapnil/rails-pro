@@ -17,7 +17,8 @@ module EveryMatrix
     def resolve(_obj, args)
       RecommendedGamesResolver.call(
         original_game_id: args[:originalGameId],
-        device: platform_type(@request)
+        device: platform_type(@request),
+        country: @request.location.country_code.upcase
       )
     end
   end

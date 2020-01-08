@@ -52,7 +52,7 @@ describe GraphQL, '#gamesOverview' do
     end
   end
 
-  xcontext 'restricted country' do
+  context 'restricted country' do
     before do
       categories.each do |category|
         category.play_items << create_list(

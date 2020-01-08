@@ -18,7 +18,8 @@ module EveryMatrix
     def resolve(_obj, args)
       EveryMatrix::GamesByProviderResolver.call(
         provider_slug: args['providerSlug'],
-        device: platform_type(@request)
+        device: platform_type(@request),
+        country: @request.location.country_code.upcase
       )
     end
   end

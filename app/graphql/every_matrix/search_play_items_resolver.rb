@@ -6,14 +6,16 @@ module EveryMatrix
     CASINO_CONTEXT = 'casino'
     LIVE_CASINO_CONTEXT = 'live-casino'
 
-    def initialize(query:, device:, context:)
+    def initialize(query:, country:, device:, context:)
       @query = query
+      @country = country
       @device = device
       @model = fetch_model(context)
     end
 
     def call
       model.joins(:content_provider)
+           .reject_country(country)
            .where(name_includes_search_query, query: "%#{query}%")
            .public_send(device)
            .group(:external_id)
@@ -22,7 +24,7 @@ module EveryMatrix
 
     private
 
-    attr_reader :query, :device, :model
+    attr_reader :query, :country, :device, :model
 
     def fetch_model(context)
       case context

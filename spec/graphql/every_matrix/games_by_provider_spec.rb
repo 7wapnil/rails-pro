@@ -70,7 +70,7 @@ describe GraphQL, '#gamesByProvider' do
     end
   end
 
-  xcontext 'rejected country' do
+  context 'rejected country' do
     before do
       category.play_items << create_list(
         :casino_game, random_amount,

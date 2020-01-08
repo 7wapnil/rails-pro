@@ -54,7 +54,7 @@ describe GraphQL, '#tables' do
     end
   end
 
-  xcontext 'block restricted country' do
+  context 'block restricted country' do
     let!(:table_games) { create_list(:casino_table, random_amount, :desktop) }
     let!(:test_restricted_table) do
       create(:casino_table, restricted_territories: [location.country_code])
