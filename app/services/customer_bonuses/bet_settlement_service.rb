@@ -50,7 +50,10 @@ module CustomerBonuses
       customer_bonus.wallet.bonus_balance <= 0 &&
         customer_bonus.active? &&
         customer_bonus.rollover_balance.positive? &&
-        Bet.pending.where(customer_bonus: customer_bonus).none?
+        (
+          Bet.pending.where(customer_bonus: customer_bonus).none? ||
+          !customer_bonus.sportsbook?
+        )
     end
   end
 end
