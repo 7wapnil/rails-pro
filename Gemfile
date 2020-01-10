@@ -79,6 +79,7 @@ gem 'factory_bot_rails', require: false
 group :production do
   gem 'appsignal'
   gem 'newrelic_rpm'
+  gem 'maxminddb'
 end
 
 group :development, :test do
