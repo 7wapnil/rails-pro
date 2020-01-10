@@ -177,6 +177,7 @@ en:
     label_description: Label description
     label_kind: Label kind
     label_name: Label name
+    label: Label
     last_name: Last name
     last_activity_at: Last activity at
     last_sign_in_at: Last sign in at
@@ -520,6 +521,7 @@ en:
       reset_password_token_not_found: No user found for password reset token
       reset_password_token_expired: Reset password token expired
       reset_password_confirmation_mismatch: Confirmation does not match password
+      reserved: is reserved by system
       nonexistent_producer: Producer not found.
       unsupported_event_type: Event type is not supported
       bonus_for_wrong_customer: Unexpected customer bonus for bet
@@ -654,6 +656,9 @@ en:
 
   graphql:
     internal_server_error: 'Something went wrong with your query, fellow :)'
+
+  labels:
+    negative_balance: negative-balance
 
   lock_reasons:
     closed: Closed

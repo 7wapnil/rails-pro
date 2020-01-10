@@ -35,4 +35,20 @@ namespace :production_data do
          .update_all(counted_towards_rollover: false)
     end
   end
+
+  namespace :labels do
+    desc 'Create system labels'
+    task add_system_labels: :environment do
+      Label::RESERVED_BY_SYSTEM.each do |name|
+        Label.find_by(name: I18n.t("labels.#{name}"),
+                      kind: Label::CUSTOMER)
+             &.destroy
+
+        Label.new(keyword: name,
+                  system: true,
+                  kind: Label::CUSTOMER)
+             .save(validate: false)
+      end
+    end
+  end
 end

@@ -11,20 +11,24 @@ module Findable
       @by = params.fetch(:by, :id)
       @attribute = params.fetch(:attribute, :id)
       @strict = params.fetch(:strict, true)
+      @decorate = params.fetch(:decorate, false)
       @fallback_parameter = params[:fallback]
       @fallback_value_parameter = params[:fallback_value]
       @options = params
     end
 
     def call
-      resource || fallback(fallback_parameter)
+      return fallback(fallback_parameter) unless resource
+
+      decorate? ? resource.decorate : resource
     end
 
     private
 
     attr_reader :controller, :resource_name, :resource_class,
                 :by, :attribute, :strict, :fallback_parameter,
-                :fallback_value_parameter, :options
+                :fallback_value_parameter, :options, :decorate
+    alias_method :decorate?, :decorate
 
     def eager_load
       @eager_load ||= options[:eager_load]

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_17_100242) do
+ActiveRecord::Schema.define(version: 2020_01_20_091107) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -129,11 +129,11 @@ ActiveRecord::Schema.define(version: 2020_01_17_100242) do
     t.datetime "updated_at", null: false
     t.integer "percentage"
     t.boolean "repeatable", default: true, null: false
+    t.boolean "limit_per_each_bet_leg", default: false
     t.boolean "casino", default: false, null: false
     t.boolean "sportsbook", default: true, null: false
     t.decimal "sportsbook_multiplier", default: "1.0", null: false
     t.decimal "max_rollover_per_spin"
-    t.boolean "limit_per_each_bet_leg", default: false
   end
 
   create_table "comments", force: :cascade do |t|
@@ -207,11 +207,11 @@ ActiveRecord::Schema.define(version: 2020_01_17_100242) do
     t.datetime "activated_at"
     t.datetime "deactivated_at"
     t.bigint "entry_id"
+    t.boolean "limit_per_each_bet_leg", default: false
     t.boolean "casino", default: false, null: false
     t.boolean "sportsbook", default: true, null: false
     t.decimal "sportsbook_multiplier", default: "1.0", null: false
     t.decimal "max_rollover_per_spin"
-    t.boolean "limit_per_each_bet_leg", default: false
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["entry_id"], name: "index_customer_bonuses_on_entry_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -729,7 +729,10 @@ ActiveRecord::Schema.define(version: 2020_01_17_100242) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.string "kind", default: "customer"
+    t.boolean "system", default: false
+    t.string "keyword"
     t.index ["deleted_at"], name: "index_labels_on_deleted_at"
+    t.index ["keyword"], name: "index_labels_on_keyword", unique: true
   end
 
   create_table "login_activities", force: :cascade do |t|

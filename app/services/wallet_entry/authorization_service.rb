@@ -9,9 +9,8 @@ module WalletEntry
 
     def call
       request.validate!
-      update_database!
-      update_summary! unless entry.bet?
-      log_success
+      process_balance_related_operations!
+      post_process_entry!
 
       entry
     rescue ActiveRecord::RecordInvalid, ActiveModel::ValidationError => e
@@ -22,7 +21,7 @@ module WalletEntry
 
     attr_reader :request, :amount, :wallet, :entry
 
-    def update_database!
+    def process_balance_related_operations!
       ActiveRecord::Base.transaction do
         find_or_create_wallet_with_lock!
         create_entry!
@@ -32,12 +31,10 @@ module WalletEntry
       end
     end
 
-    def no_balance_updates?
-      request.real_money_amount.zero? && request.bonus_amount.zero?
-    end
+    def post_process_entry!
+      Entries::PostProcessEntryWorker.perform_async(entry.id)
 
-    def perform_default_balance_update!
-      request.update(real_money_amount: amount)
+      log_success
     end
 
     def find_or_create_wallet_with_lock!
@@ -48,8 +45,6 @@ module WalletEntry
     end
 
     def create_entry!
-      base_currency_amount = Exchanger::Converter
-                             .call(amount, request.currency.code)
       @entry = Entry.create!(
         wallet_id: wallet.id,
         origin_type: request.origin_type,
@@ -74,8 +69,8 @@ module WalletEntry
       entry.confirm!
     end
 
-    def update_summary!
-      Customers::Summaries::UpdateBalance.call(day: Date.current, entry: entry)
+    def base_currency_amount
+      Exchanger::Converter.call(amount, request.currency.code)
     end
 
     def handle_failure(exception)
