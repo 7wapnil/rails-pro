@@ -67,19 +67,23 @@ module Customers
       end
 
       def active_customers_count
-        betting_customer_ids&.uniq&.count.to_i
+        (betting_customer_ids + casino_customer_ids).uniq.count
+      end
+
+      def active_sports_customers_count
+        betting_customer_ids.uniq.count
       end
 
       def active_casino_customers_count
-        casino_customer_ids&.uniq&.count.to_i
+        casino_customer_ids.uniq.count
       end
 
       def bets_count
-        betting_customer_ids&.count.to_i
+        betting_customer_ids.count
       end
 
       def casino_games_count
-        casino_customer_ids&.count.to_i
+        casino_customer_ids.count
       end
 
       def bonus_pnl_percentage

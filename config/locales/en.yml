@@ -822,7 +822,6 @@ en:
     total_ggr_amount: Total GGR
     sports_ratio_by_ggr: Sports ratio in total GGR %
     casino_ratio_by_ggr: Casino ratio in total GGR %
-    active_casino_customers_count: Active casino players
     casino_games_count: Total number of casino games
     bonus_deposit_amount: Total bonus awarded
     real_money_deposit_amount: Total deposits amount
@@ -832,6 +831,8 @@ en:
     withdraw_amount: Total withdraw amount
     signups_count: Total signups
     active_customers_count: Total active users
+    active_sports_customers_count: Total active sports users
+    active_casino_customers_count: Total active casino users
     bets_count: Total number of bets
     pending_withdrawals_amount: Pending withdraw amount
     real_money_balance_total: Cash balance total

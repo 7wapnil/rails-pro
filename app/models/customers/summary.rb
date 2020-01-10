@@ -29,6 +29,7 @@ module Customers
                          sports_ratio_by_ggr
                          casino_ratio_by_ggr
                          active_customers_count
+                         active_sports_customers_count
                          active_casino_customers_count
                          bets_count
                          casino_games_count
@@ -57,6 +58,7 @@ module Customers
                        withdraw_amount
                        signups_count
                        active_customers_count
+                       active_sports_customers_count
                        active_casino_customers_count
                        bets_count
                        casino_games_count].freeze
