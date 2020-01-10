@@ -105,11 +105,13 @@ module Bets
     end
 
     def approve_lose?
+      return false if bet.settled? && bet.lost?
+
       !unresolved_bet_legs? && still_lose_bet?
     end
 
     def rollback_to_acceptance?
-      return true if bet.settled?
+      return true if bet.settled? && !still_lose_bet?
       return false if bet.accepted?
 
       !unresolved_bet_legs? && !still_lose_bet?

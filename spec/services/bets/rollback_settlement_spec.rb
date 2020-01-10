@@ -272,6 +272,40 @@ describe Bets::RollbackSettlement do
     end
   end
 
+  context 'on lost bet leg when another lost bet leg' do
+    let(:bet) { create(:bet, :lost, :settled, :with_bet_leg, :combo_bets) }
+    let(:bet_leg) { bet.bet_legs.first }
+
+    before do
+      create(:bet_leg, :lost, bet: bet)
+    end
+
+    it 'keeps bet lost' do
+      subject
+      expect(bet.reload).to have_attributes(
+        void_factor: nil,
+        status: StateMachines::BetStateMachine::SETTLED,
+        settlement_status: Bet::LOST
+      )
+    end
+
+    it 'cleans bet leg statuses' do
+      subject
+      expect(bet_leg.reload).to have_attributes(status: nil,
+                                                settlement_status: nil)
+    end
+
+    it 'does not create rollback entry' do
+      expect { subject }.not_to change(Entry, :count)
+    end
+
+    it 'does not call bonuses rollover' do
+      expect(CustomerBonuses::RollbackBonusRolloverService)
+        .not_to receive(:call)
+      subject
+    end
+  end
+
   context 'on multiple pending manual settlement for bet leg' do
     let(:bet) do
       create(:bet, :pending_manual_settlement, :combo_bets)

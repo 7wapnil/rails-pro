@@ -12,10 +12,10 @@ module Bets
 
     def extra_log_info
       {
-        bet_id: @bet.id,
-        bet_status: @bet.status,
-        settlement_status: @bet.settlement_status,
-        void_factor: @bet.void_factor
+        bet_id: @bet_leg.bet.id,
+        bet_status: @bet_leg.bet.status,
+        settlement_status: @bet_leg.bet.settlement_status,
+        void_factor: @bet_leg.bet.void_factor
       }
     end
   end
