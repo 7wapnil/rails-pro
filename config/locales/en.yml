@@ -463,7 +463,7 @@ en:
         additional_info:
           until: " until %{until_date}"
         default: "Account is locked%{additional_info}"
-      age_adult: Must be adult!
+      age_adult: You must be over the legal age to create an account
       betting_limits: Betting limits validation failed
       bet_odd_inactive: Odd for bet became inactive
       bet_odd_outdated: Odd for bet became outdated
