@@ -32,6 +32,10 @@ class Wallet < ApplicationRecord
     WebSocket::Client.instance.trigger_wallet_update(self)
   end
 
+  def negative_balance?
+    real_money_balance.negative? || bonus_balance.negative?
+  end
+
   def to_s
     "#{currency} Wallet"
   end

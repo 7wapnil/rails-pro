@@ -2,7 +2,7 @@
 
 module Customers
   class StatisticsController < ApplicationController
-    find :customer, by: :customer_id
+    find :customer, by: :customer_id, decorate: true
 
     decorates_assigned :stats
 

@@ -9,10 +9,10 @@ module Customers
       end
 
       def call
-        summary.lock!
-
-        update_real_money_attribute
-        update_bonus_attribute
+        summary.with_lock do
+          update_real_money_attribute
+          update_bonus_attribute
+        end
       end
 
       private
@@ -22,7 +22,7 @@ module Customers
       def summary
         @summary ||= Customers::Summary.find_or_create_by(day: day)
       rescue ActiveRecord::RecordNotUnique
-        @summary = Customers::Summary.all.reload.find_by!(day: day)
+        @summary = Customers::Summary.find_by!(day: day)
       end
 
       def update_real_money_attribute
