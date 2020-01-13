@@ -240,9 +240,9 @@ describe Bet, type: :model do
 
     before do
       event_odd = event.markets.first.odds.first
-      event_odd.bets << create(:bet, customer: regular_customer, amount: 15)
-      event_odd.bets << create(:bet, customer: regular_customer, amount: 20)
-      event_odd.bets << create(:bet, customer: test_customer)
+      create(:bet, customer: regular_customer, amount: 15, odd: event_odd)
+      create(:bet, customer: regular_customer, amount: 20, odd: event_odd)
+      create(:bet, customer: test_customer, odd: event_odd)
     end
 
     it 'returns bets from regular customer' do

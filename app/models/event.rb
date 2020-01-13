@@ -119,7 +119,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     sub_query = <<~SQL
       (SELECT COUNT(bets.id) FROM bets
         INNER JOIN customers ON customers.id = bets.customer_id
-        INNER JOIN odds ON odds.id = bets.odd_id
+        INNER JOIN bet_legs ON bet_legs.bet_id = bets.id
+        INNER JOIN odds ON odds.id = bet_legs.odd_id
         INNER JOIN markets ON markets.id = odds.market_id
         WHERE markets.event_id = events.id AND customers.account_kind = '#{Customer::REGULAR}' LIMIT 1)
     SQL
@@ -131,7 +132,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
     sub_query = <<~SQL
       (SELECT COALESCE(SUM(bets.amount) ,0) FROM bets
         INNER JOIN customers ON customers.id = bets.customer_id
-        INNER JOIN odds ON odds.id = bets.odd_id
+        INNER JOIN bet_legs ON bet_legs.bet_id = bets.id
+        INNER JOIN odds ON odds.id = bet_legs.odd_id
         INNER JOIN markets ON markets.id = odds.market_id
         WHERE markets.event_id = events.id AND customers.account_kind = '#{Customer::REGULAR}' LIMIT 1)
     SQL
