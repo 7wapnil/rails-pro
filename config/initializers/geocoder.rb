@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-if Rails.env.production?
+if Rails.env.production? && ENV['WERCKER_DEPLOYTARGET_NAME'] != 'store'
   require 'aws-sdk-s3'
 
   request_params = {

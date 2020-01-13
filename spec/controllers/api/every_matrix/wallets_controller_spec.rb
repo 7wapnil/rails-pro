@@ -10,6 +10,8 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
   let(:wallet) { customer.wallet }
   let(:currency_code) { wallet.currency.code }
 
+  let(:default_country) { 'US' }
+
   let(:customer_session) do
     create(:wallet_session, wallet: wallet)
   end
@@ -46,6 +48,11 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
   let(:json) { JSON.parse(post_response.body) }
 
   before do
+    Geocoder.configure(lookup: :test, ip_lookup: :test)
+    Geocoder::Lookup::Test.set_default_stub([{ 'country' => default_country }])
+
+    customer.address.update(country: 'United States of America')
+
     allow(ENV).to receive(:[]).and_call_original
 
     allow(ENV).to receive(:[])
@@ -91,6 +98,16 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
 
         it 'successfully responds to request' do
           expect(json).to include(expected_response)
+        end
+
+        context 'with no current_sign_in_ip' do
+          before do
+            customer.update(current_sign_in_ip: nil)
+          end
+
+          it 'successfully responds to request' do
+            expect(json).to include(expected_response)
+          end
         end
 
         context 'with mBTC to BTC denomination' do

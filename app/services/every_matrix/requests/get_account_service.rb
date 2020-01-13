@@ -18,6 +18,19 @@ module EveryMatrix
       end
 
       def country_code
+        ip_lookup || profile_country
+      end
+
+      def ip_lookup
+        country_code = Geocoder.search(customer.current_sign_in_ip&.to_string)
+                               .first
+                               &.data
+                               &.fetch('country')
+
+        ISO3166::Country.new(country_code)&.alpha3
+      end
+
+      def profile_country
         ISO3166::Country.find_country_by_name(customer.address.country).alpha3
       end
 
