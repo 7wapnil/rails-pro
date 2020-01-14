@@ -3,6 +3,8 @@
 module Api
   module EveryMatrix
     class WalletsController < ActionController::API
+      FILTERED_PARAMS = %w[Password FirstName LastName].freeze
+
       include ::EveryMatrix::Requests::ErrorCodes
 
       REQUEST_HANDLERS = {
@@ -65,7 +67,7 @@ module Api
         Rails.logger.send(level,
                           message: 'EveryMatrix Wallet API request',
                           request_name: request_name,
-                          params: params,
+                          params: params.except(FILTERED_PARAMS),
                           response: response_json)
       end
     end

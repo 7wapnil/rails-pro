@@ -3,6 +3,8 @@
 module EveryMatrix
   module FreeSpinBonuses
     class BaseRequestHandler < ApplicationService
+      FILTERED_PARAMS = %w[Password].freeze
+
       def initialize(free_spin_bonus_wallet:)
         @free_spin_bonus_wallet = free_spin_bonus_wallet
       end
@@ -36,7 +38,7 @@ module EveryMatrix
         Rails.logger.send(level,
                           message: 'EveryMatrix Vendor Bonus API request',
                           url: url,
-                          params: request_body,
+                          params: request_body.except(FILTERED_PARAMS),
                           response: response_body)
       end
 
@@ -59,7 +61,7 @@ module EveryMatrix
       def update_last_request(name:, body:, result:)
         free_spin_bonus_wallet.update_attributes(
           last_request_name: name,
-          last_request_body: body.to_json,
+          last_request_body: body.except(FILTERED_PARAMS).to_json,
           last_request_result: result.to_json
         )
       end
