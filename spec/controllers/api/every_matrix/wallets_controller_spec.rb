@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+# rubocop:disable RSpec/NestedGroups
 describe Api::EveryMatrix::WalletsController, type: :controller do
   let!(:primary_currency) { create(:currency, :primary) }
   let(:em_login) { 'testlogin' }
@@ -226,72 +227,135 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
       end
     end
 
-    context 'Wager' do
-      let(:request_name) { 'Wager' }
+    context 'Transactions' do
+      let(:round_id) { Faker::String.random }
+      let(:transaction_id) { Faker::Number.number }
+      let(:payload) do
+        common_request_params.merge(
+          'Request'       => request_name,
+          'SessionId'     => customer_session.id,
+          'AccountId'     => customer.id.to_s,
+          'Amount'        => amount,
+          'TransactionId' => transaction_id,
+          'RoundId'       => round_id
+        )
+      end
 
-      context 'with existing session' do
-        let(:amount) { (wallet.real_money_balance / 2.0).round(2) }
-        let(:transaction_id) { 123_456_789 }
+      context 'Wager' do
+        let(:request_name) { 'Wager' }
 
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => customer_session.id,
-            'AccountId' => customer.id.to_s,
-            'Amount'    => amount,
-            'TransactionId' => transaction_id
-          )
-        end
+        context 'with existing session' do
+          let(:amount) { (wallet.real_money_balance / 2.0).round(2) }
 
-        let!(:expected_response) do
-          common_success_response.merge(
-            'Balance'    => (balance_before - amount).to_d.to_s,
-            'Currency'   => currency_code,
-            'SessionId'  => customer_session.id
-          )
-        end
+          let!(:expected_response) do
+            common_success_response.merge(
+              'Balance'    => (balance_before - amount).to_d.to_s,
+              'Currency'   => currency_code,
+              'SessionId'  => customer_session.id
+            )
+          end
 
-        before do
-          allow(EveryMatrix::Requests::WagerSettlementService).to(
-            receive(:call).and_return(true)
-          )
-        end
-
-        it 'successfully responds to request' do
-          expect(json).to include(expected_response)
-        end
-
-        it 'triggers wager settlement service' do
-          json
-
-          expect(EveryMatrix::Requests::WagerSettlementService).to(
-            have_received(:call)
-          )
-        end
-
-        it 'is idempotent with same transaction_id' do
-          first_json = json
-
-          post(:create, params: payload)
-
-          second_json = json
-
-          expect(second_json).to eq(first_json)
-        end
-
-        context 'with amount exceeding limit' do
           before do
-            wallet.currency.entry_currency_rules.create!(
-              kind: 'em_wager',
-              min_amount: 0,
-              max_amount: 0
+            allow(EveryMatrix::Requests::WagerSettlementService).to(
+              receive(:call).and_return(true)
+            )
+          end
+
+          it 'successfully responds to request' do
+            expect(json).to include(expected_response)
+          end
+
+          it 'triggers wager settlement service' do
+            json
+
+            expect(EveryMatrix::Requests::WagerSettlementService).to(
+              have_received(:call)
+            )
+          end
+
+          it 'is idempotent with same transaction_id' do
+            first_json = json
+
+            post(:create, params: payload)
+
+            second_json = json
+
+            expect(second_json).to eq(first_json)
+          end
+
+          context 'with amount exceeding limit' do
+            before do
+              wallet.currency.entry_currency_rules.create!(
+                kind: 'em_wager',
+                min_amount: 0,
+                max_amount: 0
+              )
+            end
+
+            let(:expected_response) do
+              common_response.merge(
+                'ReturnCode' => 112,
+                'Message'    => 'MaxStakeLimitExceeded'
+              )
+            end
+
+            it 'responds with correct error code and message' do
+              expect(json).to include(expected_response)
+            end
+          end
+
+          context 'with mBTC to BTC denomination' do
+            before do
+              wallet.currency.update_attribute(:code, 'mBTC')
+            end
+
+            let(:amount) { wallet.real_money_balance * 0.001 / 2 }
+
+            let(:expected_balance) do
+              (balance_before * 0.001 - amount).to_d.truncate(5).to_s
+            end
+
+            let(:expected_response) do
+              common_success_response.merge(
+                'Balance'    => expected_balance,
+                'Currency'   => 'BTC',
+                'SessionId'  => customer_session.id
+              )
+            end
+
+            it 'successfully responds to request' do
+              expect(json).to include(expected_response)
+            end
+          end
+        end
+
+        context 'with existing session and insufficient funds' do
+          let(:amount) { (balance_before * 2.0).round(2) }
+
+          let(:expected_response) do
+            common_response.merge(
+              'ReturnCode' => 104,
+              'Message'    => 'Insufficient funds'
+            )
+          end
+
+          it 'responds with insufficient funds error' do
+            expect(json).to include(expected_response)
+          end
+        end
+
+        context 'with missing session' do
+          let(:payload) do
+            common_request_params.merge(
+              'Request'   => request_name,
+              'SessionId' => 'non-existing-session'
             )
           end
 
           let(:expected_response) do
             common_response.merge(
-              'ReturnCode' => 112,
-              'Message'    => 'MaxStakeLimitExceeded'
+              'ReturnCode' => 103,
+              'Message'    => 'User not found'
             )
           end
 
@@ -299,22 +363,18 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
             expect(json).to include(expected_response)
           end
         end
+      end
 
-        context 'with mBTC to BTC denomination' do
-          before do
-            wallet.currency.update_attribute(:code, 'mBTC')
-          end
+      context 'Result' do
+        let(:request_name) { 'Result' }
 
-          let(:amount) { wallet.real_money_balance * 0.001 / 2 }
-
-          let(:expected_balance) do
-            (balance_before * 0.001 - amount).to_d.truncate(5).to_s
-          end
+        context 'with existing session' do
+          let(:amount) { Faker::Number.decimal(4, 2).to_d }
 
           let(:expected_response) do
             common_success_response.merge(
-              'Balance'    => expected_balance,
-              'Currency'   => 'BTC',
+              'Balance'    => (balance_before + amount).to_d.to_s,
+              'Currency'   => currency_code,
               'SessionId'  => customer_session.id
             )
           end
@@ -323,159 +383,71 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
             expect(json).to include(expected_response)
           end
         end
-      end
 
-      context 'with existing session and insufficient funds' do
-        let(:amount) { (balance_before * 2.0).round(2) }
-        let(:transaction_id) { 123_456_789 }
+        context 'with missing session' do
+          let(:payload) do
+            common_request_params.merge(
+              'Request'   => request_name,
+              'SessionId' => 'non-existing-session'
+            )
+          end
 
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => customer_session.id,
-            'AccountId' => customer.id.to_s,
-            'Amount'    => amount,
-            'TransactionId' => transaction_id
-          )
-        end
+          let(:expected_response) do
+            common_response.merge(
+              'ReturnCode' => 103,
+              'Message'    => 'User not found'
+            )
+          end
 
-        let(:expected_response) do
-          common_response.merge(
-            'ReturnCode' => 104,
-            'Message'    => 'Insufficient funds'
-          )
-        end
-
-        it 'responds with insufficient funds error' do
-          expect(json).to include(expected_response)
+          it 'responds with correct error code and message' do
+            expect(json).to include(expected_response)
+          end
         end
       end
 
-      context 'with missing session' do
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => 'non-existing-session'
-          )
+      context 'Rollback' do
+        let(:request_name) { 'Rollback' }
+
+        context 'with existing session' do
+          let(:amount) { Faker::Number.decimal(4, 2).to_d }
+
+          let(:expected_response) do
+            common_response.merge(
+              'ReturnCode' => 108,
+              'Message'    => 'TransactionNotFound'
+            )
+          end
+
+          it 'successfully responds to request' do
+            expect(json).to include(expected_response)
+          end
         end
 
-        let(:expected_response) do
-          common_response.merge(
-            'ReturnCode' => 103,
-            'Message'    => 'User not found'
-          )
-        end
+        context 'with missing session' do
+          let(:payload) do
+            common_request_params.merge(
+              'Request'   => request_name,
+              'SessionId' => 'non-existing-session'
+            )
+          end
 
-        it 'responds with correct error code and message' do
-          expect(json).to include(expected_response)
-        end
-      end
-    end
+          let(:expected_response) do
+            common_response.merge(
+              'ReturnCode' => 103,
+              'Message'    => 'User not found'
+            )
+          end
 
-    context 'Result' do
-      let(:request_name) { 'Result' }
-
-      context 'with existing session' do
-        let(:amount) { Faker::Number.decimal(4, 2).to_d }
-        let(:transaction_id) { 123_456_789 }
-
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => customer_session.id,
-            'AccountId' => customer.id.to_s,
-            'Amount'    => amount,
-            'TransactionId' => transaction_id
-          )
-        end
-
-        let(:expected_response) do
-          common_success_response.merge(
-            'Balance'    => (balance_before + amount).to_d.to_s,
-            'Currency'   => currency_code,
-            'SessionId'  => customer_session.id
-          )
-        end
-
-        it 'successfully responds to request' do
-          expect(json).to include(expected_response)
-        end
-      end
-
-      context 'with missing session' do
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => 'non-existing-session'
-          )
-        end
-
-        let(:expected_response) do
-          common_response.merge(
-            'ReturnCode' => 103,
-            'Message'    => 'User not found'
-          )
-        end
-
-        it 'responds with correct error code and message' do
-          expect(json).to include(expected_response)
-        end
-      end
-    end
-
-    context 'Rollback' do
-      let(:request_name) { 'Rollback' }
-
-      context 'with existing session' do
-        let(:amount) { Faker::Number.decimal(4, 2).to_d }
-        let(:transaction_id) { 123_456_789 }
-
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => customer_session.id,
-            'AccountId' => customer.id.to_s,
-            'Amount'    => amount,
-            'TransactionId' => transaction_id
-          )
-        end
-
-        let(:expected_response) do
-          common_response.merge(
-            'ReturnCode' => 108,
-            'Message'    => 'TransactionNotFound'
-          )
-        end
-
-        it 'successfully responds to request' do
-          expect(json).to include(expected_response)
-        end
-      end
-
-      context 'with missing session' do
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => 'non-existing-session'
-          )
-        end
-
-        let(:expected_response) do
-          common_response.merge(
-            'ReturnCode' => 103,
-            'Message'    => 'User not found'
-          )
-        end
-
-        it 'responds with correct error code and message' do
-          expect(json).to include(expected_response)
+          it 'responds with correct error code and message' do
+            expect(json).to include(expected_response)
+          end
         end
       end
     end
 
     context 'GetTransactionStatus' do
       let(:request_name) { 'GetTransactionStatus' }
-      let(:transaction_id) { 123_456_789 }
+      let(:transaction_id) { Faker::Number.number }
       let(:payload) do
         common_request_params.merge(
           'Request' => request_name,
@@ -485,7 +457,10 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
 
       context 'with existing transaction' do
         let!(:transaction) do
-          create(:every_matrix_transaction, transaction_id: transaction_id)
+          create(
+            :every_matrix_transaction, :with_game_round,
+            transaction_id: transaction_id
+          )
         end
 
         let(:expected_response) do
@@ -671,72 +646,135 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
       end
     end
 
-    context 'Wager' do
-      let(:request_name) { 'Wager' }
+    context 'Transactions' do
+      let(:round_id) { Faker::String.random }
+      let(:transaction_id) { Faker::Number.number }
+      let(:payload) do
+        common_request_params.merge(
+          'Request'       => request_name,
+          'SessionId'     => customer_session.id,
+          'AccountId'     => customer.id.to_s,
+          'Amount'        => amount,
+          'TransactionId' => transaction_id,
+          'RoundId'       => round_id
+        )
+      end
 
-      context 'with existing session' do
-        let(:amount) { (wallet.real_money_balance / 2.0).round(2) }
-        let(:transaction_id) { 123_456_789 }
+      context 'Wager' do
+        let(:request_name) { 'Wager' }
 
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => customer_session.id,
-            'AccountId' => customer.id.to_s,
-            'Amount'    => amount,
-            'TransactionId' => transaction_id
-          )
-        end
+        context 'with existing session' do
+          let(:amount) { (wallet.real_money_balance / 2.0).round(2) }
 
-        let!(:expected_response) do
-          common_success_response.merge(
-            'Balance'    => (balance_before - amount).to_d.to_s,
-            'Currency'   => currency_code,
-            'SessionId'  => customer_session.id
-          )
-        end
+          let!(:expected_response) do
+            common_success_response.merge(
+              'Balance'    => (balance_before - amount).to_d.to_s,
+              'Currency'   => currency_code,
+              'SessionId'  => customer_session.id
+            )
+          end
 
-        before do
-          allow(EveryMatrix::Requests::WagerSettlementService).to(
-            receive(:call).and_return(true)
-          )
-        end
-
-        it 'successfully responds to request' do
-          expect(json).to include(expected_response)
-        end
-
-        it 'triggers wager settlement service' do
-          json
-
-          expect(EveryMatrix::Requests::WagerSettlementService).to(
-            have_received(:call)
-          )
-        end
-
-        it 'is idempotent with same transaction_id' do
-          first_json = json
-
-          post(:create, params: payload)
-
-          second_json = json
-
-          expect(second_json).to eq(first_json)
-        end
-
-        context 'with amount exceeding limit' do
           before do
-            wallet.currency.entry_currency_rules.create!(
-              kind: 'em_wager',
-              min_amount: 0,
-              max_amount: 0
+            allow(EveryMatrix::Requests::WagerSettlementService).to(
+              receive(:call).and_return(true)
+            )
+          end
+
+          it 'successfully responds to request' do
+            expect(json).to include(expected_response)
+          end
+
+          it 'triggers wager settlement service' do
+            json
+
+            expect(EveryMatrix::Requests::WagerSettlementService).to(
+              have_received(:call)
+            )
+          end
+
+          it 'is idempotent with same transaction_id' do
+            first_json = json
+
+            post(:create, params: payload)
+
+            second_json = json
+
+            expect(second_json).to eq(first_json)
+          end
+
+          context 'with amount exceeding limit' do
+            before do
+              wallet.currency.entry_currency_rules.create!(
+                kind: 'em_wager',
+                min_amount: 0,
+                max_amount: 0
+              )
+            end
+
+            let(:expected_response) do
+              common_response.merge(
+                'ReturnCode' => 112,
+                'Message'    => 'MaxStakeLimitExceeded'
+              )
+            end
+
+            it 'responds with correct error code and message' do
+              expect(json).to include(expected_response)
+            end
+          end
+
+          context 'with mBTC to BTC denomination' do
+            before do
+              wallet.currency.update_attribute(:code, 'mBTC')
+            end
+
+            let(:amount) { wallet.real_money_balance * 0.001 / 2 }
+
+            let(:expected_balance) do
+              (balance_before * 0.001 - amount).to_d.truncate(5).to_s
+            end
+
+            let(:expected_response) do
+              common_success_response.merge(
+                'Balance'    => expected_balance,
+                'Currency'   => 'BTC',
+                'SessionId'  => customer_session.id
+              )
+            end
+
+            it 'successfully responds to request' do
+              expect(json).to include(expected_response)
+            end
+          end
+        end
+
+        context 'with existing session and insufficient funds' do
+          let(:amount) { (balance_before * 2.0).round(2) }
+
+          let(:expected_response) do
+            common_response.merge(
+              'ReturnCode' => 104,
+              'Message'    => 'Insufficient funds'
+            )
+          end
+
+          it 'responds with insufficient funds error' do
+            expect(json).to include(expected_response)
+          end
+        end
+
+        context 'with missing session' do
+          let(:payload) do
+            common_request_params.merge(
+              'Request'   => request_name,
+              'SessionId' => 'non-existing-session'
             )
           end
 
           let(:expected_response) do
             common_response.merge(
-              'ReturnCode' => 112,
-              'Message'    => 'MaxStakeLimitExceeded'
+              'ReturnCode' => 103,
+              'Message'    => 'User not found'
             )
           end
 
@@ -744,22 +782,18 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
             expect(json).to include(expected_response)
           end
         end
+      end
 
-        context 'with mBTC to BTC denomination' do
-          before do
-            wallet.currency.update_attribute(:code, 'mBTC')
-          end
+      context 'Result' do
+        let(:request_name) { 'Result' }
 
-          let(:amount) { wallet.real_money_balance * 0.001 / 2 }
-
-          let(:expected_balance) do
-            (balance_before * 0.001 - amount).to_d.truncate(5).to_s
-          end
+        context 'with existing session' do
+          let(:amount) { Faker::Number.decimal(4, 2).to_d }
 
           let(:expected_response) do
             common_success_response.merge(
-              'Balance'    => expected_balance,
-              'Currency'   => 'BTC',
+              'Balance'    => (balance_before + amount).to_d.to_s,
+              'Currency'   => currency_code,
               'SessionId'  => customer_session.id
             )
           end
@@ -768,159 +802,71 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
             expect(json).to include(expected_response)
           end
         end
-      end
 
-      context 'with existing session and insufficient funds' do
-        let(:amount) { (balance_before * 2.0).round(2) }
-        let(:transaction_id) { 123_456_789 }
+        context 'with missing session' do
+          let(:payload) do
+            common_request_params.merge(
+              'Request'   => request_name,
+              'SessionId' => 'non-existing-session'
+            )
+          end
 
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => customer_session.id,
-            'AccountId' => customer.id.to_s,
-            'Amount'    => amount,
-            'TransactionId' => transaction_id
-          )
-        end
+          let(:expected_response) do
+            common_response.merge(
+              'ReturnCode' => 103,
+              'Message'    => 'User not found'
+            )
+          end
 
-        let(:expected_response) do
-          common_response.merge(
-            'ReturnCode' => 104,
-            'Message'    => 'Insufficient funds'
-          )
-        end
-
-        it 'responds with insufficient funds error' do
-          expect(json).to include(expected_response)
+          it 'responds with correct error code and message' do
+            expect(json).to include(expected_response)
+          end
         end
       end
 
-      context 'with missing session' do
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => 'non-existing-session'
-          )
+      context 'Rollback' do
+        let(:request_name) { 'Rollback' }
+
+        context 'with existing session' do
+          let(:amount) { Faker::Number.decimal(4, 2).to_d }
+
+          let(:expected_response) do
+            common_response.merge(
+              'ReturnCode' => 108,
+              'Message'    => 'TransactionNotFound'
+            )
+          end
+
+          it 'successfully responds to request' do
+            expect(json).to include(expected_response)
+          end
         end
 
-        let(:expected_response) do
-          common_response.merge(
-            'ReturnCode' => 103,
-            'Message'    => 'User not found'
-          )
-        end
+        context 'with missing session' do
+          let(:payload) do
+            common_request_params.merge(
+              'Request'   => request_name,
+              'SessionId' => 'non-existing-session'
+            )
+          end
 
-        it 'responds with correct error code and message' do
-          expect(json).to include(expected_response)
-        end
-      end
-    end
+          let(:expected_response) do
+            common_response.merge(
+              'ReturnCode' => 103,
+              'Message'    => 'User not found'
+            )
+          end
 
-    context 'Result' do
-      let(:request_name) { 'Result' }
-
-      context 'with existing session' do
-        let(:amount) { Faker::Number.decimal(4, 2).to_d }
-        let(:transaction_id) { 123_456_789 }
-
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => customer_session.id,
-            'AccountId' => customer.id.to_s,
-            'Amount'    => amount,
-            'TransactionId' => transaction_id
-          )
-        end
-
-        let(:expected_response) do
-          common_success_response.merge(
-            'Balance'    => (balance_before + amount).to_d.to_s,
-            'Currency'   => currency_code,
-            'SessionId'  => customer_session.id
-          )
-        end
-
-        it 'successfully responds to request' do
-          expect(json).to include(expected_response)
-        end
-      end
-
-      context 'with missing session' do
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => 'non-existing-session'
-          )
-        end
-
-        let(:expected_response) do
-          common_response.merge(
-            'ReturnCode' => 103,
-            'Message'    => 'User not found'
-          )
-        end
-
-        it 'responds with correct error code and message' do
-          expect(json).to include(expected_response)
-        end
-      end
-    end
-
-    context 'Rollback' do
-      let(:request_name) { 'Rollback' }
-
-      context 'with existing session' do
-        let(:amount) { Faker::Number.decimal(4, 2).to_d }
-        let(:transaction_id) { 123_456_789 }
-
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => customer_session.id,
-            'AccountId' => customer.id.to_s,
-            'Amount'    => amount,
-            'TransactionId' => transaction_id
-          )
-        end
-
-        let(:expected_response) do
-          common_response.merge(
-            'ReturnCode' => 108,
-            'Message'    => 'TransactionNotFound'
-          )
-        end
-
-        it 'successfully responds to request' do
-          expect(json).to include(expected_response)
-        end
-      end
-
-      context 'with missing session' do
-        let(:payload) do
-          common_request_params.merge(
-            'Request'   => request_name,
-            'SessionId' => 'non-existing-session'
-          )
-        end
-
-        let(:expected_response) do
-          common_response.merge(
-            'ReturnCode' => 103,
-            'Message'    => 'User not found'
-          )
-        end
-
-        it 'responds with correct error code and message' do
-          expect(json).to include(expected_response)
+          it 'responds with correct error code and message' do
+            expect(json).to include(expected_response)
+          end
         end
       end
     end
 
     context 'GetTransactionStatus' do
       let(:request_name) { 'GetTransactionStatus' }
-      let(:transaction_id) { 123_456_789 }
+      let(:transaction_id) { Faker::Number.number }
       let(:payload) do
         common_request_params.merge(
           'Request' => request_name,
@@ -930,7 +876,10 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
 
       context 'with existing transaction' do
         let!(:transaction) do
-          create(:every_matrix_transaction, transaction_id: transaction_id)
+          create(
+            :every_matrix_transaction, :with_game_round,
+            transaction_id: transaction_id
+          )
         end
 
         let(:expected_response) do
@@ -960,3 +909,4 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
     end
   end
 end
+# rubocop:enable RSpec/NestedGroups

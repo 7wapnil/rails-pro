@@ -567,6 +567,13 @@ ActiveRecord::Schema.define(version: 2020_01_15_101850) do
     t.index ["play_item_id"], name: "index_every_matrix_game_details_on_play_item_id"
   end
 
+  create_table "every_matrix_game_rounds", primary_key: "external_id", id: :string, force: :cascade do |t|
+    t.string "status", default: "pending", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["status"], name: "index_every_matrix_game_rounds_on_status"
+  end
+
   create_table "every_matrix_jackpots", force: :cascade do |t|
     t.integer "base_currency_amount", default: 0
     t.string "external_id", null: false
@@ -667,10 +674,12 @@ ActiveRecord::Schema.define(version: 2020_01_15_101850) do
     t.decimal "real_money_ratio", default: "1.0", null: false
     t.bigint "customer_bonus_id"
     t.bigint "every_matrix_free_spin_bonus_id"
+    t.string "status", default: "finished", null: false
     t.index ["customer_bonus_id"], name: "index_every_matrix_transactions_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_every_matrix_transactions_on_customer_id"
     t.index ["every_matrix_free_spin_bonus_id"], name: "index_transaction_free_spin_bonus_id"
     t.index ["round_id"], name: "index_every_matrix_transactions_on_round_id"
+    t.index ["status"], name: "index_every_matrix_transactions_on_status"
     t.index ["transaction_id"], name: "index_every_matrix_transactions_on_transaction_id"
     t.index ["wallet_session_id"], name: "index_every_matrix_transactions_on_wallet_session_id"
   end

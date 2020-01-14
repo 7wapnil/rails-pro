@@ -30,7 +30,7 @@ module EveryMatrix
 
       def transaction_response(status:)
         common_success_response.merge(
-          'TransactionId' => transaction_id.to_i,
+          'TransactionId' => transaction_id,
           'TransactionStatus' => status
         )
       end

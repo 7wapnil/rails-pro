@@ -17,6 +17,10 @@ module EveryMatrix
         EntryRequests::Factories::EveryMatrix::RollbackPlacement
       end
 
+      def update_game_round_status!
+        game_round.rollback!
+      end
+
       def entry_creation_failed
         common_response.merge(
           'ReturnCode' => MAX_STAKE_LIMIT_EXCEEDED_CODE,

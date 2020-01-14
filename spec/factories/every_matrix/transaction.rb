@@ -23,5 +23,9 @@ FactoryBot.define do
     trait :rollback do
       type { EveryMatrix::Rollback.name }
     end
+
+    trait :with_game_round do
+      game_round
+    end
   end
 end

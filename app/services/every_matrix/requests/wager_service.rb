@@ -43,6 +43,10 @@ module EveryMatrix
         EntryRequests::Factories::EveryMatrix::WagerPlacement
       end
 
+      def update_game_round_status!
+        true
+      end
+
       def insufficient_funds?
         wallet && (amount > available_amount)
       end

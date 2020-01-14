@@ -25,11 +25,15 @@ module EveryMatrix
 
         return user_not_found_response unless customer
 
+        find_or_create_game_round!
+
         create_transaction!
 
         return record_response(validation_failed) unless valid_request?
 
         process_transaction!
+
+        update_game_round_status!
 
         return record_response(entry_creation_failed) unless transaction.entry
 
@@ -40,7 +44,7 @@ module EveryMatrix
 
       protected
 
-      attr_reader :amount, :transaction
+      attr_reader :amount, :transaction, :game_round
 
       delegate :entry_request, to: :transaction
 
@@ -57,14 +61,16 @@ module EveryMatrix
         process_entry_request!
       end
 
+      def find_or_create_game_round!
+        @game_round = GameRound.find_or_create_by!(
+          external_id: transaction_params['RoundId']
+        ) do |game_round|
+          game_round.status = EveryMatrix::GameRound::DEFAULT_STATUS
+        end
+      end
+
       def create_transaction!
-        @transaction =
-          transaction_class
-          .create!(
-            attributes.merge(
-              transaction_id: transaction_params['TransactionId']
-            )
-          )
+        @transaction = transaction_class.create!(attributes)
       end
 
       def attributes # rubocop:disable Metrics/MethodLength
@@ -80,7 +86,8 @@ module EveryMatrix
           round_id:                        transaction_params['RoundId'],
           device:                          transaction_params['Device'],
           round_status:                    transaction_params['RoundStatus'],
-          every_matrix_free_spin_bonus_id: transaction_params['BonusId']
+          every_matrix_free_spin_bonus_id: transaction_params['BonusId'],
+          transaction_id:                  transaction_params['TransactionId']
         }
       end
 
@@ -164,6 +171,12 @@ module EveryMatrix
       end
 
       def post_process_failed
+        error_msg = "#{__method__} needs to be implemented in #{self.class}"
+
+        raise NotImplementedError, error_msg
+      end
+
+      def update_game_round_status!
         error_msg = "#{__method__} needs to be implemented in #{self.class}"
 
         raise NotImplementedError, error_msg

@@ -2,6 +2,7 @@
 
 module EveryMatrix
   class Transaction < ApplicationRecord
+    include StateMachines::TransactionStateMachine
     self.table_name = 'every_matrix_transactions'
 
     TYPES = {
@@ -15,6 +16,10 @@ module EveryMatrix
 
     belongs_to :wallet_session, class_name: 'EveryMatrix::WalletSession'
     belongs_to :customer
+    belongs_to :game_round,
+               class_name: 'EveryMatrix::GameRound',
+               primary_key: :external_id,
+               foreign_key: :round_id
     has_one :play_item, through: :wallet_session
     belongs_to :customer_bonus, optional: true
     belongs_to :every_matrix_free_spin_bonus,
@@ -30,10 +35,7 @@ module EveryMatrix
     has_one :vendor, through: :play_item
     has_one :content_provider, through: :play_item
 
-    has_one :wager,
-            foreign_key: :round_id,
-            primary_key: :round_id,
-            class_name: 'EveryMatrix::Wager'
+    has_one :wager, through: :game_round
 
     delegate :entry, to: :wager, allow_nil: true, prefix: true
   end
