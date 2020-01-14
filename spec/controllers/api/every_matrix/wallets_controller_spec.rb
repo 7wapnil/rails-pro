@@ -458,7 +458,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
       context 'with existing transaction' do
         let!(:transaction) do
           create(
-            :every_matrix_transaction, :with_game_round,
+            :every_matrix_transaction,
             transaction_id: transaction_id
           )
         end
@@ -877,7 +877,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
       context 'with existing transaction' do
         let!(:transaction) do
           create(
-            :every_matrix_transaction, :with_game_round,
+            :every_matrix_transaction,
             transaction_id: transaction_id
           )
         end

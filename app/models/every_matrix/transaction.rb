@@ -2,7 +2,7 @@
 
 module EveryMatrix
   class Transaction < ApplicationRecord
-    include StateMachines::TransactionStateMachine
+    include ::EveryMatrix::StateMachines::TransactionStateMachine
     self.table_name = 'every_matrix_transactions'
 
     TYPES = {

@@ -7,6 +7,7 @@ FactoryBot.define do
     customer
     wallet_session
     entry
+    game_round
 
     trait :random do
       type { [EveryMatrix::Wager, EveryMatrix::Result].sample.name }
@@ -22,10 +23,6 @@ FactoryBot.define do
 
     trait :rollback do
       type { EveryMatrix::Rollback.name }
-    end
-
-    trait :with_game_round do
-      game_round
     end
   end
 end

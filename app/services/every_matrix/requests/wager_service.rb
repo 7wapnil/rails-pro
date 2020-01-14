@@ -11,15 +11,8 @@ module EveryMatrix
         end
       end
 
-      def post_process
-        WagerSettlementService.call(transaction)
-      end
-
-      def post_process_failed
-        common_response.merge(
-          'ReturnCode' => INSUFFICIENT_FUNDS_CODE,
-          'Message'    => "#{INSUFFICIENT_FUNDS_MESSAGE} (from post-processing)"
-        )
+      def post_process_service
+        WagerSettlementService
       end
 
       private

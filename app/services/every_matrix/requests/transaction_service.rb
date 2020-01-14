@@ -167,13 +167,20 @@ module EveryMatrix
       end
 
       def post_process
+        return post_process_service.call(transaction) if post_process_service
+
         true
       end
 
       def post_process_failed
-        error_msg = "#{__method__} needs to be implemented in #{self.class}"
+        common_response.merge(
+          'ReturnCode' => UNKNOWN_ERROR_CODE,
+          'Message' => "#{UNKNOWN_ERROR_MESSAGE} from #{self.class.name} post-processing"
+        )
+      end
 
-        raise NotImplementedError, error_msg
+      def post_process_service
+        nil
       end
 
       def update_game_round_status!

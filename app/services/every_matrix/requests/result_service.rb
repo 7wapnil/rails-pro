@@ -3,6 +3,10 @@
 module EveryMatrix
   module Requests
     class ResultService < TransactionService
+      def post_process_service
+        ResultSettlementService
+      end
+
       private
 
       def request_name
@@ -18,6 +22,8 @@ module EveryMatrix
       end
 
       def update_game_round_status!
+        return true if game_round.expired?
+
         return game_round.lose! if transaction.amount.zero?
 
         game_round.win!

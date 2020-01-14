@@ -6,6 +6,9 @@ module EveryMatrix
       SUCCESS_CODE = 0
       SUCCESS_MESSAGE = 'Success'
 
+      UNKNOWN_ERROR_CODE = 101
+      UNKNOWN_ERROR_MESSAGE = 'Unknown error'
+
       USER_NOT_FOUND_CODE = 103
       USER_NOT_FOUND_MESAGE = 'User not found'
 

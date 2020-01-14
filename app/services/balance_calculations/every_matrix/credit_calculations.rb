@@ -16,6 +16,10 @@ module BalanceCalculations
 
       private
 
+      def bonus?
+        super && wallet.bonus_balance.positive?
+      end
+
       def update_transaction
         transaction.update_columns(
           real_money_ratio: ratio,
