@@ -14,13 +14,14 @@ module Bets
         ::BetPlacement::BettingLimitsValidationService.call(subject)
         return if subject.errors.empty?
 
-        raise ::Bets::PlacementError, I18n.t('errors.messages.betting_limits')
+        raise ::Bets::RegistrationError,
+              I18n.t('errors.messages.betting_limits')
       end
 
       def combo_bets_rules_validation!
         return if match_combo_bets_rules?
 
-        raise ::Bets::PlacementError,
+        raise ::Bets::RegistrationError,
               I18n.t('errors.messages.invalid_combo_bets')
       end
 

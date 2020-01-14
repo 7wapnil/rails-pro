@@ -13,7 +13,7 @@ module EntryRequests
 
     def call
       authorize_bet!
-    rescue Bets::PlacementError, RuntimeError => error
+    rescue Bets::RegistrationError, RuntimeError => error
       bet_register_failure!(error)
       entry_request.register_failure!(error.message)
     rescue Bets::RequestFailedError => error
@@ -56,7 +56,7 @@ module EntryRequests
       WalletEntry::AuthorizationService.call(entry_request)
       return true if entry_request.succeeded?
 
-      raise Bets::PlacementError, entry_request.result_message
+      raise Bets::RegistrationError, entry_request.result_message
     end
 
     def bet_register_failure!(error)

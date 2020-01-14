@@ -9,7 +9,8 @@ module Bets
         BetPlacement::BettingLimitsValidationService.call(subject)
         return if subject.errors.empty?
 
-        raise ::Bets::PlacementError, I18n.t('errors.messages.betting_limits')
+        raise ::Bets::RegistrationError,
+              I18n.t('errors.messages.betting_limits')
       end
     end
   end

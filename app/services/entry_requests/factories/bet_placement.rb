@@ -59,7 +59,7 @@ module EntryRequests
 
       def validate_entry_request!
         bet_validator.new(subject: bet).validate!
-      rescue Bets::PlacementError => error
+      rescue Bets::RegistrationError => error
         entry_request.register_failure!(error.message)
       end
 

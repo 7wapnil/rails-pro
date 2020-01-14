@@ -29,20 +29,22 @@ module Bets
         .negative_balance_bet_placement
         .deliver_later
 
-      raise ::Bets::PlacementError, 'Bet placed with negative balance'
+      raise ::Bets::RegistrationError, 'Bet placed with negative balance'
     end
 
     def check_if_odds_active!
       return if odds.all?(&:active?)
 
-      raise ::Bets::PlacementError, I18n.t('errors.messages.bet_odd_inactive')
+      raise ::Bets::RegistrationError,
+            I18n.t('errors.messages.bet_odd_inactive')
     end
 
     def check_if_leg_odds_match_event_odds!
       subject.bet_legs.each do |leg|
         next if leg.odd_value == leg.odd.value
 
-        raise ::Bets::PlacementError, I18n.t('errors.messages.bet_odd_outdated')
+        raise ::Bets::RegistrationError,
+              I18n.t('errors.messages.bet_odd_outdated')
       end
     end
 
@@ -53,7 +55,7 @@ module Bets
     def check_provider_connection!
       return if bet_producer_active?
 
-      raise ::Bets::PlacementError,
+      raise ::Bets::RegistrationError,
             I18n.t('errors.messages.provider_disconnected')
     end
 
@@ -74,7 +76,7 @@ module Bets
       return if markets.all?(&:active?) &&
                 events.all?(&:available?)
 
-      raise ::Bets::PlacementError, I18n.t('errors.messages.market_inactive')
+      raise ::Bets::RegistrationError, I18n.t('errors.messages.market_inactive')
     end
 
     def bet_legs

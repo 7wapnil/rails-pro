@@ -102,8 +102,8 @@ describe EntryRequests::Factories::BetPlacement do
   context 'if wallet not found' do
     before { wallet.update(customer: create(:customer)) }
 
-    it 'creates new wallet' do
-      expect { subject }.to change(Wallet, :count).by(1)
+    it 'does not create new wallet' do
+      expect { subject }.not_to change(Wallet, :count)
     end
   end
 end

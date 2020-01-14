@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe GraphQL, '#place_combo_bets' do
-  let!(:currency) { create(:currency, code: 'EUR') }
+  let!(:currency) { create(:currency, :primary) }
 
   let(:auth_customer) { create(:customer) }
   let!(:wallet) do
@@ -205,6 +205,75 @@ describe GraphQL, '#place_combo_bets' do
       it 'gives an error' do
         expect(error_message)
           .to eq I18n.t('bets.notifications.placement_error')
+      end
+    end
+  end
+
+  context 'bonus' do
+    let(:bonus_wallet) { wallet }
+    let(:bonus_status) { CustomerBonus::ACTIVE }
+    let(:sportsbook) { true }
+    let!(:customer_bonus) do
+      create(:customer_bonus, customer: auth_customer,
+                              wallet: bonus_wallet,
+                              status: bonus_status,
+                              sportsbook: sportsbook)
+    end
+
+    let(:odds) { create_list(:odd, 2, :active) }
+    let(:variables) do
+      {
+        bet: {
+          amount: 10,
+          currencyCode: currency.code,
+          odds: odds.map { |odd| { id: odd.id.to_s, value: odd.value } }
+        }
+      }
+    end
+
+    let(:created_bet) { BetLeg.find_by(odd: odds.sample)&.bet }
+
+    before { response }
+
+    it 'is assigned, when active sportsbook bonus for the same wallet' do
+      expect(created_bet.customer_bonus).to eq(customer_bonus)
+    end
+
+    context 'when there is no bonus' do
+      let(:customer_bonus) {}
+
+      it 'nothing is assigned' do
+        expect(created_bet.customer_bonus).to be_nil
+      end
+    end
+
+    context 'when bonus is inactive' do
+      let(:bonus_status) { CustomerBonus::EXPIRED }
+
+      it 'is not assigned' do
+        expect(created_bet.customer_bonus).to be_nil
+      end
+    end
+
+    context 'when bonus is not sportsbook' do
+      let(:sportsbook) { false }
+
+      it 'is not assigned' do
+        expect(created_bet.customer_bonus).to be_nil
+      end
+    end
+
+    context 'when bonus is for another wallet' do
+      let!(:bonus_wallet) do
+        create(:wallet, :brick,
+               customer: auth_customer,
+               currency: create(:currency, :crypto),
+               real_money_balance: 100,
+               bonus_balance: 0)
+      end
+
+      it 'is not assigned' do
+        expect(created_bet.customer_bonus).to be_nil
       end
     end
   end

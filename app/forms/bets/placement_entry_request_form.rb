@@ -23,7 +23,7 @@ module Bets
     def validate_amount!
       return unless subject.amount&.zero?
 
-      raise Bets::PlacementError,
+      raise Bets::RegistrationError,
             I18n.t('errors.messages.real_money_blank_amount')
     end
   end
