@@ -9,6 +9,7 @@ module EveryMatrix
     JOINER = ' OR '
     CASINO = 'casino'
     LIVE_CASINO = 'live-casino'
+    LIVEDEALER_FILTER_PARAMS = %w[EveryMatrix::Game LIVEDEALER].freeze
 
     PLATFORM_TYPES = {
       desktop: DESKTOP = 'desktop',
@@ -36,6 +37,12 @@ module EveryMatrix
             class_name: EveryMatrix::GameDetails.name
 
     class << self
+      # This default scope filters unexpected games we receive from EM side.
+      # Those games should never be used as they are only used on EM side.
+      def default_scope
+        where.not(filter_query, *LIVEDEALER_FILTER_PARAMS)
+      end
+
       def reject_country(country)
         return all if country.blank?
 
@@ -54,6 +61,13 @@ module EveryMatrix
 
       def base_query(platform)
         "'#{platform}' = ANY(terminal)"
+      end
+
+      def filter_query
+        <<~SQL
+          every_matrix_play_items.type = ? AND
+          ? = ANY(every_matrix_play_items.tags)
+        SQL
       end
     end
   end
