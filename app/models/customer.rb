@@ -101,8 +101,9 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   validate :validate_account_transition
   validates :username,
             :email,
-            :date_of_birth,
             presence: true
+  validates :date_of_birth,
+            presence: { message: I18n.t('errors.messages.blank_birth_date') }
 
   validates :username, uniqueness: { case_sensitive: false }
   validates :email, uniqueness: { case_sensitive: false }

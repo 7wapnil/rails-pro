@@ -7,10 +7,10 @@ describe Customer do
   it { is_expected.to have_many(:labels) }
   it { is_expected.to allow_value(true, false).for(:verified) }
   it { is_expected.to allow_value(true, false).for(:activated) }
+  it { is_expected.not_to allow_value(nil).for(:date_of_birth) }
 
   it { is_expected.to validate_presence_of(:username) }
   it { is_expected.to validate_presence_of(:email) }
-  it { is_expected.to validate_presence_of(:date_of_birth) }
   it { is_expected.to validate_presence_of(:password) }
 
   it { is_expected.to validate_confirmation_of(:password) }

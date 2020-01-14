@@ -17,7 +17,7 @@ module Betting
       @query = filter_by_date
       @query = filter_by_excluded_statuses
 
-      query
+      query.includes(:currency, bet_legs: %i[odd market event title])
     end
 
     private
@@ -25,9 +25,10 @@ module Betting
     attr_reader :args, :customer, :query
 
     def base_query
-      Bet.includes(:currency, bet_legs: %i[odd market event title])
+      Bet.left_joins(bet_legs: :title)
          .where(customer: customer)
          .order(created_at: :desc)
+         .distinct('bets.id')
     end
 
     def filter_by_ids

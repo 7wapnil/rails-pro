@@ -6,7 +6,7 @@ module Customers
 
     Customers::Summary::REDUCE_COLUMNS.each do |column|
       define_method column do
-        object.pluck(column).reduce(:+)
+        object.map(&:"#{column}").reduce(:+)
       end
     end
   end

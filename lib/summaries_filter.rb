@@ -14,7 +14,7 @@ class SummariesFilter
   end
 
   def summaries
-    search.result.decorate
+    @summaries ||= search.result.decorate
   end
 
   def pending
