@@ -8,7 +8,7 @@ module EveryMatrix
       def call
         pending_wagers.each do |wager|
           process_bonus!(wager)
-          wager.game_round.timed_out!
+          wager.game_round.expired!
           wager.finished!
         end
       end

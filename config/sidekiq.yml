@@ -28,7 +28,7 @@
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Closes expired bonuses. Bonus expiration defined by deleted state or and time which must less then current time"
 
-  expiring_bonuses:
+  expiring_wagers:
     every: <%= ENV.fetch('EXPIRING_WAGERS_INTERVAL', '1m') %>
     class: Scheduled::ExpiringWagersWorker
     queue: expired_wagers

@@ -25,9 +25,7 @@ module EveryMatrix
       attr_reader :transaction, :customer_bonus, :play_item
 
       def bonus?
-        customer_bonus&.active? &&
-          customer_bonus&.casino? &&
-          positive_bonus_balance?
+        customer_bonus&.active? && customer_bonus&.casino?
       end
 
       def recalculate_bonus_rollover
@@ -54,6 +52,8 @@ module EveryMatrix
 
       def mark_wager_pending!
         transaction.pending_bonus_loss!
+
+        true
       end
 
       def complete_bonus?
