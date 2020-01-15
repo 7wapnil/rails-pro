@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_06_132207) do
+ActiveRecord::Schema.define(version: 2020_01_15_101850) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -515,6 +515,7 @@ ActiveRecord::Schema.define(version: 2020_01_06_132207) do
     t.boolean "as_vendor", default: false
     t.string "internal_image_name", default: ""
     t.string "slug", default: ""
+    t.integer "position"
     t.index ["name"], name: "index_every_matrix_content_providers_on_name"
     t.index ["representation_name"], name: "index_every_matrix_content_providers_on_representation_name"
   end
@@ -688,6 +689,7 @@ ActiveRecord::Schema.define(version: 2020_01_06_132207) do
     t.boolean "visible", default: false
     t.string "internal_image_name", default: ""
     t.string "slug", default: ""
+    t.integer "position"
     t.index ["vendor_id"], name: "index_every_matrix_vendors_on_vendor_id"
   end
 

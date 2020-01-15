@@ -14,6 +14,40 @@ namespace :em_data_setup do
       end
     end
 
+    task set_positions: :environment do
+      PRIORITY_LIST = {
+        'net-ent' => 1,
+        'big-time-gaming' => 2,
+        'blueprint' => 3,
+        'egt' => 4,
+        'quick-spin' => 5,
+        'pragmatic-play' => 6,
+        'gamomat' => 7,
+        'elk-gaming' => 8,
+        'evolution-gaming' => 9,
+        'red-tiger-gaming' => 10,
+        'relax-gaming' => 11,
+        'bee-fee' => 12,
+        'microgaming' => 13,
+        'pariplay' => 14,
+        'skillzz-gaming' => 15,
+        'spigo' => 16,
+        'oryx-gaming' => 17,
+        'playson' => 18,
+        'bet-soft' => 19,
+        'gamevy' => 20,
+        'bet-games' => 21
+      }.freeze
+
+      PRIORITY_LIST.each do |provider, index|
+        [EveryMatrix::Vendor, EveryMatrix::ContentProvider].each do |table|
+          result = table.find_by(slug: provider)&.update(position: index)
+
+          break if result
+        end
+      end
+    end
+
     def execute_query(table)
       ActiveRecord::Base.connection.execute(
         "UPDATE #{table} SET internal_image_name = slug"

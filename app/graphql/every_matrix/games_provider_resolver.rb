@@ -18,8 +18,16 @@ module EveryMatrix
     private
 
     def all_providers
-      [*EveryMatrix::ContentProvider.visible.as_vendor.distinct,
-       *EveryMatrix::Vendor.visible.distinct]
+      providers = [*EveryMatrix::ContentProvider.visible.as_vendor.distinct,
+                   *EveryMatrix::Vendor.visible.distinct]
+
+      providers.sort_by(&method(:sort_algorithm))
+    end
+
+    def sort_algorithm(provider)
+      return Float::INFINITY unless provider.position
+
+      provider.position
     end
   end
 end
