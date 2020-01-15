@@ -175,7 +175,8 @@ module EveryMatrix
       def post_process_failed
         common_response.merge(
           'ReturnCode' => UNKNOWN_ERROR_CODE,
-          'Message' => "#{UNKNOWN_ERROR_MESSAGE} from #{self.class.name} post-processing"
+          'Message' =>
+            "#{UNKNOWN_ERROR_MESSAGE} from #{self.class.name} post-processing"
         )
       end
 

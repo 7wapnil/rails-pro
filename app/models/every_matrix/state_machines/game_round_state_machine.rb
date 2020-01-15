@@ -10,14 +10,14 @@ module EveryMatrix
         won: WON = 'won',
         lost: LOST = 'lost',
         rolled_back: ROLLED_BACK = 'rolled_back',
-        timed_out: TIMED_OUT = 'timed_out'
+        expired: EXPIRED = 'expired'
       }.freeze
 
       FINISHED_STATUSES = [
         WON,
         LOST,
         ROLLED_BACK,
-        TIMED_OUT
+        EXPIRED
       ].freeze
 
       DEFAULT_STATUS = PENDING
@@ -34,7 +34,7 @@ module EveryMatrix
           state :won
           state :lost
           state :rolled_back
-          state :timed_out
+          state :expired
 
           event :win do
             transitions from: PENDING,
@@ -51,9 +51,9 @@ module EveryMatrix
                         to: :rolled_back
           end
 
-          event :timeout do
+          event :expire do
             transitions from: PENDING,
-                        to: :timed_out
+                        to: :expired
           end
         end
       end
