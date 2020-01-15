@@ -24,7 +24,7 @@ describe ::Reports::Queries::SalesReportQuery do
                      .sum(&:base_currency_amount)
                      .abs
   end
-  let(:ggr_control_value) do
+  let(:sports_ggr_control_value) do
     bets_stake_control_value -
       control_customers.first.entries.win.sum(&:base_currency_amount).abs
   end
@@ -86,7 +86,7 @@ describe ::Reports::Queries::SalesReportQuery do
     end
 
     it 'returns correct deposits bonus money' do
-      expect(results.first['bonus_money'].to_f)
+      expect(results.first['sports_bonus_money'].to_f)
         .to eq((bonus_amount_control_value.to_f +
                deposit_real_money_control_value.to_f * ngr).round(2))
     end
@@ -97,12 +97,13 @@ describe ::Reports::Queries::SalesReportQuery do
     end
 
     it 'returns correct bets stake' do
-      expect(results.first['stake'].to_f.abs)
+      expect(results.first['sports_stake'].to_f.abs)
         .to eq(bets_stake_control_value.to_f)
     end
 
-    it 'returns correct ggr' do
-      expect(results.first['ggr'].to_f).to eq(ggr_control_value.to_f)
+    it 'returns correct sports ggr' do
+      expect(results.first['sports_ggr'].to_f)
+        .to eq(sports_ggr_control_value.to_f)
     end
   end
 end

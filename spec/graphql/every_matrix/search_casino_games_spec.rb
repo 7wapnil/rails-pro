@@ -43,10 +43,12 @@ describe GraphQL, '#searchCasinoGames' do
   end
 
   context 'basic query for searching games' do
-    let(:play_item) { (category.play_items << create(:casino_game)).first }
+    let(:play_item) do
+      (category.play_items << create(:casino_game, :unique_names)).first
+    end
     let(:query_name) { play_item.name }
 
-    before { create_list(:play_item, rand(4..6)) }
+    before { create_list(:casino_game, rand(4..6), :unique_names) }
 
     it 'returns found game' do
       expect(result.dig('data', 'searchCasinoGames', 'collection', 0, 'id'))
@@ -55,8 +57,8 @@ describe GraphQL, '#searchCasinoGames' do
   end
 
   context 'basic query which does not find games' do
-    let(:play_item) { (category.play_items << create(:casino_game)).first }
-    let(:query_name) { Faker::Lorem.word }
+    let!(:play_item) { (category.play_items << create(:casino_game)).first }
+    let(:query_name) { Faker::Name.unique.name }
 
     it 'returns empty result' do
       expect(result.dig('data', 'searchCasinoGames', 'collection'))

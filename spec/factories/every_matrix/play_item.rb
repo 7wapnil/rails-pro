@@ -12,6 +12,10 @@ FactoryBot.define do
     association :vendor, factory: :every_matrix_vendor
     content_provider { create(:every_matrix_content_provider) }
 
+    trait :unique_names do
+      name { Faker::Name.unique.name }
+    end
+
     desktop
     trait :desktop do
       terminal { EveryMatrix::PlayItem::DESKTOP_PLATFORM }

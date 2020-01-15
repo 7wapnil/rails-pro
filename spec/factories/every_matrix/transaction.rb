@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :every_matrix_transaction, class: EveryMatrix::Transaction.name do
-    amount { rand(1_000) }
+    amount { rand(1..1_000) }
     transaction_id { rand(1e9) }
     customer
     wallet_session
