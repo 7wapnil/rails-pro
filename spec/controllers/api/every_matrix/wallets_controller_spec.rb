@@ -228,7 +228,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
     end
 
     context 'Transactions' do
-      let(:round_id) { Faker::String.random }
+      let(:round_id) { Faker::Alphanumeric.alphanumeric }
       let(:transaction_id) { Faker::Number.number }
       let(:payload) do
         common_request_params.merge(
@@ -647,7 +647,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
     end
 
     context 'Transactions' do
-      let(:round_id) { Faker::String.random }
+      let(:round_id) { Faker::Alphanumeric.alphanumeric }
       let(:transaction_id) { Faker::Number.number }
       let(:payload) do
         common_request_params.merge(
