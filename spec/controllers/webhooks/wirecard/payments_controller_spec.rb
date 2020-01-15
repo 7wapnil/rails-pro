@@ -216,31 +216,6 @@ describe Webhooks::Wirecard::PaymentsController, type: :controller do
       end
     end
 
-    context 'when canceled by provider' do
-      let(:code) { Payments::Fiat::Wirecard::Statuses::PROVIDER_SYSTEM_ERROR }
-      let(:state) { Payments::Fiat::Wirecard::TransactionStates::FAILED }
-      let(:description) { 'Failed' }
-      let(:error_message) { I18n.t('errors.messages.deposit_external_fail') }
-
-      before do
-        allow(Payments::Webhooks::DepositRedirectionUrlBuilder)
-          .to receive(:call)
-          .and_call_original
-
-        subject
-      end
-
-      it 'changes deposit status to failed' do
-        expect(deposit.reload.status).to eq(Withdrawal::FAILED)
-      end
-
-      it 'raises humanized error message' do
-        expect(Payments::Webhooks::DepositRedirectionUrlBuilder)
-          .to have_received(:call)
-          .with(status: state, custom_message: error_message)
-      end
-    end
-
     context 'when invalid signature' do
       let(:signature_id) { -1 }
       let(:code) { '201.0000' }

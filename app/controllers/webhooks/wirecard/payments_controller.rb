@@ -14,10 +14,8 @@ module Webhooks
         callback_redirect_for(SUCCESS)
       rescue ::Payments::CancelledError
         callback_redirect_for(CANCELLED)
-      rescue ::Payments::FailedError => error
-        message = error.message if error.humanized?
-
-        callback_redirect_for(FAILED, custom_message: message)
+      rescue ::Payments::FailedError
+        callback_redirect_for(FAILED)
       rescue StandardError => error
         Rails.logger.error(message: 'Technical error appeared on deposit',
                            error_object: error)
