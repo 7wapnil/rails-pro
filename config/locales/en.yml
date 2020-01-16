@@ -526,6 +526,8 @@ en:
       tos_not_accepted: You have to accept T&C and privacy policy
       blank_birth_date: Date of birth can't be blank
       crypto_deposit_limit: "External service requires amount higher than %{limit}"
+      limits_error: Currency has not passed limits validation
+      crypto_limits_service_unavailable: 'External service experiences issues at the moment. Try again later'
       invalid_combo_bets: Multiple selection for the same event or team, please remove dublicates
       too_many_bet_legs: "Bets limit is reached. Max allowed count of bets per single placement: %{limit}"
 

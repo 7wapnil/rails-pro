@@ -50,7 +50,11 @@ module Payments
               Payments::Crypto::CoinsPaid::SignatureService.call
           )
 
-          JSON.parse(self.class.post(LIMITS_ROUTE).body)['data']
+          request = self.class.post(LIMITS_ROUTE)
+
+          JSON.parse(request.body)['data']
+        rescue JSON::ParserError => error
+          raise HTTParty::Error, error.message
         end
 
         private

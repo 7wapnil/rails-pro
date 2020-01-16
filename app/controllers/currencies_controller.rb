@@ -33,18 +33,17 @@ class CurrenciesController < ApplicationController
     @currency = Currencies::Create.call(params: currency_params,
                                         current_user: current_user)
 
-    return render :new if @currency.errors.any?
+    return render_form_on_failure(:new) if @currency.errors.any?
 
     redirect_to edit_currency_path(@currency),
                 notice: t('currencies.create.success', code: @currency.code)
   end
 
   def update
-    @currency =
-      Currencies::Update.call(params: currency_params,
-                              current_user: current_user)
+    @currency = Currencies::Update.call(params: currency_params,
+                                        current_user: current_user)
 
-    return render :edit if @currency.errors.any?
+    return render_form_on_failure(:edit) if @currency.errors.any?
 
     redirect_to edit_currency_path(@currency),
                 notice: t('currencies.update.success')
@@ -59,9 +58,17 @@ class CurrenciesController < ApplicationController
               :code,
               :name,
               :kind,
-              entry_currency_rules_attributes: %i[id
-                                                  kind
-                                                  min_amount
-                                                  max_amount])
+              entry_currency_rules_attributes: %i[
+                id
+                kind
+                min_amount
+                max_amount
+              ])
+  end
+
+  def render_form_on_failure(action_key)
+    flash[:alert] = @currency.errors.full_messages.first
+
+    render action_key
   end
 end

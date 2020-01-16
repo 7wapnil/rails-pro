@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 describe Currency, '#form' do
   context 'new currency form' do
     before do
@@ -6,17 +8,17 @@ describe Currency, '#form' do
     end
 
     it 'shows code validation error' do
-      expect(page).not_to have_selector('.alert-danger')
+      expect(page).not_to have_text("Code can't be blank")
       fill_in :currency_code, with: ''
       click_submit
-      expect(page).to have_selector('.alert-danger')
+      expect(page).to have_text("Code can't be blank")
     end
 
     it 'shows name validation error' do
-      expect(page).not_to have_selector('.alert-danger')
+      expect(page).not_to have_text("Name can't be blank")
       fill_in :currency_name, with: ''
       click_submit
-      expect(page).to have_selector('.alert-danger')
+      expect(page).to have_text("Name can't be blank")
     end
 
     it 'redirect to currency edit page on success' do
@@ -48,17 +50,17 @@ describe Currency, '#form' do
     end
 
     it 'shows code validation error' do
-      expect(page).not_to have_selector('.alert-danger')
+      expect(page).not_to have_text("Code can't be blank")
       fill_in :currency_code, with: ''
       click_submit
-      expect(page).to have_selector('.alert-danger')
+      expect(page).to have_text("Code can't be blank")
     end
 
     it 'shows name validation error' do
-      expect(page).not_to have_selector('.alert-danger')
+      expect(page).not_to have_text("Name can't be blank")
       fill_in :currency_name, with: ''
       click_submit
-      expect(page).to have_selector('.alert-danger')
+      expect(page).to have_text("Name can't be blank")
     end
 
     # it 'shows amount validation error' do
@@ -68,11 +70,11 @@ describe Currency, '#form' do
     #   expect(page).to have_selector('.alert-danger')
     # end
 
-    it 'shows amount amount error' do
-      expect(page).not_to have_selector('.alert-danger')
+    it 'shows amount error' do
+      expect(page).not_to have_text("Min amount *\ncan't be blank")
       fill_in :currency_entry_currency_rules_attributes_0_min_amount, with: ''
       click_submit
-      expect(page).to have_selector('.alert-danger')
+      expect(page).to have_text("Min amount *\ncan't be blank")
     end
 
     it 'redirect to currency edit page on success' do
