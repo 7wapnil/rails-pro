@@ -8,7 +8,7 @@ class Wallet < ApplicationRecord
   has_many :entries
 
   has_one :crypto_address, dependent: :destroy
-  has_one :customer_bonus, -> { reorder(activated_at: :desc) }
+  has_one :customer_bonus, -> { reorder('activated_at DESC NULLS LAST') }
 
   scope :primary, -> { joins(:currency).where(currencies: { primary: true }) }
 
