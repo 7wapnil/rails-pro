@@ -9,7 +9,8 @@ module Forms
       attr_accessor :play_item_slug,
                     :wallet_id,
                     :subject,
-                    :country
+                    :country,
+                    :device
 
       with_options if: :real_money_mode? do
         validates :subject, presence: true
@@ -27,7 +28,9 @@ module Forms
       end
 
       def play_item
-        @play_item ||= ::EveryMatrix::PlayItem.find_by!(slug: play_item_slug)
+        @play_item ||= ::EveryMatrix::PlayItem
+                       .public_send(device)
+                       .find_by!(slug: play_item_slug)
       end
 
       private

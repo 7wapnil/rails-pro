@@ -19,7 +19,7 @@ module EveryMatrix
       def user_not_found_response
         common_response.merge(
           'ReturnCode' => USER_NOT_FOUND_CODE,
-          'Message'    => USER_NOT_FOUND_MESAGE
+          'Message'    => USER_NOT_FOUND_MESSAGE
         )
       end
 

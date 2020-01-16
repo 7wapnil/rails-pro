@@ -2,6 +2,8 @@
 
 module EveryMatrix
   class CreateSession < ::Base::Resolver
+    include DeviceChecker
+
     argument :walletId, types.Int
     argument :playItemSlug, !types.String
 
@@ -18,7 +20,8 @@ module EveryMatrix
         wallet_id: args['walletId'],
         play_item_slug: args['playItemSlug'],
         subject: @current_customer,
-        country: @request.location.country_code.upcase
+        country: @request.location.country_code.upcase,
+        device: platform_type(@request)
       )
 
       form.validate!

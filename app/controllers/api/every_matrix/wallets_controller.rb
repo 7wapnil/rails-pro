@@ -10,9 +10,9 @@ module Api
       REQUEST_HANDLERS = {
         'getaccount' => 'EveryMatrix::Requests::GetAccountService',
         'getbalance' => 'EveryMatrix::Requests::GetBalanceService',
-        'wager'      => 'EveryMatrix::Requests::WagerService',
-        'result'     => 'EveryMatrix::Requests::ResultService',
-        'rollback'   => 'EveryMatrix::Requests::RollbackService',
+        'wager' => 'EveryMatrix::Requests::WagerService',
+        'result' => 'EveryMatrix::Requests::ResultService',
+        'rollback' => 'EveryMatrix::Requests::RollbackService',
         'gettransactionstatus' =>
           'EveryMatrix::Requests::GetTransactionStatusService'
       }.freeze
@@ -44,7 +44,7 @@ module Api
           'ApiVersion' => '1.0',
           'Request'    => request_param['Request'],
           'ReturnCode' => USER_NOT_FOUND_CODE,
-          'Message'    => USER_NOT_FOUND_MESAGE
+          'Message'    => USER_NOT_FOUND_MESSAGE
         }
       end
 

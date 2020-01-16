@@ -11,6 +11,7 @@ FactoryBot.define do
     slug { Faker::Internet.slug }
     association :vendor, factory: :every_matrix_vendor
     content_provider { create(:every_matrix_content_provider) }
+    game_code { Faker::Internet.slug }
 
     trait :unique_names do
       name { Faker::Name.unique.name }

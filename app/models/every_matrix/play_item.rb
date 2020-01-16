@@ -35,6 +35,10 @@ module EveryMatrix
     has_one :game_details,
             foreign_key: :play_item_id,
             class_name: EveryMatrix::GameDetails.name
+    has_many :transactions,
+             foreign_key: :play_item_id,
+             class_name: EveryMatrix::Transaction.name,
+             dependent: :nullify
 
     class << self
       # This default scope filters unexpected games we receive from EM side.

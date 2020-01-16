@@ -230,6 +230,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
     context 'Transactions' do
       let(:round_id) { Faker::Alphanumeric.alphanumeric }
       let(:transaction_id) { Faker::Number.number }
+      let(:play_item) { create(:casino_game) }
       let(:payload) do
         common_request_params.merge(
           'Request'       => request_name,
@@ -237,7 +238,9 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
           'AccountId'     => customer.id.to_s,
           'Amount'        => amount,
           'TransactionId' => transaction_id,
-          'RoundId'       => round_id
+          'RoundId'       => round_id,
+          'GPGameId'      => play_item.game_code,
+          'Device'        => 'desktop'
         )
       end
 
@@ -281,6 +284,15 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
             second_json = json
 
             expect(second_json).to eq(first_json)
+          end
+
+          it 'assigns correct play item to transaction' do
+            json
+
+            transaction =
+              EveryMatrix::Transaction.find_by!(transaction_id: transaction_id)
+
+            expect(transaction.play_item_id).to eq(play_item.id)
           end
 
           context 'with amount exceeding limit' do
@@ -382,6 +394,15 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
           it 'successfully responds to request' do
             expect(json).to include(expected_response)
           end
+
+          it 'assigns correct play item to transaction' do
+            json
+
+            transaction =
+              EveryMatrix::Transaction.find_by!(transaction_id: transaction_id)
+
+            expect(transaction.play_item_id).to eq(play_item.id)
+          end
         end
 
         context 'with missing session' do
@@ -420,6 +441,15 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
 
           it 'successfully responds to request' do
             expect(json).to include(expected_response)
+          end
+
+          it 'assigns correct play item to transaction' do
+            json
+
+            transaction =
+              EveryMatrix::Transaction.find_by!(transaction_id: transaction_id)
+
+            expect(transaction.play_item_id).to eq(play_item.id)
           end
         end
 
@@ -649,6 +679,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
     context 'Transactions' do
       let(:round_id) { Faker::Alphanumeric.alphanumeric }
       let(:transaction_id) { Faker::Number.number }
+      let(:play_item) { create(:casino_game) }
       let(:payload) do
         common_request_params.merge(
           'Request'       => request_name,
@@ -656,7 +687,9 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
           'AccountId'     => customer.id.to_s,
           'Amount'        => amount,
           'TransactionId' => transaction_id,
-          'RoundId'       => round_id
+          'RoundId'       => round_id,
+          'GPGameId'      => play_item.game_code,
+          'Device'        => 'desktop'
         )
       end
 
@@ -700,6 +733,15 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
             second_json = json
 
             expect(second_json).to eq(first_json)
+          end
+
+          it 'assigns correct play item to transaction' do
+            json
+
+            transaction =
+              EveryMatrix::Transaction.find_by!(transaction_id: transaction_id)
+
+            expect(transaction.play_item_id).to eq(play_item.id)
           end
 
           context 'with amount exceeding limit' do
@@ -801,6 +843,15 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
           it 'successfully responds to request' do
             expect(json).to include(expected_response)
           end
+
+          it 'assigns correct play item to transaction' do
+            json
+
+            transaction =
+              EveryMatrix::Transaction.find_by!(transaction_id: transaction_id)
+
+            expect(transaction.play_item_id).to eq(play_item.id)
+          end
         end
 
         context 'with missing session' do
@@ -839,6 +890,15 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
 
           it 'successfully responds to request' do
             expect(json).to include(expected_response)
+          end
+
+          it 'assigns correct play item to transaction' do
+            json
+
+            transaction =
+              EveryMatrix::Transaction.find_by!(transaction_id: transaction_id)
+
+            expect(transaction.play_item_id).to eq(play_item.id)
           end
         end
 

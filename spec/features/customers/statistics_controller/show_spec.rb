@@ -182,6 +182,7 @@ describe Customers::StatisticsController, '#show' do
       create_list(
         :every_matrix_transaction,
         rand(3..4),
+        :live_casino,
         :wager,
         customer: customer,
         wallet_session: create(
@@ -196,6 +197,7 @@ describe Customers::StatisticsController, '#show' do
       create_list(
         :every_matrix_transaction,
         rand(2..3),
+        :live_casino,
         :result,
         customer: customer,
         wallet_session: create(
@@ -351,12 +353,12 @@ describe Customers::StatisticsController, '#show' do
       attributes = %i[deposit_count withdrawal_count
                       prematch_bet_count live_bet_count
                       casino_game_count live_casino_count]
+
       attributes.each do |attribute|
         label = Customers::Statistic.human_attribute_name(attribute)
         value = stats[attribute]
 
-        expect(page)
-          .to have_css("tr.#{attribute}", text: "#{label} #{value}")
+        expect(page).to have_css("tr.#{attribute}", text: "#{label} #{value}")
       end
     end
 

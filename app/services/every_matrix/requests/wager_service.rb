@@ -11,11 +11,11 @@ module EveryMatrix
         end
       end
 
+      private
+
       def post_process_service
         WagerSettlementService
       end
-
-      private
 
       def update_summary_casino_customer_ids!
         Customers::Summaries::UpdateWorker.perform_async(

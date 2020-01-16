@@ -75,24 +75,30 @@ module EveryMatrix
 
       def attributes # rubocop:disable Metrics/MethodLength
         {
-          customer:                        customer,
-          wallet_session:                  session,
-          amount:                          amount.to_d,
-          game_type:                       transaction_params['GameType'],
-          gp_game_id:                      transaction_params['GPGameId'],
-          gp_id:                           transaction_params['GPId'],
-          em_game_id:                      transaction_params['EMGameId'],
-          product:                         transaction_params['Product'],
-          round_id:                        transaction_params['RoundId'],
-          device:                          transaction_params['Device'],
-          round_status:                    transaction_params['RoundStatus'],
+          customer: customer,
+          wallet_session: session,
+          amount: amount.to_d,
+          game_type: transaction_params['GameType'],
+          gp_game_id: transaction_params['GPGameId'],
+          gp_id: transaction_params['GPId'],
+          em_game_id: transaction_params['EMGameId'],
+          product: transaction_params['Product'],
+          round_id: transaction_params['RoundId'],
+          device: transaction_params['Device'],
+          round_status: transaction_params['RoundStatus'],
           every_matrix_free_spin_bonus_id: transaction_params['BonusId'],
-          transaction_id:                  transaction_params['TransactionId']
+          transaction_id: transaction_params['TransactionId'],
+          play_item: find_play_item
         }
       end
 
       def transaction_params
         @transaction_params ||= params.permit(*TRANSACTION_PARAMS)
+      end
+
+      def find_play_item
+        PlayItem.public_send(transaction_params['Device'])
+                .find_by(game_code: transaction_params['GPGameId'])
       end
 
       def create_entry_request!
@@ -112,7 +118,7 @@ module EveryMatrix
           session: session,
           balance_only: true
         ).merge(
-          'SessionId'            => session.id,
+          'SessionId' => session.id,
           'AccountTransactionId' => transaction.id
         )
       end

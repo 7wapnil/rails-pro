@@ -10,7 +10,7 @@ module EveryMatrix
       UNKNOWN_ERROR_MESSAGE = 'Unknown error'
 
       USER_NOT_FOUND_CODE = 103
-      USER_NOT_FOUND_MESAGE = 'User not found'
+      USER_NOT_FOUND_MESSAGE = 'User not found'
 
       INSUFFICIENT_FUNDS_CODE = 104
       INSUFFICIENT_FUNDS_MESSAGE = 'Insufficient funds'

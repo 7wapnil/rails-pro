@@ -3,6 +3,7 @@
 module EveryMatrix
   class Transaction < ApplicationRecord
     include ::EveryMatrix::StateMachines::TransactionStateMachine
+
     self.table_name = 'every_matrix_transactions'
 
     TYPES = {
@@ -25,10 +26,12 @@ module EveryMatrix
     belongs_to :every_matrix_free_spin_bonus,
                class_name: 'EveryMatrix::FreeSpinBonus',
                optional: true
+    belongs_to :play_item,
+               optional: true,
+               class_name: EveryMatrix::PlayItem.name
 
     has_one :entry_request, as: :origin
     has_one :entry, as: :origin
-    has_one :play_item, through: :wallet_session
 
     has_one :wallet, through: :wallet_session
     has_one :currency, through: :wallet

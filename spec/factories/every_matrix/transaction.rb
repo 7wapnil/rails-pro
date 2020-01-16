@@ -4,6 +4,7 @@ FactoryBot.define do
   factory :every_matrix_transaction, class: EveryMatrix::Transaction.name do
     amount { rand(1..1_000) }
     transaction_id { rand(1e9) }
+    play_item { create(:casino_game) }
     customer
     wallet_session
     entry
@@ -23,6 +24,10 @@ FactoryBot.define do
 
     trait :rollback do
       type { EveryMatrix::Rollback.name }
+    end
+
+    trait :live_casino do
+      play_item { create(:casino_table) }
     end
   end
 end

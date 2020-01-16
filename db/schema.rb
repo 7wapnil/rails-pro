@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_15_101850) do
+ActiveRecord::Schema.define(version: 2020_01_16_131516) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -628,6 +628,7 @@ ActiveRecord::Schema.define(version: 2020_01_15_101850) do
     t.string "game_code"
     t.index ["every_matrix_content_provider_id"], name: "index_play_items_on_content_providers_id"
     t.index ["every_matrix_vendor_id"], name: "index_play_items_on_vendors_id"
+    t.index ["game_code"], name: "index_every_matrix_play_items_on_game_code"
     t.index ["slug"], name: "index_every_matrix_play_items_on_slug"
     t.index ["type"], name: "index_every_matrix_play_items_on_type"
   end
@@ -675,9 +676,11 @@ ActiveRecord::Schema.define(version: 2020_01_15_101850) do
     t.bigint "customer_bonus_id"
     t.bigint "every_matrix_free_spin_bonus_id"
     t.string "status", default: "finished", null: false
+    t.string "play_item_id"
     t.index ["customer_bonus_id"], name: "index_every_matrix_transactions_on_customer_bonus_id"
     t.index ["customer_id"], name: "index_every_matrix_transactions_on_customer_id"
     t.index ["every_matrix_free_spin_bonus_id"], name: "index_transaction_free_spin_bonus_id"
+    t.index ["play_item_id"], name: "index_every_matrix_transactions_on_play_item_id"
     t.index ["round_id"], name: "index_every_matrix_transactions_on_round_id"
     t.index ["status"], name: "index_every_matrix_transactions_on_status"
     t.index ["transaction_id"], name: "index_every_matrix_transactions_on_transaction_id"
@@ -931,6 +934,7 @@ ActiveRecord::Schema.define(version: 2020_01_15_101850) do
   add_foreign_key "every_matrix_transactions", "customer_bonuses"
   add_foreign_key "every_matrix_transactions", "customers"
   add_foreign_key "every_matrix_transactions", "every_matrix_free_spin_bonuses"
+  add_foreign_key "every_matrix_transactions", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
   add_foreign_key "every_matrix_transactions", "every_matrix_wallet_sessions", column: "wallet_session_id"
   add_foreign_key "every_matrix_wallet_sessions", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
   add_foreign_key "label_joins", "labels"
