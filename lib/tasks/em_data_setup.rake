@@ -14,7 +14,7 @@ namespace :em_data_setup do
       end
     end
 
-    task set_positions: :environment do
+    task set_position_and_visibility: :environment do
       PRIORITY_LIST = {
         'net-ent' => 1,
         'big-time-gaming' => 2,
@@ -41,9 +41,17 @@ namespace :em_data_setup do
 
       PRIORITY_LIST.each do |provider, index|
         [EveryMatrix::Vendor, EveryMatrix::ContentProvider].each do |table|
-          result = table.find_by(slug: provider)&.update(position: index)
+          result = table.find_by(slug: provider)
 
-          break if result
+          next unless result
+
+          result.update!(position: index, visible: true)
+
+          if result.is_a?(EveryMatrix::ContentProvider)
+            result.update!(as_vendor: true)
+          end
+
+          break
         end
       end
     end

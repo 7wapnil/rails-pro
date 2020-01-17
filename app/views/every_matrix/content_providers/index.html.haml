@@ -10,6 +10,7 @@
       %th Representation name
       %th Slug
       %th Visible
+      %th Position
   %tbody
     - @content_providers.each do |content_provider|
       %tr
@@ -21,5 +22,6 @@
         %td= content_provider.representation_name
         %td= content_provider.slug
         %td= content_provider.visible
+        %td= content_provider.position
 
 = paginate @content_providers

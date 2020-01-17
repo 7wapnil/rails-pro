@@ -9,6 +9,7 @@
       %th Internal Image Name
       %th External vendor id
       %th Visible
+      %th Position
   %tbody
     - @vendors.each do |vendor|
       %tr
@@ -18,5 +19,6 @@
         %td= vendor.internal_image_name
         %td= vendor.vendor_id
         %td= vendor.visible
+        %td= vendor.position
 
 = paginate @vendors

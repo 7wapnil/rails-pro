@@ -22,7 +22,8 @@ module EveryMatrix
     def vendor_params
       params
         .require(:every_matrix_vendor)
-        .permit(:name, :visible, :logo_url, :internal_image_name, :slug)
+        .permit(:name, :visible, :logo_url,
+                :internal_image_name, :slug, :position)
     end
   end
 end
