@@ -2,13 +2,7 @@
 
 module EveryMatrix
   module Requests
-    class WagerSettlementService < ApplicationService
-      def initialize(transaction)
-        @transaction = transaction
-        @customer_bonus = transaction.customer_bonus
-        @play_item = transaction.play_item
-      end
-
+    class WagerSettlementService < BaseSettlementService
       def call
         return true unless bonus?
 
@@ -21,12 +15,6 @@ module EveryMatrix
       end
 
       private
-
-      attr_reader :transaction, :customer_bonus, :play_item
-
-      def bonus?
-        customer_bonus&.active? && customer_bonus&.casino?
-      end
 
       def recalculate_bonus_rollover
         customer_bonus.with_lock do
@@ -44,20 +32,10 @@ module EveryMatrix
         ].min
       end
 
-      def complete_bonus!
-        ::CustomerBonuses::Complete.call(customer_bonus: customer_bonus)
-
-        true
-      end
-
       def mark_wager_pending!
         transaction.pending_bonus_loss!
 
         true
-      end
-
-      def complete_bonus?
-        customer_bonus.rollover_balance <= 0
       end
 
       def pending_lost_bonus?

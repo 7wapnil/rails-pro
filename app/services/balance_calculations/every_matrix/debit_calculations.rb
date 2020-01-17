@@ -27,7 +27,16 @@ module BalanceCalculations
 
       def ratio
         @ratio ||=
-          transaction.wager&.real_money_ratio || REAL_MONEY_ONLY_RATIO
+          if all_to_real_money?
+            REAL_MONEY_ONLY_RATIO
+          else
+            transaction.wager&.real_money_ratio
+          end
+      end
+
+      def all_to_real_money?
+        bonus_completed? ||
+          !transaction.wager&.real_money_ratio
       end
 
       def calculated_bonus_amount

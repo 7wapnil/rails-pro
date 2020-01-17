@@ -33,8 +33,6 @@ module EveryMatrix
 
         process_transaction!
 
-        update_game_round_status!
-
         return record_response(entry_creation_failed) unless transaction.entry
 
         return record_response(post_process_failed) unless post_process
@@ -188,12 +186,6 @@ module EveryMatrix
 
       def post_process_service
         nil
-      end
-
-      def update_game_round_status!
-        error_msg = "#{__method__} needs to be implemented in #{self.class}"
-
-        raise NotImplementedError, error_msg
       end
     end
     # rubocop:enable Metrics/ClassLength

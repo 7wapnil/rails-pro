@@ -40,6 +40,10 @@ module BalanceCalculations
         customer_bonus&.active? && customer_bonus&.casino?
       end
 
+      def bonus_completed?
+        customer_bonus&.completed?
+      end
+
       def calculated_bonus_amount
         transaction.amount - calculated_real_money_amount
       end
