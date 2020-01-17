@@ -40,17 +40,27 @@ module CustomerBonuses
     end
 
     def ensure_no_active_bonus
-      return unless customer&.active_bonus || wager_pending_bonus
+      return unless active_bonus
+      return if wager_pending_bonus
 
       errors.add(:active_bonus,
                  I18n.t('errors.messages.customer_has_active_bonus'))
     end
 
+    def active_bonus
+      @active_bonus ||= customer&.active_bonus
+    end
+
     def wager_pending_bonus
-      customer_bonus = customer_bonus&.active_bonus
+      return unless active_bonus
+
       has_pending_wagers =
-        customer_bonus&.transactions&.wager&.pending_bonus_loss&.any?
-      return customer_bonus if has_pending_wagers
+        EveryMatrix::Wager
+        .where(customer_bonus: active_bonus)
+        .pending_bonus_loss
+        .any?
+
+      return active_bonus if has_pending_wagers
     end
 
     def lose_wager_pending_bouns!
