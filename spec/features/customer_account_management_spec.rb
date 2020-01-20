@@ -64,15 +64,14 @@ describe Customer, '#account_management' do
 
     it 'displays all available payment methods without system' do
       within '.card.customer-entry-request-form #entry_request_mode' do
-        options = all('option').map(&:text).map(&:downcase)
-        supported_options = [
-          EntryRequest::CASHIER,
-          EntryRequest::SIMULATED
-        ].map(&:downcase)
+        select_modes = all('option').map(&:text)
+        allowed_modes = EntryRequest
+                        .modes
+                        .except(EntryRequest::INTERNAL)
+                        .keys
+                        .map { |mode| I18n.t("kinds.payment_methods.#{mode}") }
 
-        supported_options +=
-          I18n.t('kinds.payment_methods').values.map(&:downcase)
-        expect(options).to match_array(supported_options)
+        expect(select_modes).to match_array(allowed_modes)
       end
     end
   end

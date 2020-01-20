@@ -638,7 +638,7 @@ en:
       skrill: Skrill
       neteller: Neteller
       paysafecard: PaySafeCard
-      idebit: iDebit
+      idebit: iDebit - Online Banking Transfers
       sofort: Sofort
       ideal: iDeal
       bitcoin: Bitcoin
@@ -646,6 +646,8 @@ en:
       yandex: Yandex
       qiwi: Qiwi
       safecharge_unknown: Safecharge unknown
+      simulated: Simulated
+      cashier: Cashier
 
   graphql:
     internal_server_error: 'Something went wrong with your query, fellow :)'
@@ -795,7 +797,7 @@ en:
         paysafecard:
           title: paysafecard
         idebit:
-          title: iDebit
+          title: iDebit - Online Banking Transfers
 
   webhooks:
     safe_charge:

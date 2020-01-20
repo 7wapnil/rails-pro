@@ -9,7 +9,7 @@ module Payments
       mark_as_trackable
 
       def resolve(_obj, _args)
-        ::Payments::Deposit::PAYMENT_METHODS
+        ::Payments::Deposit::PAYMENT_METHODS.sort
       end
     end
   end

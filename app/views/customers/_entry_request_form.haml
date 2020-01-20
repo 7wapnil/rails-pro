@@ -12,7 +12,7 @@
           = f.input :mode,
                     collection: EntryRequest.modes.except(EntryRequest::INTERNAL),
                     include_blank: false,
-                    label_method: ->(k) { t("kinds.#{k.first}") },
+                    label_method: ->(k) { t("kinds.payment_methods.#{k.first}") },
                     value_method: ->(k) { k.first }
       .row
         .col-6= f.input :amount, as: :decimal, required: true
