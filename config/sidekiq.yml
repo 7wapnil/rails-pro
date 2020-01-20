@@ -1,5 +1,6 @@
 :queues:
   - default
+  - audit_log_writer
   - expired_bonuses
   - expired_wagers
   - radar_live_coverage_booking
