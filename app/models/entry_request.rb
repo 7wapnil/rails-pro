@@ -31,6 +31,7 @@ class EntryRequest < ApplicationRecord
     credit_card: CREDIT_CARD,
     skrill: SKRILL,
     neteller: NETELLER,
+    eco_payz: ECO_PAYZ,
     idebit: IDEBIT,
     paysafecard: PAYSAFECARD,
     sofort: SOFORT,

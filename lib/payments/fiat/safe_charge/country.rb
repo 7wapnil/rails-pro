@@ -87,6 +87,34 @@ module Payments
             YE YT
             ZA ZM ZW
           ].freeze,
+          ::Payments::Fiat::SafeCharge::Methods::APMGW_ECO_PAYZ => %w[
+            AD AE AG AI AN AQ AR AT AU AW AX
+            BA BB BD BE BG BH BM BO BR BS BV BZ
+            CA CC CG CH CK CL CN CO CR CV CX CY CZ
+            DE DK DM DO
+            EC EE EG ES
+            FI FJ FK FO FR
+            GB GD GE GF GG GI GL GP GR GS GU GY
+            HK HM HN HR HU
+            IE IL IM IN IO IS IT
+            JE JM JO JP
+            KM KN KR KW KY
+            LC LI LK LT LU LV
+            MC MD ME MH MK MN MO MP MQ MR MS MT MU MV MX MY
+            NA NC NF NI NL NO NP NZ
+            OM
+            PA PE PF PG PK PL PM PN PR PT PW PY
+            QA
+            RE RO RU
+            SA SB SC SE SG SH SI SJ SK SM SR ST SV
+            TC TF TH TL TM TO TR TT TV TW
+            UA UM US UY UZ
+            VA VC VE VG VI
+            WF WS
+            YT
+            ZA
+          ].freeze,
+          ::Payments::Fiat::SafeCharge::Methods::APMGW_IDEBIT => %w[CA].freeze,
           ::Payments::Fiat::SafeCharge::Methods::APMGW_PAYSAFECARD => %w[
             AD AE AR AT AU
             BE BG
@@ -106,7 +134,6 @@ module Payments
             SA SE SI SK
             UY
           ].freeze,
-          ::Payments::Fiat::SafeCharge::Methods::APMGW_IDEBIT => %w[CA].freeze,
           ::Payments::Fiat::SafeCharge::Methods::APMGW_SOFORT => %w[
             AT BE CH DE ES FR GB IT NL PL SK
           ].freeze,

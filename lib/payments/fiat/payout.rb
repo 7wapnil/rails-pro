@@ -9,6 +9,7 @@ module Payments
         ::Payments::Methods::CREDIT_CARD,
         ::Payments::Methods::NETELLER,
         ::Payments::Methods::SKRILL,
+        ::Payments::Methods::ECO_PAYZ,
         ::Payments::Methods::IDEBIT
       ].freeze
 

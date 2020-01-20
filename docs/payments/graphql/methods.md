@@ -31,6 +31,13 @@ title: String!
 name: String!
 userPaymentOptionId: String!
 
+## PaymentMethodEcoPayz
+
+id: ID!
+title: String!
+name: String!
+userPaymentOptionId: String!
+
 ## PaymentMethodIdebit
 
 id: ID!

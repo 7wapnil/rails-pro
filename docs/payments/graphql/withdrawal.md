@@ -24,6 +24,7 @@ Types definition:
 - neteller, 'Neteller'
 - skrill, 'Skrill'
 - bitcoin, 'Bitcoin'
+- eco_payz, 'ecoPayz'
 - idebit, 'iDebit'
 
 # PaymentMethodDetail

@@ -3,6 +3,7 @@
 module Payments
   module Fiat
     module SafeCharge
+      # rubocop:disable Metrics/ModuleLength
       module Currency
         AVAILABLE_CURRENCY_LIST = {
           ::Payments::Fiat::SafeCharge::Methods::CC_CARD => %w[
@@ -69,6 +70,30 @@ module Payments
             USD
             ZAR
           ].freeze,
+          ::Payments::Fiat::SafeCharge::Methods::APMGW_ECO_PAYZ => %w[
+            AED ARS AUD
+            BGN BRL
+            CAD CHF CLP CNY COP CZK
+            DKK
+            EUR
+            GBP
+            HKD HUF
+            INR ISK
+            JPY
+            LTL LVL
+            MDL MXN MYR
+            NIS NOK NZD
+            PEN PLN
+            RON RSD RUB
+            SEK SGD
+            THB TRY
+            UAH USD UYU
+            VEF
+            ZAR
+          ].freeze,
+          ::Payments::Fiat::SafeCharge::Methods::APMGW_IDEBIT => %w[
+            CAD USD
+          ].freeze,
           ::Payments::Fiat::SafeCharge::Methods::APMGW_PAYSAFECARD => %w[
             AUD
             BGN
@@ -82,9 +107,6 @@ module Payments
             RON
             SEK
             USD
-          ].freeze,
-          ::Payments::Fiat::SafeCharge::Methods::APMGW_IDEBIT => %w[
-            CAD USD
           ].freeze,
           ::Payments::Fiat::SafeCharge::Methods::APMGW_SOFORT => %w[
             EUR GBP
@@ -103,6 +125,7 @@ module Payments
           ].freeze
         }.freeze
       end
+      # rubocop:enable Metrics/ModuleLength
     end
   end
 end

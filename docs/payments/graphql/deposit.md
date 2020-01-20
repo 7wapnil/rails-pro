@@ -26,8 +26,9 @@ Types definition:
 - credit_card, 'MasterCard/Visa'
 - neteller, 'Neteller'
 - skrill, 'Skrill'
-- paysafecard, 'paysafecard'
+- eco_payz, 'ecoPayz'
 - idebit, 'iDebit'
+- paysafecard, 'paysafecard'
 - bitcoin, 'Bitcoin'
 ```
 

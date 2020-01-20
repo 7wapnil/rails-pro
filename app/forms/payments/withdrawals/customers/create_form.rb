@@ -57,6 +57,7 @@ module Payments
           form.errors.each { |attr, error| errors.add(attr, error) }
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity, Metrics/MethodLength
         def payment_method_form_class
           case payment_method
           when CREDIT_CARD
@@ -65,12 +66,15 @@ module Payments
             Payments::Withdrawals::Customers::Methods::NetellerForm
           when SKRILL
             Payments::Withdrawals::Customers::Methods::SkrillForm
+          when ECO_PAYZ
+            Payments::Withdrawals::Customers::Methods::EcoPayzForm
           when IDEBIT
             Payments::Withdrawals::Customers::Methods::IdebitForm
           when BITCOIN
             Payments::Withdrawals::Customers::Methods::BitcoinForm
           end
         end
+        # rubocop:enable Metrics/CyclomaticComplexity, Metrics/MethodLength
 
         def validate_no_pending_bets_with_bonus
           return if !customer || no_pending_bets_with_bonus?

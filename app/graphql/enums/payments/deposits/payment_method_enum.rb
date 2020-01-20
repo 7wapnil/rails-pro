@@ -10,8 +10,9 @@ module Payments
       value ::Payments::Methods::CREDIT_CARD, 'MasterCard/Visa'
       value ::Payments::Methods::NETELLER, 'Neteller'
       value ::Payments::Methods::SKRILL, 'Skrill'
-      value ::Payments::Methods::PAYSAFECARD, 'paysafecard'
+      value ::Payments::Methods::ECO_PAYZ, 'ecoPayz'
       value ::Payments::Methods::IDEBIT, 'iDebit'
+      value ::Payments::Methods::PAYSAFECARD, 'paysafecard'
       value ::Payments::Methods::BITCOIN, 'Bitcoin'
     end
   end

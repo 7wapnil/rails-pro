@@ -9,8 +9,9 @@ module Payments
         ::Payments::Methods::CREDIT_CARD,
         ::Payments::Methods::NETELLER,
         ::Payments::Methods::SKRILL,
-        ::Payments::Methods::PAYSAFECARD,
-        ::Payments::Methods::IDEBIT
+        ::Payments::Methods::ECO_PAYZ,
+        ::Payments::Methods::IDEBIT,
+        ::Payments::Methods::PAYSAFECARD
       ].freeze
 
       BUSINESS_ERRORS = [

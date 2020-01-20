@@ -554,6 +554,8 @@ en:
             inconsistent: Last four credit card digits should be the same as were used for deposit
           skrill:
             inconsistent: Skrill payment option should be the same as was used for deposit
+          eco_payz:
+            inconsistent: ecoPayz payment option should be the same as was used for deposit
           idebit:
             inconsistent: iDebit payment option should be the same as was used for deposit
           neteller:
@@ -637,8 +639,9 @@ en:
       credit_card: Credit Card
       skrill: Skrill
       neteller: Neteller
-      paysafecard: PaySafeCard
+      eco_payz: ecoPayz
       idebit: iDebit - Online Banking Transfers
+      paysafecard: paysafecard
       sofort: Sofort
       ideal: iDeal
       bitcoin: Bitcoin
@@ -773,6 +776,9 @@ en:
         neteller:
           title: Neteller
           range: 'Range: %{min_amount} - %{max_amount} %{code}'
+        eco_payz:
+          title: ecoPayz
+          range: 'Range: %{min_amount} - %{max_amount} %{code}'
         idebit:
           title: iDebit - Online Banking Transfers
           range: 'Range: %{min_amount} - %{max_amount} %{code}'
@@ -794,10 +800,12 @@ en:
         errors:
           unknown_status: "Unknown status received: '%{status}'"
       payment_methods:
-        paysafecard:
-          title: paysafecard
+        eco_payz:
+          title: ecoPayz
         idebit:
           title: iDebit - Online Banking Transfers
+        paysafecard:
+          title: paysafecard
 
   webhooks:
     safe_charge:

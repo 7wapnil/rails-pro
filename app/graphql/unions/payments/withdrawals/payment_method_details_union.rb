@@ -9,6 +9,7 @@ module Payments
                      ::Payments::Methods::CreditCardType,
                      ::Payments::Methods::NetellerType,
                      ::Payments::Methods::SkrillType,
+                     ::Payments::Methods::EcoPayzType,
                      ::Payments::Methods::IdebitType
 
       TYPES_MAP = {
@@ -16,6 +17,7 @@ module Payments
         ::Payments::Methods::SKRILL => ::Payments::Methods::SkrillType,
         ::Payments::Methods::NETELLER => ::Payments::Methods::NetellerType,
         ::Payments::Methods::BITCOIN => ::Payments::Methods::BitcoinType,
+        ::Payments::Methods::ECO_PAYZ => ::Payments::Methods::EcoPayzType,
         ::Payments::Methods::IDEBIT => ::Payments::Methods::IdebitType
       }.freeze
 

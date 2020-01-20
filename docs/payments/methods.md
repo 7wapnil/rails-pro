@@ -62,11 +62,24 @@
 }
 ```
 
-## paysafecard
+## ecoPayz
 
 **Deposit:** `true`
 
-**Withdraw:** `false`
+**Withdraw:** `true`
+
+```
+{
+    description: 'ecoPayz option name',
+    code: :name,
+    type: :string
+},
+{
+    description: 'ecoPayz option id',
+    code: :user_payment_option_id,
+    type: :string
+}
+```
 
 ## iDebit
 
@@ -86,6 +99,12 @@
     type: :string
 }
 ```
+
+## paysafecard
+
+**Deposit:** `true`
+
+**Withdraw:** `false`
 
 ## Bitcoin
 
