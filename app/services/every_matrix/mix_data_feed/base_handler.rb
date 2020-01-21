@@ -15,8 +15,9 @@ module EveryMatrix
         @action = payload['action']
       end
 
+      # TODO: remove second check after correct remove-messages processing
       def call
-        handle_update_message if action == UPDATE
+        handle_update_message if action == UPDATE && data.present?
         health_check!
       end
 
