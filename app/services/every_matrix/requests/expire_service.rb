@@ -3,7 +3,7 @@
 module EveryMatrix
   module Requests
     class ExpireService < ApplicationService
-      TIMEOUT_MINUTES = 5
+      TIMEOUT_MINUTES = 30
 
       def call
         pending_wagers.each do |wager|
