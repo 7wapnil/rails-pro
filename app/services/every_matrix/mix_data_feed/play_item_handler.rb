@@ -27,6 +27,7 @@ module EveryMatrix
 
       def create_or_update_play_item!
         play_item = EveryMatrix::PlayItem
+                    .unscoped
                     .find_or_initialize_by(external_id: data['id'])
 
         play_item.update!(play_item_attributes)
