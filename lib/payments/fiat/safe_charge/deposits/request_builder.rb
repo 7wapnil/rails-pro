@@ -16,8 +16,8 @@ module Payments
           FILTER_MODE = 'filter'
           DEFAULT_WEB_PROTOCOL = 'https'
           OPEN_AMOUNT = false
+          MIN_AMOUNT_LIMIT = 0
           MAX_AMOUNT_LIMIT = 9_999_999
-          DECIMAL_LIMIT = 2
 
           delegate :customer, :currency, :amount, to: :transaction
           delegate :address, to: :customer, prefix: true
@@ -65,16 +65,18 @@ module Payments
               totalDiscount: 0,
               totalTax: 0,
               itemOpenAmount1: OPEN_AMOUNT,
-              itemMinAmount1: currency_rule&.min_amount,
+              itemMinAmount1: min_amount,
               itemMaxAmount1: max_amount,
               numberOfItems: ITEM_QUANTITY
             }
           end
 
+          def min_amount
+            [currency_rule&.min_amount, MIN_AMOUNT_LIMIT].max_by(&:to_f)
+          end
+
           def max_amount
-            [currency_rule&.max_amount, MAX_AMOUNT_LIMIT]
-              .min_by(&:to_f)
-              .round(DECIMAL_LIMIT)
+            [currency_rule&.max_amount, MAX_AMOUNT_LIMIT].min_by(&:to_f)
           end
 
           def items_details

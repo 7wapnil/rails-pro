@@ -50,7 +50,7 @@ describe ::Payments::Fiat::SafeCharge::Deposits::RequestBuilder do
 
     include_context 'frozen_time'
 
-    it 'are appended' do
+    it 'appends them' do
       expect(subject)
         .to include(
           timeStamp: time_stamp,
@@ -75,7 +75,7 @@ describe ::Payments::Fiat::SafeCharge::Deposits::RequestBuilder do
     let(:address) { customer.address }
     let(:address_fields) { subject.fetch(:billingAddress, {}) }
 
-    it 'are appended' do
+    it 'appends them' do
       expect(address_fields)
         .to include(
           firstName: customer.first_name,
@@ -132,7 +132,7 @@ describe ::Payments::Fiat::SafeCharge::Deposits::RequestBuilder do
       )
     end
 
-    it 'are appended' do
+    it 'appends them' do
       expect(notification)
         .to include(
           successUrl: webhook_url,
@@ -141,6 +141,63 @@ describe ::Payments::Fiat::SafeCharge::Deposits::RequestBuilder do
           backUrl: cancellation_redirection_url,
           notificationUrl: webhook_url
         )
+    end
+  end
+
+  context 'amount details' do
+    let(:min_amount) { described_class::MIN_AMOUNT_LIMIT }
+    let(:max_amount) { described_class::MAX_AMOUNT_LIMIT }
+
+    let!(:entry_currency_rule) do
+      create(:entry_currency_rule, currency: entry_request.currency,
+                                   min_amount: min_amount,
+                                   max_amount: max_amount)
+    end
+
+    let(:amount_details) { subject.fetch(:amountDetails, {}) }
+
+    it 'appends them' do
+      expect(amount_details)
+        .to include(
+          totalShipping: 0,
+          totalHandling: 0,
+          totalDiscount: 0,
+          totalTax: 0,
+          itemOpenAmount1: described_class::OPEN_AMOUNT,
+          itemMinAmount1: entry_currency_rule.min_amount,
+          itemMaxAmount1: entry_currency_rule.max_amount,
+          numberOfItems: described_class::ITEM_QUANTITY
+        )
+    end
+
+    context 'when there is a big max limit on entry currency rule' do
+      let(:max_amount) { described_class::MAX_AMOUNT_LIMIT + 10 }
+
+      it 'appends default max amount limit' do
+        expect(amount_details[:itemMaxAmount1])
+          .to eq(described_class::MAX_AMOUNT_LIMIT)
+      end
+    end
+
+    context 'when there is a negative min limit on entry currency rule' do
+      let(:min_amount) { -10 }
+
+      it 'appends default min amount limit' do
+        expect(amount_details[:itemMinAmount1])
+          .to eq(described_class::MIN_AMOUNT_LIMIT)
+      end
+    end
+
+    context 'when there is no respective entry currency rule' do
+      let(:entry_currency_rule) {}
+
+      it 'appends empty limits' do
+        expect(amount_details)
+          .to include(
+            itemMinAmount1: nil,
+            itemMaxAmount1: nil
+          )
+      end
     end
   end
 
