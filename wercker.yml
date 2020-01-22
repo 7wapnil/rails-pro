@@ -144,17 +144,17 @@ deploy:
         terraform workspace select ${TARGET_ENV}
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-worker-odds-feed
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-feed-worker
         terraform init
         terraform workspace select ${TARGET_ENV}
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-worker-mts
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-mts-worker
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-listener-mts
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-mts-consumer
         terraform init
         terraform workspace select $TARGET_ENV
         terraform apply -auto-approve
@@ -164,12 +164,12 @@ deploy:
         terraform workspace select ${TARGET_ENV}
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/casino/backend-listener-every-matrix
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-casino-consumer
         terraform init
         terraform workspace select ${TARGET_ENV}
         terraform apply -auto-approve
 
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/casino/backend-callbacks
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-callbacks
         terraform init
         terraform workspace select ${TARGET_ENV}
         terraform apply -auto-approve
@@ -221,7 +221,7 @@ deploy-unified-odds-listener:
     - script:
       name: terraform-apply
       code: |
-        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-listener
+        cd $TERRAFORM_CONFIG_DIR/terraform/services/backend-feed-consumer
         terraform init
         terraform workspace select ${TARGET_ENV}
         terraform apply -auto-approve
