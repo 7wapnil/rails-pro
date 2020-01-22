@@ -100,10 +100,7 @@ module Bets
     end
 
     def raise_registration_error!
-      raise Bets::RegistrationError.new(
-        entry_request.result['message'],
-        odd_ids: entry_request.result['odds']
-      )
+      raise Bets::RegistrationError, entry_request.result['message']
     end
 
     def odd_id
