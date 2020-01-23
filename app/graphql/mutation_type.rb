@@ -18,6 +18,7 @@ MutationType = GraphQL::ObjectType.define do
   field :deleteFile, function: Documents::DeleteFile.new
 
   field :depositBonus, function: Deposits::DepositBonusQuery.new
+  field :cancelActiveBonus, function: Account::CancelActiveBonus.new
 
   field :deposit, function: ::Payments::Deposits::Perform.new
   field :withdraw, function: ::Payments::Withdrawals::Perform.new
