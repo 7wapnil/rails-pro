@@ -474,6 +474,8 @@ en:
       bonus_activation_failed: Bonus activation failed, please try later
       bonus_minimum_requirements_failed: Please ensure your deposit meets the minimum requirements
       customer_has_active_bonus: It seems you already have an active bonus, please remove bonus code to deposit
+      customer_should_have_active_bonus: It seems you don't have an active bonus now
+      customer_should_have_no_pending_bets: You are unable to cancel a bonus while having pending bets containing bonus
       repeated_bonus_activation: It seems you have already claimed this bonus, please enter a different code
       customer_account_kind_transit: Can't transit customer account kind
       customer_activated: Customer already activated

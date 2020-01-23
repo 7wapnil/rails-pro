@@ -146,10 +146,10 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     query.with_deleted
   end
 
-  def log_event(event, context = {})
+  def log_event(event, context = {}, customer = self)
     Audit::Service.call(event: event,
                         user: nil,
-                        customer: self,
+                        customer: customer,
                         context: context)
   end
 
