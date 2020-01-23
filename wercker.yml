@@ -175,6 +175,17 @@ deploy:
         terraform apply -auto-approve
 
   after-steps:
+    - script:
+      name: deploy-market-appsignal
+      code: |
+        curl --location --request POST \
+        "https://push.appsignal.com/1/markers?api_key=$APPSIGNAL_KEY&name=$APPSIGNAL_NAME&environment=$APPSIGNAL_ENVIRONMENT" \
+        --header 'Content-Type: application/json' \
+        --data-raw "{
+          \"revision\": \"$WERCKER_GIT_COMMIT\",
+          \"user\": \"wercker@trigger.com\"
+        }"
+
     - slack-notifier:
       url: $SLACK_URL
 
