@@ -40,6 +40,7 @@ module Payments
           end
 
           def supported_state?
+            return true unless country_code && state_code
             return true unless available_states.key?(country_code)
 
             available_states[country_code].include?(state_code)
