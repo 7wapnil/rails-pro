@@ -524,6 +524,8 @@ ActiveRecord::Schema.define(version: 2020_01_29_122946) do
     t.string "internal_image_name", default: ""
     t.string "slug", default: ""
     t.integer "position"
+    t.string "external_id"
+    t.string "external_status"
     t.index ["name"], name: "index_every_matrix_content_providers_on_name"
     t.index ["representation_name"], name: "index_every_matrix_content_providers_on_representation_name"
   end
@@ -634,6 +636,7 @@ ActiveRecord::Schema.define(version: 2020_01_29_122946) do
     t.decimal "bonus_contribution", default: "1.0", null: false
     t.datetime "last_updated_recommended_games_at"
     t.string "game_code"
+    t.string "external_status"
     t.index ["every_matrix_content_provider_id"], name: "index_play_items_on_content_providers_id"
     t.index ["every_matrix_vendor_id"], name: "index_play_items_on_vendors_id"
     t.index ["game_code"], name: "index_every_matrix_play_items_on_game_code"
@@ -710,6 +713,7 @@ ActiveRecord::Schema.define(version: 2020_01_29_122946) do
     t.string "internal_image_name", default: ""
     t.string "slug", default: ""
     t.integer "position"
+    t.string "external_status"
     t.index ["vendor_id"], name: "index_every_matrix_vendors_on_vendor_id"
   end
 
@@ -935,14 +939,14 @@ ActiveRecord::Schema.define(version: 2020_01_29_122946) do
   add_foreign_key "every_matrix_free_spin_bonus_play_items", "every_matrix_free_spin_bonuses"
   add_foreign_key "every_matrix_free_spin_bonus_play_items", "every_matrix_play_items", primary_key: "external_id"
   add_foreign_key "every_matrix_free_spin_bonus_wallets", "every_matrix_free_spin_bonuses"
-  add_foreign_key "every_matrix_game_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
+  add_foreign_key "every_matrix_game_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id", on_delete: :cascade
   add_foreign_key "every_matrix_play_item_categories", "every_matrix_categories", column: "category_id"
   add_foreign_key "every_matrix_play_item_categories", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
   add_foreign_key "every_matrix_play_items", "every_matrix_content_providers"
-  add_foreign_key "every_matrix_play_items", "every_matrix_vendors"
+  add_foreign_key "every_matrix_play_items", "every_matrix_vendors", on_delete: :cascade
   add_foreign_key "every_matrix_recommended_games_relationships", "every_matrix_play_items", column: "original_game_id", primary_key: "external_id"
   add_foreign_key "every_matrix_recommended_games_relationships", "every_matrix_play_items", column: "recommended_game_id", primary_key: "external_id"
-  add_foreign_key "every_matrix_table_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
+  add_foreign_key "every_matrix_table_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id", on_delete: :cascade
   add_foreign_key "every_matrix_transactions", "customer_bonuses"
   add_foreign_key "every_matrix_transactions", "customers"
   add_foreign_key "every_matrix_transactions", "every_matrix_free_spin_bonuses"

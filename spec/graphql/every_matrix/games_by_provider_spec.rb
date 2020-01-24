@@ -58,6 +58,19 @@ describe GraphQL, '#gamesByProvider' do
     end
   end
 
+  context 'deactivated games' do
+    before do
+      category.play_items <<
+        create_list(:casino_game, random_amount, :desktop, :deactivated)
+      provider.play_items << category.play_items
+    end
+
+    it 'returns list games for provider' do
+      expect(result.dig('data', 'gamesByProvider', 'collection').length)
+        .to be_zero
+    end
+  end
+
   context 'base query for live casino game' do
     before do
       category.play_items << create_list(:casino_table, random_amount, :desktop)

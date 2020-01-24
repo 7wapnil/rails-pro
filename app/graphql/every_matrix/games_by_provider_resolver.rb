@@ -13,6 +13,7 @@ module EveryMatrix
 
       subject
         .play_items
+        .activated
         .public_send(device_platform_scope)
         .reject_country(country)
         .distinct

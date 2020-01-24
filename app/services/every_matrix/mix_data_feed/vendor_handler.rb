@@ -5,11 +5,18 @@ module EveryMatrix
     class VendorHandler < MixDataFeed::BaseHandler
       private
 
+      def remove_object!
+        EveryMatrix::Vendor.find_by!(name: payload['id']).deactivated!
+
+        Rails.logger.info(message: 'Vendor deactivated on EM side',
+                          vendor_name: payload['id'])
+      end
+
       def handle_update_message
         vendor = EveryMatrix::Vendor
                  .find_or_initialize_by(vendor_id: data['vendorID'])
 
-        vendor.update!(params)
+        vendor.update!(params.compact)
       end
 
       def params
@@ -20,7 +27,8 @@ module EveryMatrix
           currencies: data['currencies'],
           logo_url: https(data.dig('presentation', 'logo', '*')),
           name: data['name'],
-          restricted_territories: data['restrictedTerritories']
+          restricted_territories: data['restrictedTerritories'],
+          external_status: Vendor::ACTIVATED
         }
       end
 

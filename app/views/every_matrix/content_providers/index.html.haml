@@ -3,14 +3,15 @@
 %table.table.entities
   %thead
     %tr
-      %th ID
-      %th Name
-      %th Show as vendor
-      %th Internal Image Name
-      %th Representation name
-      %th Slug
-      %th Visible
-      %th Position
+      %th= t('attributes.id')
+      %th= t('attributes.name')
+      %th= t('attributes.as_vendor')
+      %th= t('attributes.internal_image_name')
+      %th= t('attributes.representation_name')
+      %th= t('attributes.slug')
+      %th= t('attributes.visible')
+      %th= t('attributes.position')
+      %th= t('attributes.external_status')
   %tbody
     - @content_providers.each do |content_provider|
       %tr
@@ -23,5 +24,6 @@
         %td= content_provider.slug
         %td= content_provider.visible
         %td= content_provider.position
+        %td= content_provider.external_status
 
 = paginate @content_providers

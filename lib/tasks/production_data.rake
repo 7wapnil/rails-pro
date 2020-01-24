@@ -12,6 +12,17 @@ namespace :production_data do
     EveryMatrix::PlayItem.where("slug IS NULL OR slug = ''").find_each(&:save)
   end
 
+  namespace :every_matrix do
+    desc 'Set all every matrix entities as activated'
+    task set_as_activated: :environment do
+      %i[every_matrix_play_items
+         every_matrix_vendors
+         every_matrix_content_providers].each do |table|
+        execute("UPDATE #{table} SET external_status = 'activated'")
+      end
+    end
+  end
+
   namespace :labels do
     desc 'Create system labels'
     task add_system_labels: :environment do

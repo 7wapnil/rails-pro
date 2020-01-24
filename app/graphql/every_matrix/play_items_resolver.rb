@@ -14,6 +14,7 @@ module EveryMatrix
         .joins(:categories)
         .where(condition)
         .public_send(device)
+        .activated
         .reject_country(country)
         .order('every_matrix_play_item_categories.position ASC')
     end

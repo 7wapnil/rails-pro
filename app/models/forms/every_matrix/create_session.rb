@@ -29,6 +29,7 @@ module Forms
 
       def play_item
         @play_item ||= ::EveryMatrix::PlayItem
+                       .activated
                        .public_send(device)
                        .friendly
                        .find(play_item_slug)

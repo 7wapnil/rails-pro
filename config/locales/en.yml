@@ -121,6 +121,7 @@ en:
     converted_amount: Converted amount
     confiscated_amount: Confiscated amount
     awarded: Awarded
+    as_vendor: As vendor
     real_money_amount: Cash amount
     real_money: Real Money
     bonus_amount: Bonus amount
@@ -171,6 +172,8 @@ en:
     expired_at: Expired at
     expires_at: Expires at
     external_id: External ID
+    external_status: External status
+    external_vendor_id: External vendor id
     first_name: First name
     forfeited: Forfeited
     free_spin_bonus_id: Free spin bonus ID
@@ -182,6 +185,7 @@ en:
     initiator: Initiator
     in_progress: In progress
     ip_address: IP Address
+    internal_image_name: Internal image name
     kind: Kind
     label_description: Label description
     label_kind: Label kind
@@ -227,6 +231,7 @@ en:
     personal_information: Personal information
     phone: Phone number
     possible_payout: Possible payout
+    position: Position
     priority: Priority
     profit_loss: Profit/Loss
     promotional: Receive promotional content
@@ -237,6 +242,7 @@ en:
     repeatable: Repeatable
     requested_at: Requested at
     result: Result
+    representation_name: Representation name
     rollover_multiplier: Bonus rollover
     rollover_balance: Bonus rollover balance
     rollover_initial_balance: Bonus rollover initial balance
@@ -256,6 +262,7 @@ en:
     state: State
     status: Status
     street_address: Street address
+    slug: Slug
     text: Text
     tournament: Tournament
     transactions_spin: Transactions

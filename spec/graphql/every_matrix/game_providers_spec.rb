@@ -35,4 +35,20 @@ describe GraphQL, '#gameProviders' do
         .to eql(random_amount)
     end
   end
+
+  context 'with deactivated providers' do
+    let(:random_amount) { rand(2..5) }
+
+    before do
+      create_list(
+        :every_matrix_content_provider, random_amount,
+        :visible, :as_vendor, :deactivated
+      )
+    end
+
+    it 'does not return providers' do
+      expect(result.dig('data', 'gameProviders').length)
+        .to be_zero
+    end
+  end
 end

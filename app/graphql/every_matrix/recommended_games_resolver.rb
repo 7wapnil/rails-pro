@@ -16,6 +16,7 @@ module EveryMatrix
 
       original_game.recommended_games
                    .public_send(device)
+                   .activated
                    .reject_country(country)
                    .limit(LIMIT_RECOMMENDED_GAMES)
     end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 describe GraphQL, '#searchCasinoGames' do
-  let(:category) { create(:category) }
+  let!(:category) { create(:category) }
   let(:location) { OpenStruct.new(country_code: 'EST') }
   let(:request) { OpenStruct.new(location: location) }
   let(:context) { { request: request } }
@@ -42,10 +42,10 @@ describe GraphQL, '#searchCasinoGames' do
     ArcanebetSchema.execute(query, context: context, variables: variables)
   end
 
+  before { category.play_items << play_item }
+
   context 'basic query for searching games' do
-    let(:play_item) do
-      (category.play_items << create(:casino_game, :unique_names)).first
-    end
+    let(:play_item) { create(:casino_game, :unique_names) }
     let(:query_name) { play_item.name }
 
     before { create_list(:casino_game, rand(4..6), :unique_names) }
@@ -54,11 +54,20 @@ describe GraphQL, '#searchCasinoGames' do
       expect(result.dig('data', 'searchCasinoGames', 'collection', 0, 'id'))
         .to eq(play_item.id)
     end
+
+    context 'with deactivated games' do
+      let(:play_item) { create(:casino_game, :unique_names, :deactivated) }
+
+      it 'does not return deactivated games' do
+        expect(result.dig('data', 'searchCasinoGames', 'collection').length)
+          .to be_zero
+      end
+    end
   end
 
   context 'basic query which does not find games' do
-    let!(:play_item) { (category.play_items << create(:casino_game)).first }
-    let(:query_name) { Faker::Name.unique.name }
+    let!(:play_item) { create(:casino_game) }
+    let(:query_name) { Faker::Lorem.characters(10) }
 
     it 'returns empty result' do
       expect(result.dig('data', 'searchCasinoGames', 'collection'))

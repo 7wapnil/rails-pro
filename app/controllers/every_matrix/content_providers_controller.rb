@@ -24,7 +24,7 @@ module EveryMatrix
       params
         .require(:every_matrix_content_provider)
         .permit(
-          :name, :visible, :representation_name, :as_vendor,
+          :name, :visible, :representation_name, :as_vendor, :external_status,
           :logo_url, :internal_image_name, :slug, :position
         )
     end

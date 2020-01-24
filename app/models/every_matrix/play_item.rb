@@ -24,7 +24,7 @@ module EveryMatrix
     belongs_to :vendor, foreign_key: :every_matrix_vendor_id
 
     has_many :wallet_sessions
-    has_many :play_item_categories
+    has_many :play_item_categories, dependent: :destroy
     has_many :categories,
              through: :play_item_categories,
              foreign_key: :every_matrix_play_item_external_id
@@ -38,11 +38,17 @@ module EveryMatrix
              class_name: EveryMatrix::PlayItem.name
     has_one :game_details,
             foreign_key: :play_item_id,
-            class_name: EveryMatrix::GameDetails.name
+            class_name: EveryMatrix::GameDetails.name,
+            dependent: :destroy
     has_many :transactions,
              foreign_key: :play_item_id,
              class_name: EveryMatrix::Transaction.name,
-             dependent: :nullify
+             dependent: :restrict_with_exception
+
+    enum external_status: {
+      activated: ACTIVATED = 'activated',
+      deactivated: DEACTIVATED = 'deactivated'
+    }
 
     class << self
       # This default scope filters unexpected games we receive from EM side.
