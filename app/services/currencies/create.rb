@@ -20,7 +20,7 @@ module Currencies
     attr_reader :params, :current_user
 
     def validate_crypto_currency_deposit_rule!
-      ::EntryCurrencyRules::Crypto::DepositRuleValidation.new(
+      ::EntryCurrencyRules::Crypto::DepositRuleValidation.call(
         currency: currency,
         params: deposit_currency_rule_params
       )
