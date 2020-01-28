@@ -461,6 +461,24 @@ en:
     balance_entry_requests: Balance entry requests
     withdrawals: Withdrawal requests
 
+  transactions:
+    payment_methods:
+      credit_card: Credit Card
+      skrill: Skrill
+      neteller: Neteller
+      eco_payz: ecoPayz
+      idebit: iDebit
+      paysafecard: paysafecard
+      sofort: Sofort
+      ideal: iDeal
+      bitcoin: Bitcoin
+      webmoney: WebMoney
+      yandex: Yandex
+      qiwi: Qiwi
+      safecharge_unknown: System
+      simulated: System
+      cashier: Cashier
+
   errors:
     messages:
       account_locked:
