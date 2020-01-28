@@ -14,7 +14,7 @@ module Transactions
     field :mode, types.String,
           resolve: ->(obj, _args, _ctx) do
             mode = obj.refund? ? EntryRequest::REFUND : obj.mode
-            I18n.t("payments.payment_methods.#{mode}",
+            I18n.t("transactions.payment_methods.#{mode}",
                    default: mode&.humanize)
           end
     field :currencyCode, types.String,
