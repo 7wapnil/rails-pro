@@ -14,6 +14,7 @@ module Payments
           end
 
           def call
+            log_start_of_fetching_order_details
             return unsuccessful_request_error_message unless success?
 
             error_message
@@ -22,6 +23,12 @@ module Payments
           private
 
           attr_reader :transaction, :order_id
+
+          def log_start_of_fetching_order_details
+            Rails.logger.warn(message: 'Fetching payout order details',
+                              order_id: order_id,
+                              request_id: transaction.id)
+          end
 
           def unsuccessful_request_error_message
             return response['reason'] unless response['reason'].blank?
