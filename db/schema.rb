@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_21_091208) do
+ActiveRecord::Schema.define(version: 2020_01_28_102043) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(version: 2020_01_21_091208) do
     t.decimal "sportsbook_multiplier", default: "1.0", null: false
     t.decimal "max_rollover_per_spin"
     t.boolean "limit_per_each_bet_leg", default: false
+    t.integer "deposit_count"
   end
 
   create_table "comments", force: :cascade do |t|
