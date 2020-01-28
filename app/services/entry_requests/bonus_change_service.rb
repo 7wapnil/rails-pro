@@ -4,28 +4,34 @@ module EntryRequests
   class BonusChangeService < ApplicationService
     include JobLogger
 
-    delegate :initiator, :customer, to: :entry_request
-
     def initialize(entry_request:)
       @entry_request = entry_request
-      @customer_bonus = entry_request.origin
     end
 
     def call
-      return charge_failed! if entry_request.failed?
+      return charge_failed! unless eligible?
 
-      process_entry_request!
+      authorize!
+      return charge_failed! unless entry.present?
 
-      assign_entry if entry
+      entry
     end
 
     private
 
-    attr_reader :entry_request, :customer_bonus, :entry
+    attr_reader :entry_request, :entry
+
+    def eligible?
+      !entry_request.failed? && entry_request.entry.blank?
+    end
+
+    def authorize!
+      @entry = ::WalletEntry::AuthorizationService.call(entry_request)
+    end
 
     def charge_failed!
       raise FailedEntryRequestError,
-            'Failed entry request passed to payment service'
+            I18n.t('errors.messages.bonuses.failed_authorization')
     rescue FailedEntryRequestError => e
       log_job_message(:error,
                       message: e.message,
@@ -33,20 +39,6 @@ module EntryRequests
                       entry_request_id: entry_request.id)
 
       raise e
-    end
-
-    def process_entry_request!
-      @entry = ::WalletEntry::AuthorizationService.call(entry_request)
-    end
-
-    def assign_entry
-      return unless debit?
-
-      customer_bonus.update(entry: entry)
-    end
-
-    def debit?
-      entry.amount.positive?
     end
   end
 end

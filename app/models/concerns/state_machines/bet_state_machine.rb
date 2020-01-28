@@ -156,7 +156,7 @@ module StateMachines
         end
 
         event :send_to_manual_settlement do
-          transitions from: %i[accepted settled voided],
+          transitions from: %i[accepted settled],
                       to: :pending_manual_settlement,
                       after: :update_error_notification
         end

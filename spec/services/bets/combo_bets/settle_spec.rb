@@ -195,7 +195,6 @@ describe Bets::ComboBets::Settle do
          .reject(&:voided?)
          .map(&:odd_value)
          .reduce(:*)
-         .round(Bet::PRECISION)
     end
 
     it 'does not change bet status' do

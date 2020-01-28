@@ -16,6 +16,7 @@ module StateMachines
 
     DEFAULT_STATUS = INITIAL
     USED_STATUSES = [CANCELLED, COMPLETED, LOST, EXPIRED].freeze
+    DISMISSED_STATUSES = [CANCELLED, LOST, EXPIRED].freeze
     SYSTEM_STATUSES = [INITIAL, FAILED].freeze
 
     included do
@@ -78,7 +79,7 @@ module StateMachines
       private
 
       def assign_entry(entry)
-        update(entry: entry)
+        update(activation_entry: entry)
       end
 
       def recalculate_rolover
@@ -89,7 +90,7 @@ module StateMachines
       end
 
       def rollover_value
-        @rollover_value ||= entry.bonus_amount * rollover_multiplier
+        @rollover_value ||= activation_entry.bonus_amount * rollover_multiplier
       end
 
       def set_activated_at

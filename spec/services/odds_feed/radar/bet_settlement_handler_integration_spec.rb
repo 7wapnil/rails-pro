@@ -76,14 +76,14 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
         before do
           odd = send(state[:odd_name])
           odd.value = state[:odd_value]
-          create(:bet, :accepted,
+          create(:bet, :with_placement_entry, :accepted,
                  odd: odd, amount: state[:stake], currency: currency)
 
           subject.handle
         end
 
         it 'creates correct number of entries' do
-          expect(Entry.all.length).to eq state[:records_count]
+          expect(Entry.all.length - 1).to eq state[:records_count]
         end
 
         if state[:win]
@@ -103,7 +103,9 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
     context 'half win, half refund' do
       let(:odd) { odd_half_win }
       let!(:bet) do
-        create(:bet, :accepted, odd: odd, amount: 100, currency: currency)
+        create(:bet, :with_placement_entry, :accepted, odd: odd,
+                                                       amount: 100,
+                                                       currency: currency)
       end
 
       it 'raises an error' do
@@ -137,7 +139,9 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
     context 'lose, half refund' do
       let(:odd) { odd_lose_half_refund }
       let!(:bet) do
-        create(:bet, :accepted, odd: odd, amount: 22.4, currency: currency)
+        create(:bet, :with_placement_entry, :accepted, odd: odd,
+                                                       amount: 22.4,
+                                                       currency: currency)
       end
 
       it 'raises an error' do
@@ -171,12 +175,16 @@ describe OddsFeed::Radar::BetSettlementHandler, '#integration' do
 
   it 'pay outs win for multiple bets with different odd values' do
     odd_entire_win.value = 2
-    create(:bet, :accepted, odd: odd_entire_win, amount: 20, currency: currency)
+    create(:bet, :with_placement_entry, :accepted, odd: odd_entire_win,
+                                                   amount: 20,
+                                                   currency: currency)
     odd_entire_win.value = 3
-    create(:bet, :accepted, odd: odd_entire_win, amount: 10, currency: currency)
+    create(:bet, :with_placement_entry, :accepted, odd: odd_entire_win,
+                                                   amount: 10,
+                                                   currency: currency)
 
     subject.handle
 
-    expect(Entry.sum(&:amount)).to be_within(0.01).of(70)
+    expect(Entry.win.sum(&:amount)).to be_within(0.01).of(70)
   end
 end

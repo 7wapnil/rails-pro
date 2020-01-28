@@ -39,11 +39,9 @@ module EntryRequests
       def bet_rollback_request_attrs
         {
           **base_request_attrs,
+          **money_transitions(placement_rollback_entry, true),
           kind: EntryKinds::ROLLBACK,
-          amount: -placement_rollback_entry.amount,
-          comment: bet_rollback_comment,
-          real_money_amount: -placement_rollback_entry.real_money_amount,
-          bonus_amount: -placement_rollback_entry.bonus_amount
+          comment: bet_rollback_comment
         }
       end
 
@@ -54,6 +52,10 @@ module EntryRequests
           currency_id: bet.currency_id,
           origin: bet
         }
+      end
+
+      def money_transitions(entry, debit)
+        Bets::Clerk.call(bet: bet, origin: entry, debit: debit)
       end
 
       def bet_rollback_comment
@@ -76,11 +78,9 @@ module EntryRequests
       def win_rollback_request_attrs
         {
           **base_request_attrs,
+          **money_transitions(winning_rollback_entry, false),
           kind: EntryKinds::ROLLBACK,
-          amount: winning_rollback_entry.amount.abs,
-          comment: win_rollback_comment,
-          real_money_amount: winning_rollback_entry.real_money_amount.abs,
-          bonus_amount: winning_rollback_entry.bonus_amount.abs
+          comment: win_rollback_comment
         }
       end
 
@@ -104,11 +104,9 @@ module EntryRequests
       def resettle_rollback_request_attrs
         {
           **base_request_attrs,
+          **money_transitions(winning, true),
           kind: EntryKinds::SYSTEM_BET_CANCEL,
-          amount: -winning.amount.abs,
-          comment: resettle_rollback_comment,
-          real_money_amount: -winning.real_money_amount.abs,
-          bonus_amount: -winning.bonus_amount.abs
+          comment: resettle_rollback_comment
         }
       end
 

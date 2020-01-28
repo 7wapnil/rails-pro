@@ -34,7 +34,7 @@ FactoryBot.define do
     end
 
     trait :with_entry do
-      association :entry, factory: :entry, strategy: :build
+      association :activation_entry, factory: :entry, strategy: :build
     end
 
     trait :with_empty_bonus_balance do

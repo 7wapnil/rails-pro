@@ -22,7 +22,8 @@ module CustomerBonuses
       eligible_bet_status? &&
         !bet.counted_towards_rollover? &&
         customer_bonus.present? &&
-        customer_bonus.active? && customer_bonus.sportsbook? &&
+        customer_bonus.active? &&
+        customer_bonus.sportsbook? &&
         bet_match_bonus_rules?
     end
 

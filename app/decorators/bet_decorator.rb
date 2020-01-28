@@ -52,6 +52,10 @@ class BetDecorator < ApplicationDecorator
            default: notification_message)
   end
 
+  def odd_value(human: false)
+    human ? number_with_precision(super(), precision: PRECISION) : super()
+  end
+
   def bet_type
     live? ? t('bets.bet_types.live') : t('bets.bet_types.prematch')
   end

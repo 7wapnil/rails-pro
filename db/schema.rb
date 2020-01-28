@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_20_091107) do
+ActiveRecord::Schema.define(version: 2020_01_21_091208) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -129,11 +129,11 @@ ActiveRecord::Schema.define(version: 2020_01_20_091107) do
     t.datetime "updated_at", null: false
     t.integer "percentage"
     t.boolean "repeatable", default: true, null: false
-    t.boolean "limit_per_each_bet_leg", default: false
     t.boolean "casino", default: false, null: false
     t.boolean "sportsbook", default: true, null: false
     t.decimal "sportsbook_multiplier", default: "1.0", null: false
     t.decimal "max_rollover_per_spin"
+    t.boolean "limit_per_each_bet_leg", default: false
   end
 
   create_table "comments", force: :cascade do |t|
@@ -207,11 +207,13 @@ ActiveRecord::Schema.define(version: 2020_01_20_091107) do
     t.datetime "activated_at"
     t.datetime "deactivated_at"
     t.bigint "entry_id"
-    t.boolean "limit_per_each_bet_leg", default: false
     t.boolean "casino", default: false, null: false
     t.boolean "sportsbook", default: true, null: false
     t.decimal "sportsbook_multiplier", default: "1.0", null: false
     t.decimal "max_rollover_per_spin"
+    t.boolean "limit_per_each_bet_leg", default: false
+    t.decimal "total_confiscated_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "total_converted_amount", precision: 14, scale: 2, default: "0.0"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["entry_id"], name: "index_customer_bonuses_on_entry_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -399,9 +401,12 @@ ActiveRecord::Schema.define(version: 2020_01_20_091107) do
     t.decimal "bonus_amount", precision: 14, scale: 2, default: "0.0"
     t.decimal "base_currency_bonus_amount", precision: 14, scale: 2, default: "0.0"
     t.decimal "bonus_amount_after", precision: 14, scale: 2, default: "0.0"
-    t.decimal "cancelled_bonus_amount", precision: 14, scale: 2, default: "0.0"
-    t.decimal "base_currency_cancelled_bonus_amount", precision: 14, scale: 2, default: "0.0"
-    t.decimal "cancelled_bonus_amount_after", precision: 14, scale: 2, default: "0.0"
+    t.decimal "confiscated_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "base_currency_confiscated_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "confiscated_bonus_amount_after", precision: 14, scale: 2, default: "0.0"
+    t.decimal "converted_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "base_currency_converted_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "converted_bonus_amount_after", precision: 14, scale: 2, default: "0.0"
     t.index ["entry_request_id"], name: "index_entries_on_entry_request_id"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
@@ -436,7 +441,8 @@ ActiveRecord::Schema.define(version: 2020_01_20_091107) do
     t.string "external_id"
     t.decimal "real_money_amount", precision: 14, scale: 2, default: "0.0"
     t.decimal "bonus_amount", precision: 14, scale: 2, default: "0.0"
-    t.decimal "cancelled_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "confiscated_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "converted_bonus_amount", precision: 14, scale: 2, default: "0.0"
     t.index ["initiator_type", "initiator_id"], name: "index_entry_requests_on_initiator_type_and_initiator_id"
     t.index ["origin_type", "origin_id"], name: "index_entry_requests_on_origin_type_and_origin_id"
   end
@@ -883,7 +889,7 @@ ActiveRecord::Schema.define(version: 2020_01_20_091107) do
     t.bigint "currency_id"
     t.decimal "real_money_balance", precision: 14, scale: 2, default: "0.0"
     t.decimal "bonus_balance", precision: 14, scale: 2, default: "0.0"
-    t.decimal "cancelled_bonus_balance", precision: 14, scale: 2, default: "0.0"
+    t.decimal "confiscated_bonus_balance", precision: 14, scale: 2, default: "0.0"
     t.string "every_matrix_user_id"
     t.index ["currency_id"], name: "index_wallets_on_currency_id"
     t.index ["customer_id", "currency_id"], name: "index_wallets_on_customer_id_and_currency_id", unique: true

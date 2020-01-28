@@ -25,10 +25,8 @@ module EntryRequests
 
       def bet_cancel_request_attributes
         base_entry_request_attributes.merge(
-          amount: placement_entry.amount.abs,
-          comment: bet_cancel_comment,
-          real_money_amount: placement_entry.real_money_amount.abs,
-          bonus_amount: placement_entry.bonus_amount.abs
+          **bet_cancel_money_transitions,
+          comment: bet_cancel_comment
         )
       end
 
@@ -40,6 +38,10 @@ module EntryRequests
           currency_id: bet.currency_id,
           origin: bet
         }
+      end
+
+      def bet_cancel_money_transitions
+        Bets::Clerk.call(bet: bet, origin: placement_entry)
       end
 
       def bet_cancel_comment
@@ -54,10 +56,8 @@ module EntryRequests
 
       def win_cancel_request_attributes
         base_entry_request_attributes.merge(
-          amount: -winning_entry.amount,
-          comment: win_cancel_comment,
-          real_money_amount: -winning_entry.real_money_amount,
-          bonus_amount: -winning_entry.bonus_amount
+          **win_cancel_money_transitions,
+          comment: win_cancel_comment
         )
       end
 
@@ -67,6 +67,10 @@ module EntryRequests
 
       def placement_entry
         @placement_entry ||= bet.placement_entry
+      end
+
+      def win_cancel_money_transitions
+        Bets::Clerk.call(bet: bet, origin: winning_entry, debit: true)
       end
 
       def win_cancel_comment

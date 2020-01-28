@@ -4,7 +4,8 @@ class BetLeg < ApplicationRecord
   SETTLEMENT_STATUSES = {
     lost: LOST = 'lost',
     won: WON = 'won',
-    voided: VOIDED = 'voided'
+    voided: VOIDED = 'voided',
+    unresolved: UNRESOLVED = 'unresolved'
   }.freeze
 
   CANCELLED_BY_SYSTEM = 'cancelled_by_system'

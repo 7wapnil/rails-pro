@@ -19,7 +19,8 @@ describe EntryRequests::BetCancellationService do
   let!(:bet) do
     create(:bet, :sent_to_external_validation, placement_entry: entry,
                                                validation_ticket_id: ticket_id,
-                                               currency: currency)
+                                               currency: currency,
+                                               customer: entry.customer)
   end
   let!(:ticket_id) { "MTS_Test_#{Faker::Number.number(13)}" }
   let!(:wallet) do
@@ -30,7 +31,7 @@ describe EntryRequests::BetCancellationService do
   let!(:balance_amount_before) { wallet.real_money_balance }
 
   let(:entry_request) do
-    EntryRequests::Factories::Refund.call(entry: bet.entry, comment: message)
+    EntryRequests::Factories::BetRefund.call(bet: bet, comment: message)
   end
 
   context 'with new entry request' do

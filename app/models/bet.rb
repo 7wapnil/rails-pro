@@ -131,7 +131,6 @@ class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
         product * leg_odd_value
       end
-      .round(PRECISION)
   end
 
   def potential_win
