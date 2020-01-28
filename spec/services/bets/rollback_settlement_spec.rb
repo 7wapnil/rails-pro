@@ -374,4 +374,85 @@ describe Bets::RollbackSettlement do
       subject
     end
   end
+
+  context 'bonuses' do
+    let(:bet_status) { Bet::SETTLED }
+    let(:bet_settlement_status) { Bet::LOST }
+    let(:bet) do
+      create(:bet, :with_bet_leg, :with_active_bonus,
+             status: bet_status, settlement_status: bet_settlement_status)
+    end
+    let(:bonus) { bet.customer_bonus }
+
+    CustomerBonus::USED_STATUSES.each do |status|
+      context "lost bet and #{status} bonus" do
+        before do
+          bonus.update(status: status)
+
+          subject
+        end
+
+        it 'does not change balance' do
+          expect(wallet.amount).to eq(wallet.reload.amount)
+        end
+      end
+    end
+
+    CustomerBonus::DISMISSED_STATUSES.each do |status|
+      context "won bet and #{status} bonus" do
+        let(:bet_settlement_status) { Bet::WON }
+        let!(:winning) do
+          create(:entry, :win, :with_balance_entries, origin: bet,
+                                                      wallet: wallet)
+        end
+        let!(:total_confiscated_amount) do
+          bonus.total_confiscated_amount
+        end
+        let(:confiscated_amount) do
+          total_confiscated_amount - bet.winning.bonus_amount
+        end
+
+        before do
+          bet.bet_legs.each(&:won!)
+          bonus.update(status: status)
+
+          subject
+        end
+
+        it 'subtracts winning bonus part from confiscated amount' do
+          expect(bonus.reload.total_confiscated_amount)
+            .to eq(confiscated_amount)
+        end
+      end
+    end
+
+    context 'won bet and completed bonus' do
+      let(:bet_settlement_status) { Bet::WON }
+      let!(:winning) do
+        create(:entry, :win, :with_balance_entries, origin: bet,
+                                                    wallet: wallet)
+      end
+      let!(:total_converted_amount) { bonus.total_converted_amount }
+      let(:converted_amount) do
+        total_converted_amount - bet.winning.bonus_amount
+      end
+      let!(:real_money_balance) { wallet.real_money_balance }
+      let(:expected_real_money) { real_money_balance - bet.winning.amount }
+
+      before do
+        bet.bet_legs.each(&:won!)
+        bonus.complete!
+
+        subject
+      end
+
+      it 'subtracts winning bonus part from converted amount' do
+        expect(bonus.reload.total_converted_amount).to eq(converted_amount)
+      end
+
+      it 'subtracts winning bonus part from real money' do
+        expect(wallet.reload.real_money_balance).to eq(expected_real_money)
+      end
+    end
+  end
 end

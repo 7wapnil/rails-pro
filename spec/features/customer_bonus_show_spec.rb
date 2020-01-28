@@ -6,7 +6,7 @@ describe CustomerBonus, '#show' do
       create(:customer_bonus,
              rollover_balance: Faker::Number.decimal(2, 2),
              rollover_initial_value: Faker::Number.decimal(2, 2),
-             entry: entry)
+             activation_entry: entry)
     end
 
     let(:entry) do

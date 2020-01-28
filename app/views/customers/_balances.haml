@@ -9,14 +9,14 @@
           %td
             %b= wallet_balance(wallet)
         %tr
-          %td Real Money
+          %td= t('attributes.real_money')
           %td= wallet_balance(wallet, wallet.real_money_balance)
         %tr
-          %td Bonus
+          %td= t('attributes.bonus')
           %td= wallet_balance(wallet, wallet.bonus_balance)
         %tr
-          %td Cancelled Bonus
-          %td= wallet_balance(wallet, wallet.cancelled_bonus_balance)
+          %td= t('attributes.confiscated_bonus')
+          %td= wallet_balance(wallet, wallet.confiscated_bonus_balance)
   - else
     .text-center
       %em= t(:no_records)

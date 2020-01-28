@@ -4,7 +4,7 @@ describe Bets::RollbackCancel do
   subject { described_class.call(bet_leg: bet_leg, bet: bet.reload) }
 
   let(:bet) do
-    create(:bet, :won, :cancelled_by_system,
+    create(:bet, :won, :cancelled_by_system, :with_active_bonus,
            :with_placement_entry, :with_settled_bet_leg)
   end
   let(:bet_leg) do
@@ -12,6 +12,7 @@ describe Bets::RollbackCancel do
            bet: bet,
            settlement_status: bet_leg_settlement_status)
   end
+  let(:customer_bonus) { bet.customer_bonus }
   let(:bet_leg_settlement_status) { BetLeg::WON }
   let!(:placement_rollback_entry) do
     create(:entry, origin: bet,
@@ -71,6 +72,7 @@ describe Bets::RollbackCancel do
 
     context 'accepted canceled unsettled bet' do
       let(:bet) { create(:bet, :cancelled_by_system, :with_placement_entry) }
+      let(:bet_leg_settlement_status) { nil }
       let!(:winning_rollback_entry) {}
       let!(:expected_amount) do
         wallet.amount - bet.placement_rollback_entry.amount.abs
@@ -103,7 +105,7 @@ describe Bets::RollbackCancel do
     let(:settlement_status) { nil }
     let(:bet) do
       traits = [bet_status.to_sym, :with_placement_entry,
-                settlement_status&.to_sym]
+                :with_active_bonus, settlement_status&.to_sym]
       create(:bet, *traits.compact, combo_bets: true)
     end
 
@@ -258,6 +260,31 @@ describe Bets::RollbackCancel do
         subject
         expect(wallet.reload.amount).to eq(expected_amount)
       end
+
+      context 'when bonus was completed before rollback' do
+        let(:winning_entry) { bet.reload_winning }
+        let(:ratio) do
+          RatioCalculator.call(
+            real_money_amount: bet.placement_entry.real_money_amount,
+            bonus_amount: bet.placement_entry.bonus_amount
+          )
+        end
+        let(:converted_amount) do
+          (winning_entry.amount * (1 - ratio)).round(Bet::PRECISION)
+        end
+
+        before { customer_bonus&.complete! }
+
+        it 'returns all money as real money' do
+          subject
+          expect(wallet.reload.real_money_balance).to eq(expected_amount)
+        end
+
+        it 'stores converted amount in entry' do
+          subject
+          expect(winning_entry.converted_bonus_amount).to eq(converted_amount)
+        end
+      end
     end
 
     context 'with voided bet leg and processing canceled lost bet leg' do
@@ -351,6 +378,98 @@ describe Bets::RollbackCancel do
       it 'updates wallet balance' do
         subject
         expect(wallet.reload.amount).to eq(expected_amount)
+      end
+    end
+  end
+
+  context 'bonuses' do
+    let(:bet_status) { Bet::ACCEPTED }
+    let(:settlement_status) { nil }
+    let(:bet) do
+      traits = [bet_status.to_sym, :with_active_bonus,
+                :with_placement_entry, settlement_status&.to_sym]
+      create(:bet, *traits.compact, combo_bets: true)
+    end
+    let(:bonus) { bet.customer_bonus }
+
+    context 're-win' do
+      let(:bet_status) { Bet::SETTLED }
+      let(:settlement_status) { Bet::WON }
+      let(:bet_leg_settlement_status) { BetLeg::WON }
+      let!(:won_bet_leg) { create(:bet_leg, :won, bet: bet) }
+      let(:placed_amount) { bet.placement_entry.amount }
+      let!(:re_placement_entry) do
+        create(:entry, :with_balance_entries, origin: bet,
+                                              wallet: wallet,
+                                              kind: EntryKinds::BET,
+                                              amount: placed_amount)
+      end
+      let!(:re_winning_entry) do
+        create(:entry, :with_balance_entries, origin: bet,
+                                              wallet: wallet,
+                                              kind: EntryKinds::WIN,
+                                              amount: bet.win_amount)
+      end
+      let(:ratio) do
+        RatioCalculator.call(
+          real_money_amount: bet.placement_entry.real_money_amount,
+          bonus_amount: bet.placement_entry.bonus_amount
+        )
+      end
+      let(:win_amount) do
+        bet.amount *
+          won_bet_leg.odd_value *
+          bet_leg.odd_value
+      end
+      let(:real_money_win_amount) { win_amount.round(Bet::PRECISION) * ratio }
+      let(:bonus_win_amount) do
+        win_amount.round(Bet::PRECISION) -
+          real_money_win_amount.round(Bet::PRECISION)
+      end
+
+      CustomerBonus::DISMISSED_STATUSES.each do |status|
+        context "re-win bet when #{status} bonus" do
+          let!(:total_confiscated_amount) do
+            bonus.total_confiscated_amount
+          end
+          let(:confiscated_amount) do
+            total_confiscated_amount -
+              re_winning_entry.bonus_amount +
+              bonus_win_amount
+          end
+
+          before do
+            bet.currency.entry_currency_rules.delete_all
+            bonus.update(status: status)
+
+            subject
+          end
+
+          it 'subtracts(adds) winning bonus part from confiscated amount' do
+            expect(bonus.reload.total_confiscated_amount)
+              .to eq(confiscated_amount)
+          end
+        end
+      end
+
+      context 'won bet and completed bonus' do
+        let!(:total_converted_amount) { bonus.total_converted_amount }
+        let(:converted_amount) do
+          total_converted_amount -
+            re_winning_entry.bonus_amount +
+            bonus_win_amount
+        end
+
+        before do
+          bet.currency.entry_currency_rules.delete_all
+          bonus.complete!
+
+          subject
+        end
+
+        it 'subtracts(adds) winning bonus part from converted amount' do
+          expect(bonus.reload.total_converted_amount).to eq(converted_amount)
+        end
       end
     end
   end

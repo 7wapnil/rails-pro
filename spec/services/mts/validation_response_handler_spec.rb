@@ -29,9 +29,9 @@ describe Mts::ValidationResponseHandler do
     end
 
     it 'creates refund entry request' do
-      expect(EntryRequests::Factories::Refund)
+      expect(EntryRequests::Factories::BetRefund)
         .to receive(:call)
-        .with(entry: bet.entry, comment: comment)
+        .with(bet: bet, comment: comment)
         .and_return(refund_double)
 
       described_class.call(payload)

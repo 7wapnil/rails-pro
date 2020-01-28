@@ -7,12 +7,14 @@ module Bets
     delegate :placement_entry, to: :bet
 
     def initialize(bet_leg:, bet:)
-      @bet_leg = bet_leg
+      @bet_leg = bet.bet_legs.find { |leg| leg.id == bet_leg.id }
       @bet = bet
     end
 
     def call
       ActiveRecord::Base.transaction do
+        lock_important_entities!
+
         bet_leg.cancelled_by_system!
         return unless resettle_bet?
 
@@ -20,6 +22,7 @@ module Bets
         return resettle if bet.combo_bets?
 
         bet.cancel_by_system!
+        rollback_bonus_rollover!
       end
     end
 
@@ -27,12 +30,16 @@ module Bets
 
     attr_reader :bet_leg, :bet
 
+    def lock_important_entities!
+      bet.lock!
+      bet_leg.lock!
+      bet.customer_bonus&.lock!
+    end
+
     def resettle_bet?
       return true unless bet.combo_bets?
 
-      bet.bet_legs
-         .reject { |leg| leg.id == bet_leg.id }
-         .all? { |leg| !leg.settlement_status.nil? && !leg.lost? }
+      bet.bet_legs.all?(&method(:not_pending_or_lost_bet_leg?))
     end
 
     def return_money
@@ -42,10 +49,19 @@ module Bets
 
     def resettle
       bet.resettle!(settlement_status: resettlement_status)
+      settle_customer_bonus! unless bet.voided?
       return unless bet.won?
 
       proceed_entry_request(place_entry_request)
       proceed_entry_request(win_entry_request)
+    end
+
+    def settle_customer_bonus!
+      CustomerBonuses::BetSettlementService.call(bet)
+    end
+
+    def rollback_bonus_rollover!
+      CustomerBonuses::RollbackBonusRolloverService.call(bet: bet)
     end
 
     def resettlement_status
@@ -58,11 +74,9 @@ module Bets
 
     def place_entry_request
       ::EntryRequest.create!(
+        **replace_money_transitions,
         kind: EntryKinds::BET,
         mode: EntryRequest::INTERNAL,
-        amount: placement_entry.amount,
-        real_money_amount: placement_entry.real_money_amount,
-        bonus_amount: placement_entry.bonus_amount,
         comment: 'Resettlement',
         customer_id: bet.customer_id,
         currency_id: bet.currency_id,
@@ -70,35 +84,28 @@ module Bets
       )
     end
 
+    def replace_money_transitions
+      Bets::Clerk.call(bet: bet, origin: placement_entry, debit: true)
+    end
+
     def win_entry_request
       ::EntryRequests::Factories::WinPayout.call(
         origin: bet,
         kind: EntryKinds::WIN,
         mode: EntryRequest::INTERNAL,
-        amount: bet.amount * won_odds_product,
+        amount: bet.amount * bet.odd_value,
         comment: "WIN for bet #{bet.id}"
       )
     end
 
+    def not_pending_or_lost_bet_leg?(leg)
+      return true if leg.cancelled_by_system?
+
+      leg.settlement_status.present? && !leg.lost? && !leg.unresolved?
+    end
+
     def voided?
-      bet.bet_legs
-         .reject { |leg| leg.id == bet_leg.id }
-         .all? do |leg|
-           leg.voided? || leg.cancelled_by_system?
-         end
-    end
-
-    def won_odds_product
-      bet.bet_legs
-         .inject(1) { |product, leg| product * odd_value(leg) }
-    end
-
-    def odd_value(leg)
-      return VOIDED_ODD_VALUE if leg.cancelled_by_system? ||
-                                 leg.voided? ||
-                                 leg.id == bet_leg.id
-
-      leg.odd_value
+      bet.bet_legs.all? { |leg| leg.voided? || leg.cancelled_by_system? }
     end
   end
 end

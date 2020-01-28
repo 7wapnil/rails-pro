@@ -258,4 +258,179 @@ describe Bets::Cancel do
       end
     end
   end
+
+  context 'bonuses' do
+    let(:bet_status) { Bet::SETTLED }
+    let(:bet_settlement_status) { Bet::LOST }
+    let(:bet) do
+      create(:bet, :with_bet_leg, :with_active_bonus, :with_placement_entry,
+             status: bet_status, settlement_status: bet_settlement_status)
+    end
+    let(:bonus) { bet.customer_bonus }
+
+    CustomerBonus::DISMISSED_STATUSES.each do |status|
+      context "won bet and #{status} bonus" do
+        let(:bet_settlement_status) { Bet::WON }
+        let!(:winning) do
+          create(:entry, :win, :with_balance_entries, origin: bet,
+                                                      wallet: wallet)
+        end
+        let!(:total_confiscated_amount) do
+          bonus.total_confiscated_amount
+        end
+        let(:confiscated_amount) do
+          total_confiscated_amount -
+            bet.winning.bonus_amount +
+            bet.placement_entry.bonus_amount.abs
+        end
+
+        before do
+          bet.bet_legs.each(&:won!)
+          bonus.update(status: status)
+
+          subject
+        end
+
+        it 'subtracts winning&placed bonus part from confiscated amount' do
+          expect(bonus.reload.total_confiscated_amount)
+            .to eq(confiscated_amount)
+        end
+      end
+    end
+
+    context 'won bet and completed bonus' do
+      let(:bet_settlement_status) { Bet::WON }
+      let!(:winning) do
+        create(:entry, :win, :with_balance_entries, origin: bet,
+                                                    wallet: wallet)
+      end
+      let!(:total_converted_amount) { bonus.total_converted_amount }
+      let(:converted_amount) do
+        total_converted_amount -
+          bet.winning.bonus_amount +
+          bet.placement_entry.bonus_amount.abs
+      end
+      let!(:real_money_balance) { wallet.real_money_balance }
+      let(:expected_real_money) do
+        real_money_balance -
+          bet.winning.amount +
+          bet.placement_entry.amount.abs
+      end
+
+      before do
+        bet.bet_legs.each(&:won!)
+        bonus.complete!
+
+        subject
+      end
+
+      it 'subtracts winning&placed bonus part from converted amount' do
+        expect(bonus.reload.total_converted_amount).to eq(converted_amount)
+      end
+
+      it 'subtracts winning&placed bonus part from real money' do
+        expect(wallet.reload.real_money_balance).to eq(expected_real_money)
+      end
+    end
+
+    CustomerBonus::DISMISSED_STATUSES.each do |status|
+      context "lost bet and #{status} bonus" do
+        let!(:total_confiscated_amount) do
+          bonus.total_confiscated_amount
+        end
+        let(:confiscated_amount) do
+          total_confiscated_amount + bet.placement_entry.bonus_amount.abs
+        end
+
+        before do
+          bet.bet_legs.each(&:lost!)
+          bonus.update(status: status)
+
+          subject
+        end
+
+        it 'subtracts placed bonus part from confiscated amount' do
+          expect(bonus.reload.total_confiscated_amount)
+            .to eq(confiscated_amount)
+        end
+      end
+    end
+
+    context 'lost bet and completed bonus' do
+      let!(:total_converted_amount) { bonus.total_converted_amount }
+      let(:converted_amount) do
+        total_converted_amount + bet.placement_entry.bonus_amount.abs
+      end
+      let!(:real_money_balance) { wallet.real_money_balance }
+      let(:expected_real_money) do
+        real_money_balance + bet.placement_entry.amount.abs
+      end
+
+      before do
+        bet.bet_legs.each(&:lost!)
+        bonus.complete!
+
+        subject
+      end
+
+      it 'subtracts placed bonus part from converted amount' do
+        expect(bonus.reload.total_converted_amount).to eq(converted_amount)
+      end
+
+      it 'subtracts placed bonus part from real money' do
+        expect(wallet.reload.real_money_balance).to eq(expected_real_money)
+      end
+    end
+
+    CustomerBonus::DISMISSED_STATUSES.each do |status|
+      context "accepted bet and #{status} bonus" do
+        let(:bet_settlement_status) {}
+        let(:bet_status) { Bet::ACCEPTED }
+        let!(:total_confiscated_amount) do
+          bonus.total_confiscated_amount
+        end
+        let(:confiscated_amount) do
+          total_confiscated_amount + bet.placement_entry.bonus_amount.abs
+        end
+
+        before do
+          bonus.update(status: status)
+
+          subject
+        end
+
+        it 'subtracts placed bonus part from confiscated amount' do
+          expect(bonus.reload.total_confiscated_amount)
+            .to eq(confiscated_amount)
+        end
+      end
+    end
+
+    context 'accepted bet and completed bonus' do
+      let(:bet_settlement_status) {}
+      let(:bet_status) { Bet::ACCEPTED }
+      let!(:total_converted_amount) { bonus.total_converted_amount }
+      let(:converted_amount) do
+        total_converted_amount + bet.placement_entry.bonus_amount.abs
+      end
+      let!(:real_money_balance) { wallet.real_money_balance }
+      let(:expected_real_money) do
+        real_money_balance + bet.placement_entry.amount.abs
+      end
+
+      before do
+        bonus.complete!
+
+        subject
+      end
+
+      it 'subtracts placed bonus part from converted amount' do
+        expect(bonus.reload.total_converted_amount).to eq(converted_amount)
+      end
+
+      it 'subtracts placed bonus part from real money' do
+        expect(wallet.reload.real_money_balance).to eq(expected_real_money)
+      end
+    end
+  end
 end

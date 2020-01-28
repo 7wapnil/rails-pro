@@ -14,9 +14,8 @@ module BalanceCalculations
     end
 
     def call
-      return all_real_money if complete_bonus_bet?
-
       {
+        amount: amount,
         real_money_amount: calculated_real_money_amount,
         bonus_amount: calculated_bonus_amount
       }
@@ -26,16 +25,12 @@ module BalanceCalculations
 
     attr_reader :bet, :amount
 
-    def all_real_money
-      { real_money_amount: amount }
-    end
-
-    def complete_bonus_bet?
-      bet.customer_bonus&.completed?
-    end
-
     def calculated_real_money_amount
       @calculated_real_money_amount ||= (amount * ratio).round(MONEY_PRECISION)
+    end
+
+    def calculated_bonus_amount
+      amount - calculated_real_money_amount
     end
 
     def ratio
@@ -43,10 +38,6 @@ module BalanceCalculations
         real_money_amount: real_money_amount,
         bonus_amount: bonus_amount
       )
-    end
-
-    def calculated_bonus_amount
-      amount - calculated_real_money_amount
     end
   end
 end

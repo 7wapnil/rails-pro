@@ -14,7 +14,11 @@ module Betting
         obj.created_at.strftime('%e.%m.%y %H:%M:%S')
       end
     end
-    field :oddValue, !types.Float, property: :odd_value
+    field :oddValue, !types.Float do
+      resolve ->(obj, _args, _ctx) do
+        obj.odd_value(human: true)
+      end
+    end
     field :status, !types.String
     field :notificationCode, types.String, property: :notification_code
     field :message, types.String, property: :human_notification_message

@@ -9,6 +9,7 @@ module EntryRequests
         @customer_bonus = customer_bonus
         @amount = amount
         @initiator = params[:initiator]
+        @kind = params[:kind] || EntryRequest::BONUS_CHANGE
       end
 
       def call
@@ -21,7 +22,7 @@ module EntryRequests
 
       private
 
-      attr_reader :customer_bonus, :amount, :initiator, :entry_request
+      attr_reader :customer_bonus, :amount, :initiator, :entry_request, :kind
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
@@ -31,7 +32,7 @@ module EntryRequests
         {
           amount: amount,
           mode: EntryRequest::INTERNAL,
-          kind: EntryRequest::BONUS_CHANGE,
+          kind: kind,
           initiator: initiator,
           comment: comment,
           origin: customer_bonus,

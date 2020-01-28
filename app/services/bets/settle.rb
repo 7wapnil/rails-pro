@@ -29,6 +29,7 @@ module Bets
     rescue StandardError => error
       bet.send_to_manual_settlement!(error.message)
       bet_leg.pending_manual_settlement!
+      bet_leg.unresolved!
       raise error
     end
 
@@ -117,13 +118,7 @@ module Bets
     end
 
     def create_refund_entry_request!
-      @entry_request = ::EntryRequests::Factories::Common.call(
-        origin: bet,
-        kind: EntryRequest::REFUND,
-        mode: EntryRequest::INTERNAL,
-        amount: bet.refund_amount,
-        comment: "REFUND for bet #{bet.id}"
-      )
+      @entry_request = ::EntryRequests::Factories::BetRefund.call(bet: bet)
     end
 
     def settle_customer_bonus!

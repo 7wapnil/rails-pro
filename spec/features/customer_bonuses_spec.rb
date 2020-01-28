@@ -58,7 +58,7 @@ describe Customer, '#bonuses' do
     end
 
     let(:found_entry_request) do
-      EntryRequest.bonus_change.find_by(origin: bonus)
+      EntryRequest.bonus_cancellation.find_by(origin: bonus)
     end
 
     before do

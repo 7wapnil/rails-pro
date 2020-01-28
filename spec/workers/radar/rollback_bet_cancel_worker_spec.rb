@@ -84,7 +84,8 @@ describe Radar::RollbackBetCancelWorker do
   let!(:bets) { [*won_bets, *common_bets, *excluded_bets] }
   let!(:canceled_bet_legs) do
     bets.each do |bet|
-      bet.bet_legs.first.cancelled_by_system!
+      bet.bet_legs.first.update(status: Bet::CANCELLED_BY_SYSTEM,
+                                settlement_status: bet.settlement_status)
     end
   end
 

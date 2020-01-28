@@ -17,17 +17,22 @@ module EntryRequests
       attr_reader :bet, :bet_leg
 
       def entry_request_attributes
+        origin_attributes.merge(balance_attributes)
+      end
+
+      def origin_attributes
         {
           kind: EntryKinds::ROLLBACK,
           mode: EntryRequest::INTERNAL,
-          amount: -winning_entry.amount,
           comment: comment,
           customer_id: bet.customer_id,
           currency_id: bet.currency_id,
-          origin: bet,
-          real_money_amount: -winning_entry.real_money_amount,
-          bonus_amount: -winning_entry.bonus_amount
+          origin: bet
         }
+      end
+
+      def balance_attributes
+        Bets::Clerk.call(bet: bet, origin: winning_entry, debit: true)
       end
 
       def winning_entry

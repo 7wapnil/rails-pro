@@ -26,7 +26,7 @@ describe EntryRequests::Factories::RollbackBetCancellation do
 
   context 'lost bet' do
     let(:bet) do
-      create(:bet, :cancelled_by_system,
+      create(:bet, :cancelled_by_system, :with_active_bonus,
              customer: customer,
              currency: base_currency,
              odd: odd)
@@ -43,7 +43,8 @@ describe EntryRequests::Factories::RollbackBetCancellation do
 
   context 'won bet' do
     let(:bet) do
-      create(:bet, :won, :cancelled_by_system, customer: customer, odd: odd)
+      create(:bet, :won, :cancelled_by_system, :with_active_bonus,
+             customer: customer, odd: odd)
     end
 
     let(:winning_entry) do

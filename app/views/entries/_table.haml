@@ -6,12 +6,13 @@
       %th= sort_link(filter.search, :created_at, t('attributes.created_at'), default_order: :asc)
       %th= t('attributes.real_money_amount')
       %th= t('attributes.bonus_amount')
-      %th= t('attributes.cancelled_bonus_amount')
+      %th= t('attributes.confiscated_bonus_amount')
       %th= t('attributes.amount')
       %th= t('attributes.currency')
       %th{ colspan: 2 }= t('attributes.real_money_balance')
       %th{ colspan: 2 }= t('attributes.bonus_balance')
-      %th{ colspan: 2 }= t('attributes.cancelled_bonus_balance')
+      %th{ colspan: 2 }= t('attributes.converted_amount')
+      %th{ colspan: 2 }= t('attributes.confiscated_amount')
       %th{ colspan: 2 }= t('attributes.balance')
   %tbody
     - if filter.entries.any?
@@ -28,7 +29,7 @@
           %td.font-weight-bold{ class: entry_amount_class(entry) }
             = displayed_amount(entry.bonus_amount)
           %td.font-weight-bold{ class: entry_amount_class(entry) }
-            = displayed_amount(entry.cancelled_bonus_amount)
+            = displayed_amount(entry.confiscated_bonus_amount)
           %td.font-weight-bold{ class: entry_amount_class(entry) }
             = displayed_amount(entry.amount)
           %td
@@ -36,9 +37,11 @@
           %td{ colspan: 2 }
             = entry.balance_amount_after - entry.bonus_amount_after
           %td{ colspan: 2 }
-            = entry.bonus_amount_after || '-'
+            = entry.bonus_amount_after
           %td{ colspan: 2 }
-            = entry.cancelled_bonus_amount_after || '-'
+            = entry.converted_bonus_amount
+          %td{ colspan: 2 }
+            = entry.confiscated_bonus_amount
           %td.font-weight-bold{ colspan: 2, class: entry_amount_class(entry) }
             = entry.balance_amount_after
     - else
