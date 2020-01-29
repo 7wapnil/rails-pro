@@ -30,7 +30,8 @@ module Forms
       def play_item
         @play_item ||= ::EveryMatrix::PlayItem
                        .public_send(device)
-                       .find_by!(slug: play_item_slug)
+                       .friendly
+                       .find(play_item_slug)
       end
 
       private

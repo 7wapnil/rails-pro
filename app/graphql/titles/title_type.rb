@@ -4,6 +4,7 @@ module Titles
 
     field :id, !types.ID
     field :externalName, !types.String, property: :external_name
+    field :slug, types.String
     field :name, types.String
     field :shortName, types.String, property: :short_name
     field :kind, !types.String

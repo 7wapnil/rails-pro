@@ -81,7 +81,7 @@ Rails.application.routes.draw do
   resources :entries, only: :show
   resources :transactions, only: %i[index]
   resources :titles, only: %i[index edit update create]
-  resources :event_scopes, only: %i[index show create]
+  resources :event_scopes, except: %i[new destroy]
 
   resources :bets, only: %i[index show]
 

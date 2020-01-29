@@ -3,7 +3,8 @@
 module EveryMatrix
   class ContentProvidersController < ApplicationController
     find :content_provider, only: %i[edit update],
-                            class: EveryMatrix::ContentProvider.name
+                            class: EveryMatrix::ContentProvider.name,
+                            friendly: true
 
     def index
       @search = ContentProvider.ransack(query_params)

@@ -67,4 +67,17 @@ namespace :production_data do
       end
     end
   end
+
+  desc 'Generate slugs'
+  task generate_slugs: :environment do
+    Event.where("slug IS NULL OR slug = ''").find_each(&:save)
+    Title.where("slug IS NULL OR slug = ''").find_each(&:save)
+    EventScope.where("slug IS NULL OR slug = ''").find_each(&:save)
+    EveryMatrix::Category.where("context IS NULL OR context = ''")
+                         .find_each(&:save)
+    EveryMatrix::ContentProvider.where("slug IS NULL OR slug = ''")
+                                .find_each(&:save)
+    EveryMatrix::Vendor.where("slug IS NULL OR slug = ''").find_each(&:save)
+    EveryMatrix::PlayItem.where("slug IS NULL OR slug = ''").find_each(&:save)
+  end
 end

@@ -11,6 +11,7 @@
         = f.input :external_name, required: true, readonly: true
         = f.input :name, label: t('custom_name')
         = f.input :short_name, label: t('custom_short_name')
+        = f.input :slug, label: t('attributes.slug')
         = f.label :kind
         = f.select :kind,
             Title.kinds,

@@ -17,6 +17,11 @@
         %td= t('attributes.name')
         %td= event.name
       %tr
+        %td= t('attributes.slug')
+        %td
+          .input-group
+            = f.input_field :slug, class: 'form-control mt-0 mb-3 string required mr-1 rounded'
+      %tr
         %td= t('attributes.sport')
         %td= event.title.name
       %tr

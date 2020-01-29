@@ -247,6 +247,7 @@ en:
     settlement: Settlement
     settlement_status: Settlement status
     sign_in_count: Sign in count
+    slug: Slug
     sport: Sport
     sportsbook: Sportsbook
     sportsbook_multiplier: Sportsbook multiplier
@@ -470,6 +471,20 @@ en:
     balance_entry_requests: Balance entry requests
     withdrawals: Withdrawal requests
     online_customers: Online customers
+
+  event_scopes:
+    edit:
+      heading: Edit event scope
+
+    update:
+      success_message: Event scope was successfully updated
+
+  every_matrix:
+    categories:
+      index:
+        context: 'Context / Slug'
+      edit:
+        context: 'Context / Slug'
 
   transactions:
     payment_methods:

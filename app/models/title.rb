@@ -2,6 +2,9 @@
 
 class Title < ApplicationRecord
   include Importable
+  include BetterSluggable
+
+  friendly_id :external_name, use: :sequentially_slugged
 
   conflict_target :external_id
   conflict_updatable :external_name

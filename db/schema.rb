@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_21_091208) do
+ActiveRecord::Schema.define(version: 2020_01_29_122946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -465,6 +465,7 @@ ActiveRecord::Schema.define(version: 2020_01_21_091208) do
     t.datetime "updated_at", null: false
     t.string "external_id"
     t.integer "position", default: 9999, null: false
+    t.string "slug"
     t.index ["event_scope_id"], name: "index_event_scopes_on_event_scope_id"
     t.index ["external_id"], name: "index_event_scopes_on_external_id", unique: true
     t.index ["position"], name: "index_event_scopes_on_position"
@@ -496,6 +497,7 @@ ActiveRecord::Schema.define(version: 2020_01_21_091208) do
     t.datetime "twitch_start_time"
     t.datetime "twitch_end_time"
     t.string "twitch_url"
+    t.string "slug"
     t.index ["active"], name: "index_events_on_active"
     t.index ["external_id"], name: "index_events_on_external_id", unique: true
     t.index ["producer_id"], name: "index_events_on_producer_id"
@@ -845,6 +847,7 @@ ActiveRecord::Schema.define(version: 2020_01_21_091208) do
     t.integer "position", default: 9999, null: false
     t.string "short_name"
     t.string "name"
+    t.string "slug"
     t.index ["external_id"], name: "index_titles_on_external_id", unique: true
     t.index ["position"], name: "index_titles_on_position"
   end
