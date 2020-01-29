@@ -47,6 +47,8 @@ function attachExpander() {
 }
 
 function expandHandler(event) {
+  if (event.target.tagName.toLowerCase() === 'a') return;
+
   event.preventDefault();
   $(this).closest('.event-scope-td').nextAll().remove();
   $(this).closest('li').siblings().removeClass('active');
@@ -82,5 +84,6 @@ function initEventScopes(eventScopeId) {
 }
 
 $(() => {
+  $('#event-scopes-tr').html('');
   initEventScopes();
 });

@@ -2,6 +2,8 @@
 
 module EveryMatrix
   class PlayItem < ApplicationRecord
+    include BetterSluggable
+
     self.table_name = :every_matrix_play_items
 
     MOBILE_PLATFORMS = %w[Android iPad iPhone].freeze
@@ -15,6 +17,8 @@ module EveryMatrix
       desktop: DESKTOP = 'desktop',
       mobile: MOBILE = 'mobile'
     }.freeze
+
+    friendly_id :short_name, use: :sequentially_slugged
 
     belongs_to :content_provider, foreign_key: :every_matrix_content_provider_id
     belongs_to :vendor, foreign_key: :every_matrix_vendor_id

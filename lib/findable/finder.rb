@@ -12,6 +12,7 @@ module Findable
       @attribute = params.fetch(:attribute, :id)
       @strict = params.fetch(:strict, true)
       @decorate = params.fetch(:decorate, false)
+      @friendly = params[:friendly]
       @fallback_parameter = params[:fallback]
       @fallback_value_parameter = params[:fallback_value]
       @options = params
@@ -27,7 +28,8 @@ module Findable
 
     attr_reader :controller, :resource_name, :resource_class,
                 :by, :attribute, :strict, :fallback_parameter,
-                :fallback_value_parameter, :options, :decorate
+                :fallback_value_parameter, :options, :decorate,
+                :friendly
     alias_method :decorate?, :decorate
 
     def eager_load
@@ -54,7 +56,8 @@ module Findable
         strict:         strict?,
         eager_load:     eager_load,
         preload:        preload,
-        joins:          joins
+        joins:          joins,
+        friendly:       friendly
       )
     end
 

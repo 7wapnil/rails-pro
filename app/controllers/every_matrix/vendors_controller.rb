@@ -3,7 +3,8 @@
 module EveryMatrix
   class VendorsController < ApplicationController
     find :vendor, only: %i[edit update],
-                  class: EveryMatrix::Vendor.name
+                  class: EveryMatrix::Vendor.name,
+                  friendly: true
 
     def index
       @search = Vendor.ransack(query_params)

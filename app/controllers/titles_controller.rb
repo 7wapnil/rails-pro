@@ -1,7 +1,7 @@
 class TitlesController < ApplicationController
   protect_from_forgery prepend: true
 
-  find :title, only: %i[edit update]
+  find :title, only: %i[edit update], friendly: true
 
   def index
     @titles_hash = Titles::CollectHashByKind.call
@@ -14,9 +14,9 @@ class TitlesController < ApplicationController
   def update
     @title.update(title_params)
 
-    return redirect_to(titles_path) if @title.errors.empty?
+    return render :edit if @title.errors.any?
 
-    render 'edit'
+    redirect_to titles_path
   end
 
   private
@@ -27,6 +27,7 @@ class TitlesController < ApplicationController
       .permit(:id,
               :name,
               :short_name,
+              :slug,
               :external_id,
               :show_category_in_navigation,
               :kind)

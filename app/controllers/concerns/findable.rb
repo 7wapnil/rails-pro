@@ -18,6 +18,10 @@ module Findable
     #   - eager_load     - list of eager loaded entries to avoid N+1 problem
     #   - preload        - list of preloaded entries to avoid N+1 problem
     #   - joins          - list of joined entries to avoid N+1 problem
+    #   - decorate       - shows if we should decorate found resource.
+    #                      Can be used only with respective Drapper decorator
+    #   - friendly       - shows if we should find resource also by slug field.
+    #                      Can be used only for FriendlyId models.
     # rubocop:enable Metrics/LineLength
     #
     def find(resource_name, **options)

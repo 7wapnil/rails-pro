@@ -5,6 +5,7 @@ module Events
     name 'Event'
 
     field :id, !types.ID
+    field :slug, types.String
     field :name, !types.String
     field :description, !types.String
     field :status, !types.String
