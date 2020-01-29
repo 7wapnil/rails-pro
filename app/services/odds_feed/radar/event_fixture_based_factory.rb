@@ -4,7 +4,6 @@ module OddsFeed
   module Radar
     class EventFixtureBasedFactory
       BOOKED_FIXTURE_STATUS = 'booked'
-      EXPECTED_EVENT_DURATION = 5
 
       attr_reader :fixture
 
@@ -37,7 +36,7 @@ module OddsFeed
       end
 
       def expected_finish_time
-        expected_start_time + EXPECTED_EVENT_DURATION.hours
+        expected_start_time + Event::TWITCH_END_TIME_DELAY
       end
 
       def event_name
