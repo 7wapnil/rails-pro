@@ -33,15 +33,17 @@ module EntryRequests
           {
             kind: EntryKinds::MANUAL_BET_CANCEL,
             mode: EntryRequest::INTERNAL,
-            amount: -entry.amount.abs,
-            real_money_amount: -entry.real_money_amount.abs,
-            bonus_amount: -entry.bonus_amount.abs,
             comment: comment,
             customer_id: bet.customer_id,
             currency_id: bet.currency_id,
             origin: bet,
-            initiator: initiator
+            initiator: initiator,
+            **request_balance_attributes(entry)
           }
+        end
+
+        def request_balance_attributes(entry)
+          ::Bets::Clerk.call(bet: bet, origin: entry, debit: true)
         end
       end
     end

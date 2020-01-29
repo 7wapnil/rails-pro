@@ -66,4 +66,71 @@ describe EntryRequests::Backoffice::Bets::Won do
       expect(bet.entry_requests.last.initiator).to eq(user)
     end
   end
+
+  context 'entry balance calculation' do
+    let(:bet) { settled_bet }
+    let(:bonus) { customer_bonus }
+    let!(:entry) { placement_entry }
+    let(:ratio) do
+      RatioCalculator.call(
+        real_money_amount: placement_entry.real_money_amount,
+        bonus_amount: placement_entry.bonus_amount
+      )
+    end
+    let(:win_amount) do
+      bet.amount * bet.odd_value
+    end
+    let(:real_money_win_amount) { win_amount.round(Bet::PRECISION) * ratio }
+    let(:bonus_win_amount) do
+      win_amount.round(Bet::PRECISION) -
+        real_money_win_amount.round(Bet::PRECISION)
+    end
+
+    CustomerBonus::DISMISSED_STATUSES.each do |status|
+      context "won bet and #{status} bonus" do
+        let!(:total_confiscated_amount) do
+          bonus.total_confiscated_amount
+        end
+        let(:confiscated_amount) do
+          total_confiscated_amount + bonus_win_amount
+        end
+
+        before do
+          bet.bet_legs.each(&:won!)
+          bonus.update(status: status)
+
+          subject
+        end
+
+        it 'subtracts winning bonus part from confiscated amount' do
+          expect(bonus.reload.total_confiscated_amount)
+            .to eq(confiscated_amount)
+        end
+      end
+    end
+
+    context 'won bet and completed bonus' do
+      let!(:total_converted_amount) { bonus.total_converted_amount }
+      let(:converted_amount) do
+        total_converted_amount + bonus_win_amount
+      end
+      let!(:real_money_balance) { wallet.real_money_balance }
+      let(:expected_real_money) { real_money_balance + bet.winning.amount }
+
+      before do
+        bet.bet_legs.each(&:won!)
+        bonus.complete!
+
+        subject
+      end
+
+      it 'adds winning bonus part to converted amount' do
+        expect(bonus.reload.total_converted_amount).to eq(converted_amount)
+      end
+
+      it 'adds winning bonus part to real money' do
+        expect(wallet.reload.real_money_balance).to eq(expected_real_money)
+      end
+    end
+  end
 end
