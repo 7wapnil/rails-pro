@@ -43,15 +43,17 @@ module EntryRequests
           {
             kind: EntryKinds::MANUAL_BET_PLACEMENT,
             mode: EntryRequest::INTERNAL,
-            amount: placement_entry.amount,
-            real_money_amount: placement_entry.real_money_amount,
-            bonus_amount: placement_entry.bonus_amount,
             comment: comment,
             customer_id: bet.customer_id,
             currency_id: bet.currency_id,
             origin: bet,
-            initiator: initiator
+            initiator: initiator,
+            **bet_request_balance_attributes
           }
+        end
+
+        def bet_request_balance_attributes
+          ::Bets::Clerk.call(bet: bet, origin: placement_entry, debit: true)
         end
       end
     end

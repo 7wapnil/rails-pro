@@ -34,15 +34,17 @@ module EntryRequests
           {
             kind: EntryKinds::MANUAL_BET_CANCEL,
             mode: EntryRequest::INTERNAL,
-            amount: placement_entry.amount.abs,
-            real_money_amount: placement_entry.real_money_amount.abs,
-            bonus_amount: placement_entry.bonus_amount.abs,
             comment: comment,
             customer_id: bet.customer_id,
             currency_id: bet.currency_id,
             origin: bet,
-            initiator: initiator
+            initiator: initiator,
+            **bet_cancel_request_balance_attributes
           }
+        end
+
+        def bet_cancel_request_balance_attributes
+          ::Bets::Clerk.call(bet: bet, origin: placement_entry)
         end
 
         def create_win_cancel_request!
@@ -61,8 +63,13 @@ module EntryRequests
             customer_id: bet.customer_id,
             currency_id: bet.currency_id,
             origin: bet,
-            initiator: initiator
+            initiator: initiator,
+            **win_cancel_request_balance_attributes
           }
+        end
+
+        def win_cancel_request_balance_attributes
+          ::Bets::Clerk.call(bet: bet, origin: winning, debit: true)
         end
       end
     end
