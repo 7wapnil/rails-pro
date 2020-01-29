@@ -2,9 +2,12 @@
 
 class EventScope < ApplicationRecord
   include Importable
+  include BetterSluggable
 
   conflict_target :external_id
   conflict_updatable :name
+
+  friendly_id :name, use: :sequentially_slugged
 
   belongs_to :title
   belongs_to :event_scope, optional: true

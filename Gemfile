@@ -72,6 +72,7 @@ gem 'authtrail'
 gem 'geocoder'
 gem 'typhoeus'
 gem 'browser', require: 'browser/browser'
+gem 'friendly_id'
 
 gem 'faker', github: 'stympy/faker', branch: 'master', require: false
 gem 'factory_bot_rails', require: false

@@ -4,6 +4,7 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include Visible
   include Importable
   include EventScopeAssociations
+  include BetterSluggable
 
   UPDATABLE_ATTRIBUTES = %w[
     name
@@ -49,6 +50,8 @@ class Event < ApplicationRecord # rubocop:disable Metrics/ClassLength
   ].freeze
 
   TWITCH_END_TIME_DELAY = 5.hours
+
+  friendly_id :name, use: :sequentially_slugged
 
   enum status: STATUSES
 

@@ -16,8 +16,7 @@ module EveryMatrix
         {
           logo_url: https(presentation.dig('logo', '*')),
           representation_name: representation_name,
-          enabled: data['enabled'],
-          slug: representation_name.underscore.dasherize.tr(' ', '-')
+          enabled: data['enabled']
         }
       end
 
