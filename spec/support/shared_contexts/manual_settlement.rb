@@ -53,6 +53,7 @@ shared_context 'manual settlement' do
   let(:win_amount) { bet_amount * odd.value }
   let(:win_real_money_amount) { bet_amount * bet_ratio * odd.value }
   let(:win_bonus_amount) { bet_amount * (1 - bet_ratio) * odd.value }
+  let(:settlement_status) {}
 
   let(:base_bet_params) do
     {
@@ -60,18 +61,22 @@ shared_context 'manual settlement' do
       customer: customer,
       customer_bonus: customer_bonus,
       counted_towards_rollover: counted_towards_rollover,
-      amount: bet_amount
+      amount: bet_amount,
+      settlement_status: settlement_status
     }
   end
   let(:counted_towards_rollover) { false }
-  let(:placed_bet) { create(:bet, :accepted, **base_bet_params) }
-  let(:rejected_bet) { create(:bet, :rejected, **base_bet_params) }
-  let(:settled_bet) { create(:bet, :settled, **base_bet_params) }
-  let(:voided_bet) { create(:bet, :settled, :void, **base_bet_params) }
+  let(:placed_bet) { create(:bet, :accepted, **base_bet_params.compact) }
+  let(:rejected_bet) { create(:bet, :rejected, **base_bet_params.compact) }
+  let(:settled_bet) { create(:bet, :settled, **base_bet_params.compact) }
+  let(:voided_bet) { create(:bet, :settled, :void, **base_bet_params.compact) }
   let(:won_bet) do
-    create(:bet, :settled, **base_bet_params,
+    create(:bet, :settled, **base_bet_params.compact,
                            status: StateMachines::BetStateMachine::SETTLED,
                            settlement_status: Bet::WON)
+  end
+  let(:manually_settled_bet) do
+    create(:bet, :manually_settled, **base_bet_params.compact)
   end
 
   let(:bet) { placed_bet }

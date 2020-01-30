@@ -52,6 +52,22 @@ describe EntryRequests::Backoffice::Bets::Won do
     end
   end
 
+  context 'manually settled lost bet' do
+    let(:settlement_status) { Bet::LOST }
+    let(:bet) { manually_settled_bet }
+    let(:winning_amount) { bet.odd_value * placed_amount }
+    let!(:expected_amount) do
+      real_balance_amount + winning_amount
+    end
+
+    before { subject }
+
+    it 'adds won amount' do
+      expect(wallet.reload.real_money_balance.to_f.round(2))
+        .to eq(expected_amount.to_f.round(2))
+    end
+  end
+
   context 'track settlement details' do
     let(:bet) { settled_bet }
     let!(:entry) { placement_entry }
