@@ -18,7 +18,9 @@ namespace :production_data do
       %i[every_matrix_play_items
          every_matrix_vendors
          every_matrix_content_providers].each do |table|
-        execute("UPDATE #{table} SET external_status = 'activated'")
+        ActiveRecord::Base
+          .connection
+          .execute("UPDATE #{table} SET external_status = 'activated'")
       end
     end
   end
