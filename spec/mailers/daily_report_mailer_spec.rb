@@ -13,13 +13,8 @@ describe DailyReportMailer do
     before do
       allow(ENV)
         .to receive(:fetch)
-              .with('DAILY_REPORT_EMAILS', '')
-              .and_return(['test@mail.com'])
-
-      allow(ENV)
-        .to receive(:fetch)
-              .with('DAILY_REPORT_MAIL_TEMPLATE')
-              .and_return('')
+        .with('DAILY_REPORT_EMAILS', '')
+        .and_return(['test@mail.com'])
     end
 
     it 'sends reset password email' do

@@ -5,7 +5,7 @@ class DailyReportMailer < ApplicationMailer
           subject: I18n.t('mailers.daily_report_mailer.subject')
 
   TEMPLATES = {
-    daily_report_mail: ENV.fetch('DAILY_REPORT_MAIL_TEMPLATE')
+    daily_report_mail: ENV.fetch('DAILY_REPORT_MAIL_TEMPLATE', '')
   }.freeze
 
   def daily_report_mail
