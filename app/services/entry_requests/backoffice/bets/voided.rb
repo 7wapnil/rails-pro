@@ -56,9 +56,6 @@ module EntryRequests
           {
             kind: EntryKinds::MANUAL_BET_CANCEL,
             mode: EntryRequest::INTERNAL,
-            amount: -winning.amount,
-            real_money_amount: -winning.real_money_amount.abs,
-            bonus_amount: -winning.bonus_amount.abs,
             comment: comment,
             customer_id: bet.customer_id,
             currency_id: bet.currency_id,
