@@ -49,11 +49,47 @@ describe EntryRequests::Backoffice::Bets::Proceed do
     end
   end
 
+  context 'manually won bet' do
+    let(:bet) do
+      create(:bet, :with_placement_entry, :manually_settled, :won,
+             customer: customer)
+    end
+    let(:status) { Bet::WON }
+
+    it 'does not call authorization service' do
+      expect(::WalletEntry::AuthorizationService).not_to have_received(:call)
+    end
+  end
+
   context 'lost bet' do
     let(:bet) do
       create(:bet, :with_placement_entry, :lost, customer: customer)
     end
     let(:status) { Bet::LOST }
+
+    it 'does not call authorization service' do
+      expect(::WalletEntry::AuthorizationService).not_to have_received(:call)
+    end
+  end
+
+  context 'manually lost bet' do
+    let(:bet) do
+      create(:bet, :with_placement_entry, :manually_settled, :lost,
+             customer: customer)
+    end
+    let(:status) { Bet::LOST }
+
+    it 'does not call authorization service' do
+      expect(::WalletEntry::AuthorizationService).not_to have_received(:call)
+    end
+  end
+
+  context 'manually voided bet' do
+    let(:bet) do
+      create(:bet, :with_placement_entry, :manually_settled, :void,
+             customer: customer)
+    end
+    let(:status) { Bet::VOIDED }
 
     it 'does not call authorization service' do
       expect(::WalletEntry::AuthorizationService).not_to have_received(:call)
