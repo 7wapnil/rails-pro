@@ -10,15 +10,16 @@ describe DailyReportMailer do
   end
 
   context 'emails' do
-    it 'sends reset password email' do
-      query = Reports::Queries::DailyStatsQuery.call
+    before do
       allow(ENV)
         .to receive(:fetch)
         .with('DAILY_REPORT_EMAILS', '')
         .and_return(['test@mail.com'])
+    end
 
-      email =
-        described_class.with(data: query).daily_report_mail
+    it 'sends reset password email' do
+      email = described_class.with(data: nil).daily_report_mail
+
       expect(email.to.first).to eq('test@mail.com')
     end
   end
