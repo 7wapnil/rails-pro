@@ -1,4 +1,4 @@
-describe UnpopularEventsCleanUpWorker do
+describe CleanUpUnpopularEventsWorker do
   it 'deletes finished live events' do
     create(:event, end_at: 25.hours.ago)
     subject.perform
