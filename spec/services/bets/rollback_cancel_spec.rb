@@ -269,9 +269,10 @@ describe Bets::RollbackCancel do
             bonus_amount: bet.placement_entry.bonus_amount
           )
         end
-        let(:converted_amount) do
-          (winning_entry.amount * (1 - ratio)).round(Bet::PRECISION)
+        let(:winning_real_money) do
+          (winning_entry.amount * ratio).round(Bet::PRECISION)
         end
+        let(:converted_amount) { winning_entry.amount - winning_real_money }
 
         before { customer_bonus&.complete! }
 
