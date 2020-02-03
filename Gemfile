@@ -73,6 +73,7 @@ gem 'geocoder'
 gem 'typhoeus'
 gem 'browser', require: 'browser/browser'
 gem 'friendly_id'
+gem 'after_commit_everywhere', '~> 0.1.4'
 
 gem 'faker', github: 'stympy/faker', branch: 'master', require: false
 gem 'factory_bot_rails', require: false

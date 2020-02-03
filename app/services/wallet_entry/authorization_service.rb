@@ -2,6 +2,8 @@
 
 module WalletEntry
   class AuthorizationService < ApplicationService
+    include AfterCommitEverywhere
+
     def initialize(request)
       @request = request
       @amount = request.amount
@@ -9,8 +11,11 @@ module WalletEntry
 
     def call
       request.validate!
-      process_balance_related_operations!
-      post_process_entry!
+      ActiveRecord::Base.transaction do
+        process_balance_related_operations!
+
+        after_commit { post_process_entry }
+      end
 
       entry
     rescue ActiveRecord::RecordInvalid, ActiveModel::ValidationError => e
@@ -22,16 +27,14 @@ module WalletEntry
     attr_reader :request, :amount, :wallet, :entry
 
     def process_balance_related_operations!
-      ActiveRecord::Base.transaction do
-        find_or_create_wallet_with_lock!
-        create_entry!
-        update_balances!
-        confirm_entry! if auto_confirmation?
-        request.succeeded!
-      end
+      find_or_create_wallet_with_lock!
+      create_entry!
+      update_balances!
+      confirm_entry! if auto_confirmation?
+      request.succeeded!
     end
 
-    def post_process_entry!
+    def post_process_entry
       Entries::PostProcessEntryWorker.perform_async(entry.id)
 
       log_success
