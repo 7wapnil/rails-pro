@@ -35,7 +35,7 @@ module OddsFeed
 
         def log_producer_disconnection(error)
           Rails.logger.error(
-            message: 'MTS producer is disconnected',
+            message: 'Odds feed producer is disconnected',
             producer_id: producer.id,
             error_object: error
           )
