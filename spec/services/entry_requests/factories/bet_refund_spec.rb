@@ -3,7 +3,7 @@
 describe EntryRequests::Factories::BetRefund do
   subject { described_class.call(bet: bet) }
 
-  let(:bet) { create(:bet, :with_placement_entry, :with_active_bonus) }
+  let(:bet) { create(:bet, :with_placement_entry, :with_bonus) }
   let(:placement_entry) { bet.placement_entry }
 
   let(:general_attributes) do
@@ -34,7 +34,7 @@ describe EntryRequests::Factories::BetRefund do
 
   context 'with void factor' do
     let(:bet) do
-      create(:bet, :with_placement_entry, :settled, :with_active_bonus,
+      create(:bet, :with_placement_entry, :settled, :with_bonus,
              void_factor: void_factor)
     end
     let(:void_factor) { 0.5 }

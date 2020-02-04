@@ -76,6 +76,7 @@ describe EntryRequests::Backoffice::Bets::Voided do
 
     CustomerBonus::DISMISSED_STATUSES.each do |status|
       context "voided bet and #{status} bonus" do
+        let(:bonus_status) { status }
         let!(:total_confiscated_amount) do
           bonus.total_confiscated_amount
         end
@@ -83,11 +84,7 @@ describe EntryRequests::Backoffice::Bets::Voided do
           total_confiscated_amount + placement_entry.bonus_amount.abs
         end
 
-        before do
-          bonus.update(status: status)
-
-          subject
-        end
+        before { subject }
 
         it 'subtracts placed bonus part from confiscated amount' do
           expect(bonus.reload.total_confiscated_amount)
@@ -97,6 +94,7 @@ describe EntryRequests::Backoffice::Bets::Voided do
     end
 
     context 'voided bet and completed bonus' do
+      let(:bonus_status) { CustomerBonus::COMPLETED }
       let!(:total_converted_amount) { bonus.total_converted_amount }
       let(:converted_amount) do
         total_converted_amount + placement_entry.bonus_amount.abs
@@ -106,11 +104,7 @@ describe EntryRequests::Backoffice::Bets::Voided do
         real_money_balance + bet.placement_entry.amount.abs
       end
 
-      before do
-        bonus.complete!
-
-        subject
-      end
+      before { subject }
 
       it 'adds placed bonus part to converted amount' do
         expect(bonus.reload.total_converted_amount).to eq(converted_amount)

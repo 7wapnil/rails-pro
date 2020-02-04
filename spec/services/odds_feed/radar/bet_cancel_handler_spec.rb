@@ -61,9 +61,9 @@ describe OddsFeed::Radar::BetCancelHandler do
     let(:winning) { create(:entry, :win, :with_balance_entries) }
 
     let!(:bet) do
-      create(:bet, :won, :with_active_bonus, odd: odds.sample,
-                                             placement_entry: stake,
-                                             winning: winning)
+      create(:bet, :won, :with_bonus, odd: odds.sample,
+                                      placement_entry: stake,
+                                      winning: winning)
     end
 
     it 'refunds correct real money and bonus ratio for stake' do
@@ -111,7 +111,7 @@ describe OddsFeed::Radar::BetCancelHandler do
     it 'cancels bets accepted after the start_time' do
       created_at =
         Time.at(message.dig('bet_cancel', 'start_time')[0..-4].to_i) + 5.minutes
-      bet = create(:bet, :with_active_bonus, :with_placement_entry, :accepted,
+      bet = create(:bet, :with_bonus, :with_placement_entry, :accepted,
                    odd: odds.sample, created_at: created_at)
       subject.handle
       expect(bet.reload.status).to eq Bet::CANCELLED_BY_SYSTEM
@@ -120,7 +120,7 @@ describe OddsFeed::Radar::BetCancelHandler do
     it 'doesn\'t cancel bets accepted before the start_time' do
       created_at =
         Time.at(message.dig('bet_cancel', 'start_time')[0..-4].to_i) - 5.minutes
-      bet = create(:bet, :with_active_bonus, :with_placement_entry, :accepted,
+      bet = create(:bet, :with_bonus, :with_placement_entry, :accepted,
                    odd: odds.sample, created_at: created_at)
       subject.handle
       expect(bet.reload.status).to eq Bet::ACCEPTED
@@ -129,7 +129,7 @@ describe OddsFeed::Radar::BetCancelHandler do
     it 'cancels bets accepted before the end_time' do
       created_at =
         Time.at(message.dig('bet_cancel', 'end_time')[0..-4].to_i) - 5.minutes
-      bet = create(:bet, :with_active_bonus, :with_placement_entry, :accepted,
+      bet = create(:bet, :with_bonus, :with_placement_entry, :accepted,
                    odd: odds.sample, created_at: created_at)
       subject.handle
       expect(bet.reload.status).to eq Bet::CANCELLED_BY_SYSTEM
@@ -138,7 +138,7 @@ describe OddsFeed::Radar::BetCancelHandler do
     it 'doesn\'t cancel bets accepted after the end_time' do
       created_at =
         Time.at(message.dig('bet_cancel', 'end_time')[0..-4].to_i) + 5.minutes
-      bet = create(:bet, :with_active_bonus, :with_placement_entry, :accepted,
+      bet = create(:bet, :with_bonus, :with_placement_entry, :accepted,
                    odd: odds.sample, created_at: created_at)
       subject.handle
       expect(bet.reload.status).to eq Bet::ACCEPTED

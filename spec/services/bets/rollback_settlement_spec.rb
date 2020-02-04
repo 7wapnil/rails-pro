@@ -6,8 +6,11 @@ describe Bets::RollbackSettlement do
   let(:bet) { create(:bet, :settled, :won, :with_bet_leg) }
   let(:bet_leg) { bet.bet_legs.first }
   let!(:customer_bonus) do
-    create(:customer_bonus, bets: [bet], customer: bet.customer)
+    create(:customer_bonus, bets: [bet],
+                            customer: bet.customer,
+                            status: bonus_status)
   end
+  let(:bonus_status) { CustomerBonus::ACTIVE }
   let(:initial_value) { 10_000 }
   let!(:wallet) do
     create(:wallet, customer: bet.customer,
@@ -378,19 +381,20 @@ describe Bets::RollbackSettlement do
   context 'bonuses' do
     let(:bet_status) { Bet::SETTLED }
     let(:bet_settlement_status) { Bet::LOST }
+    let(:bonus_status) { CustomerBonus::COMPLETED }
     let(:bet) do
-      create(:bet, :with_bet_leg, :with_active_bonus,
-             status: bet_status, settlement_status: bet_settlement_status)
+      create(:bet, status: bet_status, settlement_status: bet_settlement_status)
+    end
+    let!(:bet_leg) do
+      create(:bet_leg, bet: bet, settlement_status: bet_settlement_status)
     end
     let(:bonus) { bet.customer_bonus }
 
     CustomerBonus::USED_STATUSES.each do |status|
       context "lost bet and #{status} bonus" do
-        before do
-          bonus.update(status: status)
+        let(:bonus_status) { status }
 
-          subject
-        end
+        before { subject }
 
         it 'does not change balance' do
           expect(wallet.amount).to eq(wallet.reload.amount)
@@ -401,6 +405,7 @@ describe Bets::RollbackSettlement do
     CustomerBonus::DISMISSED_STATUSES.each do |status|
       context "won bet and #{status} bonus" do
         let(:bet_settlement_status) { Bet::WON }
+        let(:bonus_status) { status }
         let!(:winning) do
           create(:entry, :win, :with_balance_entries, origin: bet,
                                                       wallet: wallet)
@@ -412,12 +417,7 @@ describe Bets::RollbackSettlement do
           total_confiscated_amount - bet.winning.bonus_amount
         end
 
-        before do
-          bet.bet_legs.each(&:won!)
-          bonus.update(status: status)
-
-          subject
-        end
+        before { subject }
 
         it 'subtracts winning bonus part from confiscated amount' do
           expect(bonus.reload.total_confiscated_amount)
@@ -439,12 +439,7 @@ describe Bets::RollbackSettlement do
       let!(:real_money_balance) { wallet.real_money_balance }
       let(:expected_real_money) { real_money_balance - bet.winning.amount }
 
-      before do
-        bet.bet_legs.each(&:won!)
-        bonus.complete!
-
-        subject
-      end
+      before { subject }
 
       it 'subtracts winning bonus part from converted amount' do
         expect(bonus.reload.total_converted_amount).to eq(converted_amount)
@@ -452,6 +447,65 @@ describe Bets::RollbackSettlement do
 
       it 'subtracts winning bonus part from real money' do
         expect(wallet.reload.real_money_balance).to eq(expected_real_money)
+      end
+    end
+  end
+
+  context 'non-balance bonus fields transition' do
+    let(:bet_settlement_status) { Bet::WON }
+    let(:bet) do
+      create(:bet, :with_placement_entry, :settled,
+             settlement_status: bet_settlement_status)
+    end
+    let!(:bet_leg) do
+      create(:bet_leg, bet: bet, settlement_status: bet_settlement_status)
+    end
+    let!(:customer_bonus) do
+      create(:customer_bonus, bets: [bet],
+                              customer: bet.customer,
+                              status: bonus_status,
+                              **bonus_track_attributes)
+    end
+    let(:bonus_track_attributes) { {} }
+    let(:bonus_status) { CustomerBonus::COMPLETED }
+    let!(:winning) do
+      create(:entry, :win, origin: bet,
+                           wallet: wallet,
+                           **affected_bonus_transition)
+    end
+    let(:bonus) { bet.customer_bonus }
+    let(:affected_bonus_amount) { 10 }
+    let(:default_affected_bonus_amount) { 100 }
+    let(:affected_amount) do
+      default_affected_bonus_amount - affected_bonus_amount
+    end
+
+    before { subject }
+
+    context 'converted amount' do
+      let(:bonus_track_attributes) do
+        { total_converted_amount: default_affected_bonus_amount }
+      end
+      let(:affected_bonus_transition) do
+        { converted_bonus_amount: affected_bonus_amount }
+      end
+
+      it 'counts converted amount to total' do
+        expect(bonus.reload.total_converted_amount).to eq(affected_amount)
+      end
+    end
+
+    context 'confiscated amount' do
+      let(:bonus_status) { CustomerBonus::CANCELLED }
+      let(:bonus_track_attributes) do
+        { total_confiscated_amount: default_affected_bonus_amount }
+      end
+      let(:affected_bonus_transition) do
+        { confiscated_bonus_amount: affected_bonus_amount }
+      end
+
+      it 'counts confiscated amount to total' do
+        expect(bonus.reload.total_confiscated_amount).to eq(affected_amount)
       end
     end
   end

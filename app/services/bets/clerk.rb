@@ -2,6 +2,12 @@
 
 module Bets
   class Clerk < ApplicationService
+    BONUS_FIELDS = %i[
+      bonus_amount
+      converted_bonus_amount
+      confiscated_bonus_amount
+    ].freeze
+
     delegate :customer_bonus, to: :bet, allow_nil: true
 
     def initialize(bet:, origin:, debit: false)
@@ -45,13 +51,13 @@ module Bets
     def converted_money
       return unless bonus_touch? && customer_bonus.completed?
 
-      debit? ? -origin.bonus_amount.abs : origin.bonus_amount.abs
+      debit? ? -converted_bonus_amount.abs : converted_bonus_amount.abs
     end
 
     def confiscated_money
       return unless bonus_touch? && dismissed?
 
-      debit? ? -origin.bonus_amount.abs : origin.bonus_amount.abs
+      debit? ? -confiscated_bonus_amount.abs : confiscated_bonus_amount.abs
     end
 
     def adjusted_amount
@@ -63,11 +69,29 @@ module Bets
     end
 
     def bonus_touch?
-      customer_bonus.present? && !origin.bonus_amount.zero?
+      customer_bonus.present? && !no_affected_bonus_fields?
     end
 
     def dismissed?
       CustomerBonus::DISMISSED_STATUSES.member?(customer_bonus.status)
+    end
+
+    def converted_bonus_amount
+      return origin.bonus_amount unless origin.bonus_amount.zero?
+
+      origin.converted_bonus_amount
+    end
+
+    def confiscated_bonus_amount
+      return origin.bonus_amount unless origin.bonus_amount.zero?
+
+      origin.confiscated_bonus_amount
+    end
+
+    def no_affected_bonus_fields?
+      origin.slice(*BONUS_FIELDS)
+            .values
+            .all?(&:zero?)
     end
   end
 end

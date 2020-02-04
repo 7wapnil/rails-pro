@@ -4,7 +4,7 @@ describe Bets::RollbackCancel do
   subject { described_class.call(bet_leg: bet_leg, bet: bet.reload) }
 
   let(:bet) do
-    create(:bet, :won, :cancelled_by_system, :with_active_bonus,
+    create(:bet, :won, :cancelled_by_system, :with_bonus,
            :with_placement_entry, :with_settled_bet_leg)
   end
   let(:bet_leg) do
@@ -105,7 +105,7 @@ describe Bets::RollbackCancel do
     let(:settlement_status) { nil }
     let(:bet) do
       traits = [bet_status.to_sym, :with_placement_entry,
-                :with_active_bonus, settlement_status&.to_sym]
+                :with_bonus, settlement_status&.to_sym]
       create(:bet, *traits.compact, combo_bets: true)
     end
 
@@ -274,7 +274,7 @@ describe Bets::RollbackCancel do
         end
         let(:converted_amount) { winning_entry.amount - winning_real_money }
 
-        before { customer_bonus&.complete! }
+        before { customer_bonus&.completed! }
 
         it 'returns all money as real money' do
           subject
@@ -387,10 +387,12 @@ describe Bets::RollbackCancel do
     let(:bet_status) { Bet::ACCEPTED }
     let(:settlement_status) { nil }
     let(:bet) do
-      traits = [bet_status.to_sym, :with_active_bonus,
+      traits = [bet_status.to_sym, :with_bonus,
                 :with_placement_entry, settlement_status&.to_sym]
-      create(:bet, *traits.compact, combo_bets: true)
+      create(:bet, *traits.compact, combo_bets: true,
+                                    bonus_status: bonus_status)
     end
+    let(:bonus_status) { CustomerBonus::COMPLETED }
     let(:bonus) { bet.customer_bonus }
 
     context 're-win' do
@@ -430,6 +432,7 @@ describe Bets::RollbackCancel do
 
       CustomerBonus::DISMISSED_STATUSES.each do |status|
         context "re-win bet when #{status} bonus" do
+          let(:bonus_status) { status }
           let!(:total_confiscated_amount) do
             bonus.total_confiscated_amount
           end
@@ -441,7 +444,6 @@ describe Bets::RollbackCancel do
 
           before do
             bet.currency.entry_currency_rules.delete_all
-            bonus.update(status: status)
 
             subject
           end
@@ -463,7 +465,6 @@ describe Bets::RollbackCancel do
 
         before do
           bet.currency.entry_currency_rules.delete_all
-          bonus.complete!
 
           subject
         end
