@@ -10,6 +10,8 @@ module Payments
         ::Payments::Webhooks::Statuses::SYSTEM_ERROR => :fail
       }.freeze
 
+      delegate :currency, to: :entry_request, allow_nil: true
+
       def initialize(status:, request_id:, custom_message: nil)
         @status = status
         @request_id = request_id
@@ -59,7 +61,8 @@ module Payments
         {
           realMoneyAmount: entry_request.real_money_amount,
           bonusAmount: entry_request.bonus_amount,
-          paymentMethod: entry_request.mode
+          paymentMethod: entry_request.mode,
+          currencyCode: currency&.code
         }
       end
 
