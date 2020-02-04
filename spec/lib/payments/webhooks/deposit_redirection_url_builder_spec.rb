@@ -21,7 +21,8 @@ describe ::Payments::Webhooks::DepositRedirectionUrlBuilder do
     {
       realMoneyAmount: entry_request.real_money_amount,
       bonusAmount: entry_request.bonus_amount,
-      paymentMethod: entry_request.mode
+      paymentMethod: entry_request.mode,
+      currencyCode: entry_request.currency&.code
     }
   end
   let(:expected_url) { URI("#{frontend_url}?#{query_params}").to_s }
