@@ -142,7 +142,8 @@ describe Webhooks::SafeCharge::PaymentsController, type: :controller do
       {
         realMoneyAmount: entry_request.real_money_amount,
         bonusAmount: entry_request.bonus_amount,
-        paymentMethod: entry_request.mode
+        paymentMethod: entry_request.mode,
+        currencyCode: entry_request.currency&.code
       }
     end
     let(:redirection_url) { "#{frontend_url}?#{query_params}" }
