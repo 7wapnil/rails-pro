@@ -85,6 +85,8 @@ describe EntryRequests::Backoffice::Bets::Won do
 
   context 'entry balance calculation' do
     let(:bet) { settled_bet }
+    let(:bet_leg_odd) {}
+    let!(:bet_leg) { create(:bet_leg, :won, bet: bet) }
     let(:bonus) { customer_bonus }
     let!(:entry) { placement_entry }
     let(:ratio) do
@@ -104,6 +106,7 @@ describe EntryRequests::Backoffice::Bets::Won do
 
     CustomerBonus::DISMISSED_STATUSES.each do |status|
       context "won bet and #{status} bonus" do
+        let(:bonus_status) { status }
         let!(:total_confiscated_amount) do
           bonus.total_confiscated_amount
         end
@@ -111,12 +114,7 @@ describe EntryRequests::Backoffice::Bets::Won do
           total_confiscated_amount + bonus_win_amount
         end
 
-        before do
-          bet.bet_legs.each(&:won!)
-          bonus.update(status: status)
-
-          subject
-        end
+        before { subject }
 
         it 'subtracts winning bonus part from confiscated amount' do
           expect(bonus.reload.total_confiscated_amount)
@@ -126,6 +124,7 @@ describe EntryRequests::Backoffice::Bets::Won do
     end
 
     context 'won bet and completed bonus' do
+      let(:bonus_status) { CustomerBonus::COMPLETED }
       let!(:total_converted_amount) { bonus.total_converted_amount }
       let(:converted_amount) do
         total_converted_amount + bonus_win_amount
@@ -133,12 +132,7 @@ describe EntryRequests::Backoffice::Bets::Won do
       let!(:real_money_balance) { wallet.real_money_balance }
       let(:expected_real_money) { real_money_balance + bet.winning.amount }
 
-      before do
-        bet.bet_legs.each(&:won!)
-        bonus.complete!
-
-        subject
-      end
+      before { subject }
 
       it 'adds winning bonus part to converted amount' do
         expect(bonus.reload.total_converted_amount).to eq(converted_amount)

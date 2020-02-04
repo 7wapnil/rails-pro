@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module StateMachines
+  # rubocop:disable Metrics/ModuleLength
   module CustomerBonusStateMachine
     extend ActiveSupport::Concern
 
@@ -58,7 +59,7 @@ module StateMachines
         event :complete do
           transitions from: :active,
                       to: :completed,
-                      after: :set_deactivated_at
+                      after: %i[set_deactivated_at set_converted_amount]
         end
 
         event :expire do
@@ -101,6 +102,12 @@ module StateMachines
         update(deactivated_at: Time.zone.now)
       end
 
+      # rubocop:disable Naming/AccessorMethodName
+      def set_converted_amount(bonus_amount)
+        update(total_converted_amount: bonus_amount)
+      end
+      # rubocop:enable Naming/AccessorMethodName
+
       def log_transition_success
         Rails.logger.info(
           message: 'CustomerBonus status changed',
@@ -123,4 +130,5 @@ module StateMachines
       end
     end
   end
+  # rubocop:enable Metrics/ModuleLength
 end

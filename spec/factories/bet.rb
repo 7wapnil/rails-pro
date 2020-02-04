@@ -115,14 +115,19 @@ FactoryBot.define do
       end
     end
 
-    trait :with_active_bonus do
-      after(:create) do |bet|
+    trait :with_bonus do
+      transient do
+        bonus_status { CustomerBonus::ACTIVE }
+      end
+
+      after(:create) do |bet, evaluator|
         wallet = bet.customer.wallets.find_by(currency: bet.currency)
         wallet ||= bet.customer.wallets.take
-        customer_bonus = create(:customer_bonus, customer: bet.customer,
-                                                 wallet: wallet)
+        bonus = create(:customer_bonus, customer: bet.customer,
+                                        wallet: wallet,
+                                        status: evaluator.bonus_status)
 
-        bet.update(customer_bonus: customer_bonus)
+        bet.update(customer_bonus: bonus)
       end
     end
 

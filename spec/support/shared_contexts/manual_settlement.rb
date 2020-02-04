@@ -24,11 +24,13 @@ shared_context 'manual settlement' do
   let!(:customer_bonus) do
     create(:customer_bonus, customer: customer,
                             wallet: wallet,
-                            status: CustomerBonus::ACTIVE,
+                            status: bonus_status,
                             rollover_balance: wallet_amount,
                             min_odds_per_bet: 1)
   end
+  let(:bonus_status) { CustomerBonus::ACTIVE }
   let(:odd) { create(:odd) }
+  let(:bet_leg_odd) { odd }
 
   let(:placement_entry) do
     create(:entry, :bet, amount: -bet_amount,
@@ -62,7 +64,8 @@ shared_context 'manual settlement' do
       customer_bonus: customer_bonus,
       counted_towards_rollover: counted_towards_rollover,
       amount: bet_amount,
-      settlement_status: settlement_status
+      settlement_status: settlement_status,
+      odd: bet_leg_odd
     }
   end
   let(:counted_towards_rollover) { false }

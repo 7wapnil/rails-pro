@@ -28,7 +28,7 @@ module CustomerBonuses
     end
 
     def complete_bonus!
-      customer_bonus.complete!
+      customer_bonus.complete!(bonus_balance)
     end
 
     def remove_bonus_money!
