@@ -16,10 +16,12 @@
 :limits:
   every_matrix_mix_data_feed: 1
   every_matrix_free_spin_bonuses: 1
+  clean_up_data: 1
 
 :process_limits:
   every_matrix_mix_data_feed: 1
   every_matrix_free_spin_bonuses: 1
+  clean_up_data: 1
 
 :schedule:
   expiring_bonuses:
@@ -49,13 +51,13 @@
     description: "Deletes all events that were finished, but have no bets placed"
 
   unpopular_odds_clean_up:
-    every: <%= ENV.fetch('UNPOPULAR_ODDS_CLEAN_UP_INTERVAL', '1w') %>
+    every: <%= ENV.fetch('UNPOPULAR_ODDS_CLEAN_UP_INTERVAL', '1d') %>
     class: CleanUpUselessOddsWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Deletes all odds that were finished, but have no bets placed"
 
   unpopular_markets_clean_up:
-    every: <%= ENV.fetch('UNPOPULAR_MARKETS_CLEAN_UP_INTERVAL', '1w') %>
+    every: <%= ENV.fetch('UNPOPULAR_MARKETS_CLEAN_UP_INTERVAL', '1d') %>
     class: CleanUpUselessMarketsWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Deletes all markets that were finished, but have no bets placed"
