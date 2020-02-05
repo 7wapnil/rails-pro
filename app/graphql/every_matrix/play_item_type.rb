@@ -9,6 +9,7 @@ module EveryMatrix
       resolve ->(obj, *) { obj.name || obj.short_name }
     end
     field :description, types.String
+    field :metaDescription, types.String, property: :meta_description
     field :url, types.String
     field :shortName, types.String, property: :short_name
     field :logoUrl, types.String, property: :thumbnail_url

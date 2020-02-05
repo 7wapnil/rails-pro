@@ -209,7 +209,7 @@ describe Event do
     let(:updatable_attributes) do
       {
         name: 'Foo vs Bar',
-        description: 'Super Mega match',
+        twitch_url: 'super-mega-match.com',
         start_at: 1.day.from_now
       }
     end

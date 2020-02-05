@@ -85,7 +85,6 @@ module EventsManager
         twitch_start_time: event_data.start_at,
         twitch_end_time: expected_event_end_time,
         name: event_data.name,
-        description: event_data.name,
         traded_live: event_data.traded_live?,
         liveodds: event_data.liveodds,
         title: title

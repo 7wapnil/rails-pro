@@ -31,6 +31,6 @@ class EventScopesController < ApplicationController
   private
 
   def update_params
-    params.require(:event_scope).permit(:slug)
+    params.require(:event_scope).permit(:slug, :meta_description)
   end
 end

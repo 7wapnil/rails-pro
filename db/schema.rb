@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_29_122946) do
+ActiveRecord::Schema.define(version: 2020_02_05_132935) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -466,6 +466,7 @@ ActiveRecord::Schema.define(version: 2020_01_29_122946) do
     t.string "external_id"
     t.integer "position", default: 9999, null: false
     t.string "slug"
+    t.text "meta_description"
     t.index ["event_scope_id"], name: "index_event_scopes_on_event_scope_id"
     t.index ["external_id"], name: "index_event_scopes_on_external_id", unique: true
     t.index ["position"], name: "index_event_scopes_on_position"
@@ -475,7 +476,7 @@ ActiveRecord::Schema.define(version: 2020_01_29_122946) do
   create_table "events", force: :cascade do |t|
     t.bigint "title_id"
     t.string "name"
-    t.text "description"
+    t.text "meta_description"
     t.datetime "start_at"
     t.datetime "end_at"
     t.datetime "created_at", null: false
@@ -509,6 +510,7 @@ ActiveRecord::Schema.define(version: 2020_01_29_122946) do
     t.string "label", default: ""
     t.integer "position"
     t.string "kind"
+    t.text "meta_description"
     t.index ["context"], name: "index_every_matrix_categories_on_context"
   end
 
@@ -524,6 +526,7 @@ ActiveRecord::Schema.define(version: 2020_01_29_122946) do
     t.string "internal_image_name", default: ""
     t.string "slug", default: ""
     t.integer "position"
+    t.text "meta_description"
     t.index ["name"], name: "index_every_matrix_content_providers_on_name"
     t.index ["representation_name"], name: "index_every_matrix_content_providers_on_representation_name"
   end
@@ -620,7 +623,7 @@ ActiveRecord::Schema.define(version: 2020_01_29_122946) do
     t.boolean "play_mode_real_money", default: false
     t.string "name"
     t.string "short_name"
-    t.string "description"
+    t.text "description"
     t.string "thumbnail_url"
     t.string "logo_url"
     t.string "background_image_url"
@@ -634,6 +637,7 @@ ActiveRecord::Schema.define(version: 2020_01_29_122946) do
     t.decimal "bonus_contribution", default: "1.0", null: false
     t.datetime "last_updated_recommended_games_at"
     t.string "game_code"
+    t.text "meta_description"
     t.index ["every_matrix_content_provider_id"], name: "index_play_items_on_content_providers_id"
     t.index ["every_matrix_vendor_id"], name: "index_play_items_on_vendors_id"
     t.index ["game_code"], name: "index_every_matrix_play_items_on_game_code"
@@ -710,6 +714,7 @@ ActiveRecord::Schema.define(version: 2020_01_29_122946) do
     t.string "internal_image_name", default: ""
     t.string "slug", default: ""
     t.integer "position"
+    t.text "meta_description"
     t.index ["vendor_id"], name: "index_every_matrix_vendors_on_vendor_id"
   end
 
@@ -848,6 +853,7 @@ ActiveRecord::Schema.define(version: 2020_01_29_122946) do
     t.string "short_name"
     t.string "name"
     t.string "slug"
+    t.text "meta_description"
     t.index ["external_id"], name: "index_titles_on_external_id", unique: true
     t.index ["position"], name: "index_titles_on_position"
   end

@@ -26,7 +26,13 @@ module EveryMatrix
     def category_params
       params
         .require(:every_matrix_category)
-        .permit(:icon, :context, :position, :kind, :label, :platform_type)
+        .permit(:icon,
+                :context,
+                :position,
+                :kind,
+                :label,
+                :platform_type,
+                :meta_description)
     end
   end
 end

@@ -70,14 +70,35 @@ namespace :production_data do
 
   desc 'Generate slugs'
   task generate_slugs: :environment do
-    Event.where("slug IS NULL OR slug = ''").find_each(&:save)
+    range = OddsFeed::Radar::ScheduledEvents::EventScheduleLoader::DEFAULT_RANGE
+
+    Event.where("events.slug IS NULL OR events.slug = ''")
+         .where('events.start_at > ?', range.ago.beginning_of_day)
+         .find_each(&:save)
+    Event.where("slug IS NULL OR slug = ''")
+         .update_all("slug = CONCAT(id, '-', LOWER(REPLACE(name, ' ', '-')))")
+
     Title.where("slug IS NULL OR slug = ''").find_each(&:save)
-    EventScope.where("slug IS NULL OR slug = ''").find_each(&:save)
+
+    EventScope.joins(:events)
+              .where("event_scopes.slug IS NULL OR event_scopes.slug = ''")
+              .where('events.start_at > ?', range.ago.beginning_of_day)
+              .distinct
+              .find_each(&:save)
+    EventScope
+      .where("slug IS NULL OR slug = ''")
+      .update_all("slug = CONCAT(id, '-', LOWER(REPLACE(name, ' ', '-')))")
+
     EveryMatrix::Category.where("context IS NULL OR context = ''")
                          .find_each(&:save)
     EveryMatrix::ContentProvider.where("slug IS NULL OR slug = ''")
                                 .find_each(&:save)
     EveryMatrix::Vendor.where("slug IS NULL OR slug = ''").find_each(&:save)
     EveryMatrix::PlayItem.where("slug IS NULL OR slug = ''").find_each(&:save)
+  end
+
+  desc 'Reset event meta tag descriptions'
+  task reset_event_meta_descriptions: :environment do
+    Event.where('meta_description = name').update_all('meta_description = NULL')
   end
 end
