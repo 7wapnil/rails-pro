@@ -10,27 +10,35 @@ module EveryMatrix
         end
 
         def call
-          EveryMatrix::TableDetails.create!(
-            play_item: table,
-            is_vip_table: data['isVIPTable'],
-            is_open: data['isOpen'],
-            is_seats_unlimited: data['isSeatsUnlimited'],
-            is_bet_behind_available: data['isBetBehindAvailable'],
-            min_limit: min_limit,
-            max_limit: max_limit
-          )
+          details = EveryMatrix::TableDetails
+                    .find_or_initialize_by(play_item_id: table.id)
+
+          details.update!(update_params.compact)
         end
 
         private
 
         attr_reader :data, :table
 
-        def min_limit
-          data['min']
+        def update_params
+          {
+            is_vip_table: property['isVIPTable'],
+            is_open: data['isOpen'],
+            is_seats_unlimited: property['isSeatsUnlimited'],
+            is_bet_behind_available: property['isBetBehindAvailable'],
+            currency_limits: property['limits'],
+            always_opened: opening_time['is24HoursOpen'],
+            start_time: opening_time['startTime'],
+            end_time: opening_time['endTime']
+          }
         end
 
-        def max_limit
-          data['max']
+        def property
+          @property ||= data['property']
+        end
+
+        def opening_time
+          @opening_time ||= data['openingTime']
         end
       end
     end

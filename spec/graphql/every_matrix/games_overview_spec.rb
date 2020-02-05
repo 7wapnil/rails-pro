@@ -15,7 +15,6 @@ describe GraphQL, '#gamesOverview' do
           label
           context
           position
-          name
           playItems{
             id
             name

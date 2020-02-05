@@ -20,7 +20,6 @@ describe GraphQL, '#tablesOverview' do
           label
           context
           position
-          name
           playItems{
             id
             name

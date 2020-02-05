@@ -11,8 +11,18 @@ module EveryMatrix
         end
 
         def call
-          EveryMatrix::GameDetails.create!(
-            play_item: game,
+          details = EveryMatrix::GameDetails
+                    .find_or_initialize_by(play_item_id: game.id)
+
+          details.update!(update_params.compact)
+        end
+
+        private
+
+        attr_reader :data, :game, :property
+
+        def update_params
+          {
             help_url: data['help_url'],
             free_spin_supported: free_spin['support'],
             free_spin_bonus_supported: free_spin['supportFeatureBonus'],
@@ -20,12 +30,8 @@ module EveryMatrix
             max_hit_frequency: hit_frequency['max'],
             launch_game_in_html_5: property['launchGameInHtml5'],
             top_prize: data['topPrize']
-          )
+          }
         end
-
-        private
-
-        attr_reader :data, :game, :property
 
         def free_spin
           property['freeSpin']

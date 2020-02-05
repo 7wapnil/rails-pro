@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_17_100242) do
+ActiveRecord::Schema.define(version: 2020_02_05_102211) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -647,11 +647,13 @@ ActiveRecord::Schema.define(version: 2020_01_17_100242) do
     t.boolean "is_open", default: false
     t.boolean "is_seats_unlimited", default: false
     t.boolean "is_bet_behind_available", default: false
-    t.decimal "max_limit", precision: 9, scale: 4, default: "0.0"
-    t.decimal "min_limit", precision: 9, scale: 4, default: "0.0"
     t.string "play_item_id", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.jsonb "currency_limits", default: {}
+    t.boolean "always_opened", default: false
+    t.string "start_time", default: ""
+    t.string "end_time", default: ""
     t.index ["play_item_id"], name: "index_every_matrix_table_details_on_play_item_id"
   end
 
