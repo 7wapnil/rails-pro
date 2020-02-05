@@ -7,7 +7,14 @@ module Customers
     decorates_assigned :stats
 
     def show
-      @stats = Customers::Statistics::Calculator.call(customer: @customer)
+      @stats = Customers::Statistics::Calculator.call(customer: @customer,
+                                                      force: force)
+    end
+
+    private
+
+    def force
+      params.permit(:force)[:force]
     end
   end
 end
