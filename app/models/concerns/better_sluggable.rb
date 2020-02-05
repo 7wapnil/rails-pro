@@ -11,7 +11,7 @@ module BetterSluggable
     end
 
     def normalize_friendly_id(value)
-      value.underscore.parameterize
+      value.underscore.parameterize.dasherize
     end
   end
 end
