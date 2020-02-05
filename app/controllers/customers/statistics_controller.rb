@@ -9,6 +9,8 @@ module Customers
     def show
       @stats = Customers::Statistics::Calculator.call(customer: @customer,
                                                       force: force)
+
+      redirect_to customer_statistics_path(@customer, force: nil) if force
     end
 
     private
