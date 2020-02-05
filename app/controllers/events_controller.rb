@@ -48,6 +48,7 @@ class EventsController < ApplicationController
   def event_params
     params.require(:event).permit(
       :slug,
+      :meta_description,
       :priority,
       :visible,
       :twitch_url,

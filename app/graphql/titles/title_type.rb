@@ -6,6 +6,7 @@ module Titles
 
     field :id, !types.ID
     field :externalName, !types.String, property: :external_name
+    field :metaDescription, types.String, property: :meta_description
     field :slug, !types.String do
       resolve ->(obj, *) { obj.slug || obj.id }
     end
