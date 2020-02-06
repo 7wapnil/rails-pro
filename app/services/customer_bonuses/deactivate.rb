@@ -13,7 +13,7 @@ module CustomerBonuses
     ENTRY_KINDS = {
       EXPIRE => ::EntryKinds::BONUS_EXPIRATION,
       CANCEL => ::EntryKinds::BONUS_CANCELLATION,
-      LOSE => ::EntryKinds::BONUS_CHANGE
+      LOSE => ::EntryKinds::BONUS_LOSS
     }.freeze
 
     def initialize(bonus:, action:, **params)
@@ -28,7 +28,7 @@ module CustomerBonuses
       validate_action!
 
       deactivate_bonus!
-      confiscate_bonus_money! if positive_bonus_balance?
+      confiscate_bonus_money! if bonus_balance?
 
       log_deactivation
     end
@@ -52,17 +52,21 @@ module CustomerBonuses
     end
 
     def confiscate_bonus_money!
-      request = EntryRequests::Factories::BonusChange.call(
-        customer_bonus: customer_bonus,
-        amount: -wallet.bonus_balance,
-        kind: entry_kind
-      )
-
-      EntryRequests::BonusChangeService.call(entry_request: request)
+      EntryRequests::BonusChangeService
+        .call(entry_request: confiscation_entry_request)
     end
 
-    def positive_bonus_balance?
-      wallet.bonus_balance.positive?
+    def bonus_balance?
+      wallet.bonus_balance.nonzero?
+    end
+
+    def confiscation_entry_request
+      EntryRequests::Factories::BonusChange.call(
+        customer_bonus: customer_bonus,
+        amount: -wallet.bonus_balance,
+        confiscated_bonus_amount: wallet.bonus_balance,
+        kind: entry_kind
+      )
     end
 
     def entry_kind

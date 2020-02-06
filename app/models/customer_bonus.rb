@@ -27,6 +27,10 @@ class CustomerBonus < ApplicationRecord
           -> { bonus_expiration },
           as: :origin,
           class_name: Entry.name
+  has_one :loss_entry,
+          -> { bonus_loss },
+          as: :origin,
+          class_name: Entry.name
 
   attr_reader :amount
 
