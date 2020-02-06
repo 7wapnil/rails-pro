@@ -10,6 +10,22 @@ module Payments
           delegate :withdrawal, to: :transaction
 
           def call
+            log_response
+            process_callback
+          end
+
+          private
+
+          attr_reader :custom_error_message
+
+          def log_response
+            Rails.logger.info(
+              message: 'SafeCharge payout callback',
+              **response.to_h.deep_symbolize_keys
+            )
+          end
+
+          def process_callback
             Payouts::CallbackHandler.call(
               withdrawal: withdrawal,
               status: external_status,
@@ -17,10 +33,6 @@ module Payments
               message: custom_error_message
             )
           end
-
-          private
-
-          attr_reader :custom_error_message
 
           def external_status
             succeeded_request? && approved?
