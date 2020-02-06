@@ -71,6 +71,7 @@ gem 'countries'
 gem 'authtrail'
 gem 'geocoder'
 gem 'typhoeus'
+gem 'staccato'
 gem 'browser', require: 'browser/browser'
 
 gem 'faker', github: 'stympy/faker', branch: 'master', require: false

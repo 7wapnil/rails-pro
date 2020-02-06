@@ -13,12 +13,28 @@ module Payments
 
             save_transaction_id! unless entry_request.external_id
 
-            return complete_entry_request if approved?
+            if approved?
+              Rails.logger.info message: 'Payment request approved',
+                                status: status_details['code'],
+                                status_message: status_details['description'],
+                                request_id: request_id
+              track_payment_event
+              return complete_entry_request
+            end
 
             fail_entry_request
           end
 
           private
+
+          def track_payment_event
+            payload = {
+              payment_processor: 'Wirecard',
+              payee: holder_name
+            }
+            Rails.logger.info(payload)
+            TrackPaymentEvent.call(payload)
+          end
 
           def cancelled?
             CANCELLED_STATUSES.include?(status_details['code']) &&
