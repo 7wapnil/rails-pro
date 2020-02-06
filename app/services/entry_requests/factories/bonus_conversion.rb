@@ -11,23 +11,18 @@ module EntryRequests
       end
 
       def call
-        create_entry_request!
-        request_balance_update!
-
-        entry_request
+        EntryRequest.create!(entry_request_attributes)
       end
 
-      attr_reader :customer_bonus, :amount, :entry_request
+      attr_reader :customer_bonus, :amount
 
       private
-
-      def create_entry_request!
-        @entry_request = EntryRequest.create!(entry_request_attributes)
-      end
 
       def entry_request_attributes
         {
           amount: amount,
+          real_money_amount: amount,
+          converted_bonus_amount: amount,
           mode: EntryRequest::INTERNAL,
           kind: EntryRequest::BONUS_CONVERSION,
           comment: comment,
@@ -40,10 +35,6 @@ module EntryRequests
       def comment
         "Bonus conversion: #{amount} #{wallet.currency} " \
         "for #{wallet.customer}."
-      end
-
-      def request_balance_update!
-        entry_request.update(real_money_amount: amount)
       end
     end
   end
