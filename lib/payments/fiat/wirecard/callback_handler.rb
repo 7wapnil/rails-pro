@@ -12,12 +12,21 @@ module Payments
         end
 
         def call
+          log_response
           callback_handler.call(response)
         end
 
         private
 
         attr_reader :request
+
+        def log_response
+          Rails.logger.info(
+            message: 'Wirecard callback',
+            payment_type: payment_type,
+            **response.deep_symbolize_keys
+          )
+        end
 
         def response
           @response ||= base64? ? base64_response : xml_response

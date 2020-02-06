@@ -11,7 +11,7 @@ module Webhooks
       end
 
       def create
-        ::Payments::Fiat::SafeCharge::CallbackHandler.call(params)
+        ::Payments::Fiat::SafeCharge::CallbackHandler.call(permitted_params)
 
         head :ok
       rescue ::Payments::FailedError
@@ -30,6 +30,10 @@ module Webhooks
 
         raise ::Deposits::AuthenticationError,
               'Malformed SafeCharge deposit request!'
+      end
+
+      def permitted_params
+        params.permit(*params.keys)
       end
 
       def redirection_url

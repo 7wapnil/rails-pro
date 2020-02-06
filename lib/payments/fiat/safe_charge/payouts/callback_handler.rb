@@ -16,7 +16,6 @@ module Payments
           def call
             return succeeded! if status
 
-            log_failure_response
             cancelled!(error_message)
             raise_payout_error!
           end
