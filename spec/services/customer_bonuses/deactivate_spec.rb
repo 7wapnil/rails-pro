@@ -63,4 +63,35 @@ describe CustomerBonuses::Deactivate do
       described_class.call(bonus: customer_bonus, action: action)
     end
   end
+
+  context 'negative bonus balance' do
+    subject do
+      described_class.call(bonus: customer_bonus, action: action)
+    end
+
+    let(:bonus) { create(:bonus) }
+    let(:currency) { create(:currency, :primary) }
+    let(:wallet) do
+      create(:wallet, currency: currency, bonus_balance: bonus_balance)
+    end
+    let(:customer_bonus) do
+      create(:customer_bonus, original_bonus: bonus, wallet: wallet)
+    end
+    let(:bonus_balance) { -100 }
+
+    before { subject }
+
+    context 'lose' do
+      let(:action) { described_class::LOSE }
+      let(:loss_entry) { customer_bonus.loss_entry }
+
+      it 'nullifies bonus balance' do
+        expect(wallet.reload.bonus_balance).to be_zero
+      end
+
+      it 'creates entry with deducted amount' do
+        expect(loss_entry.bonus_amount).to eq(-bonus_balance)
+      end
+    end
+  end
 end

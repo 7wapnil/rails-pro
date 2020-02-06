@@ -17,6 +17,7 @@ module EntryKinds
     bonus_change: BONUS_CHANGE = 'bonus_change',
     bonus_expiration: BONUS_EXPIRATION = 'bonus_expiration',
     bonus_cancellation: BONUS_CANCELLATION = 'bonus_cancellation',
+    bonus_loss: BONUS_LOSS = 'bonus_loss',
     em_wager: EVERY_MATRIX_WAGER = 'em_wager',
     em_result: EVERY_MATRIX_RESULT = 'em_result',
     em_rollback: EVERY_MATRIX_ROLLBACK = 'em_rollback'
@@ -38,6 +39,7 @@ module EntryKinds
     MANUAL_BET_PLACEMENT,
     BONUS_CONVERSION,
     BONUS_CHANGE,
+    BONUS_LOSS,
     BONUS_EXPIRATION,
     BONUS_CANCELLATION,
     EVERY_MATRIX_RESULT,
@@ -53,11 +55,15 @@ module EntryKinds
     BONUS_CHANGE,
     BONUS_EXPIRATION,
     BONUS_CANCELLATION,
+    BONUS_LOSS,
     EVERY_MATRIX_WAGER
   ].freeze
   DELAYED_CONFIRMATION_KINDS = [WITHDRAW, BET].freeze
   ALLOWED_NEGATIVE_BALANCE_KINDS = [
     BONUS_CHANGE,
+    BONUS_EXPIRATION,
+    BONUS_CANCELLATION,
+    BONUS_LOSS,
     DEPOSIT,
     REFUND,
     ROLLBACK,
