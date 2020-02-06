@@ -34,5 +34,21 @@ namespace :production_data do
       Bet.where(status: Bet::ACCEPTED, counted_towards_rollover: true)
          .update_all(counted_towards_rollover: false)
     end
+
+    desc 'Avoid getting into the pending state when re-settlement'
+    task populate_bet_leg_statuses: :environment do
+      ActiveRecord::Base.connection.execute <<~SQL
+        UPDATE bet_legs
+        SET settlement_status = bets.settlement_status
+        FROM bet_legs BetLegsScope
+        INNER JOIN bets
+          ON bets.id = BetLegsScope.bet_id
+        WHERE BetLegsScope.id = bet_legs.id AND
+              bets.combo_bets IS FALSE AND
+              bet_legs.settlement_status IS NULL AND
+              bets.settlement_status IS NOT NULL AND
+              bets.status IN ('settled','pending_manual_settlement');
+      SQL
+    end
   end
 end
