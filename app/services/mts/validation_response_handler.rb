@@ -66,8 +66,8 @@ module Mts
     end
 
     def refund_entry_request
-      EntryRequests::Factories::Refund.call(
-        entry: bet.entry,
+      EntryRequests::Factories::BetRefund.call(
+        bet: bet,
         comment: 'Bet failed external validation.'
       )
     end

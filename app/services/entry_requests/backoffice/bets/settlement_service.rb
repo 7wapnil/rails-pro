@@ -89,7 +89,7 @@ module EntryRequests
         end
 
         def voided?
-          return false if bet.won?
+          return false if bet.won? || bet.lost?
 
           REFUNDED_BET_STATUSES.member?(bet.status) || bet.voided?
         end

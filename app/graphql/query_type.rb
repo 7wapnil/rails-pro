@@ -7,6 +7,8 @@ QueryType = GraphQL::ObjectType.define do
   field :wallets, function: Wallets::WalletsQuery.new
   field :currencies, function: Currencies::CurrencyQuery.new
   field :titles, function: Titles::TitlesQuery.new
+  field :title, function: Titles::TitleQuery.new
+  field :eventScope, function: Events::EventScopeQuery.new
   field :esportEvents, function: Events::BySport::EsportEventsQuery.new
   field :sportEvents, function: Events::BySport::SportEventsQuery.new
   field :tournamentEvents, function: Events::BySport::TournamentEventsQuery.new
@@ -21,7 +23,6 @@ QueryType = GraphQL::ObjectType.define do
   field :bets, function: Betting::BetsQuery.new
   field :transactions, function: Transactions::TransactionsQuery.new
   field :bonuses, function: CustomerBonuses::BonusesQuery.new
-  field :depositMethods, function: ::Payments::Deposits::PaymentMethodsQuery.new
   field :validateComboBets, function: ::Betting::ValidateComboBetsQuery.new
 
   field :games, function: EveryMatrix::GamesQuery.new

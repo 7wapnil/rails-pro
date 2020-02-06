@@ -1,0 +1,16 @@
+= simple_form_for @event_scope do |f|
+  .row
+    .col.mt-2= f.error_notification
+  .row
+    .col-8.offset-2
+      %h2= t('.heading')
+      %hr
+      .row
+        .col
+          = f.input :slug, label: t('attributes.slug')
+
+          %hr
+          = f.button :submit, t(:save), class: 'btn btn-success'
+          = link_to t('back'), event_scopes_path(title_id: @event_scope.title_id),
+                               class: 'btn btn-outline-dark'
+

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module StateMachines
+  # rubocop:disable Metrics/ModuleLength
   module CustomerBonusStateMachine
     extend ActiveSupport::Concern
 
@@ -16,6 +17,7 @@ module StateMachines
 
     DEFAULT_STATUS = INITIAL
     USED_STATUSES = [CANCELLED, COMPLETED, LOST, EXPIRED].freeze
+    DISMISSED_STATUSES = [CANCELLED, LOST, EXPIRED].freeze
     SYSTEM_STATUSES = [INITIAL, FAILED].freeze
 
     included do
@@ -57,7 +59,7 @@ module StateMachines
         event :complete do
           transitions from: :active,
                       to: :completed,
-                      after: :set_deactivated_at
+                      after: %i[set_deactivated_at set_converted_amount]
         end
 
         event :expire do
@@ -78,7 +80,7 @@ module StateMachines
       private
 
       def assign_entry(entry)
-        update(entry: entry)
+        update(activation_entry: entry)
       end
 
       def recalculate_rolover
@@ -89,7 +91,7 @@ module StateMachines
       end
 
       def rollover_value
-        @rollover_value ||= entry.bonus_amount * rollover_multiplier
+        @rollover_value ||= activation_entry.bonus_amount * rollover_multiplier
       end
 
       def set_activated_at
@@ -99,6 +101,12 @@ module StateMachines
       def set_deactivated_at
         update(deactivated_at: Time.zone.now)
       end
+
+      # rubocop:disable Naming/AccessorMethodName
+      def set_converted_amount(bonus_amount)
+        update(total_converted_amount: bonus_amount)
+      end
+      # rubocop:enable Naming/AccessorMethodName
 
       def log_transition_success
         Rails.logger.info(
@@ -122,4 +130,5 @@ module StateMachines
       end
     end
   end
+  # rubocop:enable Metrics/ModuleLength
 end

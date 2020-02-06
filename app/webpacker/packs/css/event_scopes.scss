@@ -12,3 +12,15 @@
 .selected {
   background-color: rgba(192, 192, 192, 1);
 }
+
+.list-group-item {
+  &.active {
+    a {
+      color: white;
+
+      &:hover {
+        color: lightgray !important;
+      }
+    }
+  }
+}

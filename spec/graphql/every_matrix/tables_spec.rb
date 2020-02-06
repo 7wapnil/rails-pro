@@ -54,6 +54,19 @@ describe GraphQL, '#tables' do
     end
   end
 
+  context 'deactivated tables' do
+    let!(:table_games) do
+      create_list(:casino_table, random_amount, :desktop, :deactivated)
+    end
+
+    before { category.play_items << table_games }
+
+    it 'does not return deactivated tables' do
+      expect(result.dig('data', 'tables', 'collection').length)
+        .to be_zero
+    end
+  end
+
   context 'block restricted country' do
     let!(:table_games) { create_list(:casino_table, random_amount, :desktop) }
     let!(:test_restricted_table) do

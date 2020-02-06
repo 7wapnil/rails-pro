@@ -9,24 +9,18 @@ module EntryRequests
       end
 
       def call
-        create_entry_request!
-        adjust_amount!
-
-        entry_request
+        EntryRequest.create!(entry_request_attributes)
       end
 
       private
 
-      attr_reader :bet, :entry_request, :attributes
-
-      def create_entry_request!
-        @entry_request = EntryRequest.create!(entry_request_attributes)
-      end
+      attr_reader :bet, :attributes
 
       def entry_request_attributes
         attributes
           .merge(origin_attributes)
           .merge(balance_attributes)
+          .merge(amount: adjusted_amount)
       end
 
       def origin_attributes
@@ -41,13 +35,14 @@ module EntryRequests
       end
 
       def balance_attributes
-        return balance_calculations if bet&.customer_bonus&.active?
-
-        balance_calculations.slice(:real_money_amount)
+        @balance_attributes ||= Bets::Clerk.call(
+          bet: bet,
+          origin: Entry.new(balance_calculations)
+        )
       end
 
       def balance_calculations
-        @balance_calculations ||= BalanceCalculations::BetCompensation.call(
+        BalanceCalculations::BetCompensation.call(
           bet: bet,
           amount: requested_total_amount
         )
@@ -57,10 +52,12 @@ module EntryRequests
         attributes[:amount] || 0
       end
 
-      def adjust_amount!
-        new_amount = entry_request.real_money_amount +
-                     entry_request.bonus_amount
-        entry_request.update(amount: new_amount)
+      def adjusted_amount
+        balance_attributes
+          .slice(:real_money_amount, :bonus_amount)
+          .values
+          .map { |amount| amount.round(Bet::PRECISION) }
+          .reduce(:+)
       end
 
       def initiator

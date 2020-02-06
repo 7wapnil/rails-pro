@@ -28,7 +28,7 @@
           %td= event.id
           %td= event.external_id
           %td
-            = link_to event.name, event
+            = link_to event.name, event, title: event.slug, rel: :tooltip
             %br
               - event.labels.each do |label|
                 %span.badge.badge-info= label.name

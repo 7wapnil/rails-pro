@@ -1,6 +1,6 @@
 = simple_form_for @category do |f|
-  = f.input :context
+  = f.input :context, label: t('.context')
   = f.input :label
   = f.input :position
   = f.input :kind, collection: EveryMatrix::Category.kinds
-  = f.submit 'Save'
+  = f.submit 'Save', class: 'btn btn-success'

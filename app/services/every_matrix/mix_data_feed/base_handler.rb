@@ -15,9 +15,9 @@ module EveryMatrix
         @action = payload['action']
       end
 
-      # TODO: remove second check after correct remove-messages processing
       def call
-        handle_update_message if action == UPDATE && data.present?
+        process_payload if action == UPDATE
+
         health_check!
       end
 
@@ -25,11 +25,21 @@ module EveryMatrix
 
       attr_reader :payload, :data, :action
 
+      def deactivate_object!
+        raise NotImplementedError, 'Implement #remove_object! method'
+      end
+
       def handle_update_message
         raise NotImplementedError, 'Implement #handle_update_message method'
       end
 
       private
+
+      def process_payload
+        return deactivate_object! if data.nil?
+
+        handle_update_message
+      end
 
       def health_check!
         connection_state.with_lock do

@@ -3,7 +3,8 @@
 module EveryMatrix
   class ContentProvidersController < ApplicationController
     find :content_provider, only: %i[edit update],
-                            class: EveryMatrix::ContentProvider.name
+                            class: EveryMatrix::ContentProvider.name,
+                            friendly: true
 
     def index
       @search = ContentProvider.ransack(query_params)
@@ -23,7 +24,7 @@ module EveryMatrix
       params
         .require(:every_matrix_content_provider)
         .permit(
-          :name, :visible, :representation_name, :as_vendor,
+          :name, :visible, :representation_name, :as_vendor, :external_status,
           :logo_url, :internal_image_name, :slug, :position
         )
     end

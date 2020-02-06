@@ -8,6 +8,11 @@ FactoryBot.define do
     name { Faker::Lorem.word }
     representation_name { Faker::Lorem.word }
     slug { Faker::Internet.slug }
+    external_status { EveryMatrix::ContentProvider::ACTIVATED }
+
+    trait :deactivated do
+      external_status { EveryMatrix::ContentProvider::DEACTIVATED }
+    end
 
     trait :visible do
       visible { true }

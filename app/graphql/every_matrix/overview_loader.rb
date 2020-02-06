@@ -55,6 +55,7 @@ module EveryMatrix
           WHERE every_matrix_categories.id = every_matrix_play_item_categories.category_id
           AND NOT '#{country_code}' = ANY(every_matrix_play_items.restricted_territories)
           AND (#{query_per_device})
+          AND every_matrix_play_items.external_status = '#{PlayItem::ACTIVATED}'
           ORDER BY every_matrix_play_item_categories.position ASC
           LIMIT #{LIMIT_PER_CATEGORY}) play_items
         WHERE every_matrix_categories.id IN (#{category_ids.join(', ').presence || 'NULL'})

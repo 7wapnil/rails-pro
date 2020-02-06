@@ -11,7 +11,7 @@ describe CustomerBonuses::Deactivate do
       let(:wallet) { customer_bonus.wallet }
 
       let(:found_entry_request) do
-        EntryRequest.bonus_change.find_by(origin: customer_bonus)
+        EntryRequest.bonus_cancellation.find_by(origin: customer_bonus)
       end
       let(:comment) do
         "Bonus transaction: #{-bonus_balance} #{wallet.currency} " \
@@ -22,7 +22,7 @@ describe CustomerBonuses::Deactivate do
         allow(EntryRequests::BonusChangeService).to receive(:call)
         described_class.call(
           bonus: customer_bonus,
-          action: CustomerBonuses::Deactivate::CANCEL
+          action: described_class::CANCEL
         )
       end
 

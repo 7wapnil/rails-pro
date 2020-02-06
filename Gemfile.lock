@@ -62,6 +62,8 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
+    after_commit_everywhere (0.1.4)
+      activerecord (>= 4.2)
     airbrake (7.3.5)
       airbrake-ruby (~> 2.10)
     airbrake-ruby (2.11.0)
@@ -173,6 +175,8 @@ GEM
       dotenv (>= 0.7)
       thor (>= 0.13.6)
     formatador (0.2.5)
+    friendly_id (5.3.0)
+      activerecord (>= 4.0.0)
     fugit (1.1.6)
       et-orbi (~> 1.1, >= 1.1.6)
       raabro (~> 1.1)
@@ -562,6 +566,7 @@ DEPENDENCIES
   aasm
   action-cable-testing
   activerecord-import
+  after_commit_everywhere (~> 0.1.4)
   airbrake (~> 7.3)
   appsignal
   authtrail
@@ -584,6 +589,7 @@ DEPENDENCIES
   faker!
   file_validators
   foreman
+  friendly_id
   geocoder
   goldiloader
   graphiql-rails

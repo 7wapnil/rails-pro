@@ -5,6 +5,9 @@ module Events
     name 'Event'
 
     field :id, !types.ID
+    field :slug, !types.String do
+      resolve ->(obj, *) { obj.slug || obj.id }
+    end
     field :name, !types.String
     field :description, !types.String
     field :status, !types.String
@@ -41,11 +44,11 @@ module Events
       resolve ->(obj, _args, _ctx) { obj.twitch_end_time&.iso8601 }
     end
 
-    field :scopes, types[Types::ScopeType] do
+    field :scopes, types[Types::EventScopeType] do
       resolve ->(obj, _args, _ctx) { obj.event_scopes }
     end
 
-    field :tournament, Types::ScopeType
+    field :tournament, Types::EventScopeType
 
     field :marketsCount, !types.Int do
       resolve ->(obj, _args, _ctx) do

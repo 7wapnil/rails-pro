@@ -18,6 +18,7 @@ module EveryMatrix
            .reject_country(country)
            .where(name_includes_search_query, query: "%#{query}%")
            .public_send(device)
+           .activated
            .group(:external_id)
            .order(sort_by_name)
     end

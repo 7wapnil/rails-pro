@@ -8,24 +8,37 @@ module CustomerBonuses
     end
 
     def call
-      return unless customer_bonus.active?
+      return unless eligible?
 
-      return if customer_bonus.rollover_balance.positive?
-
-      complete_bonus
-      submit_entry_requests
+      ActiveRecord::Base.transaction do
+        complete_bonus!
+        remove_bonus_money!
+        grant_real_money!
+      end
     end
 
     attr_reader :customer_bonus
 
     private
 
-    def submit_entry_requests
-      subtract_request = remove_bonus_money_request
-      add_request = grant_real_money_request
+    def eligible?
+      return false unless customer_bonus.active?
 
-      EntryRequests::BonusChangeService.call(entry_request: subtract_request)
-      EntryRequests::ProcessingService.call(entry_request: add_request)
+      customer_bonus.rollover_balance <= 0
+    end
+
+    def complete_bonus!
+      customer_bonus.complete!(bonus_balance)
+    end
+
+    def remove_bonus_money!
+      EntryRequests::BonusChangeService
+        .call(entry_request: remove_bonus_money_request)
+    end
+
+    def grant_real_money!
+      EntryRequests::BonusChangeService
+        .call(entry_request: grant_real_money_request)
     end
 
     def remove_bonus_money_request
@@ -40,10 +53,6 @@ module CustomerBonuses
         customer_bonus: customer_bonus,
         amount: bonus_balance
       )
-    end
-
-    def complete_bonus
-      customer_bonus.complete!
     end
   end
 end

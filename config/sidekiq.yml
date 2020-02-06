@@ -11,14 +11,17 @@
   - expired_entry_requests
   - every_matrix_mix_data_feed
   - every_matrix_free_spin_bonuses
+  - clean_up_data
 
 :limits:
   every_matrix_mix_data_feed: 1
   every_matrix_free_spin_bonuses: 1
+  clean_up_data: 1
 
 :process_limits:
   every_matrix_mix_data_feed: 1
   every_matrix_free_spin_bonuses: 1
+  clean_up_data: 1
 
 :schedule:
   expiring_bonuses:
@@ -43,9 +46,21 @@
 
   unpopular_events_clean_up:
     every: <%= ENV.fetch('UNPOPULAR_EVENTS_CLEAN_UP_INTERVAL', '1h') %>
-    class: UnpopularEventsCleanUpWorker
+    class: CleanUpUnpopularEventsWorker
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Deletes all events that were finished, but have no bets placed"
+
+  unpopular_odds_clean_up:
+    every: <%= ENV.fetch('UNPOPULAR_ODDS_CLEAN_UP_INTERVAL', '1d') %>
+    class: CleanUpUselessOddsWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Deletes all odds that were finished, but have no bets placed"
+
+  unpopular_markets_clean_up:
+    every: <%= ENV.fetch('UNPOPULAR_MARKETS_CLEAN_UP_INTERVAL', '1d') %>
+    class: CleanUpUselessMarketsWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Deletes all markets that were finished, but have no bets placed"
 
   customer_lock_table_clean_up:
     every: <%= ENV.fetch('CUSTOMER_LOCK_TABLE_CLEAN_UP_INTERVAL', '1d') %>

@@ -9,11 +9,9 @@ module CustomerBonuses
 
     def call
       return unless customer_bonus&.active? && settled?
-      return if bet.voided?
 
-      recalculate_bonus_rollover
-
-      return complete_bonus! if complete_bonus?
+      recalculate_bonus_rollover unless bet.voided?
+      return complete_bonus! if reached_rollover?
 
       lose_bonus! if lose_bonus?
     end
@@ -42,34 +40,30 @@ module CustomerBonuses
       )
     end
 
-    def complete_bonus?
+    def reached_rollover?
       customer_bonus.rollover_balance <= 0
     end
 
     def lose_bonus?
-      !customer_bonus.wallet.bonus_balance.positive? &&
-        customer_bonus.active? &&
-        customer_bonus.rollover_balance.positive? &&
-        no_pending_sportsbook_bets? &&
-        no_pending_casino_wagers?
+      return false if available_bonus_funds?
+
+      no_pending_wagers? && no_pending_bets?
     end
 
-    def no_pending_sportsbook_bets?
-      return true unless customer_bonus.sportsbook?
-
-      Bet
-        .pending
-        .where(customer_bonus: customer_bonus)
-        .none?
+    def available_bonus_funds?
+      customer_bonus.wallet.bonus_balance.positive?
     end
 
-    def no_pending_casino_wagers?
+    def no_pending_wagers?
       return true unless customer_bonus.casino?
 
-      EveryMatrix::Wager
-        .pending_bonus_loss
-        .where(customer_bonus: customer_bonus)
-        .none?
+      customer_bonus.wagers.pending_bonus_loss.none?
+    end
+
+    def no_pending_bets?
+      return true unless customer_bonus.sportsbook?
+
+      customer_bonus.bets.pending.none?
     end
   end
 end

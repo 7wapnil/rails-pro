@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_28_102043) do
+ActiveRecord::Schema.define(version: 2020_01_29_122946) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -213,6 +213,8 @@ ActiveRecord::Schema.define(version: 2020_01_28_102043) do
     t.decimal "sportsbook_multiplier", default: "1.0", null: false
     t.decimal "max_rollover_per_spin"
     t.boolean "limit_per_each_bet_leg", default: false
+    t.decimal "total_confiscated_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "total_converted_amount", precision: 14, scale: 2, default: "0.0"
     t.index ["customer_id"], name: "index_customer_bonuses_on_customer_id"
     t.index ["entry_id"], name: "index_customer_bonuses_on_entry_id"
     t.index ["wallet_id"], name: "index_customer_bonuses_on_wallet_id"
@@ -400,9 +402,12 @@ ActiveRecord::Schema.define(version: 2020_01_28_102043) do
     t.decimal "bonus_amount", precision: 14, scale: 2, default: "0.0"
     t.decimal "base_currency_bonus_amount", precision: 14, scale: 2, default: "0.0"
     t.decimal "bonus_amount_after", precision: 14, scale: 2, default: "0.0"
-    t.decimal "cancelled_bonus_amount", precision: 14, scale: 2, default: "0.0"
-    t.decimal "base_currency_cancelled_bonus_amount", precision: 14, scale: 2, default: "0.0"
-    t.decimal "cancelled_bonus_amount_after", precision: 14, scale: 2, default: "0.0"
+    t.decimal "confiscated_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "base_currency_confiscated_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "confiscated_bonus_amount_after", precision: 14, scale: 2, default: "0.0"
+    t.decimal "converted_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "base_currency_converted_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "converted_bonus_amount_after", precision: 14, scale: 2, default: "0.0"
     t.index ["entry_request_id"], name: "index_entries_on_entry_request_id"
     t.index ["origin_type", "origin_id"], name: "index_entries_on_origin_type_and_origin_id"
     t.index ["wallet_id"], name: "index_entries_on_wallet_id"
@@ -437,7 +442,8 @@ ActiveRecord::Schema.define(version: 2020_01_28_102043) do
     t.string "external_id"
     t.decimal "real_money_amount", precision: 14, scale: 2, default: "0.0"
     t.decimal "bonus_amount", precision: 14, scale: 2, default: "0.0"
-    t.decimal "cancelled_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "confiscated_bonus_amount", precision: 14, scale: 2, default: "0.0"
+    t.decimal "converted_bonus_amount", precision: 14, scale: 2, default: "0.0"
     t.index ["initiator_type", "initiator_id"], name: "index_entry_requests_on_initiator_type_and_initiator_id"
     t.index ["origin_type", "origin_id"], name: "index_entry_requests_on_origin_type_and_origin_id"
   end
@@ -460,6 +466,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_102043) do
     t.datetime "updated_at", null: false
     t.string "external_id"
     t.integer "position", default: 9999, null: false
+    t.string "slug"
     t.index ["event_scope_id"], name: "index_event_scopes_on_event_scope_id"
     t.index ["external_id"], name: "index_event_scopes_on_external_id", unique: true
     t.index ["position"], name: "index_event_scopes_on_position"
@@ -491,6 +498,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_102043) do
     t.datetime "twitch_start_time"
     t.datetime "twitch_end_time"
     t.string "twitch_url"
+    t.string "slug"
     t.index ["active"], name: "index_events_on_active"
     t.index ["external_id"], name: "index_events_on_external_id", unique: true
     t.index ["producer_id"], name: "index_events_on_producer_id"
@@ -517,6 +525,8 @@ ActiveRecord::Schema.define(version: 2020_01_28_102043) do
     t.string "internal_image_name", default: ""
     t.string "slug", default: ""
     t.integer "position"
+    t.string "external_id"
+    t.string "external_status"
     t.index ["name"], name: "index_every_matrix_content_providers_on_name"
     t.index ["representation_name"], name: "index_every_matrix_content_providers_on_representation_name"
   end
@@ -627,6 +637,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_102043) do
     t.decimal "bonus_contribution", default: "1.0", null: false
     t.datetime "last_updated_recommended_games_at"
     t.string "game_code"
+    t.string "external_status"
     t.index ["every_matrix_content_provider_id"], name: "index_play_items_on_content_providers_id"
     t.index ["every_matrix_vendor_id"], name: "index_play_items_on_vendors_id"
     t.index ["game_code"], name: "index_every_matrix_play_items_on_game_code"
@@ -703,6 +714,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_102043) do
     t.string "internal_image_name", default: ""
     t.string "slug", default: ""
     t.integer "position"
+    t.string "external_status"
     t.index ["vendor_id"], name: "index_every_matrix_vendors_on_vendor_id"
   end
 
@@ -730,7 +742,10 @@ ActiveRecord::Schema.define(version: 2020_01_28_102043) do
     t.datetime "updated_at", null: false
     t.datetime "deleted_at"
     t.string "kind", default: "customer"
+    t.boolean "system", default: false
+    t.string "keyword"
     t.index ["deleted_at"], name: "index_labels_on_deleted_at"
+    t.index ["keyword"], name: "index_labels_on_keyword", unique: true
   end
 
   create_table "login_activities", force: :cascade do |t|
@@ -837,6 +852,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_102043) do
     t.integer "position", default: 9999, null: false
     t.string "short_name"
     t.string "name"
+    t.string "slug"
     t.index ["external_id"], name: "index_titles_on_external_id", unique: true
     t.index ["position"], name: "index_titles_on_position"
   end
@@ -881,7 +897,7 @@ ActiveRecord::Schema.define(version: 2020_01_28_102043) do
     t.bigint "currency_id"
     t.decimal "real_money_balance", precision: 14, scale: 2, default: "0.0"
     t.decimal "bonus_balance", precision: 14, scale: 2, default: "0.0"
-    t.decimal "cancelled_bonus_balance", precision: 14, scale: 2, default: "0.0"
+    t.decimal "confiscated_bonus_balance", precision: 14, scale: 2, default: "0.0"
     t.string "every_matrix_user_id"
     t.index ["currency_id"], name: "index_wallets_on_currency_id"
     t.index ["customer_id", "currency_id"], name: "index_wallets_on_customer_id_and_currency_id", unique: true
@@ -924,14 +940,14 @@ ActiveRecord::Schema.define(version: 2020_01_28_102043) do
   add_foreign_key "every_matrix_free_spin_bonus_play_items", "every_matrix_free_spin_bonuses"
   add_foreign_key "every_matrix_free_spin_bonus_play_items", "every_matrix_play_items", primary_key: "external_id"
   add_foreign_key "every_matrix_free_spin_bonus_wallets", "every_matrix_free_spin_bonuses"
-  add_foreign_key "every_matrix_game_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
+  add_foreign_key "every_matrix_game_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id", on_delete: :cascade
   add_foreign_key "every_matrix_play_item_categories", "every_matrix_categories", column: "category_id"
   add_foreign_key "every_matrix_play_item_categories", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
   add_foreign_key "every_matrix_play_items", "every_matrix_content_providers"
-  add_foreign_key "every_matrix_play_items", "every_matrix_vendors"
+  add_foreign_key "every_matrix_play_items", "every_matrix_vendors", on_delete: :cascade
   add_foreign_key "every_matrix_recommended_games_relationships", "every_matrix_play_items", column: "original_game_id", primary_key: "external_id"
   add_foreign_key "every_matrix_recommended_games_relationships", "every_matrix_play_items", column: "recommended_game_id", primary_key: "external_id"
-  add_foreign_key "every_matrix_table_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id"
+  add_foreign_key "every_matrix_table_details", "every_matrix_play_items", column: "play_item_id", primary_key: "external_id", on_delete: :cascade
   add_foreign_key "every_matrix_transactions", "customer_bonuses"
   add_foreign_key "every_matrix_transactions", "customers"
   add_foreign_key "every_matrix_transactions", "every_matrix_free_spin_bonuses"

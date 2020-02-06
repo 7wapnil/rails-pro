@@ -85,7 +85,7 @@ describe Customers::StatisticsController, '#show' do
                   customer: customer)
     end
     let(:awarded_customer_bonus_balance) do
-      awarded_customer_bonuses.map(&:entry)
+      awarded_customer_bonuses.map(&:activation_entry)
     end
 
     let!(:bonus_conversion_entries) do

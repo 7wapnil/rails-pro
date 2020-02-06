@@ -27,6 +27,13 @@ customer_labels = [
   { name: 'youtuber' }
 ]
 
+system_customer_labels = Label::RESERVED_BY_SYSTEM.map do |keyword|
+  {
+    keyword: keyword,
+    system: true
+  }
+end
+
 event_labels = [
   { name: 'event_label' },
   { name: 'cool_event' },
@@ -46,6 +53,12 @@ customer_labels.each do |payload|
                            kind: Label::CUSTOMER) do |label|
     label.name = payload[:name]
   end
+end
+
+system_customer_labels.each do |payload|
+  next if Label.find_by(**payload, kind: Label::CUSTOMER)
+
+  Label.new(**payload, kind: Label::CUSTOMER).save(validate: false)
 end
 
 event_labels.each do |payload|

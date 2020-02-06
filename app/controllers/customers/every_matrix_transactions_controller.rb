@@ -2,7 +2,7 @@
 
 module Customers
   class EveryMatrixTransactionsController < ApplicationController
-    find :customer, by: :customer_id
+    find :customer, by: :customer_id, decorate: true
 
     def index
       @filter = EveryMatrix::TransactionsFilter.new(

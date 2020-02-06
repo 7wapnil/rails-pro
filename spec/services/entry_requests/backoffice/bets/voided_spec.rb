@@ -68,4 +68,51 @@ describe EntryRequests::Backoffice::Bets::Voided do
       expect(bet.entry_requests.last.initiator).to eq(user)
     end
   end
+
+  context 'entry balance calculation' do
+    let(:bet) { placed_bet }
+    let(:bonus) { customer_bonus }
+    let!(:entry) { placement_entry }
+
+    CustomerBonus::DISMISSED_STATUSES.each do |status|
+      context "voided bet and #{status} bonus" do
+        let(:bonus_status) { status }
+        let!(:total_confiscated_amount) do
+          bonus.total_confiscated_amount
+        end
+        let(:confiscated_amount) do
+          total_confiscated_amount + placement_entry.bonus_amount.abs
+        end
+
+        before { subject }
+
+        it 'subtracts placed bonus part from confiscated amount' do
+          expect(bonus.reload.total_confiscated_amount)
+            .to eq(confiscated_amount)
+        end
+      end
+    end
+
+    context 'voided bet and completed bonus' do
+      let(:bonus_status) { CustomerBonus::COMPLETED }
+      let!(:total_converted_amount) { bonus.total_converted_amount }
+      let(:converted_amount) do
+        total_converted_amount + placement_entry.bonus_amount.abs
+      end
+      let!(:real_money_balance) { wallet.real_money_balance }
+      let(:expected_real_money) do
+        real_money_balance + bet.placement_entry.amount.abs
+      end
+
+      before { subject }
+
+      it 'adds placed bonus part to converted amount' do
+        expect(bonus.reload.total_converted_amount).to eq(converted_amount)
+      end
+
+      it 'adds placed bonus part to real money' do
+        expect(wallet.reload.real_money_balance).to eq(expected_real_money)
+      end
+    end
+  end
 end

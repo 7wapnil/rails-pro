@@ -41,10 +41,10 @@ describe CustomerBonuses::ExpiringBonusesHandler do
   let!(:control_balance) { control_wallet.bonus_balance }
 
   let(:control_entry_request) do
-    EntryRequest.bonus_change.find_by(origin: control_bonus)
+    EntryRequest.bonus_expiration.find_by(origin: control_bonus)
   end
   let(:control_entry) do
-    Entry.bonus_change.find_by(origin: control_bonus)
+    Entry.bonus_expiration.find_by(origin: control_bonus)
   end
 
   let(:comment) do
