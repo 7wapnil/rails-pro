@@ -12,12 +12,21 @@ module Payments
         end
 
         def call
+          log_response
           callback_handler.call(response)
         end
 
         private
 
         attr_reader :request
+
+        def log_response
+          Rails.logger.info(
+            message: 'CoinsPaid callback',
+            payment_type: payment_type,
+            **response.deep_symbolize_keys
+          )
+        end
 
         def response
           @response ||= JSON.parse(request.body.string)

@@ -40,14 +40,6 @@ module Payments
             transaction_message: message
           )
         end
-
-        def log_failure_response
-          Rails.logger.error(
-            message: 'Payout failed',
-            payment_method: entry_request.mode,
-            **response.to_h.deep_symbolize_keys
-          )
-        end
       end
     end
   end

@@ -7,9 +7,7 @@ module Webhooks
       before_action :verify_payment_signature
 
       def show
-        ::Payments::Fiat::SafeCharge::CallbackHandler.call(
-          cancellation_params
-        )
+        ::Payments::Fiat::SafeCharge::CallbackHandler.call(cancellation_params)
 
         redirect_to redirection_url
       end
@@ -27,7 +25,9 @@ module Webhooks
       end
 
       def cancellation_params
-        params.merge(Status: ::Payments::Webhooks::Statuses::CANCELLED)
+        params
+          .merge(Status: ::Payments::Webhooks::Statuses::CANCELLED)
+          .permit(*params.keys)
       end
 
       def redirection_url
