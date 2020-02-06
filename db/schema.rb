@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_01_17_100242) do
+ActiveRecord::Schema.define(version: 2020_02_06_124811) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -778,6 +778,14 @@ ActiveRecord::Schema.define(version: 2020_01_17_100242) do
     t.index ["external_id"], name: "index_markets_on_external_id", unique: true
     t.index ["producer_id"], name: "index_markets_on_producer_id"
     t.index ["template_id"], name: "index_markets_on_template_id"
+  end
+
+  create_table "monthly_balance_query_results", force: :cascade do |t|
+    t.decimal "real_money_balance_eur", precision: 17, scale: 5
+    t.decimal "bonus_amount_balance_eur", precision: 17, scale: 5
+    t.decimal "total_balance_eur", precision: 17, scale: 5
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "odds", force: :cascade do |t|
