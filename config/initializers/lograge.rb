@@ -2,7 +2,13 @@ Rails.application.configure do
   config.lograge.enabled = true
   config.lograge.formatter = Lograge::Formatters::Logstash.new
 
-  config.lograge.ignore_actions = %w[HealthChecksController#show]
+  config.lograge.ignore_actions = %w[
+    HealthChecksController#show
+    Webhooks::CoinsPaid::PaymentsController#create
+    Webhooks::SafeCharge::PaymentsController#create
+    Webhooks::SafeCharge::CancelledPaymentsController#show
+    Webhooks::Wirecard::PaymentsController#create
+  ]
 
   config.lograge.custom_payload do |controller|
     unwanted_params = %w[action authenticity_token controller commit utf8]
