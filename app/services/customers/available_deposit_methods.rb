@@ -20,6 +20,7 @@ module Customers
 
         OpenStruct.new(
           name: payment_method,
+          currency: fiat_currency,
           max_amount: max_amount(fiat_currency),
           min_amount: min_amount(fiat_currency)
         )
@@ -33,6 +34,7 @@ module Customers
 
         OpenStruct.new(
           name: payment_method,
+          currency: currency,
           max_amount: max_amount(currency),
           min_amount: min_amount(currency)
         )
