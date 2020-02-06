@@ -20,6 +20,9 @@ logs-odds:
 logs-db:
 	docker-compose logs -t db
 
+run:
+	docker-compose run --rm web $(ARGS)
+
 bash:
 	docker-compose run --rm web bash
 
@@ -28,6 +31,9 @@ attach:
 
 db:
 	rake db:migrate
+
+bundle:
+	bundle install
 
 db-reset:
 	rake db:reset
@@ -79,8 +85,23 @@ branch:
 new:
 	git checkout master &&  git checkout -b $(ARGS)
 
+stash:
+	git stash save --keep-index --include-untracked
+
+push:
+	git push origin $(branch)
+
+push!:
+	git push --force origin $(branch)
+
+pull:
+	git pull origin $(branch)
+
 master:
 	git checkout master
+
+watch:
+	bundle exec guard
 
 .PHONY: app test spec lib docs bin config db tmp
 
