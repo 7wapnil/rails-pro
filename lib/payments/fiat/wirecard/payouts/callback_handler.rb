@@ -10,6 +10,7 @@ module Payments
           def call
             return succeeded! if confirmed?
 
+            log_failure_response
             cancelled!(error_message)
           end
 

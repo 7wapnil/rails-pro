@@ -13,12 +13,14 @@ module Payments
             Payouts::CallbackHandler.call(
               withdrawal: withdrawal,
               status: external_status,
-              external_id: response['wdRequestId'],
-              message: error_message
+              response: response,
+              message: custom_error_message
             )
           end
 
           private
+
+          attr_reader :custom_error_message
 
           def external_status
             succeeded_request? && approved?
@@ -26,10 +28,6 @@ module Payments
 
           def response
             @response ||= client.authorize_payout(payout_params)
-          end
-
-          def error_message
-            @error_message ||= "SafeCharge: #{response['reason']}"
           end
 
           def succeeded_request?
@@ -42,7 +40,7 @@ module Payments
               withdrawal_id: response['wdRequestId']
             )
           rescue ::SafeCharge::ApprovingError => error
-            assign_custom_error_message(error)
+            assign_custom_error_message!(error)
             false
           end
 
@@ -58,8 +56,8 @@ module Payments
             RequestBuilder.call(transaction: transaction)
           end
 
-          def assign_custom_error_message(error)
-            @error_message = "#{error.class}: #{error.message}"
+          def assign_custom_error_message!(error)
+            @custom_error_message = "#{error.class}: #{error.message}"
           end
         end
       end
