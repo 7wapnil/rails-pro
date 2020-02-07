@@ -7,6 +7,7 @@ module EntryKinds
     deposit: DEPOSIT = 'deposit',
     win: WIN = 'win',
     withdraw: WITHDRAW = 'withdraw',
+    confiscation: CONFISCATION = 'confiscation',
     bet: BET = 'bet',
     refund: REFUND = 'refund',
     rollback: ROLLBACK = 'rollback',
@@ -21,7 +22,7 @@ module EntryKinds
   }.freeze
 
   INCOME_ENTRY_KINDS = [DEPOSIT, BONUS_CHANGE].freeze
-  FUND_KINDS = [DEPOSIT, WITHDRAW].freeze
+  FUND_KINDS = [DEPOSIT, WITHDRAW, CONFISCATION].freeze
   TRADING_KINDS = [WIN, BET, REFUND,
                    EVERY_MATRIX_WAGER,
                    EVERY_MATRIX_RESULT,
@@ -41,6 +42,7 @@ module EntryKinds
   ].freeze
   CREDIT_KINDS = [
     WITHDRAW,
+    CONFISCATION,
     BET,
     ROLLBACK,
     SYSTEM_BET_CANCEL,
@@ -51,6 +53,7 @@ module EntryKinds
   ].freeze
   DELAYED_CONFIRMATION_KINDS = [WITHDRAW, BET].freeze
   ALLOWED_NEGATIVE_BALANCE_KINDS = [
+    CONFISCATION,
     BONUS_CHANGE,
     DEPOSIT,
     REFUND,

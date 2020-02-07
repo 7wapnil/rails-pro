@@ -42,7 +42,7 @@ describe Customer, '#account_management' do
     end
 
     it 'creates new customer entry request' do
-      allow(WithdrawalProcessBackofficeWorker).to receive(:perform_async)
+      allow(ConfirmationReduceBalanceWorker).to receive(:perform_async)
 
       currency = create(:currency)
       create(:entry_currency_rule, currency: currency, kind: :deposit)

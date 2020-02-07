@@ -11,6 +11,7 @@ class EntryRequest < ApplicationRecord
   belongs_to :origin, polymorphic: true, optional: true
   belongs_to :deposit, foreign_key: :origin_id, optional: true
   belongs_to :withdrawal, foreign_key: :origin_id, optional: true
+  belongs_to :confiscation, foreign_key: :origin_id, optional: true
 
   has_one :entry, inverse_of: :entry_request, dependent: :nullify
 
