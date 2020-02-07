@@ -9,6 +9,31 @@ module Payments
 
           private
 
+          # rubocop:disable Metrics/MethodLength
+          def log_response
+            payload = response.dig('payment')
+
+            Rails.logger.info(
+              message: 'Wirecard payout request',
+              transaction: {
+                id: payload['transaction-id'],
+                type: payload['transaction-type'],
+                state: payload['transaction-state']
+              },
+              status: payload.dig('statuses', 'status', 0),
+              external_request_id: payload['request-id'].split(':').first,
+              request_id: payload['request-id'],
+              completion_timestamp: payload['completion-time-stamp'],
+              requested_amount: payload['requested-amount'],
+              payment_method: payload.dig('payment-methods', 0)
+            )
+          rescue StandardError
+            Rails.logger.error(
+              message: 'Wirecard payout request cannot be logged'
+            )
+          end
+          # rubocop:enable Metrics/MethodLength
+
           def created?
             succeeded_request? && succeeded_response?
           end
@@ -34,7 +59,7 @@ module Payments
           end
 
           def response
-            @response = JSON.parse(request.body)
+            @response ||= JSON.parse(request.body)
           end
 
           def raw_error_message
