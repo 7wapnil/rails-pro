@@ -112,6 +112,8 @@ Rails.application.routes.draw do
     end
   end
 
+  resources :monthly_balance_query_results, only: %i[index]
+
   namespace :every_matrix do
     resources :categories, only: %i[index edit update]
     resources :transactions, only: %i[index show]
