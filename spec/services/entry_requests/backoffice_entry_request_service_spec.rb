@@ -43,8 +43,8 @@ describe EntryRequests::BackofficeEntryRequestService do
         described_class.call(base_params)
       end
 
-      it 'do not passes entry request to WithdrawalProcessBackofficeWorker' do
-        expect(WithdrawalProcessBackofficeWorker).not_to receive(:perform_async)
+      it 'do not passes entry request to ConfirmationReduceBalanceWorker' do
+        expect(ConfirmationReduceBalanceWorker).not_to receive(:perform_async)
 
         described_class.call(base_params)
       end
@@ -79,8 +79,8 @@ describe EntryRequests::BackofficeEntryRequestService do
         allow(EntryRequest).to receive(:new).and_return(entry_request)
       end
 
-      it 'passes entry request to WithdrawalProcessBackofficeWorker' do
-        expect(WithdrawalProcessBackofficeWorker)
+      it 'passes entry request to ConfirmationReduceBalanceWorker' do
+        expect(ConfirmationReduceBalanceWorker)
           .to receive(:perform_async).with(entry_request.id)
 
         described_class.call(entry_params)

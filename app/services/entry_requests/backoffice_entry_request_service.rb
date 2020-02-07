@@ -10,7 +10,14 @@ module EntryRequests
     end
 
     def call
-      deposit? ? create_and_proceed_deposit : create_and_proceed_withdrawal
+      case params[:kind]
+      when EntryRequest::DEPOSIT
+        create_and_proceed_deposit
+      when EntryRequest::WITHDRAW
+        create_and_proceed_withdrawal
+      else
+        create_and_proceed_confiscation
+      end
 
       return entry_request_error! if entry_request.failed?
 
@@ -22,10 +29,6 @@ module EntryRequests
     private
 
     attr_reader :entry_request, :params, :amount, :initiator, :customer
-
-    def deposit?
-      params[:kind] == EntryRequest::DEPOSIT
-    end
 
     def create_and_proceed_deposit
       create_deposit_entry_request
@@ -39,8 +42,16 @@ module EntryRequests
       create_withdrawal_entry_request
       return if entry_request.failed?
 
-      process_withdraw_entry_request
+      authorize_entry_request
       entry_request.withdrawal.succeeded!
+    end
+
+    def create_and_proceed_confiscation
+      create_confiscation_entry_request
+      return if entry_request.failed?
+
+      authorize_entry_request
+      entry_request.confiscation.succeeded!
     end
 
     def entry_request_error!
@@ -67,12 +78,22 @@ module EntryRequests
       )
     end
 
-    def process_withdraw_entry_request
-      ::WithdrawalProcessBackofficeWorker.perform_async(entry_request.id)
+    def authorize_entry_request
+      ::ConfirmationReduceBalanceWorker.perform_async(entry_request.id)
     end
 
     def withdrawal_transaction
       ::Payments::Transactions::Withdrawal.new(transaction_params)
+    end
+
+    def create_confiscation_entry_request
+      @entry_request = EntryRequests::Factories::Confiscation.call(
+        transaction: confiscation_transaction
+      )
+    end
+
+    def confiscation_transaction
+      ::Payments::Transactions::Confiscation.new(transaction_params)
     end
 
     def transaction_params
