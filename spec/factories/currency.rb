@@ -58,6 +58,16 @@ FactoryBot.define do
       end
     end
 
+    trait :with_confiscation_rule do
+      after(:create) do |currency|
+        create(:entry_currency_rule,
+               currency: currency,
+               kind: EntryRequest::CONFISCATION,
+               min_amount: -1000,
+               max_amount: 0)
+      end
+    end
+
     trait :allowed_by_safe_charge do
       code do
         allowed_currencies =

@@ -46,6 +46,9 @@
           %td= t('attributes.external_id')
           %td
             = @entry.external_id
-
+        %tr
+          %td= t('attributes.entities.entry_request')
+          %td
+            = link_to @entry.entry_request.id, entry_request_path(@entry.entry_request.id)
       %hr
       = link_back
