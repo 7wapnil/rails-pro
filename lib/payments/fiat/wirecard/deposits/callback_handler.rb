@@ -13,15 +13,17 @@ module Payments
 
             save_transaction_id! unless entry_request.external_id
 
-            if approved?
-              track_payment_event
-              return complete_entry_request
-            end
+            return track_and_complete if approved?
 
             fail_entry_request
           end
 
           private
+
+          def track_and_complete
+            track_payment_event
+            complete_entry_request
+          end
 
           def track_payment_event
             payload = {
