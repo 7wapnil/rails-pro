@@ -26,12 +26,10 @@ module Payments
           end
 
           def track_payment_event
-            payload = {
+            GaEvents::SuccesfulPayment.call(
               payment_processor: 'Wirecard',
               payee: holder_name
-            }
-
-            GaEvents::SuccesfulPayment.call(payload)
+            )
           end
 
           def cancelled?
