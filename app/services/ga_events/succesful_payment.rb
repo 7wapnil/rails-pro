@@ -28,7 +28,7 @@ module GaEvents
     end
 
     def tracker
-      @tracker ||= Staccato.tracker('UA-129576627-1', nil, ssl: true)
+      @tracker ||= Staccato.tracker(ENV['GA_TRACKER_ID'], nil, ssl: true)
     end
   end
 end
