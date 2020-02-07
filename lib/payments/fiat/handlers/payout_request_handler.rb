@@ -9,6 +9,7 @@ module Payments
         end
 
         def call
+          log_response
           return if created?
 
           payout_failed!
@@ -20,8 +21,12 @@ module Payments
 
         delegate :withdrawal, to: :transaction, allow_nil: true
 
+        def log_response
+          raise NotImplementedError, "Implement ##{__method__} method!"
+        end
+
         def created?
-          raise NotImplementedError, 'Implement #created? method!'
+          raise NotImplementedError, "Implement ##{__method__} method!"
         end
 
         def payout_failed!
