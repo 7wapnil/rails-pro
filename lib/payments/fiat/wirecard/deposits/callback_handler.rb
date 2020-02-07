@@ -14,10 +14,6 @@ module Payments
             save_transaction_id! unless entry_request.external_id
 
             if approved?
-              Rails.logger.info message: 'Payment request approved',
-                                status: status_details['code'],
-                                status_message: status_details['description'],
-                                request_id: request_id
               track_payment_event
               return complete_entry_request
             end
@@ -32,8 +28,8 @@ module Payments
               payment_processor: 'Wirecard',
               payee: holder_name
             }
-            Rails.logger.info(payload)
-            TrackPaymentEvent.call(payload)
+
+            GaEvents::SuccesfulPayment.call(payload)
           end
 
           def cancelled?
