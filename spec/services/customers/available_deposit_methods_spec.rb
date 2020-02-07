@@ -49,4 +49,18 @@ describe Customers::AvailableDepositMethods do
       expect(payment_method).to have_attributes(limits)
     end
   end
+
+  context 'crypto primary wallet' do
+    let(:mode) { ::Payments::Methods::CREDIT_CARD }
+    let(:code) { ::Payments::Crypto::CoinsPaid::Currency::MBTC_CODE }
+    let(:currency) { create(:currency, :crypto, code: code) }
+    let!(:primary_currency) { create(:currency, :primary) }
+    let!(:deposit_rule) do
+      create(:entry_currency_rule, :deposit, currency: primary_currency)
+    end
+
+    it 'returns correct max and min amount' do
+      expect(payment_method).to have_attributes(limits)
+    end
+  end
 end

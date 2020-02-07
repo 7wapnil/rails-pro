@@ -51,10 +51,7 @@ module Customers
     end
 
     def fiat_currency
-      @fiat_currency ||= customer.currencies
-                                 .fiat
-                                 .includes(:deposit_currency_rule)
-                                 .first
+      @fiat_currency ||= customer_fiat_currency || primary_currency
     end
 
     def max_amount(currency)
@@ -81,6 +78,17 @@ module Customers
 
     def currency_code(payment_method)
       ::Payments::Methods::METHOD_PROVIDERS.dig(payment_method, :currency)
+    end
+
+    def customer_fiat_currency
+      customer.currencies
+              .fiat
+              .includes(:deposit_currency_rule)
+              .first
+    end
+
+    def primary_currency
+      Currency.includes(:deposit_currency_rule).primary
     end
   end
 end
