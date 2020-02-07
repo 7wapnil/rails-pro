@@ -9,6 +9,13 @@ module Payments
 
           private
 
+          def log_response
+            Rails.logger.info(
+              message: 'CoinsPaid payout request',
+              **response.to_h.deep_symbolize_keys
+            )
+          end
+
           def created?
             status_code == Rack::Utils::SYMBOL_TO_STATUS_CODE[:created]
           end
@@ -26,7 +33,9 @@ module Payments
           end
 
           def response
-            @response = JSON.parse(request.body)
+            @response ||= JSON.parse(request.body)
+          rescue JSON::ParserError, TypeError
+            {}
           end
 
           def raw_error_message

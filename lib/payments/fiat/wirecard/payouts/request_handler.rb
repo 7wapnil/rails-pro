@@ -9,6 +9,13 @@ module Payments
 
           private
 
+          def log_response
+            Rails.logger.info(
+              message: 'Wirecard payout request',
+              **response.to_h.deep_symbolize_keys
+            )
+          end
+
           def created?
             succeeded_request? && succeeded_response?
           end
@@ -34,7 +41,7 @@ module Payments
           end
 
           def response
-            @response = JSON.parse(request.body)
+            @response ||= JSON.parse(request.body)
           end
 
           def raw_error_message

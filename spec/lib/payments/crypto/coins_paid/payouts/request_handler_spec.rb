@@ -29,6 +29,7 @@ describe Payments::Crypto::CoinsPaid::Payouts::RequestHandler do
     allow(::Payments::Crypto::CoinsPaid::Client)
       .to receive(:new).and_return(client_double)
     allow(request_double).to receive(:code).and_return(201)
+    allow(request_double).to receive(:body)
 
     expect(client_double)
       .to receive(:authorize_payout).and_return(request_double)
