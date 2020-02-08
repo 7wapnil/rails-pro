@@ -20,13 +20,31 @@ module Payments
 
         attr_reader :request
 
+        # rubocop:disable Metrics/MethodLength
         def log_response
+          crypto_address_payload = response['crypto_address']
+                                   .slice('id', 'currency', 'foreign_id', 'tag')
+          transaction_payload = response.dig('transactions', 0).slice(
+            'id', 'currency', 'transaction_type', 'type', 'tag',
+            'amount', 'txid', 'confirmations'
+          )
+
           Rails.logger.info(
             message: 'CoinsPaid callback',
-            payment_type: payment_type,
-            **response.deep_symbolize_keys
+            id: response['id'],
+            type: payment_type,
+            crypto_address: crypto_address_payload,
+            currency_sent: response['currency_sent'],
+            currency_received: response['currency_received'],
+            transactions: transaction_payload,
+            fees: response.dig('fees', 0),
+            error: response['error'],
+            status: response['status']
           )
+        rescue StandardError
+          Rails.logger.error(message: 'CoinsPaid callback cannot be logged')
         end
+        # rubocop:enable Metrics/MethodLength
 
         def response
           @response ||= JSON.parse(request.body.string)
