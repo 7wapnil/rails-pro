@@ -27,7 +27,7 @@ module Webhooks
       def cancellation_params
         params
           .merge(Status: ::Payments::Webhooks::Statuses::CANCELLED)
-          .permit(*params.keys)
+          .permit(:Status, *params.keys)
       end
 
       def redirection_url
