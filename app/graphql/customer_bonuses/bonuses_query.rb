@@ -6,11 +6,15 @@ module CustomerBonuses
     decorate_with CustomerBonusDecorator
     mark_as_trackable
 
-    def resolve(_obj, _args)
-      CustomerBonus
-        .customer_history(current_customer)
-        .where.not(status: CustomerBonus::SYSTEM_STATUSES)
-        .order(activated_at: :desc)
+    argument :status, types.String
+
+    def resolve(_obj, args)
+      bonuses = CustomerBonus
+                .customer_history(current_customer)
+                .where.not(status: CustomerBonus::SYSTEM_STATUSES)
+                .order(activated_at: :desc)
+
+      args.status.present? ? bonuses.where(status: args.status) : bonuses
     end
   end
 end
