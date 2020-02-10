@@ -93,7 +93,8 @@ module Payments
                               status_message: status_details['description'],
                               request_id: request_id
 
-            ga_tracker.track_event deposit_failure(status_details[:description])
+            payload = deposit_failure(status_details['description'])
+            ga_tracker.track_event payload
 
             entry_request.register_failure!(
               I18n.t('errors.messages.cancelled_by_customer')
