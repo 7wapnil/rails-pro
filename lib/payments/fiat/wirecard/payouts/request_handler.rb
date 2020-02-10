@@ -12,6 +12,8 @@ module Payments
           # rubocop:disable Metrics/MethodLength
           def log_response
             payload = response.dig('payment')
+            payment_method = payload.dig('payment-methods', 'payment-method', 0)
+            status_payload = Array.wrap(payload.dig('statuses', 'status'))
 
             Rails.logger.info(
               message: 'Wirecard payout request',
@@ -20,12 +22,15 @@ module Payments
                 type: payload['transaction-type'],
                 state: payload['transaction-state']
               },
-              status: payload.dig('statuses', 'status', 0),
+              parent_transaction_id: payload['parent-transaction-id'],
+              status_1: status_payload[0],
+              status_2: status_payload[1],
+              status_3: status_payload[2],
               external_request_id: payload['request-id'].split(':').first,
               request_id: payload['request-id'],
               completion_timestamp: payload['completion-time-stamp'],
               requested_amount: payload['requested-amount'],
-              payment_method: payload.dig('payment-methods', 0)
+              payment_method: payment_method
             )
           rescue StandardError
             Rails.logger.error(
