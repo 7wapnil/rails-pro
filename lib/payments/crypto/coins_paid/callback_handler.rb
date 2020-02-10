@@ -38,8 +38,8 @@ module Payments
             currency_received: response['currency_received'],
             transactions: transaction_payload,
             fees: response.dig('fees', 0),
-            error: response['error'],
-            status: response['status']
+            external_error: response['error'],
+            external_status: response['status']
           )
         rescue StandardError
           Rails.logger.error(message: 'CoinsPaid callback cannot be logged')
