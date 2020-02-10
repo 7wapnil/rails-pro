@@ -26,7 +26,7 @@ module Payments
                                    .slice('id', 'currency', 'foreign_id', 'tag')
           transaction_payload = response.dig('transactions', 0).slice(
             'id', 'currency', 'transaction_type', 'type', 'tag',
-            'amount', 'txid', 'confirmations'
+            'amount', 'txid', 'riskscore', 'confirmations'
           )
 
           Rails.logger.info(

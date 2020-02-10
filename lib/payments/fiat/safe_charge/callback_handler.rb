@@ -18,11 +18,43 @@ module Payments
         attr_reader :response
 
         def log_response
+          return log_cancellation_response if cancellation_callback?
+
+          log_deposit_response
+        end
+
+        def cancellation_callback?
+          response['Status'] == ::Payments::Webhooks::Statuses::CANCELLED
+        end
+
+        def log_cancellation_response
           Rails.logger.info(
-            message: 'SafeCharge deposit callback',
-            **response.to_h.deep_symbolize_keys
+            message: 'SafeCharge deposit cancellation callback',
+            **response.slice('request_id', 'signature').to_h.deep_symbolize_keys
           )
         end
+
+        # rubocop:disable Metrics/MethodLength
+        def log_deposit_response
+          log_payload = response.slice(
+            'APMReferenceID', 'Cvv2Reply', 'ErrCode', 'ExErrCode',
+            'PPP_TransactionID', 'Reason', 'ReasonCode', 'Status',
+            'TransactionID', 'advanceResponseChecksum', 'client_ip',
+            'currency', 'country', 'errApmCode', 'errApmDescription',
+            'errScCode', 'errScDescription', 'externalTransactionId',
+            'feeAmount', 'item_amount_1', 'item_name_1', 'item_quantity_1',
+            'message', 'orderTransactionId', 'payment_method', 'ppp_status',
+            'request_id', 'responseTimeStamp', 'responsechecksum',
+            'totalAmount', 'transactionType', 'type', 'unknownParameters',
+            'upoRegistrationDate', 'userid', 'userPaymentOptionId'
+          )
+
+          Rails.logger.info(
+            message: 'SafeCharge deposit callback',
+            **log_payload.to_h.deep_symbolize_keys
+          )
+        end
+        # rubocop:enable Metrics/MethodLength
 
         def callback_handler
           ::Payments::Fiat::SafeCharge::Deposits::CallbackHandler

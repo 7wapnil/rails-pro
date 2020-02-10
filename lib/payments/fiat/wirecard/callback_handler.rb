@@ -20,13 +20,37 @@ module Payments
 
         attr_reader :request
 
+        # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         def log_response
+          payload = response.dig('payment')
+
           Rails.logger.info(
             message: 'Wirecard callback',
             payment_type: payment_type,
-            **response.deep_symbolize_keys
+            transaction: {
+              id: payload['transaction-id'],
+              type: payload['transaction-type'],
+              state: payload['transaction-state']
+            },
+            parent_transaction_id: payload['parent-transaction-id'],
+            status_1: payload.dig('statuses', 'status', 0),
+            status_2: payload.dig('statuses', 'status', 1),
+            status_3: payload.dig('statuses', 'status', 2),
+            external_request_id: payload['request-id'].split(':').first,
+            request_id: payload['request-id'],
+            completion_timestamp: payload['completion-time-stamp'],
+            requested_amount: payload['requested-amount'],
+            payment_method: payload.dig('payment-methods', 'payment-method', 0),
+            pending_redirect_url: payload['pending-redirect-url'],
+            success_redirect_url: payload['success-redirect-url'],
+            cancel_redirect_url: payload['cancel-redirect-url'],
+            fail_redirect_url: payload['fail-redirect-url'],
+            processing_redirect_url: payload['processing-redirect-url']
           )
+        rescue StandardError
+          Rails.logger.error(message: 'Wirecard callback cannot be logged')
         end
+        # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
         def response
           @response ||= base64? ? base64_response : xml_response
