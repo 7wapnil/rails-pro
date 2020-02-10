@@ -39,6 +39,8 @@ module EntryRequests
         end
 
         def new_status?
+          return true if bet.pending_manual_settlement? && bet.lost?
+
           bet.settlement_status != status
         end
 
