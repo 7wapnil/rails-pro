@@ -23,6 +23,7 @@ module Payments
         # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         def log_response
           payload = response.dig('payment')
+          status_payload = Array.wrap(payload.dig('statuses', 'status'))
 
           Rails.logger.info(
             message: 'Wirecard callback',
@@ -33,9 +34,9 @@ module Payments
               state: payload['transaction-state']
             },
             parent_transaction_id: payload['parent-transaction-id'],
-            status_1: payload.dig('statuses', 'status', 0),
-            status_2: payload.dig('statuses', 'status', 1),
-            status_3: payload.dig('statuses', 'status', 2),
+            status_1: status_payload[0],
+            status_2: status_payload[1],
+            status_3: status_payload[2],
             external_request_id: payload['request-id'].split(':').first,
             request_id: payload['request-id'],
             completion_timestamp: payload['completion-time-stamp'],
