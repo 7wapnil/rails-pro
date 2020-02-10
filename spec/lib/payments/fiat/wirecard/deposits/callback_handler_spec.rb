@@ -48,9 +48,9 @@ describe Payments::Fiat::Wirecard::Deposits::CallbackHandler do
   before do
     # ignore job after new customer creating
     allow(Customers::Summaries::UpdateWorker).to receive(:perform_async)
-    allow(GaEvents::SuccesfulPayment)
-      .to receive(:call)
-      .and_return(true)
+    # allow(GaTracker)
+    #   .to receive(:new)
+    #   .and_return(true)
   end
 
   context 'when request canceled by customer' do

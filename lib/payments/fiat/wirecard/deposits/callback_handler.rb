@@ -4,6 +4,7 @@ module Payments
   module Fiat
     module Wirecard
       module Deposits
+        # rubocop:disable Metrics/ClassLength
         class CallbackHandler < Handlers::DepositCallbackHandler
           include ::Payments::Fiat::Wirecard::Statuses
           include ::Payments::Fiat::Wirecard::TransactionStates
@@ -21,15 +22,34 @@ module Payments
           private
 
           def track_and_complete
-            track_payment_event
+            ga_tracker.track_event deposit_success(entry_request.amount)
             complete_entry_request
           end
 
-          def track_payment_event
-            GaEvents::SuccesfulPayment.call(
-              payment_processor: 'Wirecard',
-              payee: holder_name
+          def deposit_success(amount)
+            ga_base_payload.merge(
+              action: 'depositSuccesful',
+              value: amount
             )
+          end
+
+          def deposit_failure(reason)
+            ga_base_payload.merge(
+              action: 'depositFailed',
+              value: reason
+            )
+          end
+
+          def ga_tracker
+            GaTracker.new(ENV['GA_TRACKER_ID'])
+          end
+
+          def ga_base_payload
+            {
+              user_id: entry_request.customer.id,
+              user_ip: entry_request.customer.last_visit_ip,
+              category: 'Payment'
+            }
           end
 
           def cancelled?
@@ -72,6 +92,9 @@ module Payments
                               status: status_details['code'],
                               status_message: status_details['description'],
                               request_id: request_id
+
+            ga_tracker.track_event deposit_failure(status_details[:description])
+
             entry_request.register_failure!(
               I18n.t('errors.messages.cancelled_by_customer')
             )
@@ -120,6 +143,7 @@ module Payments
             raise ::Payments::FailedError
           end
         end
+        # rubocop:enable Metrics/ClassLength
       end
     end
   end
