@@ -26,8 +26,8 @@ module Payments
               status_1: status_payload[0],
               status_2: status_payload[1],
               status_3: status_payload[2],
-              external_request_id: payload['request-id'].split(':').first,
-              request_id: payload['request-id'],
+              external_request_id: "id:#{payload['request-id']}",
+              request_id: payload['request-id'].split(':').first,
               completion_timestamp: payload['completion-time-stamp'],
               requested_amount: payload['requested-amount'],
               payment_method: payment_method
