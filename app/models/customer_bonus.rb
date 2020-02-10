@@ -2,6 +2,8 @@
 
 class CustomerBonus < ApplicationRecord
   include StateMachines::CustomerBonusStateMachine
+  # TODO: replace this Callback with a direct call inside bonus related services
+  after_commit :notify_application, on: %i[create update]
 
   default_scope { order(:created_at) }
 
@@ -52,5 +54,11 @@ class CustomerBonus < ApplicationRecord
     return false unless active? && activated_at
 
     Time.zone.today >= active_until_date
+  end
+
+  private
+
+  def notify_application
+    WebSocket::Client.instance.trigger_customer_bonus_update(self)
   end
 end

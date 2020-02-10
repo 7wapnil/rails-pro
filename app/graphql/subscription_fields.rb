@@ -9,6 +9,7 @@ module SubscriptionFields
   CATEGORY_EVENT_UPDATED = :categoryEventUpdated
   TOURNAMENT_EVENT_UPDATED = :tournamentEventUpdated
   WALLET_UPDATED = :walletUpdated
+  CUSTOMER_BONUS_UPDATED = :customerBonusUpdated
   BET_UPDATED = :betUpdated
   EVENT_BET_STOPPED = :eventBetStopped
   EVENTS_BET_STOPPED = :eventsBetStopped
