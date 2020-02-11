@@ -29,8 +29,10 @@ module Payments
 
         validate :validate_currency_rule
         validate :validate_type_of_initiator
+        validate :validate_real_money_balance, if: :active_bonus
 
         delegate :real_money_balance, to: :wallet, allow_nil: true
+        delegate :active_bonus, to: :customer, allow_nil: true
 
         def validate_type_of_initiator
           return true if initiator.is_a? User
@@ -43,6 +45,17 @@ module Payments
           return amount_greater_than_allowed! if amount > rule.min_amount.abs
 
           amount_less_than_allowed! if -amount > rule.max_amount
+        end
+
+        def validate_real_money_balance
+          return unless amount && real_money_balance
+          return if amount <= real_money_balance
+
+          errors.add(:base,
+                     I18n.t(
+                       'errors.messages.max_confiscation_amount_with_bonus',
+                       max_amount: real_money_balance
+                     ))
         end
 
         def rule

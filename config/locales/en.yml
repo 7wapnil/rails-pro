@@ -540,6 +540,7 @@ en:
       amount_less_than_allowed: "Amount should be greater than %{min_amount} %{currency}"
       minimum_withdrawal_amount_reached: "Minimal withdrawal amount is %{min_amount} %{currency}"
       maximum_withdrawal_amount_reached: "Maximum withdrawal amount is %{max_amount} %{currency}"
+      max_confiscation_amount_with_bonus: "You can confiscate sum up to %{max_amount} because customer has active bonus"
       min_confiscation_amount_reached: "Minimal confiscation amount is %{min_amount} %{currency}"
       max_confiscation_amount_reached: "Maximum confiscation amount is %{max_amount} %{currency}"
       provider_disconnected: Provider is disconnected

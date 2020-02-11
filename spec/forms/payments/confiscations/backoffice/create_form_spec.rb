@@ -79,4 +79,14 @@ describe ::Payments::Confiscations::Backoffice::CreateForm, type: :model do
       expect { subject.validate! }.not_to raise_error
     end
   end
+
+  context 'if customer has active bonus' do
+    let!(:customer_bonus) { create(:customer_bonus, customer: customer) }
+    let(:balance_amount)  { 100 }
+    let(:confiscation_amount) { balance_amount + 50 }
+
+    it 'raises error if confiscated amount more than real money' do
+      expect { subject.validate! }.to raise_error(ActiveModel::ValidationError)
+    end
+  end
 end
