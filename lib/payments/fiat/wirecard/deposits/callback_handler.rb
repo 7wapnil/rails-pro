@@ -4,7 +4,6 @@ module Payments
   module Fiat
     module Wirecard
       module Deposits
-        # rubocop:disable Metrics/ClassLength
         class CallbackHandler < Handlers::DepositCallbackHandler
           include ::Payments::Fiat::Wirecard::Statuses
           include ::Payments::Fiat::Wirecard::TransactionStates
@@ -14,46 +13,12 @@ module Payments
 
             save_transaction_id! unless entry_request.external_id
 
-            return track_and_complete if approved?
+            return track_and_complete! if approved?
 
             fail_entry_request
           end
 
           private
-
-          def track_and_complete
-            ga_tracker.track_event deposit_success(entry_request.amount)
-            complete_entry_request
-          end
-
-          def deposit_success(amount)
-            {
-              category: 'Payment',
-              action: 'depositSuccesful',
-              label: entry_request.customer.id,
-              value: amount
-            }
-          end
-
-          def deposit_failure(reason)
-            {
-              category: 'Payment',
-              action: 'depositFailed',
-              label: entry_request.customer.id,
-              value: reason
-            }
-          end
-
-          def ga_tracker
-            GaTracker.new(ENV['GA_TRACKER_ID'], ga_base_options)
-          end
-
-          def ga_base_options
-            {
-              user_id: entry_request.customer.id,
-              user_ip: entry_request.customer.last_visit_ip.to_s
-            }
-          end
 
           def cancelled?
             CANCELLED_STATUSES.include?(status_details['code']) &&
@@ -93,11 +58,11 @@ module Payments
           def cancel_entry_request
             Rails.logger.warn message: 'Payment request cancelled',
                               status: status_details['code'],
-                              status_message: status_details['description'],
+                              status_message: payment_message_status,
                               request_id: request_id
 
-            payload = deposit_failure(status_details['description'])
-            ga_tracker.track_event payload
+            payload = deposit_failure(payment_message_status)
+            ga.track_event payload
 
             entry_request.register_failure!(
               I18n.t('errors.messages.cancelled_by_customer')
@@ -105,6 +70,10 @@ module Payments
             fail_related_entities
 
             raise ::Payments::CancelledError
+          end
+
+          def payment_message_status
+            status_details['description']
           end
 
           def request_id
@@ -120,12 +89,18 @@ module Payments
             response.dig('payment', 'transaction-id')
           end
 
+          def track_and_complete!
+            ga.track_event(deposit_success(entry_request.amount))
+
+            complete_entry_request!
+          end
+
           def approved?
             status_details['code'].match?(APPROVED_STATUSES_REGEX) &&
               transaction_state == SUCCESSFUL
           end
 
-          def complete_entry_request
+          def complete_entry_request!
             entry_request.deposit.update(details: payment_details)
             ::EntryRequests::DepositWorker.perform_async(entry_request.id)
           end
@@ -133,11 +108,15 @@ module Payments
           def fail_entry_request
             Rails.logger.warn message: 'Payment request failed',
                               status: status_details['code'],
-                              status_message: status_details['description'],
+                              status_message: payment_message_status,
                               request_id: request_id
+
+            payload = deposit_failure(payment_message_status)
+            ga.track_event payload
+
             entry_request.register_failure!(
               I18n.t('errors.messages.payment_failed_with_reason_error',
-                     reason: status_details['description'])
+                     reason: payment_message_status)
             )
             fail_related_entities
             raise_payment_failed_error!
@@ -147,7 +126,6 @@ module Payments
             raise ::Payments::FailedError
           end
         end
-        # rubocop:enable Metrics/ClassLength
       end
     end
   end

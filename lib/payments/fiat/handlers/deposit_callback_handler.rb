@@ -27,6 +27,35 @@ module Payments
           customer_bonus&.fail!
           entry_request&.origin&.failed!
         end
+
+        def ga
+          GaTracker.new(ENV['GA_TRACKER_ID'], ga_base_options)
+        end
+
+        def ga_base_options
+          {
+            user_id: entry_request.customer.id,
+            user_ip: entry_request.customer.last_visit_ip.to_s
+          }
+        end
+
+        def deposit_success(amount)
+          {
+            category: 'Payment',
+            action: 'depositSuccesful',
+            label: entry_request.customer.id,
+            value: amount
+          }
+        end
+
+        def deposit_failure(reason)
+          {
+            category: 'Payment',
+            action: 'depositFailed',
+            label: entry_request.customer.id,
+            value: reason
+          }
+        end
       end
     end
   end

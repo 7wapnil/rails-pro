@@ -16,7 +16,7 @@ module Payments
             update_deposit_details!
 
             return if pending?
-            return complete_entry_request! if approved?
+            return track_and_complete! if approved?
 
             fail_entry_request!
           end
@@ -36,6 +36,8 @@ module Payments
                               status: status,
                               payment_message_status: payment_message_status,
                               request_id: request_id)
+            ga.track_event deposit_failure(payment_message_status)
+
             entry_request.register_failure!(
               I18n.t('errors.messages.cancelled_by_customer')
             )
@@ -87,6 +89,8 @@ module Payments
                               reason: response[:Reason],
                               reason_code: response[:ReasonCode],
                               request_id: request_id)
+            ga.track_event deposit_failure(payment_message_status)
+
             entry_request.register_failure!(
               I18n.t('errors.messages.payment_failed_with_reason_error',
                      reason: response[:Reason])
@@ -94,6 +98,12 @@ module Payments
             fail_related_entities
 
             raise ::Payments::TechnicalError
+          end
+
+          def track_and_complete!
+            ga.track_event(deposit_success(entry_request.amount))
+
+            complete_entry_request!
           end
 
           def approved?
