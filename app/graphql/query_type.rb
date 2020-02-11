@@ -35,4 +35,5 @@ QueryType = GraphQL::ObjectType.define do
   field :gameProviders, function: EveryMatrix::GameProvidersQuery.new
   field :gamesByProvider, function: EveryMatrix::GamesByProviderQuery.new
   field :jackpotTotal, function: EveryMatrix::JackpotTotalQuery.new
+  field :countryByRequest, function: Account::CountryByRequestQuery.new
 end
