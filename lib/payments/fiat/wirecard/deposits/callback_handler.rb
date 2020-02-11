@@ -27,28 +27,31 @@ module Payments
           end
 
           def deposit_success(amount)
-            ga_base_payload.merge(
+            {
+              category: 'Payment',
               action: 'depositSuccesful',
+              label: entry_request.customer.id,
               value: amount
-            )
+            }
           end
 
           def deposit_failure(reason)
-            ga_base_payload.merge(
+            {
+              category: 'Payment',
               action: 'depositFailed',
+              label: entry_request.customer.id,
               value: reason
-            )
+            }
           end
 
           def ga_tracker
-            GaTracker.new(ENV['GA_TRACKER_ID'])
+            GaTracker.new(ENV['GA_TRACKER_ID'], ga_base_options)
           end
 
-          def ga_base_payload
+          def ga_base_options
             {
               user_id: entry_request.customer.id,
-              user_ip: entry_request.customer.last_visit_ip,
-              category: 'Payment'
+              user_ip: entry_request.customer.last_visit_ip.to_s
             }
           end
 
