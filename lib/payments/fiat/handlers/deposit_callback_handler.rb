@@ -48,12 +48,13 @@ module Payments
           }
         end
 
-        def deposit_failure(reason)
+        def deposit_failure(_reason)
           {
             category: 'Payment',
             action: 'depositFailed',
-            label: entry_request.customer.id,
-            value: reason
+            label: entry_request.customer.id
+            # NOTE: can't really do that because value should be numeric
+            # value: reason
           }
         end
       end
