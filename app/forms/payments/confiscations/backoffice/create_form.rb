@@ -32,7 +32,7 @@ module Payments
         validate :validate_real_money_balance, if: :active_bonus
 
         delegate :real_money_balance, to: :wallet, allow_nil: true
-        delegate :active_bonus, to: :customer, allow_nil: true
+        delegate :active_bonus, to: :wallet, allow_nil: true
 
         def validate_type_of_initiator
           return true if initiator.is_a? User
