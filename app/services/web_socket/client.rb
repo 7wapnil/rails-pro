@@ -28,6 +28,13 @@ module WebSocket
               wallet.customer_id)
     end
 
+    def trigger_customer_bonus_update(bonus)
+      trigger(SubscriptionFields::CUSTOMER_BONUS_UPDATED,
+              bonus,
+              {},
+              bonus.customer_id)
+    end
+
     def trigger_bet_update(bet)
       trigger(SubscriptionFields::BET_UPDATED,
               bet.decorate,
