@@ -28,6 +28,7 @@ describe ::Payments::Confiscations::Backoffice::CreateForm, type: :model do
   let(:payment_method) { ::EntryRequest::CASHIER }
   let(:payment_details) { { address: Faker::Bitcoin.address } }
   let(:wallet_type) { Currency::FIAT }
+  let(:crypto_type) { Currency::CRYPTO }
   let(:confiscation_amount) { 50 }
   let(:balance_amount) { confiscation_amount + 100 }
   let(:customer) do
@@ -80,13 +81,35 @@ describe ::Payments::Confiscations::Backoffice::CreateForm, type: :model do
     end
   end
 
-  context 'if customer has active bonus' do
-    let!(:customer_bonus) { create(:customer_bonus, customer: customer) }
-    let(:balance_amount)  { 100 }
+  context 'if confiscation amount more than real money with active bonus' do
+    let!(:customer_bonus) do
+      create(:customer_bonus, customer: customer, wallet: wallet)
+    end
+    let(:balance_amount) { 100 }
     let(:confiscation_amount) { balance_amount + 50 }
 
-    it 'raises error if confiscated amount more than real money' do
+    it 'raises error when confiscate from wallet which have bonus' do
       expect { subject.validate! }.to raise_error(ActiveModel::ValidationError)
+    end
+
+    context 'when confiscate from another wallet' do
+      let(:balance_amount) { 100 }
+      let(:confiscation_amount) { balance_amount + 50 }
+      let(:another_wallet) do
+        create(
+          :wallet, crypto_type.to_sym,
+          amount: balance_amount,
+          real_money_balance: balance_amount,
+          customer: customer
+        )
+      end
+      let!(:customer_bonus) do
+        create(:customer_bonus, customer: customer, wallet: another_wallet)
+      end
+
+      it 'does not raise error' do
+        expect { subject.validate! }.not_to raise_error
+      end
     end
   end
 end
