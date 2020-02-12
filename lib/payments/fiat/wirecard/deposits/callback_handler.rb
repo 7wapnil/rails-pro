@@ -61,7 +61,7 @@ module Payments
                               status_message: payment_message_status,
                               request_id: request_id
 
-            ga.track_event(deposit_failure(payment_message_status))
+            ga_client.track_event(deposit_failure(payment_message_status))
 
             entry_request.register_failure!(
               I18n.t('errors.messages.cancelled_by_customer')
@@ -89,7 +89,7 @@ module Payments
           end
 
           def track_and_complete!
-            ga.track_event(deposit_success(entry_request.amount))
+            ga_client.track_event(deposit_success(entry_request.amount))
 
             complete_entry_request!
           end
@@ -110,8 +110,7 @@ module Payments
                               status_message: payment_message_status,
                               request_id: request_id
 
-            payload = deposit_failure(payment_message_status)
-            ga.track_event payload
+            ga_client.track_event(deposit_failure(payment_message_status))
 
             entry_request.register_failure!(
               I18n.t('errors.messages.payment_failed_with_reason_error',

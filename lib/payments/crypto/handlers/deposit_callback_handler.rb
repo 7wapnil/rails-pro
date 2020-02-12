@@ -23,7 +23,7 @@ module Payments
           entry_request&.origin&.failed!
         end
 
-        def ga
+        def ga_client
           GaTracker.new(ENV['GA_TRACKER_ID'], ga_base_options)
         end
 
