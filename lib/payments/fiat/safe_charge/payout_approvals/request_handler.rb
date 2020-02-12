@@ -13,6 +13,7 @@ module Payments
           end
 
           def call
+            log_response
             return true if success?
 
             raise ::SafeCharge::ApprovingError, error_message
@@ -21,6 +22,27 @@ module Payments
           private
 
           attr_reader :transaction, :withdrawal_id
+
+          # rubocop:disable Metrics/MethodLength
+          def log_response
+            log_payload = response.slice(
+              'version', 'errCode', 'reason', 'wdRequestStatus', 'wdOrderStaus',
+              'wdOrderStatus', 'wdRequestId', 'wdOrderId',
+              'merchantWDRequestId', 'userAccountId'
+            )
+
+            Rails.logger.info(
+              message: 'SafeCharge payout approval',
+              sc_external_status: response['status'],
+              **log_payload.deep_symbolize_keys
+            )
+          rescue StandardError
+            Rails.logger.error(
+              message: 'SafeCharge payout approval cannot be logged',
+              system_request_id: transaction.id
+            )
+          end
+          # rubocop:enable Metrics/MethodLength
 
           def response
             @response ||= client.approve_payout(approve_params)
