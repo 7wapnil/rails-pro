@@ -11,18 +11,16 @@ module Webhooks
       def create
         ::Payments::Fiat::Wirecard::CallbackHandler.call(request)
 
-        redirect_to callback_redirect_for(SUCCESS)
+        callback_redirect_for(SUCCESS)
       rescue ::Payments::CancelledError
-        redirect_to callback_redirect_for(CANCELLED)
-      rescue ::Payments::FailedError => error
-        message = error.message if error.humanized?
-
-        redirect_to callback_redirect_for(FAILED, custom_message: message)
+        callback_redirect_for(CANCELLED)
+      rescue ::Payments::FailedError
+        callback_redirect_for(FAILED)
       rescue StandardError => error
         Rails.logger.error(message: 'Technical error appeared on deposit',
                            error_object: error)
 
-        redirect_to callback_redirect_for(SYSTEM_ERROR)
+        callback_redirect_for(SYSTEM_ERROR)
       end
 
       private
@@ -35,10 +33,9 @@ module Webhooks
       end
 
       def callback_redirect_for(status, custom_message: nil)
-        ::Payments::Webhooks::DepositRedirectionUrlBuilder.call(
-          status: status,
-          request_id: params[:request_id],
-          custom_message: custom_message
+        redirect_to(
+          ::Payments::Webhooks::DepositRedirectionUrlBuilder
+            .call(status: status, custom_message: custom_message)
         )
       end
     end

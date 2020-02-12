@@ -212,9 +212,7 @@ describe Webhooks::Wirecard::PaymentsController, type: :controller do
       it 'does not pass any error message' do
         expect(Payments::Webhooks::DepositRedirectionUrlBuilder)
           .to have_received(:call)
-          .with(status: state,
-                request_id: entry_request.id.to_s,
-                custom_message: nil)
+          .with(status: state, custom_message: nil)
       end
     end
 

@@ -35,9 +35,6 @@ module Account
     field :availableWithdrawalMethods,
           types[::Payments::Withdrawals::PaymentMethodType],
           property: :available_withdrawal_methods
-    field :availableDepositMethods,
-          types[::Payments::Deposits::PaymentMethodType],
-          property: :available_deposit_methods
     field :wallets, types[::Wallets::WalletType]
     field :needMoreInfo, types.Boolean do
       resolve ->(obj, _args, _ctx) do
