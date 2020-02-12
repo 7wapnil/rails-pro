@@ -6,9 +6,7 @@ module Customers
       def perform(day, entry_id)
         entry = Entry.find(entry_id)
 
-        ActiveRecord::Base.transaction do
-          Customers::Summaries::UpdateBalance.call(day: day, entry: entry)
-        end
+        Customers::Summaries::UpdateBalance.call(day: day, entry: entry)
       rescue StandardError => error
         log_job_message(
           :error,

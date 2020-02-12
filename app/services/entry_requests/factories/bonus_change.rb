@@ -8,12 +8,13 @@ module EntryRequests
       def initialize(customer_bonus:, amount:, **params)
         @customer_bonus = customer_bonus
         @amount = amount
+        @params = params
         @initiator = params[:initiator]
+        @kind = params[:kind] || EntryRequest::BONUS_CHANGE
       end
 
       def call
         create_entry_request!
-        request_balance_update!
         validate_entry_request!
 
         entry_request
@@ -21,7 +22,8 @@ module EntryRequests
 
       private
 
-      attr_reader :customer_bonus, :amount, :initiator, :entry_request
+      attr_reader :customer_bonus, :amount, :params, :initiator, :kind
+      attr_reader :entry_request
 
       def create_entry_request!
         @entry_request = EntryRequest.create!(entry_request_attributes)
@@ -30,14 +32,21 @@ module EntryRequests
       def entry_request_attributes
         {
           amount: amount,
+          bonus_amount: amount,
           mode: EntryRequest::INTERNAL,
-          kind: EntryRequest::BONUS_CHANGE,
+          kind: kind,
           initiator: initiator,
           comment: comment,
           origin: customer_bonus,
           currency: wallet.currency,
-          customer: wallet.customer
+          customer: wallet.customer,
+          **bonus_track_attributes
         }
+      end
+
+      def bonus_track_attributes
+        params.slice(:converted_bonus_amount, :confiscated_bonus_amount)
+              .compact
       end
 
       def comment
@@ -47,10 +56,6 @@ module EntryRequests
 
       def initiator_comment_suffix
         " by #{initiator}" if initiator
-      end
-
-      def request_balance_update!
-        entry_request.update(bonus_amount: amount)
       end
 
       def validate_entry_request!

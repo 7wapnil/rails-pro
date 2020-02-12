@@ -15,8 +15,7 @@ module Bonuses
       log_activation_attempt
 
       create_customer_bonus!
-      charge_bonus_money
-      @customer_bonus.activate!(customer_bonus.entry)
+      customer_bonus.activate!(activation_bonus_entry)
       log_successful_activation
 
       customer_bonus
@@ -39,9 +38,8 @@ module Bonuses
       )
     end
 
-    def charge_bonus_money
+    def activation_bonus_entry
       create_entry_request!
-
       return charge_failed! if entry_request.failed?
 
       EntryRequests::BonusChangeService.call(entry_request: entry_request)

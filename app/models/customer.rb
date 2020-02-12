@@ -61,7 +61,13 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
            as: :initiator,
            class_name: EntryRequest.name
   has_many :label_joins, as: :labelable
-  has_many :labels, through: :label_joins
+  has_many :labels,
+           -> { where(system: false) },
+           through: :label_joins
+  has_many :system_labels,
+           -> { where(system: true) },
+           through: :label_joins,
+           source: :label
   has_many :verification_documents
   has_many :betting_limits
   has_many :bets
@@ -113,6 +119,20 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
 
   validates_with AgeValidator
   ransack_alias :ip_address, :last_sign_in_ip_or_current_sign_in_ip
+  ransacker :agg_labels do
+    query = <<-SQL
+      (SELECT STRING_AGG(
+                '|' || label_joins.label_id::Text || '|', ','
+              ) AS agg_labels
+       FROM label_joins
+       WHERE label_joins.labelable_id = customers.id AND
+             label_joins.labelable_type = 'Customer'
+       GROUP BY customers.id
+       LIMIT 1
+      )
+    SQL
+    Arel.sql(query)
+  end
 
   VerificationDocument::KINDS.keys.each do |kind|
     define_method(kind) do

@@ -2,7 +2,7 @@
 class CustomersController < ApplicationController
   include Labelable
 
-  find :customer, except: %i[index]
+  find :customer, decorate: true, except: %i[index]
 
   NOTES_PER_PAGE = 5
   WIDGET_NOTES_COUNT = 2
@@ -37,7 +37,7 @@ class CustomersController < ApplicationController
   end
 
   def show
-    @labels = Label.where(kind: :customer)
+    @labels = Label.customer.non_system.decorate
   end
 
   def impersonate

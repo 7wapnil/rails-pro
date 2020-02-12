@@ -114,10 +114,19 @@ en:
     actual_payout: Actual payout
     amount: Amount
     awarded_amount: Awarded amount
+    bonus: Bonus
+    lost_amount: Lost amount
+    cancelled_amount: Cancelled amount
+    expired_amount: Expired amount
+    converted_amount: Converted amount
+    confiscated_amount: Confiscated amount
     awarded: Awarded
     real_money_amount: Cash amount
+    real_money: Real Money
     bonus_amount: Bonus amount
-    cancelled_bonus_amount: Cancelled bonus amount
+    converted_bonus_amount: Converted bonus amount
+    confiscated_bonus_amount: Confiscated bonus amount
+    confiscated_bonus: Confiscated Bonus
     authorized_at: Authorized at
     balance: Balance
     real_money_balance: Cash balance
@@ -177,6 +186,7 @@ en:
     label_description: Label description
     label_kind: Label kind
     label_name: Label name
+    label: Label
     last_name: Last name
     last_activity_at: Last activity at
     last_sign_in_at: Last sign in at
@@ -540,6 +550,7 @@ en:
       reset_password_token_not_found: No user found for password reset token
       reset_password_token_expired: Reset password token expired
       reset_password_confirmation_mismatch: Confirmation does not match password
+      reserved: is reserved by system
       nonexistent_producer: Producer not found.
       unsupported_event_type: Event type is not supported
       bonus_for_wrong_customer: Unexpected customer bonus for bet
@@ -620,6 +631,8 @@ en:
         unchanged_status: "Bet is already '%{status}'"
         unprocessed: Bet has never been processed
         settled_bet_leg: Bet leg is already settled
+      bonuses:
+        failed_authorization: Bonus authorization failed
 
   expiration_reasons:
     converted: Converted
@@ -674,6 +687,9 @@ en:
 
   graphql:
     internal_server_error: 'Something went wrong with your query, fellow :)'
+
+  labels:
+    negative_balance: negative-balance
 
   lock_reasons:
     closed: Closed

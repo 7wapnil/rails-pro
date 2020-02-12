@@ -54,27 +54,14 @@ describe EntryRequests::BonusChangeService do
     end
   end
 
-  it 'assigns entry to customer bonus' do
-    subject
-
-    expect(customer_bonus.reload.entry)
-      .to eq(entry_request.reload.entry)
-  end
-
   context 'with failed entry request' do
     before { entry_request.failed! }
 
     it 'does not proceed' do
       expect { subject }.to raise_error(
         EntryRequests::FailedEntryRequestError,
-        'Failed entry request passed to payment service'
+        I18n.t('errors.messages.bonuses.failed_authorization')
       )
-    end
-
-    it 'does not assign balance entry to customer bonus' do
-      subject
-    rescue EntryRequests::FailedEntryRequestError
-      expect(customer_bonus.reload.entry).to be_nil
     end
   end
 end

@@ -14,8 +14,10 @@
         %td
           = link_to customer.username, customer
           %br
+          - customer.system_labels.each do |label|
+            %span.badge.badge-success.mb-1= label.decorated_name
           - customer.labels.each do |label|
-            %span.badge.badge-info= label.name
+            %span.badge.badge-info.mb-1= label.decorated_name
         %td= customer.email
         %td= customer.last_sign_in_ip
         %td= customer.id

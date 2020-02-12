@@ -2,7 +2,7 @@
 
 module Customers
   class EntriesController < ApplicationController
-    find :customer, by: :customer_id
+    find :customer, by: :customer_id, decorate: true
 
     def index
       @filter = Entries::Filter.new(

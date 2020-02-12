@@ -33,9 +33,14 @@
             = number_with_precision @entry.bonus_amount, precision: 2
             = @entry.currency_code
         %tr
-          %td= t('attributes.cancelled_bonus_amount')
+          %td= t('attributes.converted_bonus_amount')
           %td
-            = number_with_precision @entry.cancelled_bonus_amount, precision: 2
+            = number_with_precision @entry.converted_bonus_amount, precision: 2
+            = @entry.currency_code
+        %tr
+          %td= t('attributes.confiscated_bonus_amount')
+          %td
+            = number_with_precision @entry.confiscated_bonus_amount, precision: 2
             = @entry.currency_code
         %tr
           %td= t('attributes.external_id')

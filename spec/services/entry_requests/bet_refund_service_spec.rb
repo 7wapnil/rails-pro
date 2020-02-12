@@ -33,7 +33,7 @@ describe EntryRequests::BetRefundService do
                                         odd: odd)
   end
   let(:entry_request) do
-    EntryRequests::Factories::Refund.call(entry: bet.entry, comment: message)
+    EntryRequests::Factories::BetRefund.call(bet: bet, comment: message)
   end
 
   context 'with new entry request' do

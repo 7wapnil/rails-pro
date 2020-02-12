@@ -105,9 +105,9 @@ module Customers
       def total_bonus_awarded
         customer
           .customer_bonuses
-          .joins(:entry)
+          .joins(:activation_entry)
           .sum do |customer_bonus|
-            convert_money(customer_bonus.entry, :bonus_amount)
+            convert_money(customer_bonus.activation_entry, :bonus_amount)
           end
       end
 

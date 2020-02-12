@@ -44,10 +44,15 @@ FactoryBot.define do
       after(:create) do |bet|
         wallet = bet.customer.wallets.take
         bet.update(currency: wallet.currency)
-        create(:entry, :bet, :with_real_money_balance_entry,
-               origin: bet,
-               wallet: wallet,
-               amount: -bet.amount)
+        balance_trait = if bet.customer_bonus.present?
+                          :with_real_money_balance_entry
+                        else
+                          :with_balance_entries
+                        end
+
+        create(:entry, :bet, balance_trait, origin: bet,
+                                            wallet: wallet,
+                                            amount: -bet.amount)
       end
     end
 
@@ -107,6 +112,22 @@ FactoryBot.define do
     trait :with_random_market do
       after(:create) do |bet|
         create(:bet_leg, :with_random_market, bet: bet)
+      end
+    end
+
+    trait :with_bonus do
+      transient do
+        bonus_status { CustomerBonus::ACTIVE }
+      end
+
+      after(:create) do |bet, evaluator|
+        wallet = bet.customer.wallets.find_by(currency: bet.currency)
+        wallet ||= bet.customer.wallets.take
+        bonus = create(:customer_bonus, customer: bet.customer,
+                                        wallet: wallet,
+                                        status: evaluator.bonus_status)
+
+        bet.update(customer_bonus: bonus)
       end
     end
 

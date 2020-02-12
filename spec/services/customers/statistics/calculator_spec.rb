@@ -94,7 +94,7 @@ describe Customers::Statistics::Calculator do
                   customer: customer)
     end
     let(:awarded_customer_bonus_entries) do
-      awarded_customer_bonuses.map(&:entry)
+      awarded_customer_bonuses.map(&:activation_entry)
     end
 
     let!(:bonus_conversion_entries) do

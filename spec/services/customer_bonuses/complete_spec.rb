@@ -29,10 +29,17 @@ describe CustomerBonuses::Complete do
       create(:customer_bonus, wallet: wallet,
                               rollover_balance: 0)
     end
+    let(:converted_amount) { wallet.bonus_balance }
 
     it 'completes the bonus' do
       subject
       expect(customer_bonus.reload).to be_completed
+    end
+
+    it 'sets total converted amount' do
+      subject
+      expect(customer_bonus.reload.total_converted_amount)
+        .to eq(converted_amount)
     end
 
     it 'creates a bonus EntryRequest' do

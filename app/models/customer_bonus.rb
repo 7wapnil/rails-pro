@@ -12,9 +12,27 @@ class CustomerBonus < ApplicationRecord
   belongs_to :customer
   belongs_to :wallet
   belongs_to :original_bonus, -> { with_deleted }, class_name: Bonus.name
-  belongs_to :entry, optional: true
+  belongs_to :activation_entry, class_name: Entry.name,
+                                foreign_key: :entry_id,
+                                optional: true
+
   has_one :currency, through: :wallet
   has_many :bets
+  has_many :wagers, class_name: EveryMatrix::Wager.name
+  has_many :entries, as: :origin
+
+  has_one :cancellation_entry,
+          -> { bonus_cancellation },
+          as: :origin,
+          class_name: Entry.name
+  has_one :expiration_entry,
+          -> { bonus_expiration },
+          as: :origin,
+          class_name: Entry.name
+  has_one :loss_entry,
+          -> { bonus_loss },
+          as: :origin,
+          class_name: Entry.name
 
   attr_reader :amount
 
@@ -23,7 +41,7 @@ class CustomerBonus < ApplicationRecord
   end
 
   def self.customer_history(customer)
-    includes(:entry).where(customer: customer)
+    includes(:activation_entry).where(customer: customer)
   end
 
   def active_until_date

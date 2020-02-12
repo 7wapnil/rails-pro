@@ -4,7 +4,7 @@ describe CustomerBonus do
   it { is_expected.to belong_to(:customer) }
   it { is_expected.to belong_to(:wallet) }
   it { is_expected.to belong_to(:original_bonus) }
-  it { is_expected.to belong_to(:entry) }
+  it { is_expected.to belong_to(:activation_entry) }
   it { is_expected.to have_many(:bets) }
   it { is_expected.to have_one(:currency).through(:wallet) }
 
@@ -101,7 +101,8 @@ describe CustomerBonus do
         )
       end
       let(:rollover_value) do
-        customer_bonus.entry.bonus_amount * customer_bonus.rollover_multiplier
+        customer_bonus.activation_entry.bonus_amount *
+          customer_bonus.rollover_multiplier
       end
 
       it 'sets #activated_at' do

@@ -51,9 +51,11 @@ FactoryBot.define do
 
     trait :with_balance_entries do
       after(:create) do |entry|
+        half_amount = (entry.amount / 2).round(2)
+
         entry.update(
-          real_money_amount: entry.amount / 2,
-          bonus_amount: entry.amount / 2
+          real_money_amount: entry.amount - half_amount,
+          bonus_amount: half_amount
         )
       end
     end

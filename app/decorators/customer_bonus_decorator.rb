@@ -12,9 +12,35 @@ class CustomerBonusDecorator < ApplicationDecorator
   end
 
   def amount(human: false)
-    amount = entry ? entry.bonus_amount : 0.0
+    amount = activation_entry ? activation_entry.bonus_amount : 0.0
 
     human ? "#{amount} #{currency}" : amount
+  end
+
+  def lost_amount(human: false)
+    amount = lost? ? activation_entry&.bonus_amount.to_f : 0.0
+
+    human ? "#{amount} #{currency}" : amount
+  end
+
+  def cancelled_amount(human: false)
+    amount = cancelled? ? cancellation_entry&.bonus_amount.to_f : 0.0
+
+    human ? "#{switch_sign(amount)} #{currency}" : switch_sign(amount)
+  end
+
+  def expired_amount(human: false)
+    amount = expired? ? expiration_entry&.bonus_amount.to_f : 0.0
+
+    human ? "#{switch_sign(amount)} #{currency}" : switch_sign(amount)
+  end
+
+  def total_converted_amount(human: false)
+    human ? "#{super()} #{currency}" : super()
+  end
+
+  def total_confiscated_amount(human: false)
+    human ? "#{super()} #{currency}" : super()
   end
 
   def max_rollover_per_bet(human: false)
@@ -42,7 +68,9 @@ class CustomerBonusDecorator < ApplicationDecorator
   end
 
   def link_to_entry
-    entry ? link_to(t('entities.entry'), entry_path(entry)) : t('not_available')
+    return t('not_available') unless activation_entry.present?
+
+    link_to(t('entities.entry'), entry_path(activation_entry))
   end
 
   def link_to_customer
@@ -51,5 +79,13 @@ class CustomerBonusDecorator < ApplicationDecorator
 
   def percentage(human: false)
     human ? number_to_percentage(super(), precision: 0) : super()
+  end
+
+  private
+
+  def switch_sign(number)
+    return number if number.zero?
+
+    -number
   end
 end

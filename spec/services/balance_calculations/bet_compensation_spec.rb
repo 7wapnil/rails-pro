@@ -42,7 +42,8 @@ describe BalanceCalculations::BetCompensation do
   context 'with placed real money and bonuses' do
     it 'calculates real and bonus amount' do
       expect(subject)
-        .to eq(real_money_amount: real_money_winning,
+        .to eq(amount: winning,
+               real_money_amount: real_money_winning,
                bonus_amount: bonus_winning)
     end
   end
@@ -51,7 +52,9 @@ describe BalanceCalculations::BetCompensation do
     let(:bonus_balance) { 0 }
 
     it 'calculates real amount' do
-      expect(subject).to eq(real_money_amount: winning, bonus_amount: 0)
+      expect(subject).to eq(amount: winning,
+                            real_money_amount: winning,
+                            bonus_amount: 0)
     end
   end
 
@@ -59,7 +62,9 @@ describe BalanceCalculations::BetCompensation do
     let(:real_money_balance) { 0 }
 
     it 'calculates bonus amount' do
-      expect(subject).to eq(real_money_amount: 0, bonus_amount: winning)
+      expect(subject).to eq(amount: winning,
+                            real_money_amount: 0,
+                            bonus_amount: winning)
     end
   end
 end

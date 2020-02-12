@@ -12,7 +12,7 @@ module BalanceCalculations
         {
           real_money_amount: calculated_real_money_amount,
           bonus_amount: calculated_bonus_amount,
-          cancelled_bonus_amount: calculated_cancelled_bonus_amount
+          confiscated_bonus_amount: calculated_confiscated_bonus_amount
         }
       end
 
@@ -47,7 +47,7 @@ module BalanceCalculations
         0
       end
 
-      def calculated_cancelled_bonus_amount
+      def calculated_confiscated_bonus_amount
         return bonus_amount unless bonus?
 
         0
