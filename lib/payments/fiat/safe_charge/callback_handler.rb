@@ -30,7 +30,8 @@ module Payments
         def log_cancellation_response
           Rails.logger.info(
             message: 'SafeCharge deposit cancellation callback',
-            **response.slice('request_id', 'signature').to_h.deep_symbolize_keys
+            system_request_id: response['request_id'],
+            signature: response['signature']
           )
         end
 
@@ -44,13 +45,14 @@ module Payments
             'errScCode', 'errScDescription', 'externalTransactionId',
             'feeAmount', 'item_amount_1', 'item_name_1', 'item_quantity_1',
             'message', 'orderTransactionId', 'payment_method', 'ppp_status',
-            'request_id', 'responseTimeStamp', 'responsechecksum',
-            'totalAmount', 'transactionType', 'type', 'unknownParameters',
+            'responseTimeStamp', 'responsechecksum', 'totalAmount',
+            'transactionType', 'type', 'unknownParameters',
             'upoRegistrationDate', 'userid', 'userPaymentOptionId'
           )
 
           Rails.logger.info(
             message: 'SafeCharge deposit callback',
+            system_request_id: response['request_id'],
             **log_payload.to_h.deep_symbolize_keys
           )
         end

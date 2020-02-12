@@ -34,7 +34,8 @@ module Payments
             )
           rescue StandardError
             Rails.logger.error(
-              message: 'Wirecard payout request cannot be logged'
+              message: 'Wirecard payout request cannot be logged',
+              system_request_id: transaction.id
             )
           end
           # rubocop:enable Metrics/MethodLength
