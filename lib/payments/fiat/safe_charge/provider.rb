@@ -11,10 +11,6 @@ module Payments
 
         protected
 
-        def customer_validation_handler
-          ::Payments::Fiat::SafeCharge::Validations::CustomerValidationHandler
-        end
-
         def payout_request_handler
           ::Payments::Fiat::SafeCharge::Payouts::RequestHandler
         end

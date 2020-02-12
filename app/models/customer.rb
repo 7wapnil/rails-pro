@@ -162,10 +162,6 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     ::Customers::AvailableWithdrawalMethods.call(customer: self)
   end
 
-  def available_deposit_methods
-    ::Customers::AvailableDepositMethods.call(customer: self)
-  end
-
   def log_account_transition
     ctx = {
       account_kind_was: account_kind_before_last_save,
