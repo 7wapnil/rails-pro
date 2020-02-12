@@ -376,4 +376,26 @@ describe GraphQL, '#user' do
       end
     end
   end
+
+  context 'available deposit methods' do
+    let(:credit_card) { ::Payments::Methods::CREDIT_CARD }
+    let(:credit_card_label) do
+      I18n.t("payments.deposits.payment_methods.#{credit_card}.title",
+             default: credit_card.humanize)
+    end
+    let(:query) do
+      %(query {
+        user {
+          availableDepositMethods { name }
+        }
+      })
+    end
+
+    before { wallet }
+
+    it 'returns requested attributes' do
+      expect(response['availableDepositMethods'])
+        .to include('name' => credit_card_label)
+    end
+  end
 end

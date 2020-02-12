@@ -11,6 +11,10 @@ module Payments
 
         protected
 
+        def customer_validation_handler
+          ::Payments::Crypto::CoinsPaid::Validations::CustomerValidationHandler
+        end
+
         def payout_request_handler
           ::Payments::Crypto::CoinsPaid::Payouts::RequestHandler
         end
