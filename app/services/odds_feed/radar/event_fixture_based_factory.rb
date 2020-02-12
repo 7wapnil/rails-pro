@@ -20,9 +20,9 @@ module OddsFeed
       def event_attributes
         {
           external_id: fixture['id'],
-          start_at: replay_mode? ? patched_start_time : start_at,
-          twitch_start_time: replay_mode? ? patched_start_time : start_at,
-          twitch_end_time: expected_event_end_time,
+          start_at: expected_start_time,
+          twitch_start_time: expected_start_time,
+          twitch_end_time: expected_finish_time,
           name: event_name,
           description: event_name,
           traded_live: event_traded_live?,
@@ -31,17 +31,12 @@ module OddsFeed
         }
       end
 
-      def replay_mode?
-        ENV['RADAR_MQ_IS_REPLAY'] == 'true'
+      def expected_start_time
+        @expected_start_time ||= replay_mode? ? patched_start_time : start_at
       end
 
-      def start_at
-        start_at_field = fixture['start_time'] || fixture['scheduled']
-        start_at_field.to_time
-      end
-
-      def liveodds
-        fixture['liveodds']
+      def expected_finish_time
+        expected_start_time + Event::TWITCH_END_TIME_DELAY
       end
 
       def event_name
@@ -57,6 +52,19 @@ module OddsFeed
         liveodds == BOOKED_FIXTURE_STATUS
       end
 
+      def liveodds
+        fixture['liveodds']
+      end
+
+      def replay_mode?
+        ENV['RADAR_MQ_IS_REPLAY'] == 'true'
+      end
+
+      def start_at
+        start_at_field = fixture['start_time'] || fixture['scheduled']
+        start_at_field.to_time
+      end
+
       def patched_start_time
         start_at_field = fixture['start_time'] || fixture['scheduled']
         original_start_time = DateTime.parse(start_at_field)
@@ -67,12 +75,6 @@ module OddsFeed
           month: today.month,
           day: today.day
         )
-      end
-
-      def expected_event_end_time
-        start_at_time = replay_mode? ? patched_start_time : start_at
-
-        start_at_time + 3.hours
       end
     end
   end
