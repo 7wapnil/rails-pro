@@ -71,7 +71,7 @@ module EveryMatrix
           medium_icon_url: https(presentation.dig('icons', '72', '*')),
           large_icon_url: https(presentation.dig('icons', '114', '*')),
           terminal: data.dig('property', 'terminal'),
-          bonus_contribution: bonus['contribution'],
+          bonus_contribution: data.dig('bonus', 'contribution'),
           external_status: PlayItem::ACTIVATED
         }
       end
@@ -100,10 +100,6 @@ module EveryMatrix
 
       def presentation
         data['presentation']
-      end
-
-      def bonus
-        data['bonus']
       end
 
       def https(string)

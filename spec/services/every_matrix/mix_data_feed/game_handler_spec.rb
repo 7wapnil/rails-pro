@@ -60,7 +60,7 @@ describe EveryMatrix::MixDataFeed::GameHandler do
 
         expect(play_item.details)
           .to have_attributes(
-            play_item: EveryMatrix::Game,
+            game: play_item,
             free_spin_supported: free_spin,
             min_hit_frequency: min_hit_frequency.to_d,
             max_hit_frequency: max_hit_frequency.to_d
