@@ -32,7 +32,7 @@ module Payments
             withdrawal_orders = Array.wrap(response['withdrawalOrders'])
 
             Rails.logger.info(
-              message: 'Payout order details request',
+              message: 'SafeCharge payout order details',
               sc_order_id: order_id,
               sc_request_id: transaction.id,
               sc_withdrawal_order_1: withdrawal_order_log(withdrawal_orders[0]),
@@ -42,7 +42,7 @@ module Payments
             )
           rescue StandardError => error
             Rails.logger.error(
-              message: 'Payout order details request cannot be logged',
+              message: 'SafeCharge payout order details cannot be logged',
               sc_order_id: order_id,
               sc_request_id: transaction.id,
               error_object: error

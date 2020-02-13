@@ -7,6 +7,8 @@ module Webhooks
       before_action :verify_payment_signature
 
       def show
+        ::Payments::Fiat::SafeCharge::RedirectHandler.call(permitted_params)
+
         redirect_to redirection_url
       end
 
