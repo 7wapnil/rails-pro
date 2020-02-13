@@ -5,7 +5,7 @@ module EveryMatrix
     class VendorHandler < MixDataFeed::BaseHandler
       private
 
-      def remove_object!
+      def deactivate_object!
         EveryMatrix::Vendor.find_by!(name: payload['id']).deactivated!
 
         Rails.logger.info(message: 'Vendor deactivated on EM side',

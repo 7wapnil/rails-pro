@@ -5,7 +5,7 @@ module EveryMatrix
     class ContentProviderHandler < MixDataFeed::BaseHandler
       private
 
-      def remove_object!
+      def deactivate_object!
         EveryMatrix::ContentProvider
           .find_by!(external_id: payload['id']).deactivated!
 

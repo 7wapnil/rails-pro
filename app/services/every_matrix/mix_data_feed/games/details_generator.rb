@@ -4,6 +4,8 @@ module EveryMatrix
   module MixDataFeed
     module Games
       class DetailsGenerator < ApplicationService
+        LIVEDEALER = 'LIVEDEALER'
+
         def initialize(data:, game:)
           @data = data
           @game = game
@@ -11,6 +13,8 @@ module EveryMatrix
         end
 
         def call
+          return if filtered_game?
+
           details = EveryMatrix::GameDetails
                     .find_or_initialize_by(play_item_id: game.id)
 
@@ -20,6 +24,10 @@ module EveryMatrix
         private
 
         attr_reader :data, :game, :property
+
+        def filtered_game?
+          game.tags.include?(LIVEDEALER)
+        end
 
         def update_params
           {
