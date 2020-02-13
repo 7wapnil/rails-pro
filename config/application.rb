@@ -22,6 +22,12 @@ module Arcanebet
       g.orm :active_record
     end
 
+    # I18n localization
+    config.i18n.load_path += Dir[Rails.root.join('config/locales/**/*.yml')]
+    config.i18n.available_locales = %i[en es pt de]
+    config.i18n.default_locale = :en
+    config.i18n.fallbacks = true
+
     config.eager_load_paths << Rails.root.join('lib')
     config.eager_load_paths << Rails.root.join('lib/hash_deep_formatter')
     config.eager_load_paths << Rails.root.join('lib/xml_parser')

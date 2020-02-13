@@ -6,6 +6,9 @@
 .DS_Store
 
 config/master.key
+config/locales/phraseapp
+!config/locales/phraseapp/en.yml
+!config/locales/phraseapp/market_categories.en.yml
 log/*
 node_modules
 storage/*
