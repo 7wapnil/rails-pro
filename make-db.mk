@@ -1,4 +1,4 @@
-db:
+db-migrate:
 	rake db:migrate
 
 db-reset:
@@ -17,4 +17,5 @@ db-dump-restore:
 # MONGO_TEST_URL=mongodb://mongo:27017/arcanebet_test
 db-init:
 	rake db:setup
-	rake dev:prime
+	# Make sure VPN is running before executing this command
+	rake dev:prime  # Oleksii: do not use this, i guess this one is outdated, not sure though

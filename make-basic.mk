@@ -10,6 +10,9 @@ style:
 summer:
 	bin/spring stop
 
+test:
+	rspec spec
+
 # DEV ENV SETUP INSTRUCTIONS
 
 # Not completely sure about it, but it kinda describes the flow I used to set up the dev environment
