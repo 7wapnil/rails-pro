@@ -366,6 +366,7 @@ ActiveRecord::Schema.define(version: 2020_02_20_095425) do
     t.datetime "last_visit_at"
     t.inet "last_visit_ip"
     t.datetime "last_activity_at"
+    t.string "locale", default: "en"
     t.index ["activation_token"], name: "index_customers_on_activation_token", unique: true
     t.index ["deleted_at"], name: "index_customers_on_deleted_at"
     t.index ["email_verification_token"], name: "index_customers_on_email_verification_token", unique: true
