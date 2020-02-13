@@ -30,8 +30,8 @@ module Payments
         def log_cancellation_response
           Rails.logger.info(
             message: 'SafeCharge deposit cancellation callback',
-            system_request_id: response['request_id'],
-            signature: response['signature']
+            sc_request_id: response['request_id'],
+            sc_signature: response['signature']
           )
         end
 
@@ -46,14 +46,13 @@ module Payments
             'feeAmount', 'item_amount_1', 'item_name_1', 'item_quantity_1',
             'message', 'orderTransactionId', 'payment_method', 'ppp_status',
             'responseTimeStamp', 'responsechecksum', 'totalAmount',
-            'transactionType', 'type', 'unknownParameters',
+            'transactionType', 'type', 'unknownParameters', 'request_id',
             'upoRegistrationDate', 'userid', 'userPaymentOptionId'
-          )
+          ).to_h.transform_keys { |key| "sc_#{key}".to_sym }
 
           Rails.logger.info(
             message: 'SafeCharge deposit callback',
-            system_request_id: response['request_id'],
-            **log_payload.to_h.deep_symbolize_keys
+            **log_payload
           )
         end
         # rubocop:enable Metrics/MethodLength

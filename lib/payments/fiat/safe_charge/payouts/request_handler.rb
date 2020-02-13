@@ -18,25 +18,21 @@ module Payments
 
           attr_reader :custom_error_message
 
-          # rubocop:disable Metrics/MethodLength
           def log_response
             log_payload = response.slice(
-              'version', 'errCode', 'reason', 'wdRequestStatus', 'wdRequestId',
-              'merchantWDRequestId', 'userId', 'userAccountId'
-            )
+              'version', 'status', 'errCode', 'reason', 'wdRequestStatus',
+              'wdRequestId', 'merchantWDRequestId', 'userId', 'userAccountId'
+            ).transform_keys { |key| "sc_#{key}".to_sym }
 
-            Rails.logger.info(
-              message: 'SafeCharge payout callback',
-              sc_external_status: response['status'],
-              **log_payload.deep_symbolize_keys
-            )
-          rescue StandardError
+            Rails.logger.info(message: 'SafeCharge payout callback',
+                              **log_payload)
+          rescue StandardError => error
             Rails.logger.error(
               message: 'SafeCharge payout callback cannot be logged',
-              system_request_id: transaction.id
+              sc_request_id: transaction.id,
+              error_object: error
             )
           end
-          # rubocop:enable Metrics/MethodLength
 
           def process_callback
             Payouts::CallbackHandler.call(
