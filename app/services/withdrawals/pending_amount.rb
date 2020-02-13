@@ -2,7 +2,6 @@
 
 module Withdrawals
   class PendingAmount < ApplicationService
-    PRECISION = 2
     QUERY = 'COALESCE(base_currency_amount, 0.0)'
 
     def call
@@ -12,8 +11,14 @@ module Withdrawals
         .pluck(Arel.sql(QUERY))
         .reduce(:+)
         .to_f
-        .truncate(PRECISION)
+        .truncate(primary_scale)
         .to_d
+    end
+
+    private
+
+    def primary_scale
+      @primary_scale ||= Currency.primary_scale
     end
   end
 end

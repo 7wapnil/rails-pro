@@ -4,13 +4,12 @@ module EveryMatrix
   class TransactionDecorator < ApplicationDecorator
     include ActionView::Helpers::UrlHelper
 
-    PRECISION = 2
     TRANSLATION_MAP = {
       game: CASINO = 'Casino',
       table: LIVE_CASINO = 'Live casino'
     }.freeze
 
-    delegate :code, to: :currency, allow_nil: true, prefix: true
+    delegate :code, :scale, to: :currency, allow_nil: true, prefix: true
 
     delegate :username, to: :customer, allow_nil: true, prefix: true
 
@@ -74,7 +73,7 @@ module EveryMatrix
     private
 
     def human_number(amount)
-      number_with_precision(amount, precision: PRECISION)
+      number_with_precision(amount, precision: currency_scale)
     end
 
     def convert_to_base(amount)

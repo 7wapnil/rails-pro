@@ -3,7 +3,6 @@
 class Bet < ApplicationRecord # rubocop:disable Metrics/ClassLength
   include StateMachines::BetStateMachine
 
-  PRECISION = 2
   VOIDED_ODD_VALUE = 1
 
   belongs_to :customer

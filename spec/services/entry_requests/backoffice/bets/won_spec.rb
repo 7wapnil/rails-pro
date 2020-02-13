@@ -98,10 +98,12 @@ describe EntryRequests::Backoffice::Bets::Won do
     let(:win_amount) do
       bet.amount * bet.odd_value
     end
-    let(:real_money_win_amount) { win_amount.round(Bet::PRECISION) * ratio }
+    let(:real_money_win_amount) do
+      win_amount.round(bet.currency.scale) * ratio
+    end
     let(:bonus_win_amount) do
-      win_amount.round(Bet::PRECISION) -
-        real_money_win_amount.round(Bet::PRECISION)
+      win_amount.round(bet.currency.scale) -
+        real_money_win_amount.round(bet.currency.scale)
     end
 
     CustomerBonus::DISMISSED_STATUSES.each do |status|

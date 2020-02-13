@@ -9,7 +9,7 @@ describe Customers::StatisticDecorator, type: :decorator do
     it_behaves_like 'decorated amount' do
       let(:amount) { subject.hold_value }
       let(:control_amount) { subject.deposit_value - subject.withdrawal_value }
-      let(:precision) { described_class::PRECISION }
+      let(:precision) { Currency.primary_scale }
       let(:currency_symbol) { '&#8364;' }
     end
   end
@@ -30,7 +30,7 @@ describe Customers::StatisticDecorator, type: :decorator do
         it_behaves_like 'decorated amount' do
           let(:amount) { decorated_amount }
           let(:control_amount) { value }
-          let(:precision) { Customers::StatisticDecorator::PRECISION }
+          let(:precision) { Currency.primary_scale }
           let(:currency_symbol) { '&#8364;' }
         end
       end
@@ -75,7 +75,7 @@ describe Customers::StatisticDecorator, type: :decorator do
         let(:expected_amount) do
           helpers.number_to_percentage(
             value * Customers::StatisticDecorator::PERCENTS_MULTIPLIER,
-            precision: Customers::StatisticDecorator::PRECISION
+            precision: Currency.primary_scale
           )
         end
 
@@ -108,7 +108,7 @@ describe Customers::StatisticDecorator, type: :decorator do
       it_behaves_like 'decorated amount' do
         let(:amount) { subject.wager(category, human: true) }
         let(:control_amount) { value }
-        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:precision) { Currency.primary_scale }
         let(:currency_symbol) { '&#8364;' }
       end
     end
@@ -124,7 +124,7 @@ describe Customers::StatisticDecorator, type: :decorator do
       it_behaves_like 'decorated amount' do
         let(:amount) { subject.wager(category, human: true) }
         let(:control_amount) { value }
-        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:precision) { Currency.primary_scale }
         let(:currency_symbol) { '&#8364;' }
       end
     end
@@ -139,7 +139,7 @@ describe Customers::StatisticDecorator, type: :decorator do
       it_behaves_like 'decorated amount' do
         let(:amount) { subject.wager(category, human: true) }
         let(:control_amount) { object.prematch_wager }
-        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:precision) { Currency.primary_scale }
         let(:currency_symbol) { '&#8364;' }
       end
     end
@@ -154,7 +154,7 @@ describe Customers::StatisticDecorator, type: :decorator do
       it_behaves_like 'decorated amount' do
         let(:amount) { subject.wager(category, human: true) }
         let(:control_amount) { object.live_sports_wager }
-        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:precision) { Currency.primary_scale }
         let(:currency_symbol) { '&#8364;' }
       end
     end
@@ -170,7 +170,7 @@ describe Customers::StatisticDecorator, type: :decorator do
       it_behaves_like 'decorated amount' do
         let(:amount) { subject.wager(category, human: true) }
         let(:control_amount) { value }
-        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:precision) { Currency.primary_scale }
         let(:currency_symbol) { '&#8364;' }
       end
     end
@@ -185,7 +185,7 @@ describe Customers::StatisticDecorator, type: :decorator do
       it_behaves_like 'decorated amount' do
         let(:amount) { subject.wager(category, human: true) }
         let(:control_amount) { object.casino_game_wager }
-        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:precision) { Currency.primary_scale }
         let(:currency_symbol) { '&#8364;' }
       end
     end
@@ -200,7 +200,7 @@ describe Customers::StatisticDecorator, type: :decorator do
       it_behaves_like 'decorated amount' do
         let(:amount) { subject.wager(category, human: true) }
         let(:control_amount) { object.live_casino_wager }
-        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:precision) { Currency.primary_scale }
         let(:currency_symbol) { '&#8364;' }
       end
     end
@@ -218,7 +218,7 @@ describe Customers::StatisticDecorator, type: :decorator do
       it_behaves_like 'decorated amount' do
         let(:amount) { subject.payout(category, human: true) }
         let(:control_amount) { value }
-        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:precision) { Currency.primary_scale }
         let(:currency_symbol) { '&#8364;' }
       end
     end
@@ -233,7 +233,7 @@ describe Customers::StatisticDecorator, type: :decorator do
       it_behaves_like 'decorated amount' do
         let(:amount) { subject.payout(category, human: true) }
         let(:control_amount) { object.prematch_payout }
-        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:precision) { Currency.primary_scale }
         let(:currency_symbol) { '&#8364;' }
       end
     end
@@ -248,7 +248,7 @@ describe Customers::StatisticDecorator, type: :decorator do
       it_behaves_like 'decorated amount' do
         let(:amount) { subject.payout(category, human: true) }
         let(:control_amount) { object.live_sports_payout }
-        let(:precision) { Customers::StatisticDecorator::PRECISION }
+        let(:precision) { Currency.primary_scale }
         let(:currency_symbol) { '&#8364;' }
       end
     end
@@ -268,7 +268,7 @@ describe Customers::StatisticDecorator, type: :decorator do
         it_behaves_like 'decorated amount' do
           let(:amount) { decorated_amount }
           let(:control_amount) { value }
-          let(:precision) { Customers::StatisticDecorator::PRECISION }
+          let(:precision) { Currency.primary_scale }
           let(:currency_symbol) { '&#8364;' }
         end
       end
@@ -336,7 +336,7 @@ describe Customers::StatisticDecorator, type: :decorator do
     it_behaves_like 'decorated amount' do
       let(:amount) { subject.total_bonus_awarded(human: true) }
       let(:control_amount) { value }
-      let(:precision) { Customers::StatisticDecorator::PRECISION }
+      let(:precision) { Currency.primary_scale }
       let(:currency_symbol) { '&#8364;' }
     end
   end
@@ -351,7 +351,7 @@ describe Customers::StatisticDecorator, type: :decorator do
     it_behaves_like 'decorated amount' do
       let(:amount) { subject.total_bonus_completed(human: true) }
       let(:control_amount) { value }
-      let(:precision) { Customers::StatisticDecorator::PRECISION }
+      let(:precision) { Currency.primary_scale }
       let(:currency_symbol) { '&#8364;' }
     end
   end
@@ -366,7 +366,7 @@ describe Customers::StatisticDecorator, type: :decorator do
     it_behaves_like 'decorated amount' do
       let(:amount) { subject.total_pending_bet_sum(human: true) }
       let(:control_amount) { value }
-      let(:precision) { Customers::StatisticDecorator::PRECISION }
+      let(:precision) { Currency.primary_scale }
       let(:currency_symbol) { '&#8364;' }
     end
   end
@@ -381,7 +381,7 @@ describe Customers::StatisticDecorator, type: :decorator do
     it_behaves_like 'decorated amount' do
       let(:amount) { subject.deposit_value(human: true) }
       let(:control_amount) { value }
-      let(:precision) { Customers::StatisticDecorator::PRECISION }
+      let(:precision) { Currency.primary_scale }
       let(:currency_symbol) { '&#8364;' }
     end
   end
@@ -396,7 +396,7 @@ describe Customers::StatisticDecorator, type: :decorator do
     it_behaves_like 'decorated amount' do
       let(:amount) { subject.withdrawal_value(human: true) }
       let(:control_amount) { value }
-      let(:precision) { Customers::StatisticDecorator::PRECISION }
+      let(:precision) { Currency.primary_scale }
       let(:currency_symbol) { '&#8364;' }
     end
   end

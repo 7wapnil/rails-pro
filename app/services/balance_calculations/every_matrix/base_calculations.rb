@@ -3,7 +3,6 @@
 module BalanceCalculations
   module EveryMatrix
     class BaseCalculations < ApplicationService
-      MONEY_PRECISION = 2
       REAL_MONEY_ONLY_RATIO = 1.0
 
       delegate :wallet, to: :transaction
@@ -26,8 +25,9 @@ module BalanceCalculations
       attr_reader :transaction
 
       def calculated_real_money_amount
-        @calculated_real_money_amount ||= (transaction.amount * ratio)
-                                          .round(MONEY_PRECISION)
+        @calculated_real_money_amount ||=
+          (transaction.amount * ratio)
+          .round(transaction.currency.scale)
       end
 
       def ratio

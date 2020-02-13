@@ -3,9 +3,9 @@
 module Customers
   # rubocop:disable Metrics/ClassLength
   class StatisticDecorator < ApplicationDecorator
-    PRECISION = 2
     FULL_PERCENTAGE = 1
     PERCENTS_MULTIPLIER = 100
+    PERCENTS_PRECISION = 2
     CATEGORIES = [
       TOTAL = :total,
       TOTAL_BETS = :total_bets,
@@ -89,11 +89,17 @@ module Customers
     private
 
     def percentage_field(value)
-      number_to_percentage(value * PERCENTS_MULTIPLIER, precision: PRECISION)
+      number_to_percentage(value * PERCENTS_MULTIPLIER,
+                           precision: PERCENTS_PRECISION)
     end
 
     def money_field(value)
-      "#{number_with_precision(value, precision: PRECISION)} &#8364;".html_safe
+      "#{number_with_precision(value, precision: primary_scale)} &#8364;"
+        .html_safe
+    end
+
+    def primary_scale
+      @primary_scale ||= Currency.primary_scale
     end
 
     ## TOTAL: CASINO + BETS

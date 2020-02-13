@@ -68,7 +68,7 @@ describe BetDecorator, type: :decorator do
     it 'returns humanized value' do
       decorated_value = helpers.number_with_precision(
         bet.amount,
-        precision: described_class::PRECISION
+        precision: bet.currency.scale
       )
 
       expect(subject.amount(human: true)).to eq(decorated_value)
@@ -83,7 +83,7 @@ describe BetDecorator, type: :decorator do
     it 'returns humanized value' do
       decorated_value = helpers.number_with_precision(
         bet.base_currency_amount,
-        precision: described_class::PRECISION
+        precision: Currency.primary_scale
       )
 
       expect(subject.base_currency_amount(human: true)).to eq(decorated_value)
