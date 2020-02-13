@@ -1,4 +1,4 @@
-describe WithdrawalProcessBackofficeWorker do
+describe ConfirmationReduceBalanceWorker do
   it 'calls WalletEntry::Service with received argument' do
     entry_request = create(:entry_request)
 
