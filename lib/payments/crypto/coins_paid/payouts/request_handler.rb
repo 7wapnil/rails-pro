@@ -27,6 +27,7 @@ module Payments
           rescue StandardError => error
             Rails.logger.error(
               message: 'CoinsPaid payout request cannot be logged',
+              cp_id: response.dig('data', 'id'),
               cp_request_id: transaction.id,
               error_object: error
             )

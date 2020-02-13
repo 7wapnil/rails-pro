@@ -44,10 +44,10 @@ module Payments
             'currency', 'country', 'errApmCode', 'errApmDescription',
             'errScCode', 'errScDescription', 'externalTransactionId',
             'feeAmount', 'item_amount_1', 'item_name_1', 'item_quantity_1',
-            'message', 'orderTransactionId', 'payment_method', 'ppp_status',
-            'responseTimeStamp', 'responsechecksum', 'totalAmount',
-            'transactionType', 'type', 'unknownParameters', 'request_id',
-            'upoRegistrationDate', 'userid', 'userPaymentOptionId'
+            'merchantLocale', 'message', 'orderTransactionId', 'payment_method',
+            'ppp_status', 'productId', 'responseTimeStamp', 'responsechecksum',
+            'totalAmount', 'transactionType', 'type', 'unknownParameters',
+            'request_id', 'upoRegistrationDate', 'userid', 'userPaymentOptionId'
           ).to_h.transform_keys { |key| "sc_#{key}" }
 
           Rails.logger.info(
