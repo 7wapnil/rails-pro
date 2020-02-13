@@ -26,7 +26,7 @@ module EveryMatrix
       attr_reader :payload, :data, :action
 
       def deactivate_object!
-        raise NotImplementedError, 'Implement #remove_object! method'
+        raise NotImplementedError, 'Implement #deactivate_object! method'
       end
 
       def handle_update_message
