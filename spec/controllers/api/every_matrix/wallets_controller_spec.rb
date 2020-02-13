@@ -321,10 +321,15 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
               wallet.currency.update_attribute(:code, 'mBTC')
             end
 
-            let(:amount) { wallet.real_money_balance * 0.001 / 2 }
+            let(:multiplier) { 0.001 }
+            let(:scale_correction) { 3 }
+            let(:scale) { wallet.currency.scale + scale_correction }
+            let(:amount) { wallet.real_money_balance * multiplier / 2 }
 
             let(:expected_balance) do
-              (balance_before * 0.001 - amount).to_d.truncate(5).to_s
+              (balance_before * multiplier - amount)
+                .truncate(scale)
+                .to_s
             end
 
             let(:expected_response) do
