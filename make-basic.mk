@@ -13,6 +13,10 @@ summer:
 test:
 	rspec spec
 
+# Put this into your make-personal.mk:
+vpn:
+	#sudo openvpn --config <path-to-yourconfig>.ovpn
+
 # DEV ENV SETUP INSTRUCTIONS
 
 # Not completely sure about it, but it kinda describes the flow I used to set up the dev environment
