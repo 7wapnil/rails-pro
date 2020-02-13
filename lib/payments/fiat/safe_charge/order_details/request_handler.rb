@@ -28,7 +28,7 @@ module Payments
           def log_response
             log_payload = response
                           .slice('totalCount', 'status', 'version')
-                          .transform_keys { |key| "sc_#{key}".to_sym }
+                          .transform_keys { |key| "sc_#{key}" }
             withdrawal_orders = Array.wrap(response['withdrawalOrders'])
 
             Rails.logger.info(
@@ -38,7 +38,7 @@ module Payments
               sc_withdrawal_order_1: withdrawal_order_log(withdrawal_orders[0]),
               sc_withdrawal_order_2: withdrawal_order_log(withdrawal_orders[1]),
               sc_withdrawal_order_3: withdrawal_order_log(withdrawal_orders[2]),
-              **log_payload
+              **log_payload.symbolize_keys
             )
           rescue StandardError => error
             Rails.logger.error(
@@ -59,7 +59,7 @@ module Payments
               'wdOrderStatus', 'gwTrxId', 'errorCode', 'extendedErrorCode',
               'reasonCode', 'apmTrxId', 'creationData', 'lastModifiedDate',
               'pmName', 'pmIssuer', 'gwReason', 'gwStatus'
-            ).transform_keys { |key| "sc_#{key}".to_sym }
+            ).transform_keys { |key| "sc_#{key}" }
 
             wd_request_payload = payload.fetch('wdRequest', {}).slice(
               'userTokenId', 'wdRequestId', 'merchantWDRequestId',
@@ -71,7 +71,7 @@ module Payments
 
             {
               sc_wdRequest: wd_request_payload,
-              **log_payload
+              **log_payload.symbolize_keys
             }
           end
           # rubocop:enable Metrics/MethodLength

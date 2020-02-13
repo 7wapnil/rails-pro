@@ -48,11 +48,11 @@ module Payments
             'responseTimeStamp', 'responsechecksum', 'totalAmount',
             'transactionType', 'type', 'unknownParameters', 'request_id',
             'upoRegistrationDate', 'userid', 'userPaymentOptionId'
-          ).to_h.transform_keys { |key| "sc_#{key}".to_sym }
+          ).to_h.transform_keys { |key| "sc_#{key}" }
 
           Rails.logger.info(
             message: 'SafeCharge deposit callback',
-            **log_payload
+            **log_payload.symbolize_keys
           )
         end
         # rubocop:enable Metrics/MethodLength

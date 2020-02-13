@@ -14,7 +14,7 @@ module Payments
             log_payload = response.fetch('data', {}).slice(
               'id', 'status', 'foreign_id', 'type', 'amount', 'sender_amount',
               'sender_currency', 'receiver_amount', 'receiver_currency'
-            ).transform_keys { |key| "cp_#{key}".to_sym }
+            ).transform_keys { |key| "cp_#{key}" }
             response_errors = Array.wrap(response['errors'])
 
             Rails.logger.info(
@@ -22,7 +22,7 @@ module Payments
               cp_error_1: response_errors[0],
               cp_error_2: response_errors[1],
               cp_error_3: response_errors[2],
-              **log_payload
+              **log_payload.symbolize_keys
             )
           rescue StandardError => error
             Rails.logger.error(
