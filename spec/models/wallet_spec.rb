@@ -49,19 +49,21 @@ describe Wallet do
       create(:customer_bonus,
              wallet: wallet,
              customer: wallet.customer,
-             status: 'initial')
+             status: CustomerBonus::INITIAL)
       create(:customer_bonus,
              wallet: wallet,
              customer: wallet.customer,
-             status: 'expired')
+             status: CustomerBonus::EXPIRED)
     end
 
     it 'returns expired bonus as #customer_bonus' do
-      expect(wallet.customer_bonus.status).to eq('expired')
+      expect(wallet.customer_bonus.status)
+        .to eq(CustomerBonus::EXPIRED)
     end
 
     it 'returns initial bonus as #initial_customer_bonus' do
-      expect(wallet.initial_customer_bonus.status).to eq('initial')
+      expect(wallet.initial_customer_bonus.status)
+        .to eq(CustomerBonus::INITIAL)
     end
   end
 end
