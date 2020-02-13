@@ -22,7 +22,8 @@ module Payments
 
         # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
         def log_response
-          payload = response.dig('payment')
+          payload = response.fetch('payment', {})
+          request_id = payload['request-id'].to_s.split(':').first
           status_payload = Array.wrap(payload.dig('statuses', 'status'))
           payment_method_payload = payload
                                    .dig('payment-methods', 'payment-method', 0)
@@ -40,7 +41,7 @@ module Payments
             wc_status_2: status_payload[1],
             wc_status_3: status_payload[2],
             wc_external_request_id: "id:#{payload['request-id']}",
-            wc_request_id: payload['request-id'].split(':').first,
+            wc_request_id: request_id,
             wc_completion_timestamp: payload['completion-time-stamp'],
             wc_requested_amount: payload['requested-amount'],
             wc_payment_method: payment_method_payload,
@@ -53,6 +54,7 @@ module Payments
         rescue StandardError => error
           Rails.logger.error(
             message: 'Wirecard callback cannot be logged',
+            wc_request_id: request_id,
             error_object: error
           )
         end
