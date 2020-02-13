@@ -56,6 +56,10 @@ class BetDecorator < ApplicationDecorator
     human ? number_with_precision(super(), precision: PRECISION) : super()
   end
 
+  def potential_win(human: false)
+    human ? number_with_precision(super(), precision: PRECISION) : super()
+  end
+
   def bet_type
     live? ? t('bets.bet_types.live') : t('bets.bet_types.prematch')
   end
