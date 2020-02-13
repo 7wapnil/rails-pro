@@ -24,7 +24,11 @@ module Payments
         end
 
         def ga_client
-          GaTracker.new(ENV['GA_TRACKER_ID'], ga_base_options)
+          GaTracker.new(ENV['GA_TRACKER_ID'], client_id, ga_base_options)
+        end
+
+        def client_id
+          entry_request.customer.customer_data&.ga_client_id
         end
 
         def ga_base_options
