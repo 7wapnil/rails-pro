@@ -14,3 +14,4 @@ include make-gitflow.mk
 include make-basic.mk
 include make-db.mk
 include make-docker.mk
+-include make-personal.mk

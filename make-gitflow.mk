@@ -40,9 +40,6 @@ staging!:
 branch:
 	git checkout $(ARGS) || git checkout -b $(ARGS)
 
-new:
-	git checkout master &&  git checkout -b $(ARGS)
-
 stash:
 	git stash save --keep-index --include-untracked
 
