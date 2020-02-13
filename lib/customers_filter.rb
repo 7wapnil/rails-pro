@@ -21,7 +21,7 @@ class CustomersFilter
       .result
       .order(id: :desc)
       .page(@page)
-      .includes(:labels, :system_labels)
+      .includes(:labels, :system_labels, :address)
       .decorate
   end
 
