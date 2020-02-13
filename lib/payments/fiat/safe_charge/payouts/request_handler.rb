@@ -22,10 +22,10 @@ module Payments
             log_payload = response.slice(
               'version', 'status', 'errCode', 'reason', 'wdRequestStatus',
               'wdRequestId', 'merchantWDRequestId', 'userId', 'userAccountId'
-            ).transform_keys { |key| "sc_#{key}".to_sym }
+            ).transform_keys { |key| "sc_#{key}" }
 
             Rails.logger.info(message: 'SafeCharge payout callback',
-                              **log_payload)
+                              **log_payload.symbolize_keys)
           rescue StandardError => error
             Rails.logger.error(
               message: 'SafeCharge payout callback cannot be logged',

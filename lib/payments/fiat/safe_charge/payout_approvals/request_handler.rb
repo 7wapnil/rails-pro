@@ -29,11 +29,11 @@ module Payments
               'version', 'status', 'errCode', 'reason', 'wdRequestStatus',
               'wdOrderStaus', 'wdOrderStatus', 'wdRequestId', 'wdOrderId',
               'merchantWDRequestId', 'userAccountId'
-            ).transform_keys { |key| "sc_#{key}".to_sym }
+            ).transform_keys { |key| "sc_#{key}" }
 
             Rails.logger.info(
               message: 'SafeCharge payout approval',
-              **log_payload
+              **log_payload.symbolize_keys
             )
           rescue StandardError => error
             Rails.logger.error(
