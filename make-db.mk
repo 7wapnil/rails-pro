@@ -6,7 +6,6 @@ db-reset:
 	make db-init
 
 db-dump-restore:
-	apt-get install -y postgresql-client
 	pg_restore --verbose --clean --no-acl --no-owner -h db -U postgres -d arcanebet_development tmp/arcanebet-latest.dump
 
 # Make sure to set the following in .ENV file (if you're using docker)
