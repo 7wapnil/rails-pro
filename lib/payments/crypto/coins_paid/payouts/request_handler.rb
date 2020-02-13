@@ -12,23 +12,24 @@ module Payments
           # rubocop:disable Metrics/MethodLength
           def log_response
             log_payload = response.fetch('data', {}).slice(
-              'id', 'foreign_id', 'type', 'amount', 'sender_amount',
+              'id', 'status', 'foreign_id', 'type', 'amount', 'sender_amount',
               'sender_currency', 'receiver_amount', 'receiver_currency'
-            )
+            ).transform_keys { |key| "cp_#{key}" }
             response_errors = Array.wrap(response['errors'])
 
             Rails.logger.info(
               message: 'CoinsPaid payout request',
-              external_status: response['status'],
-              response_error_1: response_errors[0],
-              response_error_2: response_errors[1],
-              response_error_3: response_errors[2],
-              **log_payload.deep_symbolize_keys
+              cp_error_1: response_errors[0],
+              cp_error_2: response_errors[1],
+              cp_error_3: response_errors[2],
+              **log_payload.symbolize_keys
             )
-          rescue StandardError
+          rescue StandardError => error
             Rails.logger.error(
               message: 'CoinsPaid payout request cannot be logged',
-              system_request_id: transaction.id
+              cp_id: response.dig('data', 'id'),
+              cp_request_id: transaction.id,
+              error_object: error
             )
           end
           # rubocop:enable Metrics/MethodLength

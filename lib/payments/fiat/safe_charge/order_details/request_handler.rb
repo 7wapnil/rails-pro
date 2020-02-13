@@ -14,7 +14,7 @@ module Payments
           end
 
           def call
-            log_start_of_fetching_order_details
+            log_response
             return unsuccessful_request_error_message unless success?
 
             error_message
@@ -24,11 +24,57 @@ module Payments
 
           attr_reader :transaction, :order_id
 
-          def log_start_of_fetching_order_details
-            Rails.logger.warn(message: 'Fetching payout order details',
-                              order_id: order_id,
-                              request_id: transaction.id)
+          # rubocop:disable Metrics/MethodLength
+          def log_response
+            log_payload = response
+                          .slice('totalCount', 'status', 'version')
+                          .transform_keys { |key| "sc_#{key}" }
+            withdrawal_orders = Array.wrap(response['withdrawalOrders'])
+
+            Rails.logger.info(
+              message: 'SafeCharge payout order details',
+              sc_order_id: order_id,
+              sc_request_id: transaction.id,
+              sc_withdrawal_order_1: withdrawal_order_log(withdrawal_orders[0]),
+              sc_withdrawal_order_2: withdrawal_order_log(withdrawal_orders[1]),
+              sc_withdrawal_order_3: withdrawal_order_log(withdrawal_orders[2]),
+              **log_payload.symbolize_keys
+            )
+          rescue StandardError => error
+            Rails.logger.error(
+              message: 'SafeCharge payout order details cannot be logged',
+              sc_order_id: order_id,
+              sc_request_id: transaction.id,
+              error_object: error
+            )
           end
+          # rubocop:enable Metrics/MethodLength
+
+          # rubocop:disable Metrics/MethodLength
+          def withdrawal_order_log(payload)
+            return unless payload
+
+            log_payload = payload.slice(
+              'wdOrderId', 'userPMId', 'amount', 'currency', 'settlementType',
+              'wdOrderStatus', 'gwTrxId', 'errorCode', 'extendedErrorCode',
+              'reasonCode', 'apmTrxId', 'creationData', 'lastModifiedDate',
+              'pmName', 'pmIssuer', 'gwReason', 'gwStatus'
+            ).transform_keys { |key| "sc_#{key}" }
+
+            wd_request_payload = payload.fetch('wdRequest', {}).slice(
+              'userTokenId', 'wdRequestId', 'merchantWDRequestId',
+              'userPMId', 'requestedAmount', 'requestedCurrency',
+              'state', 'wdRequestStatus', 'creationDate',
+              'lastModifiedDate', 'dueDate', 'wdRequestOrderCount',
+              'pmName', 'pmIssuer', 'approvedAmount'
+            )
+
+            {
+              sc_wdRequest: wd_request_payload,
+              **log_payload.symbolize_keys
+            }
+          end
+          # rubocop:enable Metrics/MethodLength
 
           def unsuccessful_request_error_message
             return response['reason'] unless response['reason'].blank?

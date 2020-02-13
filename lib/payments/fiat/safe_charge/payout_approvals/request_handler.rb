@@ -26,20 +26,20 @@ module Payments
           # rubocop:disable Metrics/MethodLength
           def log_response
             log_payload = response.slice(
-              'version', 'errCode', 'reason', 'wdRequestStatus', 'wdOrderStaus',
-              'wdOrderStatus', 'wdRequestId', 'wdOrderId',
+              'version', 'status', 'errCode', 'reason', 'wdRequestStatus',
+              'wdOrderStaus', 'wdOrderStatus', 'wdRequestId', 'wdOrderId',
               'merchantWDRequestId', 'userAccountId'
-            )
+            ).transform_keys { |key| "sc_#{key}" }
 
             Rails.logger.info(
               message: 'SafeCharge payout approval',
-              sc_external_status: response['status'],
-              **log_payload.deep_symbolize_keys
+              **log_payload.symbolize_keys
             )
-          rescue StandardError
+          rescue StandardError => error
             Rails.logger.error(
               message: 'SafeCharge payout approval cannot be logged',
-              system_request_id: transaction.id
+              sc_request_id: transaction.id,
+              error_object: error
             )
           end
           # rubocop:enable Metrics/MethodLength
