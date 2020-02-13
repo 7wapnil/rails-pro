@@ -34,6 +34,8 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     fraud:             FRAUD             = 'fraud'
   }
 
+  enum locale: I18n.available_locales.map { |code| [code, code.to_s] }.to_h
+
   devise :database_authenticatable, :registerable, :validatable,
          :recoverable, :rememberable, :trackable,
          authentication_keys: %i[login], password_length: 6..32
