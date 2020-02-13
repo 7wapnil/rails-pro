@@ -17,25 +17,26 @@ module Payments
 
             Rails.logger.info(
               message: 'Wirecard payout request',
-              transaction: {
+              wc_transaction: {
                 id: payload['transaction-id'],
                 type: payload['transaction-type'],
                 state: payload['transaction-state']
               },
-              parent_transaction_id: payload['parent-transaction-id'],
-              status_1: status_payload[0],
-              status_2: status_payload[1],
-              status_3: status_payload[2],
-              external_request_id: "id:#{payload['request-id']}",
-              request_id: payload['request-id'].split(':').first,
-              completion_timestamp: payload['completion-time-stamp'],
-              requested_amount: payload['requested-amount'],
-              payment_method: payment_method
+              wc_parent_transaction_id: payload['parent-transaction-id'],
+              wc_status_1: status_payload[0],
+              wc_status_2: status_payload[1],
+              wc_status_3: status_payload[2],
+              wc_external_request_id: "id:#{payload['request-id']}",
+              wc_request_id: payload['request-id'].split(':').first,
+              wc_completion_timestamp: payload['completion-time-stamp'],
+              wc_requested_amount: payload['requested-amount'],
+              wc_payment_method: payment_method
             )
-          rescue StandardError
+          rescue StandardError => error
             Rails.logger.error(
               message: 'Wirecard payout request cannot be logged',
-              system_request_id: transaction.id
+              wc_request_id: transaction.id,
+              error_object: error
             )
           end
           # rubocop:enable Metrics/MethodLength
