@@ -6,6 +6,8 @@ module EveryMatrix
 
     include ::Base::Pagination
 
+    mark_as_trackable
+
     description 'Get Every Matrix transactions'
 
     type !types[EveryMatrixTransactionType]

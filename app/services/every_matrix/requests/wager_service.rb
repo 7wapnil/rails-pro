@@ -8,10 +8,18 @@ module EveryMatrix
           next if response&.dig('ReturnCode') != SUCCESS_CODE
 
           update_summary_casino_customer_ids!
+
+          update_customer_activity!
         end
       end
 
       private
+
+      def update_customer_activity!
+        Customers::VisitLogService.call(
+          customer, OpenStruct.new(remote_ip: customer.last_visit_ip)
+        )
+      end
 
       def post_process_service
         WagerSettlementService

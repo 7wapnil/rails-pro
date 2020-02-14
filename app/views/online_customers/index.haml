@@ -1,0 +1,7 @@
+%h1.display-4= 'Online Customers'
+
+= render 'search',
+         filter: @filter,
+         search_path: online_customers_path
+
+= render 'table', filter: @filter

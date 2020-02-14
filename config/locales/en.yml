@@ -469,6 +469,7 @@ en:
     balance_entries: Balance entries
     balance_entry_requests: Balance entry requests
     withdrawals: Withdrawal requests
+    online_customers: Online customers
 
   transactions:
     payment_methods:
