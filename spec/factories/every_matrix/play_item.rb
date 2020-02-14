@@ -12,9 +12,14 @@ FactoryBot.define do
     association :vendor, factory: :every_matrix_vendor
     content_provider { create(:every_matrix_content_provider) }
     game_code { Faker::Internet.slug }
+    external_status { EveryMatrix::PlayItem::ACTIVATED }
 
     trait :unique_names do
       name { Faker::Name.unique.name }
+    end
+
+    trait :deactivated do
+      external_status { EveryMatrix::PlayItem::DEACTIVATED }
     end
 
     desktop

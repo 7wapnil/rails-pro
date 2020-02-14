@@ -7,6 +7,11 @@ FactoryBot.define do
     name { Faker::Lorem.word }
     slug { Faker::Internet.slug }
     sequence(:vendor_id, 10) { |n| n }
+    external_status { EveryMatrix::Vendor::ACTIVATED }
+
+    trait :deactivated do
+      external_status { EveryMatrix::Vendor::DEACTIVATED }
+    end
 
     trait :visible do
       visible { true }

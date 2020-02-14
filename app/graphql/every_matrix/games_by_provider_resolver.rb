@@ -13,6 +13,7 @@ module EveryMatrix
 
       subject
         .play_items
+        .activated
         .public_send(device_platform_scope)
         .reject_country(country)
         .distinct
@@ -27,15 +28,19 @@ module EveryMatrix
     end
 
     def vendor
-      @vendor ||= EveryMatrix::Vendor.visible.find_by(slug: provider_slug)
+      @vendor ||= EveryMatrix::Vendor.visible.friendly.find(provider_slug)
+    rescue ActiveRecord::RecordNotFound
+      nil
     end
 
     def content_provider
-      @content_provider ||=
-        EveryMatrix::ContentProvider
-        .visible
-        .as_vendor
-        .find_by(slug: provider_slug)
+      @content_provider ||= EveryMatrix::ContentProvider
+                            .visible
+                            .as_vendor
+                            .friendly
+                            .find(provider_slug)
+    rescue ActiveRecord::RecordNotFound
+      nil
     end
 
     def device_platform_scope

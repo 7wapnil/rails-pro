@@ -2,7 +2,7 @@ class EventsController < ApplicationController
   include Labelable
   include DateIntervalFilters
 
-  find :event, only: :update
+  find :event, only: :update, friendly: true
 
   def index
     @search = Event.includes(:labels, :event_scopes)
@@ -20,26 +20,26 @@ class EventsController < ApplicationController
   end
 
   def show
-    @event =
-      Event.includes(:labels, :event_scopes, :title, markets: [:labels])
-           .order('markets.priority ASC, markets.name ASC')
-           .find(params.require(:id))
-           .decorate
+    @event = Event.includes(:labels, :event_scopes, :title, markets: [:labels])
+                  .order('markets.priority ASC, markets.name ASC')
+                  .friendly
+                  .find(params.require(:id))
+                  .decorate
 
     @labels = Label.where(kind: Label::EVENT)
     @market_labels = Label.where(kind: Label::MARKET)
   end
 
   def update
-    return head :unprocessable_entity unless @event.update(event_params)
+    result = @event.update(event_params)
+
+    return head :unprocessable_entity unless result
 
     WebSocket::Client.instance.trigger_event_update(@event, force: true)
 
     respond_to do |format|
       format.js
-      format.html do
-        redirect_back(fallback_location: events_path)
-      end
+      format.html { redirect_to events_path }
     end
   end
 
@@ -47,7 +47,12 @@ class EventsController < ApplicationController
 
   def event_params
     params.require(:event).permit(
-      :priority, :visible, :twitch_url, :twitch_start_time, :twitch_end_time
+      :slug,
+      :priority,
+      :visible,
+      :twitch_url,
+      :twitch_start_time,
+      :twitch_end_time
     )
   end
 end

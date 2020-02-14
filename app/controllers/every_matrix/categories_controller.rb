@@ -2,7 +2,9 @@
 
 module EveryMatrix
   class CategoriesController < ApplicationController
-    find :category, only: %i[update edit], class: EveryMatrix::Category
+    find :category, only: %i[update edit],
+                    class: EveryMatrix::Category,
+                    friendly: true
 
     def index
       @categories = EveryMatrix::Category.all.order(:id)

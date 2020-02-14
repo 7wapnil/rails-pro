@@ -16,13 +16,17 @@ module EveryMatrix
       private
 
       def handle_update_message
-        return delete_play_item! if data.nil?
-
         create_or_update_play_item!
       end
 
-      def delete_play_item!
-        EveryMatrix::PlayItem.find_by(external_id: data['id'])&.destroy!
+      def deactivate_object!
+        EveryMatrix::PlayItem
+          .unscoped
+          .find_by!(external_id: payload['id'])
+          .deactivated!
+
+        Rails.logger.info(message: 'Play Item deactivated on EM side',
+                          external_id: payload['id'])
       end
 
       def create_or_update_play_item!
@@ -30,7 +34,7 @@ module EveryMatrix
                     .unscoped
                     .find_or_initialize_by(external_id: data['id'])
 
-        play_item.update!(play_item_attributes)
+        play_item.update!(play_item_attributes.compact)
         assign_details!(play_item)
       end
 
@@ -67,7 +71,8 @@ module EveryMatrix
           medium_icon_url: https(presentation.dig('icons', '72', '*')),
           large_icon_url: https(presentation.dig('icons', '114', '*')),
           terminal: data.dig('property', 'terminal'),
-          bonus_contribution: bonus['contribution']
+          bonus_contribution: data.dig('bonus', 'contribution'),
+          external_status: PlayItem::ACTIVATED
         }
       end
       # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
@@ -95,10 +100,6 @@ module EveryMatrix
 
       def presentation
         data['presentation']
-      end
-
-      def bonus
-        data['bonus']
       end
 
       def https(string)

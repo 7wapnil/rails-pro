@@ -21,7 +21,6 @@ module EveryMatrix
                class_name: 'EveryMatrix::GameRound',
                primary_key: :external_id,
                foreign_key: :round_id
-    has_one :play_item, through: :wallet_session
     belongs_to :customer_bonus, optional: true
     belongs_to :every_matrix_free_spin_bonus,
                class_name: 'EveryMatrix::FreeSpinBonus',

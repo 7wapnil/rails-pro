@@ -13,12 +13,24 @@ module Payments
 
             save_transaction_id! unless entry_request.external_id
 
-            return complete_entry_request if approved?
+            return track_and_complete if approved?
 
             fail_entry_request
           end
 
           private
+
+          def track_and_complete
+            track_payment_event
+            complete_entry_request
+          end
+
+          def track_payment_event
+            GaEvents::SuccesfulPayment.call(
+              payment_processor: 'Wirecard',
+              payee: holder_name
+            )
+          end
 
           def cancelled?
             CANCELLED_STATUSES.include?(status_details['code']) &&

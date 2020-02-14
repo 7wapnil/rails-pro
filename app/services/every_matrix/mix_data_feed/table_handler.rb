@@ -6,7 +6,7 @@ module EveryMatrix
       private
 
       def assign_details!(table)
-        Tables::DetailsGenerator.call(data: data['property'], table: table)
+        Tables::DetailsGenerator.call(data: data, table: table)
       end
 
       def play_item_type

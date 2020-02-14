@@ -11,24 +11,13 @@ module Audit
       @context = context
     end
 
-    # rubocop:disable Metrics/MethodLength
     def call
-      AuditLog.create!(event: @event,
-                       user_id: @user&.id,
-                       customer_id: @customer&.id,
-                       context: context)
-    rescue ::Mongoid::Errors::MongoidError, ::Mongo::Error => e
-      log_job_message(
-        :error,
-        message: "Audit Service raised error: #{e.message}",
-        context: context,
-        event: @event,
-        user_id: @user&.id,
-        customer_id: @customer&.id,
-        error_object: e
-      )
+      LogWriterWorker.perform_async(event: @event,
+                                    user_id: @user&.id,
+                                    customer_id: @customer&.id,
+                                    context: context,
+                                    created_at: Time.zone.now)
     end
-    # rubocop:enable Metrics/MethodLength
 
     private
 

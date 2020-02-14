@@ -1,18 +1,19 @@
+# frozen_string_literal: true
+
 module Events
   class EventQuery < ::Base::Resolver
-    type EventType
+    type !EventType
 
-    description 'Get single event by ID'
+    description 'Get single event by slug or id'
 
-    argument :id, !types.ID
+    argument :slug, types.String
 
     def auth_protected?
       false
     end
 
     def resolve(_obj, args)
-      Event.find_by(id: args[:id],
-                    visible: true)
+      Event.friendly.visible.find(args[:slug])
     end
   end
 end
