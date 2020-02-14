@@ -36,6 +36,7 @@ module Payments
                               status: status,
                               payment_message_status: payment_message_status,
                               request_id: request_id)
+
             ga_client.track_event(deposit_failure(payment_message_status))
 
             entry_request.register_failure!(
@@ -89,7 +90,8 @@ module Payments
                               reason: response[:Reason],
                               reason_code: response[:ReasonCode],
                               request_id: request_id)
-            ga_client.track_event deposit_failure(payment_message_status)
+
+            ga_client.track_event(deposit_failure(payment_message_status))
 
             entry_request.register_failure!(
               I18n.t('errors.messages.payment_failed_with_reason_error',

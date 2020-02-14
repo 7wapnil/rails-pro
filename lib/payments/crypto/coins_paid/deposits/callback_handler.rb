@@ -142,7 +142,7 @@ module Payments
             error_message =
               "#{message} for entry request with id #{entry_request.id}"
 
-            ga_client.track_event deposit_failure(message)
+            ga_client.track_event(deposit_failure(message))
 
             entry_request.register_failure!(message)
             fail_related_entities
