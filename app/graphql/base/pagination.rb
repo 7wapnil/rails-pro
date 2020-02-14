@@ -8,13 +8,13 @@ module Base
     DEFAULT_ITEMS_COUNT = Pagy::VARS[:items]
 
     class_methods do
-      def type(premade_type = nil)
-        @type ||= define_pagination_object_type(premade_type)
+      def type(premade_type = nil, &block)
+        @type ||= define_pagination_object_type(premade_type, &block)
       end
 
       private
 
-      def define_pagination_object_type(type)
+      def define_pagination_object_type(type, &block)
         name = self.name.delete('::')
 
         GraphQL::ObjectType.define do
@@ -22,6 +22,8 @@ module Base
 
           field :pagination, !Types::PaginationType
           field :collection, type
+
+          instance_eval(&block) if block
         end
       end
     end
@@ -33,6 +35,10 @@ module Base
       argument :page, types.Int, 'Page number', default_value: FIRST_PAGE
       argument :perPage, types.Int, 'Items per page',
                default_value: DEFAULT_ITEMS_COUNT
+
+      protected
+
+      def extend_pagination_result(_args); end
     end
   end
 end

@@ -5,7 +5,9 @@ module EveryMatrix
     include ::Base::Pagination
     include DeviceChecker
 
-    type !types[PlayItemType]
+    type !types[PlayItemType] do
+      field :provider, EveryMatrix::ProviderType
+    end
 
     description 'List of games by provider'
 
@@ -16,11 +18,37 @@ module EveryMatrix
     end
 
     def resolve(_obj, args)
-      EveryMatrix::GamesByProviderResolver.call(
-        provider_slug: args['providerSlug'],
-        device: platform_type(@request),
-        country: @request.location.country_code.upcase
+      find_subject!(args)
+
+      return EveryMatrix::PlayItem.none unless @subject
+
+      @subject
+        .play_items
+        .public_send(device_platform_scope)
+        .reject_country(country)
+        .distinct
+    end
+
+    private
+
+    def extend_pagination_result(*)
+      { provider: @subject }
+    end
+
+    def find_subject!(args)
+      @subject = EveryMatrix::Providers::FindForApi.call(
+        slug: args['providerSlug']
       )
+    end
+
+    def device_platform_scope
+      return :desktop if platform_type(@request) == PlayItem::DESKTOP
+
+      :mobile
+    end
+
+    def country
+      @request.location.country_code.upcase
     end
   end
 end
