@@ -24,3 +24,4 @@ yarn-error.log
 !storage/.keep
 !tmp/.keep
 docker-compose.yml
+make-personal.mk
