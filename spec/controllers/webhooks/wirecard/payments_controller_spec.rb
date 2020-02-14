@@ -48,11 +48,6 @@ describe Webhooks::Wirecard::PaymentsController, type: :controller do
   before do
     # ignore job after new customer creating
     allow(Customers::Summaries::UpdateWorker).to receive(:perform_async)
-
-    # ignore GA event tracking
-    allow(GaEvents::SuccesfulPayment)
-      .to receive(:call)
-      .and_return(true)
   end
 
   context 'when withdrawal' do
