@@ -16,6 +16,7 @@ describe GraphQL, '#gamesOverview' do
           context
           position
           name
+          metaDescription
           playItems{
             id
             name

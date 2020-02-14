@@ -2,7 +2,7 @@
 
 module EveryMatrix
   class GameProvidersQuery < ::Base::Resolver
-    type !types[ProviderType]
+    type !types[EveryMatrix::ProviderType]
 
     description 'List of providers'
 
@@ -11,7 +11,16 @@ module EveryMatrix
     end
 
     def resolve(_obj, _args)
-      GamesProviderResolver.call
+      [
+        *EveryMatrix::ContentProvider.visible.as_vendor.distinct,
+        *EveryMatrix::Vendor.visible.distinct
+      ].sort_by(&method(:sort_algorithm))
+    end
+
+    private
+
+    def sort_algorithm(provider)
+      provider.position.presence || Float::INFINITY
     end
   end
 end

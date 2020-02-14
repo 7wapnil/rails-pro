@@ -8,7 +8,11 @@ module Base
 
         data = apply_decorator(data) if self.class.decorator_enabled?
 
-        Pagination::ObjectBuilder.call(collection: data, pagy: pagy)
+        Pagination::ObjectBuilder.call(
+          collection: data,
+          pagy: pagy,
+          extra_fields: extend_pagination_result(args)
+        )
       end
     end
   end
