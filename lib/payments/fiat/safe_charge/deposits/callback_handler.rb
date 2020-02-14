@@ -92,8 +92,6 @@ module Payments
                      reason: response[:Reason])
             )
             fail_related_entities
-
-            raise ::Payments::TechnicalError
           end
 
           def approved?

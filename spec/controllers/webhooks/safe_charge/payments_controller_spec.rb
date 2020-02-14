@@ -3,12 +3,12 @@
 describe Webhooks::SafeCharge::PaymentsController, type: :controller do
   include_context 'safecharge_env'
 
-  let(:params) { response.merge(advanceResponseChecksum: signature) }
+  let(:params) { external_response.merge(advanceResponseChecksum: signature) }
   let(:signature) { Digest::SHA256.hexdigest(signature_string) }
   let(:signature_string) do
     [
       ENV['SAFECHARGE_SECRET_KEY'],
-      *response.slice(*signature_keys).values
+      *external_response.slice(*signature_keys).values
     ].join
   end
   let(:signature_keys) do
@@ -22,7 +22,7 @@ describe Webhooks::SafeCharge::PaymentsController, type: :controller do
     ]
   end
 
-  let(:response) do
+  let(:external_response) do
     {
       totalAmount: amount,
       currency: Faker::Currency.code,
@@ -97,13 +97,14 @@ describe Webhooks::SafeCharge::PaymentsController, type: :controller do
       let(:status) { Payments::Webhooks::Statuses::FAILED }
       let(:payment_status) { Payments::Webhooks::Statuses::FAILED }
 
-      before do
-        subject
-      rescue Payments::TechnicalError => _e
-      end
+      before { subject }
 
       it 'change deposit status to failed' do
         expect(deposit.reload.status).to eq(Deposit::FAILED)
+      end
+
+      it 'responds with status 200' do
+        expect(response.status).to eq(200)
       end
     end
 
