@@ -1,0 +1,69 @@
+- content_for :js do
+  = javascript_pack_tag 'input_mask', 'data-turbolinks-track': 'reload'
+  = javascript_pack_tag 'simple_labels_selector'
+
+= search_form_for filter.search, url: search_path, as: :customers do |f|
+  %table.table.search
+    %thead
+      %tr
+        %th
+          .filter_title
+            #{t('attributes.customer_name')}:
+          .filter_field
+            = f.label :username_cont, class: 'sr-only'
+            = f.search_field :username_cont,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: t('attributes.username')),
+                              autocomplete: :off
+        %th
+          .filter_title
+            #{t('attributes.email')}:
+          .filter_field
+            = f.label :email_cont, class: 'sr-only'
+            = f.search_field :email_cont,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: t('attributes.email')),
+                              autocomplete: :off
+        %th
+          .filter_title
+            #{t('attributes.ip_address')}:
+          .filter_field
+            = f.label :ip_address_eq, class: 'sr-only'
+            = f.search_field :ip_address_eq,
+                             class: 'form-control',
+                             placeholder: t(:search, subject: t('attributes.ip_address')),
+                             autocomplete: :off,
+                             data: { inputmask: { mask: '9[9][9].9[9][9].9[9][9].9[9][9]',
+                                                  clearIncomplete: 'true' }.to_json[1..-2] }
+        %th
+          .filter_field
+            #{t('attributes.id')}:
+          .filter_field
+            = f.label :id_eq, class: 'sr-only'
+            = f.search_field :id_eq,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: t('attributes.id')),
+                              autocomplete: :off
+
+        %th
+          .filter_field
+            #{t('attributes.label')}:
+          .filter_field
+            = f.label :agg_labels_matches_all, class: 'sr-only'
+            = collection_select(:customers, :agg_labels_matches_all,
+                                filter.available_labels, :id, :decorated_name,
+              { selected: filter.params[:agg_labels_matches_all] },
+              class: 'form-control simple_labels_selector',
+              multiple: true,
+              data: { placeholder: t(:search, subject: t('attributes.label')) })
+        %th
+          .filter_field
+            #{t('attributes.b_tag')}:
+          .filter_field
+            = f.label :b_tag_cont, class: 'sr-only'
+            = f.search_field :b_tag_cont,
+                              class: 'form-control',
+                              placeholder: t(:search, subject: t('attributes.b_tag')),
+                              autocomplete: :off
+        %th
+          = f.submit class: 'btn btn-outline-dark btn-block'
