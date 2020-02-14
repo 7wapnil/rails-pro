@@ -16,8 +16,6 @@ module Webhooks
         ::Payments::Fiat::SafeCharge::CallbackHandler.call(permitted_params)
 
         head :ok
-      rescue ::Payments::FailedError
-        head :unprocessable_entity
       rescue StandardError => error
         Rails.logger.error(message: 'Technical error appeared on deposit',
                            error_object: error)
