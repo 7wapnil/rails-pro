@@ -15,13 +15,18 @@ epic-feature:
 	git checkout -b $(ARGS)
 
 # Local merge to develop branch
-# Usage: merge-to-develop
+# Usage: make merge-to-develop
 merge-to-develop:
 	@$(eval current_branch := $(branch))
 	git checkout develop
 	git pull origin develop --rebase
 	git merge --no-ff $(current_branch)
 	git checkout $(current_branch)
+
+merge-to-master:
+	@echo
+	@echo "Click 'Merge pull request' in GitHub UI"
+	@echo
 
 # Quickly commit something before checking out
 # Usage: make commit-wip Codestyle fixes
