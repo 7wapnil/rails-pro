@@ -5,3 +5,5 @@
          search_path: online_customers_path
 
 = render 'table', filter: @filter
+
+= paginate @filter.customers
