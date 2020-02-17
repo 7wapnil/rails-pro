@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_102211) do
     t.decimal "sportsbook_multiplier", default: "1.0", null: false
     t.decimal "max_rollover_per_spin"
     t.boolean "limit_per_each_bet_leg", default: false
+    t.integer "deposit_count"
   end
 
   create_table "comments", force: :cascade do |t|
