@@ -138,7 +138,7 @@ module Reports
             CAST(SUM(COALESCE(entries.base_currency_bonus_amount,0)) AS DECIMAL(10,2)) bonuses
           FROM entries
           JOIN wallets ON wallets.id = entries.wallet_id
-          WHERE entries.kind in (#{Entry::INCOME_ENTRY_KINDS.map { |a| "'#{a}'" }.join(', ')})
+          WHERE entries.kind IN (#{joined_condition(Entry::INCOME_ENTRY_KINDS)})
                 AND entries.created_at BETWEEN #{recent_scope}
                 AND entries.base_currency_bonus_amount > 0
           GROUP BY customer_id
@@ -152,7 +152,8 @@ module Reports
             CAST(SUM(COALESCE(ABS(entries.base_currency_amount),0)) AS DECIMAL(10,2)) stake,
             count(entries.id) bets_count
           FROM entries
-          JOIN bets ON bets.id = entries.origin_id AND bets.status = '#{Bet::SETTLED}' AND bets.settlement_status != '#{Bet::VOIDED}'
+          JOIN bets ON bets.id = entries.origin_id AND bets.status IN (#{joined_condition(Bet::SETTLED_STATUSES_MASK)})
+                                                   AND bets.settlement_status != '#{Bet::VOIDED}'
           WHERE bets.bet_settlement_status_achieved_at BETWEEN #{recent_scope}
                 AND entries.kind = '#{Entry::BET}'
                 AND entries.confirmed_at IS NOT NULL
@@ -179,7 +180,8 @@ module Reports
             bets.customer_id customer_id,
             CAST(SUM(COALESCE(entries.base_currency_amount,0)) AS DECIMAL(10,2)) wins_amount
           FROM entries
-          JOIN bets ON bets.id = entries.origin_id AND bets.status = '#{Bet::SETTLED}' AND bets.settlement_status != '#{Bet::VOIDED}'
+          JOIN bets ON bets.id = entries.origin_id AND bets.status IN (#{joined_condition(Bet::SETTLED_STATUSES_MASK)})
+                                                   AND bets.settlement_status != '#{Bet::VOIDED}'
           WHERE entries.created_at BETWEEN#{recent_scope} AND entries.kind = '#{Entry::WIN}'
           GROUP BY bets.customer_id
         SQL
@@ -212,6 +214,10 @@ module Reports
 
         # not an array, but PG::Result object, does not support [-1]
         records[records.length - 1]['customer_id']
+      end
+
+      def joined_condition(array_for_join)
+        array_for_join.map { |element| "'#{element}'" }.join(', ')
       end
     end
     # rubocop:enable Metrics/ClassLength
