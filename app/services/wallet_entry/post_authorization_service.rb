@@ -2,7 +2,7 @@
 
 module WalletEntry
   class PostAuthorizationService < ApplicationService
-    delegate :wallet, to: :entry
+    delegate :customer, to: :entry
 
     def initialize(entry)
       @entry = entry
@@ -22,7 +22,7 @@ module WalletEntry
     end
 
     def verify_balance!
-      Wallets::BalanceVerification.call(wallet)
+      Wallets::BalanceVerification.call(customer)
     end
   end
 end
