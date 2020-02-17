@@ -22,7 +22,7 @@ describe WalletEntry::PostAuthorizationService do
   it 'calls balance verification' do
     expect(::Wallets::BalanceVerification)
       .to have_received(:call)
-      .with(entry.wallet)
+      .with(entry.customer)
   end
 
   context 'for bet entry' do
@@ -36,7 +36,7 @@ describe WalletEntry::PostAuthorizationService do
     it 'calls balance verification' do
       expect(::Wallets::BalanceVerification)
         .to have_received(:call)
-        .with(entry.wallet)
+        .with(entry.customer)
     end
   end
 end
