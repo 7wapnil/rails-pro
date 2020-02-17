@@ -54,6 +54,8 @@ Rails.application.routes.draw do
     resources :entries, only: :index
   end
 
+  resources :online_customers, only: :index
+
   resources :customers, only: [], module: :customers do
     resource :statistics, only: :show, path: 'stats'
     resources :entry_requests, only: :create
