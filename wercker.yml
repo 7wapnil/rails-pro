@@ -5,7 +5,7 @@ box:
   tag: node10
 
 services:
-  - postgres
+  - postgres:9.6.16
   - mongo:3.6
 
 build:
