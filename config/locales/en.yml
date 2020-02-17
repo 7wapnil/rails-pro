@@ -125,6 +125,8 @@ en:
     real_money_amount: Cash amount
     real_money: Real Money
     bonus_amount: Bonus amount
+    bonus_amount_balance_eur: Bonus amount balance (€)
+    cancelled_bonus_amount: Cancelled bonus amount
     converted_bonus_amount: Converted bonus amount
     confiscated_bonus_amount: Confiscated bonus amount
     confiscated_bonus: Confiscated Bonus
@@ -240,6 +242,7 @@ en:
     email_verified: Verified email
     vendor: Vendor
     verification_sent: User notified about verification
+    real_money_balance_eur: Real money balance (€)
     repeatable: Repeatable
     requested_at: Requested at
     result: Result
@@ -265,6 +268,7 @@ en:
     street_address: Street address
     slug: Slug
     text: Text
+    total_balance_eur: Total balance (€)
     tournament: Tournament
     transactions_spin: Transactions
     twitch_end_time: Twitch end time
@@ -449,6 +453,8 @@ en:
       zero: No markets
       one: 1 market
       other: "%{count} markets"
+    monthly_balance_query_results: Monthly balance query results
+    monthly_balance_query_results_short: Monthly balances
     request_information: Request information
     entry_information: Entry information
     scope: Scope

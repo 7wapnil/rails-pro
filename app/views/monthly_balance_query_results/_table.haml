@@ -1,0 +1,15 @@
+%table.table.entities
+  %thead
+    %tr
+      %th= t('attributes.real_money_balance_eur')
+      %th= t('attributes.bonus_amount_balance_eur')
+      %th= t('attributes.total_balance_eur')
+      %th= t('attributes.created_at')
+
+  %tbody
+    - filter.monthly_balance_query_results.each do |result|
+      %tr
+        %td= result.real_money_balance_eur
+        %td= result.bonus_amount_balance_eur
+        %td= result.total_balance_eur
+        %td= result.created_at
