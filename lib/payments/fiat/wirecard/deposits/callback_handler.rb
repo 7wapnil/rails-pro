@@ -82,7 +82,7 @@ module Payments
           end
 
           def approved?
-            status_details['code'].match?(APPROVED_STATUSES_REGEX) &&
+            status_details['code']&.match?(APPROVED_STATUSES_REGEX) &&
               transaction_state == SUCCESSFUL
           end
 

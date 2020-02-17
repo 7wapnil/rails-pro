@@ -4,9 +4,6 @@ module Payments
   module Fiat
     module Wirecard
       class CallbackHandler < ::ApplicationService
-        DEPOSIT = 'purchase'
-        WITHDRAWAL = Rails.env.production? ? 'original-credit' : 'credit'
-
         def initialize(request)
           @request = request
         end
@@ -61,18 +58,30 @@ module Payments
         # rubocop:enable Metrics/MethodLength, Metrics/AbcSize
 
         def response
-          @response ||= base64? ? base64_response : xml_response
+          @response ||= case payment_type
+                        when ::Deposit.name
+                          base64_response
+                        when ::Withdrawal.name
+                          xml_response
+                        else
+                          non_supported_payment_type!
+                        end
+        end
+
+        def request_id
+          request.params['request_id']
         end
 
         def payment_type
-          response.dig('payment', 'transaction-type')
-        end
-
-        def base64?
-          request.params['response-base64'].present?
+          @payment_type ||= CustomerTransaction
+                            .joins(:entry_request)
+                            .find_by!(entry_requests: { id: request_id })
+                            .type
         end
 
         def base64_response
+          return stub_response unless request.params.key?('response-base64')
+
           JSON.parse(Base64.decode64(request.params['response-base64']))
         end
 
@@ -84,13 +93,17 @@ module Payments
 
         def callback_handler
           case payment_type
-          when DEPOSIT
+          when ::Deposit.name
             ::Payments::Fiat::Wirecard::Deposits::CallbackHandler
-          when WITHDRAWAL
+          when ::Withdrawal.name
             ::Payments::Fiat::Wirecard::Payouts::CallbackHandler
           else
             non_supported_payment_type!
           end
+        end
+
+        def stub_response
+          { 'payment' => { 'request-id' => request_id } }
         end
 
         def non_supported_payment_type!
