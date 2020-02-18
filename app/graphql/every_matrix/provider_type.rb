@@ -10,6 +10,7 @@ module EveryMatrix
     field :name, types.String do
       resolve ->(obj, *) { obj.try(:representation_name) || obj.name }
     end
+    field :metaTitle, types.String, property: :meta_title
     field :metaDescription, types.String, property: :meta_description
     field :slug, types.String
     field :logoUrl, types.String, property: :logo_url

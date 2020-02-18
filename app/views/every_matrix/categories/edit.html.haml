@@ -3,6 +3,11 @@
     = card header: t('.title'), class: 'mb-3' do
       = simple_form_for @category do |f|
         = f.input :context, label: t('.context')
+        = f.input :meta_title,
+                  as: :text,
+                  rows: 2,
+                  label: t('attributes.meta_title'),
+                  class: 'form-control'
         = f.input :meta_description,
                   as: :text,
                   rows: 4,

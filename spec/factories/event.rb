@@ -6,6 +6,7 @@ FactoryBot.define do
     active                 { true }
     ready                  { true }
     name                   { "#{Faker::Esport.team} vs. #{Faker::Esport.team}" }
+    meta_title             { "Meta: #{name}" }
     meta_description       { 'FPSThailand CS:GO Pro League Season#4 | MiTH vs. Beyond eSports' } # rubocop:disable Metrics/LineLength
     start_at               { 2.hours.ago }
     end_at                 { 1.hours.ago }

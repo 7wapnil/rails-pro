@@ -17,6 +17,7 @@ describe EventArchive::Service do
     expect(archived).to have_attributes(
       name: event.name,
       title_name: event.title.name,
+      meta_title: event.meta_title,
       meta_description: event.meta_description,
       display_status: event.display_status,
       home_score: event.home_score,

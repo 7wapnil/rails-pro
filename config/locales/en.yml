@@ -206,6 +206,7 @@ en:
     max_rollover_per_bet: Max rollover per bet
     max_rollover_per_spin: Max rollover per spin
     message: Message
+    meta_title: Meta Tag Title
     meta_description: Meta Tag Description
     notification_code: Notification code
     notification_message: Notification message

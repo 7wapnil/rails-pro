@@ -62,7 +62,21 @@ describe GraphQL, '#gamesByProvider' do
 
     it 'returns requested provider info' do
       expect(result.dig('data', 'gamesByProvider', 'provider', 'id'))
-        .to eq(provider.id.to_s)
+        .to eq("content_provider:#{provider.id}")
+    end
+
+    context 'when provider is vendor' do
+      let(:provider) { create(:every_matrix_vendor, :visible) }
+
+      it 'returns list games for provider' do
+        expect(result.dig('data', 'gamesByProvider', 'collection').length)
+          .to eq(EveryMatrix::Game.count)
+      end
+
+      it 'returns requested provider info' do
+        expect(result.dig('data', 'gamesByProvider', 'provider', 'id'))
+          .to eq("vendor:#{provider.id}")
+      end
     end
   end
 
@@ -79,7 +93,7 @@ describe GraphQL, '#gamesByProvider' do
 
     it 'returns requested provider info' do
       expect(result.dig('data', 'gamesByProvider', 'provider', 'id'))
-        .to eq(provider.id.to_s)
+        .to eq("content_provider:#{provider.id}")
     end
   end
 

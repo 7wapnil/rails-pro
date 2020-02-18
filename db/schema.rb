@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_05_132935) do
+ActiveRecord::Schema.define(version: 2020_02_05_132936) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -85,8 +85,8 @@ ActiveRecord::Schema.define(version: 2020_02_05_132935) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.datetime "validation_ticket_sent_at"
     t.string "settlement_status"
+    t.datetime "validation_ticket_sent_at"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"
@@ -467,6 +467,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_132935) do
     t.integer "position", default: 9999, null: false
     t.string "slug"
     t.text "meta_description"
+    t.string "meta_title"
     t.index ["event_scope_id"], name: "index_event_scopes_on_event_scope_id"
     t.index ["external_id"], name: "index_event_scopes_on_external_id", unique: true
     t.index ["position"], name: "index_event_scopes_on_position"
@@ -499,6 +500,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_132935) do
     t.datetime "twitch_end_time"
     t.string "twitch_url"
     t.string "slug"
+    t.string "meta_title"
     t.index ["active"], name: "index_events_on_active"
     t.index ["external_id"], name: "index_events_on_external_id", unique: true
     t.index ["producer_id"], name: "index_events_on_producer_id"
@@ -511,6 +513,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_132935) do
     t.integer "position"
     t.string "kind"
     t.text "meta_description"
+    t.string "meta_title"
     t.index ["context"], name: "index_every_matrix_categories_on_context"
   end
 
@@ -527,6 +530,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_132935) do
     t.string "slug", default: ""
     t.integer "position"
     t.text "meta_description"
+    t.string "meta_title"
     t.index ["name"], name: "index_every_matrix_content_providers_on_name"
     t.index ["representation_name"], name: "index_every_matrix_content_providers_on_representation_name"
   end
@@ -638,6 +642,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_132935) do
     t.datetime "last_updated_recommended_games_at"
     t.string "game_code"
     t.text "meta_description"
+    t.string "meta_title"
     t.index ["every_matrix_content_provider_id"], name: "index_play_items_on_content_providers_id"
     t.index ["every_matrix_vendor_id"], name: "index_play_items_on_vendors_id"
     t.index ["game_code"], name: "index_every_matrix_play_items_on_game_code"
@@ -715,6 +720,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_132935) do
     t.string "slug", default: ""
     t.integer "position"
     t.text "meta_description"
+    t.string "meta_title"
     t.index ["vendor_id"], name: "index_every_matrix_vendors_on_vendor_id"
   end
 
@@ -854,6 +860,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_132935) do
     t.string "name"
     t.string "slug"
     t.text "meta_description"
+    t.string "meta_title"
     t.index ["external_id"], name: "index_titles_on_external_id", unique: true
     t.index ["position"], name: "index_titles_on_position"
   end

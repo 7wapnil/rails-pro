@@ -108,6 +108,7 @@ describe OddsFeed::Radar::EventAdapter do
         expect(result).to have_attributes(
           external_id: event_id,
           name: 'IK Oddevold VS Tvaakers IF',
+          meta_title: nil,
           meta_description: nil,
           traded_live: false,
           liveodds: expected_liveodds
@@ -124,6 +125,7 @@ describe OddsFeed::Radar::EventAdapter do
           expect(result).to have_attributes(
             external_id: event_id,
             name: 'IK Oddevold VS Tvaakers IF',
+            meta_title: nil,
             meta_description: nil,
             traded_live: true,
             liveodds: expected_liveodds

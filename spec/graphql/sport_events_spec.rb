@@ -48,6 +48,7 @@ describe GraphQL, '#sportEvents' do
       %({
         sportEvents(context: #{upcoming_ctx}, titleId: #{title.id}) {
           id
+          metaTitle
           metaDescription
         }
       })

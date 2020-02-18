@@ -25,6 +25,9 @@
         %td= t('attributes.sport')
         %td= event.title.name
       %tr
+        %td= t('attributes.meta_title')
+        %td= f.input :meta_title, as: :text, rows: 2, label: false, class: 'form-control'
+      %tr
         %td= t('attributes.meta_description')
         %td= f.input :meta_description, as: :text, rows: 4, label: false, class: 'form-control'
       %tr
