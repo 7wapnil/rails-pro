@@ -268,4 +268,12 @@ namespace :production_data do
       )
     end
   end
+
+  desc 'Change esports title slugs'
+  task change_esports_title_slugs: :environment do
+    Title
+      .esports
+      .where("slug ILIKE 'e-sport%'")
+      .update_all("slug = REPLACE(slug, 'e-sport', 'esport')")
+  end
 end
