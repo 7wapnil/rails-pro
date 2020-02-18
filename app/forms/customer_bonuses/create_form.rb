@@ -92,8 +92,8 @@ module CustomerBonuses
       return unless original_bonus.deposit_count
       return if deposit_count_matches?
 
-      errors.add(:bonus,
-                 I18n.t('errors.messages.deposit_count_violation'))
+      errors.add(:bonus, I18n.t('errors.messages.deposit_count_violation',
+                                number: original_bonus.deposit_count))
     end
 
     def deposit_count_matches?
