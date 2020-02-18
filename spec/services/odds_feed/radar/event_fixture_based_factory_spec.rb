@@ -18,6 +18,7 @@ describe OddsFeed::Radar::EventFixtureBasedFactory do
       expect(result).to have_attributes(
         external_id: event_id,
         name: event_name,
+        meta_title: nil,
         meta_description: nil,
         traded_live: false,
         liveodds: expected_liveodds
@@ -34,6 +35,7 @@ describe OddsFeed::Radar::EventFixtureBasedFactory do
         expect(result).to have_attributes(
           external_id: event_id,
           name: event_name,
+          meta_title: nil,
           meta_description: nil,
           traded_live: true,
           liveodds: expected_liveodds

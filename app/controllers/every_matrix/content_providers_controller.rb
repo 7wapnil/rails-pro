@@ -26,7 +26,7 @@ module EveryMatrix
         .permit(
           :name, :visible, :representation_name, :as_vendor,
           :logo_url, :internal_image_name, :slug, :position,
-          :meta_description
+          :meta_title, :meta_description
         )
     end
   end

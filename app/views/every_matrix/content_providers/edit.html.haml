@@ -4,6 +4,11 @@
       = simple_form_for @content_provider do |f|
         = f.input :name
         = f.input :slug
+        = f.input :meta_title,
+                  as: :text,
+                  rows: 2,
+                  label: t('attributes.meta_title'),
+                  class: 'form-control'
         = f.input :meta_description,
                   as: :text,
                   rows: 4,

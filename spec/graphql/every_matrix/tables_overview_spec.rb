@@ -21,6 +21,7 @@ describe GraphQL, '#tablesOverview' do
           context
           position
           name
+          metaTitle
           metaDescription
           playItems{
             id

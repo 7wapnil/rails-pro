@@ -30,8 +30,8 @@ describe GraphQL, '#tournamentEvents' do
     let(:query) do
       %({
         tournamentEvents(id: #{tournament.id}) {
-          live     { id metaDescription }
-          upcoming { id metaDescription }
+          live     { id metaTitle metaDescription }
+          upcoming { id metaTitle metaDescription }
         }
       })
     end

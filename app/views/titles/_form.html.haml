@@ -12,6 +12,11 @@
         = f.input :name, label: t('custom_name')
         = f.input :short_name, label: t('custom_short_name')
         = f.input :slug, label: t('attributes.slug')
+        = f.input :meta_title,
+                  as: :text,
+                  rows: 2,
+                  label: t('attributes.meta_title'),
+                  class: 'form-control'
         = f.input :meta_description,
                   as: :text,
                   rows: 4,

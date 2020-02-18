@@ -16,6 +16,7 @@ module EventArchive
         external_id: @event.external_id,
         name: @event.name,
         title_name: @event.title.name,
+        meta_title: @event.meta_title,
         meta_description: @event.meta_description,
         start_at: @event.start_at,
         display_status: @event.display_status,

@@ -9,6 +9,7 @@ module Events
       resolve ->(obj, *) { obj.slug || obj.id }
     end
     field :name, !types.String
+    field :metaTitle, types.String, property: :meta_title
     field :metaDescription, types.String, property: :meta_description
     field :status, !types.String
     field :displayStatus, types.String,

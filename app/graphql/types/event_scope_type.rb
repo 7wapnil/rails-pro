@@ -5,6 +5,7 @@ Types::EventScopeType = GraphQL::ObjectType.define do
 
   field :id, !types.ID
   field :name, !types.String
+  field :metaTitle, types.String, property: :meta_title
   field :metaDescription, types.String, property: :meta_description
   field :slug, !types.String do
     resolve ->(obj, *) { obj.slug || obj.id }
