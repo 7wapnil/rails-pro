@@ -46,7 +46,11 @@ describe GraphQL, '#esportEvents' do
     let(:control_event) {}
     let(:query) do
       %({
-          esportEvents(context: #{upcoming_ctx}, titleId: #{title.id}) { id }
+        esportEvents(context: #{upcoming_ctx}, titleId: #{title.id}) {
+          id
+          metaTitle
+          metaDescription
+        }
       })
     end
 

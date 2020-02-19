@@ -25,8 +25,11 @@
         %td= t('attributes.sport')
         %td= event.title.name
       %tr
-        %td= t('attributes.description')
-        %td= event.description
+        %td= t('attributes.meta_title')
+        %td= f.input :meta_title, as: :text, rows: 2, label: false, class: 'form-control'
+      %tr
+        %td= t('attributes.meta_description')
+        %td= f.input :meta_description, as: :text, rows: 4, label: false, class: 'form-control'
       %tr
         %td= t('attributes.start_at')
         %td= safe_date_localize_helper(event.start_at, format: :long, default_result: '-')

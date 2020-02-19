@@ -28,6 +28,8 @@ class TitlesController < ApplicationController
               :name,
               :short_name,
               :slug,
+              :meta_title,
+              :meta_description,
               :external_id,
               :show_category_in_navigation,
               :kind)

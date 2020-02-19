@@ -213,6 +213,8 @@ en:
     max_rollover_per_bet: Max rollover per bet
     max_rollover_per_spin: Max rollover per spin
     message: Message
+    meta_title: Meta Tag Title
+    meta_description: Meta Tag Description
     notification_code: Notification code
     notification_message: Notification message
     number_of_free_rounds: Free rounds
@@ -498,7 +500,14 @@ en:
       index:
         context: 'Context / Slug'
       edit:
+        title: Edit category
         context: 'Context / Slug'
+    content_providers:
+      edit:
+        title: Edit content provider
+    vendors:
+      edit:
+        title: Edit vendor
 
   transactions:
     payment_methods:

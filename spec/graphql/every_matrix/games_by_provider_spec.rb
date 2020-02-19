@@ -14,32 +14,35 @@ describe GraphQL, '#gamesByProvider' do
 
   let(:query) do
     %({
-        gamesByProvider(providerSlug: "#{query_name}") {
-          pagination {
-            count
-            items
-            page
-            pages
-            offset
-            last
-            next
-            prev
-            from
-            to
-          }
-          collection {
-            id
-            name
-            description
-            url
-            shortName
-            logoUrl
-            backgroundImageUrl
-            slug
-            type
-          }
+      gamesByProvider(providerSlug: "#{query_name}") {
+        pagination {
+          count
+          items
+          page
+          pages
+          offset
+          last
+          next
+          prev
+          from
+          to
         }
-      })
+        collection {
+          id
+          name
+          description
+          url
+          shortName
+          logoUrl
+          backgroundImageUrl
+          slug
+          type
+        },
+        provider {
+          id
+        }
+      }
+    })
   end
 
   let(:result) do
@@ -55,6 +58,25 @@ describe GraphQL, '#gamesByProvider' do
     it 'returns list games for provider' do
       expect(result.dig('data', 'gamesByProvider', 'collection').length)
         .to eq(EveryMatrix::Game.count)
+    end
+
+    it 'returns requested provider info' do
+      expect(result.dig('data', 'gamesByProvider', 'provider', 'id'))
+        .to eq("content_provider:#{provider.id}")
+    end
+
+    context 'when provider is vendor' do
+      let(:provider) { create(:every_matrix_vendor, :visible) }
+
+      it 'returns list games for provider' do
+        expect(result.dig('data', 'gamesByProvider', 'collection').length)
+          .to eq(EveryMatrix::Game.count)
+      end
+
+      it 'returns requested provider info' do
+        expect(result.dig('data', 'gamesByProvider', 'provider', 'id'))
+          .to eq("vendor:#{provider.id}")
+      end
     end
   end
 
@@ -80,6 +102,11 @@ describe GraphQL, '#gamesByProvider' do
     it 'returns list games for provider' do
       expect(result.dig('data', 'gamesByProvider', 'collection').length)
         .to eq(EveryMatrix::Table.count)
+    end
+
+    it 'returns requested provider info' do
+      expect(result.dig('data', 'gamesByProvider', 'provider', 'id'))
+        .to eq("content_provider:#{provider.id}")
     end
   end
 

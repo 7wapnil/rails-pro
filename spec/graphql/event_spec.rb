@@ -11,7 +11,9 @@ describe GraphQL, '#event' do
   let(:visible) { true }
   let!(:event) { create(:event, visible: visible) }
 
-  let(:query) { %({ event (slug: "#{event.slug}") { id } }) }
+  let(:query) do
+    %({ event (slug: "#{event.slug}") { id metaTitle metaDescription } })
+  end
 
   it 'returns valid event' do
     expect(result['data']['event']['id']).to eq(event.id.to_s)

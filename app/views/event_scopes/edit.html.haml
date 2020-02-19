@@ -8,7 +8,16 @@
       .row
         .col
           = f.input :slug, label: t('attributes.slug')
-
+          = f.input :meta_title,
+                    as: :text,
+                    rows: 2,
+                    label: t('attributes.meta_title'),
+                    class: 'form-control'
+          = f.input :meta_description,
+                    as: :text,
+                    rows: 4,
+                    label: t('attributes.meta_description'),
+                    class: 'form-control'
           %hr
           = f.button :submit, t(:save), class: 'btn btn-success'
           = link_to t('back'), event_scopes_path(title_id: @event_scope.title_id),

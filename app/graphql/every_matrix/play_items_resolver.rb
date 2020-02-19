@@ -2,9 +2,9 @@
 
 module EveryMatrix
   class PlayItemsResolver < ApplicationService
-    def initialize(model:, category_name:, device:, country: '')
+    def initialize(model:, category:, device:, country: '')
       @model = model
-      @category_name = category_name
+      @category = category
       @device = device
       @country = country
     end
@@ -21,12 +21,12 @@ module EveryMatrix
 
     private
 
-    attr_reader :model, :category_name, :device, :country
+    attr_reader :model, :category, :device, :country
 
     def condition
       {
         every_matrix_categories: {
-          context: category_name
+          id: category.id
         }
       }
     end

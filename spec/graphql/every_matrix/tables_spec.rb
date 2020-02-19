@@ -11,32 +11,35 @@ describe GraphQL, '#tables' do
 
   let(:query) do
     %({
-        tables(context: #{category.context}) {
-          pagination {
-            count
-            items
-            page
-            pages
-            offset
-            last
-            next
-            prev
-            from
-            to
-          }
-          collection {
-            id
-            name
-            description
-            url
-            shortName
-            logoUrl
-            backgroundImageUrl
-            slug
-            type
-          }
+      tables(context: #{category.context}) {
+        pagination {
+          count
+          items
+          page
+          pages
+          offset
+          last
+          next
+          prev
+          from
+          to
         }
-      })
+        collection {
+          id
+          name
+          description
+          url
+          shortName
+          logoUrl
+          backgroundImageUrl
+          slug
+          type
+        },
+        category {
+          id
+        }
+      }
+    })
   end
 
   let(:result) do
@@ -51,6 +54,11 @@ describe GraphQL, '#tables' do
     it 'returns result with all table games' do
       expect(result.dig('data', 'tables', 'collection').length)
         .to eq(table_games.length)
+    end
+
+    it 'returns category' do
+      expect(result.dig('data', 'tables', 'category', 'id'))
+        .to eq(category.id.to_s)
     end
   end
 
