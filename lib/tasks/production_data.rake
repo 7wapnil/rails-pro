@@ -276,4 +276,12 @@ namespace :production_data do
       .where("slug ILIKE 'e-sport%'")
       .update_all("slug = REPLACE(slug, 'e-sport', 'esport')")
   end
+
+  desc 'Run all task regarding SEO improvement'
+  task prepare_seo_improvement: :environment do
+    Rake::Task['production_data:reset_event_meta_descriptions'].invoke
+    Rake::Task['production_data:generate_slugs'].invoke
+    Rake::Task['production_data:fill_static_meta_data'].invoke
+    Rake::Task['production_data:change_esports_title_slugs'].invoke
+  end
 end
