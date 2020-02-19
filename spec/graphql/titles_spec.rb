@@ -13,7 +13,7 @@ describe GraphQL, '#titles' do
   let(:control_count) { rand(1..4) }
 
   context 'basic query' do
-    let(:query) { %({ titles { id name } }) }
+    let(:query) { %({ titles { id name metaTitle metaDescription } }) }
 
     let!(:control_titles) { create_list(:title, control_count, :with_event) }
 

@@ -24,7 +24,6 @@ module OddsFeed
           twitch_start_time: expected_start_time,
           twitch_end_time: expected_finish_time,
           name: event_name,
-          description: event_name,
           traded_live: event_traded_live?,
           liveodds: liveodds,
           status: EventStatusConverter.call(fixture['status'])

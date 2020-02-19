@@ -6,7 +6,6 @@ describe OddsFeed::Radar::EventFixtureBasedFactory do
   end
   let(:event_id) { 'sr:match:8696826' }
   let(:event_name) { 'IK Oddevold VS Tvaakers IF' }
-  let(:event_description) { event_name }
   let(:start_at) { '2016-10-31T18:00:00+00:00'.to_time }
   let(:expected_liveodds) { payload['liveodds'] }
 
@@ -19,7 +18,8 @@ describe OddsFeed::Radar::EventFixtureBasedFactory do
       expect(result).to have_attributes(
         external_id: event_id,
         name: event_name,
-        description: event_description,
+        meta_title: nil,
+        meta_description: nil,
         traded_live: false,
         liveodds: expected_liveodds
       )
@@ -35,7 +35,8 @@ describe OddsFeed::Radar::EventFixtureBasedFactory do
         expect(result).to have_attributes(
           external_id: event_id,
           name: event_name,
-          description: event_description,
+          meta_title: nil,
+          meta_description: nil,
           traded_live: true,
           liveodds: expected_liveodds
         )
