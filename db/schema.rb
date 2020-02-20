@@ -864,6 +864,17 @@ ActiveRecord::Schema.define(version: 2020_02_20_095425) do
     t.index ["event_scope_id"], name: "index_scoped_events_on_event_scope_id"
   end
 
+  create_table "title_translations", force: :cascade do |t|
+    t.bigint "title_id", null: false
+    t.string "locale", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.string "name"
+    t.string "short_name"
+    t.index ["locale"], name: "index_title_translations_on_locale"
+    t.index ["title_id"], name: "index_title_translations_on_title_id"
+  end
+
   create_table "titles", force: :cascade do |t|
     t.string "external_name"
     t.datetime "created_at", null: false

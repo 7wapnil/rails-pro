@@ -9,6 +9,8 @@ class Title < ApplicationRecord
   conflict_target :external_id
   conflict_updatable :external_name
 
+  translates :name, :short_name
+
   has_many :events, dependent: :destroy
   has_many :event_scopes, dependent: :destroy
   has_many :tournaments, -> { where kind: EventScope::TOURNAMENT },
