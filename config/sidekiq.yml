@@ -103,6 +103,12 @@
     enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
     description: "Sends daily stats report"
 
+  monthly_balance_query:
+    cron: '0 0 1 * * CET'
+    class: Scheduled::MonthlyBalanceQueryWorker
+    enabled: <%= ['production', 'staging'].include?(ENV['RACK_ENV']) %>
+    description: "Runs monthly balance query"
+
   expirining_entry_requests_worker:
     every: <%= ENV.fetch('EXPIRING_ENTRY_REQUESTS_INTERVAL', '1d') %>
     class: Scheduled::ExpiringEntryRequestsWorker

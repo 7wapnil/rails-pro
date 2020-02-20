@@ -9,3 +9,5 @@ linters:
     severity: warning
   LineLength:
     max: 100
+  ViewLength:
+    max: 120
