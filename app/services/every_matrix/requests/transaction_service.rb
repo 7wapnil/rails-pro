@@ -86,7 +86,7 @@ module EveryMatrix
           round_status: transaction_params['RoundStatus'],
           every_matrix_free_spin_bonus_id: transaction_params['BonusId'],
           transaction_id: transaction_params['TransactionId'],
-          play_item: find_play_item
+          play_item: find_play_item!
         }
       end
 
@@ -94,9 +94,10 @@ module EveryMatrix
         @transaction_params ||= params.permit(*TRANSACTION_PARAMS)
       end
 
-      def find_play_item
-        PlayItem.public_send(transaction_params['Device'])
-                .find_by(game_code: transaction_params['GPGameId'])
+      def find_play_item!
+        FindPlayItemService.call(em_game_id: transaction_params['EMGameId'],
+                                 game_code: transaction_params['GPGameId'],
+                                 device: transaction_params['Device'])
       end
 
       def create_entry_request!
