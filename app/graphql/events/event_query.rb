@@ -4,7 +4,7 @@ module Events
   class EventQuery < ::Base::Resolver
     type !EventType
 
-    description 'Get single event by slug or id'
+    description 'Get single event by slug'
 
     argument :slug, types.String
 
@@ -13,7 +13,7 @@ module Events
     end
 
     def resolve(_obj, args)
-      Event.friendly.visible.find(args[:slug])
+      Event.visible.find_by!(slug: args[:slug])
     end
   end
 end

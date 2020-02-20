@@ -35,7 +35,7 @@ module EveryMatrix
     end
 
     def find_category!(args)
-      @category = Category.friendly.find(args['context'])
+      @category = Category.find_by!(context: args['context'])
     end
   end
 end
