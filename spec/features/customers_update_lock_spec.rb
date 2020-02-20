@@ -10,7 +10,7 @@ describe Customer, '#update_lock' do
     end
 
     it 'shows account lock block' do
-      expect(page).to have_content(I18n.t('attributes.account_lock'))
+      expect(page).to have_content(I18n.t('internal.attributes.account_lock'))
     end
 
     it 'lock customer' do
