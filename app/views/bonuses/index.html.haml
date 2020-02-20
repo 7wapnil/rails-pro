@@ -31,6 +31,11 @@
           %td= l(bonus.expires_at)
           %td= number_to_percentage(bonus.percentage, precision: 0)
           %td
-            = t('attributes.repeatable') if bonus.repeatable
+            - if bonus.repeatable
+              %div= t('attributes.repeatable')
+            - if bonus.previous_deposits_number
+              %div
+                = t('attributes.previous_deposits_number')
+                = bonus.previous_deposits_number
 
 = paginate @bonuses

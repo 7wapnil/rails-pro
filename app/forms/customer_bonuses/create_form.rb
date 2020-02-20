@@ -4,11 +4,17 @@ module CustomerBonuses
   class CreateForm
     include ActiveModel::Model
 
+    NON_COUNTABLE_DEPOSITS = [
+      EntryRequest::CASHIER,
+      EntryRequest::SIMULATED
+    ].freeze
+
     attr_reader :subject, :amount, :currency
 
     validate :ensure_no_active_bonus
     validate :validate_repeated_activation
     validate :minimal_bonus_amount
+    validate :validate_previous_deposits_number
 
     delegate :customer, :original_bonus, to: :subject
 
@@ -80,6 +86,27 @@ module CustomerBonuses
 
       errors.add(:bonus,
                  I18n.t('errors.messages.repeated_bonus_activation'))
+    end
+
+    def validate_previous_deposits_number
+      return unless original_bonus.previous_deposits_number
+      return if previous_deposits_number_matches?
+
+      errors.add(:bonus,
+                 I18n.t('errors.messages.previous_deposits_number_violation',
+                        number: original_bonus.previous_deposits_number))
+    end
+
+    def previous_deposits_number_matches?
+      successful_deposits_count == original_bonus.previous_deposits_number
+    end
+
+    def successful_deposits_count
+      Entry
+        .where(kind: Entry::DEPOSIT, wallet: customer.wallets)
+        .joins(:entry_request)
+        .where.not(entry_requests: { mode: NON_COUNTABLE_DEPOSITS })
+        .count
     end
 
     def displayed_error
