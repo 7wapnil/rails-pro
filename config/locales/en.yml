@@ -162,7 +162,7 @@ en:
     date: Date
     date_of_birth: Date of birth
     deactivated_at: Deactivated at
-    deposit_count: Previous successful deposits
+    previous_deposits_number: Previous successful deposits
     description: Description
     email: Email
     end_at: End at
@@ -550,7 +550,7 @@ en:
       currency_not_supported: Your currency is not supported for this payment method
       email_verified: Email already verified
       deposit_limits: Deposit limit reached, please try again later
-      deposit_count_violation: "You need to have made %{number} successful deposits to be able to claim this bonus"
+      previous_deposits_number_violation: "You need to have made %{number} successful deposits to be able to claim this bonus"
       document_type_not_supported: Document type not supported
       entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
       amount_greater_than_allowed: "Amount should be less than %{max_amount} %{currency}"

@@ -33,9 +33,9 @@
           %td
             - if bonus.repeatable
               %div= t('attributes.repeatable')
-            - if bonus.deposit_count
+            - if bonus.previous_deposits_number
               %div
-                = t('attributes.deposit_count')
-                = bonus.deposit_count
+                = t('attributes.previous_deposits_number')
+                = bonus.previous_deposits_number
 
 = paginate @bonuses
