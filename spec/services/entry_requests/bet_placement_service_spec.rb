@@ -159,7 +159,9 @@ describe EntryRequests::BetPlacementService do
   end
 
   context 'with zero amount for entry request' do
-    let(:error_message) { I18n.t('errors.messages.real_money_blank_amount') }
+    let(:error_message) do
+      I18n.t('errors.messages.real_money_not_negative_amount')
+    end
     let(:subject_result) { subject.call }
 
     before { entry_request.amount = 0 }
