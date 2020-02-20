@@ -790,6 +790,14 @@ ActiveRecord::Schema.define(version: 2020_02_20_095425) do
     t.index ["template_id"], name: "index_markets_on_template_id"
   end
 
+  create_table "monthly_balance_query_results", force: :cascade do |t|
+    t.decimal "real_money_balance_eur", precision: 17, scale: 5
+    t.decimal "bonus_amount_balance_eur", precision: 17, scale: 5
+    t.decimal "total_balance_eur", precision: 17, scale: 5
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
   create_table "odds", force: :cascade do |t|
     t.bigint "market_id"
     t.string "name"
