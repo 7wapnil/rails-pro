@@ -13,7 +13,7 @@ module Titles
     end
 
     def resolve(*, args)
-      Title.friendly.find(args[:slug])
+      Title.find_by!(slug: args[:slug])
     end
   end
 end

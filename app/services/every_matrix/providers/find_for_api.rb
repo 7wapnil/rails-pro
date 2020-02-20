@@ -16,13 +16,13 @@ module EveryMatrix
       attr_reader :slug
 
       def find_vendor
-        EveryMatrix::Vendor.visible.friendly.find(slug)
+        EveryMatrix::Vendor.visible.find_by!(slug: slug)
       rescue ActiveRecord::RecordNotFound
         nil
       end
 
       def find_content_provider
-        EveryMatrix::ContentProvider.visible.as_vendor.friendly.find(slug)
+        EveryMatrix::ContentProvider.visible.as_vendor.find_by!(slug: slug)
       rescue ActiveRecord::RecordNotFound
         nil
       end

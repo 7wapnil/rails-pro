@@ -14,9 +14,7 @@ module Events
     end
 
     def resolve(_obj, args)
-      EventScope.friendly
-                .where(kind: args[:kind])
-                .find(args[:slug])
+      EventScope.find_by!(slug: args[:slug], kind: args[:kind])
     end
   end
 end

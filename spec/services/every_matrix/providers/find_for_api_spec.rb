@@ -30,8 +30,25 @@ describe EveryMatrix::Providers::FindForApi do
 
   let(:query) { slug }
 
-  context 'by vendor id' do
+  xcontext 'by vendor id' do
     let(:query) { vendor.id }
+
+    it 'finds vendor' do
+      expect(subject).to eq(vendor)
+    end
+  end
+
+  xcontext 'by content provider id' do
+    let(:query) { content_provider.id }
+
+    it 'finds content_provider' do
+      expect(subject).to eq(content_provider)
+    end
+  end
+
+  context 'by vendor slug' do
+    let(:vendor_slug) { 'test-2' }
+    let(:query) { vendor.slug }
 
     it 'finds vendor' do
       expect(subject).to eq(vendor)
@@ -46,8 +63,9 @@ describe EveryMatrix::Providers::FindForApi do
     end
   end
 
-  context 'by content provider id' do
-    let(:query) { content_provider.id }
+  context 'by content provider slug' do
+    let(:content_provider_slug) { 'test-2' }
+    let(:query) { content_provider.slug }
 
     it 'finds content_provider' do
       expect(subject).to eq(content_provider)
@@ -70,29 +88,11 @@ describe EveryMatrix::Providers::FindForApi do
     end
   end
 
-  context 'by vendor slug' do
-    let(:vendor_slug) { 'test-2' }
-    let(:query) { vendor.slug }
-
-    it 'finds vendor' do
-      expect(subject).to eq(vendor)
-    end
-  end
-
-  context 'by content provider slug' do
-    let(:content_provider_slug) { 'test-2' }
-    let(:query) { content_provider.slug }
-
-    it 'finds content_provider' do
-      expect(subject).to eq(content_provider)
-    end
-  end
-
   it 'when the same slug finds vendor first' do
     expect(subject).to eq(vendor)
   end
 
-  context 'when the same id' do
+  xcontext 'when the same id' do
     let(:content_provider_id) { id }
 
     it 'finds vendor first' do
