@@ -124,6 +124,8 @@ en:
     real_money_amount: Cash amount
     real_money: Real Money
     bonus_amount: Bonus amount
+    bonus_amount_balance_eur: Bonus amount balance (€)
+    cancelled_bonus_amount: Cancelled bonus amount
     converted_bonus_amount: Converted bonus amount
     confiscated_bonus_amount: Confiscated bonus amount
     confiscated_bonus: Confiscated Bonus
@@ -159,6 +161,7 @@ en:
     date: Date
     date_of_birth: Date of birth
     deactivated_at: Deactivated at
+    previous_deposits_number: Previous successful deposits
     description: Description
     email: Email
     end_at: End at
@@ -236,6 +239,7 @@ en:
     email_verified: Verified email
     vendor: Vendor
     verification_sent: User notified about verification
+    real_money_balance_eur: Real money balance (€)
     repeatable: Repeatable
     requested_at: Requested at
     result: Result
@@ -259,6 +263,7 @@ en:
     status: Status
     street_address: Street address
     text: Text
+    total_balance_eur: Total balance (€)
     tournament: Tournament
     transactions_spin: Transactions
     twitch_end_time: Twitch end time
@@ -443,6 +448,8 @@ en:
       zero: No markets
       one: 1 market
       other: "%{count} markets"
+    monthly_balance_query_results: Monthly balance query results
+    monthly_balance_query_results_short: Monthly balances
     request_information: Request information
     entry_information: Entry information
     scope: Scope
@@ -536,6 +543,7 @@ en:
       currency_not_supported: Your currency is not supported for this payment method
       email_verified: Email already verified
       deposit_limits: Deposit limit reached, please try again later
+      previous_deposits_number_violation: "You need to have made %{number} successful deposits to be able to claim this bonus"
       document_type_not_supported: Document type not supported
       entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
       amount_greater_than_allowed: "Amount should be less than %{max_amount} %{currency}"
@@ -555,7 +563,8 @@ en:
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
       account_transition: "can't bet changed from '%{from}' to '%{to}'"
       balance_request_uniqueness: 'already has balance entry request with this kind.'
-      real_money_blank_amount: Real money amount can not be blank!
+      real_money_not_negative_amount: Real money amount has to be negative value!
+      bet_placed_with_not_positive_amount: Bet amount has to be more than zero!
       entry_request_for_settled_bet: "Entry request for settled bet is expected! Received for bet %{bet_id}"
       deposit_limit_exceeded: 'Deposit limit exceeded'
       bonus_expired: 'Bonus is expired!'

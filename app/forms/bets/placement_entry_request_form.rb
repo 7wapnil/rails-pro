@@ -21,10 +21,10 @@ module Bets
     end
 
     def validate_amount!
-      return unless subject.amount&.zero?
+      return if subject.amount.negative?
 
       raise Bets::RegistrationError,
-            I18n.t('errors.messages.real_money_blank_amount')
+            I18n.t('errors.messages.real_money_not_negative_amount')
     end
   end
 end

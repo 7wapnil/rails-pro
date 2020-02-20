@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_02_05_132936) do
+ActiveRecord::Schema.define(version: 2020_02_20_095425) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
@@ -85,8 +85,8 @@ ActiveRecord::Schema.define(version: 2020_02_05_132936) do
     t.datetime "updated_at", null: false
     t.decimal "void_factor", precision: 2, scale: 1
     t.string "validation_ticket_id"
-    t.string "settlement_status"
     t.datetime "validation_ticket_sent_at"
+    t.string "settlement_status"
     t.bigint "customer_bonus_id"
     t.decimal "base_currency_amount"
     t.string "notification_code"
@@ -134,6 +134,7 @@ ActiveRecord::Schema.define(version: 2020_02_05_132936) do
     t.decimal "sportsbook_multiplier", default: "1.0", null: false
     t.decimal "max_rollover_per_spin"
     t.boolean "limit_per_each_bet_leg", default: false
+    t.integer "previous_deposits_number"
   end
 
   create_table "comments", force: :cascade do |t|
@@ -800,6 +801,14 @@ ActiveRecord::Schema.define(version: 2020_02_05_132936) do
     t.index ["external_id"], name: "index_markets_on_external_id", unique: true
     t.index ["producer_id"], name: "index_markets_on_producer_id"
     t.index ["template_id"], name: "index_markets_on_template_id"
+  end
+
+  create_table "monthly_balance_query_results", force: :cascade do |t|
+    t.decimal "real_money_balance_eur", precision: 17, scale: 5
+    t.decimal "bonus_amount_balance_eur", precision: 17, scale: 5
+    t.decimal "total_balance_eur", precision: 17, scale: 5
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "odds", force: :cascade do |t|
