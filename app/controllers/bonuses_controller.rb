@@ -67,7 +67,7 @@ class BonusesController < ApplicationController
                   :valid_for_days,
                   :percentage,
                   :repeatable,
-                  :deposit_count,
+                  :previous_deposits_number,
                   :limit_per_each_bet_leg,
                   :casino,
                   :sportsbook,

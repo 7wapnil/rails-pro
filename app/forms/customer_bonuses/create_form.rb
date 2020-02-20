@@ -14,7 +14,7 @@ module CustomerBonuses
     validate :ensure_no_active_bonus
     validate :validate_repeated_activation
     validate :minimal_bonus_amount
-    validate :validate_deposit_count
+    validate :validate_previous_deposits_number
 
     delegate :customer, :original_bonus, to: :subject
 
@@ -88,16 +88,17 @@ module CustomerBonuses
                  I18n.t('errors.messages.repeated_bonus_activation'))
     end
 
-    def validate_deposit_count
-      return unless original_bonus.deposit_count
-      return if deposit_count_matches?
+    def validate_previous_deposits_number
+      return unless original_bonus.previous_deposits_number
+      return if previous_deposits_number_matches?
 
-      errors.add(:bonus, I18n.t('errors.messages.deposit_count_violation',
-                                number: original_bonus.deposit_count))
+      errors.add(:bonus,
+                 I18n.t('errors.messages.previous_deposits_number_violation',
+                        number: original_bonus.previous_deposits_number))
     end
 
-    def deposit_count_matches?
-      successful_deposits_count == original_bonus.deposit_count
+    def previous_deposits_number_matches?
+      successful_deposits_count == original_bonus.previous_deposits_number
     end
 
     def successful_deposits_count
