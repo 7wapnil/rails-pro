@@ -4,21 +4,21 @@
 %table.table.entities
   %thead
     %tr
-      %th= sort_link filter.search, :id, t('attributes.bet_id'), default_order: :asc
+      %th= sort_link filter.search, :id, t('internal.attributes.bet_id'), default_order: :asc
       - unless excluded_columns.include?(:customer)
-        %th= t('attributes.customer')
-      %th= t('attributes.event')
-      %th= t('attributes.market')
-      %th= t('attributes.selection')
-      %th= t('attributes.odd_value')
-      %th= sort_link filter.search, :amount, t('attributes.stake')
-      %th= sort_link filter.search, :winning_amount, t('attributes.winning_amount')
-      %th= sort_link filter.search, :created_at, t('attributes.bet_placement_time')
-      %th= t('attributes.status')
-      %th= t('attributes.settlement')
-      %th= t('attributes.sport')
-      %th= t('attributes.tournament')
-      %th= t('attributes.bet_type')
+        %th= t('internal.attributes.customer')
+      %th= t('internal.attributes.event')
+      %th= t('internal.attributes.market')
+      %th= t('internal.attributes.selection')
+      %th= t('internal.attributes.odd_value')
+      %th= sort_link filter.search, :amount, t('internal.attributes.stake')
+      %th= sort_link filter.search, :winning_amount, t('internal.attributes.winning_amount')
+      %th= sort_link filter.search, :created_at, t('internal.attributes.bet_placement_time')
+      %th= t('internal.attributes.status')
+      %th= t('internal.attributes.settlement')
+      %th= t('internal.attributes.sport')
+      %th= t('internal.attributes.tournament')
+      %th= t('internal.attributes.bet_type')
   %tbody
     - if filter.bets.any?
       - filter.bets.each do |bet|
@@ -28,7 +28,7 @@
             %td= link_to bet.customer_username, bet.customer
           - if bet.combo_bets?
             %td{ colspan: 3 }
-              = link_to t('combo_bets'), '#', class: 'combo-bets-collapse-link',
+              = link_to t('internal.combo_bets'), '#', class: 'combo-bets-collapse-link',
                                               id: "combo-bets-#{bet.id}"
           - else
             %td
@@ -74,4 +74,4 @@
       %tr
         %td{ colspan: excluded_columns.include?(:customer) ? 13 : 14 }
           .text-center
-            = t(:not_found, instance: t('entities.bets'))
+            = t('internal.not_found', instance: t('internal.entities.bets'))

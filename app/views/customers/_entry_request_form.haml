@@ -1,4 +1,4 @@
-= card header: t(:add_instance, instance: t('entities.entry_request')),
+= card header: t('internal.add_instance', instance: t('internal.entities.entry_request')),
        class: 'customer-entry-request-form' do
   .customer-entry-request-form
     = simple_form_for [customer, entry_request] do |f|
@@ -19,4 +19,4 @@
         .col-6= f.association :currency, include_blank: false
       .row
         .col= f.input :comment, as: :text, required: true
-      = f.submit t(:confirm), class: 'btn btn-outline-dark'
+      = f.submit t('internal.confirm'), class: 'btn btn-outline-dark'

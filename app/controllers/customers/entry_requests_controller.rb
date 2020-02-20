@@ -7,7 +7,7 @@ module Customers
     def create
       EntryRequests::BackofficeEntryRequestService.call(payload_params)
 
-      flash[:success] = t('messages.entry_request.flash')
+      flash[:success] = t('internal.messages.entry_request.flash')
       redirect_to account_management_customer_path(@customer)
     rescue Wallets::ValidationError, EntryRequests::ValidationError => error
       flash[:error] = error.message

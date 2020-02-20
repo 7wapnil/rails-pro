@@ -17,7 +17,7 @@ describe Customer, '#bonuses' do
   context 'bonuses' do
     it 'shows bonuses history section' do
       expect_to_have_section 'bonuses'
-      expect(page).to have_content(I18n.t('no_records'))
+      expect(page).to have_content(I18n.t('internal.no_records'))
     end
   end
 
@@ -43,8 +43,8 @@ describe Customer, '#bonuses' do
 
       within '.container-fluid' do
         expect_to_have_notification I18n.t(
-          :activated,
-          instance: I18n.t('entities.bonus')
+          'internal.activated',
+          instance: I18n.t('internal.entities.bonus')
         )
       end
     end

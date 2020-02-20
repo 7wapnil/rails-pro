@@ -20,7 +20,7 @@ module Payments
 
           errors.add(
             :bonus,
-            I18n.t('errors.messages.entry_requests.bonus_expired')
+            I18n.t('internal.errors.messages.entry_requests.bonus_expired')
           )
         end
 

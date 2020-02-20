@@ -61,7 +61,7 @@ module Payments
                               status_message: status_details['description'],
                               request_id: request_id
             entry_request.register_failure!(
-              I18n.t('errors.messages.cancelled_by_customer')
+              I18n.t('internal.errors.messages.cancelled_by_customer')
             )
             fail_related_entities
 
@@ -97,8 +97,10 @@ module Payments
                               status_message: status_details['description'],
                               request_id: request_id
             entry_request.register_failure!(
-              I18n.t('errors.messages.payment_failed_with_reason_error',
-                     reason: status_details['description'])
+              I18n.t(
+                'internal.errors.messages.payment_failed_with_reason_error',
+                reason: status_details['description']
+              )
             )
             fail_related_entities
             raise_payment_failed_error!

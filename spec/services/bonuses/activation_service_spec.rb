@@ -142,12 +142,15 @@ describe Bonuses::ActivationService do
   end
 
   context 'activating an expired_bonus' do
+    let(:expected_error_message) do
+      I18n.t('internal.errors.messages.entry_requests.bonus_expired')
+    end
+
     before { bonus.update(expires_at: 1.day.ago) }
 
     it 'raises an error' do
-      expected_message = I18n.t('errors.messages.entry_requests.bonus_expired')
-      expect { subject }
-        .to raise_error(CustomerBonuses::ActivationError, expected_message)
+      expect { subject }.to raise_error(CustomerBonuses::ActivationError,
+                                        expected_error_message)
     end
 
     it 'fails entry request' do

@@ -1,17 +1,17 @@
 .row.mt-4
   .col-6.offset-3
-    = card header: t('entities.comments'), class: 'comments' do
+    = card header: t('internal.entities.comments'), class: 'comments' do
       - if comments.present?
         - comments.each do |comment|
           = card class: 'mb-4' do
             %p.card-text= comment.text
             %p.card-text
               %small.text-muted
-                = t(:says_at,
+                = t('internal.says_at',
                     who: comment.user.full_name,
                     when: l(comment.created_at, format: :short))
       = simple_form_for :comment, url: polymorphic_url([:create_comment, document]) do |f|
         = f.label :text
         = f.text_area :text, rows: 4, class: 'form-control', required: true
         %br
-        = f.submit t(:save), class: 'btn btn-success'
+        = f.submit t('internal.save'), class: 'btn btn-success'

@@ -1,13 +1,17 @@
-= card header: t('entities.activity'), class: 'activity' do
+= card header: t('internal.entities.activity'), class: 'activity' do
   - if entries.any?
     %table.table.table-hover
       %tbody
         %thead
-          %th= sort_link(search, :created_at, t('attributes.created_at'), default_order: :asc)
-          %th= sort_link(search, :kind, t('attributes.kind'), default_order: :asc)
-          %th= t('attributes.amount')
-          %th= t('attributes.currency')
-          %th= t('attributes.authorized_at')
+          %th
+            = sort_link(search,
+                        :created_at,
+                        t('internal.attributes.created_at'),
+                        default_order: :asc)
+          %th= sort_link(search, :kind, t('internal.attributes.kind'), default_order: :asc)
+          %th= t('internal.attributes.amount')
+          %th= t('internal.attributes.currency')
+          %th= t('internal.attributes.authorized_at')
         - entries.each do |entry|
           %tr
             %td= l entry.created_at, format: :long
@@ -17,6 +21,6 @@
             %td= safe_date_localize_helper(entry.authorized_at, format: :long)
   - else
     .text-center
-      %em= t(:no_records)
+      %em= t('internal.no_records')
 
   = paginate entries

@@ -1,7 +1,7 @@
 - content_for :css do
   = stylesheet_pack_tag 'css/documents'
 
-= card header: t('entities.customer_documents'), class: 'customer-documents' do
+= card header: t('internal.entities.customer_documents'), class: 'customer-documents' do
   - flash[:file_errors]&.keys&.each do |kind|
     %small.text-danger #{t("attributes.#{kind}")}: #{flash[:file_errors][kind]}
     %br
@@ -13,7 +13,7 @@
           %td.col.d-flex.align-items-center= t("attributes.#{kind}")
           %td.col.d-flex.align-items-center
             %span.d-inline-block.text-truncate.document-file-name{ 'data-target': kind.to_s }
-              = attachment&.filename || t('no_file')
+              = attachment&.filename || t('internal.no_file')
           %td.col.d-flex.align-items-center.justify-content-end= attachment&.status
           %td.col-md-12.col-lg-4.d-flex.align-items-center.justify-content-end
             = label_tag kind, class: 'btn btn-secondary mt-2 mr-2' do
@@ -27,12 +27,12 @@
                        customer: customer,
                        kind: kind
             - elsif customer.documents_history(kind).present?
-              = link_to t(:history),
+              = link_to t('internal.history'),
                         documents_history_customer_path(id: customer.id, document_type: kind),
                         class: 'btn btn-outline-dark mr-2'
     .row
       .col.text-right
-        = submit_tag t(:upload), class: 'btn btn-secondary mr-2'
+        = submit_tag t('internal.upload'), class: 'btn btn-secondary mr-2'
 
 - content_for :js do
   = javascript_pack_tag 'customers/documents_upload'

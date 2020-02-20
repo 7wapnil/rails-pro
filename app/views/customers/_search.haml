@@ -8,46 +8,50 @@
       %tr
         %th
           .filter_title
-            #{t('attributes.customer_name')}:
+            #{t('internal.attributes.customer_name')}:
           .filter_field
             = f.label :username_cont, class: 'sr-only'
             = f.search_field :username_cont,
                               class: 'form-control',
-                              placeholder: t(:search, subject: t('attributes.username')),
+                              placeholder: t('internal.search',
+                                             subject: t('internal.attributes.username')),
                               autocomplete: :off
         %th
           .filter_title
-            #{t('attributes.email')}:
+            #{t('internal.attributes.email')}:
           .filter_field
             = f.label :email_cont, class: 'sr-only'
             = f.search_field :email_cont,
                               class: 'form-control',
-                              placeholder: t(:search, subject: t('attributes.email')),
+                              placeholder: t('internal.search',
+                                             subject: t('internal.attributes.email')),
                               autocomplete: :off
         %th
           .filter_title
-            #{t('attributes.ip_address')}:
+            #{t('internal.attributes.ip_address')}:
           .filter_field
             = f.label :ip_address_eq, class: 'sr-only'
             = f.search_field :ip_address_eq,
                              class: 'form-control',
-                             placeholder: t(:search, subject: t('attributes.ip_address')),
+                             placeholder: t('internal.search',
+                                            subject: t('internal.attributes.ip_address')),
                              autocomplete: :off,
                              data: { inputmask: { mask: '9[9][9].9[9][9].9[9][9].9[9][9]',
                                                   clearIncomplete: 'true' }.to_json[1..-2] }
         %th
           .filter_field
-            #{t('attributes.id')}:
+            #{t('internal.attributes.id')}:
           .filter_field
             = f.label :id_eq, class: 'sr-only'
             = f.search_field :id_eq,
                               class: 'form-control',
-                              placeholder: t(:search, subject: t('attributes.id')),
+                              placeholder: t('internal.search',
+                                             subject: t('internal.attributes.id')),
                               autocomplete: :off
 
         %th
           .filter_field
-            #{t('attributes.label')}:
+            #{t('internal.attributes.label')}:
           .filter_field
             = f.label :agg_labels_matches_all, class: 'sr-only'
             = collection_select(:customers, :agg_labels_matches_all,
@@ -55,15 +59,16 @@
               { selected: filter.params[:agg_labels_matches_all] },
               class: 'form-control simple_labels_selector',
               multiple: true,
-              data: { placeholder: t(:search, subject: t('attributes.label')) })
+              data: { placeholder: t(:search, subject: t('internal.attributes.label')) })
         %th
           .filter_field
-            #{t('attributes.b_tag')}:
+            #{t('internal.attributes.b_tag')}:
           .filter_field
             = f.label :b_tag_cont, class: 'sr-only'
             = f.search_field :b_tag_cont,
                               class: 'form-control',
-                              placeholder: t(:search, subject: t('attributes.b_tag')),
+                              placeholder: t('internal.search',
+                                             subject: t('internal.attributes.b_tag')),
                               autocomplete: :off
         %th
           = f.submit class: 'btn btn-outline-dark btn-block'

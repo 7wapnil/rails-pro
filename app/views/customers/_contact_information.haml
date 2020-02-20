@@ -1,15 +1,15 @@
-= card header: t('attributes.contact_information'), class: 'contact-information' do
+= card header: t('internal.attributes.contact_information'), class: 'contact-information' do
   = simple_form_for customer, html: { class: 'contact-information-form' },
                     url: update_contact_information_customer_path do |f|
     %table.table.vertical-with-labels
       %tr
-        %td= t('attributes.email')
+        %td= t('internal.attributes.email')
         %td
           = f.input :email,
                     label: false,
                     required: true
       %tr
-        %td= t('attributes.phone')
+        %td= t('internal.attributes.phone')
         %td
           = f.input :phone,
                     as: :phone,
@@ -17,7 +17,7 @@
                     required: true
       = f.simple_fields_for :address, wrapper: :inline_form do |a|
         %tr
-          %td= t('attributes.country')
+          %td= t('internal.attributes.country')
           %td
             = a.input :country,
                     as: :country_collection,
@@ -25,32 +25,32 @@
                     input_html: { data: { current: customer.address_country } },
                     required: true
         %tr
-          %td= t('attributes.street_address')
+          %td= t('internal.attributes.street_address')
           %td
             = a.input :street_address,
                       label: false,
                       required: true
         %tr
-          %td= t('attributes.zip_code')
+          %td= t('internal.attributes.zip_code')
           %td
             = a.input :zip_code,
                       label: false,
                       required: true
         %tr
-          %td= t('attributes.city')
+          %td= t('internal.attributes.city')
           %td
             = a.input :city,
                       label: false,
                       required: true
         %tr
-          %td= t('attributes.state')
+          %td= t('internal.attributes.state')
           %td
             = a.input :state,
                       label: false,
                       required: true
       %tr
         %td.text-right{ colspan: 2 }
-          = f.submit t(:save), class: 'btn btn-outline-dark'
+          = f.submit t('internal.save'), class: 'btn btn-outline-dark'
 
 - content_for :js do
   = javascript_pack_tag 'input_mask', 'data-turbolinks-track': 'reload'

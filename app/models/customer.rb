@@ -205,7 +205,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   def validate_account_transition
     return unless account_kind_changed?
 
-    msg = I18n.t('errors.messages.account_transition',
+    msg = I18n.t('internal.errors.messages.account_transition',
                  from: account_kind_was,
                  to: account_kind)
     errors.add(:account_kind, msg) if account_kind_was != 'regular'

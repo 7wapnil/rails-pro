@@ -69,8 +69,8 @@ describe Customer, '#show' do
 
       within '.container-fluid' do
         expect_to_have_notification I18n.t(
-          :updated,
-          instance: I18n.t('attributes.personal_information')
+          'internal.updated',
+          instance: I18n.t('internal.attributes.personal_information')
         )
       end
     end
@@ -89,8 +89,8 @@ describe Customer, '#show' do
 
       within '.container-fluid' do
         expect_to_have_notification I18n.t(
-          :updated,
-          instance: I18n.t('attributes.contact_information')
+          'internal.updated',
+          instance: I18n.t('internal.attributes.contact_information')
         )
       end
     end

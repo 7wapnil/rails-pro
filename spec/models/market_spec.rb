@@ -77,7 +77,7 @@ describe Market do
       market = create(:market, status: initial_state)
       market.status = new_state
       expect(market).not_to be_valid
-      error_msg = I18n.t('errors.messages.wrong_market_state',
+      error_msg = I18n.t('internal.errors.messages.wrong_market_state',
                          initial_state: initial_state,
                          new_state: new_state)
       expect(market.errors[:status][0]).to eq(error_msg)

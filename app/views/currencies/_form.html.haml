@@ -8,13 +8,13 @@
         = f.input :name, required: true
         = f.input :code, required: true
         = f.input :exchange_rate,
-            label: t('entities.exchange_rate', code: Currency::PRIMARY_CODE),
+            label: t('internal.entities.exchange_rate', code: Currency::PRIMARY_CODE),
             required: true,
             disabled: true,
             input_html: { type: :text,
                           value: f.object.exchange_rate(human: true) }
         = f.input :reverse_exchange_rate,
-            label: t('entities.reverse_exchange_rate', code: f.object.code),
+            label: t('internal.entities.reverse_exchange_rate', code: f.object.code),
             required: true,
             disabled: true,
             input_html: { type: :text,
@@ -26,14 +26,14 @@
 
         .row.mt-5
           .col
-            %h3= t('entities.entry_rules')
+            %h3= t('internal.entities.entry_rules')
 
             %table.table
               %thead
                 %tr
-                  %th.w-50= t('attributes.kind')
-                  %th= t('attributes.min_amount')
-                  %th= t('attributes.max_amount')
+                  %th.w-50= t('internal.attributes.kind')
+                  %th= t('internal.attributes.min_amount')
+                  %th= t('internal.attributes.max_amount')
               %tbody
                 = f.simple_fields_for :entry_currency_rules, wrapper: :inline_form do |p|
                   %tr{ id: 'entry-rule' }
@@ -45,5 +45,5 @@
                     %td= p.input :min_amount
                     %td= p.input :max_amount
 
-        = f.button :submit, t(:save), class: 'btn btn-success'
-        = link_to t(:back), currencies_path
+        = f.button :submit, t('internal.save'), class: 'btn btn-success'
+        = link_to t('internal.back'), currencies_path
