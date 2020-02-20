@@ -23,7 +23,8 @@ describe ::Payments::Fiat::SafeCharge::Deposits::ModeVerifier do
     let(:payment_method_code) { Faker::Lorem.word }
 
     let(:message) do
-      "Payment method '#{payment_method_code}' is not implemented"
+      I18n.t('errors.messages.unsupported_payment_method',
+             code: payment_method_code)
     end
 
     # rubocop:disable RSpec/MultipleExpectations

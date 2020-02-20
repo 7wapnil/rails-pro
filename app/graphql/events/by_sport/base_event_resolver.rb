@@ -33,7 +33,7 @@ module Events
 
       def context_not_supported!
         raise StandardError,
-              I18n.t('errors.messages.graphql.events.context.invalid',
+              I18n.t('internal.errors.messages.graphql.events.context.invalid',
                      context: context,
                      contexts: SUPPORTED_CONTEXTS.join(', '))
       end

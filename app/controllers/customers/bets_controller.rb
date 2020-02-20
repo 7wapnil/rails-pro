@@ -8,7 +8,7 @@ module Customers
     def update
       EntryRequests::Backoffice::Bets::Proceed.call(@bet, bet_params)
 
-      flash[:success] = t('messages.bets.flash')
+      flash[:success] = t('internal.messages.bets.flash')
       redirect_to bet_path(@bet)
     rescue Bets::InvalidStatusError, Bets::AuthorizeWalletEntryError => error
       flash[:error] = error.message

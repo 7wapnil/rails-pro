@@ -10,7 +10,7 @@
       %tr
         %th
           .filter_title
-            #{t('attributes.wallet')}:
+            #{t('internal.attributes.wallet')}:
           .filter_field
             = f.select :wallet_id_eq,
                        customer_wallets_options(customer),
@@ -19,7 +19,7 @@
 
         %th
           .filter_title
-            #{t('attributes.entry_kind')}:
+            #{t('internal.attributes.entry_kind')}:
           .filter_field
             = f.select :kind_eq,
                        entry_kinds_options,
@@ -28,24 +28,24 @@
       %tr
         %th
           .filter_title
-            #{t(:search, subject: t('from'))}:
+            #{t('internal.search', subject: t('internal.from'))}:
           .filter_field
             .input-group
               = f.search_field :created_at_gteq,
                                 class: 'form-control form_date',
-                                placeholder: t(:search, subject: t('from')),
+                                placeholder: t('internal.search', subject: t('internal.from')),
                                 value: params.dig(:entries, :created_at_gteq)
               .input-group-append
                 .input-group-text.btn &#128197;
 
         %th
           .filter_title
-            #{t(:search, subject: t('to'))}:
+            #{t('internal.search', subject: t('internal.to'))}:
           .filter_field
             .input-group
               = f.search_field :created_at_lteq,
                                 class: 'form-control form_date',
-                                placeholder: t(:search, subject: t('to')),
+                                placeholder: t('internal.search', subject: t('internal.to')),
                                 value: params.dig(:entries, :created_at_lteq)
               .input-group-append
                 .input-group-text.btn &#128197;

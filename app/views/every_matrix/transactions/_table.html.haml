@@ -1,20 +1,24 @@
 %table.table.em_transactions
   %thead
     %tr
-      %th= sort_link filter.search, :id, t('attributes.transaction_id'), default_order: :asc
-      %th= t('attributes.transaction_type')
+      %th
+        = sort_link filter.search,
+                    :id,
+                    t('internal.attributes.transaction_id'),
+                    default_order: :asc
+      %th= t('internal.attributes.transaction_type')
       - unless excluded_columns.include?(:customer)
-        %th= t('attributes.customer')
-      %th= sort_link filter.search, :amount, t('attributes.amount')
-      %th= t('attributes.transaction_amount_before')
-      %th= t('attributes.transaction_amount_after')
-      %th= t('attributes.currency')
-      %th= sort_link filter.search, :created_at, t('attributes.created_at')
-      %th= t('attributes.status')
-      %th= t('attributes.free_spin_bonus_id')
-      %th= t('attributes.game_name')
-      %th= t('attributes.vendor')
-      %th= t('attributes.content_provider')
+        %th= t('internal.attributes.customer')
+      %th= sort_link filter.search, :amount, t('internal.attributes.amount')
+      %th= t('internal.attributes.transaction_amount_before')
+      %th= t('internal.attributes.transaction_amount_after')
+      %th= t('internal.attributes.currency')
+      %th= sort_link filter.search, :created_at, t('internal.attributes.created_at')
+      %th= t('internal.attributes.status')
+      %th= t('internal.attributes.free_spin_bonus_id')
+      %th= t('internal.attributes.game_name')
+      %th= t('internal.attributes.vendor')
+      %th= t('internal.attributes.content_provider')
   %tbody
     - if filter.transactions.any?
       - filter.transactions.each do |transaction|
@@ -52,4 +56,4 @@
       %tr
         %td{ colspan: excluded_columns.include?(:customer) ? 12 : 13 }
           .text-center
-            = t(:not_found, instance: t('entities.transactions'))
+            = t('internal.not_found', instance: t('internal.entities.transactions'))

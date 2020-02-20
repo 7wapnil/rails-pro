@@ -1,14 +1,14 @@
-%h1.display-4= t('entities.market_templates')
+%h1.display-4= t('internal.entities.market_templates')
 
 = render 'search'
 
 %table.table.entities
   %thead
     %tr
-      %th= sort_link @search, :id, t('attributes.id')
-      %th= sort_link @search, :external_id, t('attributes.external_id')
-      %th= sort_link @search, :name, t('attributes.name')
-      %th= sort_link @search, :category, t('attributes.category')
+      %th= sort_link @search, :id, t('internal.attributes.id')
+      %th= sort_link @search, :external_id, t('internal.attributes.external_id')
+      %th= sort_link @search, :name, t('internal.attributes.name')
+      %th= sort_link @search, :category, t('internal.attributes.category')
 
   %tbody
     - @market_templates.each do |market_template|
@@ -22,6 +22,6 @@
                           MarketTemplate.categories,
                           { include_blank: true },
                           class: 'form-control'
-            = form.submit t(:save), class: 'btn btn-success ml-2'
+            = form.submit t('internal.save'), class: 'btn btn-success ml-2'
 
 = paginate @market_templates

@@ -84,7 +84,7 @@ describe Currency, '#form' do
       currency = Currency.order(created_at: :desc).reload.first
 
       expect(page).to have_current_path(edit_currency_path(currency))
-      expect(page).to have_content(I18n.t('currencies.edit.title'))
+      expect(page).to have_content(I18n.t('internal.currencies.edit.title'))
     end
   end
 end

@@ -9,7 +9,7 @@ module Customers
       @bet_leg.update!(bet_leg_params)
 
       redirect_to bet_path(@bet_leg.bet),
-                  flash: { success: t('messages.bet_legs.flash') }
+                  flash: { success: t('internal.messages.bet_legs.flash') }
     rescue StandardError => error
       redirect_back fallback_location: root_path,
                     flash: { error: error.message }

@@ -68,9 +68,9 @@ class CustomerBonusDecorator < ApplicationDecorator
   end
 
   def link_to_entry
-    return t('not_available') unless activation_entry.present?
+    return t('internal.not_available') unless activation_entry.present?
 
-    link_to(t('entities.entry'), entry_path(activation_entry))
+    link_to(t('internal.entities.entry'), entry_path(activation_entry))
   end
 
   def link_to_customer

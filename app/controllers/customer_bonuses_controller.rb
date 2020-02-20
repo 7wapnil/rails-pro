@@ -12,17 +12,11 @@ class CustomerBonusesController < ApplicationController
   decorates_assigned :customer_bonus
 
   def create
-    form = CustomerBonuses::Backoffice::CreateForm.new(
-      wallet: @wallet,
-      bonus: @original_bonus,
-      amount: payload_params[:amount],
-      initiator: current_user
-    )
-
-    @customer_bonus = form.submit!
+    @customer_bonus = create_customer_bonus_form.submit!
 
     redirect_to bonuses_customer_path(@customer_bonus.customer),
-                notice: t(:activated, instance: t('entities.bonus'))
+                notice: t('internal.activated',
+                          instance: t('internal.entities.bonus'))
   rescue CustomerBonuses::ActivationError,
          EntryRequests::FailedEntryRequestError,
          ActiveModel::ValidationError => error
@@ -48,5 +42,14 @@ class CustomerBonusesController < ApplicationController
         :wallet_id,
         :amount
       )
+  end
+
+  def create_customer_bonus_form
+    CustomerBonuses::Backoffice::CreateForm.new(
+      wallet: @wallet,
+      bonus: @original_bonus,
+      amount: payload_params[:amount],
+      initiator: current_user
+    )
   end
 end

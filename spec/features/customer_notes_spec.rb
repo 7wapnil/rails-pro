@@ -52,7 +52,7 @@ describe Customer, '#notes' do
 
     it 'shows no records note' do
       within '.customer-notes:not(.widget)' do
-        expect(page).to have_content I18n.t(:no_records)
+        expect(page).to have_content I18n.t('internal.no_records')
       end
     end
 
@@ -76,7 +76,7 @@ describe Customer, '#notes' do
 
       within '.container-fluid' do
         expect_to_have_notification(
-          "#{I18n.t(:content)} #{I18n.t('errors.messages.blank')}"
+          "#{I18n.t('internal.content')} #{I18n.t('errors.messages.blank')}"
         )
       end
     end
@@ -129,7 +129,7 @@ describe Customer, '#notes' do
 
     it 'shows no records note' do
       within '.customer-notes.widget' do
-        expect(page).to have_content I18n.t(:no_records)
+        expect(page).to have_content I18n.t('internal.no_records')
       end
     end
 
@@ -153,7 +153,7 @@ describe Customer, '#notes' do
 
       within '.container-fluid' do
         expect_to_have_notification(
-          "#{I18n.t(:content)} #{I18n.t('errors.messages.blank')}"
+          "#{I18n.t('internal.content')} #{I18n.t('errors.messages.blank')}"
         )
       end
     end

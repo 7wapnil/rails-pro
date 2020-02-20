@@ -61,7 +61,7 @@ module EveryMatrix
       redirect_to(
         every_matrix_free_spin_bonuses_path,
         flash: {
-          notice: t('bonus_award_requested', number: requested_number)
+          notice: t('internal.bonus_award_requested', number: requested_number)
         }
       )
     end
@@ -74,7 +74,10 @@ module EveryMatrix
       redirect_to(
         every_matrix_free_spin_bonuses_path,
         flash: {
-          notice: t('bonus_forfeit_requested', number: requested_number)
+          notice: I18n.t(
+            'internal.bonus_forfeit_requested',
+            number: requested_number
+          )
         }
       )
     end

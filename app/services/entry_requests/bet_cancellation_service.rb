@@ -50,7 +50,7 @@ module EntryRequests
       return bet.cancel! if successful_status_code?
 
       bet.finish_external_cancellation_with_rejection!(
-        I18n.t("errors.messages.mts.#{error_code}"),
+        I18n.t("internal.errors.messages.mts.#{error_code}"),
         code: Bets::Notification::MTS_CANCELLATION_ERROR
       )
       log_unsuccessful_bet_cancel_error
@@ -70,7 +70,7 @@ module EntryRequests
 
     def log_unsuccessful_bet_cancel_error
       raise ::Bets::UnsuccessfulBetCancelError,
-            I18n.t("errors.messages.mts.#{error_code}")
+            I18n.t("internal.errors.messages.mts.#{error_code}")
     rescue ::Bets::UnsuccessfulBetCancelError => e
       log_job_message(:error, message: e.message,
                               bet_id: bet.id,

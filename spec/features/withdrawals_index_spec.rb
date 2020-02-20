@@ -3,6 +3,10 @@ describe 'Withdrawals index page' do
   let(:rule) do
     create(:entry_currency_rule, min_amount: -999_999, max_amount: 999_999)
   end
+  let(:not_found) do
+    I18n.t('internal.not_found',
+           instance: I18n.t('internal.entities.withdrawals'))
+  end
 
   before do
     login_as create(:admin_user), scope: :user
@@ -10,8 +14,6 @@ describe 'Withdrawals index page' do
   end
 
   it 'displays not found message' do
-    instance = I18n.t('entities.withdrawals')
-    not_found = I18n.t(:not_found, instance: instance)
     visit withdrawals_path
 
     expect(page).to have_content(not_found)
@@ -63,14 +65,16 @@ describe 'Withdrawals index page' do
     end
 
     it 'shows notification after withdrawal confirmation' do
-      click_on I18n.t('confirm')
+      click_on I18n.t('internal.confirm')
 
-      expect_to_have_notification I18n.t('messages.withdrawal_confirmed')
+      expect_to_have_notification(
+        I18n.t('internal.messages.withdrawal_confirmed')
+      )
     end
   end
 
   context 'withdrawal rejection' do
-    let(:message) { I18n.t('messages.withdrawal_rejected') }
+    let(:message) { I18n.t('internal.messages.withdrawal_rejected') }
 
     before do
       create(:withdrawal)
@@ -80,7 +84,7 @@ describe 'Withdrawals index page' do
     context 'with comment' do
       before do
         page.find('#rejection_comment').fill_in(with: Faker::Lorem.word)
-        click_on I18n.t('reject')
+        click_on I18n.t('internal.reject')
       end
 
       it 'shows notification after withdrawal rejection' do
@@ -94,7 +98,7 @@ describe 'Withdrawals index page' do
 
     context 'without comment' do
       before do
-        click_on I18n.t('reject')
+        click_on I18n.t('internal.reject')
       end
 
       it 'keeps withdrawal request in pending status' do
@@ -140,9 +144,7 @@ describe 'Withdrawals index page' do
         click_on('Search')
 
         within 'table.table thead+tbody' do
-          expect(page).to have_content(
-            I18n.t(:not_found, instance: I18n.t('entities.withdrawals'))
-          )
+          expect(page).to have_content(not_found)
         end
       end
     end
@@ -168,9 +170,7 @@ describe 'Withdrawals index page' do
         click_on('Search')
 
         within 'table.table thead+tbody' do
-          expect(page).to have_content(
-            I18n.t(:not_found, instance: I18n.t('entities.withdrawals'))
-          )
+          expect(page).to have_content(not_found)
         end
       end
     end
@@ -213,9 +213,7 @@ describe 'Withdrawals index page' do
         click_on('Search')
 
         within 'table.table thead+tbody' do
-          expect(page).to have_content(
-            I18n.t(:not_found, instance: I18n.t('entities.withdrawals'))
-          )
+          expect(page).to have_content(not_found)
         end
       end
     end
@@ -243,9 +241,7 @@ describe 'Withdrawals index page' do
         click_on('Search')
 
         within 'table.table thead+tbody' do
-          expect(page).to have_content(
-            I18n.t(:not_found, instance: I18n.t('entities.withdrawals'))
-          )
+          expect(page).to have_content(not_found)
         end
       end
     end
@@ -274,9 +270,7 @@ describe 'Withdrawals index page' do
         click_on('Search')
 
         within 'table.table thead+tbody' do
-          expect(page).to have_content(
-            I18n.t(:not_found, instance: I18n.t('entities.withdrawals'))
-          )
+          expect(page).to have_content(not_found)
         end
       end
     end
@@ -302,10 +296,7 @@ describe 'Withdrawals index page' do
         click_on('Search')
 
         within 'table.table thead+tbody' do
-          instance = I18n.t('entities.withdrawals')
-          expect(page).to have_content(
-            I18n.t(:not_found, instance: instance)
-          )
+          expect(page).to have_content(not_found)
         end
       end
     end

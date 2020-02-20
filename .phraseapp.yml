@@ -4,19 +4,17 @@ phraseapp:
     sources:
       - file: ./config/locales/phraseapp/en.yml
         params:
-          branch: develop
           file_format: yml
           locale_id: en
           tags: backend-base
       - file: ./config/locales/phraseapp/market_categories.en.yml
         params:
-          branch: develop
           file_format: yml
           locale_id: en
           tags: backend-market-categories
   pull:
     targets:
-      # Base keys
+      # Base
       - file: ./config/locales/phraseapp/en.yml
         params:
           locale_id: en

@@ -70,13 +70,14 @@ describe EntryRequests::Factories::BonusChange do
                               wallet: wallet,
                               status: CustomerBonus::EXPIRED)
     end
+    let(:status_message) do
+      I18n.t('internal.errors.messages.entry_requests.bonus_expired')
+    end
 
     it 'returns failed entry request' do
       expect(subject).to have_attributes(
         status: EntryRequest::FAILED,
-        result: {
-          'message' => I18n.t('errors.messages.entry_requests.bonus_expired')
-        }
+        result: { 'message' => status_message }
       )
     end
   end

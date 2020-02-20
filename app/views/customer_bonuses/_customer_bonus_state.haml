@@ -3,37 +3,37 @@
     = card(header: t(:activated, instance: t('entities.bonus'))) do
       %table.table
         %tr
-          %td= t('entities.entry_information')
+          %td= t('internal.entities.entry_information')
           %td= customer_bonus.link_to_entry
         %tr
-          %td= t('attributes.rollover_balance')
+          %td= t('internal.attributes.rollover_balance')
           %td= customer_bonus.rollover_balance(human: true)
         %tr
-          %td= t('attributes.rollover_initial_balance')
+          %td= t('internal.attributes.rollover_initial_balance')
           %td= customer_bonus.rollover_initial_value(human: true)
         %tr
-          %td= t('attributes.awarded_amount')
+          %td= t('internal.attributes.awarded_amount')
           %td= customer_bonus.amount(human: true)
         %tr
-          %td= t('attributes.lost_amount')
+          %td= t('internal.attributes.lost_amount')
           %td= customer_bonus.lost_amount(human: true)
         %tr
-          %td= t('attributes.cancelled_amount')
+          %td= t('internal.attributes.cancelled_amount')
           %td= customer_bonus.cancelled_amount(human: true)
         %tr
-          %td= t('attributes.expired_amount')
+          %td= t('internal.attributes.expired_amount')
           %td= customer_bonus.expired_amount(human: true)
         %tr
-          %td= t('attributes.converted_amount')
+          %td= t('internal.attributes.converted_amount')
           %td= customer_bonus.total_converted_amount(human: true)
         %tr
-          %td= t('attributes.confiscated_amount')
+          %td= t('internal.attributes.confiscated_amount')
           %td= customer_bonus.total_confiscated_amount(human: true)
         - if customer_bonus.customer_bonus.activated_at
           %tr
-            %td= t('attributes.activated_at')
+            %td= t('internal.attributes.activated_at')
             %td= l(customer_bonus.activated_at)
         - if customer_bonus.customer_bonus.deactivated_at
           %tr
-            %td= t('attributes.deactivated_at')
+            %td= t('internal.attributes.deactivated_at')
             %td= l(customer_bonus.deactivated_at)

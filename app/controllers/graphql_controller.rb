@@ -15,7 +15,7 @@ class GraphqlController < ApiController
     super
   rescue ActionDispatch::Http::Parameters::ParseError => e
     log_params_parsing_error(e)
-    render json: { message: I18n.t('graphql.internal_server_error') },
+    render json: { message: I18n.t('internal.graphql.internal_server_error') },
            status: :internal_server_error
   end
 
@@ -27,7 +27,7 @@ class GraphqlController < ApiController
     render json: result
   rescue StandardError => e
     Rails.logger.error(error_object: e)
-    render json: { message: I18n.t('graphql.internal_server_error') },
+    render json: { message: I18n.t('internal.graphql.internal_server_error') },
            status: :internal_server_error
   ensure
     set_action_name(params[:operationName], self.class.name)

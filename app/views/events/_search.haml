@@ -9,27 +9,29 @@
     %thead
       %tr
         %th
-          .filter_title #{t('attributes.id')}:
+          .filter_title #{t('internal.attributes.id')}:
           .filter_field
             = f.label :id_eq, class: 'sr-only'
             = f.search_field :id_eq, class: 'form-control',
-                                     placeholder: t('attributes.id'),
+                                     placeholder: t('internal.attributes.id'),
                                      autocomplete: :off
         %th
-          .filter_title #{t('attributes.external_id')}:
+          .filter_title #{t('internal.attributes.external_id')}:
           .filter_field
             = f.search_field :external_id_cont,
                               class: 'form-control',
-                              placeholder: t(:search, subject: t('attributes.external_id'))
+                              placeholder: t('internal.search',
+                                             subject: t('internal.attributes.external_id'))
         %th
-          .filter_title #{t('attributes.name')}:
+          .filter_title #{t('internal.attributes.name')}:
           .filter_field
             = f.label :name_cont, class: 'sr-only'
             = f.search_field :name_cont, class: 'form-control',
-                                         placeholder: t(:search, subject: 'Name'),
+                                         placeholder: t('internal.search',
+                                                        subject: t('internal.attributes.name')),
                                          autocomplete: :off
         %th
-          .filter_title #{t('attributes.sport')}:
+          .filter_title #{t('internal.attributes.sport')}:
           .filter_field
             = f.label :title_id_eq, class: 'sr-only'
             = f.select :title_id_eq,
@@ -37,7 +39,7 @@
                   { include_blank: true },
                   class: 'form-control'
         %th
-          .filter_title #{t('attributes.visibility')}:
+          .filter_title #{t('internal.attributes.visibility')}:
           .filter_field
             = f.label :visible_eq, class: 'sr-only'
             = f.select :visible_eq,
@@ -48,7 +50,7 @@
                   class: 'form-control'
       %tr
         %th
-          .filter_title #{t('attributes.live')}:
+          .filter_title #{t('internal.attributes.live')}:
           .filter_field
           = f.select :traded_live_eq,
                  options_for_select({ 'Yes': true,
@@ -57,42 +59,41 @@
                   { include_blank: true },
                   class: 'form-control'
         %th
-          .filter_title #{t(:from)}:
+          .filter_title #{t('internal.from')}:
           .filter_field
             = f.label :start_at_gteq, class: 'sr-only'
             .input-group
               = f.search_field :start_at_gteq,
                                class: 'form-control form_date',
-                               placeholder: t(:search, subject: t('from')),
+                               placeholder: t('internal.search', subject: t('internal.from')),
                                value: search_date_for(:start_at_gteq)
               .input-group-append
                 .input-group-text.btn &#128197;
-
         %th
-          .filter_title #{t(:to)}:
+          .filter_title #{t('internal.to')}:
           .filter_field
             = f.label :start_at_lteq, class: 'sr-only'
             .input-group
               = f.search_field :start_at_lteq,
                                class: 'form-control form_date',
-                               placeholder: t(:search, subject: t('to')),
+                               placeholder: t('internal.search', subject: t('internal.to')),
                                value: search_date_for(:start_at_lteq)
               .input-group-append
                 .input-group-text.btn &#128197;
-
         %th
-          .filter_title #{t('attributes.scope_kind')}:
+          .filter_title #{t('internal.attributes.scope_kind')}:
           .filter_field
             = f.select :event_scopes_kind_eq,
                  options_for_select(EventScope.kinds, query_params[:event_scopes_kind_eq]),
                   { include_blank: true },
                   class: 'form-control'
         %th
-          .filter_title #{t('attributes.scope_name')}:
+          .filter_title #{t('internal.attributes.scope_name')}:
           .filter_field
             = f.search_field :event_scopes_name_cont,
                               class: 'form-control',
-                              placeholder: t(:search, subject: t('attributes.scope_name'))
+                              placeholder: t('internal.search',
+                                             subject: t('internal.attributes.scope_name'))
       %tr
         %th{ colspan: 4 }
         %th

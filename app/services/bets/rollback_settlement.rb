@@ -97,7 +97,7 @@ module Bets
     end
 
     def bonus_for_wrong_customer!
-      raise I18n.t('errors.messages.bonus_for_wrong_customer')
+      raise I18n.t('internal.errors.messages.bonus_for_wrong_customer')
     end
 
     def pending_manual_settlement?

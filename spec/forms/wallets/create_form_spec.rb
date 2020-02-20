@@ -42,7 +42,7 @@ describe Wallets::CreateForm do
         expect { subject }.to raise_error(
           ActiveModel::ValidationError,
           'Validation failed: ' \
-          "#{I18n.t('errors.messages.wallets.not_unique')}"
+          "#{I18n.t('internal.errors.messages.wallets.not_unique')}"
         )
       end
 
@@ -63,7 +63,7 @@ describe Wallets::CreateForm do
         expect { subject }.to raise_error(
           ActiveModel::ValidationError,
           'Validation failed: ' \
-          "#{I18n.t('errors.messages.wallets.not_unique')}"
+          "#{I18n.t('internal.errors.messages.wallets.not_unique')}"
         )
       end
 
@@ -86,7 +86,7 @@ describe Wallets::CreateForm do
         expect { subject }.to raise_error(
           ActiveModel::ValidationError,
           'Validation failed: ' \
-          "#{I18n.t('errors.messages.wallets.fiat_not_unique')}"
+          "#{I18n.t('internal.errors.messages.wallets.fiat_not_unique')}"
         )
       end
 

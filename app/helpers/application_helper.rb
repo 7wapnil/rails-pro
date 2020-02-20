@@ -2,7 +2,7 @@
 
 module ApplicationHelper
   def link_back(link = nil)
-    link_to t(:back), link || 'javascript:history.back()',
+    link_to t('internal.back'), link || 'javascript:history.back()',
             class: 'btn btn-outline-dark'
   end
 

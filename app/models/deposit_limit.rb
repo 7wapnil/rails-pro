@@ -16,7 +16,7 @@ class DepositLimit < ApplicationRecord
   def range_name
     return NAMED_RANGES[range] if NAMED_RANGES.key?(range)
 
-    I18n.t('days', days: range)
+    I18n.t('internal.days', days: range)
   end
 
   def loggable_attributes

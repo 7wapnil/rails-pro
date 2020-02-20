@@ -413,7 +413,7 @@ describe Customers::StatisticDecorator, type: :decorator do
 
       it 'returns n/a' do
         expect(subject.last_updated_at(human: true))
-          .to eq("#{label}: #{I18n.t('not_available')}")
+          .to eq("#{label}: #{I18n.t('internal.not_available')}")
       end
     end
 

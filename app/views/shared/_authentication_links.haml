@@ -7,6 +7,6 @@
                           'aria-expanded': false }
       = current_user.full_name
     .dropdown-menu{ 'aria-labelledby': 'username-dropdown' }
-      = link_to t(:sign_out),
+      = link_to t('internal.sign_out'),
                 destroy_user_session_path,
                 class: 'dropdown-item'

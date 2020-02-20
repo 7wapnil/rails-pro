@@ -1,2 +1,3 @@
 = simple_form_for @label do |f|
-  = render 'labels/form', f: f, heading: t(:edit_instance, instance: t('entities.label'))
+  = render 'labels/form', f: f, heading: t('internal.edit_instance',
+                                           instance: t('internal.entities.label'))
