@@ -38,7 +38,7 @@ class ApiUploadController < ApiController
   def attachments_from_params
     params
       .require(:attachments)
-      .permit(*VerificationDocument::KINDS.keys)
+      .permit(*VerificationDocument::PERMITED_KINDS)
   end
 
   def format_errors(key, value)
