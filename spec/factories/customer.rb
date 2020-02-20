@@ -36,5 +36,10 @@ FactoryBot.define do
     trait :with_address do
       association :address, factory: %i[address with_state], strategy: :build
     end
+
+    trait :locked do
+      locked      { true }
+      lock_reason { Customer.lock_reasons.values.sample }
+    end
   end
 end
