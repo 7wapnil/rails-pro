@@ -8,6 +8,7 @@ module EntryKinds
     win: WIN = 'win',
     withdraw: WITHDRAW = 'withdraw',
     confiscation: CONFISCATION = 'confiscation',
+    system_error: SYSTEM_ERROR = 'system_error',
     bet: BET = 'bet',
     refund: REFUND = 'refund',
     rollback: ROLLBACK = 'rollback',
