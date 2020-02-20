@@ -248,8 +248,7 @@ describe Customers::Statistics::Calculator do
         live_sports_wager: live_sports_wager,
         live_sports_payout: live_sports_payout,
         total_pending_bet_sum: total_pending_bet_sum,
-        updated_at: current_time,
-        last_updated_at: nil
+        updated_at: current_time
       )
     end
 

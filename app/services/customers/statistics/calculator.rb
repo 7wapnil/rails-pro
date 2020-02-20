@@ -5,12 +5,14 @@ module Customers
     # rubocop:disable Metrics/ClassLength
     class Calculator < ApplicationService
       BATCH_SIZE = 200
+      UPDATE_INTERVAL_MONTHS = 2
 
       def initialize(customer:)
         @customer = customer
       end
 
       def call
+        persist_stats_up_to_last_month! if monthly_update_required?
         calculate_stats
         stats
       end
@@ -19,13 +21,29 @@ module Customers
 
       attr_reader :customer
 
-      def calculate_stats
-        stats.update(**explicit_attributes, **calculated_attributes)
+      def persist_stats_up_to_last_month!
+        delete_stats unless stats.new_record?
+
+        stats.update(
+          **explicit_attributes,
+          **calculated_attributes,
+          updated_at: cut_off_time
+        )
+
+        reset_instance!
       end
 
-      def stats
-        @stats ||= Customers::Statistic
-                   .find_or_initialize_by(customer: customer)
+      def delete_stats
+        stats.delete
+        @stats = nil
+      end
+
+      def monthly_update_required?
+        stats.new_record? || update_inerval_exceeded?
+      end
+
+      def update_inerval_exceeded?
+        stats.updated_at < UPDATE_INTERVAL_MONTHS.months.ago
       end
 
       def explicit_attributes
@@ -49,20 +67,48 @@ module Customers
         }.map { |attribute, value| sum_up_attribute(attribute, value) }.to_h
       end
 
+      def cut_off_time
+        @cut_off_time ||= Time.zone.now.last_month.beginning_of_month
+      end
+
+      def reset_instance!
+        @stats = nil
+        @entries = nil
+        @successful_deposits = nil
+        @successful_withdrawals = nil
+      end
+
+      def calculate_stats
+        stats.assign_attributes(
+          **explicit_attributes,
+          **calculated_attributes,
+          updated_at: Time.zone.now
+        )
+      end
+
+      def stats
+        @stats ||= Customers::Statistic
+                   .find_or_initialize_by(customer: customer)
+      end
+
       def successful_deposits
         @successful_deposits ||= entries.deposit
       end
 
       def entries
-        @entries ||= customer.entries
-                             .joins(:currency)
-                             .where(updated_at_clause('entries'))
+        @entries ||=
+          customer
+          .entries
+          .joins(:currency)
+          .where(updated_at_clause('entries'))
       end
 
       def updated_at_clause(table_name)
-        return 'true' if stats.new_record?
-
-        "#{table_name}.updated_at >= '#{stats.updated_at.to_s(:db)}'"
+        if stats.new_record?
+          "#{table_name}.updated_at < '#{cut_off_time.to_s(:db)}'"
+        else
+          "#{table_name}.updated_at >= '#{stats.updated_at.to_s(:db)}'"
+        end
       end
 
       def deposit_value
