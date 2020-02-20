@@ -537,7 +537,8 @@ en:
       wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
       account_transition: "can't bet changed from '%{from}' to '%{to}'"
       balance_request_uniqueness: 'already has balance entry request with this kind.'
-      real_money_blank_amount: Real money amount can not be blank!
+      real_money_not_negative_amount: Real money amount has to be negative value!
+      bet_placed_with_not_positive_amount: Bet amount has to be more than zero!
       entry_request_for_settled_bet: "Entry request for settled bet is expected! Received for bet %{bet_id}"
       deposit_limit_exceeded: 'Deposit limit exceeded'
       bonus_expired: 'Bonus is expired!'
