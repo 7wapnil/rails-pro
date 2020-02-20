@@ -10,6 +10,7 @@ module Bets
     delegate :wallet, to: :customer
 
     def validate!
+      check_bet_amount!
       check_if_odds_active!
       check_if_market_active!
       check_if_leg_odds_match_event_odds! unless subject.odds_change?
@@ -19,6 +20,13 @@ module Bets
     end
 
     private
+
+    def check_bet_amount!
+      return if subject.amount.positive?
+
+      raise Bets::RegistrationError,
+            I18n.t('errors.messages.bet_placed_with_not_positive_amount')
+    end
 
     def check_if_customer_balance_positive!
       return unless wallet

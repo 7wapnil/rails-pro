@@ -249,8 +249,8 @@ describe GraphQL, '#place_bet' do
         { bets: [invalid_bet_attrs] }
       end
 
-      it 'recognizes it as success for GraphQL response' do
-        expect(succeeded_bets_response.count).to eq(1)
+      it 'recognizes it as failure for GraphQL response' do
+        expect(failed_bets_response.length).to eq(1)
       end
     end
 
