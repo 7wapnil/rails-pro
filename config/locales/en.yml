@@ -80,6 +80,7 @@ en:
     updated: "%{instance} updated"
     instance_overview: "%{instance} overview"
     not_found: "No %{instance} found"
+    choose_file: Choose file
 
     bonus_forfeit_requested: "%{number} bonus(es) requested to be forfeited"
     bonus_award_requested: "%{number} bonus(es) requested to be awarded"
@@ -92,6 +93,7 @@ en:
       verify: Verify
       forfeit: Forfeit awarded
       retry_errors: Retry errors
+      cancel: Cancel
 
     attributes:
       account_information: Account information
@@ -106,6 +108,7 @@ en:
       awarded_amount: Awarded amount
       bonus: Bonus
       lost_amount: Lost amount
+      label: Label
       cancelled_amount: Cancelled amount
       expired_amount: Expired amount
       converted_amount: Converted amount
@@ -117,6 +120,9 @@ en:
       converted_bonus_amount: Converted bonus amount
       confiscated_bonus_amount: Confiscated bonus amount
       confiscated_bonus: Confiscated Bonus
+      bonus_amount_balance_eur: Bonus amount balance (€)
+      real_money_balance_eur: Real money balance (€)
+      total_balance_eur: Total balance (€)
       authorized_at: Authorized at
       balance: Balance
       real_money_balance: Cash balance
@@ -305,6 +311,10 @@ en:
         casino_performance:
           title: Casino performance
 
+    global:
+      minimal_title: ArcaneBet
+      title: ArcaneBet Backoffice
+
     documents:
       history_title: "Files history: %{document_type}"
 
@@ -409,6 +419,8 @@ en:
         zero: No markets
         one: 1 market
         other: "%{count} markets"
+      monthly_balance_query_results: Monthly balance query results
+      monthly_balance_query_results_short: Monthly balances
       request_information: Request information
       entry_information: Entry information
       scope: Scope
