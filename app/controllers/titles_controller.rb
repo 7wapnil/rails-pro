@@ -25,13 +25,12 @@ class TitlesController < ApplicationController
     params
       .require(:title)
       .permit(:id,
-              :name,
-              :short_name,
               :slug,
               :meta_title,
               :meta_description,
               :external_id,
               :show_category_in_navigation,
-              :kind)
+              :kind,
+              Title.globalize_attribute_names)
   end
 end
