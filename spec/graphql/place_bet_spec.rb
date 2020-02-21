@@ -51,7 +51,7 @@ describe GraphQL, '#place_bet' do
         bets: odds.map do |odd|
           {
             amount: 10,
-            currencyCode: 'EUR',
+            currencyCode: currency.code,
             odds: [
               {
                 id: odd.id.to_s,
@@ -96,6 +96,19 @@ describe GraphQL, '#place_bet' do
           expect(leg['odd']['id']).to be_a String
           expect(leg['odd']['name']).to be_a String
         end
+      end
+    end
+
+    context 'when another wallet with negative balance' do
+      let!(:negative_balance_wallet) do
+        create(:wallet, :crypto, customer: auth_customer,
+                                 amount: -100,
+                                 real_money_balance: -50,
+                                 bonus_balance: -50)
+      end
+
+      it 'returns success' do
+        expect(bets.first['success']).to be_truthy
       end
     end
   end
