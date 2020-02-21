@@ -48,7 +48,7 @@ module Payments
             category: 'Payment',
             action: 'depositSuccesful',
             label: entry_request.customer.id,
-            value: amount
+            value: (amount * 100).to_i
           }
         end
 
