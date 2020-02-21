@@ -59,16 +59,16 @@ describe Payments::Fiat::Wirecard::Deposits::CallbackHandler do
       expect { subject }.to raise_error(Payments::CancelledError)
     end
 
-    it 'fail entry request' do
+    it 'fails entry request' do
       subject
     rescue Payments::CancelledError => _e
-      expect(entry_request.reload.status).to eq(EntryRequest::FAILED)
+      expect(entry_request.reload).to be_failed
     end
 
-    it 'fail deposit' do
+    it 'fails deposit' do
       subject
     rescue Payments::CancelledError => _e
-      expect(deposit.reload.status).to eq(CustomerTransaction::FAILED)
+      expect(deposit.reload).to be_failed
     end
   end
 
@@ -77,20 +77,20 @@ describe Payments::Fiat::Wirecard::Deposits::CallbackHandler do
     let(:state) { Payments::Fiat::Wirecard::TransactionStates::FAILED }
     let(:description) { 'Failed' }
 
-    it 'raise Payments::CancelledError' do
+    it 'raises Payments::CancelledError' do
       expect { subject }.to raise_error(Payments::FailedError)
     end
 
-    it 'fail entry request' do
+    it 'fails entry request' do
       subject
     rescue Payments::FailedError => _e
-      expect(entry_request.reload.status).to eq(EntryRequest::FAILED)
+      expect(entry_request.reload).to be_failed
     end
 
-    it 'fail deposit' do
+    it 'fails deposit' do
       subject
     rescue Payments::FailedError => _e
-      expect(deposit.reload.status).to eq(CustomerTransaction::FAILED)
+      expect(deposit.reload).to be_failed
     end
   end
 
@@ -103,11 +103,24 @@ describe Payments::Fiat::Wirecard::Deposits::CallbackHandler do
       allow(EntryRequests::DepositWorker).to receive(:perform_async)
     end
 
-    it 'record payment details' do
+    it 'records payment details' do
       subject
 
       expect(deposit.reload.details)
         .to include('masked_account_number', 'token_id')
+    end
+  end
+
+  context 'consumer cancels the transaction on a 3rd party provider page' do
+    let(:response) { { 'payment' => { 'request-id' => entry_request.id } } }
+
+    before do
+      subject
+    rescue Payments::FailedError
+    end
+
+    it 'fails deposit' do
+      expect(deposit.reload).to be_failed
     end
   end
 end
