@@ -11,14 +11,14 @@
       = f.input :every_matrix_vendor_id,
                 collection: available_vendors,
                 include_blank: false,
-                label: t('attributes.vendor'),
+                label: t('internal.attributes.vendor'),
                 label_required: true,
                 input_html: { onchange: 'reload_play_items(this)' }
       #play-items
         Loading games...
       %br
     .col-6
-      = label_tag :customers_csv, t('attributes.customers_csv')
+      = label_tag :customers_csv, t('internal.attributes.customers_csv')
       %br
       = file_field_tag :customers_csv
       %br

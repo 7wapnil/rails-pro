@@ -40,7 +40,7 @@ module Mts
     end
 
     def error_message
-      I18n.t('errors.messages.nonexistent_bet')
+      I18n.t('internal.errors.messages.nonexistent_bet')
     end
   end
 end

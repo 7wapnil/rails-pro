@@ -3,6 +3,10 @@ describe Customer, '#update_lock' do
 
   context 'signed in' do
     let(:customer) { create(:customer) }
+    let(:sample_lock_reason) do
+      I18n.t("lock_reasons.#{Customer.lock_reasons.values.sample}")
+      Customer.lock_reasons.values.sample
+    end
 
     before do
       login_as create(:admin_user), scope: :user
@@ -10,21 +14,19 @@ describe Customer, '#update_lock' do
     end
 
     it 'shows account lock block' do
-      expect(page).to have_content(I18n.t('attributes.account_lock'))
+      expect(page).to have_content(I18n.t('internal.attributes.account_lock'))
     end
 
     it 'lock customer' do
       within 'form#account_lock_form' do
-        select sample_lock_reason, from: :customer_lock_reason
+        within '#customer_lock_reason' do
+          find("option[value='#{sample_lock_reason}']").click
+        end
         find('#customer_locked').check
 
         click_submit
       end
       expect(customer.reload.locked).to be(true)
-    end
-
-    def sample_lock_reason
-      I18n.t("lock_reasons.#{Customer.lock_reasons.values.sample}")
     end
   end
 

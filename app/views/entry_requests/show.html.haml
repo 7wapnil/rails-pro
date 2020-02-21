@@ -4,47 +4,47 @@
   account_management_path = account_management_customer_path(customer)
 .row.mt-4
   .col-6.offset-3
-    = card header: t('entities.request_information'), class: 'request-info' do
+    = card header: t('internal.entities.request_information'), class: 'request-info' do
       %table.table
         %tr
-          %td= t('attributes.id')
+          %td= t('internal.attributes.id')
           %td= @request.id
         %tr
-          %td= t('attributes.status')
+          %td= t('internal.attributes.status')
           %td= status_badge @request.status
         %tr
-          %td= t('attributes.created_at')
+          %td= t('internal.attributes.created_at')
           %td= l(@request.created_at, format: :long)
         %tr
-          %td= t('attributes.updated_at')
+          %td= t('internal.attributes.updated_at')
           %td= l(@request.updated_at, format: :long)
         %tr
-          %td= t('attributes.customer')
+          %td= t('internal.attributes.customer')
           %td
             %span= customer.full_name
             %span (#{link_to(username, account_management_path)})
         %tr
-          %td= t('attributes.kind')
+          %td= t('internal.attributes.kind')
           %td= t("kinds.#{@request.kind}")
         %tr
-          %td= t('attributes.amount')
+          %td= t('internal.attributes.amount')
           %td
             = number_with_precision @request.amount, precision: 2
             = @request.currency.code
         %tr
-          %td= t('attributes.initiator')
+          %td= t('internal.attributes.initiator')
           %td= @request.initiator
         %tr
-          %td= t('attributes.comment')
+          %td= t('internal.attributes.comment')
           %td= @request.comment
         %tr
-          %td= t('attributes.result')
+          %td= t('internal.attributes.result')
           %td= @request.result_message
         %tr
-          %td= t('attributes.external_id')
+          %td= t('internal.attributes.external_id')
           %td= @request.external_id
         %tr
-          %td= t('attributes.mode')
+          %td= t('internal.attributes.mode')
           %td= t("kinds.#{@request.mode}")
 
       %hr

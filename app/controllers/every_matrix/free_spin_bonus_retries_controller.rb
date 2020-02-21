@@ -23,7 +23,7 @@ module EveryMatrix
       redirect_to(
         every_matrix_free_spin_bonuses_path,
         flash: {
-          notice: t('bonus_retry_requested',
+          notice: t('internal.bonus_retry_requested',
                     number: free_spin_bonus_wallet_ids.count)
         }
       )

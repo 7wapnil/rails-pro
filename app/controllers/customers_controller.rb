@@ -134,8 +134,8 @@ class CustomersController < ApplicationController
     )
 
     flash[:success] = t(
-      :updated,
-      instance: t('attributes.personal_information')
+      'internal.updated',
+      instance: t('internal.attributes.personal_information')
     )
     redirect_to customer_path(@customer)
   rescue ActiveRecord::RecordInvalid => e
@@ -150,7 +150,8 @@ class CustomersController < ApplicationController
       :customer_contact_information_updated, nil, @customer
     )
 
-    flash[:success] = t(:updated, instance: t('attributes.contact_information'))
+    flash[:success] = t('internal.updated',
+                        instance: t('internal.attributes.contact_information'))
     redirect_to customer_path(@customer)
   rescue ActiveRecord::RecordInvalid => e
     flash[:error] = e.message
@@ -167,7 +168,8 @@ class CustomersController < ApplicationController
     )
 
     redirect_to customer_path(@customer),
-                success: t(:updated, instance: t('attributes.lock_status'))
+                success: t('internal.updated',
+                           instance: t('internal.attributes.lock_status'))
   end
 
   def account_update

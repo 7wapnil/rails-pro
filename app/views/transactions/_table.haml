@@ -1,16 +1,18 @@
 %table.table.entities
   %thead
     %tr
-      %th= t('attributes.id')
-      %th= t('attributes.external_id')
-      %th= t('attributes.kind')
-      %th= t('attributes.status')
-      %th= sort_link(filter.search, :amount, t('attributes.amount'), default_order: :desc)
-      %th= t('attributes.payment_method')
+      %th= t('internal.attributes.id')
+      %th= t('internal.attributes.external_id')
+      %th= t('internal.attributes.kind')
+      %th= t('internal.attributes.status')
+      %th= sort_link(filter.search, :amount, t('internal.attributes.amount'), default_order: :desc)
+      %th= t('internal.attributes.payment_method')
       - unless local_assigns[:no_user]
-        %th= t('attributes.username')
-      %th= sort_link(filter.search, :created_at, t('attributes.requested_at'), default_order: :asc)
-      %th= t('attributes.completed_at')
+        %th= t('internal.attributes.username')
+      %th
+        = sort_link(filter.search, :created_at, t('internal.attributes.requested_at'),
+                    default_order: :asc)
+      %th= t('internal.attributes.completed_at')
   %tbody
     - if filter.transactions.any?
       - filter.transactions.each do |transaction|
@@ -30,4 +32,4 @@
           %td= l(transaction.entry.created_at, format: :long) if transaction.entry
     - else
       %tr
-        %td{ colspan: 9 }= t(:not_found, instance: t('entities.entry_requests'))
+        %td{ colspan: 9 }= t('internal.not_found', instance: t('internal.entities.entry_requests'))

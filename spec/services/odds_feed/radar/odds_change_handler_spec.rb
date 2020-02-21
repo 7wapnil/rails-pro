@@ -49,7 +49,7 @@ describe OddsFeed::Radar::OddsChangeHandler do
       let(:message) do
         {
           event_id: external_id,
-          message: I18n.t('errors.messages.unsupported_event_type')
+          message: I18n.t('internal.errors.messages.unsupported_event_type')
         }
       end
 

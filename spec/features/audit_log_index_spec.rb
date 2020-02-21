@@ -23,7 +23,7 @@ describe AuditLog, '#index' do
             I18n.l(activity.created_at, format: :long)
           )
           expect(page).to have_content(
-            I18n.t("events.#{activity.event}", activity.interpolation)
+            I18n.t("internal.events.#{activity.event}", activity.interpolation)
           )
         end
       end

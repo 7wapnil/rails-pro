@@ -1,18 +1,18 @@
 .row.mt-4
   .col-8.offset-2
-    = card header: t('.title'), class: 'mb-3' do
+    = card header: t('internal.every_matrix.vendors.edit.title'), class: 'mb-3' do
       = simple_form_for @vendor do |f|
         = f.input :name
         = f.input :slug
         = f.input :meta_title,
                   as: :text,
                   rows: 2,
-                  label: t('attributes.meta_title'),
+                  label: t('internal.attributes.meta_title'),
                   class: 'form-control'
         = f.input :meta_description,
                   as: :text,
                   rows: 4,
-                  label: t('attributes.meta_description'),
+                  label: t('internal.attributes.meta_description'),
                   class: 'form-control'
         = f.input :logo_url, as: :string
         = f.input :enabled

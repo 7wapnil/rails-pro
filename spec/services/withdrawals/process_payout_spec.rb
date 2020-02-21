@@ -43,9 +43,6 @@ describe Withdrawals::ProcessPayout do
       create(:withdrawal, entry_request: entry_request,
                           details: { paymentOptionId: '1' })
     end
-    let(:error_message) do
-      "base: #{I18n.t('errors.messages.withdrawal.invalid_withdrawal')}"
-    end
 
     it 'raise transaction validation error' do
       expect { subject }.to raise_error(Payments::InvalidTransactionError)

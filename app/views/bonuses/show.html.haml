@@ -6,65 +6,65 @@
           = card do
             %table.table
               %tr
-                %td= t('attributes.rollover_multiplier')
+                %td= t('internal.attributes.rollover_multiplier')
                 %td= @bonus.rollover_multiplier
               %tr
-                %td= t('attributes.max_rollover_per_bet')
+                %td= t('internal.attributes.max_rollover_per_bet')
                 %td= @bonus.max_rollover_per_bet
               %tr
-                %td= t('attributes.max_rollover_per_spin')
+                %td= t('internal.attributes.max_rollover_per_spin')
                 %td= @bonus.max_rollover_per_spin
               %tr
-                %td= t('attributes.max_deposit_match')
+                %td= t('internal.attributes.max_deposit_match')
                 %td= @bonus.max_deposit_match
               %tr
-                %td= t('attributes.min_deposit')
+                %td= t('internal.attributes.min_deposit')
                 %td= @bonus.min_deposit
               %tr
-                %td= t('attributes.percentage')
+                %td= t('internal.attributes.percentage')
                 %td= number_to_percentage(@bonus.percentage, precision: 0)
               %tr
-                %td= t('attributes.sportsbook')
+                %td= t('internal.attributes.sportsbook')
                 %td= @bonus.sportsbook
               %tr
-                %td= t('attributes.sportsbook_multiplier')
+                %td= t('internal.attributes.sportsbook_multiplier')
                 %td= @bonus.sportsbook_multiplier
               %tr
-                %td= t('attributes.casino')
+                %td= t('internal.attributes.casino')
                 %td= @bonus.casino
         .col-6
           = card do
             %table.table
               %tr
-                %td= t('attributes.kind')
+                %td= t('internal.attributes.kind')
                 %td= @bonus.kind
               %tr
-                %td= t('attributes.min_odds_per_bet')
+                %td= t('internal.attributes.min_odds_per_bet')
                 %td= @bonus.min_odds_per_bet
               %tr
-                %td= t('attributes.limit_per_each_bet_leg')
+                %td= t('internal.attributes.limit_per_each_bet_leg')
                 %td= @bonus.limit_per_each_bet_leg
               %tr
-                %td= t('attributes.valid_for_days')
+                %td= t('internal.attributes.valid_for_days')
                 %td= @bonus.valid_for_days
               %tr
-                %td= t('attributes.expires_at')
+                %td= t('internal.attributes.expires_at')
                 %td= l @bonus.expires_at
               %tr
-                %td= t('attributes.repeatable')
+                %td= t('internal.attributes.repeatable')
                 %td= @bonus.repeatable
               %tr
-                %td= t('attributes.previous_deposits_number')
+                %td= t('internal.attributes.previous_deposits_number')
                 %td= @bonus.previous_deposits_number
 
       %hr
       = link_back
-      = link_to t(:edit),
+      = link_to t('internal.edit'),
                 edit_bonus_path(@bonus),
                 class: 'btn btn-outline-dark'
 
-      = link_to t(:delete),
+      = link_to t('internal.delete'),
                 @bonus,
                 class: 'btn btn-outline-dark',
                 method: :delete,
-                data: { confirm: t(:confirm_sure) }
+                data: { confirm: t('internal.confirm_sure') }

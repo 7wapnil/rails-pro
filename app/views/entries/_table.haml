@@ -1,19 +1,23 @@
 %table.table.entities
   %thead
     %tr
-      %th= t('attributes.id')
-      %th= t('attributes.entry_kind')
-      %th= sort_link(filter.search, :created_at, t('attributes.created_at'), default_order: :asc)
-      %th= t('attributes.real_money_amount')
-      %th= t('attributes.bonus_amount')
-      %th= t('attributes.confiscated_bonus_amount')
-      %th= t('attributes.amount')
-      %th= t('attributes.currency')
-      %th{ colspan: 2 }= t('attributes.real_money_balance')
-      %th{ colspan: 2 }= t('attributes.bonus_balance')
-      %th{ colspan: 2 }= t('attributes.converted_amount')
-      %th{ colspan: 2 }= t('attributes.confiscated_amount')
-      %th{ colspan: 2 }= t('attributes.balance')
+      %th= t('internal.attributes.id')
+      %th= t('internal.attributes.entry_kind')
+      %th
+        = sort_link(filter.search,
+                    :created_at,
+                    t('internal.attributes.created_at'),
+                    default_order: :asc)
+      %th= t('internal.attributes.real_money_amount')
+      %th= t('internal.attributes.bonus_amount')
+      %th= t('internal.attributes.confiscated_bonus_amount')
+      %th= t('internal.attributes.amount')
+      %th= t('internal.attributes.currency')
+      %th{ colspan: 2 }= t('internal.attributes.real_money_balance')
+      %th{ colspan: 2 }= t('internal.attributes.bonus_balance')
+      %th{ colspan: 2 }= t('internal.attributes.converted_amount')
+      %th{ colspan: 2 }= t('internal.attributes.confiscated_amount')
+      %th{ colspan: 2 }= t('internal.attributes.balance')
   %tbody
     - if filter.entries.any?
       - filter.entries.each do |entry|
@@ -46,4 +50,4 @@
             = entry.balance_amount_after
     - else
       %tr
-        %td{ colspan: 9 }= t(:not_found, instance: t('entities.entries'))
+        %td{ colspan: 9 }= t('internal.not_found', instance: t('internal.entities.entries'))

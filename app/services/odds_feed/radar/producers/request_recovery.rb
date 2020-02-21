@@ -115,7 +115,7 @@ module OddsFeed
         end
 
         def recovery_delay
-          return I18n.t('not_available') unless last_recovery_call_at
+          return I18n.t('internal.not_available') unless last_recovery_call_at
 
           requested_at.to_i - last_recovery_call_at.to_i
         end

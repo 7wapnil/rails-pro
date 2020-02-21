@@ -1,0 +1,58 @@
+phraseapp:
+  project_id: 7b0a8d99f9e746ea50fe3426b961985e
+  push:
+    sources:
+      - file: ./config/locales/phraseapp/en.yml
+        params:
+          file_format: yml
+          locale_id: en
+          tags: backend-base
+      - file: ./config/locales/phraseapp/market_categories.en.yml
+        params:
+          file_format: yml
+          locale_id: en
+          tags: backend-market-categories
+  pull:
+    targets:
+      # Base
+      - file: ./config/locales/phraseapp/en.yml
+        params:
+          locale_id: en
+          file_format: yml
+          tags: backend-base
+      - file: ./config/locales/phraseapp/es.yml
+        params:
+          locale_id: es
+          file_format: yml
+          tags: backend-base
+      - file: ./config/locales/phraseapp/pt.yml
+        params:
+          locale_id: pt-BR
+          file_format: yml
+          tags: backend-base
+      - file: ./config/locales/phraseapp/de.yml
+        params:
+          locale_id: de
+          file_format: yml
+          tags: backend-base
+      # Market categories
+      - file: ./config/locales/phraseapp/market_categories.en.yml
+        params:
+          file_format: yml
+          locale_id: en
+          tags: backend-market-categories
+      - file: ./config/locales/phraseapp/market_categories.es.yml
+        params:
+          file_format: yml
+          locale_id: es
+          tags: backend-market-categories
+      - file: ./config/locales/phraseapp/market_categories.pt.yml
+        params:
+          file_format: yml
+          locale_id: pt-BR
+          tags: backend-market-categories
+      - file: ./config/locales/phraseapp/market_categories.de.yml
+        params:
+          file_format: yml
+          locale_id: de
+          tags: backend-market-categories

@@ -113,7 +113,8 @@ describe BetDecorator, type: :decorator do
 
       it 'returns notification message' do
         expect(subject.human_notification_message)
-          .to eq(I18n.t("bets.notifications.#{bet.notification_code}"))
+          .to eq(I18n.t("bets.notifications.#{bet.notification_code}",
+                        default: bet.notification_message))
       end
     end
 

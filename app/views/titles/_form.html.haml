@@ -15,12 +15,12 @@
         = f.input :meta_title,
                   as: :text,
                   rows: 2,
-                  label: t('attributes.meta_title'),
+                  label: t('internal.attributes.meta_title'),
                   class: 'form-control'
         = f.input :meta_description,
                   as: :text,
                   rows: 4,
-                  label: t('attributes.meta_description'),
+                  label: t('internal.attributes.meta_description'),
                   class: 'form-control'
         = f.label :kind
         = f.select :kind,
@@ -29,5 +29,5 @@
             class: 'form-control'
         = f.input :show_category_in_navigation, required: true
         %hr
-        = f.button :submit, t(:save), class: 'btn btn-success'
+        = f.button :submit, t('internal.save'), class: 'btn btn-success'
         = link_back

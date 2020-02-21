@@ -1,5 +1,5 @@
-= card header: t('documents.history_title',
-                 document_type: t("attributes.#{@document_type}")),
+= card header: t('internal.documents.history_title',
+                 document_type: t("internal.attributes.#{@document_type}")),
        class: 'customer-documents' do
   %table.table.table-striped
     %tbody
@@ -7,7 +7,7 @@
         %tr.row
           %td.col-6.text-truncate= file.filename
           %td.col-4.text-center= l(file.created_at, format: :short)
-          %td.col-2.text-right= link_to t(:view),
+          %td.col-2.text-right= link_to t('internal.view'),
                       rails_blob_path(file.document),
                       class: 'btn btn-outline-dark',
                       target: :blank

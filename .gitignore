@@ -6,6 +6,7 @@
 .DS_Store
 
 config/master.key
+config/locales/phraseapp
 log/*
 node_modules
 storage/*
@@ -20,6 +21,7 @@ tags
 yarn-debug.log*
 yarn-error.log
 
+!config/locales/phraseapp/.keep
 !log/.keep
 !storage/.keep
 !tmp/.keep

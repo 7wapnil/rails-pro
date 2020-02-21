@@ -31,7 +31,7 @@ describe Customer, '#account_management' do
 
     it 'shows no records note' do
       within '.balances' do
-        expect(page).to have_content I18n.t(:no_records)
+        expect(page).to have_content I18n.t('internal.no_records')
       end
     end
   end
@@ -50,7 +50,7 @@ describe Customer, '#account_management' do
       visit page_path
 
       within 'form#new_entry_request' do
-        select I18n.t('kinds.deposit'), from: :entry_request_kind
+        select EntryKinds::DEPOSIT.capitalize, from: :entry_request_kind
         select 'Credit Card', from: :entry_request_mode
         fill_in :entry_request_amount, with: 200.00
         fill_in :entry_request_comment, with: 'A reason'
@@ -58,18 +58,19 @@ describe Customer, '#account_management' do
       end
 
       within '.container-fluid' do
-        expect_to_have_notification(I18n.t('messages.entry_request.flash'))
+        expect_to_have_notification(
+          I18n.t('internal.messages.entry_request.flash')
+        )
       end
     end
 
     it 'displays all available payment methods without system' do
       within '.card.customer-entry-request-form #entry_request_mode' do
-        select_modes = all('option').map(&:text)
+        select_modes = all('option').map(&:value)
         allowed_modes = EntryRequest
                         .modes
                         .except(EntryRequest::INTERNAL)
                         .keys
-                        .map { |mode| I18n.t("kinds.payment_methods.#{mode}") }
 
         expect(select_modes).to match_array(allowed_modes)
       end
@@ -90,17 +91,17 @@ describe Customer, '#account_management' do
 
       within '.customer-entry-requests' do
         customer.entry_requests.each do |request|
-          expect(page).to have_content I18n.t "kinds.#{request.kind}"
+          expect(page).to have_content request.kind.capitalize
           expect(page).to have_content request.mode
           expect(page).to have_content request.amount
           expect(page).to have_content request.currency_code
-          expect(page).to have_content I18n.t "statuses.#{request.status}"
+          expect(page).to have_content request.status.capitalize
         end
       end
     end
 
     it 'shows no records note' do
-      expect(page).to have_content I18n.t(:no_records)
+      expect(page).to have_content I18n.t('internal.no_records')
     end
   end
 
@@ -120,7 +121,7 @@ describe Customer, '#account_management' do
           link_to_entry = I18n.l(entry.created_at, format: :long)
 
           expect(page).to have_link(link_to_entry, href: entry_path(entry))
-          expect(page).to have_content I18n.t "kinds.#{entry.kind}"
+          expect(page).to have_content entry.kind.capitalize
           expect(page).to have_content entry.amount
           expect(page).to have_content entry.currency_code
         end
@@ -128,7 +129,7 @@ describe Customer, '#account_management' do
     end
 
     it 'shows no records note' do
-      expect(page).to have_content I18n.t(:no_records)
+      expect(page).to have_content I18n.t('internal.no_records')
     end
   end
 end

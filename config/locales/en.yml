@@ -1,89 +1,4 @@
 en:
-  action: Action
-  add: Add
-  back: Back
-  confirm: Confirm
-  confirm_sure: Are you sure?
-  content: Content
-  create: Create
-  days: "%{days} days"
-  delete: Delete
-  details: Details
-  edit: Edit
-  from: From
-  history: History
-  impersonation_comment: IMPERSONATED EVENT
-  infinite: Infinite
-  note: Note
-  no_file: No File
-  no_records: No records yet
-  process_manually: Process manually
-  reject: Reject
-  save: Save
-  says_at: "%{who} at %{when}"
-  search: "Search %{subject}"
-  settle_bet_leg: Settle bet leg manually
-  show_more: Show more
-  sidekiq: Sidekiq
-  sign_in: Sign In
-  sign_out: Sign Out
-  sign_up: Sign Up
-  system: System
-  odds_feed: Odds Feed
-  casino: Casino
-  to: To
-  upload: Upload
-  view: View
-  balance_interactions: Balance interactions
-  balance_interaction_requests: Balance interaction requests
-  not_available: 'N/A'
-  not_set: Not set
-  combo_bets: Combo-bets
-
-  activate_instance: "Activate %{instance}"
-  activated: "%{instance} activated"
-  add_instance: "Add %{instance}"
-  created: "%{instance} created"
-  deleted: "%{instance} deleted"
-  edit_instance: "Edit %{instance}"
-  new_instance: "New %{instance}"
-  updated: "%{instance} updated"
-  instance_overview: "%{instance} overview"
-  not_found: "No %{instance} found"
-
-  bonus_forfeit_requested: "%{number} bonus(es) requested to be forfeited"
-  bonus_award_requested: "%{number} bonus(es) requested to be awarded"
-  bonus_retry_requested: "%{number} bonus(es) requested to be retried"
-
-  actions:
-    expire: Expire
-    impersonate: Impersonate
-    reset_password: Reset password
-    verify: Verify
-    forfeit: Forfeit awarded
-    retry_errors: Retry errors
-
-  activemodel:
-    errors:
-      models:
-        forms/withdraw_request:
-          attributes:
-            amount:
-              less_than: exceeds maximum individual withdrawal
-              greater_than: must be non-zero value
-        forms/payment_methods/credit_card:
-          attributes:
-            last_four_digits:
-              blank: Card last four digits can't be blank
-              not_a_umber: Card last four digits can\'t be blank
-              wrong_length: Please confirm the last four digits of your card are entered correctly
-    attributes:
-      forms/withdraw_request:
-        last_four_digits: ''
-      forms/registration:
-        date_of_birth: ''
-        agreed_with_privacy: ''
-
   activerecord:
     attributes:
       customers/statistic:
@@ -102,838 +17,636 @@ en:
         live_margin: Live margin
         average_total_bet_value: Average sports bet value
         last_updated_at: Last calculated at
+      customer:
+        account_kind: ''
 
-  attributes:
-    account_information: Account information
-    account_lock: Account lock
-    account_kind: Account type
+  activemodel:
+    attributes:
+      forms/withdraw_request:
+        amount: ''
+        last_four_digits: ''
+      forms/registration:
+        date_of_birth: ''
+        agreed_with_privacy: ''
+
+  internal:
     action: Action
-    actioned_by: Actioned by
-    actions: Actions
-    activated_at: Activated at
-    actual_payout: Actual payout
-    amount: Amount
-    awarded_amount: Awarded amount
-    bonus: Bonus
-    lost_amount: Lost amount
-    cancelled_amount: Cancelled amount
-    expired_amount: Expired amount
-    converted_amount: Converted amount
-    confiscated_amount: Confiscated amount
-    awarded: Awarded
-    as_vendor: As vendor
-    real_money_amount: Cash amount
-    real_money: Real Money
-    bonus_amount: Bonus amount
-    bonus_amount_balance_eur: Bonus amount balance (€)
-    cancelled_bonus_amount: Cancelled bonus amount
-    converted_bonus_amount: Converted bonus amount
-    confiscated_bonus_amount: Confiscated bonus amount
-    confiscated_bonus: Confiscated Bonus
-    authorized_at: Authorized at
-    balance: Balance
-    real_money_balance: Cash balance
-    bonus_balance: Bonus balance
-    bank_statement: Bank statement
-    bank_statements: Bank statements
-    bet_id: Bet ID
-    bet_placement_time: Bet placement time
-    bet_settlement_status_achieved_at: Bet settlement time
-    b_tag: Affiliate tag
+    add: Add
+    back: Back
+    confirm: Confirm
+    confirm_sure: Are you sure?
+    content: Content
+    create: Create
+    days: "%{days} days"
+    delete: Delete
+    details: Details
+    edit: Edit
+    from: From
+    history: History
+    impersonation_comment: IMPERSONATED EVENT
+    infinite: Infinite
+    note: Note
+    no_file: No File
+    no_records: No records yet
+    process_manually: Process manually
+    reject: Reject
+    save: Save
+    says_at: "%{who} at %{when}"
+    search: "Search %{subject}"
+    settle_bet_leg: Settle bet leg manually
+    show_more: Show more
+    sidekiq: Sidekiq
+    sign_in: Sign In
+    sign_out: Sign Out
+    sign_up: Sign Up
+    system: System
+    odds_feed: Odds Feed
     casino: Casino
-    category: Category
-    city: City
-    code: Code
-    comment: Comment
-    completed_at: Completed at
-    contact_information: Contact information
-    counted_towards_rollover: Counted towards rollover
-    country: Country
-    created_at: Created at
-    credit_card: Credit card
-    credit_cards: Credit cards
-    currency: Currency
-    currency_code: Currency
-    customer: Customer
-    customer_name: Customer name
-    customer_verification_status: Customer verification status
-    customer_username: Customer username
-    customers_csv: Customers CSV file
-    date: Date
-    date_of_birth: Date of birth
-    deactivated_at: Deactivated at
-    previous_deposits_number: Previous successful deposits
-    description: Description
-    email: Email
-    end_at: End at
-    entry_kind: Entry type
-    error: Error
-    event: Event
-    event_id: Event ID
-    event_status: Event status
-    expiration_reason: Expiration reason
-    expired_at: Expired at
-    expires_at: Expires at
-    external_id: External ID
-    external_status: External status
-    external_vendor_id: External vendor id
-    first_name: First name
-    forfeited: Forfeited
-    free_spin_bonus_id: Free spin bonus ID
-    free_rounds_end_date: End date
-    gender: Gender
-    id: ID
-    info: Info
-    initial: Initial
-    initiator: Initiator
-    in_progress: In progress
-    ip_address: IP Address
-    internal_image_name: Internal image name
-    kind: Kind
-    label_description: Label description
-    label_kind: Label kind
-    label_name: Label name
-    label: Label
-    last_name: Last name
-    last_activity_at: Last activity at
-    last_sign_in_at: Last sign in at
-    last_sign_in_ip: Last sign in IP
-    last_visit_at: Last visit at
-    last_visit_ip: Last visit IP
-    live: Live
-    live_coverage: Live coverage
-    lock: Lock
-    lock_reason: Lock reason
-    lock_status: Lock status
-    lock_until: Lock until
-    mode: Mode
-    market: Market
-    max_amount: Max amount
-    max_deposit_match: Max amount
-    max_rollover_per_bet: Max rollover per bet
-    max_rollover_per_spin: Max rollover per spin
-    message: Message
-    meta_title: Meta Tag Title
-    meta_description: Meta Tag Description
-    notification_code: Notification code
-    notification_message: Notification message
-    number_of_free_rounds: Free rounds
-    number_of_games: Games
-    number_of_wallets: Wallets
-    min_amount: Min amount
-    min_deposit: Min deposit
-    min_odds_per_bet: Min odds per bet
-    name: Name
-    odd_value: Odd value
-    origin_id: Origin ID
-    origin_kind: Origin type
-    origin_name: Origin name
-    other_document: Other document
-    other_documents: Other documents
-    payment_method: Payment method
-    personal_id: Personal Id
-    personal_ids: Personal Id's
-    personal_information: Personal information
-    phone: Phone number
-    possible_payout: Possible payout
-    position: Position
-    priority: Priority
-    profit_loss: Profit/Loss
-    promotional: Receive promotional content
-    promotional_agreement: Promotional agreement
-    email_verified: Verified email
-    vendor: Vendor
-    verification_sent: User notified about verification
-    real_money_balance_eur: Real money balance (€)
-    repeatable: Repeatable
-    requested_at: Requested at
-    result: Result
-    representation_name: Representation name
-    rollover_multiplier: Bonus rollover
-    rollover_balance: Bonus rollover balance
-    rollover_initial_balance: Bonus rollover initial balance
-    scope_kind: Scope type
-    scope_name: Scope name
-    selection: Selection
-    set: Set
-    settlement: Settlement
-    settlement_status: Settlement status
-    sign_in_count: Sign in count
-    slug: Slug
-    sport: Sport
-    sportsbook: Sportsbook
-    sportsbook_multiplier: Sportsbook multiplier
-    stake: Stake
-    start_at: Start at
-    state: State
-    status: Status
-    street_address: Street address
-    slug: Slug
-    text: Text
-    total_balance_eur: Total balance (€)
-    tournament: Tournament
-    transactions_spin: Transactions
-    twitch_end_time: Twitch end time
-    twitch_start_time: Twitch start time
-    twitch_url: Twitch URL
-    bet_type: Bet type
-    updated_at: Updated at
-    username: Username
-    utility_bill: Utility bill
-    utility_bills: Utility bills
-    valid_for_days: Valid for days
-    visibility: Visibility
-    visible: Visible
-    visit_count: Visit count
-    wager: Wager
-    wallet: Wallet
-    winning_amount: Winnings
-    zip_code: ZIP
-    percentage: Percentage
-    confirmed_at: Confirmed at
-    balance_id: Balance ID
-    balance_kind: Balance type
-    limit_per_each_bet_leg: Every selection in Combo Bet needs to be higher than the “Min odds per bet”
-    # Transaction`s attributes
-    transaction_id: Transaction ID
-    em_transaction_id: EM Transaction ID
-    transaction_type: Type
-    transaction_amount_before: Amount before
-    transaction_amount_after: Amount after
-    base_currency_amount: Base currency amount
-    game_name: Game name
-    vendor_name: Vendor name
-    content_provider_name: Content provider name
-    game_round_id: Game round Id
-    category_type: Category type
-    round_status: Round status
-    game_id: Game Id
+    to: To
+    upload: Upload
+    view: View
+    balance_interactions: Balance interactions
+    balance_interaction_requests: Balance interaction requests
+    not_available: 'N/A'
+    not_set: Not set
+    combo_bets: Combo-bets
+    activate_instance: "Activate %{instance}"
+    activated: "%{instance} activated"
+    add_instance: "Add %{instance}"
+    created: "%{instance} created"
+    deleted: "%{instance} deleted"
+    edit_instance: "Edit %{instance}"
+    new_instance: "New %{instance}"
+    updated: "%{instance} updated"
+    instance_overview: "%{instance} overview"
+    not_found: "No %{instance} found"
+    choose_file: Choose file
 
-  bets:
-    bet_types:
+    bonus_forfeit_requested: "%{number} bonus(es) requested to be forfeited"
+    bonus_award_requested: "%{number} bonus(es) requested to be awarded"
+    bonus_retry_requested: "%{number} bonus(es) requested to be retried"
+
+    actions:
+      expire: Expire
+      impersonate: Impersonate
+      reset_password: Reset password
+      verify: Verify
+      forfeit: Forfeit awarded
+      retry_errors: Retry errors
+
+    event_scopes:
+      edit:
+        heading: Edit event scope
+
+      update:
+        success_message: Event scope was successfully updated
+
+    every_matrix:
+      categories:
+        index:
+          context: Context / Slug
+        edit:
+          title: Edit content category
+          context: Context / Slug
+      content_providers:
+        edit:
+          title: Edit content provider
+      vendors:
+        edit:
+          title: Edit vendor
+
+    attributes:
+      account_information: Account information
+      account_lock: Account lock
+      account_kind: Account type
+      action: Action
+      actioned_by: Actioned by
+      actions: Actions
+      activated_at: Activated at
+      actual_payout: Actual payout
+      amount: Amount
+      awarded_amount: Awarded amount
+      bonus: Bonus
+      lost_amount: Lost amount
+      label: Label
+      cancelled_amount: Cancelled amount
+      expired_amount: Expired amount
+      converted_amount: Converted amount
+      confiscated_amount: Confiscated amount
+      awarded: Awarded
+      real_money_amount: Cash amount
+      real_money: Real Money
+      bonus_amount: Bonus amount
+      converted_bonus_amount: Converted bonus amount
+      confiscated_bonus_amount: Confiscated bonus amount
+      confiscated_bonus: Confiscated Bonus
+      bonus_amount_balance_eur: Bonus amount balance (€)
+      real_money_balance_eur: Real money balance (€)
+      total_balance_eur: Total balance (€)
+      authorized_at: Authorized at
+      balance: Balance
+      real_money_balance: Cash balance
+      bonus_balance: Bonus balance
+      bank_statement: Bank statement
+      bank_statements: Bank statements
+      bet_id: Bet ID
+      bet_placement_time: Bet placement time
+      bet_settlement_status_achieved_at: Bet settlement time
+      b_tag: Affiliate tag
+      casino: Casino
+      category: Category
+      city: City
+      code: Code
+      comment: Comment
+      completed_at: Completed at
+      contact_information: Contact information
+      counted_towards_rollover: Counted towards rollover
+      country: Country
+      created_at: Created at
+      credit_card: Credit card
+      credit_cards: Credit cards
+      currency: Currency
+      currency_code: Currency
+      customer: Customer
+      customer_name: Customer name
+      customer_verification_status: Customer verification status
+      customer_username: Customer username
+      customers_csv: Customers CSV file
+      date: Date
+      date_of_birth: Date of birth
+      deactivated_at: Deactivated at
+      previous_deposits_number: Previous successful deposits
+      description: Description
+      email: Email
+      end_at: End at
+      entry_kind: Entry type
+      error: Error
+      event: Event
+      event_id: Event ID
+      event_status: Event status
+      expiration_reason: Expiration reason
+      expired_at: Expired at
+      expires_at: Expires at
+      external_id: External ID
+      first_name: First name
+      forfeited: Forfeited
+      free_spin_bonus_id: Free spin bonus ID
+      free_rounds_end_date: End date
+      gender: Gender
+      id: ID
+      info: Info
+      initial: Initial
+      initiator: Initiator
+      in_progress: In progress
+      ip_address: IP Address
+      kind: Kind
+      label_description: Label description
+      label_kind: Label kind
+      label_name: Label name
+      last_name: Last name
+      last_activity_at: Last activity at
+      last_sign_in_at: Last sign in at
+      last_sign_in_ip: Last sign in IP
+      last_visit_at: Last visit at
+      last_visit_ip: Last visit IP
       live: Live
-      prematch: Prematch
-    notifications:
-      internal_server_error: "Betting service is experiencing some issues now. Bet was not accepted"
-      placement_error: "Oops! Bet cannot be accepted. Feel free to contact administration or try again later"
-      internal_validation_error: "Oops! Bet cannot be accepted. Feel free to contact administration or try again later"
-      external_validation_error: "Betting service is experiencing some issues now. Bet was not accepted"
-      mts_cancellation_error: "Betting service is experiencing some issues now. Bet was not accepted"
-      liability_limit_reached_error: 'Max stake limit reached, please reduce your bet size'
-      payout_limit_reached_error: 'Max stake limit reached, please reduce your bet size'
-      odds_too_high_error: 'Oops! Bet cannot be accepted. Odds changed.'
-      conflicting_event: Conflicting event
-      conflicting_competitor: Conflicting team/player
+      live_coverage: Live coverage
+      lock: Lock
+      lock_reason: Lock reason
+      lock_status: Lock status
+      lock_until: Lock until
+      mode: Mode
+      market: Market
+      max_amount: Max amount
+      max_deposit_match: Max amount
+      max_rollover_per_bet: Max rollover per bet
+      max_rollover_per_spin: Max rollover per spin
+      message: Message
+      meta_title: Meta Tag Title
+      meta_description: Meta Tag Description
+      notification_code: Notification code
+      notification_message: Notification message
+      number_of_free_rounds: Free rounds
+      number_of_games: Games
+      number_of_wallets: Wallets
+      min_amount: Min amount
+      min_deposit: Min deposit
+      min_odds_per_bet: Min odds per bet
+      name: Name
+      odd_value: Odd value
+      origin_id: Origin ID
+      origin_kind: Origin type
+      origin_name: Origin name
+      other_document: Other document
+      other_documents: Other documents
+      payment_method: Payment method
+      personal_id: Personal Id
+      personal_ids: Personal Id's
+      personal_information: Personal information
+      phone: Phone number
+      possible_payout: Possible payout
+      priority: Priority
+      profit_loss: Profit/Loss
+      promotional: Receive promotional content
+      promotional_agreement: Promotional agreement
+      email_verified: Verified email
+      vendor: Vendor
+      verification_sent: User notified about verification
+      repeatable: Repeatable
+      requested_at: Requested at
+      result: Result
+      rollover_multiplier: Bonus rollover
+      rollover_balance: Bonus rollover balance
+      rollover_initial_balance: Bonus rollover initial balance
+      scope_kind: Scope type
+      scope_name: Scope name
+      selection: Selection
+      set: Set
+      settlement: Settlement
+      settlement_status: Settlement status
+      sign_in_count: Sign in count
+      slug: Slug
+      sport: Sport
+      sportsbook: Sportsbook
+      sportsbook_multiplier: Sportsbook multiplier
+      stake: Stake
+      start_at: Start at
+      state: State
+      status: Status
+      street_address: Street address
+      text: Text
+      tournament: Tournament
+      transactions_spin: Transactions
+      twitch_end_time: Twitch end time
+      twitch_start_time: Twitch start time
+      twitch_url: Twitch URL
+      bet_type: Bet type
+      updated_at: Updated at
+      username: Username
+      utility_bill: Utility bill
+      utility_bills: Utility bills
+      valid_for_days: Valid for days
+      visibility: Visibility
+      visible: Visible
+      visit_count: Visit count
+      wager: Wager
+      wallet: Wallet
+      winning_amount: Winnings
+      zip_code: ZIP
+      percentage: Percentage
+      confirmed_at: Confirmed at
+      balance_id: Balance ID
+      balance_kind: Balance type
+      limit_per_each_bet_leg: Every selection in Combo Bet needs to be higher than the “Min odds per bet”
+      # Transaction`s attributes
+      transaction_id: Transaction ID
+      em_transaction_id: EM Transaction ID
+      transaction_type: Type
+      transaction_amount_before: Amount before
+      transaction_amount_after: Amount after
+      base_currency_amount: Base currency amount
+      game_name: Game name
+      vendor_name: Vendor name
+      content_provider_name: Content provider name
+      game_round_id: Game round Id
+      category_type: Category type
+      round_status: Round status
+      game_id: Game Id
 
-  currencies:
-    edit:
-      title: Edit Currency
-    create:
-      success: 'Currency %{code} was created successfully'
-    update:
-      success: 'Currency settings were updated successfully'
-
-  customers:
-    statistics:
-      deposit_and_withdrawal:
-        title: Financials - Deposits & Withdrawals category
-      bonus:
-        title: Bonus
-      sports_betting:
-        title: Sports Betting
-      profit_and_revenue:
-        title: 'Profit / Revenue'
-      casino_performance:
-        title: "Casino performance"
-  date:
-    formats:
-      date_picker: "%-d %B %Y"
-      informative: "%a, %d %b %Y (%d-%m-%Y)"
-      default: "%-d %B %Y"
-
-  documents:
-    history_title: "Files history: %{document_type}"
-
-  entities:
-    activity: Activity
-    activities: Activities
-    deposit: Deposit
-    activity_count:
-      zero: No activities
-      one: 1 activity
-      other: "%{count} activities"
-    balance: Balance
-    balances: Balances
-    balance_count:
-      zero: No balances
-      one: 1 balance
-      other: "%{count} balances"
-    bet: Bet
-    bets: Bets
-    bet_count:
-      zero: No bets
-      one: 1 bet
-      other: "%{count} bets"
-    betting_limit: Betting limit
-    betting_limits: Betting limits
-    betting_limit_by_sport: Betting limit by sport
-    betting_limits_by_sport: Betting limits by sport
-    bonus: Bonus
-    bonuses: Bonuses
-    bonus_count:
-      zero: No bonuses
-      one: 1 bonus
-      other: "%{count} bonuses"
-    categories: Categories
-    comment: Comment
-    comments: Comments
-    comment_count:
-      zero: No comments
-      one: 1 comment
-      other: "%{count} comments"
-    currency: Currency
-    currencies: Currencies
-    currency_count:
-      zero: No currencies
-      one: 1 currency
-      other: "%{count} currencies"
-    customer: Customer
-    customers: Customers
-    customer_count:
-      zero: No customers
-      one: 1 customer
-      other: "%{count} customers"
-    customer_document: Customer document
-    customer_documents: Customer documents
-    customer_note: Customer note
-    customer_notes: Customer notes
-    customer_note_count:
-      zero: No customer notes
-      one: 1 customer note
-      other: "%{count} customer notes"
-    debit_credit_history: Debit/Credit history
-    deposit_limit: Deposit limit
-    deposit_limits: Deposit limits
-    document: Document
-    documents: Documents
-    document_count:
-      zero: No documents
-      one: 1 document
-      other: "%{count} documents"
-    entry: Entry
-    entries: Entries
-    entry_request: Entry request
-    entry_requests: Entry requests
-    entry_request_count:
-      zero: No entry requests
-      one: 1 entry request
-      other: "%{count} entry requests"
-    entry_rule: Entry Rule
-    entry_rules: Entry Rules
-    event: Event
-    events: Events
-    event_count:
-      zero: No events
-      one: 1 event
-      other: "%{count} events"
-    event_scopes: Event Scopes
-    exchange_rate: "Exchange rate (for 1 %{code})"
-    free_spin_bonus: Free spin bonus
-    free_spin_bonuses: Free spin bonuses
-    reverse_exchange_rate: "Reverse exchange rate (for 1 %{code})"
-    global_betting_limit: Global betting limit
-    global_betting_limits: Global betting limits
-    label: Label
-    labels: Labels
-    label_count:
-      zero: No labels
-      one: 1 label
-      other: "%{count} labels"
-    market: Market
-    markets: Markets
-    market_count:
-      zero: No markets
-      one: 1 market
-      other: "%{count} markets"
-    monthly_balance_query_results: Monthly balance query results
-    monthly_balance_query_results_short: Monthly balances
-    request_information: Request information
-    entry_information: Entry information
-    scope: Scope
-    scopes: Scopes
-    scope_count:
-      zero: No scopes
-      one: 1 scope
-      other: "%{count} scopes"
-    titles: Titles
-    transaction: Transaction
-    transactions: Transactions
-    content_providers: Content Providers
-    vendors: Vendors
-    transactions_count:
-      zero: No transactions
-      one: 1 transaction
-      other: "%{count} transactions"
-    wallet: Wallet
-    wallets: Wallets
-    wallet_count:
-      zero: No wallets
-      one: 1 wallet
-      other: "%{count} wallets"
-    market_template: Market template
-    market_templates: Market templates
-    wallet_name: "%{currency} wallet"
-    balance_entries: Balance entries
-    balance_entry_requests: Balance entry requests
-    withdrawals: Withdrawal requests
-    online_customers: Online customers
-
-  event_scopes:
-    edit:
-      heading: Edit event scope
-
-    update:
-      success_message: Event scope was successfully updated
-
-  every_matrix:
-    categories:
-      index:
-        context: 'Context / Slug'
+    currencies:
       edit:
-        title: Edit category
-        context: 'Context / Slug'
-    content_providers:
-      edit:
-        title: Edit content provider
-    vendors:
-      edit:
-        title: Edit vendor
+        title: Edit Currency
+      create:
+        success: 'Currency %{code} was created successfully'
+      update:
+        success: Currency settings were updated successfully
 
-  transactions:
-    payment_methods:
-      credit_card: Credit Card
-      skrill: Skrill
-      neteller: Neteller
-      eco_payz: ecoPayz
-      idebit: iDebit
-      paysafecard: paysafecard
-      sofort: Sofort
-      ideal: iDeal
-      bitcoin: Bitcoin
-      webmoney: WebMoney
-      yandex: Yandex
-      qiwi: Qiwi
-      safecharge_unknown: System
-      simulated: System
-      cashier: Cashier
+    customers:
+      statistics:
+        deposit_and_withdrawal:
+          title: Financials - Deposits & Withdrawals category
+        bonus:
+          title: Bonus
+        sports_betting:
+          title: Sports Betting
+        profit_and_revenue:
+          title: Profit / Revenue
+        casino_performance:
+          title: Casino performance
 
-  errors:
-    messages:
-      account_locked:
-        additional_info:
-          until: " until %{until_date}"
-        default: "Account is locked%{additional_info}"
-      age_adult: You must be over the legal age to create an account
-      betting_limits: Betting limits validation failed
-      bet_odd_inactive: Odd for bet became inactive
-      bet_odd_outdated: Odd for bet became outdated
-      bonus_activation_failed: Bonus activation failed, please try later
-      bonus_minimum_requirements_failed: Please ensure your deposit meets the minimum requirements
-      customer_has_active_bonus: It seems you already have an active bonus, please remove bonus code to deposit
-      customer_should_have_active_bonus: It seems you don't have an active bonus now
-      customer_should_have_no_pending_bets: You are unable to cancel a bonus while having pending bets containing bonus
-      repeated_bonus_activation: It seems you have already claimed this bonus, please enter a different code
-      customer_account_kind_transit: Can't transit customer account kind
-      customer_activated: Customer already activated
-      country_not_supported: Your country is not supported for this payment method
-      state_not_supported: Your state is not supported for this payment method
-      currency_not_supported: Your currency is not supported for this payment method
-      email_verified: Email already verified
-      deposit_limits: Deposit limit reached, please try again later
-      previous_deposits_number_violation: "You need to have made %{number} successful deposits to be able to claim this bonus"
-      document_type_not_supported: Document type not supported
-      entry_amount_between: "%{kind} amount should be between %{min_amount} and %{max_amount} %{currency}"
-      amount_greater_than_allowed: "Amount should be less than %{max_amount} %{currency}"
-      amount_negative: Amount should be more than zero
-      amount_less_than_allowed: "Amount should be greater than %{min_amount} %{currency}"
-      minimum_withdrawal_amount_reached: "Minimal withdrawal amount is %{min_amount} %{currency}"
-      maximum_withdrawal_amount_reached: "Maximum withdrawal amount is %{max_amount} %{currency}"
-      max_confiscation_amount_with_bonus: "You can confiscate sum up to %{max_amount} because customer has active bonus"
-      min_confiscation_amount_reached: "Minimal confiscation amount is %{min_amount} %{currency}"
-      max_confiscation_amount_reached: "Maximum confiscation amount is %{max_amount} %{currency}"
-      provider_disconnected: Provider is disconnected
-      market_inactive: Bet market is inactive
-      amount_not_negative: "%{subject} amount cannot beсome negative. Current amount: %{current_amount}, new amount: %{new_amount}."
-      wrong_login_credentials: Wrong username, email or password
-      imported_customer_first_login: "For your safety, we require you to update your password. Please follow the instructions sent to email %{email}"
-      initiator_type: "can be only admin"
-      wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
-      account_transition: "can't bet changed from '%{from}' to '%{to}'"
-      balance_request_uniqueness: 'already has balance entry request with this kind.'
-      real_money_not_negative_amount: Real money amount has to be negative value!
-      bet_placed_with_not_positive_amount: Bet amount has to be more than zero!
-      entry_request_for_settled_bet: "Entry request for settled bet is expected! Received for bet %{bet_id}"
-      deposit_limit_exceeded: 'Deposit limit exceeded'
-      bonus_expired: 'Bonus is expired!'
-      deposit_payment_error: 'Deposit payment error!'
-      entry_request_failed: Entry request has been already failed
-      deposit_attempts_exceeded: Deposit attempts exceeded, contact support agent
-      deposit_attempt_is_not_succeded: Deposit attempt is not succeded
-      technical_error_happened: Technical error happened
-      payment_failed_error: Payment was failed
-      payment_failed_with_reason_error: "Payment was failed: `%{reason}`"
-      payment_cancelled_error: Payment was cancelled
-      cancelled_by_customer: Payment was cancelled by customer
-      deposit_cancelled: Deposit was cancelled
-      deposit_failed: The transaction was declined by your financial institution. Please try using another deposit method
-      unsupported_payment_method: "Payment method '%{code}' is not implemented"
-      nonexistent_bet: "Bet with validation ticket does not exist"
-      password_invalid: Incorrect password
-      unavailable_country: This game is unavailable
-      unsupported_withdraw_method: "Payment method %{name} is not supported"
-      reset_password_empty_token: Empty reset token
-      reset_password_token_not_found: No user found for password reset token
-      reset_password_token_expired: Reset password token expired
-      reset_password_confirmation_mismatch: Confirmation does not match password
-      reserved: is reserved by system
-      nonexistent_producer: Producer not found.
-      unsupported_event_type: Event type is not supported
-      bonus_for_wrong_customer: Unexpected customer bonus for bet
-      tos_not_accepted: You have to accept T&C and privacy policy
-      blank_birth_date: Date of birth can't be blank
-      crypto_deposit_limit: "External service requires amount higher than %{limit}"
-      limits_error: Currency has not passed limits validation
-      crypto_limits_service_unavailable: 'External service experiences issues at the moment. Try again later'
-      invalid_combo_bets: Multiple selection for the same event or team, please remove dublicates
-      too_many_bet_legs: "Bets limit is reached. Max allowed count of bets per single placement: %{limit}"
+    documents:
+      history_title: "Files history: %{document_type}"
 
-      mts:
-        internal_server_error: "Betting service is experiencing some issues now. Bet was not accepted."
-        ticket_not_found: "Ticket not found for bet"
-        inconsistent_bookmaker_code: "Inconsistent ticket bookmaker Code for bet"
-        live_selections: "Ticket contains live selections for bet"
-        cancellation_time_expired: "Ticket contains live selections for bet"
-        pre_match_section: "Cannot be cancelled because it contains pre-match selection for bet"
-        cancellation_option_not_active: "Cannot be cancelled because particular cancellation option is not active for bet"
-        ticket_already_settled: "Cannot be cancelled because ticket is already settled for bet"
-        generic_exception: "Generic exception code for bet"
-
-      entry_requests:
-        bonus_expired: 'Customer bonus is expired!'
-
-      payments:
-        gateway_error: 'Technical gateway error'
-        deposits:
-          currency_error: 'Your currency is currently not supported for depositing with Credit Cards. We are working hard to make sure this is in place early next week. Our apologies for the inconvenience.'
-        withdrawals:
-          credit_card:
-            inconsistent: Last four credit card digits should be the same as were used for deposit
-          skrill:
-            inconsistent: Skrill payment option should be the same as was used for deposit
-          eco_payz:
-            inconsistent: ecoPayz payment option should be the same as was used for deposit
-          idebit:
-            inconsistent: iDebit payment option should be the same as was used for deposit
-          neteller:
-            inconsistent: Neteller payment option should be the same as was used for deposit
-
-      backoffice:
-        not_enough_money: Please check customer available balance
-        pending_bets_with_bonus: Customer has pending bets containing bonus
-        negative_balance: Customer has negative real money/bonus balance
-      deposit:
-        method_not_supported: Deposit method is not supported
-      withdrawal:
-        not_enough_money: Please check your available balance
-        invalid_payment_method: "Invalid payment method: %{payment_method}"
-        invalid_payload: "Missing %{attr}"
-        invalid_withdrawal: Should be rejected. Balance has not been reduced
-        method_not_supported: Withdraw method is not supported
-        customer_not_verified: Customer should be verified to withdraw funds
-        pending_bets_with_bonus: You are unable to request a withdrawal while having pending bets containing bonus
-        negative_balance: You are unable to request a withdrawal while having negative real money/bonus balance
-        confirmation_error: Fail during withdrawal confirmation
-        no_order_details: "Fail during fetching error details for order id: %{id}"
-      withdrawals:
-        not_actionable: Withdrawal request has already been reviewed
-        empty_comment: Rejection comment is required
-      graphql:
-        events:
-          context:
-            invalid: "Unsupported context '%{context}'. Supported contexts: %{contexts}"
-            blank:   "Field 'sportEvents' is missing required arguments: context"
-        transactions:
-          kind:
-            invalid: "Invalid transaction kind: '%{kind}'"
-      wallets:
-        not_unique: 'You have the same wallet created already'
-        fiat_not_unique: 'You can have only one FIAT wallet'
-      bets:
-        invalid_status: "'%{status}' is not valid bet status"
-        cannot_be_proceeded: Bet cannot be processed
-        not_accepted: Bet is not accepted
-        not_supported_void_factor: Void factor is not supported
-        unchanged_status: "Bet is already '%{status}'"
-        unprocessed: Bet has never been processed
-        settled_bet_leg: Bet leg is already settled
-      bonuses:
-        failed_authorization: Bonus authorization failed
-
-  expiration_reasons:
-    converted: Converted
-    expired_by_date: Expired by date
-    expired_by_new_activation: Expired by new activation
-    manual_cancel: Expired in Backoffice
-
-  genders:
-    female: Female
-    male: Male
-
-  global:
-    minimal_title: ArcaneBet
-    title: ArcaneBet Backoffice
-
-  initiators:
-    customer: Customer
-    user: User
-
-  kinds:
-    bet: Bet
-    deposit: Deposit
-    internal_credit: Internal credit
-    internal_debit: Internal debit
-    win: Win
-    withdraw: Withdraw
-    refund: Refund
-    rollback: Rollback settlement by Radar
-    system_bet_cancel: Cancellation by Radar
-    bonus_change: Bonus balance change
-    bonus: Bonus money
-    real_money: Real money
-    category: Category
-    tournament: Tournament
-    season: Season
-    payment_methods:
-      credit_card: Credit Card
-      skrill: Skrill
-      neteller: Neteller
-      eco_payz: ecoPayz
-      idebit: iDebit - Online Banking Transfers
-      paysafecard: paysafecard
-      sofort: Sofort
-      ideal: iDeal
-      bitcoin: Bitcoin
-      webmoney: WebMoney
-      yandex: Yandex
-      qiwi: Qiwi
-      safecharge_unknown: Safecharge unknown
-      simulated: Simulated
-      cashier: Cashier
-
-  graphql:
-    internal_server_error: 'Something went wrong with your query, fellow :)'
-
-  labels:
-    negative_balance: negative-balance
-
-  lock_reasons:
-    closed: Closed
-    cooling_off: Cooling off
-    fraud: Fraud
-    locked: Lock
-    password_recovery: Password recovery
-    self_exclusion: Self-exclusion
-
-  mailers:
-    daily_report_mailer:
-      subject: Daily report
-    arcanebet_mailer:
-      suspicious_login:
-        subject: Suspicious login attempt
-      verification_mail:
-        subject: Account verified
-      email_verification:
-        subject: Verify your email address
-      reset_password_mail:
-        subject: Reset your password
-
-  messages:
-    bet_legs:
-      flash: Bet leg settlement status successfully updated
-    bets:
-      flash: Bet successfully updated and will be processed ASAP. Check bet status in bets table
-    deposit_limits:
-      delete: "Are you sure you want to delete customer (%{customer_name}) deposit limit?"
-    entry_request:
-      flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
-    reset_password_confirmation: "Are you sure you want to reset customer (%{customer_name}) password?"
-    reset_password_success: Password copied to clipboard
-    reset_password_error: Could not copy password to clipboard
-    withdrawal_confirmed: Withdrawal confirmed.
-    withdrawal_rejected: Withdrawal rejected.
-    success_deposit: Deposit was processed successfully
-    reset_password_token:
-      valid: 'Reset password token is valid'
-      invalid: 'Reset password token is invalid'
-      expired: 'Reset password token expired'
-
-  navigation:
-    customer:
-      account: Account
-      account_management: Account management
+    entities:
       activity: Activity
+      activities: Activities
+      deposit: Deposit
+      activity_count:
+        zero: No activities
+        one: 1 activity
+        other: "%{count} activities"
+      balance: Balance
+      balances: Balances
+      balance_count:
+        zero: No balances
+        one: 1 balance
+        other: "%{count} balances"
+      bet: Bet
       bets: Bets
-      casino_transactions: Casino Spins
-      betting_limits: Betting Limits
+      bet_count:
+        zero: No bets
+        one: 1 bet
+        other: "%{count} bets"
+      betting_limit: Betting limit
+      betting_limits: Betting limits
+      betting_limit_by_sport: Betting limit by sport
+      betting_limits_by_sport: Betting limits by sport
+      bonus: Bonus
       bonuses: Bonuses
-      deposit_limit: Deposit Limit
+      bonus_count:
+        zero: No bonuses
+        one: 1 bonus
+        other: "%{count} bonuses"
+      categories: Categories
+      comment: Comment
+      comments: Comments
+      comment_count:
+        zero: No comments
+        one: 1 comment
+        other: "%{count} comments"
+      currency: Currency
+      currencies: Currencies
+      currency_count:
+        zero: No currencies
+        one: 1 currency
+        other: "%{count} currencies"
+      customer: Customer
+      customers: Customers
+      customer_count:
+        zero: No customers
+        one: 1 customer
+        other: "%{count} customers"
+      customer_document: Customer document
+      customer_documents: Customer documents
+      customer_note: Customer note
+      customer_notes: Customer notes
+      customer_note_count:
+        zero: No customer notes
+        one: 1 customer note
+        other: "%{count} customer notes"
+      debit_credit_history: Debit/Credit history
+      deposit_limit: Deposit limit
+      deposit_limits: Deposit limits
+      document: Document
       documents: Documents
-      notes: Notes
-      statistic: Account overview
-    dashboard: Dashboard
-    document:
-      pending: Pending documents
-      recently_actioned: Recently actioned
-    documents: Documents
+      document_count:
+        zero: No documents
+        one: 1 document
+        other: "%{count} documents"
+      entry: Entry
+      entries: Entries
+      entry_request: Entry request
+      entry_requests: Entry requests
+      entry_request_count:
+        zero: No entry requests
+        one: 1 entry request
+        other: "%{count} entry requests"
+      entry_rule: Entry Rule
+      entry_rules: Entry Rules
+      event: Event
+      events: Events
+      event_count:
+        zero: No events
+        one: 1 event
+        other: "%{count} events"
+      event_scopes: Event Scopes
+      exchange_rate: "Exchange rate (for 1 %{code})"
+      free_spin_bonus: Free spin bonus
+      free_spin_bonuses: Free spin bonuses
+      reverse_exchange_rate: "Reverse exchange rate (for 1 %{code})"
+      global_betting_limit: Global betting limit
+      global_betting_limits: Global betting limits
+      label: Label
+      labels: Labels
+      label_count:
+        zero: No labels
+        one: 1 label
+        other: "%{count} labels"
+      market: Market
+      markets: Markets
+      market_count:
+        zero: No markets
+        one: 1 market
+        other: "%{count} markets"
+      monthly_balance_query_results: Monthly balance query results
+      monthly_balance_query_results_short: Monthly balances
+      request_information: Request information
+      entry_information: Entry information
+      scope: Scope
+      scopes: Scopes
+      scope_count:
+        zero: No scopes
+        one: 1 scope
+        other: "%{count} scopes"
+      titles: Titles
+      transaction: Transaction
+      transactions: Transactions
+      content_providers: Content Providers
+      vendors: Vendors
+      transactions_count:
+        zero: No transactions
+        one: 1 transaction
+        other: "%{count} transactions"
+      wallet: Wallet
+      wallets: Wallets
+      wallet_count:
+        zero: No wallets
+        one: 1 wallet
+        other: "%{count} wallets"
+      market_template: Market template
+      market_templates: Market templates
+      wallet_name: "%{currency} wallet"
+      balance_entries: Balance entries
+      balance_entry_requests: Balance entry requests
+      withdrawals: Withdrawal requests
+      online_customers: Online customers
 
-  account:
-    impersonate:
-      failure: 'Technical error happened. Feel free to contact administration to help you'
-
-    request_password_reset:
-      not_found_error: "You've entered a wrong email address. There is no such customer"
-      technical_error: 'Technical error happened. Feel free to contact administration to help you'
-
-  origins:
-    cashier: Cashier
-
-  ranges:
-    day: Day
-    week: Week
-    month: Month
-
-  recaptcha:
     errors:
-      verification_failed: Captcha verification has been failed.
+      messages:
+        customer_activated: Customer already activated
+        amount_not_negative: "%{subject} amount cannot beсome negative. Current amount: %{current_amount}, new amount: %{new_amount}."
+        entry_request_for_settled_bet: "Entry request for settled bet is expected! Received for bet %{bet_id}"
+        wrong_market_state: "Changing market status from '%{initial_state}' to '%{new_state}' is restricted"
+        account_transition: "Account type can't bet changed from '%{from}' to '%{to}'"
+        payment_failed_with_reason_error: "Payment was failed: `%{reason}`"
+        payment_failed_error: Payment was failed
+        payment_cancelled_error: Payment was cancelled
+        nonexistent_bet: Bet with validation ticket does not exist
+        reset_password_empty_token: Empty reset token
+        reset_password_token_not_found: No user found for password reset token
+        reset_password_token_expired: Reset password token expired
+        reset_password_confirmation_mismatch: Confirmation does not match password
+        unsupported_event_type: Event type is not supported
+        bonus_for_wrong_customer: Unexpected customer bonus for bet
+        cancelled_by_customer: Payment was cancelled by customer
+        entry_request_failed: Entry request has been already failed
+        max_confiscation_amount_with_bonus: "You can confiscate sum up to %{max_amount} because customer has active bonus"
+        min_confiscation_amount_reached: "Minimal confiscation amount is %{min_amount} %{currency}"
+        max_confiscation_amount_reached: "Maximum confiscation amount is %{max_amount} %{currency}"
+        initiator_type: can be only admin
+        mts:
+          ticket_not_found: Ticket not found for bet
+          inconsistent_bookmaker_code: Inconsistent ticket bookmaker Code for bet
+          live_selections: Ticket contains live selections for bet
+          cancellation_time_expired: Ticket contains live selections for bet
+          pre_match_section: Cannot be cancelled because it contains pre-match selection for bet
+          cancellation_option_not_active: Cannot be cancelled because particular cancellation option is not active for bet
+          ticket_already_settled: Cannot be cancelled because ticket is already settled for bet
+          generic_exception: Generic exception code for bet"
+        entry_requests:
+          bonus_expired: Customer bonus is expired!
+        backoffice:
+          not_enough_money: Please check customer available balance
+          pending_bets_with_bonus: Customer has pending bets containing bonus
+          negative_balance: Customer has negative real money/bonus balance
+        deposit:
+          method_not_supported: Deposit method is not supported
+        withdrawal:
+          invalid_withdrawal: Should be rejected. Balance has not been reduced
+          customer_not_verified: Customer should be verified to withdraw funds
+          confirmation_error: Fail during withdrawal confirmation
+          no_order_details: "Fail during fetching error details for order id: %{id}"
+        withdrawals:
+          not_actionable: Withdrawal request has already been reviewed
+          empty_comment: Rejection comment is required
+        graphql:
+          events:
+            context:
+              invalid: "Unsupported context '%{context}'. Supported contexts: %{contexts}"
+              blank:   "Field 'sportEvents' is missing required arguments: context"
+          transactions:
+            kind:
+              invalid: "Invalid transaction kind: '%{kind}'"
+        wallets:
+          not_unique: 'You have the same wallet created already'
+          fiat_not_unique: 'You can have only one FIAT wallet'
+        bets:
+          invalid_status: "'%{status}' is not valid bet status"
+          cannot_be_proceeded: Bet cannot be processed
+          not_accepted: Bet is not accepted
+          not_supported_void_factor: Void factor is not supported
+          unchanged_status: "Bet is already '%{status}'"
+          unprocessed: Bet has never been processed
+          settled_bet_leg: Bet leg is already settled
+        payments:
+          withdrawals:
+            credit_card:
+              inconsistent: Last four credit card digits should be the same as were used for deposit
+            skrill:
+              inconsistent: Skrill payment option should be the same as was used for deposit
+            eco_payz:
+              inconsistent: ecoPayz payment option should be the same as was used for deposit
+            idebit:
+              inconsistent: iDebit payment option should be the same as was used for deposit
+            neteller:
+              inconsistent: Neteller payment option should be the same as was used for deposit
 
-  settles:
-    lost: Lost
-    won: Won
-    voided: Voided
+    expiration_reasons:
+      converted: Converted
+      expired_by_date: Expired by date
+      expired_by_new_activation: Expired by new activation
+      manual_cancel: Expired in Backoffice
 
-  statuses:
-    active: Active
-    expired: Expired
-    failed: Failed
-    initial: Initial
-    live: Live
-    not_verified: Not verified
-    offline: Offline
-    pending: Pending
-    settled: Settled
-    succeeded: Succeeded
-    verified: Verified
-    cancelled_by_system: Cancelled
-    sent_to_internal_validation: Internal validation
-    validated_internally: Validated internally
-    sent_to_external_validation: External validation
-    accepted: Accepted
-    pending_cancellation: Pending cancellation
-    pending_mts_cancellation: Pending MTS cancellation
-    cancelled: Cancelled
-    rejected: Rejected
-    pending_manual_settlement: Waiting for manual settlement
+    initiators:
+      customer: Customer
+      user: User
 
-  payments:
-    withdrawals:
-      success_message: "Withdrawal has been sent to processing successfully"
-      payment_methods:
-        credit_card:
-          title: Credit card
-          range: 'Range: %{min_amount} - %{max_amount} %{code} / No service fee'
-          description: 'Debit/Credit Card withdrawals come with a 0% withdrawal fee'
-        skrill:
-          title: Skrill
-          range: 'Range: %{min_amount} - %{max_amount} %{code}'
-        neteller:
-          title: Neteller
-          range: 'Range: %{min_amount} - %{max_amount} %{code}'
-        eco_payz:
-          title: ecoPayz
-          range: 'Range: %{min_amount} - %{max_amount} %{code}'
-        idebit:
-          title: iDebit - Online Banking Transfers
-          range: 'Range: %{min_amount} - %{max_amount} %{code}'
-        bitcoin:
-          title: Bitcoin
-          range: 'Range: %{min_amount} - %{max_amount} %{code}'
-          description: 'Bitcoin transactions have slight delays. It will be processed soon as possible'
-          errors:
-            address_format: Please, recheck address
+    graphql:
+      internal_server_error: 'Something went wrong with your query, fellow :)'
 
-    deposits:
-      success_message: 'You will be redirected to the payment page in a while'
-      coins_paid:
-        statuses:
-          confirmed: You are safe to process this transaction
-          not_confirmed: Transaction is not yet confirmed
-          cancelled: This transaction is a double spend. Pay attention to this transaction.
+    labels:
+      negative_balance: negative-balance
 
-        errors:
-          unknown_status: "Unknown status received: '%{status}'"
-      payment_methods:
-        eco_payz:
-          title: ecoPayz
-        idebit:
-          title: iDebit - Online Banking Transfers
-        paysafecard:
-          title: paysafecard
+    mailers:
+      daily_report_mailer:
+        subject: Daily report
 
-  time:
-    formats:
-      date_picker: "%-d %B %Y"
-      default: "%-d %B %Y %-k:%M"
-      long: "%-d %B %Y %-k:%M:%S"
+    messages:
+      bet_legs:
+        flash: Bet leg settlement status successfully updated
+      bets:
+        flash: Bet successfully updated and will be processed ASAP. Check bet status in bets table
+      deposit_limits:
+        delete: "Are you sure you want to delete customer (%{customer_name}) deposit limit?"
+      entry_request:
+        flash: Entry request successfully created and will be processed ASAP. Check request status in entry requests table
+      reset_password_confirmation: "Are you sure you want to reset customer (%{customer_name}) password?"
+      reset_password_success: Password copied to clipboard
+      reset_password_error: Could not copy password to clipboard
+      withdrawal_confirmed: Withdrawal confirmed.
+      withdrawal_rejected: Withdrawal rejected.
+      reset_password_token:
+        valid: Reset password token is valid
+        invalid: Reset password token is invalid
+        expired: Reset password token expired
 
-  dashboard_report:
-    title: Summary
-    pending_bets_count: Pending bets number
-    pending_bets_amount: Pending bets volume
-    from: Start date
-    to: End date
-    submit: Update
-    no_data_for_date_range: No data available for selected date range
-    bonus_wager_amount: Bet bonus wager amount
-    real_money_wager_amount: Bet wager cash amount
-    bonus_payout_amount: Bet bonus payout amount
-    real_money_payout_amount: Bet payout cash amount
-    total_bet_wager_amount: Total wager sports amount
-    total_bet_payout_amount: Total payout sports amount
-    total_casino_wager_amount: Total wager casino amount
-    total_casino_payout_amount: Total payout casino amount
-    ggr_casino_amount: GGR casino
-    ggr_casino_bonus_amount: Bonus GGR casino
-    total_ggr_amount: Total GGR
-    sports_ratio_by_ggr: Sports ratio in total GGR %
-    casino_ratio_by_ggr: Casino ratio in total GGR %
-    casino_games_count: Total number of casino games
-    bonus_deposit_amount: Total bonus awarded
-    real_money_deposit_amount: Total deposits amount
-    bonus_pnl_percentage: Bonus profit/loss %
-    real_money_pnl_percentage: Real money profit/loss %
-    total_pnl_percentage: Total profit/loss %
-    withdraw_amount: Total withdraw amount
-    signups_count: Total signups
-    active_customers_count: Total active users
-    active_sports_customers_count: Total active sports users
-    active_casino_customers_count: Total active casino users
-    bets_count: Total number of bets
-    pending_withdrawals_amount: Pending withdraw amount
-    real_money_balance_total: Cash balance total
-    bonus_balance_total: Bonus balance total
-    balance_total: Balance total
-  number:
-    currency:
-      format:
-        format: "%n %u"
-        unit: '€'
+    navigation:
+      customer:
+        account: Account
+        account_management: Account management
+        activity: Activity
+        bets: Bets
+        casino_transactions: Casino Spins
+        betting_limits: Betting Limits
+        bonuses: Bonuses
+        deposit_limit: Deposit Limit
+        documents: Documents
+        notes: Notes
+        statistic: Account overview
+      dashboard: Dashboard
+      document:
+        pending: Pending documents
+        recently_actioned: Recently actioned
+      documents: Documents
+
+    account:
+      impersonate:
+        failure: Technical error happened. Feel free to contact administration to help you
+
+    dashboard_report:
+      title: Summary
+      pending_bets_count: Pending bets number
+      pending_bets_amount: Pending bets volume
+      from: Start date
+      to: End date
+      submit: Update
+      no_data_for_date_range: No data available for selected date range
+      bonus_wager_amount: Bet bonus wager amount
+      real_money_wager_amount: Bet wager cash amount
+      bonus_payout_amount: Bet bonus payout amount
+      real_money_payout_amount: Bet payout cash amount
+      total_bet_wager_amount: Total wager sports amount
+      total_bet_payout_amount: Total payout sports amount
+      total_casino_wager_amount: Total wager casino amount
+      total_casino_payout_amount: Total payout casino amount
+      ggr_casino_amount: GGR casino
+      ggr_casino_bonus_amount: Bonus GGR casino
+      total_ggr_amount: Total GGR
+      sports_ratio_by_ggr: Sports ratio in total GGR %
+      casino_ratio_by_ggr: Casino ratio in total GGR %
+      casino_games_count: Total number of casino games
+      bonus_deposit_amount: Total bonus awarded
+      real_money_deposit_amount: Total deposits amount
+      bonus_pnl_percentage: Bonus profit/loss %
+      real_money_pnl_percentage: Real money profit/loss %
+      total_pnl_percentage: Total profit/loss %
+      withdraw_amount: Total withdraw amount
+      signups_count: Total signups
+      active_customers_count: Total active users
+      active_sports_customers_count: Total active sports users
+      active_casino_customers_count: Total active casino users
+      bets_count: Total number of bets
+      pending_withdrawals_amount: Pending withdraw amount
+      real_money_balance_total: Cash balance total
+      bonus_balance_total: Bonus balance total
+      balance_total: Balance total

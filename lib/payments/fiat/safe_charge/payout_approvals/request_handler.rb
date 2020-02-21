@@ -82,7 +82,7 @@ module Payments
           end
 
           def default_error_message
-            I18n.t('errors.messages.withdrawal.confirmation_error')
+            I18n.t('internal.errors.messages.withdrawal.confirmation_error')
           end
         end
       end

@@ -44,7 +44,7 @@ describe GraphQL, '#sign_in' do
 
     it 'returns wrong credentials error' do
       expect(result['errors'][0]['message'])
-        .to eq('Wrong username, email or password')
+        .to eq(I18n.t('errors.messages.wrong_login_credentials'))
     end
 
     it 'creates LoginActivity record' do
@@ -112,7 +112,7 @@ describe GraphQL, '#sign_in' do
 
     it 'returns wrong credentials' do
       expect(result['errors'][0]['message'])
-        .to eq('Wrong username, email or password')
+        .to eq(I18n.t('errors.messages.wrong_login_credentials'))
     end
 
     it 'creates LoginActivity record' do

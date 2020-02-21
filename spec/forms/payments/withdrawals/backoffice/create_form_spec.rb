@@ -103,7 +103,7 @@ describe ::Payments::Withdrawals::Backoffice::CreateForm, type: :model do
   context 'with negative bonus balance' do
     let(:error_message) do
       'Validation failed: ' \
-        "#{I18n.t('errors.messages.backoffice.negative_balance')}"
+      "#{I18n.t('internal.errors.messages.backoffice.negative_balance')}"
     end
 
     before { wallet.update(bonus_balance: -10) }
@@ -118,7 +118,7 @@ describe ::Payments::Withdrawals::Backoffice::CreateForm, type: :model do
     let(:balance_amount) { withdrawal_amount - 10 }
     let(:error_message) do
       'Validation failed: ' \
-      "#{I18n.t('errors.messages.backoffice.not_enough_money')}"
+      "#{I18n.t('internal.errors.messages.backoffice.not_enough_money')}"
     end
 
     it 'raises error when wallet amount is less than withdrawal amount' do

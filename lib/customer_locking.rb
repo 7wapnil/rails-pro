@@ -29,7 +29,7 @@ class CustomerLocking
   def build_date
     return unless @customer.locked
 
-    return I18n.t('infinite') unless @customer.locked_until
+    return I18n.t('internal.infinite') unless @customer.locked_until
 
     I18n.l(@customer.locked_until, format: :date_picker)
   end

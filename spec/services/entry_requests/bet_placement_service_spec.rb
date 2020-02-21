@@ -200,7 +200,7 @@ describe EntryRequests::BetPlacementService do
 
   context 'with failed entry request' do
     let(:error_message) do
-      I18n.t('errors.messages.entry_request_failed')
+      I18n.t('internal.errors.messages.entry_request_failed')
     end
 
     before { entry_request.failed! }

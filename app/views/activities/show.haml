@@ -1,24 +1,24 @@
 .row.mt-4
   .col-6.offset-3
-    = card header: t('entities.activity'), class: 'activity-info' do
+    = card header: t('internal.entities.activity'), class: 'activity-info' do
       %table.table
         %tr
-          %td= t('attributes.action')
-          %td= t("events.#{@activity.event}", @activity.interpolation)
+          %td= t('internal.attributes.action')
+          %td= t("internal.events.#{@activity.event}", @activity.interpolation)
         %tr
-          %td= t('attributes.created_at')
+          %td= t('internal.attributes.created_at')
           %td= l(@activity.created_at, format: :long)
         - if @activity.user
           %tr
-            %td= t('attributes.user')
+            %td= t('internal.attributes.user')
             %td= @activity.user_name
         - if @activity.customer
           %tr
-            %td= t('attributes.customer')
+            %td= t('internal.attributes.customer')
             %td= @activity.customer_name
         - if @activity.context
           %tr
-            %td= t('attributes.info')
+            %td= t('internal.attributes.info')
             %td
               %ul.list-unstyled
                 - @activity.context.attributes.each do |attr, value|

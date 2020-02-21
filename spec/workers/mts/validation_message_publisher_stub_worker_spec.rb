@@ -29,7 +29,7 @@ describe Mts::ValidationMessagePublisherStubWorker do
     it 'raises an error' do
       expect { subject.perform(id) }.to raise_error(
         ActiveRecord::RecordNotFound,
-        I18n.t('errors.messages.nonexistent_bet', id: id)
+        I18n.t('internal.errors.messages.nonexistent_bet', id: id)
       )
     end
   end

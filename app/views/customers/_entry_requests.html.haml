@@ -1,4 +1,4 @@
-= card header: t('balance_interaction_requests'),
+= card header: t('internal.balance_interaction_requests'),
        class: 'customer-entry-requests' do
   - if entry_requests.any?
     %table.table
@@ -13,6 +13,6 @@
             %td= status_badge entry_request.status
   - else
     .text-center
-      %em= t(:no_records)
+      %em= t('internal.no_records')
 
   = paginate entry_requests, param_name: :entry_requests_page

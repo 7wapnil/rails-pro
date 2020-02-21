@@ -84,7 +84,7 @@ describe Mts::CancellationResponseHandler do
                 error_object: kind_of(ActiveRecord::RecordNotFound))
       end
 
-      let(:error_message) { I18n.t('errors.messages.nonexistent_bet') }
+      let(:error_message) { I18n.t('internal.errors.messages.nonexistent_bet') }
       let(:status_code) { Mts::Codes::SUCCESSFUL_CODE }
       let!(:bet) do
         create(:bet,

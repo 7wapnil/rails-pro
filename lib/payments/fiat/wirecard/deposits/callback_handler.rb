@@ -64,7 +64,7 @@ module Payments
             ga_client.track_event(deposit_failure(payment_message_status))
 
             entry_request.register_failure!(
-              I18n.t('errors.messages.cancelled_by_customer')
+              I18n.t('internal.errors.messages.cancelled_by_customer')
             )
             fail_related_entities
 
@@ -113,8 +113,10 @@ module Payments
             ga_client.track_event(deposit_failure(payment_message_status))
 
             entry_request.register_failure!(
-              I18n.t('errors.messages.payment_failed_with_reason_error',
-                     reason: payment_message_status)
+              I18n.t(
+                'internal.errors.messages.payment_failed_with_reason_error',
+                reason: payment_message_status
+              )
             )
             fail_related_entities
             raise_payment_failed_error!

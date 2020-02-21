@@ -16,6 +16,6 @@ module WithdrawalHelper
   def actioned_by(user)
     return unless user
 
-    "#{t('attributes.actioned_by')} #{user.email}"
+    "#{t('internal.attributes.actioned_by')} #{user.email}"
   end
 end

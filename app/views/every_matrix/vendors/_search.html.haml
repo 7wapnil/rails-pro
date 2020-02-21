@@ -3,19 +3,19 @@
     %thead
       %tr
         %th
-          .filter_title #{t('attributes.id')}:
+          .filter_title #{t('internal.attributes.id')}:
           .filter_field
             = f.label :id_eq, class: 'sr-only'
             = f.search_field :id_eq, class: 'form-control',
-                                     placeholder: t('attributes.id'),
+                                     placeholder: t('internal.attributes.id'),
                                      autocomplete: :off
 
         %th
-          .filter_title #{t('attributes.name')}:
+          .filter_title #{t('internal.attributes.name')}:
           .filter_field
             = f.label :name_cont, class: 'sr-only'
             = f.search_field :name_cont, class: 'form-control',
-                                         placeholder: t('attributes.name'),
+                                         placeholder: t('internal.attributes.name'),
                                          autocomplete: :off
 
         %th

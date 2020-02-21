@@ -16,7 +16,7 @@ class WithdrawalsController < ApplicationController
 
   def confirm
     withdrawal.confirm!(current_user)
-    flash[:notice] = I18n.t('messages.withdrawal_confirmed')
+    flash[:notice] = I18n.t('internal.messages.withdrawal_confirmed')
   rescue Payments::InvalidTransactionError => error
     flash[:error] = error.validation_errors.messages.first.flatten.join(': ')
   rescue StandardError => e
@@ -28,7 +28,7 @@ class WithdrawalsController < ApplicationController
   def reject
     comment = rejection_params[:comment]
     withdrawal.reject!(current_user, comment)
-    flash[:notice] = I18n.t('messages.withdrawal_rejected')
+    flash[:notice] = I18n.t('internal.messages.withdrawal_rejected')
   rescue StandardError => e
     flash[:error] = e.message
   ensure

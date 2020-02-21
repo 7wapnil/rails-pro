@@ -18,7 +18,7 @@ module Mts
       Bet.find(bet_id)
     rescue ActiveRecord::RecordNotFound
       raise ActiveRecord::RecordNotFound,
-            I18n.t('errors.messages.nonexistent_bet', id: bet_id)
+            I18n.t('internal.errors.messages.nonexistent_bet', id: bet_id)
     end
 
     def notify_betslip(bet)

@@ -2,7 +2,7 @@
 
 class DailyReportMailer < ApplicationMailer
   default from: 'noreply@arcanebet.com',
-          subject: I18n.t('mailers.daily_report_mailer.subject')
+          subject: I18n.t('internal.mailers.daily_report_mailer.subject')
 
   TEMPLATES = {
     daily_report_mail: ENV.fetch('DAILY_REPORT_MAIL_TEMPLATE', '')

@@ -25,7 +25,7 @@ class EventScopesController < ApplicationController
     return render :edit unless result
 
     redirect_to edit_event_scope_path(@event_scope),
-                notice: t('.success_message')
+                notice: t('internal.event_scopes.update.success_message')
   end
 
   private

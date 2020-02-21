@@ -4,63 +4,63 @@
 - content_for :js do
   = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
 
-= card header: t('entities.event'), class: 'events-info mb-3' do
+= card header: t('internal.entities.event'), class: 'events-info mb-3' do
   = simple_form_for event do |f|
     %table.table
       %tr
-        %td= t('attributes.event_id')
+        %td= t('internal.attributes.event_id')
         %td= event.id
       %tr
-        %td= t('attributes.external_id')
+        %td= t('internal.attributes.external_id')
         %td= event.external_id
       %tr
-        %td= t('attributes.name')
+        %td= t('internal.attributes.name')
         %td= event.name
       %tr
-        %td= t('attributes.slug')
+        %td= t('internal.attributes.slug')
         %td
           .input-group
             = f.input_field :slug, class: 'form-control mt-0 mb-3 string required mr-1 rounded'
       %tr
-        %td= t('attributes.sport')
+        %td= t('internal.attributes.sport')
         %td= event.title.name
       %tr
-        %td= t('attributes.meta_title')
+        %td= t('internal.attributes.meta_title')
         %td= f.input :meta_title, as: :text, rows: 2, label: false, class: 'form-control'
       %tr
-        %td= t('attributes.meta_description')
+        %td= t('internal.attributes.meta_description')
         %td= f.input :meta_description, as: :text, rows: 4, label: false, class: 'form-control'
       %tr
-        %td= t('attributes.start_at')
+        %td= t('internal.attributes.start_at')
         %td= safe_date_localize_helper(event.start_at, format: :long, default_result: '-')
       %tr
-        %td= t('attributes.end_at')
+        %td= t('internal.attributes.end_at')
         %td= safe_date_localize_helper(event.end_at, format: :long, default_result: '-')
       %tr
-        %td= t('attributes.status')
+        %td= t('internal.attributes.status')
         %td= event.status
       %tr
-        %td= t('entities.labels')
+        %td= t('internal.entities.labels')
         %td
           = labels_selector(event.object, labels)
           %button.btn.btn-success.mt-2.save_labels{ disabled: true,
-             data: { label_selector: "event_#{event.id}" } }= t(:save)
+             data: { label_selector: "event_#{event.id}" } }= t('internal.save')
       %tr
-        %td= t('entities.bets')
+        %td= t('internal.entities.bets')
         %td= event.bets.length
       %tr
-        %td= t('attributes.wager')
+        %td= t('internal.attributes.wager')
         %td= event.bets.sum(&:amount)
       %tr
-        %td= t('attributes.live_coverage')
+        %td= t('internal.attributes.live_coverage')
         %td= status_badge(event.traded_live ? 'live' : 'offline')
       = render 'twitch', f: f
       %tr
-        %td= t('attributes.priority')
+        %td= t('internal.attributes.priority')
         %td
           = f.select :priority, Event::PRIORITIES, {}, class: 'form-control-sm'
       %tr
-        %td= t('entities.scopes')
+        %td= t('internal.entities.scopes')
         %td
           %ul.list-unstyled
             - event.event_scopes.each do |scope|
@@ -68,20 +68,20 @@
                 %b #{scope.kind}:
                 %span= scope.name
       %tr
-        %td= t('attributes.event_status')
+        %td= t('internal.attributes.event_status')
         %td= event.status
       %tr
-        %td= t('attributes.visible')
+        %td= t('internal.attributes.visible')
         %td
           %span.toggle_container
             = f.check_box :visible, class: 'toggle_button', id: 'event_visibility_toggle'
             %label{ for: 'event_visibility_toggle' }
       %tr
-        %td= t('attributes.score')
+        %td= t('internal.attributes.score')
         %td= display_score(event)
       %tr
-        %td= t('attributes.ready')
+        %td= t('internal.attributes.ready')
         %td= event.ready
     %hr
     = link_back
-    = f.submit t(:save), class: 'btn btn-success mt-0'
+    = f.submit t('internal.save'), class: 'btn btn-success mt-0'

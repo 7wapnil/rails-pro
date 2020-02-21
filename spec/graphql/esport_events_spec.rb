@@ -297,11 +297,11 @@ describe GraphQL, '#esportEvents' do
 
     let(:query) do
       %({
-      esportEvents(titleId: #{title.id}, context: #{upcoming_ctx}){
-        id
-        priority
-      }
-    })
+        esportEvents(titleId: #{title.id}, context: #{upcoming_ctx}){
+          id
+          priority
+        }
+      })
     end
 
     it 'returns esportEvents in valid order' do
@@ -312,8 +312,10 @@ describe GraphQL, '#esportEvents' do
   context 'start status' do
     let(:query) do
       %({
-      esportEvents(titleId: #{title.id}, context: #{ctx}) { id startStatus }
-    })
+        esportEvents(titleId: #{title.id}, context: #{ctx}) {
+          id startStatus
+        }
+      })
     end
     let(:ctx) { 'live' }
 
@@ -355,79 +357,13 @@ describe GraphQL, '#esportEvents' do
     end
   end
 
-  context 'with invalid context' do
-    let(:query) do
-      %({ esportEvents(context: abcd) {
-          id
-          live
-    } })
-    end
-
-    it 'when context is unsupported raises an error' do
-      expect(result['errors']).not_to be_empty
-    end
-
-    it 'without context raises an error' do
-      query = %({ esportEvents(titleId: #{title.id}){ id } })
-
-      result = ArcanebetSchema.execute(query,
-                                       context: context,
-                                       variables: variables)
-      error_msg = I18n.t(
-        'errors.messages.graphql.events.context.invalid',
-        context: nil,
-        contexts: Events::BySport::EsportQueryResolver::SUPPORTED_CONTEXTS
-          .join(', ')
-      )
-
-      expect(result['errors'].first['message']).to eq(error_msg)
-    end
-  end
-
-  context 'with invalid titleId' do
-    let(:query) do
-      %({ esportEvents(context: #{upcoming_ctx}) {
-          id
-          live
-    } })
-    end
-
-    it 'when titleId is blank raises an error' do
-      expect(result['errors']).not_to be_empty
-    end
-
-    it 'with invalid titleId is blank array' do
-      query = %({ esportEvents(titleId: 0, context: #{upcoming_ctx}){ id } })
-
-      ArcanebetSchema.execute(query,
-                              context: context,
-                              variables: variables)
-
-      expect(result_events.to_a).to match_array([])
-    end
-  end
-
-  it 'context cannot be omitted even when title id is present' do
-    create(:event_scope, :with_event)
-    query = %({ esportEvents(titleId: #{title.id}) { id } })
-
-    result = ArcanebetSchema.execute(query,
-                                     context: context,
-                                     variables: variables)
-
-    error_msg = I18n.t(
-      'errors.messages.graphql.events.context.invalid',
-      context: nil,
-      contexts: Events::BySport::EsportQueryResolver::SUPPORTED_CONTEXTS
-        .join(', ')
-    )
-
-    expect(result['errors'].first['message']).to eq(error_msg)
-  end
-
   context "with 'live' context" do
     let(:query) do
-      %({ esportEvents(titleId: #{title.id}, context: #{live_ctx}) { id } })
+      %({
+        esportEvents(titleId: #{title.id}, context: #{live_ctx}) {
+          id
+        }
+      })
     end
     let!(:live_events) do
       create_list(:event, rand(1..3), :with_market, :live,
@@ -440,6 +376,69 @@ describe GraphQL, '#esportEvents' do
 
     it 'returns live esportEvents' do
       expect(result_event_ids).to match_array(live_events.map(&:id))
+    end
+  end
+
+  context 'with invalid context' do
+    let(:query) do
+      %({
+        esportEvents(context: abcd) {
+          id
+        }
+      })
+    end
+
+    it 'raises an error' do
+      expect(result['errors']).not_to be_empty
+    end
+  end
+
+  context 'without context' do
+    let(:query) do
+      %({
+        esportEvents(titleId: #{title.id}) {
+          id
+        }
+      })
+    end
+    let(:expected_error_message) do
+      I18n.t('internal.errors.messages.graphql.events.context.invalid',
+             context: nil,
+             contexts: Events::BySport::EsportQueryResolver::SUPPORTED_CONTEXTS
+                       .join(', '))
+    end
+
+    it 'raises an error' do
+      expect(result['errors'].first['message']).to eq(expected_error_message)
+    end
+  end
+
+  context 'without titleId' do
+    let(:query) do
+      %({
+        esportEvents(context: #{upcoming_ctx}) {
+          id
+          live
+        }
+      })
+    end
+
+    it 'raises an error' do
+      expect(result['errors']).not_to be_empty
+    end
+  end
+
+  context 'when non existing title id' do
+    let(:query) do
+      %({
+        esportEvents(titleId: 0, context: #{upcoming_ctx}) {
+          id
+        }
+      })
+    end
+
+    it 'returns empty array' do
+      expect(result_events.to_a).to match_array([])
     end
   end
 end

@@ -11,60 +11,61 @@
       %tr
         %th
           .filter_title
-            #{t('attributes.transaction_id')}:
+            #{t('internal.attributes.transaction_id')}:
           .filter_field
             = f.label :id_eq, class: 'sr-only'
             = f.search_field :id_eq,
                               class: 'form-control',
-                              placeholder: t('attributes.transaction_id'),
+                              placeholder: t('internal.attributes.transaction_id'),
                               autocomplete: :off
         - unless local_assigns[:excluded_columns]&.include?(:customer)
           %th
             .filter_title
-              #{t('attributes.customer')}:
+              #{t('internal.attributes.customer')}:
             .filter_field
               = f.label :customer_username_cont, class: 'sr-only'
               = f.search_field :customer_username_cont,
                               class: 'form-control',
-                              placeholder: t(:search, subject: t('attributes.customer')),
+                              placeholder: t('internal.search',
+                                             subject: t('internal.attributes.customer')),
                               autocomplete: :off
         %th
           .filter_title
-            #{t(:search, subject: t('from'))}:
+            #{t('internal.search', subject: t('internal.from'))}:
           .filter_field
             = f.label :created_at_gteq, class: 'sr-only'
             .input-group
               = f.search_field :created_at_gteq,
                                 class: 'form-control form_date',
-                                placeholder: t(:search, subject: t('from')),
+                                placeholder: t('internal.search', subject: t('internal.from')),
                                 value: search_date_for(:created_at_gteq, :transactions, false)
               .input-group-append
                 .input-group-text.btn &#128197;
         %th
           .filter_title
-            #{t(:search, subject: t('to'))}:
+            #{t('internal.search', subject: t('internal.to'))}:
           .filter_field
             = f.label :created_at_lteq, class: 'sr-only'
             .input-group
               = f.search_field :created_at_lteq,
                                 class: 'form-control form_date',
-                                placeholder: t(:search, subject: t('to')),
+                                placeholder: t('internal.search', subject: t('internal.to')),
                                 value: search_date_for(:created_at_lteq, :transactions, false)
               .input-group-append
                 .input-group-text.btn &#128197;
       %tr
         %th
           .filter_title
-            #{t('attributes.em_transaction_id')}:
+            #{t('internal.attributes.em_transaction_id')}:
           .filter_field
             = f.label :round_id_eq, class: 'sr-only'
             = f.search_field :round_id_eq,
                               class: 'form-control',
-                              placeholder: t('attributes.em_transaction_id'),
+                              placeholder: t('internal.attributes.em_transaction_id'),
                               autocomplete: :off
         %th
           .filter_title
-            #{t('attributes.transaction_type')}:
+            #{t('internal.attributes.transaction_type')}:
           .filter_field
             = f.label :type, class: 'sr-only'
             = f.select :type_eq,
@@ -73,7 +74,7 @@
                        class: 'form-control'
         %th
           .filter_title
-            #{t('attributes.free_spin_bonus_id')}:
+            #{t('internal.attributes.free_spin_bonus_id')}:
           .filter_field
             = f.label :type, class: 'sr-only'
             = f.select :every_matrix_free_spin_bonus_id_eq,

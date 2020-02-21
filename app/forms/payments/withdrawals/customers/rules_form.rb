@@ -16,8 +16,10 @@ module Payments
         def validate_status
           return if !customer || customer.verified
 
-          errors.add(:status,
-                     I18n.t('errors.messages.withdrawal.customer_not_verified'))
+          errors.add(
+            :status,
+            I18n.t('internal.errors.messages.withdrawal.customer_not_verified')
+          )
         end
 
         def validate_password

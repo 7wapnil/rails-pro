@@ -14,7 +14,8 @@ module Payments
           end
 
           def consistency_error_message
-            I18n.t('errors.messages.payments.withdrawals.idebit.inconsistent')
+            I18n.t('internal.errors.messages.payments.withdrawals.idebit' \
+                   '.inconsistent')
           end
         end
       end
