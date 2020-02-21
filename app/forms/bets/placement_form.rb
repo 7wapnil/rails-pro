@@ -7,7 +7,6 @@ module Bets
     attr_accessor :subject
 
     delegate :customer, to: :subject
-    delegate :wallet, to: :customer
 
     def validate!
       check_bet_amount!
@@ -85,6 +84,10 @@ module Bets
                 events.all?(&:available?)
 
       raise ::Bets::RegistrationError, I18n.t('errors.messages.market_inactive')
+    end
+
+    def wallet
+      @wallet ||= customer.wallets.find_by(currency_id: subject.currency_id)
     end
 
     def bet_legs
