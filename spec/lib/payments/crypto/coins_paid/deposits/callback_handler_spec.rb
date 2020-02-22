@@ -13,7 +13,6 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
   let(:bonus_code) { nil }
   let(:amount) { rand(10..100) }
   let(:currency_code) { wallet&.currency&.code }
-  let(:currency) { create(:currency, code: currency_code) }
   let!(:wallet) do
     create(:wallet, :crypto_btc, :with_crypto_address, customer: customer)
   end
@@ -32,6 +31,7 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
     context 'response status confirmed' do
       let(:status) { Payments::Crypto::CoinsPaid::Statuses::CONFIRMED }
       let(:entry_request_double) { double }
+      let!(:currency) { create(:currency, :primary) }
 
       it 'calls entry request creation' do
         allow(entry_request_double).to receive(:succeeded?).and_return(true)
