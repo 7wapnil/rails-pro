@@ -13,6 +13,7 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
   let(:bonus_code) { nil }
   let(:amount) { rand(10..100) }
   let(:currency_code) { wallet&.currency&.code }
+  let(:currency) { create(:currency, code: currency_code) }
   let!(:wallet) do
     create(:wallet, :crypto_btc, :with_crypto_address, customer: customer)
   end
