@@ -56,7 +56,7 @@ class BetDecorator < ApplicationDecorator
   end
 
   def potential_win(human: false)
-    human ? number_with_precision(super(), precision: PRECISION) : super()
+    human ? number_with_precision(super(), precision: currency_scale) : super()
   end
 
   def bet_type
