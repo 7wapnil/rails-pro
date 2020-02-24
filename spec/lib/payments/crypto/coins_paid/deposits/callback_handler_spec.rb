@@ -31,6 +31,7 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
     context 'response status confirmed' do
       let(:status) { Payments::Crypto::CoinsPaid::Statuses::CONFIRMED }
       let(:entry_request_double) { double }
+      let!(:currency) { create(:currency, :primary) }
 
       it 'calls entry request creation' do
         allow(entry_request_double).to receive(:succeeded?).and_return(true)
@@ -67,6 +68,8 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
       it 'calls entry request creation' do
         allow(entry_request_double).to receive(:register_failure!)
         allow(entry_request_double).to receive(:origin)
+        allow(entry_request_double)
+          .to receive(:customer).at_least(:once).and_return(customer)
 
         expect(::EntryRequests::Factories::Deposit)
           .to receive(:call).and_return(entry_request_double)
@@ -78,6 +81,8 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
         allow(::EntryRequests::Factories::Deposit)
           .to receive(:call).and_return(entry_request_double)
         allow(entry_request_double).to receive(:origin)
+        allow(entry_request_double)
+          .to receive(:customer).at_least(:once).and_return(customer)
 
         expect(entry_request_double).to receive(:register_failure!)
 
@@ -90,6 +95,8 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
         allow(entry_request_double).to receive(:register_failure!)
         allow(entry_request_double)
           .to receive(:origin).and_return(origin_double)
+        allow(entry_request_double)
+          .to receive(:customer).at_least(:once).and_return(customer)
         allow(origin_double).to receive(:failed!)
 
         subject
@@ -103,6 +110,8 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
         allow(entry_request_double).to receive(:register_failure!)
         allow(entry_request_double)
           .to receive(:origin).and_return(origin_double)
+        allow(entry_request_double)
+          .to receive(:customer).at_least(:once).and_return(customer)
         allow(origin_double)
           .to receive(:customer_bonus).and_return(customer_bonus_double)
 
@@ -150,6 +159,8 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
       allow(entry_request_double).to receive(:register_failure!)
       allow(entry_request_double).to receive(:id).and_return(rand(1..5))
       allow(entry_request_double).to receive(:origin)
+      allow(entry_request_double)
+        .to receive(:customer).at_least(:once).and_return(customer)
 
       expect(::EntryRequests::Factories::Deposit)
         .to receive(:call).and_return(entry_request_double)
@@ -161,6 +172,8 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
     it 'raises error' do
       allow(entry_request_double).to receive(:register_failure!)
       allow(entry_request_double).to receive(:origin)
+      allow(entry_request_double)
+        .to receive(:customer).at_least(:once).and_return(customer)
 
       expect { subject }.to raise_error(::Payments::GatewayError)
     end
@@ -170,6 +183,8 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
         .to receive(:call).and_return(entry_request_double)
       allow(entry_request_double).to receive(:id).and_return(rand(1..5))
       allow(entry_request_double).to receive(:origin)
+      allow(entry_request_double)
+        .to receive(:customer).at_least(:once).and_return(customer)
 
       expect(entry_request_double).to receive(:register_failure!)
 

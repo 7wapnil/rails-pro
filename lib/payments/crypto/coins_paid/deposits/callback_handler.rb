@@ -83,11 +83,11 @@ module Payments
                                 .wallets
                                 .joins(:currency)
                                 .find_by(currencies: { code: currency_code })
-                                &.customer_bonus
+                                &.initial_customer_bonus
           end
 
           def valid_entry_for_customer_bonus?
-            return unless customer_bonus&.initial?
+            return unless customer_bonus
 
             min_deposit.present? && converted_amount >= min_deposit
           end
@@ -101,6 +101,8 @@ module Payments
           end
 
           def cancel_entry_request
+            ga_client.track_deposit_cancellation!
+
             entry_request.register_failure!(message)
             fail_related_entities
           end
@@ -123,6 +125,8 @@ module Payments
           def create_deposit_entry!
             return if entry_request.succeeded?
 
+            ga_client.track_deposit_success!
+
             entry_request.deposit.update(details: payment_details)
             ::EntryRequests::DepositService.call(entry_request: entry_request)
           end
@@ -137,6 +141,8 @@ module Payments
                      status: status)
             error_message =
               "#{message} for entry request with id #{entry_request.id}"
+
+            ga_client.track_deposit_failure!
 
             entry_request.register_failure!(message)
             fail_related_entities
