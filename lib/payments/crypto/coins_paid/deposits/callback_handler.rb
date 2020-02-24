@@ -83,11 +83,11 @@ module Payments
                                 .wallets
                                 .joins(:currency)
                                 .find_by(currencies: { code: currency_code })
-                                &.initial_customer_bonus
+                                &.customer_bonus
           end
 
           def valid_entry_for_customer_bonus?
-            return unless customer_bonus
+            return unless customer_bonus&.initial?
 
             min_deposit.present? && converted_amount >= min_deposit
           end
