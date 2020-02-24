@@ -31,6 +31,7 @@ describe Payments::Crypto::CoinsPaid::Deposits::CallbackHandler do
     context 'response status confirmed' do
       let(:status) { Payments::Crypto::CoinsPaid::Statuses::CONFIRMED }
       let(:entry_request_double) { double }
+      let!(:currency) { create(:currency, :primary) }
 
       it 'calls entry request creation' do
         allow(entry_request_double).to receive(:succeeded?).and_return(true)

@@ -101,7 +101,7 @@ module Payments
           end
 
           def cancel_entry_request
-            ga_client.track_event(deposit_failure(message))
+            ga_client.track_deposit_cancellation!
 
             entry_request.register_failure!(message)
             fail_related_entities
@@ -125,7 +125,7 @@ module Payments
           def create_deposit_entry!
             return if entry_request.succeeded?
 
-            ga_client.track_event(deposit_success(entry_request.amount))
+            ga_client.track_deposit_success!
 
             entry_request.deposit.update(details: payment_details)
             ::EntryRequests::DepositService.call(entry_request: entry_request)
@@ -142,7 +142,7 @@ module Payments
             error_message =
               "#{message} for entry request with id #{entry_request.id}"
 
-            ga_client.track_event(deposit_failure(message))
+            ga_client.track_deposit_failure!
 
             entry_request.register_failure!(message)
             fail_related_entities
