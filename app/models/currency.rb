@@ -63,10 +63,4 @@ class Currency < ApplicationRecord
 
     FIAT_SCALE
   end
-
-  def self.primary_scale
-    return FIAT_SCALE if FIAT_CODES.include?(PRIMARY_CODE)
-
-    CRYPTO_SCALE
-  end
 end

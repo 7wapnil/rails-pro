@@ -4,6 +4,7 @@ describe BetDecorator, type: :decorator do
   subject { bet.decorate }
 
   let(:bet) { build(:bet) }
+  let!(:primary_currency) { create(:currency, :primary) }
 
   describe '#display_status' do
     pending_statuses = StateMachines::BetStateMachine::PENDING_STATUSES_MASK
@@ -83,7 +84,7 @@ describe BetDecorator, type: :decorator do
     it 'returns humanized value' do
       decorated_value = helpers.number_with_precision(
         bet.base_currency_amount,
-        precision: Currency.primary_scale
+        precision: Currency.primary.scale
       )
 
       expect(subject.base_currency_amount(human: true)).to eq(decorated_value)

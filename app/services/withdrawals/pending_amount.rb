@@ -11,14 +11,8 @@ module Withdrawals
         .pluck(Arel.sql(QUERY))
         .reduce(:+)
         .to_f
-        .truncate(primary_scale)
+        .truncate(Currency.primary.scale)
         .to_d
-    end
-
-    private
-
-    def primary_scale
-      @primary_scale ||= Currency.primary_scale
     end
   end
 end

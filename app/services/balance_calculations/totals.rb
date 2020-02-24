@@ -31,11 +31,7 @@ module BalanceCalculations
     def humanize_amount(amount)
       return 0.0 unless amount
 
-      (::Currency::PRIMARY_RATE * amount).truncate(primary_scale)
-    end
-
-    def primary_scale
-      @primary_scale ||= Currency.primary_scale
+      (::Currency::PRIMARY_RATE * amount).truncate(Currency.primary.scale)
     end
   end
 end

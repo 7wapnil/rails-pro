@@ -4,6 +4,7 @@ describe Customers::Statistics::Calculator do
   subject { described_class.call(customer: customer) }
 
   let(:customer) { create(:customer) }
+  let!(:primary_currency) { create(:currency, :primary) }
 
   it 'creates new Customers::Statistic' do
     expect { subject }.to change(Customers::Statistic, :count).by(1)

@@ -94,12 +94,9 @@ module Customers
     end
 
     def money_field(value)
-      "#{number_with_precision(value, precision: primary_scale)} &#8364;"
-        .html_safe
-    end
+      precision = Currency.primary.scale
 
-    def primary_scale
-      @primary_scale ||= Currency.primary_scale
+      "#{number_with_precision(value, precision: precision)} &#8364;".html_safe
     end
 
     ## TOTAL: CASINO + BETS
