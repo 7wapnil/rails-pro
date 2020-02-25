@@ -21,7 +21,7 @@ class BonusesController < ApplicationController
 
     if @bonus.save
       redirect_to @bonus, notice: t(
-        :created,
+        'internal.created',
         instance: t('internal.entities.bonus')
       )
     else
@@ -34,7 +34,7 @@ class BonusesController < ApplicationController
 
     if @bonus.update(bonus_params)
       redirect_to @bonus, notice: t(
-        :updated,
+        'internal.updated',
         instance: @bonus.code
       )
     else
@@ -46,7 +46,7 @@ class BonusesController < ApplicationController
     @bonus = Bonus.find(params[:id])
     @bonus.destroy!
     redirect_to bonuses_path, notice: t(
-      :deleted,
+      'internal.deleted',
       instance: t('internal.entities.bonus')
     )
   end
