@@ -41,7 +41,7 @@
 
         %th
           .filter_field
-            #{t('attributes.country')}:
+            #{t('internal.attributes.country')}:
           .filter_field
             = f.label :address_country_matches_any, class: 'sr-only'
             = collection_select(:customers, :address_country_matches_any,
@@ -49,7 +49,8 @@
               { selected: filter.params[:address_country_matches_any] },
               class: 'form-control simple_labels_selector',
               multiple: true,
-              data: { placeholder: t(:search, subject: t('attributes.country')) })
+              data: { placeholder: t('internal.search',
+                                      subject: t('internal.attributes.country')) })
 
         %th
           .filter_field
