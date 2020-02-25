@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 module Payments
+  # rubocop:disable Metrics/ModuleLength
   module Methods
     CREDIT_CARD = 'credit_card'
     NETELLER = 'neteller'
@@ -14,6 +15,7 @@ module Payments
     YANDEX = 'yandex'
     QIWI = 'qiwi'
     BITCOIN = 'bitcoin'
+    CHANGELLY = 'changelly'
 
     METHOD_PROVIDERS = {
       CREDIT_CARD => {
@@ -76,6 +78,12 @@ module Payments
         name: BITCOIN,
         currency_kind: ::Currency::CRYPTO,
         currency: ::Payments::Crypto::CoinsPaid::Currency::MBTC_CODE
+      },
+      CHANGELLY => {
+        provider: ::Payments::Crypto::CoinsPaid::Provider,
+        name: CHANGELLY,
+        currency_kind: ::Currency::CRYPTO,
+        currency: ::Payments::Crypto::CoinsPaid::Currency::MBTC_CODE
       }
     }.freeze
 
@@ -105,4 +113,5 @@ module Payments
       raise Payments::NotSupportedError, err_msg
     end
   end
+  # rubocop:enable Metrics/ModuleLength
 end

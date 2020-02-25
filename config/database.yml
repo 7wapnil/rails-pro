@@ -11,7 +11,7 @@ local: &local
 
 development:
   <<: *local
-  database: backend
+  database: arcanebet_development
 
 test:
   <<: *local
