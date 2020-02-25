@@ -62,7 +62,7 @@
       - if customer_bonus.active?
         - if params['controller'] == 'customer_bonuses'
           = link_back bonuses_customer_path(customer_bonus.customer)
-        = link_to t('actions.cancel'),
+        = link_to t('internal.actions.cancel'),
                   customer_bonus,
                   class: 'btn btn-outline-danger',
                   method: :delete,

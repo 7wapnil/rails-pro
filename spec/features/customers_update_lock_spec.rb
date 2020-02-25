@@ -4,7 +4,6 @@ describe Customer, '#update_lock' do
   context 'signed in' do
     let(:customer) { create(:customer) }
     let(:sample_lock_reason) do
-      I18n.t("lock_reasons.#{Customer.lock_reasons.values.sample}")
       Customer.lock_reasons.values.sample
     end
 

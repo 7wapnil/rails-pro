@@ -81,6 +81,7 @@ en:
     instance_overview: "%{instance} overview"
     not_found: "No %{instance} found"
     choose_file: Choose file
+    cancel: Cancel
 
     bonus_forfeit_requested: "%{number} bonus(es) requested to be forfeited"
     bonus_award_requested: "%{number} bonus(es) requested to be awarded"
@@ -333,6 +334,10 @@ en:
           title: Profit / Revenue
         casino_performance:
           title: Casino performance
+
+    global:
+      minimal_title: ArcaneBet
+      title: ArcaneBet Backoffice
 
     documents:
       history_title: "Files history: %{document_type}"
