@@ -3,7 +3,7 @@
                   html: { class: 'js-recaptcha-form' }) do |f|
   .row
     .col-6.offset-3
-      %h1.text-center.display-4= t(:sign_in)
+      %h1.text-center.display-4= t('internal.sign_in')
   .row
     .col-6.offset-3
       = f.input :email, required: false, autofocus: true
@@ -12,7 +12,7 @@
       - if auth_session.suspicious?
         .form-group
           = recaptcha_tags noscript: false, callback: 'onRecaptchaSuccess'
-      = f.button :submit, t(:sign_in), class: 'btn btn-dark btn-block'
+      = f.button :submit, t('internal.sign_in'), class: 'btn btn-dark btn-block'
 
 = content_for :js do
   = javascript_pack_tag 'users/recaptcha_verification'

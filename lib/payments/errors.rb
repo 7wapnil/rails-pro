@@ -21,13 +21,13 @@ module Payments
     end
 
     def default_message
-      I18n.t('errors.messages.payment_failed_error')
+      I18n.t('internal.errors.messages.payment_failed_error')
     end
   end
 
   class CancelledError < GatewayError
     def message
-      I18n.t('errors.messages.payment_cancelled_error')
+      I18n.t('internal.errors.messages.payment_cancelled_error')
     end
   end
 

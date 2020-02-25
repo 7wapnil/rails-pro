@@ -24,13 +24,14 @@ module Wallets
     def currency_uniqueness
       return unless duplicate?
 
-      errors.add(:base, I18n.t('errors.messages.wallets.not_unique'))
+      errors.add(:base, I18n.t('internal.errors.messages.wallets.not_unique'))
     end
 
     def fiat_uniqueness
       return unless customer && customer.wallets.fiat.exists?
 
-      errors.add(:base, I18n.t('errors.messages.wallets.fiat_not_unique'))
+      errors.add(:base,
+                 I18n.t('internal.errors.messages.wallets.fiat_not_unique'))
     end
 
     def fiat?

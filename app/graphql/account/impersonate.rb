@@ -16,7 +16,8 @@ module Account
         ip_address: @request.remote_ip
       )
     rescue StandardError
-      raise ActiveRecord::RecordNotFound, I18n.t('account.impersonate.failure')
+      raise ActiveRecord::RecordNotFound,
+            I18n.t('internal.account.impersonate.failure')
     end
   end
 end

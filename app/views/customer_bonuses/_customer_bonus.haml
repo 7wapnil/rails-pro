@@ -5,54 +5,54 @@
         = card do
           %table.table
             %tr
-              %td= t('attributes.customer_name')
+              %td= t('internal.attributes.customer_name')
               %td= customer_bonus.link_to_customer
             %tr
-              %td= t('attributes.rollover_multiplier')
+              %td= t('internal.attributes.rollover_multiplier')
               %td= customer_bonus.rollover_multiplier
             %tr
-              %td= t('attributes.max_rollover_per_bet')
+              %td= t('internal.attributes.max_rollover_per_bet')
               %td= customer_bonus.max_rollover_per_bet(human: true)
             %tr
-              %td= t('attributes.max_rollover_per_spin')
+              %td= t('internal.attributes.max_rollover_per_spin')
               %td= customer_bonus.max_rollover_per_spin(human: true)
             %tr
-              %td= t('attributes.max_deposit_match')
+              %td= t('internal.attributes.max_deposit_match')
               %td= customer_bonus.max_deposit_match(human: true)
             %tr
-              %td= t('attributes.min_deposit')
+              %td= t('internal.attributes.min_deposit')
               %td= customer_bonus.min_deposit(human: true)
             %tr
-              %td= t('attributes.sportsbook')
+              %td= t('internal.attributes.sportsbook')
               %td= customer_bonus.sportsbook
             %tr
-              %td= t('attributes.sportsbook_multiplier')
+              %td= t('internal.attributes.sportsbook_multiplier')
               %td= customer_bonus.sportsbook_multiplier
             %tr
-              %td= t('attributes.casino')
+              %td= t('internal.attributes.casino')
               %td= customer_bonus.casino
       .col-6
         = card do
           %table.table
             %tr
-              %td= t('attributes.percentage')
+              %td= t('internal.attributes.percentage')
               %td= customer_bonus.percentage(human: true)
             %tr
-              %td= t('attributes.kind')
+              %td= t('internal.attributes.kind')
               %td= customer_bonus.kind
             %tr
-              %td= t('attributes.min_odds_per_bet')
+              %td= t('internal.attributes.min_odds_per_bet')
               %td= customer_bonus.min_odds_per_bet
             %tr
-              %td= t('attributes.valid_for_days')
+              %td= t('internal.attributes.valid_for_days')
               %td= customer_bonus.valid_for_days
             - if customer_bonus.expired?
               %tr
-                %td= t('attributes.expired_at')
+                %td= t('internal.attributes.expired_at')
                 %td= l(customer_bonus.expires_at)
             - else
               %tr
-                %td= t('attributes.expires_at')
+                %td= t('internal.attributes.expires_at')
                 %td= l(customer_bonus.active_until_date)
 
     %hr
@@ -62,8 +62,8 @@
       - if customer_bonus.active?
         - if params['controller'] == 'customer_bonuses'
           = link_back bonuses_customer_path(customer_bonus.customer)
-        = link_to t('actions.cancel'),
+        = link_to t('internal.actions.cancel'),
                   customer_bonus,
                   class: 'btn btn-outline-danger',
                   method: :delete,
-                  data: { confirm: t(:confirm_sure) }
+                  data: { confirm: t('internal.confirm_sure') }

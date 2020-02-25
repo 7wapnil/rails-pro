@@ -59,7 +59,7 @@ describe GraphQL, '#impersonate' do
 
     it 'returns technical error' do
       expect(result['errors'].first['message'])
-        .to eq(I18n.t('account.impersonate.failure'))
+        .to eq(I18n.t('internal.account.impersonate.failure'))
     end
 
     it 'logs malformed impersonation attempt' do
@@ -73,7 +73,7 @@ describe GraphQL, '#impersonate' do
 
     it 'returns technical error' do
       expect(result['errors'].first['message'])
-        .to eq(I18n.t('account.impersonate.failure'))
+        .to eq(I18n.t('internal.account.impersonate.failure'))
     end
 
     it 'logs malformed impersonation attempt' do

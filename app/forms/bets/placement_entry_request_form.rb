@@ -17,7 +17,7 @@ module Bets
       return unless subject.failed?
 
       raise Bets::RequestFailedError,
-            I18n.t('errors.messages.entry_request_failed')
+            I18n.t('internal.errors.messages.entry_request_failed')
     end
 
     def validate_amount!

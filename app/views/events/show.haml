@@ -1,15 +1,15 @@
 .row.mt-4
   .col-8.offset-2
     = render 'events/event', event: @event, labels: @labels
-    = card header: t('entities.markets', count: 5), class: 'markets-info mb-3' do
+    = card header: t('internal.entities.markets', count: 5), class: 'markets-info mb-3' do
       %table.table
         %thead
           %tr
-            %th= t('attributes.name')
-            %th= t('attributes.status')
-            %th= t('attributes.priority')
-            %th= t('entities.labels')
-            %th= t('attributes.visibility')
+            %th= t('internal.attributes.name')
+            %th= t('internal.attributes.status')
+            %th= t('internal.attributes.priority')
+            %th= t('internal.entities.labels')
+            %th= t('internal.attributes.visibility')
         %tbody
           - @event.markets.each do |market|
             %tr
@@ -34,7 +34,7 @@
                   = labels_selector(market, @market_labels)
                 .selection_button
                   %button.btn.btn-success.mt-2.save_labels{ disabled: true,
-                   data: { label_selector: "market_#{market.id}" } }= t(:save)
+                   data: { label_selector: "market_#{market.id}" } }= t('internal.save')
 
               %td= visibility_toggle(market, market_path(market))
 - content_for :js do

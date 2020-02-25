@@ -24,7 +24,7 @@ module Account
 
     def raise_gql(name)
       raise GraphQL::ExecutionError,
-            I18n.t("errors.messages.reset_password_#{name}")
+            I18n.t("internal.errors.messages.reset_password_#{name}")
     end
   end
 end

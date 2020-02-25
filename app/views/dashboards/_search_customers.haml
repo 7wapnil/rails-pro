@@ -1,4 +1,5 @@
-= card header: t(:search, subject: t('entities.customers')), class: 'customers mb-4' do
+= card header: t('internal.search', subject: t('internal.entities.customers')),
+       class: 'customers mb-4' do
   = render 'customers/search',
           filter: filter,
           search_path: dashboard_path

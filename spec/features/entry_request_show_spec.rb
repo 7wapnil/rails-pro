@@ -27,12 +27,10 @@ describe EntryRequest, '#show' do
         # the value is returned with an extra space
         # between the date and the time
         expected_date = I18n.l(request.created_at, format: :long).squish
-
-        expected_kind = I18n.t("kinds.#{request.kind}")
         expected_amount = "200.00 #{request.currency.code}"
 
         expect(page).to have_content(expected_date)
-        expect(page).to have_content(expected_kind)
+        expect(page).to have_content(request.kind.capitalize)
         expect(page).to have_content(request.customer.full_name)
         expect(page).to have_content(expected_amount)
         expect(page).to have_content(request.external_id)

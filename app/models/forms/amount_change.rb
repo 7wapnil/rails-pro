@@ -39,7 +39,7 @@ module Forms
 
     def amount_not_negative
       result_amount = subject.amount + amount_increment.to_d
-      message = I18n.t('errors.messages.amount_not_negative',
+      message = I18n.t('internal.errors.messages.amount_not_negative',
                        subject: subject.to_s,
                        current_amount: subject.amount,
                        new_amount: result_amount)
@@ -50,7 +50,7 @@ module Forms
     def real_money_amount_not_negative
       result_amount = subject.real_money_balance +
                       real_money_amount_increment.to_d
-      message = I18n.t('errors.messages.amount_not_negative',
+      message = I18n.t('internal.errors.messages.amount_not_negative',
                        subject: subject.to_s,
                        current_amount: subject.real_money_balance,
                        new_amount: result_amount)
@@ -60,7 +60,7 @@ module Forms
 
     def bonus_amount_not_negative
       result_amount = subject.bonus_balance + bonus_amount_increment.to_d
-      message = I18n.t('errors.messages.amount_not_negative',
+      message = I18n.t('internal.errors.messages.amount_not_negative',
                        subject: subject.to_s,
                        current_amount: subject.bonus_balance,
                        new_amount: result_amount)

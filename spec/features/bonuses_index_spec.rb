@@ -125,7 +125,7 @@ describe Bonus, '#index' do
 
       it 'sorts by code' do
         within 'table.table thead' do
-          click_on I18n.t('attributes.code')
+          click_on I18n.t('internal.attributes.code')
         end
 
         first_row = all('table.table tbody tr').first
@@ -137,7 +137,7 @@ describe Bonus, '#index' do
 
       it 'sorts by expires_at' do
         within 'table.table thead' do
-          click_on I18n.t('attributes.expires_at')
+          click_on I18n.t('internal.attributes.expires_at')
         end
 
         first_row = all('table.table tbody tr').first

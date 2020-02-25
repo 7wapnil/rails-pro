@@ -36,8 +36,8 @@ describe Customer, '#betting_limits' do
 
       within '.container-fluid' do
         expect_to_have_notification I18n.t(
-          :created,
-          instance: I18n.t('entities.betting_limit')
+          'internal.created',
+          instance: I18n.t('internal.entities.betting_limit')
         )
       end
     end
@@ -58,8 +58,8 @@ describe Customer, '#betting_limits' do
 
       within '.container-fluid' do
         expect_to_have_notification I18n.t(
-          :updated,
-          instance: I18n.t('entities.betting_limit')
+          'internal.updated',
+          instance: I18n.t('internal.entities.betting_limit')
         )
       end
     end
@@ -87,8 +87,8 @@ describe Customer, '#betting_limits' do
 
       within '.container-fluid' do
         expect_to_have_notification I18n.t(
-          :created,
-          instance: I18n.t('entities.betting_limit')
+          'internal.created',
+          instance: I18n.t('internal.entities.betting_limit')
         )
       end
     end
@@ -109,8 +109,8 @@ describe Customer, '#betting_limits' do
 
       within '.container-fluid' do
         expect_to_have_notification I18n.t(
-          :updated,
-          instance: I18n.t('entities.betting_limit')
+          'internal.updated',
+          instance: I18n.t('internal.entities.betting_limit')
         )
       end
     end

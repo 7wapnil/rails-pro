@@ -10,17 +10,17 @@ module Account
 
       def self.valid
         new(success: true,
-            message: I18n.t('messages.reset_password_token.valid'))
+            message: I18n.t('internal.messages.reset_password_token.valid'))
       end
 
       def self.invalid
         new(success: false,
-            message: I18n.t('messages.reset_password_token.invalid'))
+            message: I18n.t('internal.messages.reset_password_token.invalid'))
       end
 
       def self.expired
         new(success: false,
-            message: I18n.t('messages.reset_password_token.expired'))
+            message: I18n.t('internal.messages.reset_password_token.expired'))
       end
     end
   end

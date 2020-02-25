@@ -1,23 +1,23 @@
 .mt-4.mb-4
-  = card header: t('entities.bet'), class: 'bet-info' do
+  = card header: t('internal.entities.bet'), class: 'bet-info' do
     .row
       .col
         .row
           %table.table
             %tr
-              %td= t('attributes.id')
+              %td= t('internal.attributes.id')
               %td= bet.id
             %tr
-              %td= t('attributes.customer')
+              %td= t('internal.attributes.customer')
               %td= link_to bet.customer_username, bet.customer
             %tr
-              %td= t('entities.bonus')
+              %td= t('internal.entities.bonus')
               %td= link_to_if bet.customer_bonus, bet.customer_bonus_code, bet.customer_bonus
             %tr
-              %td= t('attributes.counted_towards_rollover')
+              %td= t('internal.attributes.counted_towards_rollover')
               %td= bet.counted_towards_rollover
             %tr
-              %td= t('attributes.bet_type')
+              %td= t('internal.attributes.bet_type')
               %td
                 %span.badge.badge-primary= bet.bet_type
         .row
@@ -26,11 +26,11 @@
           %table.table
             %thead
               %tr
-                %th= t('attributes.event')
-                %th= t('attributes.market')
-                %th= t('attributes.selection')
-                %th= t('attributes.odd_value')
-                %th= t('attributes.settlement')
+                %th= t('internal.attributes.event')
+                %th= t('internal.attributes.market')
+                %th= t('internal.attributes.selection')
+                %th= t('internal.attributes.odd_value')
+                %th= t('internal.attributes.settlement')
             %tbody
               - bet.bet_legs.each do |bet_leg|
                 %tr
@@ -42,7 +42,7 @@
       .col
         %table.table
           %tr
-            %td= t('attributes.stake')
+            %td= t('internal.attributes.stake')
             %td
               = bet.amount(human: true)
               = bet.currency_code
@@ -50,33 +50,33 @@
               = bet.base_currency_amount(human: true)
               = Currency::PRIMARY_CODE
           %tr
-            %td= t('attributes.bet_placement_time')
+            %td= t('internal.attributes.bet_placement_time')
             %td= bet.created_at(human: true)
           %tr
-            %td= t('attributes.bet_settlement_status_achieved_at')
+            %td= t('internal.attributes.bet_settlement_status_achieved_at')
             %td= bet.bet_settlement_status_achieved_at(human: true)
           %tr
-            %td= t('attributes.status')
+            %td= t('internal.attributes.status')
             %td= status_badge(bet.status)
           %tr
-            %td= t('attributes.external_id')
+            %td= t('internal.attributes.external_id')
             %td= bet.validation_ticket_id
           %tr
-            %td= t('attributes.notification_message')
+            %td= t('internal.attributes.notification_message')
             %td= bet.notification_message
           %tr
-            %td= t('attributes.notification_code')
+            %td= t('internal.attributes.notification_code')
             %td= bet.notification_code
           %tr
-            %td= t('attributes.settlement')
+            %td= t('internal.attributes.settlement')
             %td= settle_badge(bet.settlement_status)
           %tr
-            %td= t('attributes.possible_payout')
+            %td= t('internal.attributes.possible_payout')
             %td
               = bet.winning_amount(human: true)
               = bet.currency_code
           %tr
-            %td= t('attributes.actual_payout')
+            %td= t('internal.attributes.actual_payout')
             %td= render 'entries', entries: bet.entries
     %hr
     .row

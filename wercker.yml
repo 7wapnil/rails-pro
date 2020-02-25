@@ -2,7 +2,7 @@ box:
   id: arcanebet/arcanebet
   username: $DOCKERHUB_USERNAME
   password: $DOCKERHUB_PASSWORD
-  tag: node10
+  tag: phraseapp
 
 services:
   - postgres:9.6.16
@@ -57,6 +57,15 @@ store:
     - script:
       name: compile-assets
       code: bundle exec rake webpacker:compile
+
+    - script:
+      name: pull-locale-translations
+      code: |
+        if [ -z $PHRASEAPP_BRANCH_NAME ]; then \
+          phraseapp pull --access-token $PHRASEAPP_ACCESS_TOKEN; \
+        else \
+          phraseapp pull --branch $PHRASEAPP_BRANCH_NAME --access-token $PHRASEAPP_ACCESS_TOKEN; \
+        fi
 
     - internal/docker-push:
       username: $DOCKERHUB_USERNAME

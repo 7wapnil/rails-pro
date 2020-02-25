@@ -5,21 +5,21 @@
 %table.table
   %thead
     %tr
-      %th= t('attributes.id')
-      %th= t('attributes.external_id')
-      %th= sort_link(@search, :name, t('attributes.name'))
-      %th= t('attributes.sport')
-      %th= t('attributes.visible')
-      %th= sort_link(@search, :start_at, t('attributes.start_at'))
-      %th= sort_link(@search, :markets_count, t('entities.markets'))
+      %th= t('internal.attributes.id')
+      %th= t('internal.attributes.external_id')
+      %th= sort_link(@search, :name, t('internal.attributes.name'))
+      %th= t('internal.attributes.sport')
+      %th= t('internal.attributes.visible')
+      %th= sort_link(@search, :start_at, t('internal.attributes.start_at'))
+      %th= sort_link(@search, :markets_count, t('internal.entities.markets'))
 
       - EventScope.kinds.keys.map(&:capitalize).each do |scope_kind|
         %th= scope_kind
 
-      %th= sort_link(@search, :wager, t('attributes.wager'))
-      %th= sort_link(@search, :bets_count, t('entities.bets'))
-      %th= t('attributes.profit_loss')
-      %th= t('attributes.live_coverage')
+      %th= sort_link(@search, :wager, t('internal.attributes.wager'))
+      %th= sort_link(@search, :bets_count, t('internal.entities.bets'))
+      %th= t('internal.attributes.profit_loss')
+      %th= t('internal.attributes.live_coverage')
 
       %th
     %tbody

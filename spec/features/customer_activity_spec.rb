@@ -13,7 +13,7 @@ describe Customer, '#activity' do
     end
 
     it 'shows no records note' do
-      expect(page).to have_content I18n.t(:no_records)
+      expect(page).to have_content I18n.t('internal.no_records')
     end
   end
 end

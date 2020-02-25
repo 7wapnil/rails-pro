@@ -6,7 +6,7 @@ describe User, '#sign_out' do
     visit dashboard_path
 
     within 'nav.navbar' do
-      click_link I18n.t(:sign_out)
+      click_link I18n.t('internal.sign_out')
     end
 
     expect(page).to have_current_path(new_user_session_path)

@@ -166,7 +166,7 @@ describe Bets::SingleBet::Settle do
 
     it 'raises an error' do
       expect { subject }
-        .to raise_error(I18n.t('errors.messages.bets.settled_bet_leg'))
+        .to raise_error(I18n.t('internal.errors.messages.bets.settled_bet_leg'))
     end
 
     it 'does not change bet status' do
@@ -226,7 +226,7 @@ describe Bets::SingleBet::Settle do
 
     it 'raises an error' do
       expect { subject }
-        .to raise_error(I18n.t('errors.messages.bets.settled_bet_leg'))
+        .to raise_error(I18n.t('internal.errors.messages.bets.settled_bet_leg'))
     end
 
     it 'does not change bet status' do

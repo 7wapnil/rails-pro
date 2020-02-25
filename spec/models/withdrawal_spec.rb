@@ -5,7 +5,7 @@ describe Withdrawal, type: :model do
 
   let(:user) { create(:admin_user) }
   let(:error_message) do
-    I18n.t('errors.messages.withdrawals.not_actionable')
+    I18n.t('internal.errors.messages.withdrawals.not_actionable')
   end
 
   it { is_expected.to belong_to(:actioned_by) }

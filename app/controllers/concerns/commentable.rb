@@ -10,7 +10,8 @@ module Commentable
     @comment.user = current_user
     if @comment.save
       redirect_to @commentable_resource,
-                  notice: t(:created, instance: t('attributes.comment'))
+                  notice: t('internal.created',
+                            instance: t('internal.attributes.comment'))
     else
       redirect_to @commentable_resource,
                   alert: @comment.errors.full_messages.join('. ')

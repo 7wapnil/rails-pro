@@ -10,17 +10,18 @@
       %tr
         %th
           .filter_title
-            #{t('attributes.username')}:
+            #{t('internal.attributes.username')}:
           .filter_field
             = f.label :customer_username_cont, class: 'sr-only'
             = f.search_field :customer_username_cont,
                               class: 'form-control',
-                              placeholder: t(:search, subject: t('attributes.username')),
+                              placeholder: t('internal.search',
+                                             subject: t('internal.attributes.username')),
                               autocomplete: :off
 
         %th
           .filter_title
-            #{t('attributes.kind')}:
+            #{t('internal.attributes.kind')}:
           .filter_field
             = f.label :kind_eq, class: 'sr-only'
             = f.select :kind_eq,
@@ -30,7 +31,7 @@
 
         %th
           .filter_title
-            #{t('attributes.status')}:
+            #{t('internal.attributes.status')}:
           .filter_field
             = f.label :status_eq, class: 'sr-only'
             = f.select :status_eq,
@@ -39,25 +40,25 @@
                        class: 'form-control'
         %th
           .filter_title
-            #{t(:search, subject: t('from'))}:
+            #{t('internal.search', subject: t('internal.from'))}:
           .filter_field
             = f.label :created_at_gteq, class: 'sr-only'
             .input-group
               = f.search_field :created_at_gteq,
                                 class: 'form-control form_date',
-                                placeholder: t(:search, subject: t('from')),
+                                placeholder: t('internal.search', subject: t('internal.from')),
                                 value: search_date_for(:created_at_gteq)
               .input-group-append
                 .input-group-text.btn &#128197;
         %th
           .filter_title
-            #{t(:search, subject: t('to'))}:
+            #{t('internal.search', subject: t('internal.to'))}:
           .filter_field
             = f.label :created_at_lteq, class: 'sr-only'
             .input-group
               = f.search_field :created_at_lteq,
                                 class: 'form-control form_date',
-                                placeholder: t(:search, subject: t('to')),
+                                placeholder: t('internal.search', subject: t('internal.to')),
                                 value: search_date_for(:created_at_lteq)
               .input-group-append
                 .input-group-text.btn &#128197;

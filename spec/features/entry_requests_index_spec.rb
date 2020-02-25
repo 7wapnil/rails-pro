@@ -22,12 +22,10 @@ describe EntryRequest, '#index' do
           # the value is returned with an extra space
           # between the date and the time
           expected_date = I18n.l(request.created_at, format: :long).squish
-
-          expected_kind = I18n.t("kinds.#{request.kind}")
           expected_amount = "200.00 #{request.currency.code}"
 
           expect(page).to have_content(expected_date)
-          expect(page).to have_content(expected_kind)
+          expect(page).to have_content(request.kind.capitalize)
           expect(page).to have_content(request.customer.full_name)
           expect(page).to have_content(expected_amount)
           expect(page).to have_content(request.external_id)
@@ -37,7 +35,7 @@ describe EntryRequest, '#index' do
 
     it 'allows sorting by date' do
       oldest = EntryRequest.unscoped.order(created_at: :asc).first
-      click_link(I18n.t('attributes.date'))
+      click_link(I18n.t('internal.attributes.date'))
       first_row = page.first('table > tbody tr')
       element_id = "entry-request-#{oldest.id}"
 
@@ -46,7 +44,7 @@ describe EntryRequest, '#index' do
 
     it 'allows sorting by kind' do
       first_in_table = EntryRequest.unscoped.order(kind: :desc).first
-      click_link(I18n.t('attributes.entry_kind'))
+      click_link(I18n.t('internal.attributes.entry_kind'))
       first_row = page.first('table > tbody tr')
       element_id = "entry-request-#{first_in_table.id}"
 
