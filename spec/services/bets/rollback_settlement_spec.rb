@@ -88,7 +88,7 @@ describe Bets::RollbackSettlement do
 
       it 'raises an error' do
         expect { subject }.to raise_error(
-          I18n.t('errors.messages.bonus_for_wrong_customer')
+          I18n.t('internal.errors.messages.bonus_for_wrong_customer')
         )
       end
 

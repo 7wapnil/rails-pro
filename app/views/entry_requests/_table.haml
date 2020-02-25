@@ -1,14 +1,18 @@
 %table.table
   %thead
     %tr
-      %th= sort_link(filter.search, :created_at, t('attributes.date'), default_order: :asc)
-      %th= t('attributes.status')
-      %th= sort_link(filter.search, :kind, t('attributes.entry_kind'), default_order: :desc)
-      %th= t('attributes.customer_name')
-      %th= t('attributes.customer_username')
-      %th= t('attributes.amount')
-      %th= t('attributes.result')
-      %th= t('attributes.external_id')
+      %th= sort_link(filter.search, :created_at, t('internal.attributes.date'), default_order: :asc)
+      %th= t('internal.attributes.status')
+      %th
+        = sort_link(filter.search,
+                    :kind,
+                    t('internal.attributes.entry_kind'),
+                    default_order: :desc)
+      %th= t('internal.attributes.customer_name')
+      %th= t('internal.attributes.customer_username')
+      %th= t('internal.attributes.amount')
+      %th= t('internal.attributes.result')
+      %th= t('internal.attributes.external_id')
   %tbody
     - if filter.requests.any?
       - filter.requests.each do |request|
@@ -27,4 +31,4 @@
           %td= request.external_id
     - else
       %tr
-        %td{ colspan: 6 }= t(:not_found, instance: t('entities.entry_requests'))
+        %td{ colspan: 6 }= t('internal.not_found', instance: t('internal.entities.entry_requests'))

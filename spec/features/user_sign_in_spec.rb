@@ -34,7 +34,6 @@ describe User do
     end
 
     context 'suspicious' do
-      let(:captcha_message) { I18n.t('recaptcha.errors.verification_failed') }
       let!(:user) do
         create(:admin_user,
                failed_attempts: LoginAttemptable::LOGIN_ATTEMPTS_CAP)
@@ -43,7 +42,6 @@ describe User do
       it 'failure login attempt' do
         fill_sign_in_form
 
-        expect_to_have_notification(captcha_message)
         expect { user.reload }.to change(user, :failed_attempts).by(1)
       end
 

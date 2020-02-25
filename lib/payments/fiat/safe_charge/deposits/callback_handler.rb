@@ -40,7 +40,7 @@ module Payments
             ga_client.track_deposit_cancellation!
 
             entry_request.register_failure!(
-              I18n.t('errors.messages.cancelled_by_customer')
+              I18n.t('internal.errors.messages.cancelled_by_customer')
             )
             fail_related_entities
           end
@@ -90,13 +90,9 @@ module Payments
                               reason: response[:Reason],
                               reason_code: response[:ReasonCode],
                               request_id: request_id)
-            entry_request.register_failure!(
-              I18n.t('errors.messages.payment_failed_with_reason_error',
-                     reason: response[:Reason])
-            )
-
             ga_client.track_deposit_failure!
 
+            entry_request.register_failure!(failed_with_reason_message)
             fail_related_entities
           end
 
@@ -119,6 +115,11 @@ module Payments
           def throw_unknown_status
             raise ::Payments::NotSupportedError,
                   "Unknown response status #{status}"
+          end
+
+          def failed_with_reason_message
+            I18n.t('internal.errors.messages.payment_failed_with_reason_error',
+                   reason: response[:Reason])
           end
         end
       end

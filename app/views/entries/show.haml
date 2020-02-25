@@ -1,53 +1,53 @@
 .row.mt-4
   .col-6.offset-3
-    = card header: t('entities.entry_information'), class: 'entry-info' do
+    = card header: t('internal.entities.entry_information'), class: 'entry-info' do
       %table.table
         %tr
-          %td= t('attributes.id')
+          %td= t('internal.attributes.id')
           %td= @entry.id
         %tr
-          %td= t('attributes.created_at')
+          %td= t('internal.attributes.created_at')
           %td= l(@entry.created_at, format: :long)
         %tr
-          %td= t('attributes.authorized_at')
+          %td= t('internal.attributes.authorized_at')
           %td= l(@entry.authorized_at, format: :long) if @entry.authorized_at
         %tr
-          %td= t('attributes.confirmed_at')
+          %td= t('internal.attributes.confirmed_at')
           %td= l(@entry.confirmed_at, format: :long) if @entry.confirmed_at
         %tr
-          %td= t('attributes.kind')
+          %td= t('internal.attributes.kind')
           %td= t("kinds.#{@entry.kind}")
         %tr
-          %td= t('attributes.amount')
+          %td= t('internal.attributes.amount')
           %td
             = number_with_precision @entry.amount, precision: 2
             = @entry.currency_code
         %tr
-          %td= t('attributes.real_money_amount')
+          %td= t('internal.attributes.real_money_amount')
           %td
             = number_with_precision @entry.real_money_amount, precision: 2
             = @entry.currency_code
         %tr
-          %td= t('attributes.bonus_amount')
+          %td= t('internal.attributes.bonus_amount')
           %td
             = number_with_precision @entry.bonus_amount, precision: 2
             = @entry.currency_code
         %tr
-          %td= t('attributes.converted_bonus_amount')
+          %td= t('internal.attributes.converted_bonus_amount')
           %td
             = number_with_precision @entry.converted_bonus_amount, precision: 2
             = @entry.currency_code
         %tr
-          %td= t('attributes.confiscated_bonus_amount')
+          %td= t('internal.attributes.confiscated_bonus_amount')
           %td
             = number_with_precision @entry.confiscated_bonus_amount, precision: 2
             = @entry.currency_code
         %tr
-          %td= t('attributes.external_id')
+          %td= t('internal.attributes.external_id')
           %td
             = @entry.external_id
         %tr
-          %td= t('attributes.entities.entry_request')
+          %td= t('internal.attributes.entities.entry_request')
           %td
             = link_to @entry.entry_request.id, entry_request_path(@entry.entry_request.id)
       %hr

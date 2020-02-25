@@ -30,7 +30,8 @@ module EntryRequests
                       error_object: e)
 
       entry_request.register_failure!(
-        I18n.t('errors.messages.entry_request_for_settled_bet', bet_id: bet.id)
+        I18n.t('internal.errors.messages.entry_request_for_settled_bet',
+               bet_id: bet.id)
       )
     end
 

@@ -56,7 +56,7 @@ namespace :production_data do
     desc 'Create system labels'
     task add_system_labels: :environment do
       Label::RESERVED_BY_SYSTEM.each do |name|
-        Label.find_by(name: I18n.t("labels.#{name}"),
+        Label.find_by(name: I18n.t("internal.labels.#{name}"),
                       kind: Label::CUSTOMER)
              &.destroy
 

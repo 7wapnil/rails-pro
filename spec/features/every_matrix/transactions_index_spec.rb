@@ -87,7 +87,8 @@ describe EveryMatrix::Transaction, '#index' do
 
           within 'table.table.em_transactions tbody' do
             expect(page).to have_content(
-              I18n.t(:not_found, instance: I18n.t('entities.transactions'))
+              I18n.t('internal.not_found',
+                     instance: I18n.t('internal.entities.transactions'))
             )
           end
         end

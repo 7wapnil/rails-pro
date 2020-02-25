@@ -36,7 +36,8 @@ module Bets
         .negative_balance_bet_placement
         .deliver_later
 
-      raise ::Bets::RegistrationError, 'Bet placed with negative balance'
+      raise ::Bets::RegistrationError,
+            I18n.t('errors.messages.bet_with_negative_balance')
     end
 
     def check_if_odds_active!

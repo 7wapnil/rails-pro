@@ -44,9 +44,9 @@ class Label < ApplicationRecord
 
   def name_eligibility
     return unless RESERVED_BY_SYSTEM
-                  .map { |keyword| I18n.t("labels.#{keyword}") }
+                  .map { |keyword| I18n.t("internal.labels.#{keyword}") }
                   .include?(name)
 
-    errors.add(:name, I18n.t('errors.messages.reserved'))
+    errors.add(:name, I18n.t('internal.errors.messages.reserved'))
   end
 end

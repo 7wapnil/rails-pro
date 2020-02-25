@@ -1,22 +1,22 @@
-= card header: t('entities.balances'),
+= card header: t('internal.entities.balances'),
        class: 'mt-4 balances' do
   - if @customer.wallets.any?
     %table.table
       - @customer.wallets.each do |wallet|
         %tr
           %td
-            %b= t('entities.wallet_name', currency: wallet.currency_name)
+            %b= t('internal.entities.wallet_name', currency: wallet.currency_name)
           %td
             %b= wallet_balance(wallet)
         %tr
-          %td= t('attributes.real_money')
+          %td= t('internal.attributes.real_money')
           %td= wallet_balance(wallet, wallet.real_money_balance)
         %tr
-          %td= t('attributes.bonus')
+          %td= t('internal.attributes.bonus')
           %td= wallet_balance(wallet, wallet.bonus_balance)
         %tr
-          %td= t('attributes.confiscated_bonus')
+          %td= t('internal.attributes.confiscated_bonus')
           %td= wallet_balance(wallet, wallet.confiscated_bonus_balance)
   - else
     .text-center
-      %em= t(:no_records)
+      %em= t('internal.no_records')

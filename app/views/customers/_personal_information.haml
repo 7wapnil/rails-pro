@@ -1,33 +1,33 @@
-= card header: t('attributes.personal_information'), class: 'personal-information' do
+= card header: t('internal.attributes.personal_information'), class: 'personal-information' do
   = simple_form_for customer, html: { class: 'personal-information-form' },
                     url: update_personal_information_customer_path do |f|
     %table.table.vertical-with-labels
       %tr
-        %td= t('attributes.first_name')
+        %td= t('internal.attributes.first_name')
         %td
           = f.input :first_name,
                     label: false,
                     input_html: { data: { only_letters: true } }
       %tr
-        %td= t('attributes.last_name')
+        %td= t('internal.attributes.last_name')
         %td
           = f.input :last_name,
                     label: false,
                     input_html: { data: { only_letters: true } }
       %tr
-        %td= t('attributes.gender')
+        %td= t('internal.attributes.gender')
         %td
           = collection_select :customer, :gender,
             Customer.genders.keys,
             :itself,
             ->(gender) { t("genders.#{gender}") },
-            { include_blank: t('not_set') },
+            { include_blank: t('internal.not_set') },
             label: false,
             class: 'form-control',
             id: 'customer_gender'
 
       %tr
-        %td= t('attributes.date_of_birth')
+        %td= t('internal.attributes.date_of_birth')
         %td
           .input-group
             = f.input_field :date_of_birth,
@@ -40,7 +40,7 @@
               .input-group-text.btn &#128197;
       %tr
         %td.text-right{ colspan: 2 }
-          = f.submit t(:save), class: 'btn btn-outline-dark'
+          = f.submit t('internal.save'), class: 'btn btn-outline-dark'
 
 - content_for :js do
   = javascript_pack_tag 'input_validation', 'data-turbolinks-track': 'reload'

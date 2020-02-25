@@ -12,10 +12,11 @@
                     label_method: ->(k) { t("ranges.#{k.second}") },
                     value_method: :first,
                     required: true
-  = f.submit t(:save), class: 'btn btn-outline-dark'
+  = f.submit t('internal.save'), class: 'btn btn-outline-dark'
   - if limit.id
-    = link_to t(:delete),
+    = link_to t('internal.delete'),
       deposit_limit_path(limit),
       method: :delete,
-      data: { confirm: t('messages.deposit_limits.delete', customer_name: customer.full_name) },
+      data: { confirm: t('internal.messages.deposit_limits.delete',
+                         customer_name: customer.full_name) },
       class: 'btn btn-danger'

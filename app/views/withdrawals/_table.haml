@@ -1,15 +1,15 @@
 %table.table
   %thead
     %tr
-      %th= t('attributes.id')
-      %th= t('attributes.customer')
-      %th= sort_link filter.search, :created_at, t('attributes.created_at')
-      %th= sort_link filter.search, :entry_request_amount, t('attributes.amount')
-      %th= t('attributes.currency')
-      %th= t('attributes.payment_method')
-      %th= t('attributes.payment_details')
-      %th= t('entities.entry_request')
-      %th= t('attributes.status')
+      %th= t('internal.attributes.id')
+      %th= t('internal.attributes.customer')
+      %th= sort_link filter.search, :created_at, t('internal.attributes.created_at')
+      %th= sort_link filter.search, :entry_request_amount, t('internal.attributes.amount')
+      %th= t('internal.attributes.currency')
+      %th= t('internal.attributes.payment_method')
+      %th= t('internal.attributes.payment_details')
+      %th= t('internal.entities.entry_request')
+      %th= t('internal.attributes.status')
       %th
   %tbody
     - if filter.withdrawals.any?
@@ -38,7 +38,7 @@
               %b= withdrawal.status
 
           - if withdrawal.pending?
-            %td= link_to t('confirm'),
+            %td= link_to t('internal.confirm'),
               confirm_withdrawal_path(withdrawal),
               method: :post,
               class: 'btn btn-success'
@@ -48,16 +48,16 @@
                 .form-row
                   .col
                     = f.text_field :comment,
-                      placeholder: t('attributes.comment'),
+                      placeholder: t('internal.attributes.comment'),
                       class: 'form-control',
                       required: true
                   .col
-                    = f.submit t('reject'),
-                      data: { confirm: t('confirm_sure') },
+                    = f.submit t('internal.reject'),
+                      data: { confirm: t('internal.confirm_sure') },
                       class: 'btn btn-danger'
           - else
             %td{ colspan: 2 }
               = actioned_by(withdrawal.actioned_by)
     - else
       %tr
-        %td{ colspan: 7 }= t(:not_found, instance: t('entities.withdrawals'))
+        %td{ colspan: 7 }= t('internal.not_found', instance: t('internal.entities.withdrawals'))

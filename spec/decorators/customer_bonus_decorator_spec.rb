@@ -45,14 +45,14 @@ describe CustomerBonusDecorator, type: :decorator do
 
   describe '#link_to_entry' do
     it 'shows that entry is not available' do
-      expect(subject.link_to_entry).to eq(I18n.t('not_available'))
+      expect(subject.link_to_entry).to eq(I18n.t('internal.not_available'))
     end
 
     context 'with balance_entry' do
       let(:customer_bonus) { create(:customer_bonus, :with_entry) }
       let(:entry) { customer_bonus.activation_entry }
       let(:link_to_entry) do
-        helpers.link_to(I18n.t('entities.entry'), entry_path(entry))
+        helpers.link_to(I18n.t('internal.entities.entry'), entry_path(entry))
       end
 
       it 'returns link to entry' do

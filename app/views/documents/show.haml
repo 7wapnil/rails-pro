@@ -1,28 +1,28 @@
 .row.mt-4
   .col-6.offset-3
-    = card header: t('entities.document'), class: 'document-info' do
+    = card header: t('internal.entities.document'), class: 'document-info' do
       %table.table
         %tr
-          %td= t('attributes.username')
+          %td= t('internal.attributes.username')
           %td= link_to @document.customer.username,
                         documents_customer_path(id: @document.customer.id)
         %tr
-          %td= t('attributes.kind')
-          %td= t("attributes.#{@document.kind}")
+          %td= t('internal.attributes.kind')
+          %td= t("internal.attributes.#{@document.kind}")
         %tr
-          %td= t('attributes.created_at')
+          %td= t('internal.attributes.created_at')
           %td= l(@document.created_at, format: :long)
         %tr
-          %td= t('attributes.status')
+          %td= t('internal.attributes.status')
           %td= status_badge(@document.status)
         %tr
-          %td= t('view')
-          %td= link_to t(:view),
+          %td= t('internal.view')
+          %td= link_to t('internal.view'),
                         rails_blob_path(@document.document),
                         class: 'btn btn-outline-dark mr-2',
                         target: :blank
         %tr
-          %td= t('attributes.actions')
+          %td= t('internal.attributes.actions')
           %td
             = render 'documents/actions', document: @document
         %tr

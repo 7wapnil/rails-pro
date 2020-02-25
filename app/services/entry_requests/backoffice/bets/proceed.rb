@@ -35,7 +35,7 @@ module EntryRequests
 
         def raise_unprocessed_bet!
           raise ::Bets::InvalidStatusError,
-                I18n.t('errors.messages.bets.unprocessed')
+                I18n.t('internal.errors.messages.bets.unprocessed')
         end
 
         def new_status?
@@ -46,7 +46,8 @@ module EntryRequests
 
         def raise_update_to_current_state!
           raise ::Bets::InvalidStatusError,
-                I18n.t('errors.messages.bets.unchanged_status', status: status)
+                I18n.t('internal.errors.messages.bets.unchanged_status',
+                       status: status)
         end
 
         def proceed_won_bet
@@ -63,7 +64,7 @@ module EntryRequests
 
         def raise_invalid_status!
           raise ::Bets::InvalidStatusError,
-                I18n.t('errors.messages.bets.invalid_status',
+                I18n.t('internal.errors.messages.bets.invalid_status',
                        status: status)
         end
 

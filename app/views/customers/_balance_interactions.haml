@@ -1,4 +1,4 @@
-= card header: t('balance_interactions'),
+= card header: t('internal.balance_interactions'),
        class: 'customer-entries' do
   - if entries.any?
     %table.table
@@ -11,6 +11,6 @@
             %td= entry.currency_code
   - else
     .text-center
-      %em= t(:no_records)
+      %em= t('internal.no_records')
 
   = paginate entries, param_name: :entries_page

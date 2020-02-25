@@ -3,28 +3,28 @@
                                                                                   haspopup: true },
                                                                           'data-toggle': 'dropdown',
                                                                           type: :button }
-    = t(:action)
+    = t('internal.action')
   .dropdown-menu{ 'aria-labelledby' => 'dropdown-menu-button' }
-    = link_to t(:details),
+    = link_to t('internal.details'),
               verification_document_path(attachment),
               class: 'dropdown-item'
-    = link_to t(:view),
+    = link_to t('internal.view'),
               rails_blob_path(attachment.document),
               class: 'dropdown-item',
               target: :blank
     - if attachment.pending? || attachment.rejected?
-      = link_to t(:confirm),
+      = link_to t('internal.confirm'),
                 status_verification_document_path(status: :confirmed,
                 id: attachment.id),
                 class: 'dropdown-item',
                 data: { turbolinks: false }
     - if attachment.pending? || attachment.confirmed?
-      = link_to t(:reject),
+      = link_to t('internal.reject'),
                 status_verification_document_path(status: :rejected,
                 id: attachment.id),
                 class: 'dropdown-item',
                               data: { turbolinks: false }
-    = link_to t(:history),
+    = link_to t('internal.history'),
               documents_history_customer_path(id: customer.id, document_type: kind),
               class: 'dropdown-item'
 

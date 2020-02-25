@@ -36,7 +36,8 @@ describe GraphQL, '#verify_email' do
     end
 
     it 'returns customer already activated error' do
-      expect(result['errors'][0]['message']).to eq('Email already verified')
+      expect(result['errors'][0]['message'])
+        .to eq(I18n.t('errors.messages.email_verified'))
     end
   end
 

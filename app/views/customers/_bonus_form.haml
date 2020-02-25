@@ -5,7 +5,7 @@
   = javascript_pack_tag 'flatpickr', 'data-turbolinks-track': 'reload'
   = javascript_pack_tag 'customers/bonuses', 'data-turbolinks-track': 'reload'
 
-= card header: t(:activate_instance, instance: t('entities.bonus')) do
+= card header: t('internal.activate_instance', instance: t('internal.entities.bonus')) do
   = simple_form_for customer_bonus do |f|
     .row
       .col-4
@@ -55,6 +55,6 @@
           = f.input :percentage,
                     disabled: true
 
-    = f.submit t(:confirm),
+    = f.submit t('internal.confirm'),
                class: 'btn btn-outline-dark'
   #bonus-data{ data: { bonuses: active_bonuses.to_json } }

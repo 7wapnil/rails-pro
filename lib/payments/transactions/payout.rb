@@ -14,7 +14,7 @@ module Payments
 
         errors.add(
           :cashier,
-          I18n.t('errors.messages.withdrawal.invalid_withdrawal')
+          I18n.t('internal.errors.messages.withdrawal.invalid_withdrawal')
         )
       end
 

@@ -65,7 +65,7 @@ describe CustomerLocking do
 
     it 'returns correct date' do
       expect(subject.date).to eq(
-        I18n.t('infinite')
+        I18n.t('internal.infinite')
       )
     end
   end

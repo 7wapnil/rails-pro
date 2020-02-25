@@ -61,10 +61,6 @@ describe Customer do
   end
 
   describe 'account transition' do
-    let(:error_message) do
-      I18n.t('errors.messages.customer_account_kind_transit')
-    end
-
     it 'from regular' do
       customer = create(:customer, account_kind: :regular)
       customer.account_kind = Customer::TESTING

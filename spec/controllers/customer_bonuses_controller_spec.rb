@@ -46,7 +46,8 @@ describe CustomerBonusesController, type: :controller do
       it 'sets success message' do
         expect(controller)
           .to set_flash[:notice].to(
-            I18n.t(:activated, instance: I18n.t('entities.bonus'))
+            I18n.t('internal.activated',
+                   instance: I18n.t('internal.entities.bonus'))
           )
       end
     end

@@ -1,4 +1,4 @@
-= card header: t('entities.activities'), class: 'audit-logs' do
+= card header: t('internal.entities.activities'), class: 'audit-logs' do
   - if audit_logs.any?
     %table.table.table-hover
       %tbody
@@ -8,6 +8,6 @@
             %td= t "events.#{log.event}", log.interpolation
   - else
     .text-center
-      %em= t(:no_records)
+      %em= t('internal.no_records')
 
   = paginate audit_logs, param_name: :audit_logs_page
