@@ -32,6 +32,7 @@ entry_currency_rule_ranges = {
   EntryKinds::WIN => { min: 0, max: 100_000_000 },
   EntryKinds::WITHDRAW => { min: -100_000_000, max: 0 },
   EntryKinds::CONFISCATION => { min: -100_000_000, max: 0 },
+  EntryKinds::SYSTEM_ADJUSTMENT => { min: -100_000_000, max: 0 },
   EntryKinds::BET => { min: -100_000_000, max: 0 },
   EntryKinds::REFUND => { min: 0, max: 100_000_000 },
   EntryKinds::ROLLBACK => { min: -100_000_000, max: 100_000_000 },

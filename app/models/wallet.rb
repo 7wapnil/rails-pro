@@ -44,4 +44,11 @@ class Wallet < ApplicationRecord
   def to_s
     "#{currency} Wallet"
   end
+
+  def with_money?
+    amount.positive? ||
+      real_money_balance.positive? ||
+      bonus_balance.positive? ||
+      confiscated_bonus_balance.positive?
+  end
 end
