@@ -6,7 +6,7 @@ class CleanUpBaseWorker < ApplicationWorker
   sidekiq_options queue: 'clean_up_data'
 
   MAX_ITERATIONS = 1_000
-  BATCH_SIZE = 50_000
+  BATCH_SIZE = 25_000
 
   def perform
     MAX_ITERATIONS.times do
