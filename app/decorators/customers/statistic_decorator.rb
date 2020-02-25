@@ -23,13 +23,6 @@ module Customers
       "#{Customers::Statistic.human_attribute_name(:last_updated_at)}: #{time}"
     end
 
-    def updated_at(human: false)
-      return super() unless human
-
-      time = super() ? l(super()) : t('not_available')
-      "#{Customers::Statistic.human_attribute_name(:updated_at)}: #{time}"
-    end
-
     def total_bonus_awarded(human: false)
       human ? money_field(super()) : super()
     end

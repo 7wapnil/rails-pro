@@ -5,37 +5,19 @@ module Customers
     # rubocop:disable Metrics/ClassLength
     class Calculator < ApplicationService
       BATCH_SIZE = 200
-      DEFAULT_TIMEOUT_SECONDS = 60
 
-      def initialize(customer:, force: true)
+      def initialize(customer:)
         @customer = customer
-        @force = force
       end
 
       def call
-        calculate_stats if needs_update?
+        calculate_stats
         stats
       end
 
       private
 
-      attr_reader :customer, :force
-
-      def needs_update?
-        force || no_stats? || old_stats?
-      end
-
-      def no_stats?
-        stats.updated_at.nil?
-      end
-
-      def old_stats?
-        stats.updated_at < timeout_seconds.seconds.ago
-      end
-
-      def timeout_seconds
-        ENV['CUSTOMER_STATS_TIMEOUT_SECONDS']&.to_i || DEFAULT_TIMEOUT_SECONDS
-      end
+      attr_reader :customer
 
       def calculate_stats
         stats.update(**explicit_attributes, **calculated_attributes)
