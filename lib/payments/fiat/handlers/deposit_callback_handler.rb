@@ -27,6 +27,10 @@ module Payments
           customer_bonus&.fail!
           entry_request&.origin&.failed!
         end
+
+        def ga_client
+          EntryRequestGaTracker.new(entry_request)
+        end
       end
     end
   end

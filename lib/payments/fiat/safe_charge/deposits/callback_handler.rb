@@ -16,7 +16,7 @@ module Payments
             update_deposit_details!
 
             return if pending?
-            return complete_entry_request! if approved?
+            return track_and_complete! if approved?
 
             fail_entry_request!
           end
@@ -36,6 +36,9 @@ module Payments
                               status: status,
                               payment_message_status: payment_message_status,
                               request_id: request_id)
+
+            ga_client.track_deposit_cancellation!
+
             entry_request.register_failure!(
               I18n.t('internal.errors.messages.cancelled_by_customer')
             )
@@ -87,8 +90,16 @@ module Payments
                               reason: response[:Reason],
                               reason_code: response[:ReasonCode],
                               request_id: request_id)
+            ga_client.track_deposit_failure!
+
             entry_request.register_failure!(failed_with_reason_message)
             fail_related_entities
+          end
+
+          def track_and_complete!
+            ga_client.track_deposit_success!
+
+            complete_entry_request!
           end
 
           def approved?
