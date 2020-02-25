@@ -8,5 +8,5 @@
       %tr{ data: { id: title.id } }
         %td= link_to title.name,
                       edit_title_path(title)
-        %td= title.slug=
+        %td= title.slug
         %td= link_to t('internal.entities.event_scopes'), event_scopes_path(title_id: title.id)
