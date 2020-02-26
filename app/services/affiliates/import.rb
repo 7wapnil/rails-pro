@@ -33,9 +33,17 @@ module Affiliates
       end
     end
 
+    private
+
     def mapped_row(raw_row)
-      FIELDS_MAPPING.map do |k, v|
-        [v, attribute_value(attribute: v, value: raw_row[k])]
+      FIELDS_MAPPING.map do |external_name, internal_name|
+        [
+          internal_name,
+          attribute_value(
+            attribute: internal_name,
+            value: raw_row[external_name]
+          )
+        ]
       end.to_h
     end
 
