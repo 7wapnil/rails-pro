@@ -1,0 +1,23 @@
+%h1.display-4= t('internal.entities.affiliates')
+
+%table.table.entities
+  %thead
+    %tr
+      %th= t('internal.attributes.name')
+      %th= t('internal.attributes.b_tag')
+      %th= t('internal.attributes.external_id')
+      %th= t('internal.attributes.sports_revenue_share')
+      %th= t('internal.attributes.casino_revenue_share')
+      %th= t('internal.attributes.cost_per_acquisition')
+
+  %tbody
+    - @affiliates.each do |affiliate|
+      %tr{ id: "affiliate-#{id.id}" }
+        %td= affiliate.name
+        %td= affiliate.b_tag
+        %td= affiliate.external_id
+        %td= affiliate.sports_revenue_share
+        %td= affiliate.casino_revenue_share
+        %td= affiliate.cost_per_acquisition
+
+= paginate @affiliates
