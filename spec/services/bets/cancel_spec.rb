@@ -146,7 +146,6 @@ describe Bets::Cancel do
 
       it 'updates wallet balance' do
         subject
-        puts "bet.currency.scale: #{bet.currency.scale}"
         expect(wallet.reload.amount).to eq(expected_amount)
       end
     end

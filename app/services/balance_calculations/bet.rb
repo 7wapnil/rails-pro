@@ -24,8 +24,7 @@ module BalanceCalculations
 
     def calculated_real_money_amount
       @calculated_real_money_amount ||=
-        (bet.amount * ratio)
-        .round(bet.currency.scale)
+        (bet.amount * ratio).round(bet.currency.scale)
     end
 
     def ratio
