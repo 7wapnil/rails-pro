@@ -169,6 +169,14 @@ en:
       credit_cards: Credit cards
       currency: Currency
       currency_code: Currency
+      custom_name_en: Custom Name En
+      custom_name_es: Custom Name Es
+      custom_name_pt: Custom Name Pt
+      custom_name_de: Custom Name De
+      custom_short_name_en: Custom Short Name En
+      custom_short_name_es: Custom Name Es
+      custom_short_name_pt: Custom Name Pt
+      custom_short_name_de: Custom Name De
       customer: Customer
       customer_name: Customer name
       customer_verification_status: Customer verification status

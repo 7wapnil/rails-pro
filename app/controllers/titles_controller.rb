@@ -1,7 +1,7 @@
 class TitlesController < ApplicationController
   protect_from_forgery prepend: true
 
-  find :title, only: %i[edit update], friendly: true
+  find :title, only: %i[edit update], friendly: true, decorate: true
 
   def index
     @titles_hash = Titles::CollectHashByKind.call

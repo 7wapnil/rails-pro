@@ -9,26 +9,26 @@
         = f.hidden_field :id, hidden: true
         = f.input :external_id, required: true, readonly: true
         = f.input :external_name, required: true, readonly: true
-        = f.input :name_en, label: t('custom_name_en')
+        = f.input :name_en, label: t('internal.custom_name_en')
         = link_to t('internal.edit_other_translations'),
                   '#name-attrs',
                   data: { toggle: 'collapse',
                         'aria-expanded': false },
                   class: 'nav-link dropdown-toggle'
         .collapse#name-attrs
-          - translated_attributes_for(:name).each do |attr|
-            = f.input attr, label: t("custom_#{attr}")
+          - @title.locale_attributes_for(:name).each do |attr|
+            = f.input attr, label: t("internal.custom_#{attr}")
 
-        = f.input :short_name_en, label: t('custom_short_name_en')
+        = f.input :short_name_en, label: t('internal.custom_short_name_en')
         = link_to t('internal.edit_other_translations'),
                   '#short-name-attrs',
                   data: { toggle: 'collapse',
                           'aria-expanded': false },
                   class: 'nav-link dropdown-toggle'
         .collapse#short-name-attrs
-          - translated_attributes_for(:short_name).each do |attr|
-            = f.input attr, label: t("custom_#{attr}")
-        = f.input :slug, label: t('attributes.slug')
+          - @title.locale_attributes_for(:short_name).each do |attr|
+            = f.input attr, label: t("internal.custom_#{attr}")
+        = f.input :slug, label: t('internal.attributes.slug')
         = f.input :meta_title,
                   as: :text,
                   rows: 2,

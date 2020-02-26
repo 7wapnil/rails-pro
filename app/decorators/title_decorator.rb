@@ -16,4 +16,12 @@ class TitleDecorator < ApplicationDecorator
   def event_scopes_header
     "#{t('internal.entities.event_scopes')} for #{name}"
   end
+
+  def locale_attributes_for(field)
+    locales_except_en = I18n.available_locales - [:en]
+
+    locales_except_en.map do |locale|
+      object.localized_attr_name_for(field, locale)
+    end
+  end
 end
