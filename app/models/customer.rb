@@ -114,6 +114,10 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
             presence: { message: I18n.t('errors.messages.blank_birth_date') }
 
   validates :username, uniqueness: { case_sensitive: false }
+  validates_format_of :username,
+                      without: /\s/,
+                      message: I18n.t('errors.messages.username_with_spaces')
+
   validates :email, uniqueness: { case_sensitive: false }
   validates :verified, :activated, :locked, inclusion: { in: [true, false] }
 
