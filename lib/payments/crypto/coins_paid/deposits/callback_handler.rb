@@ -101,8 +101,6 @@ module Payments
           end
 
           def cancel_entry_request
-            ga_client.track_deposit_cancellation!
-
             entry_request.register_failure!(message)
             fail_related_entities
           end
@@ -141,8 +139,6 @@ module Payments
                      status: status)
             error_message =
               "#{message} for entry request with id #{entry_request.id}"
-
-            ga_client.track_deposit_failure!
 
             entry_request.register_failure!(message)
             fail_related_entities
