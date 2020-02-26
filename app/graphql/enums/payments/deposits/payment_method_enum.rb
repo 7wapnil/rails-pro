@@ -14,6 +14,7 @@ module Payments
       value ::Payments::Methods::IDEBIT, 'iDebit'
       value ::Payments::Methods::PAYSAFECARD, 'paysafecard'
       value ::Payments::Methods::BITCOIN, 'Bitcoin'
+      value ::Payments::Methods::CHANGELLY, 'changelly'
     end
   end
 end

@@ -6,7 +6,8 @@ module Payments
       include Payments::Methods
 
       PAYMENT_METHODS = [
-        ::Payments::Methods::BITCOIN
+        ::Payments::Methods::BITCOIN,
+        ::Payments::Methods::CHANGELLY
       ].freeze
 
       BUSINESS_ERRORS = [
