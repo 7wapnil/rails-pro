@@ -1,5 +1,6 @@
 describe User do
   let(:user) { create(:admin_user) }
+  let!(:primary_currency) { create(:currency, :primary) }
 
   before { Recaptcha.configuration.skip_verify_env.delete('test') }
 

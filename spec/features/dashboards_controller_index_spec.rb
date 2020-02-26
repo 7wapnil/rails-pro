@@ -1,5 +1,7 @@
 describe DashboardsController, '#index' do
   context 'signed in' do
+    let!(:primary_currency) { create(:currency, :primary) }
+
     before do
       login_as create(:admin_user), scope: :user
       visit dashboard_path

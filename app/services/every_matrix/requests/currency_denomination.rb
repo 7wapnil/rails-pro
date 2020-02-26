@@ -20,9 +20,13 @@ module EveryMatrix
       def denominate_request_amount(code:, amount:)
         multiplier = CURRENCY_DENOMINATION.dig(code, :multiplier)
 
-        return (amount / multiplier) if multiplier
+        return amount unless multiplier
 
-        amount
+        scale_correction = -Math.log10(multiplier).floor
+        currency = Currency.by_code(code)
+        scale = currency.scale + scale_correction
+
+        (amount / multiplier).truncate(scale)
       end
     end
   end

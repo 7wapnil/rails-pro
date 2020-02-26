@@ -2,8 +2,6 @@
 
 module Exchanger
   class Converter < ApplicationService
-    PRECISION = 2
-
     def initialize(value, origin_currency, target_currency = nil)
       @value = value
       @origin = origin_currency
@@ -11,9 +9,9 @@ module Exchanger
     end
 
     def call
-      return value.truncate(PRECISION) if origin_currency == target_currency
+      return value.truncate(target_scale) if origin_currency == target_currency
 
-      converted_value.truncate(PRECISION)
+      converted_value.truncate(target_scale)
     end
 
     private
@@ -22,6 +20,10 @@ module Exchanger
 
     def converted_value
       value / currency_rate(origin_currency) * currency_rate(target_currency)
+    end
+
+    def target_scale
+      target_currency.scale
     end
 
     def origin_currency

@@ -2,7 +2,6 @@
 
 module BalanceCalculations
   class Totals < ApplicationService
-    PRECISION = 2
     BALANCE_SELECT_QUERY = <<~SQL
       SUM(
         wallets.real_money_balance / COALESCE(currencies.exchange_rate, 1.0)
@@ -32,7 +31,7 @@ module BalanceCalculations
     def humanize_amount(amount)
       return 0.0 unless amount
 
-      ::Currency::PRIMARY_RATE * amount.truncate(PRECISION)
+      (::Currency::PRIMARY_RATE * amount).truncate(Currency.primary.scale)
     end
   end
 end

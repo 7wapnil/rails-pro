@@ -4,7 +4,10 @@ class Currency < ApplicationRecord
   FIAT_CODES = %w[EUR USD INR ZAR].freeze
   CRYPTO_CODES = %w[BTC].freeze
   PRIMARY_CODE = 'EUR'
+  PRIMARY_NAME = 'Euro'
   PRIMARY_RATE = 1
+  CRYPTO_SCALE = 5
+  FIAT_SCALE   = 2
 
   include Loggable
 
@@ -30,11 +33,15 @@ class Currency < ApplicationRecord
   validates_associated :entry_currency_rules
 
   def self.build_default
-    new(code: PRIMARY_CODE, name: 'Euro', primary: true)
+    new(code: PRIMARY_CODE, name: PRIMARY_NAME, primary: true)
   end
 
   def self.primary
-    find_by(code: PRIMARY_CODE)
+    by_code(PRIMARY_CODE)
+  end
+
+  def self.by_code(code)
+    find_by(code: code)
   end
 
   def to_s
@@ -49,5 +56,11 @@ class Currency < ApplicationRecord
     { id: id,
       code: code,
       name: name }
+  end
+
+  def scale
+    return CRYPTO_SCALE if crypto?
+
+    FIAT_SCALE
   end
 end

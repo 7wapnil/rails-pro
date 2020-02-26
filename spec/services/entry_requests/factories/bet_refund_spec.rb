@@ -47,7 +47,7 @@ describe EntryRequests::Factories::BetRefund do
     end
     let(:balance_attributes) do
       original_balance_attributes.transform_values do |amount|
-        (amount * void_factor).round(Bet::PRECISION)
+        (amount * void_factor).round(bet.currency.scale)
       end
     end
 

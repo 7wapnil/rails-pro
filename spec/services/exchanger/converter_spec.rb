@@ -32,7 +32,10 @@ describe Exchanger::Converter do
                                     test_data[:target])
 
       expect(result).to(
-        eq(test_data[:expected].truncate(described_class::PRECISION))
+        eq(
+          test_data[:expected]
+            .truncate(Currency.by_code(test_data[:target]).scale)
+        )
       )
     end
   end
@@ -40,7 +43,7 @@ describe Exchanger::Converter do
   it 'returns initial value if conversion currencies are similar' do
     value = 1234.1234
     expect(described_class.call(value, 'EUR', 'EUR')).to(
-      eq(value.truncate(described_class::PRECISION))
+      eq(value.truncate(Currency.by_code('EUR').scale))
     )
   end
 end

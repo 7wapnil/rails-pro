@@ -232,7 +232,7 @@ describe Bets::RollbackCancel do
       let!(:voided_bet_leg) { create(:bet_leg, :voided, bet: bet) }
       let!(:expected_amount) do
         wallet.amount +
-          (bet.amount * bet_leg.odd_value).round(Bet::PRECISION) -
+          (bet.amount * bet_leg.odd_value).round(bet.currency.scale) -
           bet.placement_rollback_entry.amount
       end
 
@@ -270,7 +270,7 @@ describe Bets::RollbackCancel do
           )
         end
         let(:winning_real_money) do
-          (winning_entry.amount * ratio).round(Bet::PRECISION)
+          (winning_entry.amount * ratio).round(bet.currency.scale)
         end
         let(:converted_amount) { winning_entry.amount - winning_real_money }
 
@@ -346,7 +346,7 @@ describe Bets::RollbackCancel do
           re_winning_entry.amount +
           (bet.amount *
             won_bet_leg.odd_value *
-            bet_leg.odd_value).round(Bet::PRECISION)
+            bet_leg.odd_value).round(bet.currency.scale)
       end
 
       before do
@@ -424,10 +424,12 @@ describe Bets::RollbackCancel do
           won_bet_leg.odd_value *
           bet_leg.odd_value
       end
-      let(:real_money_win_amount) { win_amount.round(Bet::PRECISION) * ratio }
+      let(:real_money_win_amount) do
+        win_amount.round(bet.currency.scale) * ratio
+      end
       let(:bonus_win_amount) do
-        win_amount.round(Bet::PRECISION) -
-          real_money_win_amount.round(Bet::PRECISION)
+        win_amount.round(bet.currency.scale) -
+          real_money_win_amount.round(bet.currency.scale)
       end
 
       CustomerBonus::DISMISSED_STATUSES.each do |status|

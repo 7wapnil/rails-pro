@@ -2,6 +2,7 @@
 
 describe Customers::StatisticsController, '#show' do
   let(:customer) { create(:customer) }
+  let!(:primary_currency) { create(:currency, :primary) }
 
   before { login_as create(:admin_user), scope: :user }
 

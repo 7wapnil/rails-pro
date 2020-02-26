@@ -2,15 +2,13 @@
 
 module BalanceCalculations
   class BetCompensation < ApplicationService
-    MONEY_PRECISION = 2
-
     delegate :placement_entry, to: :bet, allow_nil: true
     delegate :real_money_amount, :bonus_amount, to: :placement_entry,
                                                 allow_nil: true
 
     def initialize(bet:, amount:)
       @bet = bet
-      @amount = amount.round(MONEY_PRECISION)
+      @amount = amount.round(bet.currency.scale)
     end
 
     def call
@@ -26,7 +24,8 @@ module BalanceCalculations
     attr_reader :bet, :amount
 
     def calculated_real_money_amount
-      @calculated_real_money_amount ||= (amount * ratio).round(MONEY_PRECISION)
+      @calculated_real_money_amount ||=
+        (amount * ratio).round(bet.currency.scale)
     end
 
     def calculated_bonus_amount

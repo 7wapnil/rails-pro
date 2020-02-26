@@ -43,8 +43,9 @@ module EntryRequests
         return original_balance_attributes unless bet.settled? &&
                                                   bet.void_factor
 
-        original_balance_attributes
-          .transform_values { |amount| amount * bet.void_factor }
+        original_balance_attributes.transform_values do |amount|
+          (amount * bet.void_factor).round(bet.currency.scale)
+        end
       end
 
       def original_balance_attributes

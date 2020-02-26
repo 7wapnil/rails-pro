@@ -1,4 +1,6 @@
 describe User, '#sign_out' do
+  let!(:primary_currency) { create(:currency, :primary) }
+
   it 'Successfully signs out' do
     user = create(:admin_user)
     login_as user, scope: :user

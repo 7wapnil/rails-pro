@@ -44,6 +44,7 @@ module Customers
         prematch_bets.won
                      .find_each(batch_size: BATCH_SIZE)
                      .sum { |bet| convert_money(bet, :win_amount) }
+                     .round(Currency.primary.scale)
       end
 
       def live_bets
@@ -60,6 +61,7 @@ module Customers
         live_bets.won
                  .find_each(batch_size: BATCH_SIZE)
                  .sum { |bet| convert_money(bet, :win_amount) }
+                 .round(Currency.primary.scale)
       end
     end
   end

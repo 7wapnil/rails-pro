@@ -119,8 +119,8 @@ describe Bets::Cancel do
       let(:bet_leg_settlement_status) { BetLeg::LOST }
       let!(:won_bet_leg) { create(:bet_leg, :won, bet: bet) }
       let!(:expected_amount) do
-        wallet.amount + (bet.amount * won_bet_leg.odd_value)
-                        .round(Bet::PRECISION)
+        wallet.amount +
+          (bet.amount * won_bet_leg.odd_value).round(bet.currency.scale)
       end
 
       it 'processes entries requests 3 times' do
@@ -228,7 +228,7 @@ describe Bets::Cancel do
       let!(:expected_amount) do
         wallet.amount -
           bet.winning.amount +
-          (bet.amount * won_bet_leg.odd_value).round(Bet::PRECISION)
+          (bet.amount * won_bet_leg.odd_value).round(bet.currency.scale)
       end
 
       it 'processes entries requests 4 times' do

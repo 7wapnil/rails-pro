@@ -28,11 +28,17 @@ module Bets
 
     def balance_transitions
       {
-        real_money_amount: real_money,
-        bonus_amount: bonus_money,
-        confiscated_bonus_amount: confiscated_money,
-        converted_bonus_amount: converted_money
+        real_money_amount: rounded_amount(real_money),
+        bonus_amount: rounded_amount(bonus_money),
+        confiscated_bonus_amount: rounded_amount(confiscated_money),
+        converted_bonus_amount: rounded_amount(converted_money)
       }
+    end
+
+    def rounded_amount(field)
+      return unless field
+
+      field.round(bet.currency.scale)
     end
 
     def real_money

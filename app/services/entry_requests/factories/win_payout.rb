@@ -56,7 +56,7 @@ module EntryRequests
         balance_attributes
           .slice(:real_money_amount, :bonus_amount)
           .values
-          .map { |amount| amount.round(Bet::PRECISION) }
+          .map { |amount| amount.round(bet.currency.scale) }
           .reduce(:+)
       end
 

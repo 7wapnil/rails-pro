@@ -1,12 +1,11 @@
 # frozen_string_literal: true
 
 class BetDecorator < ApplicationDecorator
-  PRECISION = 2
   PENDING = 'pending'
   CANCELLED = 'cancelled'
   LOST = 'lost'
 
-  delegate :code, to: :currency, allow_nil: true, prefix: true
+  delegate :code, :scale, to: :currency, allow_nil: true, prefix: true
   delegate :username, to: :customer, allow_nil: true, prefix: true
   delegate :code, to: :customer_bonus, allow_nil: true, prefix: true
 
@@ -24,11 +23,11 @@ class BetDecorator < ApplicationDecorator
   end
 
   def amount(human: false)
-    human ? number_with_precision(super(), precision: PRECISION) : super()
+    human ? number_with_precision(super(), precision: currency_scale) : super()
   end
 
   def base_currency_amount(human: false)
-    human ? number_with_precision(super(), precision: PRECISION) : super()
+    human ? number_with_precision(super(), precision: currency_scale) : super()
   end
 
   def created_at(human: false)
@@ -42,7 +41,7 @@ class BetDecorator < ApplicationDecorator
   end
 
   def winning_amount(human: false)
-    human ? number_with_precision(super(), precision: PRECISION) : super()
+    human ? number_with_precision(super(), precision: currency_scale) : super()
   end
 
   def human_notification_message
@@ -53,11 +52,11 @@ class BetDecorator < ApplicationDecorator
   end
 
   def odd_value(human: false)
-    human ? number_with_precision(super(), precision: PRECISION) : super()
+    human ? number_with_precision(super(), precision: currency_scale) : super()
   end
 
   def potential_win(human: false)
-    human ? number_with_precision(super(), precision: PRECISION) : super()
+    human ? number_with_precision(super(), precision: currency_scale) : super()
   end
 
   def bet_type
