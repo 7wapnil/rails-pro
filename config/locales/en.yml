@@ -241,7 +241,7 @@ en:
       other_document: Other document
       other_documents: Other documents
       payment_method: Payment method
-      personal_id: Personal Id
+      personal_id: ID documents
       personal_ids: Personal Id's
       personal_information: Personal information
       phone: Phone number
@@ -284,7 +284,7 @@ en:
       bet_type: Bet type
       updated_at: Updated at
       username: Username
-      utility_bill: Utility bill
+      utility_bill: Proof of address
       utility_bills: Utility bills
       valid_for_days: Valid for days
       visibility: Visibility
