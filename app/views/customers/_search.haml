@@ -38,6 +38,20 @@
                              autocomplete: :off,
                              data: { inputmask: { mask: '9[9][9].9[9][9].9[9][9].9[9][9]',
                                                   clearIncomplete: 'true' }.to_json[1..-2] }
+
+        %th
+          .filter_field
+            #{t('internal.attributes.country')}:
+          .filter_field
+            = f.label :address_country_matches_any, class: 'sr-only'
+            = collection_select(:customers, :address_country_matches_any,
+                                available_countries, :name, :name,
+              { selected: filter.params[:address_country_matches_any] },
+              class: 'form-control simple_labels_selector',
+              multiple: true,
+              data: { placeholder: t('internal.search',
+                                      subject: t('internal.attributes.country')) })
+
         %th
           .filter_field
             #{t('internal.attributes.id')}:

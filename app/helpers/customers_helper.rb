@@ -89,6 +89,10 @@ module CustomersHelper
     end
   end
 
+  def available_countries
+    ISO3166::Country.countries
+  end
+
   private
 
   def submit_button(html, resource, url)
