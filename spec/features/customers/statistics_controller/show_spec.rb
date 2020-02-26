@@ -425,32 +425,4 @@ describe Customers::StatisticsController, '#show' do
       end
     end
   end
-
-  context 'with last_updated_at' do
-    let(:label) do
-      Customers::Statistic.human_attribute_name(:last_updated_at)
-    end
-    let!(:stats) { create(:customer_statistic, customer: customer) }
-
-    before { visit customer_statistics_path(customer) }
-
-    it 'is shown on page' do
-      expect(page).to have_css(
-        'small.last_updated_at',
-        text: "#{label}: #{I18n.l(stats.updated_at)}"
-      )
-    end
-  end
-
-  context 'without last_updated_at' do
-    let(:label) do
-      Customers::Statistic.human_attribute_name(:last_updated_at)
-    end
-
-    before { visit customer_statistics_path(customer) }
-
-    it 'when stats has not been generated yet is shown on page' do
-      expect(page).to have_css('small.last_updated_at', text: "#{label}: N/A")
-    end
-  end
 end
