@@ -183,7 +183,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
           end
 
           let(:expected_real_money) do
-            (wallet.real_money_balance * 0.001).truncate(5).to_s
+            (wallet.real_money_balance * 0.001).truncate(8).to_s
           end
 
           let(:expected_balance) do
@@ -778,7 +778,7 @@ describe Api::EveryMatrix::WalletsController, type: :controller do
             let(:amount) { wallet.real_money_balance * 0.001 / 2 }
 
             let(:expected_balance) do
-              (balance_before * 0.001 - amount).to_d.truncate(5).to_s
+              (balance_before * 0.001 - amount).to_d.truncate(8).to_s
             end
 
             let(:expected_response) do
