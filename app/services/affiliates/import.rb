@@ -3,11 +3,11 @@ module Affiliates
     require 'csv'
 
     FIELDS_MAPPING = {
-      "Aff. ID" => :b_tag,
-      "Username" => :name,
-      "Sports %" => :sports_revenue_share,
-      "Casino %" => :casino_revenue_share,
-      "CPA (€)" => :cost_per_acquisition
+      'Aff. ID' => :b_tag,
+      'Username' => :name,
+      'Sports %' => :sports_revenue_share,
+      'Casino %' => :casino_revenue_share,
+      'CPA (€)' => :cost_per_acquisition
     }.freeze
 
     NUMERIC_ATTRIBUTES = %i[
