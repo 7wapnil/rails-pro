@@ -39,7 +39,7 @@ module Customers
     end
 
     def send_verification_email
-      ArcanebetMailer
+      CustomerAccountMailer
         .with(customer: customer)
         .account_verification_mail
         .deliver_now

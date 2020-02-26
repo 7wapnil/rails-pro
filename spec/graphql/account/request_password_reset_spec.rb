@@ -31,7 +31,7 @@ describe GraphQL, '#requestPasswordReset' do
       .and_return([raw_token, reset_password_token])
 
     mailer_chain_mock = double
-    allow(ArcanebetMailer)
+    allow(ApplicationMailer)
       .to receive(:with)
       .with(customer: customer)
       .and_return(mailer_chain_mock)

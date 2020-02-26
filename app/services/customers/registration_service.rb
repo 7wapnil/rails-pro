@@ -38,7 +38,7 @@ module Customers
     end
 
     def send_email_verification_email(customer)
-      ArcanebetMailer
+      CustomerAccountMailer
         .with(customer: customer)
         .email_verification_mail
         .deliver_later

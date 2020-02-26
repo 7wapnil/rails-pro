@@ -4,10 +4,6 @@ class DailyReportMailer < ApplicationMailer
   default from: 'noreply@arcanebet.com',
           subject: I18n.t('internal.mailers.daily_report_mailer.subject')
 
-  TEMPLATES = {
-    daily_report_mail: ENV.fetch('DAILY_REPORT_MAIL_TEMPLATE', '')
-  }.freeze
-
   def daily_report_mail
     data = params[:data]
     receivers = ENV.fetch('DAILY_REPORT_EMAILS', '').split(',')
@@ -15,39 +11,13 @@ class DailyReportMailer < ApplicationMailer
     return if receivers.blank?
 
     smtpapi_mail(
-      TEMPLATES[__method__],
+      template(__method__, I18n.default_locale),
       receivers,
       data
     )
   end
 
   private
-
-  def smtpapi_mail(template_id, email, substitutions = nil)
-    smtpapi_headers(template_id, substitutions)
-    mail(to: email, content_type: 'text/html', body: '')
-  end
-
-  def smtpapi_headers(template_id, substitutions = nil)
-    headers(
-      'X-SMTPAPI' => template_headers(template_id)
-                       .merge(substitutions_headers(substitutions))
-                       .to_json
-    )
-  end
-
-  def template_headers(template_id)
-    {
-      filters: {
-        templates: {
-          settings: {
-            enable: 1,
-            template_id: template_id
-          }
-        }
-      }
-    }
-  end
 
   def substitutions_headers(substitutions = nil)
     return {} unless substitutions

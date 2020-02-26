@@ -31,6 +31,9 @@ module Concerns
       },
       negative_balance_bet_placement: {
         en: 'fe39d899-cf6c-48c5-9f15-dc722d7cb6f1'
+      },
+      daily_report_mail: {
+        en: ENV.fetch('DAILY_REPORT_MAIL_TEMPLATE', '')
       }
     }.freeze
 
