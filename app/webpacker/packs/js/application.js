@@ -2,6 +2,7 @@ import 'bootstrap/dist/js/bootstrap'
 import Noty from 'noty'
 import Rails from 'rails-ujs'
 import Turbolinks from 'turbolinks'
+import bsCustomFileInput from 'bs-custom-file-input'
 import 'select2/dist/js/select2.full.min'
 
 Noty.overrideDefaults({
@@ -37,4 +38,5 @@ document.addEventListener('turbolinks:load', () => {
     new Noty(options).show()
   })
   $('.multi-select').select2()
+  bsCustomFileInput.init()
 })
