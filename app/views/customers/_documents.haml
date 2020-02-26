@@ -11,7 +11,7 @@
         - attachment = attachment_for(customer, kind)
         - if attachment.present? || VerificationDocument::DEPRECATED_KINDS.exclude?(kind)
           %tr.row
-            %td.col.d-flex.align-items-center= t("attributes.#{kind}")
+            %td.col.d-flex.align-items-center= t("internal.attributes.#{kind}")
             %td.col.d-flex.align-items-center
               %span.d-inline-block.text-truncate.document-file-name{ 'data-target': kind.to_s }
                 = attachment&.filename || t('internal.no_file')
