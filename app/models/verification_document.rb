@@ -13,6 +13,9 @@ class VerificationDocument < ApplicationRecord
     other_document: OTHER_DOCUMENT = 'other_document'
   }.freeze
 
+  DEPRECATED_KINDS = [BANK_STATEMENT.to_sym].freeze
+  PERMITED_KINDS = KINDS.keys - DEPRECATED_KINDS
+
   enum kind: KINDS
 
   enum status: {

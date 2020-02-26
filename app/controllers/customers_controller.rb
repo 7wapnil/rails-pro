@@ -239,7 +239,7 @@ class CustomersController < ApplicationController
   end
 
   def documents_from_params
-    params.permit(*VerificationDocument::KINDS)
+    params.permit(*VerificationDocument::PERMITED_KINDS)
   end
 
   def document_type
