@@ -9,14 +9,6 @@ class EntryRequestGaTracker
     ga_client.track_event(deposit_success_payload)
   end
 
-  def track_deposit_failure!
-    ga_client.track_event(deposit_failure_payload)
-  end
-
-  def track_deposit_cancellation!
-    ga_client.track_event(deposit_cancellation_payload)
-  end
-
   private
 
   attr_reader :entry_request
@@ -42,22 +34,6 @@ class EntryRequestGaTracker
       action: 'depositSuccesful',
       label: entry_request.customer.id,
       value: (base_currency_amount * 100).to_i
-    }
-  end
-
-  def deposit_failure_payload
-    {
-      category: 'Payment',
-      action: 'depositFailed',
-      label: entry_request.customer.id
-    }
-  end
-
-  def deposit_cancellation_payload
-    {
-      category: 'Payment',
-      action: 'depositCancelled',
-      label: entry_request.customer.id
     }
   end
 
