@@ -48,6 +48,7 @@ en:
     note: Note
     no_file: No File
     no_records: No records yet
+    import: Import
     process_manually: Process manually
     reject: Reject
     save: Save
@@ -83,6 +84,7 @@ en:
     not_found: "No %{instance} found"
     choose_file: Choose file
     cancel: Cancel
+    import_successful: Import successful
 
     bonus_forfeit_requested: "%{number} bonus(es) requested to be forfeited"
     bonus_award_requested: "%{number} bonus(es) requested to be awarded"
@@ -279,6 +281,9 @@ en:
       sport: Sport
       sportsbook: Sportsbook
       sportsbook_multiplier: Sportsbook multiplier
+      sports_revenue_share: Sports revenue share
+      casino_revenue_share: Casino revenue share
+      cost_per_acquisition: Cost per acquisition
       stake: Stake
       start_at: Start at
       state: State
@@ -354,6 +359,7 @@ en:
     entities:
       activity: Activity
       activities: Activities
+      affiliates: Affiliates
       deposit: Deposit
       activity_count:
         zero: No activities
