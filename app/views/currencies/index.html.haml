@@ -1,7 +1,6 @@
 %h1.display-4
   = t('internal.entities.currencies')
-  = link_to t('internal.add_instance', instance: t('internal.entities.currency')),
-            new_currency_path, class: 'btn btn-primary float-right btn-sm'
+  = link_to t('internal.create'), new_currency_path, class: 'btn btn-outline-primary float-right'
 
 = search_form_for @search do |f|
   %table.table
