@@ -16,7 +16,6 @@ module Affiliates
       cost_per_acquisition
     ].freeze
 
-    attr_reader :file
 
     def initialize(file)
       @file = file
@@ -34,6 +33,8 @@ module Affiliates
     end
 
     private
+
+    attr_reader :file
 
     def mapped_row(raw_row)
       FIELDS_MAPPING.map do |external_name, internal_name|
