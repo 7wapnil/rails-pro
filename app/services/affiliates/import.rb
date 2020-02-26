@@ -16,7 +16,6 @@ module Affiliates
       cost_per_acquisition
     ].freeze
 
-
     def initialize(file)
       @file = file
     end
