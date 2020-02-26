@@ -2,7 +2,8 @@ class AffiliatesController < ApplicationController
   PER_PAGE = 20
 
   def index
-    @affiliates = Affiliate.order(:id).page(params[:page]).per(PER_PAGE)
+    @search = Affiliate.ransack(params[:query])
+    @affiliates = @search.result.page(params[:page]).per(PER_PAGE)
   end
 
   def import

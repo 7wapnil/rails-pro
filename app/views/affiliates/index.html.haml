@@ -13,11 +13,11 @@
   %table.table.entities
     %thead
       %tr
-        %th= t('internal.attributes.name')
+        %th= sort_link @search, :name, t('internal.attributes.name')
         %th= t('internal.attributes.b_tag')
         %th= t('internal.attributes.sports_revenue_share')
         %th= t('internal.attributes.casino_revenue_share')
-        %th= t('internal.attributes.cost_per_acquisition')
+        %th= sort_link @search, :cost_per_acquisition, t('internal.attributes.cost_per_acquisition')
 
     %tbody
       - @affiliates.each do |affiliate|
