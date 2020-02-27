@@ -2,21 +2,23 @@
 
 module Wallets
   class BalanceVerification < ApplicationService
-    delegate :customer, to: :wallet
-
-    def initialize(wallet)
-      @wallet = wallet
+    def initialize(customer)
+      @customer = customer
     end
 
     def call
-      return negative_balance_reached if wallet.negative_balance?
+      return negative_balance_reached if negative_balance_reached?
 
       positive_balance_reached
     end
 
     private
 
-    attr_reader :wallet
+    attr_reader :customer
+
+    def negative_balance_reached?
+      customer.wallets.any?(&:negative_balance?)
+    end
 
     def negative_balance_reached
       LabelJoin.find_or_create_by(negative_balance_attributes)

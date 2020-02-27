@@ -16,7 +16,7 @@ describe AuditLog, '#show' do
 
       it 'shows activity details with context' do
         expect(page).to have_content(
-          I18n.t("events.#{subject.event}", subject.interpolation)
+          I18n.t("internal.events.#{subject.event}", subject.interpolation)
         )
         expect(page).to have_content(I18n.l(subject.created_at, format: :long))
         expect(page).to have_content(current_user.full_name)
@@ -41,11 +41,11 @@ describe AuditLog, '#show' do
 
       it 'shows activity details without context' do
         expect(page).to have_content(
-          I18n.t("events.#{subject.event}", subject.interpolation)
+          I18n.t("internal.events.#{subject.event}", subject.interpolation)
         )
         expect(page).to have_content(I18n.l(subject.created_at, format: :long))
         expect(page).to have_content(current_user.full_name)
-        expect(page).not_to have_content(I18n.t('attributes.info'))
+        expect(page).not_to have_content(I18n.t('internal.attributes.info'))
       end
     end
   end

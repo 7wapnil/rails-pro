@@ -64,14 +64,14 @@ module Bets
       return if bet_leg.settlement_status.nil?
 
       raise ::Bets::SettledBetLegError,
-            I18n.t('errors.messages.bets.settled_bet_leg')
+            I18n.t('internal.errors.messages.bets.settled_bet_leg')
     end
 
     def validate_void_factor!
       return if SUPPORTED_VOID_FACTORS.include?(void_factor)
 
       raise ::Bets::NotSupportedError,
-            I18n.t('errors.messages.bets.not_supported_void_factor')
+            I18n.t('internal.errors.messages.bets.not_supported_void_factor')
     end
 
     def bet_leg_void_factor

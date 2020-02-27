@@ -1,60 +1,60 @@
 .mt-4
-  = card header: t('entities.transaction'), class: 'transaction-info' do
+  = card header: t('internal.entities.transaction'), class: 'transaction-info' do
     .row
       .col
         %table.table
           %tr
-            %td= t('attributes.id')
+            %td= t('internal.attributes.id')
             %td= transaction.id
           %tr
-            %td= t('attributes.customer')
+            %td= t('internal.attributes.customer')
             %td= link_to transaction.customer_username, transaction.customer
           %tr
-            %td= t('attributes.em_transaction_id')
+            %td= t('internal.attributes.em_transaction_id')
             %td= transaction.transaction_id
           %tr
-            %td= t('attributes.game_round_id')
+            %td= t('internal.attributes.game_round_id')
             %td= transaction.round_id
           %tr
-            %td= t('attributes.created_at')
+            %td= t('internal.attributes.created_at')
             %td= transaction.created_at(human: true)
           %tr
-            %td= t('attributes.transaction_type')
+            %td= t('internal.attributes.transaction_type')
             %td= settle_type(transaction.type(human: true))
           %tr
-            %td= t('attributes.platform_type')
+            %td= t('internal.attributes.platform_type')
             %td= transaction.device
           %tr
-            %td= t('attributes.category_type')
+            %td= t('internal.attributes.category_type')
             %td= transaction.play_item_type
       .col
         %table.table
           %tr
-            %td= t('attributes.currency')
+            %td= t('internal.attributes.currency')
             %td= transaction.currency_code
           %tr
-            %td= t('attributes.amount')
+            %td= t('internal.attributes.amount')
             %td= transaction.amount(human: true)
           %tr
-            %td= t('attributes.base_currency_amount')
+            %td= t('internal.attributes.base_currency_amount')
             %td= transaction.base_currency_amount(human: true)
           %tr
-            %td= t('attributes.free_spin_bonus_id')
+            %td= t('internal.attributes.free_spin_bonus_id')
             %td= transaction.every_matrix_free_spin_bonus
           %tr
-            %td= t('attributes.round_status')
+            %td= t('internal.attributes.round_status')
             %td= transaction.round_status
           %tr
-            %td= t('attributes.game_id')
+            %td= t('internal.attributes.game_id')
             %td= transaction.play_item_id
           %tr
-            %td= t('attributes.game_name')
+            %td= t('internal.attributes.game_name')
             %td= transaction.casino_play_item_name
           %tr
-            %td= t('attributes.vendor_name')
+            %td= t('internal.attributes.vendor_name')
             %td= transaction.vendor_name
           %tr
-            %td= t('attributes.content_provider_name')
+            %td= t('internal.attributes.content_provider_name')
             %td= transaction.content_provider_name
 
     .row

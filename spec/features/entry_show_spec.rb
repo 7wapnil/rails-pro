@@ -33,9 +33,7 @@ describe Entry, '#show' do
 
       it 'shows :kind' do
         within entry_card do
-          expected_kind = I18n.t("kinds.#{entry.kind}")
-
-          expect(page).to have_content(expected_kind)
+          expect(page).to have_content(entry.kind.capitalize)
         end
       end
 

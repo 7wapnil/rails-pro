@@ -65,7 +65,7 @@ describe EntryRequests::Factories::Confiscation do
     let(:initiator) { nil }
     let(:error_message) do
       "Validation failed: Initiator can't be blank, " \
-      "Initiator #{I18n.t('errors.messages.initiator_type')}"
+      "Initiator #{I18n.t('internal.errors.messages.initiator_type')}"
     end
 
     before do

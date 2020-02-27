@@ -67,7 +67,7 @@ module EntryRequests
         return true unless customer_bonus.expired?
 
         entry_request.register_failure!(
-          I18n.t('errors.messages.entry_requests.bonus_expired')
+          I18n.t('internal.errors.messages.entry_requests.bonus_expired')
         )
       end
     end

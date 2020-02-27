@@ -28,7 +28,7 @@ module FormHelper
     named_ranges = resource.class::NAMED_RANGES
     return named_ranges if !resource.range || named_ranges.key?(resource.range)
 
-    { resource.range => I18n.t('days', days: resource.range) }
+    { resource.range => I18n.t('internal.days', days: resource.range) }
       .merge(named_ranges)
       .sort
       .to_h

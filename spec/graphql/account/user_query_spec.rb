@@ -197,19 +197,21 @@ describe GraphQL, '#user' do
 
     let(:details) { OpenStruct.new(object.deposit.details) }
     let(:name) do
-      I18n.t("payments.withdrawals.payment_methods.#{object.mode}.title")
+      I18n.t("payments.withdrawals.payment_methods.#{object.mode}.title",
+             default: object.mode.humanize)
     end
 
     let(:note) do
       I18n.t("payments.withdrawals.payment_methods.#{object.mode}.range",
              min_amount: currency_rule.max_amount.abs,
              max_amount: currency_rule.min_amount.abs,
-             code: control_wallet.currency.code)
+             code: control_wallet.currency.code,
+             default: nil)
     end
 
     let(:description) do
-      I18n
-        .t("payments.withdrawals.payment_methods.#{object.mode}.description")
+      I18n.t("payments.withdrawals.payment_methods.#{object.mode}.description",
+             default: nil)
     end
 
     let(:response_fields) do

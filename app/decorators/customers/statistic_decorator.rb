@@ -19,7 +19,7 @@ module Customers
     def last_updated_at(human: false)
       return super() unless human
 
-      time = super() ? l(super()) : t('not_available')
+      time = super() ? l(super()) : t('internal.not_available')
       "#{Customers::Statistic.human_attribute_name(:last_updated_at)}: #{time}"
     end
 

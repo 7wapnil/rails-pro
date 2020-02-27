@@ -15,6 +15,10 @@ describe DepositLimitsController, type: :controller do
     }
   end
 
+  before { Sidekiq::Testing.inline! }
+
+  after { Sidekiq::Testing.fake! }
+
   describe '#create' do
     let(:create_deposit_limit) { post :create, params: payload_params }
 
@@ -27,14 +31,14 @@ describe DepositLimitsController, type: :controller do
 
       it 'calls AuditLog::create! with created deposit limit' do
         expect(AuditLog)
-          .to have_received(:create!).with(
-            event: :deposit_limit_created,
-            user_id: current_user.id,
-            customer_id: customer.id,
-            context: {
-              currency_code: primary_currency.code,
-              range: DepositLimit::NAMED_RANGES[range],
-              value: value
+          .to have_received(:create!).with hash_including(
+            'event' => 'deposit_limit_created',
+            'user_id' => current_user.id,
+            'customer_id' => customer.id,
+            'context' => {
+              'currency_code' => primary_currency.code,
+              'range' => DepositLimit::NAMED_RANGES[range],
+              'value' => value.to_f.to_s
             }
           )
       end
@@ -78,14 +82,14 @@ describe DepositLimitsController, type: :controller do
 
       it 'calls AuditLog::create! with updated deposit limit' do
         expect(AuditLog)
-          .to have_received(:create!).with(
-            event: :deposit_limit_updated,
-            user_id: current_user.id,
-            customer_id: customer.id,
-            context: {
-              currency_code: primary_currency.code,
-              range: DepositLimit::NAMED_RANGES[range],
-              value: value
+          .to have_received(:create!).with hash_including(
+            'event' => 'deposit_limit_updated',
+            'user_id' => current_user.id,
+            'customer_id' => customer.id,
+            'context' => {
+              'currency_code' => primary_currency.code,
+              'range' => DepositLimit::NAMED_RANGES[range],
+              'value' => value.to_f.to_s
             }
           )
       end
@@ -119,11 +123,11 @@ describe DepositLimitsController, type: :controller do
 
       it 'calls AuditLog::create! with updated deposit limit' do
         expect(AuditLog)
-          .to have_received(:create!).with(
-            event: :deposit_limit_deleted,
-            user_id: current_user.id,
-            customer_id: customer.id,
-            context: {}
+          .to have_received(:create!).with hash_including(
+            'event' => 'deposit_limit_deleted',
+            'user_id' => current_user.id,
+            'customer_id' => customer.id,
+            'context' => {}
           )
       end
     end

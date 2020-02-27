@@ -24,7 +24,7 @@ module OddsFeed
 
         log_job_message(
           :warn,
-          message: I18n.t('errors.messages.unsupported_event_type'),
+          message: I18n.t('internal.errors.messages.unsupported_event_type'),
           event_id: event_id
         )
 

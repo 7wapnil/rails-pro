@@ -1,20 +1,20 @@
 %h1.display-4
-  = t('entities.bonuses')
-  = link_to t(:create), new_bonus_path, class: 'btn btn-outline-primary float-right'
+  = t('internal.entities.bonuses')
+  = link_to t('internal.create'), new_bonus_path, class: 'btn btn-outline-primary float-right'
 
 = search_form_for @search do |f|
   %table.table
     %thead
       %tr
-        %th= sort_link @search, :code, t('attributes.code')
-        %th= t('attributes.kind')
-        %th= t('attributes.rollover_multiplier')
-        %th= t('attributes.min_deposit')
-        %th= t('attributes.max_deposit_match')
-        %th= t('attributes.min_odds_per_bet')
-        %th= t('attributes.valid_for_days')
-        %th= sort_link @search, :expires_at, t('attributes.expires_at')
-        %th= t('attributes.percentage')
+        %th= sort_link @search, :code, t('internal.attributes.code')
+        %th= t('internal.attributes.kind')
+        %th= t('internal.attributes.rollover_multiplier')
+        %th= t('internal.attributes.min_deposit')
+        %th= t('internal.attributes.max_deposit_match')
+        %th= t('internal.attributes.min_odds_per_bet')
+        %th= t('internal.attributes.valid_for_days')
+        %th= sort_link @search, :expires_at, t('internal.attributes.expires_at')
+        %th= t('internal.attributes.percentage')
         %th
       = render 'search', f: f
 
@@ -32,10 +32,10 @@
           %td= number_to_percentage(bonus.percentage, precision: 0)
           %td
             - if bonus.repeatable
-              %div= t('attributes.repeatable')
+              %div= t('internal.attributes.repeatable')
             - if bonus.previous_deposits_number
               %div
-                = t('attributes.previous_deposits_number')
+                = t('internal.attributes.previous_deposits_number')
                 = bonus.previous_deposits_number
 
 = paginate @bonuses

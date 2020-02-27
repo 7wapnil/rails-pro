@@ -79,7 +79,7 @@ module EntryRequests
           return if WalletEntry::AuthorizationService.call(entry_request)
 
           raise ::Bets::AuthorizeWalletEntryError,
-                I18n.t('errors.messages.bets.cannot_be_proceeded')
+                I18n.t('internal.errors.messages.bets.cannot_be_proceeded')
         end
 
         def placed?

@@ -28,8 +28,8 @@ describe Bet, '#show' do
         number_with_precision(bet_leg.odd_value * subject.amount, precision: 2)
       )
 
-      expect(page).to have_content(I18n.t("kinds.#{bet_trait}"))
-      expect(page).to have_content(I18n.t("kinds.#{win_trait}"))
+      expect(page).to have_content(bet_trait.to_s.capitalize)
+      expect(page).to have_content(win_trait.to_s.capitalize)
       expect(page).to have_content(bet_entry.amount)
       expect(page).to have_content(win_entry.amount)
     end

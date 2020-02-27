@@ -49,8 +49,8 @@ describe Bonus do
       end
 
       success_message = I18n.t(
-        :created,
-        instance: I18n.t('entities.bonus')
+        'internal.created',
+        instance: I18n.t('internal.entities.bonus')
       )
 
       expect(page).to have_current_path(bonus_path(described_class.last))
@@ -71,7 +71,7 @@ describe Bonus do
         click_submit
       end
 
-      success_message = I18n.t(:updated, instance: subject.code)
+      success_message = I18n.t('internal.updated', instance: subject.code)
 
       expect(page).to have_current_path(bonus_path(subject))
       expect_to_have_notification success_message
@@ -93,13 +93,13 @@ describe Bonus do
 
     before do
       visit bonus_path(subject)
-      click_on I18n.t(:delete)
+      click_on I18n.t('internal.delete')
     end
 
     it 'deletes an existing bonus' do
       success_message = I18n.t(
-        :deleted,
-        instance: I18n.t('entities.bonus')
+        'internal.deleted',
+        instance: I18n.t('internal.entities.bonus')
       )
 
       expect(page).to have_current_path(bonuses_path)

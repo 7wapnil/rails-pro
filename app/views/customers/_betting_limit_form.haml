@@ -11,4 +11,4 @@
   .row
     .col-6= f.input :user_stake_factor, as: :decimal, input_html: { min: 0 }, required: false
     .col-6= f.input :live_stake_factor, as: :decimal, input_html: { min: 0 }, required: false
-  = f.submit t(:save), class: 'btn btn-outline-dark'
+  = f.submit t('internal.save'), class: 'btn btn-outline-dark'

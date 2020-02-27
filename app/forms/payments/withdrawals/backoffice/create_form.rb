@@ -35,10 +35,7 @@ module Payments
         def validate_no_pending_bets_with_bonus
           return if !customer || no_pending_bets_with_bonus?
 
-          errors.add(
-            :base,
-            I18n.t('errors.messages.backoffice.pending_bets_with_bonus')
-          )
+          errors.add(:base, pending_bets_with_bonus_message)
         end
 
         def no_pending_bets_with_bonus?
@@ -55,7 +52,7 @@ module Payments
 
           errors.add(
             :base,
-            I18n.t('errors.messages.backoffice.negative_balance')
+            I18n.t('internal.errors.messages.backoffice.negative_balance')
           )
         end
 
@@ -65,7 +62,7 @@ module Payments
 
           errors.add(
             :base,
-            I18n.t('errors.messages.backoffice.not_enough_money')
+            I18n.t('internal.errors.messages.backoffice.not_enough_money')
           )
         end
 
@@ -74,6 +71,10 @@ module Payments
           return amount_greater_than_allowed! if amount > rule.min_amount.abs
 
           amount_less_than_allowed! if -amount > rule.max_amount
+        end
+
+        def pending_bets_with_bonus_message
+          I18n.t('internal.errors.messages.backoffice.pending_bets_with_bonus')
         end
 
         def rule

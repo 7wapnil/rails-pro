@@ -37,7 +37,8 @@ module Payments
         def validate_type_of_initiator
           return true if initiator.is_a? User
 
-          errors.add(:initiator, I18n.t('errors.messages.initiator_type'))
+          errors.add(:initiator,
+                     I18n.t('internal.errors.messages.initiator_type'))
         end
 
         def validate_currency_rule
@@ -51,11 +52,9 @@ module Payments
           return unless amount && real_money_balance
           return if amount <= real_money_balance
 
-          errors.add(:base,
-                     I18n.t(
-                       'errors.messages.max_confiscation_amount_with_bonus',
-                       max_amount: real_money_balance
-                     ))
+          errors.add(:base, I18n.t('internal.errors.messages.' \
+                                     'max_confiscation_amount_with_bonus',
+                                   max_amount: real_money_balance))
         end
 
         def rule
@@ -68,17 +67,21 @@ module Payments
         end
 
         def amount_less_than_allowed!
-          errors.add(:amount,
-                     I18n.t('errors.messages.min_confiscation_amount_reached',
-                            min_amount: rule.max_amount.abs,
-                            currency: currency.to_s))
+          errors.add(
+            :amount,
+            I18n.t('internal.errors.messages.min_confiscation_amount_reached',
+                   min_amount: rule.max_amount.abs,
+                   currency: currency.to_s)
+          )
         end
 
         def amount_greater_than_allowed!
-          errors.add(:amount,
-                     I18n.t('errors.messages.max_confiscation_amount_reached',
-                            max_amount: rule.min_amount.abs,
-                            currency: currency.to_s))
+          errors.add(
+            :amount,
+            I18n.t('internal.errors.messages.max_confiscation_amount_reached',
+                   max_amount: rule.min_amount.abs,
+                   currency: currency.to_s)
+          )
         end
       end
     end

@@ -98,7 +98,8 @@ module Payments
           end
 
           def default_error_message
-            I18n.t('errors.messages.withdrawal.no_order_details', id: order_id)
+            I18n.t('internal.errors.messages.withdrawal.no_order_details',
+                   id: order_id)
           end
 
           def client

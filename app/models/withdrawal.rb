@@ -11,7 +11,7 @@ class Withdrawal < CustomerTransaction
   end
 
   def reject!(user, comment)
-    comment_error = I18n.t('errors.messages.withdrawals.empty_comment')
+    comment_error = I18n.t('internal.errors.messages.withdrawals.empty_comment')
     raise comment_error if comment.empty?
 
     review!(user, REJECTED)
@@ -23,9 +23,8 @@ class Withdrawal < CustomerTransaction
   private
 
   def review!(user, new_status)
-    error_message = I18n.t('errors.messages.withdrawals.not_actionable')
-    raise error_message unless pending?
+    return update!(actioned_by: user, status: new_status) if pending?
 
-    update!(actioned_by: user, status: new_status)
+    raise I18n.t('internal.errors.messages.withdrawals.not_actionable')
   end
 end

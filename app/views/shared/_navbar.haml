@@ -1,5 +1,5 @@
 %nav.navbar.navbar-expand-lg.navbar-light.bg-light
-  = link_to t('global.title'), root_path, class: 'navbar-brand'
+  = link_to t('internal.global.title'), root_path, class: 'navbar-brand'
   %button.navbar-toggler{ 'aria-controls': 'navbar-content',
                           'aria-expanded': 'false',
                           'aria-label': 'Toggle navigation',
@@ -10,92 +10,92 @@
   .collapse.navbar-collapse#navbar-content
     %ul.navbar-nav.mr-auto
       %li.nav-item.dropdown
-        = link_to t(:odds_feed), '#',
+        = link_to t('internal.odds_feed'), '#',
                   class: 'nav-link dropdown-toggle',
                   'data-toggle': 'dropdown',
                   aria: { haspopup: true, expanded: false }
 
         .dropdown-menu
-          = link_to t('entities.events'),
+          = link_to t('internal.entities.events'),
                     events_path,
                     class: 'nav-link'
 
-          = link_to t('entities.market_templates'),
+          = link_to t('internal.entities.market_templates'),
                     market_templates_path,
                     class: 'nav-link'
 
-          = link_to t('entities.titles'),
+          = link_to t('internal.entities.titles'),
                     titles_path,
                     class: 'nav-link'
 
       = render 'shared/navbar/casino-dropdown'
 
       %li.nav-item.dropdown
-        = link_to t('entities.customers'), '#',
+        = link_to t('internal.entities.customers'), '#',
                   class: 'nav-link dropdown-toggle',
                   'data-toggle': 'dropdown',
                   aria: { haspopup: true, expanded: false }
 
         .dropdown-menu
-          = link_to t('entities.customers'),
+          = link_to t('internal.entities.customers'),
                     customers_path,
                     class: 'dropdown-item'
 
-          = link_to t('entities.documents'),
+          = link_to t('internal.entities.documents'),
                     verification_documents_path,
                     class: 'dropdown-item'
 
-          = link_to t('entities.activities'),
+          = link_to t('internal.entities.activities'),
                     activities_path,
                     class: 'dropdown-item'
 
-          = link_to t('entities.entry_requests'),
+          = link_to t('internal.entities.entry_requests'),
                     entry_requests_path,
                     class: 'dropdown-item'
 
-          = link_to t('entities.withdrawals'),
+          = link_to t('internal.entities.withdrawals'),
                     withdrawals_path,
                     class: 'dropdown-item'
 
-          = link_to t('entities.bets'),
+          = link_to t('internal.entities.bets'),
                     bets_path,
                     class: 'dropdown-item'
 
-          = link_to t('entities.transactions'),
+          = link_to t('internal.entities.transactions'),
                     transactions_path,
                     class: 'dropdown-item'
 
-          = link_to t('entities.online_customers'),
+          = link_to t('internal.entities.online_customers'),
                     online_customers_path,
                     class: 'dropdown-item'
 
-          = link_to t('entities.monthly_balance_query_results_short'),
+          = link_to t('internal.entities.monthly_balance_query_results_short'),
                     monthly_balance_query_results_path,
                     class: 'dropdown-item'
 
       %li.nav-item.dropdown
-        = link_to t(:system), '#',
+        = link_to t('internal.system'), '#',
                   class: 'nav-link dropdown-toggle',
                   'data-toggle': 'dropdown',
                   aria: { haspopup: true, expanded: false }
 
         .dropdown-menu
-          = link_to t('entities.currencies'),
+          = link_to t('internal.entities.currencies'),
                     currencies_path,
                     class: 'dropdown-item'
-          = link_to t('entities.bonuses'),
+          = link_to t('internal.entities.bonuses'),
                     bonuses_path,
                     class: 'dropdown-item'
-          = link_to t('entities.free_spin_bonuses'),
+          = link_to t('internal.entities.free_spin_bonuses'),
                     every_matrix_free_spin_bonuses_path,
                     class: 'dropdown-item'
-          = link_to t('entities.labels'),
+          = link_to t('internal.entities.labels'),
                     labels_path,
                     class: 'dropdown-item'
 
           .dropdown-divider
 
-          = link_to t('sidekiq'),
+          = link_to t('internal.sidekiq'),
                     sidekiq_web_path,
                     class: 'dropdown-item',
                     target: :blank

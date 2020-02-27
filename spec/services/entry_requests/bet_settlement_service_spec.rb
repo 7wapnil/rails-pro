@@ -15,7 +15,8 @@ describe EntryRequests::BetSettlementService do
     let(:bet) { create(:bet, status: Bet::INITIAL) }
 
     let(:error_message) do
-      I18n.t('errors.messages.entry_request_for_settled_bet', bet_id: bet.id)
+      I18n.t('internal.errors.messages.entry_request_for_settled_bet',
+             bet_id: bet.id)
     end
 
     before { subject }

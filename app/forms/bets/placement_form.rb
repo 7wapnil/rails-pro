@@ -7,7 +7,6 @@ module Bets
     attr_accessor :subject
 
     delegate :customer, to: :subject
-    delegate :wallet, to: :customer
 
     def validate!
       check_bet_amount!
@@ -37,7 +36,8 @@ module Bets
         .negative_balance_bet_placement
         .deliver_later
 
-      raise ::Bets::RegistrationError, 'Bet placed with negative balance'
+      raise ::Bets::RegistrationError,
+            I18n.t('errors.messages.bet_with_negative_balance')
     end
 
     def check_if_odds_active!
@@ -85,6 +85,10 @@ module Bets
                 events.all?(&:available?)
 
       raise ::Bets::RegistrationError, I18n.t('errors.messages.market_inactive')
+    end
+
+    def wallet
+      @wallet ||= customer.wallets.find_by(currency_id: subject.currency_id)
     end
 
     def bet_legs

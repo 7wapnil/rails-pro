@@ -26,7 +26,7 @@ describe VerificationDocument, '#index' do
       end
 
       it 'displays pending documents' do
-        click_on(I18n.t('navigation.document.pending'))
+        click_on(I18n.t('internal.navigation.document.pending'))
 
         within 'table.table.entities tbody' do
           expect(page).to have_selector("tr#document-#{pending.id}")
@@ -35,7 +35,7 @@ describe VerificationDocument, '#index' do
       end
 
       it 'displays recently auctioned' do
-        click_on(I18n.t('navigation.document.recently_actioned'))
+        click_on(I18n.t('internal.navigation.document.recently_actioned'))
 
         within 'table.table.entities tbody' do
           expect(page).to have_selector("tr#document-#{rejected.id}")
@@ -56,7 +56,7 @@ describe VerificationDocument, '#index' do
           create(:verification_document, created_at: Time.zone.now.end_of_day)
         end
 
-        let(:link_title) { I18n.t('attributes.created_at') }
+        let(:link_title) { I18n.t('internal.attributes.created_at') }
         let(:sort_link) { find_link(link_title) }
 
         it 'in asc direction' do
@@ -87,7 +87,7 @@ describe VerificationDocument, '#index' do
       context 'by username' do
         let(:first_doc) { create(:verification_document) }
         let(:last_doc) { create(:verification_document) }
-        let(:link_title) { I18n.t('attributes.username') }
+        let(:link_title) { I18n.t('internal.attributes.username') }
         let(:sort_link) { find_link(link_title) }
 
         before do
@@ -129,7 +129,8 @@ describe VerificationDocument, '#index' do
         end
 
         it 'is found' do
-          fill_in(I18n.t('attributes.username'), with: customer.username)
+          fill_in(I18n.t('internal.attributes.username'),
+                  with: customer.username)
           click_on 'Search'
 
           within 'table.table.entities tbody' do
@@ -141,7 +142,8 @@ describe VerificationDocument, '#index' do
         end
 
         it 'is not found' do
-          fill_in(I18n.t('attributes.username'), with: 'unknown_username')
+          fill_in(I18n.t('internal.attributes.username'),
+                  with: 'unknown_username')
           click_on 'Search'
 
           within 'table.table.entities tbody' do
@@ -200,7 +202,9 @@ describe VerificationDocument, '#index' do
               .reject(&:blank?)
         end
 
-        before { click_on I18n.t('navigation.document.recently_actioned') }
+        before do
+          click_on I18n.t('internal.navigation.document.recently_actioned')
+        end
 
         it 'is found' do
           select confirmed_doc.status.humanize, from: 'Status'

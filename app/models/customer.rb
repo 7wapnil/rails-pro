@@ -34,6 +34,8 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
     fraud:             FRAUD             = 'fraud'
   }
 
+  enum locale: I18n.available_locales.map { |code| [code, code.to_s] }.to_h
+
   devise :database_authenticatable, :registerable, :validatable,
          :recoverable, :rememberable, :trackable,
          authentication_keys: %i[login], password_length: 6..32
@@ -203,7 +205,7 @@ class Customer < ApplicationRecord # rubocop:disable Metrics/ClassLength
   def validate_account_transition
     return unless account_kind_changed?
 
-    msg = I18n.t('errors.messages.account_transition',
+    msg = I18n.t('internal.errors.messages.account_transition',
                  from: account_kind_was,
                  to: account_kind)
     errors.add(:account_kind, msg) if account_kind_was != 'regular'

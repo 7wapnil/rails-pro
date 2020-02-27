@@ -1,16 +1,10 @@
 # rubocop:disable Metrics/ClassLength
 # TODO split this into several mailers
 class ArcanebetMailer < ApplicationMailer
+  include Concerns::Templatable
+
   default from: 'noreply@arcanebet.com',
           subject: 'ArcaneBet'
-
-  TEMPLATES = {
-    suspicious_login:               '13ea825c-23dd-4d82-bc55-fc037d2e1a49',
-    account_verification_mail:      '2f09ad2c-5db2-40ee-8c62-d2781fa7bea8',
-    email_verification_mail:        '0114629f-0d3d-4bcb-8f45-8377e4659be4',
-    reset_password_mail:            '6ce802da-57e3-4ef0-9a0a-141f840864ac',
-    negative_balance_bet_placement: 'fe39d899-cf6c-48c5-9f15-dc722d7cb6f1'
-  }.freeze
 
   def suspicious_login(login)
     customer = find_person(login)
@@ -20,7 +14,7 @@ class ArcanebetMailer < ApplicationMailer
     warn_suspicious_login(login) unless customer
 
     smtpapi_mail(
-      TEMPLATES[__method__],
+      template(__method__, customer.locale),
       customer.email,
       'changePasswordUrl': change_password_url
     )
@@ -33,7 +27,7 @@ class ArcanebetMailer < ApplicationMailer
     receiver = ENV['ADMIN_NOTIFY_MAIL'] || 'contact@arcanebet.com'
 
     smtpapi_mail(
-      TEMPLATES[__method__],
+      template(__method__, I18n.default_locale),
       receiver,
       'customerName': customer.full_name,
       'customerUrl': customer_url
@@ -46,7 +40,7 @@ class ArcanebetMailer < ApplicationMailer
     deposit_url = "#{domain}?depositState=1"
 
     smtpapi_mail(
-      TEMPLATES[__method__],
+      template(__method__, customer.locale),
       customer.email,
       'fullName':   customer.full_name,
       'depositUrl': deposit_url
@@ -61,7 +55,7 @@ class ArcanebetMailer < ApplicationMailer
     bonus_rules_url = "#{domain}/promotions/bonus-rules"
 
     smtpapi_mail(
-      TEMPLATES[__method__],
+      template(__method__, customer.locale),
       customer.email,
       'fullName':        customer.full_name,
       'verificationUrl': verification_url,
@@ -75,7 +69,7 @@ class ArcanebetMailer < ApplicationMailer
     reset_password_url = "#{domain}/reset_password/#{raw_token}"
 
     smtpapi_mail(
-      TEMPLATES[__method__],
+      template(__method__, customer.locale),
       customer.email,
       'fullName':         customer.full_name,
       'resetPasswordUrl': reset_password_url

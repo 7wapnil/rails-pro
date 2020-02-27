@@ -1,6 +1,9 @@
 describe Bet, '#index' do
   context 'signed in' do
     let(:per_page_count) { 10 }
+    let(:not_found) do
+      I18n.t('internal.not_found', instance: I18n.t('internal.entities.bets'))
+    end
 
     before do
       create(:event_scope, kind: EventScope::TOURNAMENT, name: 'X-Bet')
@@ -97,9 +100,7 @@ describe Bet, '#index' do
           click_on('Search')
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(
-              I18n.t(:not_found, instance: I18n.t('entities.bets'))
-            )
+            expect(page).to have_content(not_found)
           end
         end
       end
@@ -134,9 +135,7 @@ describe Bet, '#index' do
           click_on('Search')
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(
-              I18n.t(:not_found, instance: I18n.t('entities.bets'))
-            )
+            expect(page).to have_content(not_found)
           end
         end
       end
@@ -171,9 +170,7 @@ describe Bet, '#index' do
           click_on('Search')
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(
-              I18n.t(:not_found, instance: I18n.t('entities.bets'))
-            )
+            expect(page).to have_content(not_found)
           end
         end
       end
@@ -198,9 +195,7 @@ describe Bet, '#index' do
           click_on 'Search'
 
           within 'table.table.entities tbody' do
-            expect(page)
-              .to have_content(I18n.t(:not_found,
-                                      instance: I18n.t('entities.bets')))
+            expect(page).to have_content(not_found)
           end
         end
       end
@@ -224,9 +219,7 @@ describe Bet, '#index' do
           click_on 'Search'
 
           within 'table.table.entities tbody' do
-            expect(page).to have_content(
-              I18n.t(:not_found, instance: I18n.t('entities.bets'))
-            )
+            expect(page).to have_content(not_found)
           end
         end
       end

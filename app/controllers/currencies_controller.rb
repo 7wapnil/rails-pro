@@ -36,7 +36,8 @@ class CurrenciesController < ApplicationController
     return render_form_on_failure(:new) if @currency.errors.any?
 
     redirect_to edit_currency_path(@currency),
-                notice: t('currencies.create.success', code: @currency.code)
+                notice: t('internal.currencies.create.success',
+                          code: @currency.code)
   end
 
   def update
@@ -46,7 +47,7 @@ class CurrenciesController < ApplicationController
     return render_form_on_failure(:edit) if @currency.errors.any?
 
     redirect_to edit_currency_path(@currency),
-                notice: t('currencies.update.success')
+                notice: t('internal.currencies.update.success')
   end
 
   private
