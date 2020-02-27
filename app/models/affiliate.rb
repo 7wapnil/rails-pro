@@ -1,4 +1,6 @@
 class Affiliate < ApplicationRecord
+  default_scope { order(:id) }
+
   validates :name,
             :b_tag,
             :sports_revenue_share,
