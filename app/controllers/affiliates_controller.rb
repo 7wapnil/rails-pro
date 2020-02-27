@@ -9,6 +9,6 @@ class AffiliatesController < ApplicationController
   def import
     result = Affiliates::Import.call(params[:file].path)
 
-    redirect_to affiliates_path, notice: result.message
+    redirect_to affiliates_path, notice: result[:message]
   end
 end
