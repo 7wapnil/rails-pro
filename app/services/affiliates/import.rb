@@ -52,7 +52,7 @@ module Affiliates
     end
 
     def attribute_value(attribute:, value:)
-      return value&.to_d if NUMERIC_ATTRIBUTES.include?(attribute)
+      return value&.to_d || 0 if NUMERIC_ATTRIBUTES.include?(attribute)
 
       value
     end
