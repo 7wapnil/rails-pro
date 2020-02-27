@@ -7,8 +7,8 @@ class AffiliatesController < ApplicationController
   end
 
   def import
-    Affiliates::Import.call(params[:file].path)
+    result = Affiliates::Import.call(params[:file].path)
 
-    redirect_to affiliates_path, notice: t('internal.import_successful')
+    redirect_to affiliates_path, notice: result.message
   end
 end

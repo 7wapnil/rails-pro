@@ -29,6 +29,10 @@ module Affiliates
         affiliate.assign_attributes(attributes.slice(*NUMERIC_ATTRIBUTES))
         affiliate.save! if affiliate.changed?
       end
+
+      { success: true, message: 'Affiliates imported successfully' }
+    rescue StandardError => e
+      { success: false, message: e.message }
     end
 
     private
@@ -48,7 +52,7 @@ module Affiliates
     end
 
     def attribute_value(attribute:, value:)
-      return value.to_d if NUMERIC_ATTRIBUTES.include?(attribute)
+      return value&.to_d if NUMERIC_ATTRIBUTES.include?(attribute)
 
       value
     end
