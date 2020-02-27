@@ -48,7 +48,6 @@ class Wallet < ApplicationRecord
   def with_money?
     amount.positive? ||
       real_money_balance.positive? ||
-      bonus_balance.positive? ||
-      confiscated_bonus_balance.positive?
+      bonus_balance.positive?
   end
 end
