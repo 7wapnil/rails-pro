@@ -12,7 +12,7 @@ module DataAdjustments
 
         request = EntryRequest.create!(
           kind: EntryRequest::SYSTEM_ADJUSTMENT,
-          mode: :cashier,
+          mode: EntryRequest::CASHIER,
           comment: 'Removing player balance that occured by a system error',
           customer: customer,
           currency: wallet.currency,
@@ -22,9 +22,7 @@ module DataAdjustments
           confiscated_bonus_amount: -wallet.confiscated_bonus_balance
         )
 
-        entry = WalletEntry::AuthorizationService.call(request)
-
-        entry.confirm!
+        WalletEntry::AuthorizationService.call(request)
       end
     end
   end

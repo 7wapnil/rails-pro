@@ -2,8 +2,10 @@ describe DataAdjustments::RemoveCustomerBalance do
   before { create(:currency, :primary) }
 
   # rubocop:disable RSpec/MultipleExpectations
+
+  let(:customer) { create(:customer) }
+
   it 'removes balance from a single non-empty wallet' do
-    customer = create(:customer)
     fiat_wallet = create(:wallet, :fiat, :empty, customer: customer)
     crypto_wallet = create(:wallet, :crypto, customer: customer)
 
@@ -21,7 +23,6 @@ describe DataAdjustments::RemoveCustomerBalance do
   end
 
   it 'removes balance from multiple non-empty wallets' do
-    customer = create(:customer)
     fiat_wallet = create(:wallet, :fiat, customer: customer)
     crypto_wallet = create(:wallet, :crypto, customer: customer)
 
@@ -39,7 +40,6 @@ describe DataAdjustments::RemoveCustomerBalance do
   end
 
   it 'skips empty wallet' do
-    customer = create(:customer)
     create(:wallet, :empty, customer: customer)
 
     expect(WalletEntry::AuthorizationService).not_to receive(:call)
@@ -48,7 +48,6 @@ describe DataAdjustments::RemoveCustomerBalance do
   end
 
   it 'skips wallet with negative balance' do
-    customer = create(:customer)
     wallet = create(
       :wallet,
       amount: -100,
