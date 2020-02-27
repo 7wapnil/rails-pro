@@ -84,7 +84,6 @@ en:
     not_found: "No %{instance} found"
     choose_file: Choose file
     cancel: Cancel
-    import_successful: Import successful
 
     bonus_forfeit_requested: "%{number} bonus(es) requested to be forfeited"
     bonus_award_requested: "%{number} bonus(es) requested to be awarded"
