@@ -38,7 +38,7 @@ module LoginAttemptable
     private
 
     def notify_account_owner
-      ArcanebetMailer.suspicious_login(email).deliver_now
+      CustomerActivityMailer.suspicious_login(email).deliver_now
     end
   end
 end

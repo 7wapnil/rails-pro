@@ -47,7 +47,7 @@ describe User do
       end
 
       xit 'notify about suspicious login' do
-        expect_any_instance_of(ArcanebetMailer)
+        expect_any_instance_of(CustomerActivityMailer)
           .to receive(:suspicious_login).with(user.email)
 
         fill_sign_in_form

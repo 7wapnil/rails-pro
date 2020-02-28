@@ -38,7 +38,7 @@ shared_examples 'LoginAttemptable' do
     end
 
     context 'notify account owner' do
-      let(:mailer) { instance_double(ArcanebetMailer) }
+      let(:mailer) { instance_double(CustomerActivityMailer) }
 
       before do
         allow(mailer).to receive(:suspicious_login)

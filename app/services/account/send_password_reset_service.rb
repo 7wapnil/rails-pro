@@ -58,7 +58,7 @@ module Account
     end
 
     def send_reset_password_mail
-      ArcanebetMailer
+      CustomerActivityMailer
         .with(customer: customer)
         .reset_password_mail(@raw_token)
         .deliver_later

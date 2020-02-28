@@ -31,7 +31,7 @@ module Bets
       return unless wallet
       return if wallet.real_money_balance >= 0 && wallet.bonus_balance >= 0
 
-      ArcanebetMailer
+      UserMailer
         .with(customer: customer)
         .negative_balance_bet_placement
         .deliver_later
