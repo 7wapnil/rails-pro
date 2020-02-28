@@ -8,8 +8,12 @@ class Wallet < ApplicationRecord
   has_many :entries
 
   has_one :crypto_address, dependent: :destroy
+  has_many :customer_bonuses
   has_one :customer_bonus, -> { reorder('activated_at DESC NULLS LAST') }
   has_one :active_bonus, -> { active }, class_name: CustomerBonus.name
+  has_one :initial_customer_bonus,
+          -> { initial.reorder('created_at DESC') },
+          class_name: CustomerBonus.name
 
   scope :primary, -> { joins(:currency).where(currencies: { primary: true }) }
 
@@ -39,5 +43,11 @@ class Wallet < ApplicationRecord
 
   def to_s
     "#{currency} Wallet"
+  end
+
+  def with_money?
+    amount.positive? ||
+      real_money_balance.positive? ||
+      bonus_balance.positive?
   end
 end

@@ -37,8 +37,6 @@ module Payments
                               payment_message_status: payment_message_status,
                               request_id: request_id)
 
-            ga_client.track_deposit_cancellation!
-
             entry_request.register_failure!(
               I18n.t('internal.errors.messages.cancelled_by_customer')
             )
@@ -90,7 +88,6 @@ module Payments
                               reason: response[:Reason],
                               reason_code: response[:ReasonCode],
                               request_id: request_id)
-            ga_client.track_deposit_failure!
 
             entry_request.register_failure!(failed_with_reason_message)
             fail_related_entities
