@@ -11,11 +11,11 @@ local: &local
 
 development:
   <<: *local
-  database: arcanebet_development
+  database: gammabet_development
 
 test:
   <<: *local
-  database: arcanebet_test
+  database: gammabet_test
 
 production:
   <<: *default
