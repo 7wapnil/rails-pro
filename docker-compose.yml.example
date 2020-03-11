@@ -27,7 +27,7 @@ services:
       - mongo:/data/db
 
   web:
-    image: arcanebet/arcanebet:dev
+    build: .
     command: bundle exec rails s -p 3000 -b '0.0.0.0'
     stdin_open: true
     tty: true
@@ -42,7 +42,7 @@ services:
       - db
 
   worker:
-    image: arcanebet/arcanebet:dev
+    build: .
     command: bundle exec sidekiq -C config/sidekiq.yml
     stdin_open: true
     tty: true
@@ -56,7 +56,7 @@ services:
       - redis
 
   worker_mts:
-    image: arcanebet/arcanebet:dev
+    build: .
     command: bundle exec sidekiq -C config/mts.sidekiq.yml
     stdin_open: true
     tty: true
@@ -70,7 +70,7 @@ services:
       - redis
 
   worker_odds_feed:
-    image: arcanebet/arcanebet:dev
+    build: .
     command: bundle exec sidekiq -C config/odds-feed.sidekiq.yml
     stdin_open: true
     tty: true
@@ -84,7 +84,7 @@ services:
       - redis
 
   listener:
-    image: arcanebet/arcanebet:dev
+    build: .
     command: rake sneakers:run
     stdin_open: true
     tty: true
@@ -99,7 +99,7 @@ services:
       - db
 
   mts_listener:
-    image: arcanebet/arcanebet:dev
+    build: .
     command: rake listeners:start
     stdin_open: true
     tty: true
@@ -112,7 +112,7 @@ services:
       - db
 
   cable:
-    image: arcanebet/arcanebet:dev
+    build: .
     command: bundle exec puma -p 28080 cable.ru
     stdin_open: true
     tty: true
